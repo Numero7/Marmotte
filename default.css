@@ -1,0 +1,386 @@
+/*#############################################################
+Name: Fluid Solution
+Date: 2006-09-06
+Description: Totally liquid three-column layout, clean and simple.
+Author: Viktor Persson
+URL: http://arcsin.se
+
+Feel free to use and modify but please provide credits.
+
+Adaptations CSE27UP
+#############################################################*/
+
+/* standard elements */
+
+/* fonce CNRS: #002A4C clair: #63C3DC*/
+
+* {
+	margin: 0;
+	padding: 0;
+}
+a {
+	text-decoration: none;
+}
+body {
+	background: #FFF url(img/bg.gif) repeat-x;
+	color: #444;
+	font: normal 62.5% "Lucida Sans Unicode",Verdana,sans-serif;
+	padding-top: 40px;
+}
+p,code,ul {
+	font-size: 1.2em;
+	padding-bottom: 1.2em;
+}
+dl {
+    font-size: 1.2em;
+    padding: 8px;
+}
+dd {
+    font-weight: bold;
+}
+dt {
+    margin-left: 16px;
+}
+li {
+	list-style: none;
+}
+h1 {
+	font-size: 1.4em;
+
+}
+code {
+	background-color: #ddd  ;
+	border: 1px solid #F0F0F0;
+	border-left: 6px solid #a91623;	
+	color: #444;
+	display: block;
+	font: normal 1.1em "Lucida Sans Unicode",serif;
+	margin-bottom: 12px;
+	padding: 8px 10px;
+	white-space: pre;
+}
+blockquote {
+	background: #222;
+	border-bottom: 1px solid #444;
+	border-top: 1px solid #444;
+	color: #fff;
+	display: block;
+	font: normal 0.9em Verdana,sans-serif;
+	margin-bottom: 12px;
+	padding: 12px;
+}
+
+h1,h2,h3,h4 {
+	font: bold 1.2em "Trebuchet MS",sans-serif;
+	color: #002A4C;
+}
+
+/* misc */
+.clearer {
+	clear: both;
+}
+
+/* header */
+.header {
+    background: url(img/stripes.png) no-repeat;
+	border-bottom: 1px solid #EEE;
+	height: 160px;
+	margin-bottom: 24px;
+}
+.header h1 {
+	color: #222;
+	font: normal 4em sans-serif;
+	margin-top: 40px;
+	text-align: center;
+}
+.header h1 a {
+    color: #222;
+}
+.header h2 {
+	border-top: 1px solid #EEE;
+	color: #666;
+	text-align: right;
+}
+.header h2 span {
+	background: #002A4C;
+	color: #fff;
+	font-weight: normal;
+	padding: 2px 4px;
+}
+
+/* left side (main content) */
+.left {
+	margin: 0 26% 20px 3%;
+}
+
+.large {
+	margin: 0 10% 20px 10%;
+}
+
+.content {
+	margin-bottom: 100px;
+}
+
+.content .descr {
+	color: #63C3DC;
+	font-size: 1.2em;
+}
+.content li {
+	list-style: disc;
+	margin-left: 28px;
+}
+.content h1 {
+	font-size: 2.4em;
+	margin-bottom: 4px;
+	vertical-align: bottom;
+}
+
+.content h2 {
+    font-size: 1.6em;
+    color: #222;
+    margin-bottom: 4px;
+    margin-top: 8px;
+}
+.content h3 {
+    font-size: 1.3em;
+    color: #002A4C;
+    margin-bottom: 4px;
+    margin-top: 4px;
+}
+
+.content a:link {
+	color: #002A4C;
+    text-decoration: underline;
+}
+
+.content a:visited {
+	color: #002A4C;
+    text-decoration: underline;
+}
+
+
+.content a:hover {
+	color: #002A4C;
+	background-color:#63C3DC;
+	text-decoration: none;
+}
+
+
+
+.content a:active {
+	color: #63C3DC;
+	text-decoration: none;
+}
+
+
+
+.footer a:link, a:visited {
+	color: #002A4C;
+	text-decoration: none;
+}
+
+.footer a:hover, a:active {
+	color: #63C3DC;
+    text-decoration: underline;
+}
+
+
+/* nav & subnavigation */
+.nav,.right {
+	margin-bottom: 20px;
+	position: absolute;
+	top: 40px;
+}	
+
+/* navigation */
+.nav {
+	right: 23%;
+	text-align: center;
+	width: 17%;
+}
+.nav .logo {
+	background: url(img/CNRSlogo.png) no-repeat center center;
+	border-bottom: 1px solid #EEE;
+	border-top: 1px solid #EEE;
+	height: 159px;	
+}
+
+.nav h1 {
+	color: #F60;
+	margin: 12px 0;
+}
+.nav li {
+	border-bottom: 1px solid #EEE;
+}
+.nav li a {
+	color: #888;
+	display: block;
+	font: normal 1.4em serif;
+	padding: 8px 0;
+}
+.nav li a:hover {
+	background: #FAFAFA;
+	color: #63C3DC;
+}
+
+/* subnav */
+.right {
+	background: #222;
+	right: 3%;
+	width: 18%;
+	position:fixed;
+	float: left;
+
+}
+.subnav {
+	padding: 12px 12px 0;
+}
+.subnav h1 {
+	color: #63C3DC;
+	font-size: 1.4em;
+	height: 20px;
+	margin-left: 8px;
+}
+
+.subnav h1 a{
+	color: #63C3DC;
+}
+.subnav ul {
+	margin: 0 0 16px;
+	padding: 0;
+}
+.subnav li { 
+	list-style: none;
+	margin: 0;
+	border-bottom: 1px solid #333;
+}
+.subnav li a {	
+	color: #fff;
+	display: block;
+	font-size: 0.9em;
+	padding: 3px 6px 3px 8px;
+	text-decoration: none;
+}
+.subnav li a:hover {
+	color: #DDD;
+}
+
+.liste a {
+    color: #fff;
+}
+
+.liste a:hover {
+    color: #002A4C;
+}
+
+
+/* round edges */
+.roundtl,.roundtr,.roundbl,.roundbr {
+	background: url(img/round.gif);
+	height: 16px;
+	width: 14px;
+}
+.roundtl,.roundbl {
+	float: left;
+}
+.roundtr,.roundbr {
+	float: right;
+}
+.roundtr {
+	background-position:  top;
+}
+.roundbr {
+	background-position: right bottom;
+}
+.roundbl {
+	background-position: left bottom;
+}
+
+/* footer */
+.footer {
+	color: #666;
+	border-top: 1px solid #EEE;
+	font: normal 1em Verdana,sans-serif;
+	margin: 0 26% 0 3%;
+	padding: 8px 6px;
+}
+
+.listeout {
+    background-color: #222;
+}
+
+.liste {
+    background: #222;
+    color: #fff;
+    padding: 1px 16px;
+}
+
+.liste h2 {
+    color: #63C3DC;
+    font-size: 1.4em;
+}
+
+.liste p {
+    margin: 2px;
+    padding: 2px 4px;
+}
+
+.examplevaleur {
+    font-style: italic;
+    color: #63C3DC;
+}
+
+#authbar{
+	background: #63C3DC;
+	color: #FFFFFF;
+	padding: 8px;
+	font-weight:bold;
+	font-size: 150%;
+	text-align: right;
+	margin-bottom:1em;
+	border: 1px solid #002A4C;
+  }
+
+.login{
+	border: 2px solid #ffffff;
+	padding: 3px;
+	font-weight:bold;
+	margin-right:1em;
+}
+
+.summary{
+  width:100%;
+}
+.tools{
+  float:right;
+  border: 1px solid #002A4C;
+  padding: 5px;
+}
+
+.history{
+  border: 1px solid #002A4C;
+  background: #EEEEEE;
+  padding:1em;
+  margin-bottom:1em;
+}
+
+.highlight{
+	color:#FF0000;
+}
+
+.faded{
+	color:#999999;
+}
+
+.inputreport{
+	width:100%;
+}
+
+.inputreport td{
+	text-align:left;
+}
+
+.inputreport td input, .inputreport td select{
+	width:15em;
+}
+

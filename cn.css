@@ -1,0 +1,97 @@
+.hop {
+    margin-bottom: 16px;
+}
+
+
+table.emploidutemps
+{
+	width : 150%;
+	border-collapse : collapse;
+}
+
+table.calendrier
+{
+	border: 1px solid black;
+	width : 150%;
+	border-collapse : collapse;
+}
+
+table.emploidutemps th {
+}
+
+table.emploidutemps tr {
+}
+
+table.emploidutemps td {
+	border-right: 1px solid black;
+}
+
+table.emploidutemps td.busy {
+	border-top: 1px solid black;
+}
+
+table.calendrier th {
+	border-bottom: 1px solid black;
+}
+
+table.calendrier tr {
+	font-size : 100%;
+    padding-top: 16px;
+	border-bottom: 1px solid gray;
+}
+
+table.calendrier td {
+    padding-left: 16px;
+}
+
+table.compo {
+    text-align: left;
+}
+
+table.compo tr.l1 {
+    font-size: 1.8em;
+    color: #222;
+}
+
+table.compo tr.l2 {
+    font-size: 1.5em;
+    font-style: italic;
+    color: #222;
+}
+
+table.compo tr.l3 {
+    font-size: 1.2em;
+    color: #000;
+}
+
+table.compo tr.l1 th {
+    padding-left: 8px;
+    font-weight: bold;
+    padding-top: 16px;
+}
+
+table.compo tr.l2 th {
+    padding-left: 16px;
+    padding-top: 12px;
+}
+
+table.compo tr.l3 th {
+    padding-left: 24px;
+}
+
+table.compo td {
+    padding-left: 24px;
+}
+
+table.compo th {
+    font-weight: normal;
+    padding: 4px;
+}
+
+table.compo a {
+    color: #000;
+}
+
+.avert{
+	color:#FF0000;
+}

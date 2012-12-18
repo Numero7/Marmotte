@@ -1,0 +1,13 @@
+body {
+    font-family: Helvetica, sans-serif;
+}
+
+a {
+    text-decoration: none;
+    font-weight: normal;
+    font-style: normal;
+}
+
+.header, .footer, .nav, .right {
+    display: none;
+}
