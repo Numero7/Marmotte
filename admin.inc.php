@@ -1,5 +1,32 @@
 <h1>Interface d'administration</h1>
-<h2>Créer nouvel utilisateur</h2>
+
+<h2>Suppression d'un rapporteur</h2>
+<p>
+<form method="post"  onsubmit="return confirm('Etes vous sur de vouloir supprimer cet utilisateur ?');">
+<table class="inputreport" >
+	<tr>
+		<td style="width:20em;">Utilisateur</td>
+		<td><select name="login"> 
+		<?php 
+			$users = listUsers();
+			foreach($users as $user)
+			{
+				if (!isSuperUser($user))
+				echo "<option value=\"$user\">".ucfirst($user)."</option>";
+			}
+		?>
+		</select></td>
+	</tr>
+	<tr>
+	    <td><input type="hidden" name="action" value="admindeleteaccount">
+		</td>
+		<td><input type="submit" value="Supprimer rapporteur"></td>
+	</tr>
+</table>
+</form>
+</p>
+
+<h2>Création nouveau rapporteur</h2>
 <p>
 <form method="post">
 <table class="inputreport">
@@ -63,30 +90,6 @@
 </form>
 </p>
 
-<h2>Suppression d'un utilisateur</h2>
-<p>
-<form method="post"  onsubmit="return confirm('Etes vous sur de vouloir supprimer cet utilisateur ?');">
-<table class="inputreport" >
-	<tr>
-		<td style="width:20em;">Utilisateur</td>
-		<td><select name="login"> 
-		<?php 
-			$users = listUsers();
-			foreach($users as $user)
-			{
-				if (!isSuperUser($user))
-				echo "<option value=\"$user\">".ucfirst($user)."</option>";
-			}
-		?>
-		</select></td>
-	</tr>
-	<tr>
-	    <td><input type="hidden" name="action" value="admindeleteaccount">
-		</td>
-		<td><input type="submit" value="Supprimer rapporteur"></td>
-	</tr>
-</table>
-</form>
 <br>
 <hr>
 <h2>Ajout d'une session</h2>

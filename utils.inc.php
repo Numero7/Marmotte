@@ -145,11 +145,9 @@
 		return $sql;
 	}
 	
-	function displaySummary($id_session, $type_eval, $sort_crit)
+	
+	function filterSortReports($id_session, $type_eval, $sort_crit, $login_rapp)
 	{
-		global $fieldsSummary;
-		global $fieldsAll;
-		global $actions;
 		$sortCrit = parseSortCriteria($sort_crit);
 		
 		$sql = "SELECT tt.*, ss.nom AS nom_session, ss.date AS date_session FROM evaluations tt INNER JOIN ( SELECT id, MAX(date) AS date FROM evaluations GROUP BY id_origine) mostrecent ON tt.date = mostrecent.date, sessions ss WHERE ss.id=tt.id_session ";
@@ -159,11 +157,29 @@
 		{ 
 			$sql .= " AND type=\"$type_eval\"";
 		}
+		if ($login_rapp!="")
+		{ 
+			$sql .= " AND rapporteur=\"$login_rapp\"";
+		}
 		$sql .= sortCriteriaToSQL($sortCrit);
 		$sql .= ";";
 		//echo $sql;
 		$result=mysql_query($sql);
+		return $result;
+	}
+	
+	function displaySummary($id_session, $type_eval, $sort_crit, $login_rapp)
+	{
+		global $fieldsSummary;
+		global $fieldsAll;
+		global $actions;
+		
+		$result = filterSortReports($id_session, $type_eval, $sort_crit, $login_rapp);
+		$sortCrit = parseSortCriteria($sort_crit);
+		
+
 		?>
+			<h2>Rapports disponibles</h2>
 			<table class="summary">
 				<tr>
 		<?php
@@ -182,8 +198,10 @@
 		?>
 				</tr>
 		<?php
+		$rapporteurs = array();
 		while ($row = mysql_fetch_object($result))
 		{
+			$rapporteurs[$row->rapporteur] = 1;
 		?>
 				<tr>
 			<?php
@@ -202,8 +220,35 @@
 				<tr>
 		<?php
 		}
+		$krapp = array_keys($rapporteurs);
+		natcasesort($krapp);
+		$rapporteurs = $krapp;
 		?>
 			</table>
+			<br><hr><br>
+			<form  method="get">
+				<table class="inputreport">
+					<tr>
+						<td style="width:20em;">Rapporteur</td>
+						<td style="width:20em;"><select name="login_rapp"> 
+						<option value="">Tous les rapporteurs</option>
+						<?php
+							foreach ($rapporteurs as $rapp)
+							{
+								echo "<option value=\"$rapp\">".ucfirst($rapp)."</option>";
+							}
+						?>
+						</select></td>
+						<td>
+							<input type="hidden" name="id_session" value="<?php echo $id_session;?>">
+							<input type="hidden" name="type_eval" value="<?php echo $type_eval;?>">
+							<input type="hidden" name="sor_crit" value="<?php echo $sort_crit;?>">
+							<input type="hidden" name="action" value="view">
+							<input type="submit" value="Filtrer rapporteurs">
+						</td>
+					</tr>
+				</table>
+			</form>
 		<?php
 	} ;	
 
@@ -250,7 +295,7 @@
 			"date_session"=>0,
 		);
 		$sql = "SELECT tt.*, ss.nom AS nom_session, ss.date AS date_session FROM evaluations tt, sessions ss WHERE tt.id=$id_rapport AND tt.id_session=ss.id;";
-		echo $sql;
+		//echo $sql;
 		$result=mysql_query($sql);
 		if ($row = mysql_fetch_object($result))
 		{

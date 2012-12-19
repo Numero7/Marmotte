@@ -2,7 +2,7 @@
 	
 	<div class="header">
 		<h2><span>Comité National de la Recherche Scientifique</span></h2>
-		<h1><a href="index.html">Section 6 : </a>Interface de saisie des prérapports</h1>
+		<h1>Interface de saisie des prérapports</h1>
 	</div>
 
 	<div class="content"> 
@@ -20,12 +20,18 @@
 		{
 			$type_eval = $_REQUEST["type_eval"];
 		}
+		$login_rapp = "";
+		if (isset($_REQUEST["login_rapp"]))
+		{
+			$login_rapp = $_REQUEST["login_rapp"];
+		}
+		
 		$sort_crit = "";
 		if (isset($_REQUEST["sort"]))
 		{
 			$sort_crit = $_REQUEST["sort"];
 		}
-		displaySummary($id_session,$type_eval,$sort_crit);
+		displaySummary($id_session,$type_eval,$sort_crit,$login_rapp);
 	}
 	else if ($action=="details")
 	{
