@@ -441,12 +441,15 @@
 		global $fieldsTypes;
 		global $actions;
 		global $typesEval;
+		global $grades;
+		global $evaluations;
 		$specialRule = array(
 			"auteur"=>0,
 			"date"=>0,
 			"nom_session"=>0,
 			"date_session"=>0,
 			"type"=>0,
+			"grade" => 0,
 		);
 		
 		$sql = "SELECT tt.*, ss.nom AS nom_session, ss.date AS date_session FROM evaluations tt, sessions ss WHERE tt.id=$id_rapport ORDER BY date DESC LIMIT 1;";
@@ -458,8 +461,8 @@
 			<table class="inputreport">
 			<tr>
 				<td>Session</td>
-				<td colspan="2">
-					<select name="fieldid_session">				
+				<td>
+					<select name="fieldid_session" style="width:100%;">				
 					<?php 		
 					$sessions = showSessions();
 					foreach($sessions as $s)
@@ -476,8 +479,8 @@
 			</tr>
 			<tr>
 				<td>Type d'évaluation</td>
-				<td colspan="2">
-					<select name="fieldtype">				
+				<td>
+					<select name="fieldtype"  style="width:100%;">				
 					<?php
 					foreach($typesEval as $ty)
 					{
@@ -486,6 +489,22 @@
 						{ $sel = "selected=\"selected\""; }
 						echo  "\t\t\t\t\t<option value=\"$ty\" $sel>$ty</option>";
 					}
+					?>
+					</select> 
+				</td>
+			</tr>
+			<tr>
+				<td>Grade</td>
+				<td>
+					<select name="fieldgrade"  style="width:100%;">				
+					<?php
+						foreach($grades as $idg => $txtg)
+						{
+							$sel = "";
+							if ($row->grade==$idg)
+							{ $sel = "selected=\"selected\""; }
+							echo  "\t\t\t\t\t<option value=\"$idg\" $sel>$txtg</option>";
+						}
 					?>
 					</select> 
 				</td>
@@ -515,7 +534,24 @@
 					else if ($type=="short")
 					{
 				?>
-					<td  style="width:23em;"><input name="field<?php echo $fieldID;?>" value="<?php echo $row->$fieldID;?>"></td>
+					<td  style="width:30em;"><input name="field<?php echo $fieldID;?>" value="<?php echo $row->$fieldID;?>"  style="width:100%;"></td>
+					<td><span class="examplevaleur"><?php echo getExample($fieldID);?></span></td>
+				<?php
+					}
+					else if ($type=="evaluation")
+					{
+				?>
+					<td  style="width:30em;"><select name="field<?php echo $fieldID;?>" style="width:100%;"> 
+					<?php
+						foreach($evaluations as $val)
+						{
+							$sel = "";
+							if ($row->$fieldID==$val)
+							{ $sel = "selected=\"selected\""; }
+							echo  "\t\t\t\t\t<option value=\"$val\" $sel>$val</option>";
+						}
+					?>
+					</select></td>
 					<td><span class="examplevaleur"><?php echo getExample($fieldID);?></span></td>
 				<?php
 					}
@@ -589,12 +625,15 @@
 	{
 		global $fieldsAll;
 		global $fieldsTypes;
+		global $grades;
+		global $evaluations;
 		global $actions;
 		global $typesEval;
 		$specialRule = array(
 			"auteur"=>0,
 			"date"=>0,
 			"date_session"=>0,
+			"grade" => 0,
 		);
 		?>
 		<form method="get" action="index.php" style="width:100%">
@@ -602,7 +641,7 @@
 		<tr>
 			<td style="width:18em; white-space: nowrap;">Session</td>
 			<td>
-				<select name="fieldid_session">				
+				<select name="fieldid_session" style="width:100%;">				
 				<?php 		
 				$sessions = showSessions();
 				foreach($sessions as $s)
@@ -616,7 +655,7 @@
 		<tr>
 			<td>Type d'évaluation</td>
 			<td>
-				<select name="fieldtype">				
+				<select name="fieldtype" style="width:100%;">				
 				<?php
 					foreach($typesEval as $ty)
 					{
@@ -626,7 +665,19 @@
 				</select> 
 			</td>
 		</tr>
-
+		<tr>
+			<td>Grade</td>
+			<td>
+				<select name="fieldgrade" style="width:100%;">				
+				<?php
+					foreach($grades as $idg => $txtg)
+					{
+						echo  "\t\t\t\t\t<option value=\"$idg\">$txtg</option>";
+					}
+				?>
+				</select> 
+			</td>
+		</tr>
 		<?php
 		foreach($fieldsAll as  $fieldID => $title)
 		{
@@ -642,7 +693,7 @@
 					<td><span><?php echo $title;?></span></td><td><span class="examplevaleur"><?php echo getExample($fieldID);?></span></td>
 				</tr>
 				<tr>
-					<td colspan="2"><textarea name="field<?php echo $fieldID;?>" style="width:100%;"></textarea></td>
+					<td colspan="3"><textarea name="field<?php echo $fieldID;?>" style="width:100%;"></textarea></td>
 				</tr>
 				<?php
 					}
@@ -651,7 +702,25 @@
 				?>
 				<tr>
 					<td><?php echo $title;?> </td>
-					<td><input name="field<?php echo $fieldID;?>" value=""> <span class="examplevaleur"><?php echo getExample($fieldID);?></span></td>
+					<td><input name="field<?php echo $fieldID;?>" value="" style="width:100%;"> </td>
+					<td><span class="examplevaleur"><?php echo getExample($fieldID);?></span></td>
+				</tr>
+				<?php
+					}
+					else if ($type=="evaluation")
+					{
+				?>
+				<tr>
+					<td><?php echo $title;?> </td>
+					<td  style="width:30em;"><select name="field<?php echo $fieldID;?>" style="width:100%;"> 
+					<?php
+						foreach($evaluations as $val)
+						{
+							echo  "\t\t\t\t\t<option value=\"$val\">$val</option>";
+						}
+					?>
+					</select></td>
+					<td><span class="examplevaleur"><?php echo getExample($fieldID);?></span></td>
 				</tr>
 				<?php
 					}
@@ -773,5 +842,28 @@
 			mysql_query($sql);
 		}
 	}
+
+	function createSession($name,$date)
+	{
+		if (isSuperUser())
+		{
+			echo $date."<br>";
+			echo strtotime($date)."<br>";
+			echo date("Y-m-d h:m:s",strtotime($date));
+			$sql = "INSERT INTO sessions(nom,date) VALUES ('".mysql_real_escape_string($name)."','".date("Y-m-d h:m:s",strtotime($date))."');";
+			mysql_query($sql);
+			return true;
+		}
+	}
+	
+	function deleteSession($id)
+	{
+		if (isSuperUser())
+		{
+			$sql = "DELETE FROM sessions WHERE id=$id;";
+			mysql_query($sql);
+		}
+	}
+
 
 ?>

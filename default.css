@@ -326,6 +326,7 @@ h1,h2,h3,h4 {
 }
 
 .examplevaleur {
+    padding-left:1em;
     font-style: italic;
     color: #63C3DC;
 }
