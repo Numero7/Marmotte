@@ -181,23 +181,91 @@ function filterSortReports($id_session, $type_eval, $sort_crit, $login_rapp)
 	$sql = "SELECT tt.*, ss.nom AS nom_session, ss.date AS date_session FROM evaluations tt INNER JOIN ( SELECT id, MAX(date) AS date FROM evaluations GROUP BY id_origine) mostrecent ON tt.date = mostrecent.date, sessions ss WHERE ss.id=tt.id_session ";
 	if ($id_session!=-1)
 	{
-		$sql .= " AND id_session=$id_session";
+		$sortCrit = parseSortCriteria($sort_crit);
+		
+		$sql = "SELECT tt.*, ss.nom AS nom_session, ss.date AS date_session FROM evaluations tt INNER JOIN ( SELECT id, MAX(date) AS date FROM evaluations GROUP BY id_origine) mostrecent ON tt.date = mostrecent.date, sessions ss WHERE ss.id=tt.id_session ";
+		if ($id_session!=-1)
+		{ $sql .= " AND id_session=$id_session ";}
+		if ($type_eval!="")
+		{ 
+			$sql .= " AND type=\"$type_eval\" ";
+		}
+		if ($login_rapp!="")
+		{ 
+			$sql .= " AND rapporteur=\"$login_rapp\" ";
+		}
+		$sql .= sortCriteriaToSQL($sortCrit);
+		$sql .= ";";
+		//echo $sql;
+		$result=mysql_query($sql);
+		return $result;
 	}
 	if ($type_eval!="")
 	{
-		$sql .= " AND type=\"$type_eval\"";
-	}
-	if ($login_rapp!="")
-	{
-		$sql .= " AND rapporteur=\"$login_rapp\"";
-	}
-	$sql .= sortCriteriaToSQL($sortCrit);
-	$sql .= ";";
-	//echo $sql;
-	$result=mysql_query($sql);
-	return $result;
-}
 
+		?>
+			<h2>Filtrage</h2>
+			<form  method="get">
+				<table class="inputreport">
+					<tr>
+						<td style="width:20em;">Session</td>
+						<td><select name="id_session"> 
+						<option value="-1">Toutes les sessions</option>
+						<?php
+							foreach ($sessions as $val)
+							{
+								$sel = "";
+								if ($val["id"]==$id_session)
+								{ $sel = " selected=\"selected\""; }
+								echo "<option value=\"".$val["id"]."\" $sel>".ucfirst($val["nom"])." ".date("Y",strtotime($val["date"]))."</option>";
+							}
+						?>
+						</select></td>
+					</tr>
+					<tr>
+						<td>Rapporteur</td>
+						<td><select name="login_rapp"> 
+						<option value="">Tous les rapporteurs</option>
+						<?php
+							foreach ($rapporteurs as $rapp)
+							{
+								$sel = "";
+								if ($rapp==$login_rapp)
+								{ $sel = " selected=\"selected\""; }
+								echo "<option value=\"$rapp\"$sel>".ucfirst($rapp)."</option>";
+							}
+						?>
+						</select></td>
+					</tr>
+					<tr>
+						<td>Type évaluation</td>
+						<td><select name="type_eval"> 
+						<option value="">Tous les types</option>
+						<?php
+							foreach ($typesEval as $ty)
+							{
+								$sel = "";
+								if ($ty==$type_eval)
+								{ $sel = " selected=\"selected\""; }
+								echo "<option value=\"$ty\"$sel>".ucfirst($ty)."</option>";
+							}
+						?>
+						</select></td>
+					</tr>
+					<tr>
+						<td></td>
+						<td>
+							<input type="hidden" name="sort_crit" value="<?php echo $sort_crit;?>">
+							<input type="hidden" name="action" value="view">
+							<input type="submit" value="Filtrer">
+						</td>
+					</tr>
+				</table>
+			</form>
+			<br><hr><br>
+			<h2>Rapports disponibles</h2>
+			<table class="summary">
+				<tr>
 function get_rapporteurs()
 {
 	$sql = "SELECT tt.*, ss.nom AS nom_session, ss.date AS date_session FROM evaluations tt INNER JOIN ( SELECT id, MAX(date) AS date FROM evaluations GROUP BY id_origine) mostrecent ON tt.date = mostrecent.date, sessions ss WHERE ss.id=tt.id_session ";
@@ -214,116 +282,23 @@ function get_rapporteurs()
 	$rapporteurs = $krapp;
 }
 
-function displaySummary($id_session, $type_eval, $sort_crit, $login_rapp)
-{
-	global $fieldsSummary;
-	global $fieldsAll;
-	global $actions;
-	global $typesEvalChercheurs;
-	global $typesEvalUnites;
-	global $typeExports;
-
-	$result = filterSortReports($id_session, $type_eval, $sort_crit, $login_rapp);
-	$sortCrit = parseSortCriteria($sort_crit);
-	$rapporteurs = array();
-	$sessions =  showSessions();
-	$rows = array();
-	while ($row = mysql_fetch_object($result))
-	{
-		$rows[] = $row;
-		$rapporteurs[$row->rapporteur] = 1;
-	}
-	$krapp = array_keys($rapporteurs);
-	natcasesort($krapp);
-	$rapporteurs = $krapp;
-
-	?>
-<h2>Filtrage</h2>
-<form method="get">
-	<table class="inputreport">
-		<tr>
-			<td style="width: 20em;">Session</td>
-			<td><select name="id_session">
-					<option value="-1">Toutes les sessions</option>
-					<?php
-					foreach ($sessions as $val)
-					{
-						$sel = "";
-						if ($val["id"]==$id_session)
-						{
-							$sel = " selected=\"selected\"";
-						}
-						echo "<option value=\"".$val["id"]."\" $sel>".ucfirst($val["nom"])." ".date("Y",strtotime($val["date"]))."</option>";
-					}
-					?>
-			</select></td>
-		</tr>
 		<tr>
 			<td>Rapporteur</td>
 			<td><select name="login_rapp">
-					<option value="">Tous les rapporteurs</option>
-					<?php
-					foreach ($rapporteurs as $rapp)
-					{
-						$sel = "";
-						if ($rapp==$login_rapp)
-						{
-							$sel = " selected=\"selected\"";
-						}
-						echo "<option value=\"$rapp\"$sel>".ucfirst($rapp)."</option>";
-					}
-					?>
-			</select></td>
-		</tr>
-		<tr>
-			<td>Type évaluation</td>
-			<td><select name="type_eval">
-					<option value="">Tous les types</option>
-					<?php
-					foreach ($typesEvalChercheurs as $ty)
-					{
-						$sel = "";
-						if ($ty==$type_eval)
-						{
-							$sel = " selected=\"selected\"";
-						}
-						echo "<option value=\"$ty\"$sel>".ucfirst($ty)."</option>";
-					}
-					foreach ($typesEvalUnites as $ty)
-					{
-						$sel = "";
-						if ($ty==$type_eval)
-						{
-							$sel = " selected=\"selected\"";
-						}
-						echo "<option value=\"$ty\"$sel>".ucfirst($ty)."</option>";
-					}
-					?>
-			</select></td>
-		</tr>
-		<tr>
-			<td></td>
-			<td><input type="hidden" name="sor_crit"
-				value="<?php echo $sort_crit;?>"> <input type="hidden" name="action"
-				value="view"> <input type="submit" value="Filtrer">
-			</td>
-		</tr>
-	</table>
-</form>
-<br>
-<hr>
-<br>
-<h2>Rapports disponibles</h2>
-<table class="summary">
-	<tr>
 		<?php
 		foreach($fieldsSummary as $fieldID)
 		{
 			$title = $fieldsAll[$fieldID];
-			?>
-		<th><span class="nomColonne"><a
-				href="?action=view&amp;sort=<?php echo dumpEditedCriteria($sortCrit, $fieldID);?>"><?php echo $title.showCriteria($sortCrit, $fieldID);?>
-			</a> </span></th>
+		?>
+					<th><span class="nomColonne"><?php 
+					echo "<a href=\"?action=view"; 
+					echo "&amp;id_session=$id_session";
+					echo "&amp;type_eval=$type_eval";
+					echo "&amp;login_rapp=$login_rapp";
+					echo "&amp;sort=".dumpEditedCriteria($sortCrit, $fieldID)."\">";
+					echo $title.showCriteria($sortCrit, $fieldID);
+					echo "</a>";?>
+					</span></th>
 		<?php
 		}
 		foreach($actions as $action => $actionTitle)
