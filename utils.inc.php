@@ -152,14 +152,14 @@
 		
 		$sql = "SELECT tt.*, ss.nom AS nom_session, ss.date AS date_session FROM evaluations tt INNER JOIN ( SELECT id, MAX(date) AS date FROM evaluations GROUP BY id_origine) mostrecent ON tt.date = mostrecent.date, sessions ss WHERE ss.id=tt.id_session ";
 		if ($id_session!=-1)
-		{ $sql .= " AND id_session=$id_session";}
+		{ $sql .= " AND id_session=$id_session ";}
 		if ($type_eval!="")
 		{ 
-			$sql .= " AND type=\"$type_eval\"";
+			$sql .= " AND type=\"$type_eval\" ";
 		}
 		if ($login_rapp!="")
 		{ 
-			$sql .= " AND rapporteur=\"$login_rapp\"";
+			$sql .= " AND rapporteur=\"$login_rapp\" ";
 		}
 		$sql .= sortCriteriaToSQL($sortCrit);
 		$sql .= ";";
@@ -242,7 +242,7 @@
 					<tr>
 						<td></td>
 						<td>
-							<input type="hidden" name="sor_crit" value="<?php echo $sort_crit;?>">
+							<input type="hidden" name="sort_crit" value="<?php echo $sort_crit;?>">
 							<input type="hidden" name="action" value="view">
 							<input type="submit" value="Filtrer">
 						</td>
@@ -258,7 +258,15 @@
 		{
 			$title = $fieldsAll[$fieldID];
 		?>
-					<th><span class="nomColonne"><a href="?action=view&amp;sort=<?php echo dumpEditedCriteria($sortCrit, $fieldID);?>"><?php echo $title.showCriteria($sortCrit, $fieldID);?></a></span></th>
+					<th><span class="nomColonne"><?php 
+					echo "<a href=\"?action=view"; 
+					echo "&amp;id_session=$id_session";
+					echo "&amp;type_eval=$type_eval";
+					echo "&amp;login_rapp=$login_rapp";
+					echo "&amp;sort=".dumpEditedCriteria($sortCrit, $fieldID)."\">";
+					echo $title.showCriteria($sortCrit, $fieldID);
+					echo "</a>";?>
+					</span></th>
 		<?php
 		}
 		foreach($actions as $action => $actionTitle)
