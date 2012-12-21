@@ -195,7 +195,7 @@
 				<table class="inputreport">
 					<tr>
 						<td style="width:20em;">Session</td>
-						<td style="width:20em;"><select name="id_session"> 
+						<td><select name="id_session"> 
 						<option value="-1">Toutes les sessions</option>
 						<?php
 							foreach ($sessions as $val)
@@ -207,21 +207,10 @@
 							}
 						?>
 						</select></td>
-						<td>
-							<input type="hidden" name="login_rapp" value="<?php echo $login_rapp;?>">
-							<input type="hidden" name="type_eval" value="<?php echo $type_eval;?>">
-							<input type="hidden" name="sor_crit" value="<?php echo $sort_crit;?>">
-							<input type="hidden" name="action" value="view">
-							<input type="submit" value="Filtrer">
-						</td>
 					</tr>
-				</table>
-			</form>
-			<form  method="get">
-				<table class="inputreport">
 					<tr>
-						<td style="width:20em;">Rapporteur</td>
-						<td style="width:20em;"><select name="login_rapp"> 
+						<td>Rapporteur</td>
+						<td><select name="login_rapp"> 
 						<option value="">Tous les rapporteurs</option>
 						<?php
 							foreach ($rapporteurs as $rapp)
@@ -233,21 +222,10 @@
 							}
 						?>
 						</select></td>
-						<td>
-							<input type="hidden" name="id_session" value="<?php echo $id_session;?>">
-							<input type="hidden" name="type_eval" value="<?php echo $type_eval;?>">
-							<input type="hidden" name="sor_crit" value="<?php echo $sort_crit;?>">
-							<input type="hidden" name="action" value="view">
-							<input type="submit" value="Filtrer">
-						</td>
 					</tr>
-				</table>
-			</form>
-			<form  method="get">
-				<table class="inputreport">
 					<tr>
-						<td style="width:20em;">Type évaluation</td>
-						<td style="width:20em;"><select name="type_eval"> 
+						<td>Type évaluation</td>
+						<td><select name="type_eval"> 
 						<option value="">Tous les types</option>
 						<?php
 							foreach ($typesEval as $ty)
@@ -259,11 +237,12 @@
 							}
 						?>
 						</select></td>
+					</tr>
+					<tr>
+						<td></td>
 						<td>
-							<input type="hidden" name="id_session" value="<?php echo $id_session;?>">
 							<input type="hidden" name="sor_crit" value="<?php echo $sort_crit;?>">
 							<input type="hidden" name="action" value="view">
-							<input type="hidden" name="login_rapp" value="<?php echo $login_rapp;?>">
 							<input type="submit" value="Filtrer">
 						</td>
 					</tr>
@@ -972,5 +951,25 @@
 		}
 	}
 
-
+	function getReportsAsXML($id_session=-1, $type_eval="", $sort_crit="", $login_rapp="")
+	{
+		global $fieldsAll;
+		$xml = new DOMDocument();
+		$root = $xml->createElement("rapports");
+		$result = filterSortReports($id_session, $type_eval, $sort_crit, $login_rapp);
+		while ($row = mysql_fetch_object($result))
+		{
+			$rapportElem = $xml->createElement("rapport");
+			foreach ($fieldsAll as $fieldID => $desc)
+			{
+				$contentElem = $xml->createElement($fieldID);
+				$data = $xml->createCDATASection ($row->$fieldID);
+				$contentElem->appendChild($data);
+				$rapportElem->appendChild($contentElem);
+			}
+			$root->appendChild($rapportElem);
+		}
+		$xml->appendChild($root);
+		return $xml;
+	}
 ?>
