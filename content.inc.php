@@ -77,10 +77,10 @@
 		newReport($type_eval);
 	}
 	else if ($action=="add")
-	{	global $typesEvalUnites;
+	{	global $typesEvalUnit;
 		$id_nouveau = addReport();
 		
-		$is_unite = in_array(mysql_real_escape_string($_REQUEST["fieldtype"]),$typesEvalUnites);
+		$is_unite = in_array(mysql_real_escape_string($_REQUEST["fieldtype"]),$typesEvalUnit);
 		
 		if($is_unite)
 		{
@@ -88,7 +88,7 @@
 		}
 		else 
 		{
-			displayPeopleReport($id_nouveau);
+			displayIndividualReport($id_nouveau);
 		}
 	}
 	else if ($action=="newpwd" or $action=="adminnewpwd")

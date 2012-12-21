@@ -22,7 +22,7 @@ include("config.inc.php");
 		<h1>Ajouter Rapport Chercheur</h1>
 		<ul>
 		<?php 
-		foreach($typesEvalChercheurs as $typeEval)
+		foreach($typesEvalIndividual as $typeEval)
 		{
 			?>
 		<li><a href="?action=new&type_eval=<?php echo $typeEval ?>"><?php echo $typeEval?>
@@ -35,7 +35,7 @@ include("config.inc.php");
 		<h1>Ajouter Rapport Unité</h1>
 		<ul>
 		<?php 
-		foreach($typesEvalUnites as $typeEval)
+		foreach($typesEvalUnit as $typeEval)
 		{
 			?>
 			<li>

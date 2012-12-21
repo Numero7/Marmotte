@@ -125,6 +125,25 @@ INSERT INTO `sessions` (`id`, `nom`, `date`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `units`
+--
+
+DROP TABLE IF EXISTS `units`;
+CREATE TABLE IF NOT EXISTS `units` (
+  `nickname` text CHARACTER SET utf8 NOT NULL,
+  `code` text CHARACTER SET utf8 NOT NULL,
+  `fullname` text CHARACTER SET utf8 NOT NULL,
+  `directeur` text CHARACTER SET utf8 NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+INSERT INTO `units` (`nickname`, `code`, `fullname`, `directeur`) VALUES
+('LaBRI', 'UMR5800', 'Laboratoire Bordelais de Recherche en Informatique','Pascal WEIL' ),
+('LIX', 'UMR7161', 'Laboratoire d''Informatique de l''Ecole Polytechnique','Olivier BOURNEZ');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `users`
 --
 

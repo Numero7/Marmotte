@@ -174,209 +174,24 @@ function sortCriteriaToSQL($sortCrit)
 }
 
 
-function filterSortReports($id_session, $type_eval, $sort_crit, $login_rapp)
-{
-	$sortCrit = parseSortCriteria($sort_crit);
-
-	$sql = "SELECT tt.*, ss.nom AS nom_session, ss.date AS date_session FROM evaluations tt INNER JOIN ( SELECT id, MAX(date) AS date FROM evaluations GROUP BY id_origine) mostrecent ON tt.date = mostrecent.date, sessions ss WHERE ss.id=tt.id_session ";
-	if ($id_session!=-1)
-	{
-		$sortCrit = parseSortCriteria($sort_crit);
-		
-		$sql = "SELECT tt.*, ss.nom AS nom_session, ss.date AS date_session FROM evaluations tt INNER JOIN ( SELECT id, MAX(date) AS date FROM evaluations GROUP BY id_origine) mostrecent ON tt.date = mostrecent.date, sessions ss WHERE ss.id=tt.id_session ";
-		if ($id_session!=-1)
-		{ $sql .= " AND id_session=$id_session ";}
-		if ($type_eval!="")
-		{ 
-			$sql .= " AND type=\"$type_eval\" ";
-		}
-		if ($login_rapp!="")
-		{ 
-			$sql .= " AND rapporteur=\"$login_rapp\" ";
-		}
-		$sql .= sortCriteriaToSQL($sortCrit);
-		$sql .= ";";
-		//echo $sql;
-		$result=mysql_query($sql);
-		return $result;
-	}
-	if ($type_eval!="")
-	{
-
-		?>
-			<h2>Filtrage</h2>
-			<form  method="get">
-				<table class="inputreport">
-					<tr>
-						<td style="width:20em;">Session</td>
-						<td><select name="id_session"> 
-						<option value="-1">Toutes les sessions</option>
-						<?php
-							foreach ($sessions as $val)
-							{
-								$sel = "";
-								if ($val["id"]==$id_session)
-								{ $sel = " selected=\"selected\""; }
-								echo "<option value=\"".$val["id"]."\" $sel>".ucfirst($val["nom"])." ".date("Y",strtotime($val["date"]))."</option>";
-							}
-						?>
-						</select></td>
-					</tr>
-					<tr>
-						<td>Rapporteur</td>
-						<td><select name="login_rapp"> 
-						<option value="">Tous les rapporteurs</option>
-						<?php
-							foreach ($rapporteurs as $rapp)
-							{
-								$sel = "";
-								if ($rapp==$login_rapp)
-								{ $sel = " selected=\"selected\""; }
-								echo "<option value=\"$rapp\"$sel>".ucfirst($rapp)."</option>";
-							}
-						?>
-						</select></td>
-					</tr>
-					<tr>
-						<td>Type évaluation</td>
-						<td><select name="type_eval"> 
-						<option value="">Tous les types</option>
-						<?php
-							foreach ($typesEval as $ty)
-							{
-								$sel = "";
-								if ($ty==$type_eval)
-								{ $sel = " selected=\"selected\""; }
-								echo "<option value=\"$ty\"$sel>".ucfirst($ty)."</option>";
-							}
-						?>
-						</select></td>
-					</tr>
-					<tr>
-						<td></td>
-						<td>
-							<input type="hidden" name="sort_crit" value="<?php echo $sort_crit;?>">
-							<input type="hidden" name="action" value="view">
-							<input type="submit" value="Filtrer">
-						</td>
-					</tr>
-				</table>
-			</form>
-			<br><hr><br>
-			<h2>Rapports disponibles</h2>
-			<table class="summary">
-				<tr>
-function get_rapporteurs()
-{
-	$sql = "SELECT tt.*, ss.nom AS nom_session, ss.date AS date_session FROM evaluations tt INNER JOIN ( SELECT id, MAX(date) AS date FROM evaluations GROUP BY id_origine) mostrecent ON tt.date = mostrecent.date, sessions ss WHERE ss.id=tt.id_session ";
-	$result=mysql_query($sql);
-	$rapporteurs = array();
-	$rows = array();
-	while ($row = mysql_fetch_object($result))
-	{
-		$rows[] = $row;
-		$rapporteurs[$row->rapporteur] = 1;
-	}
-	$krapp = array_keys($rapporteurs);
-	natcasesort($krapp);
-	$rapporteurs = $krapp;
-}
-
-		<tr>
-			<td>Rapporteur</td>
-			<td><select name="login_rapp">
-		<?php
-		foreach($fieldsSummary as $fieldID)
-		{
-			$title = $fieldsAll[$fieldID];
-		?>
-					<th><span class="nomColonne"><?php 
-					echo "<a href=\"?action=view"; 
-					echo "&amp;id_session=$id_session";
-					echo "&amp;type_eval=$type_eval";
-					echo "&amp;login_rapp=$login_rapp";
-					echo "&amp;sort=".dumpEditedCriteria($sortCrit, $fieldID)."\">";
-					echo $title.showCriteria($sortCrit, $fieldID);
-					echo "</a>";?>
-					</span></th>
-		<?php
-		}
-		foreach($actions as $action => $actionTitle)
-		{?>
-		<th></th>
-		<?php
-		}
-		?>
-	</tr>
-	<?php
-	foreach($rows as $row)
-	{
-		?>
-	<tr>
-		<?php
-		foreach($fieldsSummary as $fieldID)
-		{
-			$title = $fieldsAll[$fieldID];
-			?>
-		<td><span class="valeur"><?php echo $row->$fieldID;?> </span></td>
-		<?php
-		}
-		foreach($actions as $action => $actionTitle)
-		{
-			echo "<td><a href=\"?action=$action&amp;id=".$row->id."&amp;id_origine=".$row->id_origine."\"><img class=\"icon\" src=\"img/$action-icon.png\" alt=\"$actionTitle\"></a></td>";
-		}
-		?>
-	
-	
-	<tr>
-		<?php
-	}
-	?>
-
-</table>
-Exporter :
-<?php
-foreach($typeExports as $idexp => $exp)
-{
-	$expname= $exp["name"];
-	echo " <a href=\"export.php?id_session=$id_session&amp;type_eval=$type_eval&amp;sort_crit=$sort_crit&amp;login_rapp=$login_rapp&amp;type=$idexp\">$expname</a>";
-}
-} ;
-
-function showSessions()
-{
-	$finalResult = array();
-	$sql = "SELECT * FROM sessions ORDER BY date DESC;";
-	$result=mysql_query($sql);
-
-	while ($row = mysql_fetch_object($result))
-	{
-		$finalResult[] = array(
-			  "id" => $row->id,
-			  "nom" => $row->nom,
-			  "date" => $row->date,
-			  );
-	}
-	return $finalResult;
-} ;
 
 function getTypesEval($id_session){
-		$finalResult = array();
-		$sql = "SELECT DISTINCT type FROM (SELECT tt.*, ss.nom AS nom_session, ss.date AS date_session FROM evaluations tt INNER JOIN ( SELECT id, MAX(date) AS date FROM evaluations GROUP BY id_origine) mostrecent ON tt.date = mostrecent.date, sessions ss WHERE ss.id=tt.id_session) difftypes WHERE id_session=$id_session ORDER BY type DESC;";
-		$result=mysql_query($sql);
-		while ($row = mysql_fetch_object($result))
-		{
-			if ($row->type)
-				$finalResult[] = $row->type;
-		}
-		return $finalResult;
-	}
-
-	function displayPeopleReport($id_rapport)
+	$finalResult = array();
+	$sql = "SELECT DISTINCT type FROM (SELECT tt.*, ss.nom AS nom_session, ss.date AS date_session FROM evaluations tt INNER JOIN ( SELECT id, MAX(date) AS date FROM evaluations GROUP BY id_origine) mostrecent ON tt.date = mostrecent.date, sessions ss WHERE ss.id=tt.id_session) difftypes WHERE id_session=$id_session ORDER BY type DESC;";
+	$result=mysql_query($sql);
+	while ($row = mysql_fetch_object($result))
 	{
-		global $fieldsAll;
-		global $actions;
-		$specialRule = array(
+		if ($row->type)
+			$finalResult[] = $row->type;
+	}
+	return $finalResult;
+}
+
+function displayIndividualReport($id_rapport)
+{
+	global $fieldsAll;
+	global $actions;
+	$specialRule = array(
 			"nom"=>0,
 			"prenom"=>0,
 			"grade"=>0,
@@ -384,13 +199,13 @@ function getTypesEval($id_session){
 			"type"=>0,
 			"nom_session"=>0,
 			"date_session"=>0,
-		);
-		$sql = "SELECT tt.*, ss.nom AS nom_session, ss.date AS date_session FROM evaluations tt, sessions ss WHERE tt.id=$id_rapport AND tt.id_session=ss.id;";
-		//echo $sql;
-		$result=mysql_query($sql);
-		if ($row = mysql_fetch_object($result))
-		{
-			?>
+	);
+	$sql = "SELECT tt.*, ss.nom AS nom_session, ss.date AS date_session FROM evaluations tt, sessions ss WHERE tt.id=$id_rapport AND tt.id_session=ss.id;";
+	//echo $sql;
+	$result=mysql_query($sql);
+	if ($row = mysql_fetch_object($result))
+	{
+		?>
 <div class="tools">
 	<?php
 	foreach($actions as $action => $actionTitle)
@@ -434,17 +249,17 @@ function getTypesEval($id_session){
 </dl>
 <div></div>
 <?php
-		}
-		?>
+	}
+	?>
 <?php
-	} ;
+} ;
 
-	function displayUnitReport($id_rapport)
-	{
-		global $fieldsAll;
-		global $fieldsUnites;
-		global $actions;
-		$specialRule = array(
+function displayUnitReport($id_rapport)
+{
+	global $fieldsAll;
+	global $fieldsUnites;
+	global $actions;
+	$specialRule = array(
 				"nom"=>0,
 				"prenom"=>0,
 				"grade"=>0,
@@ -511,59 +326,261 @@ function getTypesEval($id_session){
 
 		?>
 <?php
-	} ;
+} ;
 
-	function getExample($type)
+function getExample($type)
+{
+	global $examples;
+	$tmp = "Exemple : ";
+	if (isset($examples[$type]))
 	{
-		global $examples;
-		$tmp = "Exemple : ";
-		if (isset($examples[$type]))
-		{
-			$tmp .= $examples[$type];
-		}
-		return $tmp;
+		$tmp .= $examples[$type];
 	}
+	return $tmp;
+}
 
-	function highlightDiff(&$prevVals,$key,$val)
+function highlightDiff(&$prevVals,$key,$val)
+{
+	if (isset($prevVals[$key]))
 	{
-		if (isset($prevVals[$key]))
+		if ($prevVals[$key]==$val)
 		{
-			if ($prevVals[$key]==$val)
-			{
-				$prevVals[$key] = $val;
-				return "<span class=\"faded\">$val</span>";
-			}
-			else
-			{
-				$prevVals[$key] = $val;
-				return "<span class=\"highlight\">$val</span>";
-			}
+			$prevVals[$key] = $val;
+			return "<span class=\"faded\">$val</span>";
 		}
-		$prevVals[$key] = $val;
-		return $val;
-	}
-
-	function fieldDiffers($prevVals,$key,$val)
-	{
-		if (isset($prevVals[$key]))
+		else
 		{
-			if ($prevVals[$key]==$val)
-			{
-				return false;
-			}
-			else
-			{
-				return true;
-			}
+			$prevVals[$key] = $val;
+			return "<span class=\"highlight\">$val</span>";
 		}
-		return true;
 	}
+	$prevVals[$key] = $val;
+	return $val;
+}
 
-	function historyReport($id_origine)
+function filterSortReports($id_session, $type_eval, $sort_crit, $login_rapp)
+{
+	$sortCrit = parseSortCriteria($sort_crit);
+
+	$sql = "SELECT tt.*, ss.nom AS nom_session, ss.date AS date_session FROM evaluations tt INNER JOIN ( SELECT id, MAX(date) AS date FROM evaluations GROUP BY id_origine) mostrecent ON tt.date = mostrecent.date, sessions ss WHERE ss.id=tt.id_session ";
+	if ($id_session!=-1)
 	{
-		global $fieldsAll;
-		global $actions;
-		$specialRule = array(
+		$sql .= " AND id_session=$id_session ";
+	}
+	if ($type_eval!="")
+	{
+		$sql .= " AND type=\"$type_eval\" ";
+	}
+	if ($login_rapp!="")
+	{
+		$sql .= " AND rapporteur=\"$login_rapp\" ";
+	}
+	$sql .= sortCriteriaToSQL($sortCrit);
+	$sql .= ";";
+	//echo $sql;
+	$result=mysql_query($sql);
+	return $result;
+}
+
+function displaySummary($id_session, $type_eval, $sort_crit, $login_rapp)
+{
+	global $fieldsSummary;
+	global $fieldsAll;
+	global $actions;
+	global $typesEvalUnit;
+	global $typesEvalIndividual;
+	global $typeExports;
+
+	$result = filterSortReports($id_session, $type_eval, $sort_crit, $login_rapp);
+	$sortCrit = parseSortCriteria($sort_crit);
+	$rapporteurs = array();
+	$sessions = showSessions();
+	$rows = array();
+	while ($row = mysql_fetch_object($result))
+	{
+		$rows[] = $row;
+		$rapporteurs[$row->rapporteur] = 1;
+	}
+	$krapp = array_keys($rapporteurs);
+	natcasesort($krapp);
+	$rapporteurs = $krapp;
+
+	?>
+<h2>Filtrage</h2>
+<form method="get">
+	<table class="inputreport">
+		<tr>
+			<td style="width: 20em;">Session</td>
+			<td><select name="id_session">
+					<option value="-1">Toutes les sessions</option>
+					<?php
+					foreach ($sessions as $val)
+					{
+						$sel = "";
+						if ($val["id"]==$id_session)
+						{
+							$sel = " selected=\"selected\"";
+						}
+						echo "<option value=\"".$val["id"]."\" $sel>".ucfirst($val["nom"])." ".date("Y",strtotime($val["date"]))."</option>";
+					}
+					?>
+			</select></td>
+		</tr>
+		<tr>
+			<td>Rapporteur</td>
+			<td><select name="login_rapp">
+					<option value="">Tous les rapporteurs</option>
+					<?php
+					foreach ($rapporteurs as $rapp)
+					{
+						$sel = "";
+						if ($rapp==$login_rapp)
+						{
+							$sel = " selected=\"selected\"";
+						}
+						echo "<option value=\"$rapp\"$sel>".ucfirst($rapp)."</option>";
+					}
+					?>
+			</select></td>
+		</tr>
+		<tr>
+			<td>Type évaluation</td>
+			<td><select name="type_eval">
+					<option value="">Tous les types</option>
+					<?php
+					foreach ($typesEvalUnit as $ty)
+					{
+						$sel = "";
+						if ($ty==$type_eval)
+						{
+							$sel = " selected=\"selected\"";
+						}
+						echo "<option value=\"$ty\"$sel>".ucfirst($ty)."</option>";
+					}
+					foreach ($typesEvalIndividual as $ty)
+					{
+						$sel = "";
+						if ($ty==$type_eval)
+						{
+							$sel = " selected=\"selected\"";
+						}
+						echo "<option value=\"$ty\"$sel>".ucfirst($ty)."</option>";
+					}
+					?>
+			</select></td>
+		</tr>
+		<tr>
+			<td></td>
+			<td><input type="hidden" name="sort_crit"
+				value="<?php echo $sort_crit;?>"> <input type="hidden" name="action"
+				value="view"> <input type="submit" value="Filtrer">
+			</td>
+		</tr>
+	</table>
+</form>
+<br>
+<hr>
+<br>
+<h2>Rapports disponibles</h2>
+<table class="summary">
+	<tr>
+		<?php
+		foreach($fieldsSummary as $fieldID)
+		{
+			$title = $fieldsAll[$fieldID];
+			?>
+		<th><span class="nomColonne"><?php
+		echo "<a href=\"?action=view";
+		echo "&amp;id_session=$id_session";
+		echo "&amp;type_eval=$type_eval";
+		echo "&amp;login_rapp=$login_rapp";
+		echo "&amp;sort=".dumpEditedCriteria($sortCrit, $fieldID)."\">";
+		echo $title.showCriteria($sortCrit, $fieldID);
+		echo "</a>";?> </span></th>
+		<?php
+		}
+		foreach($actions as $action => $actionTitle)
+{?>
+		<th></th>
+		<?php
+}
+?>
+	</tr>
+	<?php
+	foreach($rows as $row)
+	{
+		?>
+	<tr>
+		<?php
+		foreach($fieldsSummary as $fieldID)
+		{
+			$title = $fieldsAll[$fieldID];
+			?>
+		<td><span class="valeur"><?php echo $row->$fieldID;?> </span></td>
+		<?php
+		}
+		foreach($actions as $action => $actionTitle)
+		{
+			echo "<td><a href=\"?action=$action&amp;id=".$row->id."&amp;id_origine=".$row->id_origine."\"><img class=\"icon\" src=\"img/$action-icon.png\" alt=\"$actionTitle\"></a></td>";
+		}
+		?>
+	
+	
+	<tr>
+		<?php
+	}
+	?>
+
+</table>
+Exporter :
+<?php
+foreach($typeExports as $idexp => $exp)
+{
+	$expname= $exp["name"];
+	echo " <a href=\"export.php?id_session=$id_session&amp;type_eval=$type_eval&amp;sort_crit=$sort_crit&amp;login_rapp=$login_rapp&amp;type=$idexp\">$expname</a>";
+}
+} ;
+
+
+function showSessions()
+{
+	$finalResult = array();
+	$sql = "SELECT * FROM sessions ORDER BY date DESC;";
+	$result=mysql_query($sql);
+
+	while ($row = mysql_fetch_object($result))
+	{
+		$finalResult[] = array(
+"id" => $row->id,
+"nom" => $row->nom,
+"date" => $row->date,
+);
+	}
+	return $finalResult;
+} ;
+
+
+function fieldDiffers($prevVals,$key,$val)
+{
+	if (isset($prevVals[$key]))
+	{
+		if ($prevVals[$key]==$val)
+		{
+			return false;
+		}
+		else
+		{
+			return true;
+		}
+	}
+	return true;
+}
+
+function historyReport($id_origine)
+{
+	global $fieldsAll;
+	global $actions;
+	$specialRule = array(
 			"nom"=>0,
 			"prenom"=>0,
 			"grade"=>0,
@@ -663,37 +680,39 @@ $first = false;
 		}
 		?>
 <?php
-	} ;
+} ;
 
 
-	function editReport($id_rapport)
-	{
-		$sql = "SELECT tt.*, ss.nom AS nom_session, ss.date AS date_session FROM evaluations tt, sessions ss WHERE tt.id=$id_rapport ORDER BY date DESC LIMIT 1;";
-		$result=mysql_query($sql);
-		if ($row = mysql_fetch_object($result))
-			displayDetailedReport($row);
-		?>
-<tr>
-	<td colspan="2"><input type="submit"
-		value="Enregistrer les changements"> <input type="hidden"
-		name="id_origine" value="<?php echo $row->id_origine;?>"> <input
-		type="hidden" name="action" value="update">
-	</td>
+function editReport($id_rapport)
+{
+	$sql = "SELECT tt.*, ss.nom AS nom_session, ss.date AS date_session FROM evaluations tt, sessions ss WHERE tt.id=$id_rapport ORDER BY date DESC LIMIT 1;";
+	$result=mysql_query($sql);
+	if ($row = mysql_fetch_object($result)
+
+	)
+		displayDetailedReport($row);
+	?>
+<t r>
+<td colspan="2"><input type="submit" value="Enregistrer les changements">
+	<input type="hidden" name="id_origine"
+	value="<?php echo $row->id_origine;?>"> <input type="hidden"
+	name="action" value="update"></td>
+
 </tr>
 </table>
 </form>
 <?php
-	}
+};
 
-	function newReport($type_rapport)
-	{
-		global $fieldsAll;
-		global $fieldsTypes;
-		global $grades;
-		global $evaluations;
-		global $actions;
-		global $empty_report;
-		$specialRule = array(
+function newReport($type_rapport)
+{
+	global $fieldsAll;
+	global $fieldsTypes;
+	global $grades;
+	global $evaluations;
+	global $actions;
+	global $empty_report;
+	$specialRule = array(
 				"auteur"=>0,
 				"date"=>0,
 				"date_session"=>0,
@@ -706,27 +725,25 @@ $first = false;
 <tr>
 	<td colspan="2"><input type="submit"
 		value="Ajouter <?php echo $type_rapport;?>"> <input type="hidden"
-		name="action" value="add">
-	</td>
+		name="action" value="add"></td>
 </tr>
 </table>
 </form>
 <?php
-?>
-<?php
-	} ;
+?> <?php
+} ;
 
-	function displayDetailedReport($row)
-	{
-		global $fieldsAll;
-		global $fieldsUnites;
-		global $fieldsTypes;
-		global $actions;
-		global $typesEvalChercheurs;
-		global $typesEvalUnites;
-		global $grades;
-		global $evaluations;
-		$specialRule = array(
+function displayDetailedReport($row)
+{
+	global $fieldsAll;
+	global $fieldsUnites;
+	global $fieldsTypes;
+	global $actions;
+	global $typesEvalIndividual;
+	global $typesEvalUnit;
+	global $grades;
+	global $evaluations;
+	$specialRule = array(
 			"auteur"=>0,
 			"date"=>0,
 			"nom_session"=>0,
@@ -736,7 +753,7 @@ $first = false;
 		);
 
 			$eval_type = $row->type;
-			$is_unite = in_array($eval_type,$typesEvalUnites);
+			$is_unite = in_array($eval_type,$typesEvalUnit);
 
 			?>
 <h1>
@@ -751,8 +768,7 @@ $first = false;
 					<?php
 					echo "\t\t\t\t\t<option value=\"$eval_type\">$eval_type</option>";
 					?>
-			</select>
-			</td>
+			</select></td>
 		</tr>
 		<tr>
 			<td>Session</td>
@@ -770,8 +786,7 @@ $first = false;
 						echo  "\t\t\t\t\t<option value=\"".$s["id"]."\" $sel>".$s["nom"]." ".date("Y",strtotime($s["date"]))."</option>";
 					}
 					?>
-			</select>
-			</td>
+			</select></td>
 		</tr>
 		<?php 
 		if(!$is_unite)
@@ -791,8 +806,7 @@ $first = false;
 						echo  "\t\t\t\t\t<option value=\"$idg\" $sel>$txtg</option>";
 					}
 					?>
-			</select>
-			</td>
+			</select></td>
 		</tr>
 		<?php
 		}
@@ -809,40 +823,46 @@ $first = false;
 					continue;
 				?>
 		<tr>
-			<td style="width: 17em;"><span><?php echo $title;?> </span></td>
+			<td style="width: 17em;"><span><?php echo $title;?> </span>
+			</td>
 			<?php
 
 			if ($type=="long")
 			{
 				?>
 			<td colspan="2"><span class="examplevaleur"><?php echo getExample($fieldID);?>
-			</span></td>
+			</span>
+			</td>
 		</tr>
 		<tr>
 			<td colspan="3"><textarea name="field<?php echo $fieldID;?>"
 					style="width: 100%;">
 					<?php echo $row->$fieldID;?>
-				</textarea></td>
+				</textarea>
+			</td>
 			<?php
 			}
 			elseif ($type=="treslong")
 			{
 				?>
 			<td colspan="2"><span class="examplevaleur"><?php echo getExample($fieldID);?>
-			</span></td>
+			</span>
+			</td>
 		</tr>
 		<tr>
 			<td colspan="3"><textarea rows=10 name="field<?php echo $fieldID;?>"
 					style="width: 100%;">
 					<?php echo $row->$fieldID;?>
-				</textarea></td>
+				</textarea>
+			</td>
 			<?php
 			}
 			else if ($type=="short")
 			{
 				?>
 			<td style="width: 30em;"><input name="field<?php echo $fieldID;?>"
-				value="<?php echo $row->$fieldID;?>" style="width: 100%;"></td>
+				value="<?php echo $row->$fieldID;?>" style="width: 100%;">
+			</td>
 			<td><span class="examplevaleur"><?php echo getExample($fieldID);?> </span>
 			</td>
 			<?php
@@ -863,19 +883,68 @@ $first = false;
 						echo  "\t\t\t\t\t<option value=\"$val\" $sel>$val</option>";
 					}
 					?>
-			</select></td>
+			</select>
+			</td>
 			<?php
 			}
+			else if ($type=="rapporteur")
+			{
+				?>
+			<td style="width: 30em;"><select name="field<?php echo $fieldID;?>"
+				style="width: 100%;">
+					<?php
+					$users = listUsers();
+					foreach($users as $val)
+					{
+						if($val!="admin")
+						{
+							$sel = "";
+							if ($row->$fieldID==$val)
+							{
+								$sel = "selected=\"selected\"";
+							}
+							echo  "\t\t\t\t\t<option value=\"$val\" $sel>$val</option>";
+						}
+					}
+					?>
+			</select>
+			</td>
+			<?php
+			}
+			else if ($type=="unit")
+			{
+				?>
+			<td style="width: 30em;"><select name="field<?php echo $fieldID;?>"
+				style="width: 100%;">
+					<?php
+					$units = listUnits();
+					foreach($units as $val)
+					{
+						$sel = "";
+						if ($row->$fieldID==$val)
+						{
+							$sel = "selected=\"selected\"";
+						}
+						echo  "\t\t\t\t\t<option value=\"$val\" $sel>$val</option>";
+					}
+					?>
+			</select>
+			</td>
+			<?php
+			}
+
 			else
 			{
 				?>
 			<td colspan="2"><span class="examplevaleur"><?php echo getExample($fieldID);?>
-			</span></td>
+			</span>
+			</td>
 		</tr>
 		<tr>
 			<td><textarea name="field<?php echo $fieldID;?>">
 					<?php echo $row->$fieldID;?>
-				</textarea></td>
+				</textarea>
+			</td>
 			<?php
 			}
 			?>
@@ -883,14 +952,14 @@ $first = false;
 		<?php
 			}
 		}
-	}
+}
 
 
 
-	function update($id_origine)
-	{
-		global $fieldsAll;
-		$specialRule = array(
+function update($id_origine)
+{
+	global $fieldsAll;
+	$specialRule = array(
 			"auteur"=>0,
 			"date"=>0,
 			"nom_session"=>0,
@@ -926,142 +995,156 @@ $first = false;
 		$sql = "INSERT INTO evaluations ($fields) VALUES ($values);";
 		mysql_query($sql);
 		return mysql_insert_id ();
-	}
+}
 
 
-	function addReport()
-	{
-		$newid = update(0);
-		$sql = "UPDATE evaluations SET id_origine=$newid WHERE id=$newid;";
-		mysql_query($sql);
-		return $newid;
-	};
+function addReport()
+{
+	$newid = update(0);
+	$sql = "UPDATE evaluations SET id_origine=$newid WHERE id=$newid;";
+	mysql_query($sql);
+	return $newid;
+};
 
-	function isSuperUser($login = "")
-	{
-		if ($login=="")
-		{
-			if (isset($_SESSION["login"]))
-			{
-				$login = $_SESSION["login"];
-			}
-			else return false;
-		}
-		return $login == "admin";
-	};
-
-	function listUsers()
-	{
-		$users = array();
-		if (isSuperUser())
-		{
-			$sql = "SELECT login FROM users ORDER BY login ASC;";
-			$result=mysql_query($sql);
-			while ($row = mysql_fetch_object($result))
-			{
-				$users[] = $row->login;
-			}
-		}
-		return $users;
-	}
-
-	function changePwd($login,$old,$new1,$new2)
+function isSuperUser($login = "")
+{
+	if ($login=="")
 	{
 		if (isset($_SESSION["login"]))
 		{
-			$currLogin = $_SESSION["login"];
-			if ($currLogin==$login or isSuperUser())
+			$login = $_SESSION["login"];
+		}
+		else return false;
+	}
+	return $login == "admin";
+};
+
+function listUsers()
+{
+	$users = array();
+	$sql = "SELECT login FROM users ORDER BY login ASC;";
+	if($result=mysql_query($sql))
+	{
+		while ($row = mysql_fetch_object($result))
+		{
+			$users[] = $row->login;
+		}
+	}
+	return $users;
+}
+
+function listUnits()
+{
+	$units = array();
+	$sql = "SELECT nickname FROM units ORDER BY nickname ASC;";
+	if($result=mysql_query($sql))
+	{
+		while ($row = mysql_fetch_object($result))
+		{
+			$units[] = $row->nickname;
+		}
+	}
+	return $units;
+
+}
+
+function changePwd($login,$old,$new1,$new2)
+{
+	if (isset($_SESSION["login"]))
+	{
+		$currLogin = $_SESSION["login"];
+		if ($currLogin==$login or isSuperUser())
+		{
+			if (authenticateBase($login,$old) or isSuperUser())
 			{
-				if (authenticateBase($login,$old) or isSuperUser())
+				$oldPassHash = getPassHash($login);
+				if ($oldPassHash != NULL)
 				{
-					$oldPassHash = getPassHash($login);
-					if ($oldPassHash != NULL)
-					{
-						$newPassHash = crypt($new1, $oldPassHash);
-						$sql = "UPDATE users SET passHash='$newPassHash' WHERE login='$login';";
-						mysql_query($sql);
-						return true;
-					}
+					$newPassHash = crypt($new1, $oldPassHash);
+					$sql = "UPDATE users SET passHash='$newPassHash' WHERE login='$login';";
+					mysql_query($sql);
+					return true;
 				}
-				else
-				{
-					echo "<p><strong>Erreur :</strong> La saisie du mot de passe courant est incorrecte, veuillez réessayer.</p>";
-					return false;
-				};
 			}
 			else
 			{
-				echo "<p><strong>Erreur :</strong> Seuls les administrateurs du site peuvent modifier les mots de passes d'autres utilisateurs, veuillez nous contacter (Yann ou Hugo) en cas de difficultés.</p>";
+				echo "<p><strong>Erreur :</strong> La saisie du mot de passe courant est incorrecte, veuillez réessayer.</p>";
 				return false;
-			}
+			};
 		}
 		else
 		{
-			echo "<p><strong>Erreur :</strong> Login manquant, veuillez vous reconnecter.</p>";
+			echo "<p><strong>Erreur :</strong> Seuls les administrateurs du site peuvent modifier les mots de passes d'autres utilisateurs, veuillez nous contacter (Yann ou Hugo) en cas de difficultés.</p>";
 			return false;
 		}
 	}
-	function createUser($login,$pwd,$desc)
+	else
 	{
-		if (isSuperUser())
-		{
-			$passHash = crypt($pwd);
-			$sql = "INSERT INTO users(login,passHash,description) VALUES ('".mysql_real_escape_string($login)."','".mysql_real_escape_string($passHash)."','".mysql_real_escape_string($desc)."');";
-			mysql_query($sql);
-			return true;
-		}
+		echo "<p><strong>Erreur :</strong> Login manquant, veuillez vous reconnecter.</p>";
+		return false;
 	}
+}
+function createUser($login,$pwd,$desc)
+{
+	if (isSuperUser())
+	{
+		$passHash = crypt($pwd);
+		$sql = "INSERT INTO users(login,passHash,description) VALUES ('".mysql_real_escape_string($login)."','".mysql_real_escape_string($passHash)."','".mysql_real_escape_string($desc)."');";
+		mysql_query($sql);
+		return true;
+	}
+}
 
-	function deleteUser($login)
+function deleteUser($login)
+{
+	if (isSuperUser())
 	{
-		if (isSuperUser())
-		{
-			$sql = "DELETE FROM users WHERE login='".mysql_real_escape_string($login)."';";
-			mysql_query($sql);
-		}
+		$sql = "DELETE FROM users WHERE login='".mysql_real_escape_string($login)."';";
+		mysql_query($sql);
 	}
+}
 
-	function createSession($name,$date)
+function createSession($name,$date)
+{
+	if (isSuperUser())
 	{
-		if (isSuperUser())
-		{
-			echo $date."<br>";
-			echo strtotime($date)."<br>";
-			echo date("Y-m-d h:m:s",strtotime($date));
-			$sql = "INSERT INTO sessions(nom,date) VALUES ('".mysql_real_escape_string($name)."','".date("Y-m-d h:m:s",strtotime($date))."');";
-			mysql_query($sql);
-			return true;
-		}
+		echo $date."<br>";
+		echo strtotime($date)."<br>";
+		echo date("Y-m-d h:m:s",strtotime($date));
+		$sql = "INSERT INTO sessions(nom,date) VALUES ('".mysql_real_escape_string($name)."','".date("Y-m-d h:m:s",strtotime($date))."');";
+		mysql_query($sql);
+		return true;
 	}
+}
 
-	function deleteSession($id)
+function deleteSession($id)
+{
+	if (isSuperUser())
 	{
-		if (isSuperUser())
-		{
-			$sql = "DELETE FROM sessions WHERE id=$id;";
-			mysql_query($sql);
-		}
+		$sql = "DELETE FROM sessions WHERE id=$id;";
+		mysql_query($sql);
 	}
+}
 
-	function getReportsAsXML($id_session=-1, $type_eval="", $sort_crit="", $login_rapp="")
+function getReportsAsXML($id_session=-1, $type_eval="", $sort_crit="", $login_rapp="")
+{
+	global $fieldsAll;
+	$xml = new DOMDocument();
+	$root = $xml->createElement("rapports");
+	$result = filterSortReports($id_session, $type_eval, $sort_crit, $login_rapp);
+	while ($row = mysql_fetch_object($result))
 	{
-		global $fieldsAll;
-		$xml = new DOMDocument();
-		$root = $xml->createElement("rapports");
-		$result = filterSortReports($id_session, $type_eval, $sort_crit, $login_rapp);
-		while ($row = mysql_fetch_object($result))
+		$rapportElem = $xml->createElement("rapport");
+		foreach ($fieldsAll as $fieldID => $desc)
 		{
-			$rapportElem = $xml->createElement("rapport");
-			foreach ($fieldsAll as $fieldID => $desc)
-			{
-				$contentElem = $xml->createElement($fieldID);
-				$data = $xml->createCDATASection ($row->$fieldID);
-				$contentElem->appendChild($data);
-				$rapportElem->appendChild($contentElem);
-			}
-			$root->appendChild($rapportElem);
+			$contentElem = $xml->createElement($fieldID);
+			$data = $xml->createCDATASection ($row->$fieldID);
+			$contentElem->appendChild($data);
+			$rapportElem->appendChild($contentElem);
 		}
-		$xml->appendChild($root);
-		return $xml;
+		$root->appendChild($rapportElem);
 	}
-	?>
+	$xml->appendChild($root);
+	return $xml;
+}
+?>

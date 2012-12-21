@@ -130,9 +130,9 @@
 		"nom" => "short",
 		"prenom" => "short",
 		"grade" => "short",
-		"unite" => "short",
+		"unite" => "unit",
 		"type" => "short",
-		"rapporteur" => "short",
+		"rapporteur" => "rapporteur",
 		"prerapport" => "treslong",
 		"anciennete_grade" => "short",
 		"date_recrutement" => "short",
@@ -162,7 +162,7 @@
 		"prenom" => "Prenom",
 	);
 	
-	$typesEvalChercheurs = array(
+	$typesEvalIndividual = array(
 		'Evaluation-Vague',
 		'Evaluation-MiVague',
 		'Promotion',
@@ -172,7 +172,7 @@
 		'Confirmation-Affectation',
 	);
 
-	$typesEvalUnites = array(
+	$typesEvalUnit = array(
 			'Changement-Direction-Unité',
 			'Renouvellement-Unité',
 			'Expertise',
