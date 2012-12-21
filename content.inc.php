@@ -1,10 +1,11 @@
  <div class="left">
-	
+
+ <!-- 
 	<div class="header">
 		<h2><span>Comité National de la Recherche Scientifique</span></h2>
 		<h1>Interface de saisie des prérapports</h1>
 	</div>
-
+ -->
 	<div class="content"> 
 		
  <?php 
@@ -68,12 +69,27 @@
 	}
 	else if ($action=="new")
 	{
-		newReport();
+		$type_eval = "";
+		if (isset($_REQUEST["type_eval"]))
+		{
+			$type_eval = $_REQUEST["type_eval"];
+		}
+		newReport($type_eval);
 	}
 	else if ($action=="add")
-	{
+	{	global $typesEvalUnites;
 		$id_nouveau = addReport();
-		displayReport($id_nouveau);
+		
+		$is_unite = in_array(mysql_real_escape_string($_REQUEST["fieldtype"]),$typesEvalUnites);
+		
+		if($is_unite)
+		{
+			displayUnitReport($id_nouveau);
+		}
+		else 
+		{
+			displayPeopleReport($id_nouveau);
+		}
 	}
 	else if ($action=="newpwd" or $action=="adminnewpwd")
 	{

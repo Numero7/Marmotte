@@ -31,6 +31,8 @@
 		"unite" => "Unité",
 		"type" => "Type",
 		"rapporteur" => "Rapporteur",
+		"avis" => "Proposition d'avis",
+		"rapport" => "Proposition de rapport",
 		"prerapport" => "Points marquants",
 		"anciennete_grade" => "Ancienneté dans grade",
 		"date_recrutement" => "Date de recrutement",
@@ -48,12 +50,21 @@
 		"animation_notes" => "Détails sur l'animation",
 		"rayonnement" => "Rayonnement",		
 		"rayonnement_notes" => "Détails sur le rayonnement",		
-		"rapport" => "Proposition de rapport",
-		"avis" => "Proposition d'avis",
 		"auteur" => "Auteur Dernière(s) modif(s)",
 		"date" => "Date modification",
 	);
 	
+	$fieldsUnites = array(
+		"unite",
+		"type",
+		"rapporteur",
+		"rapport",
+		"prerapport",
+		"avis",
+		"auteur",
+		"date"
+	);
+		
 	$examples = array(
 		"nom" => "Doe",
 		"prenom" => "John",
@@ -84,6 +95,37 @@
 		"date" => "3/02/2013",
 	);
 
+	$empty_report = array(
+		"id_session" => "",
+		"nom" => "",
+		"prenom" => "",
+		"grade" => "",
+		"unite" => "",
+		"type" => "",
+		"rapporteur" => "",
+		"prerapport" => "",
+		"anciennete_grade" => "",
+		"date_recrutement" => "",
+		"production" => "",
+		"production_notes" => "",
+		"transfert" => "",
+		"transfert_notes" => "",
+		"encadrement" => "",
+		"encadrement_notes" => "",
+		"responsabilites" => "",
+		"responsabilites_notes" => "",
+		"mobilite" => "",
+		"mobilite_notes" => "",
+		"animation" => "",
+		"animation_notes" => "",
+		"rayonnement" => "",		
+		"rayonnement_notes" => "",		
+		"rapport" => "",
+		"avis" => "",
+		"auteur" => "",
+		"date" => date_default_timezone_get()
+	);
+		
 	$fieldsTypes = array(
 		"nom" => "short",
 		"prenom" => "short",
@@ -91,7 +133,7 @@
 		"unite" => "short",
 		"type" => "short",
 		"rapporteur" => "short",
-		"prerapport" => "long",
+		"prerapport" => "treslong",
 		"anciennete_grade" => "short",
 		"date_recrutement" => "short",
 		"production" => "evaluation",
@@ -108,7 +150,7 @@
 		"animation_notes" => "long",
 		"rayonnement" => "evaluation",		
 		"rayonnement_notes" => "long",		
-		"rapport" => "long",
+		"rapport" => "treslong",
 		"avis" => "short",
 		"auteur" => "short",
 		"date" => "short",
@@ -120,7 +162,7 @@
 		"prenom" => "Prenom",
 	);
 	
-	$typesEval = array(
+	$typesEvalChercheurs = array(
 		'Evaluation-Vague',
 		'Evaluation-MiVague',
 		'Promotion',
@@ -128,13 +170,16 @@
 		'Suivi-PostEvaluation',
 		'Titularisation',
 		'Confirmation-Affectation',
-		'Changement-Direction-Unité',
-		'Renouvellement-Unité',
-		'Expertise',
-		'Ecole',
-		'Comité-AERES',
 	);
 
+	$typesEvalUnites = array(
+			'Changement-Direction-Unité',
+			'Renouvellement-Unité',
+			'Expertise',
+			'Ecole',
+			'Comité-AERES',
+	);
+	
 	$grades = array(
 		'CR2' => 'Chargé de Recherche 2ème classe (CR2)',
 		'CR1' => 'Chargé de Recherche 1ère classe (CR1)',
@@ -145,6 +190,7 @@
 	);
 	
 	$evaluations = array(
+		' ',
 		'A+',
 		'A',
 		'A-',
@@ -161,4 +207,5 @@
 		'history' => "Historique", 
 		'edit'  => "Modifier", 
 	);
+	
 ?>
