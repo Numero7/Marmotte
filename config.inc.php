@@ -1,5 +1,19 @@
 <?php
 	include "configDB.inc.php";
+
+	$typeExports = array(
+		"xml" => 	array(
+						"mime" => "text/xml",		
+						"xsl" => "xslt/xmlidentity.xsl",
+						"name" => "XML",
+					),
+		"latex" => 	array(
+						"mime" => "application/x-latex",		
+						"xsl" => "xslt/latexshort.xsl",
+						"name" => "Latex",
+					),
+	);
+	
 	$fieldsSummary = array(
 		"nom",
 		"prenom",

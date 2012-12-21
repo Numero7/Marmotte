@@ -174,6 +174,7 @@
 		global $fieldsAll;
 		global $actions;
 		global $typesEval;
+		global $typeExports;
 		
 		$result = filterSortReports($id_session, $type_eval, $sort_crit, $login_rapp);
 		$sortCrit = parseSortCriteria($sort_crit);
@@ -290,7 +291,13 @@
 		}
 		?>
 			</table>
+		Exporter :
 		<?php
+			foreach($typeExports as $idexp => $exp)
+			{
+				$expname= $exp["name"];
+				echo " <a href=\"export.php?id_session=$id_session&amp;type_eval=$type_eval&amp;sort_crit=$sort_crit&amp;login_rapp=$login_rapp&amp;type=$idexp\">$expname</a>";
+			}
 	} ;	
 
 	function showSessions()
