@@ -450,16 +450,7 @@ function displaySummary($id_session, $type_eval, $sort_crit, $login_rapp)
 			<td><select name="type_eval">
 					<option value="">Tous les types</option>
 					<?php
-					foreach ($typesEvalUnit as $ty => $value)
-					{
-						$sel = "";
-						if ($ty==$type_eval)
-						{
-							$sel = " selected=\"selected\"";
-						}
-						echo "<option value=\"$ty\"$sel>".ucfirst($value)."</option>";
-					}
-					foreach ($typesEvalIndividual as $ty => $value)
+					foreach ($typesEval as $ty => $value)
 					{
 						$sel = "";
 						if ($ty==$type_eval)
