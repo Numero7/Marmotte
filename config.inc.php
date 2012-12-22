@@ -187,6 +187,22 @@
 	
 	$typesEval = array_merge($typesEvalIndividual, $typesEvalUnit);
 	
+	$typesEvalUpperCase = array(
+			'Evaluation-Vague' => 'EVALUATION A VAGUE DE CHERCHEUR',
+			'Evaluation-MiVague' => 'EVALUATION A MI-VAGUE DE CHERCHEUR',
+			'Promotion' => '',
+			'Candidature' => '',
+			'Suivi-PostEvaluation' => '',
+			'Titularisation' => '',
+			'Confirmation-Affectation' => '',
+			'Changement-Direction' => '',
+			'Renouvellement' => '',
+			'Expertise' => '',
+			'Ecole' => '',
+			'Comite-Evaluation' => ''
+	);
+	
+	
 	$avis_eval = array(
 			""=>"",
 			"favorable" => "Favorable",

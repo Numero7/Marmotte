@@ -190,7 +190,7 @@ function getTypesEval($id_session){
 	return $finalResult;
 }
 
-function displayIndividualReport($id_rapport)
+function displayIndividualReport($row)
 {
 	global $fieldsAll;
 	global $actions;
@@ -203,11 +203,6 @@ function displayIndividualReport($id_rapport)
 			"nom_session"=>0,
 			"date_session"=>0,
 	);
-	$sql = "SELECT tt.*, ss.nom AS nom_session, ss.date AS date_session FROM evaluations tt, sessions ss WHERE tt.id=$id_rapport AND tt.id_session=ss.id;";
-	//echo $sql;
-	$result=mysql_query($sql);
-	if ($row = mysql_fetch_object($result))
-	{
 		?>
 <div class="tools">
 	<?php
@@ -252,12 +247,38 @@ function displayIndividualReport($id_rapport)
 </dl>
 <div></div>
 <?php
-	}
-	?>
-<?php
 } ;
 
-function displayUnitReport($id_rapport)
+function displayReport($id_rapport)
+{
+	global $typesEvalUnit;
+	global $typesEvalIndividual;
+	
+	$sql = "SELECT tt.*, ss.nom AS nom_session, ss.date AS date_session FROM evaluations tt, sessions ss WHERE tt.id=$id_rapport AND tt.id_session=ss.id;";
+	$result=mysql_query($sql);
+	if ($row = mysql_fetch_object($result))
+	{
+		if(array_key_exists($row->type,$typesEvalUnit))
+		{
+			displayUnitReport($row);
+		}
+		else if(array_key_exists($row->type,$typesEvalIndividual))
+		{
+			displayIndividualReport($row);
+		}
+		else
+		{			
+			echo "Unknown report type ".$row->type;
+		}
+	}
+	else
+	{
+		echo "No report with if ".$is_rapport;
+	}
+	
+}
+
+function displayUnitReport($row)
 {
 	global $fieldsAll;
 	global $fieldsUnites;
@@ -271,10 +292,6 @@ function displayUnitReport($id_rapport)
 				"nom_session"=>0,
 				"date_session"=>0,
 		);
-		$sql = "SELECT tt.*, ss.nom AS nom_session, ss.date AS date_session FROM evaluations tt, sessions ss WHERE tt.id=$id_rapport AND tt.id_session=ss.id;";
-		$result=mysql_query($sql);
-		if ($row = mysql_fetch_object($result))
-		{
 			?>
 <div class="tools">
 	<?php
@@ -314,21 +331,7 @@ function displayUnitReport($id_rapport)
 </dl>
 <div></div>
 <?php
-		}
-		else
-		{
-			?>
-<p>
-	Error: no entry with id_rapport
-	<?php echo $id_rapport;?>
-	.
-</p>
-<?php
-		}
 
-
-		?>
-<?php
 } ;
 
 function getExample($type)
@@ -589,9 +592,8 @@ function historyReport($id_origine)
 <?php
 $first = false;
 	 }
-	}
 
-	?>
+	 ?>
 <div class="history">
 	<h3>
 		Version modifiée le
@@ -652,6 +654,7 @@ $first = false;
 	</dl>
 </div>
 <?php
+	}
 }
 
 function getReport($id_rapport)
@@ -667,11 +670,7 @@ function editReport($id_rapport)
 {
 	$row = getReport($id_rapport);
 	if($row)
-	{
-		$row = (object) $empty_report;
-		$row->type = $type_rapport;
-		displayDetailedReport($row, "update");
-	}
+		displayEditableReport($row, "update");
 };
 
 function newReport($type_rapport)
@@ -685,10 +684,10 @@ function newReport($type_rapport)
 
 	$row = (object) $empty_report;
 	$row->type = $type_rapport;
-	displayDetailedReport($row, "add");
+	displayEditableReport($row, "add");
 } ;
 
-function displayDetailedReport($row, $actioname)
+function displayEditableReport($row, $actioname)
 {
 	global $fieldsAll;
 	global $fieldsUnites;
@@ -714,7 +713,7 @@ function displayDetailedReport($row, $actioname)
 			$is_unite = in_array($eval_type,$typesEvalUnit);
 			$eval_name = "";
 			$eval_name = $typesEval[$eval_type];
-			
+
 			$avis_possibles = $typesEvalToAvis[$eval_type];
 
 			?>
@@ -726,9 +725,12 @@ function displayDetailedReport($row, $actioname)
 
 <form method="post" action="index.php" style="width: 100%">
 	<tr>
-		<td colspan="2"><input type="submit"
-			value="Ajouter <?php echo $eval_type;?>"> <input type="hidden"
-			name="action" value=<?php echo $actioname?>></td>
+		<td colspan="2">
+		<input type="submit"
+			value="<?php echo (($actioname == "add") ? "Ajouter" : "Modifier")." ".$eval_type;?>">
+			<input type="hidden" name="action" value=<?php echo $actioname?>>
+			<input type="hidden" name="id_origine" value="<?php echo $row->id_origine;?>">
+			</td>
 	</tr>
 
 	<table class="inputreport">
@@ -890,7 +892,7 @@ function displayDetailedReport($row, $actioname)
 					foreach($avis_possibles as $avis => $prettyprint)
 					{
 						$sel = "";
-						if ($row->$fieldID==$val)
+						if ($row->$fieldID==$avis)
 						{
 							$sel = "selected=\"selected\"";
 						}
@@ -1316,6 +1318,7 @@ function appendRowToXMLDoc($row, $sessions, $units, DOMDocument $doc)
 {
 	global $fieldsAll;
 	global $typesEval;
+	global $typesEvalUpperCase;
 
 	if(!$sessions)
 		$sessions = sessionArrays();
@@ -1364,6 +1367,12 @@ function appendRowToXMLDoc($row, $sessions, $units, DOMDocument $doc)
 	//On ajoute la date du jour
 	$contentElem = $doc->createElement("type");
 	$data = $doc->createCDATASection($typesEval[$row->type]);
+	$contentElem->appendChild($data);
+	$rapportElem->appendChild($contentElem);
+
+	//On ajoute la date du jour
+	$contentElem = $doc->createElement("UPPERCASETYPE");
+	$data = $doc->createCDATASection($typesEvalUpperCase[$row->type]);
 	$contentElem->appendChild($data);
 	$rapportElem->appendChild($contentElem);
 
@@ -1465,7 +1474,7 @@ function HTMLToPDF($html)
 	// dejavusans is a UTF-8 Unicode font, if you only need to
 	// print standard ASCII chars, you can use core fonts like
 	// helvetica or times to reduce file size.
-	$pdf->SetFont('dejavusans', '', 14, '', true);
+	$pdf->SetFont('dejavusans', '', 11, '', true);
 
 	// Add a page
 	// This method has several options, check the source code documentation for more information.
