@@ -101,22 +101,29 @@ Avis de la section sur l’activité du chercheur
 </tr>
 <tr>
 <td width="30">
-<xsl:text> </xsl:text><xsl:if test="@avis= 'Favorable' "><xsl:text>X</xsl:text></xsl:if>
+<B><xsl:text> </xsl:text><xsl:if test="avis= 'favorable' "><xsl:text>X</xsl:text></xsl:if></B>
 </td>
 <td width="630">
 	<B>Avis favorable</B>	
 	<small> (l’activité du chercheur est conforme à ses obligations statutaires)
 	</small>
 	</td></tr>
-<tr><td><xsl:text> </xsl:text></td><td><B>Avis différé</B>
+<tr><td>
+<B><xsl:text> </xsl:text><xsl:if test="avis= 'differe' "><xsl:text>X</xsl:text></xsl:if></B>
+</td><td><B>Avis différé</B>
 <small> (l’évaluation est renvoyée à la session suivante en raison de l’insuffisance ou de l'absence d'éléments du dossier)
 	</small>
 </td></tr>
-<tr><td><xsl:text> </xsl:text></td><td><B>Avis réservé</B>
+<tr><td>
+<B><xsl:text> </xsl:text><xsl:if test="avis= 'reserve' "><xsl:text>X</xsl:text></xsl:if></B>
+</td><td><B>Avis réservé</B>
 <small> (la section a identifié dans l’activité du chercheur un ou plusieurs éléments qui nécessitent un suivi spécifique)
 	</small>
 </td></tr>
-<tr><td><xsl:text> </xsl:text></td><td><B>Avis d'alerte</B>
+<tr><td>
+<B><xsl:text> </xsl:text><xsl:if test="avis= 'alerte' "><xsl:text>X</xsl:text></xsl:if></B>
+
+</td><td><B>Avis d'alerte</B>
 <small> (la section exprime des inquiétudes sur l’évolution de l’activité du chercheur))
 	</small>
 </td></tr>
