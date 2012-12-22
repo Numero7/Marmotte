@@ -690,15 +690,25 @@ function editReport($id_rapport)
 	if ($row = mysql_fetch_object($result)
 
 	)
-		displayDetailedReport($row);
-	?>
-<t r>
+?>
+<tr>
 <td colspan="2"><input type="submit" value="Enregistrer les changements">
 	<input type="hidden" name="id_origine"
 	value="<?php echo $row->id_origine;?>"> <input type="hidden"
 	name="action" value="update"></td>
 
 </tr>
+<?php 
+		displayDetailedReport($row);
+		?>
+<tr>
+<td colspan="2"><input type="submit" value="Enregistrer les changements">
+	<input type="hidden" name="id_origine"
+	value="<?php echo $row->id_origine;?>"> <input type="hidden"
+	name="action" value="update"></td>
+
+</tr>
+		
 </table>
 </form>
 <?php
@@ -718,16 +728,23 @@ function newReport($type_rapport)
 				"date_session"=>0,
 				"grade" => 0,
 		);
+?>
+<tr>
+<td colspan="2"><input type="submit"
+		value="Ajouter <?php echo $type_rapport;?>"> <input type="hidden"
+				name="action" value="add"></td>
+				</tr>
+<?php
 		$row = (object) $empty_report;
-		$row->type = $type_rapport;
+		$row->type = $type_rapport;		
 		displayDetailedReport($row);
 		?>
 <tr>
-	<td colspan="2"><input type="submit"
+<td colspan="2"><input type="submit"
 		value="Ajouter <?php echo $type_rapport;?>"> <input type="hidden"
-		name="action" value="add"></td>
-</tr>
-</table>
+				name="action" value="add"></td>
+				</tr>
+		</table>
 </form>
 <?php
 ?> <?php

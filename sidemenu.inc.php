@@ -19,6 +19,10 @@ include("config.inc.php");
 			<a href="?">Accueil</a>
 		</h1>
 		<hr>
+				<h1>
+			<a href="?action=view">Tous les rapports</a>
+		</h1>
+		<hr>
 		<h1>Ajouter Rapport Chercheur</h1>
 		<ul>
 		<?php 
@@ -67,9 +71,6 @@ include("config.inc.php");
 		}
 		?>
 		<hr>
-		<h1>
-			<a href="?action=view">Tous les rapports</a>
-		</h1>
 	</div>
 	<div class="round">
 		<div class="roundbl">

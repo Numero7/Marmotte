@@ -173,11 +173,11 @@
 	);
 
 	$typesEvalUnit = array(
-			'Changement-Direction-Unité',
-			'Renouvellement-Unité',
+			'Changement-Direction',
+			'Renouvellement',
 			'Expertise',
 			'Ecole',
-			'Comité-AERES',
+			'Comité-Evaluation',
 	);
 	
 	$grades = array(
