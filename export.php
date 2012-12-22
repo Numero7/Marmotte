@@ -7,7 +7,7 @@ function filename_from_node(DOMNode $node)
 	$grade = "";
 	$unite = "";
 	$type = "";
-	
+
 	foreach($node->childNodes as $child)
 	{
 		if($child->nodeName == "nom")
@@ -21,11 +21,19 @@ function filename_from_node(DOMNode $node)
 		else if($child->nodeName == "type")
 			$type = $child->nodeValue;
 	}
-	
+
 	if($unite != "")
 		return $type."_".$unite.".tex";
 	else
 		return $type."_".$grade." ".$nom." ".$prenom.".tex";
+}
+
+function type_from_node(DOMNode $node)
+{
+	foreach($node->childNodes as $child)
+		if($child->nodeName == "type")
+		return $child->nodeValue;
+	return "";
 }
 
 function xml_to_zipped_tex(DOMDocument $xml)
@@ -35,19 +43,43 @@ function xml_to_zipped_tex(DOMDocument $xml)
 
 	$zip = new ZipArchive();
 	// On ouvre l’archive.
-	
+
 	$xsl = new DOMDocument();
 	$xsl->load("xslt/latexshort.xsl");
 	$proc = new XSLTProcessor();
 	$proc->importStyleSheet($xsl);
-		
+
+	$xsl->load("xslt/latex_eval.xsl");
+	$proc_eval = new XSLTProcessor();
+	$proc_eval->importStyleSheet($xsl);
+
+	$processors = array(
+			'Evaluation-Vague' => $proc_eval,
+			'Evaluation-MiVague' => $proc_eval,
+			'Promotion' => $proc,
+			'Candidature' => $proc,
+			'Suivi-PostEvaluation' => $proc,
+			'Titularisation' => $proc,
+			'Confirmation-Affectation' => $proc,
+			'Changement-Direction' => $proc,
+			'Renouvellement' => $proc,
+			'Expertise' => $proc,
+			'Ecole' => $proc,
+			'Comité-Evaluation' => $proc,
+			'' => $proc
+	);
+
 	if($zip->open('reports3.zip',ZipArchive::OVERWRITE))
 	{
 		$zip->addFromString("compile.bat", "for /r %%x in (*.tex) do pdflatex \"%%x\"\r\ndel *.log\r\ndel *.aux");
 		foreach($docs as $doc)
 		{
 			$filename = filename_from_node($doc);
-			$zip->addFromString($filename,$proc->transformToXML($doc));
+			$type = type_from_node($doc);
+			$zip->addFromString($filename,$processors[$type]->transformToXML($doc));
+			$zip->addFile("latex/CN.png","CN.png");
+			$zip->addFile("latex/CNRSlogo.png","CNRSlogo.png");
+			$zip->addFile("latex/signature.jpg","signature.jpg");
 		}
 		$zip->close();
 	}

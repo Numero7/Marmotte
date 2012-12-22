@@ -208,4 +208,11 @@
 		'edit'  => "Modifier", 
 	);
 	
+	$avis_eval = array(
+			"Favorable",
+			"Réservé",
+			"Différé",
+			"Alerte"
+			)
+	
 ?>

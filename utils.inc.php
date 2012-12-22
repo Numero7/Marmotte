@@ -1062,8 +1062,22 @@ function listUnits()
 		}
 	}
 	return $units;
-
 }
+
+function sessionArrays()
+{
+	$sessions = array();
+	$sql = "SELECT * FROM sessions ORDER BY id ASC;";
+	if($result=mysql_query($sql))
+	{
+		while ($row = mysql_fetch_object($result))
+		{
+			$sessions[$row->id] = $row->nom." ".date("Y", strtotime($row->date));
+		}
+	}
+	return $sessions;
+}
+
 
 function changePwd($login,$old,$new1,$new2)
 {
@@ -1149,6 +1163,10 @@ function getReportsAsXML($id_session=-1, $type_eval="", $sort_crit="", $login_ra
 	$xml = new DOMDocument();
 	$root = $xml->createElement("rapports");
 	$result = filterSortReports($id_session, $type_eval, $sort_crit, $login_rapp);
+	
+	//to map id_session s to session nicknames
+	$sessions = sessionArrays();
+	
 	while ($row = mysql_fetch_object($result))
 	{
 		$rapportElem = $xml->createElement("rapport");
@@ -1159,6 +1177,13 @@ function getReportsAsXML($id_session=-1, $type_eval="", $sort_crit="", $login_ra
 			$contentElem->appendChild($data);
 			$rapportElem->appendChild($contentElem);
 		}
+		
+		//On ajoute le nickname de la session
+		$contentElem = $xml->createElement("session");
+		$data = $xml->createCDATASection ($sessions[$row->id_session]);
+		$contentElem->appendChild($data);
+		$rapportElem->appendChild($contentElem);
+		
 		$root->appendChild($rapportElem);
 	}
 	$xml->appendChild($root);
