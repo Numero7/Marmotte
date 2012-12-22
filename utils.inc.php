@@ -390,8 +390,7 @@ function displaySummary($id_session, $type_eval, $sort_crit, $login_rapp)
 	global $fieldsSummary;
 	global $fieldsAll;
 	global $actions;
-	global $typesEvalUnit;
-	global $typesEvalIndividual;
+	global $typesEval;
 	global $typeExports;
 
 	$result = filterSortReports($id_session, $type_eval, $sort_crit, $login_rapp);
@@ -704,10 +703,13 @@ function displayDetailedReport($row, $actioname)
 	global $fieldsUnites;
 	global $fieldsTypes;
 	global $actions;
-	global $typesEvalIndividual;
 	global $typesEvalUnit;
+	global $typesEval;
 	global $grades;
 	global $evaluations;
+	global $avis_eval;
+	global $typesEvalToAvis;
+
 	$specialRule = array(
 			"auteur"=>0,
 			"date"=>0,
@@ -720,14 +722,9 @@ function displayDetailedReport($row, $actioname)
 			$eval_type = $row->type;
 			$is_unite = in_array($eval_type,$typesEvalUnit);
 			$eval_name = "";
-			if($is_unite)
-			{
-				$eval_name = $typesEvalUnite[$eval_type];
-			}
-			else
-			{
-				$eval_name = $typesEvalIndividual[$eval_type];
-			}
+			$eval_name = $typesEval[$eval_type];
+			
+			$avis_possibles = $typesEvalToAvis[$eval_type];
 
 			?>
 <h1>
@@ -887,6 +884,26 @@ function displayDetailedReport($row, $actioname)
 							}
 							echo  "\t\t\t\t\t<option value=\"$val\" $sel>$val</option>";
 						}
+					}
+					?>
+			</select>
+			</td>
+			<?php
+			}
+			else if ($type=="avis")
+			{
+				?>
+			<td style="width: 30em;"><select name="field<?php echo $fieldID;?>"
+				style="width: 100%;">
+					<?php
+					foreach($avis_possibles as $avis => $prettyprint)
+					{
+						$sel = "";
+						if ($row->$fieldID==$val)
+						{
+							$sel = "selected=\"selected\"";
+						}
+						echo  "\t\t\t\t\t<option value=\"$avis\" $sel>$prettyprint</option>";
 					}
 					?>
 			</select>
@@ -1144,7 +1161,7 @@ function getReportsAsXMLArray($id_session=-1, $type_eval="", $sort_crit="", $log
 
 	$docs = array();
 	while ($row = mysql_fetch_object($result))
-	{	
+	{
 		$doc = new DOMDocument();
 		$root = $doc->createElement("rapports");
 		appendRowToXMLDoc($row, $sessions,$units,$doc);
@@ -1247,10 +1264,10 @@ function xml_to_zipped_tex($docs)
 			$type = type_from_node($doc);
 			$zip->addFromString($filename,$processors[$type]->transformToXML($doc));
 		}
-		
+
 		$zip->close();
 		return "reports_latex.zip";
-		
+
 	}
 	return "";
 }
@@ -1261,7 +1278,7 @@ function xml_to_zipped_pdf($docs)
 	$xsl->load("xslt/html.xsl");
 	$proc_eval = new XSLTProcessor();
 	$proc_eval->importStyleSheet($xsl);
-	
+
 	$proc = $proc_eval;
 
 	$processors = array(
@@ -1296,7 +1313,7 @@ function xml_to_zipped_pdf($docs)
 			$zip->addFromString($filename,$pdf->Output("","S"));
 			$i++;
 		}
-		
+
 		$zip->close();
 		return "reports_pdf.zip";
 
@@ -1308,18 +1325,18 @@ function appendRowToXMLDoc($row, $sessions, $units, DOMDocument $doc)
 {
 	global $fieldsAll;
 	global $typesEval;
-	
+
 	if(!$sessions)
 		$sessions = sessionArrays();
-	
+
 	if(!$units)
 		$units = unitsList();
-	
-	
+
+
 	$rapportElem = $doc->createElement("rapport");
-	
+
 	$fieldsspecial = array('unite','date','type');
-	
+
 	foreach ($fieldsAll as $fieldID => $title)
 	{
 		if(!in_array($fieldID,$fieldsspecial))
@@ -1330,7 +1347,7 @@ function appendRowToXMLDoc($row, $sessions, $units, DOMDocument $doc)
 			$rapportElem->appendChild($contentElem);
 		}
 	}
-	
+
 	//On ajoute le nickname du labo
 	$contentElem = $doc->createElement("unite");
 	if(array_key_exists($row->unite,$units))
@@ -1343,9 +1360,9 @@ function appendRowToXMLDoc($row, $sessions, $units, DOMDocument $doc)
 		$data = $doc->createCDATASection($row->unite);
 		$contentElem->appendChild($data);
 	}
-	
+
 	$rapportElem->appendChild($contentElem);
-	
+
 	//On ajoute la date du jour
 	$contentElem = $doc->createElement("date");
 	setlocale(LC_TIME, "fr_FR");
@@ -1358,38 +1375,38 @@ function appendRowToXMLDoc($row, $sessions, $units, DOMDocument $doc)
 	$data = $doc->createCDATASection($typesEval[$row->type]);
 	$contentElem->appendChild($data);
 	$rapportElem->appendChild($contentElem);
-	
+
 	//On ajoute le nickname de la session
 	$contentElem = $doc->createElement("session");
 	$data = $doc->createCDATASection ($sessions[$row->id_session]);
 	$contentElem->appendChild($data);
 	$rapportElem->appendChild($contentElem);
-	
+
 	//On ajoute le numero de la section
 	$contentElem = $doc->createElement("section_nb");
 	$data = $doc->createCDATASection (section_nb);
 	$contentElem->appendChild($data);
 	$rapportElem->appendChild($contentElem);
-	
+
 	//On ajoute l'intitulé de la section
 	$contentElem = $doc->createElement("section_intitule");
 	$data = $doc->createCDATASection (section_intitule);
 	$contentElem->appendChild($data);
 	$rapportElem->appendChild($contentElem);
-	
+
 	//On ajoute le nom du signataire
 	$contentElem = $doc->createElement("signataire");
 	$data = $doc->createCDATASection (president);
 	$contentElem->appendChild($data);
 	$rapportElem->appendChild($contentElem);
-	
+
 	$contentElem = $doc->createElement("signataire_titre");
 	$data = $doc->createCDATASection (president_titre);
 	$contentElem->appendChild($data);
 	$rapportElem->appendChild($contentElem);
-	
+
 	$doc->appendChild($rapportElem);
-	
+
 }
 
 function rowToXMLDoc($row, $sessions = null, $units = null)
@@ -1413,32 +1430,32 @@ function HTMLToPDF($html)
 {
 	// create new PDF document
 	$pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
-	
+
 	// set document information
 	$pdf->SetCreator(secretaire);
 	$pdf->SetAuthor(section_fullname);
 	$pdf->SetTitle('Rapport de la '.section_fullname);
 	$pdf->SetSubject('Rapport de la '.section_fullname);
 	$pdf->SetKeywords('Rapport de la '.section_fullname);
-	
+
 	// set default monospaced font
 	$pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
-	
+
 	// remove default header/footer
 	$pdf->setPrintHeader(false);
 	$pdf->setPrintFooter(false);
-	
+
 	//set margins
 	$pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
 	$pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
 	$pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
-	
+
 	//set auto page breaks
 	$pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
-	
+
 	//set image scale factor
 	$pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
-	
+
 	$l = Array(
 			'a_meta_charset' => 'UTF-8',
 			'a_meta_dir' => 'ltr',
@@ -1447,25 +1464,25 @@ function HTMLToPDF($html)
 	);
 	//set some language-dependent strings
 	$pdf->setLanguageArray($l);
-	
+
 	// ---------------------------------------------------------
-	
+
 	// set default font subsetting mode
 	$pdf->setFontSubsetting(true);
-	
+
 	// Set font
 	// dejavusans is a UTF-8 Unicode font, if you only need to
 	// print standard ASCII chars, you can use core fonts like
 	// helvetica or times to reduce file size.
 	$pdf->SetFont('dejavusans', '', 14, '', true);
-	
+
 	// Add a page
 	// This method has several options, check the source code documentation for more information.
 	$pdf->AddPage();
-	
-	
+
+
 	$pdf->writeHTML($html);
-	
+
 	$pdf->Close();
 	return $pdf;
 }

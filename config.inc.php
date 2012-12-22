@@ -156,7 +156,7 @@
 		"rayonnement" => "evaluation",		
 		"rayonnement_notes" => "long",		
 		"rapport" => "treslong",
-		"avis" => "short",
+		"avis" => "avis",
 		"auteur" => "short",
 		"date" => "short",
 	);
@@ -182,10 +182,70 @@
 			'Renouvellement' => 'Renouvellement',
 			'Expertise' => 'Expertise',
 			'Ecole' => 'Evaluation d\'Ecole Thematique',
-			'Comité-Evaluation' => 'Comité d\'Evaluation'
+			'Comite-Evaluation' => 'Comité d\'Evaluation'
 	);
 	
 	$typesEval = array_merge($typesEvalIndividual, $typesEvalUnit);
+	
+	$avis_eval = array(
+			""=>"",
+			"favorable" => "Favorable",
+			"reserve" => "Réservé",
+			"differe" => "Différé",
+			"alerte" => "Alerte"
+	);
+
+	$avis_classement = array(""=>"", "non"=>"Non", "oui"=>"Oui", "1"=>"1", "2"=>"2", "3"=>"3", "4"=>"4", "5"=>"5", "6"=>"6", "7"=>"7" , "8"=>"8", "9"=>"9"
+			, "10"=>"10", "11"=>"11", "12"=>"12", "13"=>"13", "14"=>"14", "15"=>"15", "16"=>"16", "17"=>"17", "18"=>"18", "19"=>"19",
+			 "20"=>"20", "21"=>"21");
+
+	$avis_candidature = array(""=>"", "nonauditionne"=>"Non Auditionné", "oral"=>"Auditionné", "nonclasse"=>"Non-Classé", "1"=>"1", "2"=>"2", "3"=>"3", "4"=>"4", "5"=>"5", "6"=>"6", "7"=>"7" , "8"=>"8", "9"=>"9"
+			, "10"=>"10", "11"=>"11", "12"=>"12", "13"=>"13", "14"=>"14", "15"=>"15", "16"=>"16", "17"=>"17", "18"=>"18", "19"=>"19",
+			"20"=>"20", "21"=>"21");
+	
+	$avis_vide = array(""=>"");
+
+	$avis_binaire = array(
+			""=>"",
+			"favorable" => "Favorable",
+			"reserve" => "Réservé",
+			"differe" => "Différé",
+			"so" => "Pas d'avis"
+	);
+
+	$avis_ternaire = array(
+			""=>"", 
+			"tresfavorable" => "Très Favorable",
+			"favorable" => "Favorable",
+			"reserve" => "Réservé",
+			"differe" => "Différé",
+			"so" => "Pas d'avis"
+	);
+
+	$avis_ecoles = array(
+			""=>"",
+			"tresfavorable" => "Très Favorable",
+			"favorable" => "Favorable",
+			"defavorable" => "Défavorable",
+			"so" => "Pas d'avis"
+	);
+	
+	
+	$typesEvalToAvis = array(
+	'Evaluation-Vague' => $avis_eval,
+	'Evaluation-MiVague' => $avis_eval,
+	'Promotion' => $avis_classement,
+	'Candidature' => $avis_candidature,
+	'Suivi-PostEvaluation' => $avis_vide,
+	'Affectation' => $avis_binaire,
+	'Titularisation' => $avis_binaire,
+	'Confirmation-Affectation' => $avis_binaire,
+	'Changement-Direction' => $avis_ternaire,
+	'Renouvellement' => $avis_ternaire,
+	'Expertise' => $avis_ternaire,
+	'Ecole' => $avis_ecoles,
+	'Comite-Evaluation' => $avis_binaire
+	);
 	
 	$grades = array(
 		'CR2' => 'Chargé de Recherche 2ème classe (CR2)',
@@ -215,12 +275,6 @@
 		'edit'  => "Modifier"
 	);
 	
-	$avis_eval = array(
-			"Favorable",
-			"Réservé",
-			"Différé",
-			"Alerte"
-			);
 
 	define("president","Frédérique Bassino");
 	define("president_titre","Présidente de la Section 6");

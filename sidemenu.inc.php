@@ -39,11 +39,11 @@ include_once("config.inc.php");
 		<h1>Ajouter Rapport Unité</h1>
 		<ul>
 		<?php 
-		foreach($typesEvalUnit as $typeEval)
+		foreach($typesEvalUnit as $typeEval => $value)
 		{
 			?>
 			<li>
-		<a href="?action=new&type_eval=<?php echo $typeEval ?>"><?php echo $typeEval?>
+		<a href="?action=new&type_eval=<?php echo $typeEval ?>"><?php echo $value?>
 		</a></li>
 		<?php
 		}
