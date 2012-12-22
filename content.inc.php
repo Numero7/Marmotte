@@ -1,4 +1,5 @@
- <div class="left">
+
+<div class="left">
 
  <!-- 
 	<div class="header">
@@ -77,7 +78,8 @@
 		newReport($type_eval);
 	}
 	else if ($action=="add")
-	{	global $typesEvalUnit;
+	{	
+		global $typesEvalUnit;
 		$id_nouveau = addReport();
 		
 		$is_unite = in_array(mysql_real_escape_string($_REQUEST["fieldtype"]),$typesEvalUnit);

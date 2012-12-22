@@ -1,7 +1,12 @@
 <?php
 	include "configDB.inc.php";
-
+	
 	$typeExports = array(
+		"pdf" => 	array(
+					"mime" => "application/x-pdf",
+					"xsl" => "",
+					"name" => "XML",
+		),
 		"xml" => 	array(
 						"mime" => "text/xml",		
 						"xsl" => "xslt/xmlidentity.xsl",
@@ -9,8 +14,8 @@
 					),
 		"latex" => 	array(
 						"mime" => "application/x-latex",		
-						"xsl" => "xslt/latexshort.xsl",
-						"name" => "Latex",
+						"xsl" => "",
+						"name" => "Zip",
 					),
 	);
 	
@@ -163,21 +168,21 @@
 	);
 	
 	$typesEvalIndividual = array(
-		'Evaluation-Vague',
-		'Evaluation-MiVague',
-		'Promotion',
-		'Candidature',
-		'Suivi-PostEvaluation',
-		'Titularisation',
-		'Confirmation-Affectation',
+		'Evaluation-Vague' => 'Evaluation à Vague',
+		'Evaluation-MiVague' => 'Evaluation à Mi-Vague',
+		'Promotion' => 'Promotion',
+		'Candidature' => 'Candidature',
+		'Suivi-PostEvaluation' => 'Suivi Post-Evaluation',
+		'Titularisation' => 'Titularisation',
+		'Confirmation-Affectation' => 'Confirmation d\'Affectation'
 	);
 
 	$typesEvalUnit = array(
-			'Changement-Direction',
-			'Renouvellement',
-			'Expertise',
-			'Ecole',
-			'Comité-Evaluation',
+			'Changement-Direction' => 'Changement de Direction',
+			'Renouvellement' => 'Renouvellement',
+			'Expertise' => 'Expertise',
+			'Ecole' => 'Evaluation d\'Ecole Thematique',
+			'Comité-Evaluation' => 'Comité d\'Evaluation'
 	);
 	
 	$grades = array(
@@ -205,7 +210,7 @@
 	$actions = array(
 		'details' => "Détails", 
 		'history' => "Historique", 
-		'edit'  => "Modifier", 
+		'edit'  => "Modifier"
 	);
 	
 	$avis_eval = array(
@@ -213,6 +218,13 @@
 			"Réservé",
 			"Différé",
 			"Alerte"
-			)
-	
+			);
+
+	define("president","Frédérique Bassino");
+	define("president_titre","Présidente de la Section 6");
+	define("secretaire","Hugo Gimbert");
+	define("section_nb","6");
+	define("section_fullname","Section 6 du CoNRS");
+	define("section_intitule","Sciences de l'information : fondements de l'informatique, calculs, algorithmes, représentations, exploitations");
+		
 ?>
