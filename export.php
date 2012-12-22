@@ -1,145 +1,136 @@
 <?php
-//Returns the name of the zip file
-function filename_from_node(DOMNode $node)
+require_once("utils.inc.php");
+require_once('tcpdf/config/lang/eng.php');
+require_once('tcpdf/tcpdf.php');
+
+function viewReportAsPdf($id_rapport)
 {
-	$nom = "";
-	$prenom = "";
-	$grade = "";
-	$unite = "";
-	$type = "";
-	
-	foreach($node->childNodes as $child)
+	$row = getReport($id_rapport);
+	if(!$row)
 	{
-		if($child->nodeName == "nom")
-			$nom = $child->nodeValue;
-		else if($child->nodeName == "prenom")
-			$prenom = $child->nodeValue;
-		else if($child->nodeName == "grade")
-			$grade = $child->nodeValue;
-		else if($child->nodeName == "unite")
-			$unite = $child->nodeValue;
-		else if($child->nodeName == "type")
-			$type = $child->nodeValue;
+		echo 'Pas de rapport avec id '.$id_rapport;
+		return;
 	}
-	
-	if($unite != "")
-		return $type."_".$unite.".tex";
-	else
-		return $type."_".$grade." ".$nom." ".$prenom.".tex";
-}
 
-function xml_to_zipped_tex(DOMDocument $xml)
-{
-
-	$docs = $xml->getElementsByTagName("rapport");
-
-	$zip = new ZipArchive();
-	// On ouvre l’archive.
-	
-	$xsl = new DOMDocument();
-	$xsl->load("xslt/latexshort.xsl");
-	$proc = new XSLTProcessor();
-	$proc->importStyleSheet($xsl);
-		
-	if($zip->open('reports3.zip',ZipArchive::OVERWRITE))
+	$doc = rowToXMLDoc($row);
+	if(!$doc)
 	{
-		$zip->addFromString("compile.bat", "for /r %%x in (*.tex) do pdflatex \"%%x\"\r\ndel *.log\r\ndel *.aux");
-		foreach($docs as $doc)
-		{
-			$filename = filename_from_node($doc);
-			$zip->addFromString($filename,$proc->transformToXML($doc));
-		}
-		$zip->close();
+		echo 'Impossible de convertir la requete en xml';
+		return;
 	}
-	return "reports3.zip";
 
-}
-?>
-<?php
-include("utils.inc.php");
+	$html = XMLToHTML($doc);
+
+	$pdf = HTMLToPDF($html);
+
+	$pdf->Output('rapport.pdf', 'I');
+};
 
 $dbh = db_connect($servername,$dbname,$serverlogin,$serverpassword);
 if($dbh!=0)
 {
 	if (authenticate())
 	{
-		$type = "xml";
-		if (isset($_REQUEST["type"]))
+		$action="single";
+		if (isset($_REQUEST["action"]))
 		{
-			$type = $_REQUEST["type"];
+			$action = $_REQUEST["action"];
 		}
-		if (isset($typeExports[$type]))
+
+		if($action=="single")
 		{
-			$id_session = -1;
-			if (isset($_REQUEST["id_session"]))
+			$id="-1";
+			if (isset($_REQUEST["id"]))
 			{
-				$id_session = $_REQUEST["id_session"];
+				$id = $_REQUEST["id"];
 			}
-			$type_eval = "";
-			if (isset($_REQUEST["type_eval"]))
+			viewReportAsPdf($id);
+		}
+		else if($action=="group")
+		{
+			if (isset($_REQUEST["save"]) and isset($_REQUEST["avis"]) and isset($_REQUEST["rapport"]))
 			{
-				$type_eval = $_REQUEST["type_eval"];
+				$idtosave = $_REQUEST["save"];
+				$avis = $_REQUEST["avis"];
+				$rapport = $_REQUEST["rapport"];
+				updateRapportAvis($idtosave,$avis,$rapport);
 			}
-			$login_rapp = "";
-			if (isset($_REQUEST["login_rapp"]))
+			$type = "xml";
+			if (isset($_REQUEST["type"]))
 			{
-				$login_rapp = $_REQUEST["login_rapp"];
+				$type = $_REQUEST["type"];
 			}
-
-			$sort_crit = "";
-			if (isset($_REQUEST["sort"]))
+			if (isset($typeExports[$type]))
 			{
-				$sort_crit = $_REQUEST["sort"];
-			}
-			$xml = getReportsAsXML($id_session,$type_eval,$sort_crit,$login_rapp);
+				$id_session = -1;
+				if (isset($_REQUEST["id_session"]))
+				{
+					$id_session = $_REQUEST["id_session"];
+				}
+				$type_eval = "";
+				if (isset($_REQUEST["type_eval"]))
+				{
+					$type_eval = $_REQUEST["type_eval"];
+				}
+				$login_rapp = "";
+				if (isset($_REQUEST["login_rapp"]))
+				{
+					$login_rapp = $_REQUEST["login_rapp"];
+				}
 
-			$conf = $typeExports[$type];
-			$mime = $conf["mime"];
-			$xslpath = $conf["xsl"];
+				$sort_crit = "";
+				if (isset($_REQUEST["sort"]))
+				{
+					$sort_crit = $_REQUEST["sort"];
+				}
+				$id_edit = -1;
+				if (isset($_REQUEST["id_edit"]))
+				{
+					$id_edit = $_REQUEST["id_edit"];
+				}
 
-			if($type=="latex")
-			{
-				$filename=xml_to_zipped_tex($xml);
-				$filepath="./";
+				$conf = $typeExports[$type];
+				$mime = $conf["mime"];
+				$xslpath = $conf["xsl"];
 
-				header("Pragma: public");
-				header("Expires: 0");
-				header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
-				header("Cache-Control: public");
-				header("Content-Description: File Transfer");
-				header("Content-type: application/octet-stream");
-				header("Content-Disposition: attachment; filename=\"".$filename."\"");
-				header("Content-Transfer-Encoding: binary");
-				header("Content-Length: ".filesize($filename));
-				ob_clean();
-				flush();
-				readfile($filename);
+				if($type=="latex" || $type=="pdf")
+				{
+					$xmls = getReportsAsXMLArray($id_session,$type_eval,$sort_crit,$login_rapp);
+					
+					$filename = "";
+					if($type=="latex")
+						$filename=xml_to_zipped_tex($xmls);
+					else
+						$filename=xml_to_zipped_pdf($xmls);
 
-				/*
-				 header("Pragma: public");
-				header('Content-disposition: attachment; filename='.$file);
-				$finfo = new finfo(FILEINFO_MIME);
-				header("Content-type: ".$finfo->file($file));
-				$finfo->close();
-				header('Content-Transfer-Encoding: binary');
-				ob_clean();
-				flush();
-				readfile($file);
-				*/
+					$filepath="./";
+
+					header("Pragma: public");
+					header("Expires: 0");
+					header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+					header("Cache-Control: public");
+					header("Content-Description: File Transfer");
+					header("Content-type: application/octet-stream");
+					header("Content-Disposition: attachment; filename=\"".$filename."\"");
+					header("Content-Transfer-Encoding: binary");
+					header("Content-Length: ".filesize($filename));
+					ob_clean();
+					flush();
+					readfile($filename);
+				}
+				else
+				{
+					$xml = getReportsAsXML($id_session,$type_eval,$sort_crit,$login_rapp,$id_edit);
+					header("Content-type: $mime; charset=utf-8");
+					$xsl = new DOMDocument();
+					$xsl->load($xslpath);
+					$proc = new XSLTProcessor();
+					$proc->importStyleSheet($xsl);
+					echo $proc->transformToXML($xml);
+				}
 			}
 			else
 			{
-				header("Content-type: $mime; charset=utf-8");
-				$xsl = new DOMDocument();
-				$xsl->load($xslpath);
-				$proc = new XSLTProcessor();
-				$proc->importStyleSheet($xsl);
-				echo $proc->transformToXML($xml);
-			}
-
-		}
-		else
-		{
 			?>
 <html>
 <head>
@@ -150,9 +141,9 @@ if($dbh!=0)
 	</strong> n'est pas un type d'export valide.
 </body>
 </html>
-<?php				
+<?php		
+			}		
 		}
-			
 	}
 }
 ?>

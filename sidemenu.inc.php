@@ -1,6 +1,6 @@
 
 <?php 
-include("config.inc.php");
+include_once("config.inc.php");
 ?>
 <div class="right">
 	<div class="round">
@@ -26,10 +26,10 @@ include("config.inc.php");
 		<h1>Ajouter Rapport Chercheur</h1>
 		<ul>
 		<?php 
-		foreach($typesEvalIndividual as $typeEval)
+		foreach($typesEvalIndividual as $typeEval => $value)
 		{
 			?>
-		<li><a href="?action=new&type_eval=<?php echo $typeEval ?>"><?php echo $typeEval?>
+		<li><a href="?action=new&type_eval=<?php echo $typeEval ?>"><?php echo $value?>
 		</a></li>
 		<?php
 		}
@@ -39,11 +39,11 @@ include("config.inc.php");
 		<h1>Ajouter Rapport Unité</h1>
 		<ul>
 		<?php 
-		foreach($typesEvalUnit as $typeEval)
+		foreach($typesEvalUnit as $typeEval => $value)
 		{
 			?>
 			<li>
-		<a href="?action=new&type_eval=<?php echo $typeEval ?>"><?php echo $typeEval?>
+		<a href="?action=new&type_eval=<?php echo $typeEval ?>"><?php echo $value?>
 		</a></li>
 		<?php
 		}

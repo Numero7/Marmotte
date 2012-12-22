@@ -1,7 +1,12 @@
 <?php
 	include "configDB.inc.php";
-
+	
 	$typeExports = array(
+		"pdf" => 	array(
+					"mime" => "application/x-pdf",
+					"xsl" => "",
+					"name" => "XML",
+		),
 		"xml" => 	array(
 						"mime" => "text/xml",		
 						"xsl" => "xslt/xmlidentity.xsl",
@@ -9,8 +14,8 @@
 					),
 		"latex" => 	array(
 						"mime" => "application/x-latex",		
-						"xsl" => "xslt/latexshort.xsl",
-						"name" => "Latex",
+						"xsl" => "",
+						"name" => "Zip",
 					),
 		"htmlmin" => 	array(
 						"mime" => "text/html",		
@@ -32,12 +37,10 @@
 	$fieldsAll = array(
 		"nom" => "Nom",
 		"prenom" => "Prenom",
-		"grade" => "Grade",
 		"unite" => "Unité",
+		"grade" => "Grade",
 		"type" => "Type",
 		"rapporteur" => "Rapporteur",
-		"avis" => "Proposition d'avis",
-		"rapport" => "Proposition de rapport",
 		"prerapport" => "Points marquants",
 		"anciennete_grade" => "Ancienneté dans grade",
 		"date_recrutement" => "Date de recrutement",
@@ -55,6 +58,8 @@
 		"animation_notes" => "Détails sur l'animation",
 		"rayonnement" => "Rayonnement",		
 		"rayonnement_notes" => "Détails sur le rayonnement",		
+		"rapport" => "Proposition de rapport",
+		"avis" => "Proposition d'avis",
 		"auteur" => "Auteur Dernière(s) modif(s)",
 		"date" => "Date modification",
 	);
@@ -156,7 +161,7 @@
 		"rayonnement" => "evaluation",		
 		"rayonnement_notes" => "long",		
 		"rapport" => "treslong",
-		"avis" => "short",
+		"avis" => "avis",
 		"auteur" => "short",
 		"date" => "short",
 	);
@@ -168,21 +173,99 @@
 	);
 	
 	$typesEvalIndividual = array(
-		'Evaluation-Vague',
-		'Evaluation-MiVague',
-		'Promotion',
-		'Candidature',
-		'Suivi-PostEvaluation',
-		'Titularisation',
-		'Confirmation-Affectation',
+		'Evaluation-Vague' => 'Evaluation à Vague',
+		'Evaluation-MiVague' => 'Evaluation à Mi-Vague',
+		'Promotion' => 'Promotion',
+		'Candidature' => 'Candidature',
+		'Suivi-PostEvaluation' => 'Suivi Post-Evaluation',
+		'Titularisation' => 'Titularisation',
+		'Confirmation-Affectation' => 'Confirmation d\'Affectation'
 	);
 
 	$typesEvalUnit = array(
-			'Changement-Direction',
-			'Renouvellement',
-			'Expertise',
-			'Ecole',
-			'Comité-Evaluation',
+			'Changement-Direction' => 'Changement de Direction',
+			'Renouvellement' => 'Renouvellement',
+			'Expertise' => 'Expertise',
+			'Ecole' => 'Evaluation d\'Ecole Thematique',
+			'Comite-Evaluation' => 'Comité d\'Evaluation'
+	);
+	
+	$typesEval = array_merge($typesEvalIndividual, $typesEvalUnit);
+	
+	$typesEvalUpperCase = array(
+			'Evaluation-Vague' => 'EVALUATION A VAGUE DE CHERCHEUR',
+			'Evaluation-MiVague' => 'EVALUATION A MI-VAGUE DE CHERCHEUR',
+			'Promotion' => '',
+			'Candidature' => '',
+			'Suivi-PostEvaluation' => '',
+			'Titularisation' => '',
+			'Confirmation-Affectation' => '',
+			'Changement-Direction' => '',
+			'Renouvellement' => '',
+			'Expertise' => '',
+			'Ecole' => '',
+			'Comite-Evaluation' => ''
+	);
+	
+	
+	$avis_eval = array(
+			""=>"",
+			"favorable" => "Favorable",
+			"reserve" => "Réservé",
+			"differe" => "Différé",
+			"alerte" => "Alerte"
+	);
+
+	$avis_classement = array(""=>"", "non"=>"Non", "oui"=>"Oui", "1"=>"1", "2"=>"2", "3"=>"3", "4"=>"4", "5"=>"5", "6"=>"6", "7"=>"7" , "8"=>"8", "9"=>"9"
+			, "10"=>"10", "11"=>"11", "12"=>"12", "13"=>"13", "14"=>"14", "15"=>"15", "16"=>"16", "17"=>"17", "18"=>"18", "19"=>"19",
+			 "20"=>"20", "21"=>"21");
+
+	$avis_candidature = array(""=>"", "nonauditionne"=>"Non Auditionné", "oral"=>"Auditionné", "nonclasse"=>"Non-Classé", "1"=>"1", "2"=>"2", "3"=>"3", "4"=>"4", "5"=>"5", "6"=>"6", "7"=>"7" , "8"=>"8", "9"=>"9"
+			, "10"=>"10", "11"=>"11", "12"=>"12", "13"=>"13", "14"=>"14", "15"=>"15", "16"=>"16", "17"=>"17", "18"=>"18", "19"=>"19",
+			"20"=>"20", "21"=>"21");
+	
+	$avis_vide = array(""=>"");
+
+	$avis_binaire = array(
+			""=>"",
+			"favorable" => "Favorable",
+			"reserve" => "Réservé",
+			"differe" => "Différé",
+			"so" => "Pas d'avis"
+	);
+
+	$avis_ternaire = array(
+			""=>"", 
+			"tresfavorable" => "Très Favorable",
+			"favorable" => "Favorable",
+			"reserve" => "Réservé",
+			"differe" => "Différé",
+			"so" => "Pas d'avis"
+	);
+
+	$avis_ecoles = array(
+			""=>"",
+			"tresfavorable" => "Très Favorable",
+			"favorable" => "Favorable",
+			"defavorable" => "Défavorable",
+			"so" => "Pas d'avis"
+	);
+	
+	
+	$typesEvalToAvis = array(
+	'Evaluation-Vague' => $avis_eval,
+	'Evaluation-MiVague' => $avis_eval,
+	'Promotion' => $avis_classement,
+	'Candidature' => $avis_candidature,
+	'Suivi-PostEvaluation' => $avis_vide,
+	'Affectation' => $avis_binaire,
+	'Titularisation' => $avis_binaire,
+	'Confirmation-Affectation' => $avis_binaire,
+	'Changement-Direction' => $avis_ternaire,
+	'Renouvellement' => $avis_ternaire,
+	'Expertise' => $avis_ternaire,
+	'Ecole' => $avis_ecoles,
+	'Comite-Evaluation' => $avis_binaire
 	);
 	
 	$grades = array(
@@ -210,7 +293,15 @@
 	$actions = array(
 		'details' => "Détails", 
 		'history' => "Historique", 
-		'edit'  => "Modifier", 
+		'edit'  => "Modifier"
 	);
 	
+
+	define("president","Frédérique Bassino");
+	define("president_titre","Présidente de la Section 6");
+	define("secretaire","Hugo Gimbert");
+	define("section_nb","6");
+	define("section_fullname","Section 6 du CoNRS");
+	define("section_intitule","Sciences de l'information : fondements de l'informatique, calculs, algorithmes, représentations, exploitations");
+		
 ?>

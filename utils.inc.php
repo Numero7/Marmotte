@@ -1,6 +1,9 @@
 <?php
 session_start();
-include_once "config.inc.php";
+require_once('tcpdf/config/lang/eng.php');
+require_once('tcpdf/tcpdf.php');
+require_once('config.inc.php');
+
 function db_connect($serverName,$dbname,$login,$password)
 {
 	$dbh = @mysql_connect($serverName, $login, $password);
@@ -189,7 +192,7 @@ function getTypesEval($id_session){
 	return $finalResult;
 }
 
-function displayIndividualReport($id_rapport)
+function displayIndividualReport($row)
 {
 	global $fieldsAll;
 	global $actions;
@@ -202,11 +205,6 @@ function displayIndividualReport($id_rapport)
 			"nom_session"=>0,
 			"date_session"=>0,
 	);
-	$sql = "SELECT tt.*, ss.nom AS nom_session, ss.date AS date_session FROM evaluations tt, sessions ss WHERE tt.id=$id_rapport AND tt.id_session=ss.id;";
-	//echo $sql;
-	$result=mysql_query($sql);
-	if ($row = mysql_fetch_object($result))
-	{
 		?>
 <div class="tools">
 	<?php
@@ -251,12 +249,38 @@ function displayIndividualReport($id_rapport)
 </dl>
 <div></div>
 <?php
-	}
-	?>
-<?php
 } ;
 
-function displayUnitReport($id_rapport)
+function displayReport($id_rapport)
+{
+	global $typesEvalUnit;
+	global $typesEvalIndividual;
+	
+	$sql = "SELECT tt.*, ss.nom AS nom_session, ss.date AS date_session FROM evaluations tt, sessions ss WHERE tt.id=$id_rapport AND tt.id_session=ss.id;";
+	$result=mysql_query($sql);
+	if ($row = mysql_fetch_object($result))
+	{
+		if(array_key_exists($row->type,$typesEvalUnit))
+		{
+			displayUnitReport($row);
+		}
+		else if(array_key_exists($row->type,$typesEvalIndividual))
+		{
+			displayIndividualReport($row);
+		}
+		else
+		{			
+			echo "Unknown report type ".$row->type;
+		}
+	}
+	else
+	{
+		echo "No report with if ".$is_rapport;
+	}
+	
+}
+
+function displayUnitReport($row)
 {
 	global $fieldsAll;
 	global $fieldsUnites;
@@ -270,10 +294,6 @@ function displayUnitReport($id_rapport)
 				"nom_session"=>0,
 				"date_session"=>0,
 		);
-		$sql = "SELECT tt.*, ss.nom AS nom_session, ss.date AS date_session FROM evaluations tt, sessions ss WHERE tt.id=$id_rapport AND tt.id_session=ss.id;";
-		$result=mysql_query($sql);
-		if ($row = mysql_fetch_object($result))
-		{
 			?>
 <div class="tools">
 	<?php
@@ -313,21 +333,7 @@ function displayUnitReport($id_rapport)
 </dl>
 <div></div>
 <?php
-		}
-		else
-		{
-			?>
-<p>
-	Error: no entry with id_rapport
-	<?php echo $id_rapport;?>
-	.
-</p>
-<?php
-		}
 
-
-		?>
-<?php
 } ;
 
 function getExample($type)
@@ -360,7 +366,7 @@ function highlightDiff(&$prevVals,$key,$val)
 	return $val;
 }
 
-function filterSortReports($id_session, $type_eval, $sort_crit, $login_rapp)
+function filterSortReports($id_session, $type_eval, $sort_crit, $login_rapp, $id_origin=-1)
 {
 	$sortCrit = parseSortCriteria($sort_crit);
 
@@ -368,6 +374,10 @@ function filterSortReports($id_session, $type_eval, $sort_crit, $login_rapp)
 	if ($id_session!=-1)
 	{
 		$sql .= " AND id_session=$id_session ";
+	}
+	if ($id_origin!=-1)
+	{
+		$sql .= " AND id_origine=$id_origin ";
 	}
 	if ($type_eval!="")
 	{
@@ -389,8 +399,7 @@ function displaySummary($id_session, $type_eval, $sort_crit, $login_rapp)
 	global $fieldsSummary;
 	global $fieldsAll;
 	global $actions;
-	global $typesEvalUnit;
-	global $typesEvalIndividual;
+	global $typesEval;
 	global $typeExports;
 
 	$result = filterSortReports($id_session, $type_eval, $sort_crit, $login_rapp);
@@ -450,23 +459,14 @@ function displaySummary($id_session, $type_eval, $sort_crit, $login_rapp)
 			<td><select name="type_eval">
 					<option value="">Tous les types</option>
 					<?php
-					foreach ($typesEvalUnit as $ty)
+					foreach ($typesEval as $ty => $value)
 					{
 						$sel = "";
 						if ($ty==$type_eval)
 						{
 							$sel = " selected=\"selected\"";
 						}
-						echo "<option value=\"$ty\"$sel>".ucfirst($ty)."</option>";
-					}
-					foreach ($typesEvalIndividual as $ty)
-					{
-						$sel = "";
-						if ($ty==$type_eval)
-						{
-							$sel = " selected=\"selected\"";
-						}
-						echo "<option value=\"$ty\"$sel>".ucfirst($ty)."</option>";
+						echo "<option value=\"$ty\"$sel>".ucfirst($value)."</option>";
 					}
 					?>
 			</select></td>
@@ -481,9 +481,18 @@ function displaySummary($id_session, $type_eval, $sort_crit, $login_rapp)
 	</table>
 </form>
 <br>
-<hr>
 <br>
-<h2>Rapports disponibles</h2>
+<h2>Exporter :</h2>
+<p>
+	<?php
+	foreach($typeExports as $idexp => $exp)
+	{
+		$expname= $exp["name"];
+		echo " <a href=\"export.php?action=group&amp;id_session=$id_session&amp;type_eval=$type_eval&amp;sort_crit=$sort_crit&amp;login_rapp=$login_rapp&amp;type=$idexp\"><img class=\"icon\" width=\"50\" height=\"50\" src=\"img/$idexp-icon.png\" alt=\"$expname\"></a>";
+	}
+	?>
+</p>
+<hr>
 <table class="summary">
 	<tr>
 		<?php
@@ -523,8 +532,9 @@ function displaySummary($id_session, $type_eval, $sort_crit, $login_rapp)
 		}
 		foreach($actions as $action => $actionTitle)
 		{
-			echo "<td><a href=\"?action=$action&amp;id=".$row->id."&amp;id_origine=".$row->id_origine."\"><img class=\"icon\" src=\"img/$action-icon.png\" alt=\"$actionTitle\"></a></td>";
+			echo "<td><a href=\"?action=$action&amp;id=".$row->id."&amp;id_origine=".$row->id_origine."\"><img class=\"icon\" width=\"24\" height=\"24\" src=\"img/$action-icon.png\" alt=\"$actionTitle\"></a></td>";
 		}
+		echo "<td><a href=\"export.php?action=single&amp;id=".$row->id."&amp;id_origine=".$row->id_origine."\"><img class=\"icon\" width=\"24\" height=\"24\" src=\"img/pdf-icon.png\" alt=\"$actionTitle\"></a></td>";
 		?>
 	
 	
@@ -534,75 +544,46 @@ function displaySummary($id_session, $type_eval, $sort_crit, $login_rapp)
 	?>
 
 </table>
-Exporter :
 <?php
-foreach($typeExports as $idexp => $exp)
-{
-	$expname= $exp["name"];
-	echo " <a href=\"export.php?id_session=$id_session&amp;type_eval=$type_eval&amp;sort_crit=$sort_crit&amp;login_rapp=$login_rapp&amp;type=$idexp\" target=\"_blank\">$expname</a>";
-}
 } ;
-
 
 function showSessions()
 {
-	$finalResult = array();
-	$sql = "SELECT * FROM sessions ORDER BY date DESC;";
-	$result=mysql_query($sql);
-
+	$finalResult = array(); $sql = "SELECT * FROM sessions ORDER BY date DESC;"; $result=mysql_query($sql);
 	while ($row = mysql_fetch_object($result))
 	{
-		$finalResult[] = array(
-"id" => $row->id,
-"nom" => $row->nom,
-"date" => $row->date,
-);
+		$finalResult[] = array( "id" => $row->id, "nom" => $row->nom, "date" => $row->date, );
 	}
-	return $finalResult;
+	return	$finalResult;
 } ;
-
 
 function fieldDiffers($prevVals,$key,$val)
 {
-	if (isset($prevVals[$key]))
+	if(isset($prevVals[$key]))
 	{
 		if ($prevVals[$key]==$val)
 		{
 			return false;
 		}
-		else
-		{
-			return true;
+		else {
+ 		return true;
 		}
-	}
-	return true;
+	} return true;
 }
 
 function historyReport($id_origine)
 {
 	global $fieldsAll;
 	global $actions;
-	$specialRule = array(
-			"nom"=>0,
-			"prenom"=>0,
-			"grade"=>0,
-			"unite"=>0,
-			"type"=>0,
-			"nom_session"=>0,
-			"date_session"=>0,
-			"date"=>0,
-			"auteur"=>0,
-		);
-
-		$sql = "SELECT tt.*, ss.nom AS nom_session, ss.date AS date_session FROM evaluations tt, sessions ss WHERE tt.id_session=ss.id AND tt.id_origine=$id_origine ORDER BY date DESC;";
-		$result=mysql_query($sql);
-		$prevVals = array();
-		$first = true;
-		while ($row = mysql_fetch_object($result))
-		{
-			if ($first)
-			{
-				?>
+	$specialRule = array( "nom"=>0, "prenom"=>0, "grade"=>0, "unite"=>0, "type"=>0, "nom_session"=>0, "date_session"=>0, "date"=>0, "auteur"=>0);
+	$sql = "SELECT tt.*, ss.nom AS nom_session, ss.date AS date_session FROM evaluations tt, sessions ss WHERE tt.id_session=ss.id AND tt.id_origine=$id_origine ORDER BY date DESC;";
+	$result=mysql_query($sql);
+	$prevVals = array();
+	$first = true;
+	while ($row = mysql_fetch_object($result))
+	{
+		if ($first)
+	 { ?>
 <div class="tools">
 	<?php
 	foreach($actions as $action => $actionTitle)
@@ -616,9 +597,9 @@ function historyReport($id_origine)
 </div>
 <?php
 $first = false;
-			}
+	 }
 
-			?>
+	 ?>
 <div class="history">
 	<h3>
 		Version modifiée le
@@ -679,41 +660,23 @@ $first = false;
 	</dl>
 </div>
 <?php
-		}
-		?>
-<?php
-} ;
+	}
+}
+
+function getReport($id_rapport)
+{
+	$sql = "SELECT tt.*, ss.nom AS nom_session, ss.date AS date_session FROM evaluations tt, sessions ss WHERE tt.id=$id_rapport ORDER BY date DESC LIMIT 1;";
+	$result=mysql_query($sql);
+	return mysql_fetch_object($result);
+}
+
 
 
 function editReport($id_rapport)
 {
-	$sql = "SELECT tt.*, ss.nom AS nom_session, ss.date AS date_session FROM evaluations tt, sessions ss WHERE tt.id=$id_rapport ORDER BY date DESC LIMIT 1;";
-	$result=mysql_query($sql);
-	if ($row = mysql_fetch_object($result)
-
-	)
-?>
-<tr>
-<td colspan="2"><input type="submit" value="Enregistrer les changements">
-	<input type="hidden" name="id_origine"
-	value="<?php echo $row->id_origine;?>"> <input type="hidden"
-	name="action" value="update"></td>
-
-</tr>
-<?php 
-		displayDetailedReport($row);
-		?>
-<tr>
-<td colspan="2"><input type="submit" value="Enregistrer les changements">
-	<input type="hidden" name="id_origine"
-	value="<?php echo $row->id_origine;?>"> <input type="hidden"
-	name="action" value="update"></td>
-
-</tr>
-		
-</table>
-</form>
-<?php
+	$row = getReport($id_rapport);
+	if($row)
+		displayEditableReport($row, "update");
 };
 
 function newReport($type_rapport)
@@ -724,44 +687,25 @@ function newReport($type_rapport)
 	global $evaluations;
 	global $actions;
 	global $empty_report;
-	$specialRule = array(
-				"auteur"=>0,
-				"date"=>0,
-				"date_session"=>0,
-				"grade" => 0,
-		);
-?>
-<tr>
-<td colspan="2"><input type="submit"
-		value="Ajouter <?php echo $type_rapport;?>"> <input type="hidden"
-				name="action" value="add"></td>
-				</tr>
-<?php
-		$row = (object) $empty_report;
-		$row->type = $type_rapport;		
-		displayDetailedReport($row);
-		?>
-<tr>
-<td colspan="2"><input type="submit"
-		value="Ajouter <?php echo $type_rapport;?>"> <input type="hidden"
-				name="action" value="add"></td>
-				</tr>
-		</table>
-</form>
-<?php
-?> <?php
+
+	$row = (object) $empty_report;
+	$row->type = $type_rapport;
+	displayEditableReport($row, "add");
 } ;
 
-function displayDetailedReport($row)
+function displayEditableReport($row, $actioname)
 {
 	global $fieldsAll;
 	global $fieldsUnites;
 	global $fieldsTypes;
 	global $actions;
-	global $typesEvalIndividual;
 	global $typesEvalUnit;
+	global $typesEval;
 	global $grades;
 	global $evaluations;
+	global $avis_eval;
+	global $typesEvalToAvis;
+
 	$specialRule = array(
 			"auteur"=>0,
 			"date"=>0,
@@ -773,19 +717,34 @@ function displayDetailedReport($row)
 
 			$eval_type = $row->type;
 			$is_unite = in_array($eval_type,$typesEvalUnit);
+			$eval_name = "";
+			$eval_name = $typesEval[$eval_type];
+
+			$avis_possibles = $typesEvalToAvis[$eval_type];
 
 			?>
 <h1>
-	<?php if($is_unite) echo "Unite: "; else echo "Chercheur: "; echo $eval_type; ?>
+	<?php 
+	echo ($is_unite ? "Unite : " : "Chercheur : ").$eval_name;
+	?>
 </h1>
 
 <form method="post" action="index.php" style="width: 100%">
+	<tr>
+		<td colspan="2">
+		<input type="submit"
+			value="<?php echo (($actioname == "add") ? "Ajouter" : "Modifier")." ".$eval_type;?>">
+			<input type="hidden" name="action" value=<?php echo $actioname?>>
+			<input type="hidden" name="id_origine" value="<?php echo $row->id_origine;?>">
+			</td>
+	</tr>
+
 	<table class="inputreport">
 		<tr>
 			<td>Type d'évaluation</td>
 			<td><select name="fieldtype" style="width: 100%;">
 					<?php
-					echo "\t\t\t\t\t<option value=\"$eval_type\">$eval_type</option>";
+					echo "\t\t\t\t\t<option value=\"$eval_type\">$eval_name</option>";
 					?>
 			</select></td>
 		</tr>
@@ -930,21 +889,41 @@ function displayDetailedReport($row)
 			</td>
 			<?php
 			}
+			else if ($type=="avis")
+			{
+				?>
+			<td style="width: 30em;"><select name="field<?php echo $fieldID;?>"
+				style="width: 100%;">
+					<?php
+					foreach($avis_possibles as $avis => $prettyprint)
+					{
+						$sel = "";
+						if ($row->$fieldID==$avis)
+						{
+							$sel = "selected=\"selected\"";
+						}
+						echo  "\t\t\t\t\t<option value=\"$avis\" $sel>$prettyprint</option>";
+					}
+					?>
+			</select>
+			</td>
+			<?php
+			}
 			else if ($type=="unit")
 			{
 				?>
 			<td style="width: 30em;"><select name="field<?php echo $fieldID;?>"
 				style="width: 100%;">
 					<?php
-					$units = listUnits();
-					foreach($units as $val)
+					$units = unitsList();
+					foreach($units as $code => $nickname)
 					{
 						$sel = "";
-						if ($row->$fieldID==$val)
+						if ($row->$fieldID==$nickname)
 						{
 							$sel = "selected=\"selected\"";
 						}
-						echo  "\t\t\t\t\t<option value=\"$val\" $sel>$val</option>";
+						echo  "\t\t\t\t\t<option value=\"$code\" $sel>$nickname</option>";
 					}
 					?>
 			</select>
@@ -971,6 +950,15 @@ function displayDetailedReport($row)
 		<?php
 			}
 		}
+		?>
+		<tr>
+			<td colspan="2"><input type="submit"
+				value="Ajouter <?php echo $eval_type;?>"> <input type="hidden"
+				name="action" value=<?php echo $actioname?>></td>
+		</tr>
+	</table>
+</form>
+<?php 
 }
 
 
@@ -984,36 +972,65 @@ function update($id_origine)
 			"nom_session"=>0,
 			"date_session"=>0,
 		);
-		$fields = "id_session, id_origine, auteur";
-		foreach($fieldsAll as  $fieldID => $title)
+
+$fields = "id_session, id_origine, auteur";
+foreach($fieldsAll as  $fieldID => $title)
+{
+	if (!isset($specialRule[$fieldID]))
+	{
+		$fields.=",";
+		$fields.=$fieldID;
+	}
+}
+$values = mysql_real_escape_string($_REQUEST["fieldid_session"]);
+$values .= ",".mysql_real_escape_string($id_origine);
+$values .= ",\"".mysql_real_escape_string($_SESSION["login"])."\"";
+foreach($fieldsAll as  $fieldID => $title)
+{
+	if (!isset($specialRule[$fieldID]) )
+	{
+		$values.=",";
+		if(isset($_REQUEST["field".$fieldID]))
 		{
-			if (!isset($specialRule[$fieldID]))
-			{
-				$fields.=",";
-				$fields.=$fieldID;
-			}
+			$values.="\"".mysql_real_escape_string($_REQUEST["field".$fieldID])."\"";
 		}
-		$values = mysql_real_escape_string($_REQUEST["fieldid_session"]);
-		$values .= ",".mysql_real_escape_string($id_origine);
-		$values .= ",\"".mysql_real_escape_string($_SESSION["login"])."\"";
-		foreach($fieldsAll as  $fieldID => $title)
+		else
 		{
-			if (!isset($specialRule[$fieldID]) )
-			{
-				$values.=",";
-				if(isset($_REQUEST["field".$fieldID]))
-				{
-					$values.="\"".mysql_real_escape_string($_REQUEST["field".$fieldID])."\"";
-				}
-				else
-				{
-					$values.="\"".mysql_real_escape_string("")."\"";
-				}
-			}
+			$values.="\"".mysql_real_escape_string("")."\"";
 		}
-		$sql = "INSERT INTO evaluations ($fields) VALUES ($values);";
-		mysql_query($sql);
-		return mysql_insert_id ();
+	}
+}
+$sql = "INSERT INTO evaluations ($fields) VALUES ($values);";
+mysql_query($sql);
+return mysql_insert_id ();
+}
+
+function updateRapportAvis($id_origine,$avis,$rapport)
+{
+	$result = filterSortReports(-1, "", "", "", $id_origine);
+	global $fieldsAll;
+	$tab = mysql_fetch_array($result);
+	$specialRule = array(
+			"auteur"=>0,
+			"date"=>0,
+			"avis"=>0,
+			"rapport"=>0,
+		);
+	$fields = "auteur,id_session,id_origine,avis,rapport";
+	$values = "\"".mysql_real_escape_string($_SESSION["login"])."\",".$tab["id_session"].",".$tab["id_origine"].",\"".mysql_real_escape_string($avis)."\",\"".mysql_real_escape_string($rapport)."\"";
+	foreach($fieldsAll as  $fieldID => $title)
+	{
+		if (!isset($specialRule[$fieldID]))
+		{
+			$fields.=",";
+			$fields.=$fieldID;
+			$values.=",";
+			$values.="\"".mysql_real_escape_string($tab[$fieldID])."\"";
+		}
+	}
+	$sql = "INSERT INTO evaluations ($fields) VALUES ($values);";
+	echo $sql."<br>";
+	mysql_query($sql);		
 }
 
 
@@ -1052,20 +1069,34 @@ function listUsers()
 	return $users;
 }
 
-function listUnits()
+function unitsList()
 {
 	$units = array();
-	$sql = "SELECT nickname FROM units ORDER BY nickname ASC;";
+	$sql = "SELECT * FROM units ORDER BY nickname ASC;";
 	if($result=mysql_query($sql))
 	{
 		while ($row = mysql_fetch_object($result))
 		{
-			$units[] = $row->nickname;
+			$units[$row->code] = $row->nickname;
 		}
 	}
 	return $units;
-
 }
+
+function sessionArrays()
+{
+	$sessions = array();
+	$sql = "SELECT * FROM sessions ORDER BY id ASC;";
+	if($result=mysql_query($sql))
+	{
+		while ($row = mysql_fetch_object($result))
+		{
+			$sessions[$row->id] = $row->nom." ".date("Y", strtotime($row->date));
+		}
+	}
+	return $sessions;
+}
+
 
 function changePwd($login,$old,$new1,$new2)
 {
@@ -1145,30 +1176,366 @@ function deleteSession($id)
 	}
 }
 
-function getReportsAsXML($id_session=-1, $type_eval="", $sort_crit="", $login_rapp="")
+
+function getReportsAsXMLArray($id_session=-1, $type_eval="", $sort_crit="", $login_rapp="")
 {
 	global $fieldsAll;
-	$xml = new DOMDocument();
-	$root = $xml->createElement("rapports");
+	$result = filterSortReports($id_session, $type_eval, $sort_crit, $login_rapp);
+
+	//to map id_session s to session nicknames
+	$sessions = sessionArrays();
+	$units = unitsList();
+
+	$docs = array();
+	while ($row = mysql_fetch_object($result))
+	{
+		$doc = new DOMDocument();
+		$root = $doc->createElement("rapports");
+		$elem = appendRowToXMLDoc($row, $sessions,$units,$doc);
+		$doc->appendChild($elem);
+		$docs[] = $doc;
+	}
+
+	return $docs;
+}
+
+function getReportsAsXML($id_session=-1, $type_eval="", $sort_crit="", $login_rapp="",$id_edit="")
+{
+	global $fieldsAll;
+	$doc = new DOMDocument();
+	$root = $doc->createElement("rapports");
 	$root->setAttribute("id_session",$id_session);
 	$root->setAttribute("type_eval",$type_eval);
 	$root->setAttribute("sort_crit",$sort_crit);
 	$root->setAttribute("login_rapp",$login_rapp);
+	$root->setAttribute("id_edit",$id_edit);
 	$result = filterSortReports($id_session, $type_eval, $sort_crit, $login_rapp);
+
+	//to map id_session s to session nicknames
+	$sessions = sessionArrays();
+	$units = unitsList();
+
 	while ($row = mysql_fetch_object($result))
 	{
-		$rapportElem = $xml->createElement("rapport");
-		$rapportElem->setAttribute('id',$row->id_origine);
-		foreach ($fieldsAll as $fieldID => $desc)
+		$elem = appendRowToXMLDoc($row, $sessions,$units,$doc);
+		$root->appendChild($elem); 
+	}
+	$doc->appendChild($root);
+
+	return $doc;
+}
+
+//Returns the name of the zip file
+function filename_from_node(DOMNode $node)
+{
+	$nom = "";
+	$prenom = "";
+	$grade = "";
+	$unite = "";
+	$type = "";
+
+	foreach($node->childNodes as $child)
+	{
+		if($child->nodeName == "nom")
+			$nom = $child->nodeValue;
+		else if($child->nodeName == "prenom")
+			$prenom = $child->nodeValue;
+		else if($child->nodeName == "grade")
+			$grade = $child->nodeValue;
+		else if($child->nodeName == "unite")
+			$unite = $child->nodeValue;
+		else if($child->nodeName == "type")
+			$type = $child->nodeValue;
+	}
+
+	if($unite != "")
+		return $type."_".$unite;
+	else
+		return $type."_".$grade." ".$nom." ".$prenom.".tex";
+}
+
+function type_from_node(DOMNode $node)
+{
+	foreach($node->childNodes as $child)
+		if($child->nodeName == "type")
+		return $child->nodeValue;
+	return "";
+}
+
+
+function xml_to_zipped_tex($docs)
+{
+	$xsl = new DOMDocument();
+	$xsl->load("xslt/latex_eval.xsl");
+	$proc_eval = new XSLTProcessor();
+	$proc_eval->importStyleSheet($xsl);
+	$proc = $proc_eval;
+
+	$processors = array(
+			'Evaluation-Vague' => $proc_eval,
+			'Evaluation-MiVague' => $proc_eval,
+			'Promotion' => $proc,
+			'Candidature' => $proc,
+			'Suivi-PostEvaluation' => $proc,
+			'Titularisation' => $proc,
+			'Confirmation-Affectation' => $proc,
+			'Changement-Direction' => $proc,
+			'Renouvellement' => $proc,
+			'Expertise' => $proc,
+			'Ecole' => $proc,
+			'Comité-Evaluation' => $proc,
+			'' => $proc
+	);
+
+	$zip = new ZipArchive();
+	if($zip->open('reports_latex.zip',ZipArchive::OVERWRITE))
+	{
+
+		$zip->addFromString("compile.bat", "for /r %%x in (*.tex) do pdflatex \"%%x\"\r\ndel *.log\r\ndel *.aux");
+		$zip->addFile("latex/CN.png","CN.png");
+		$zip->addFile("latex/CNRSlogo.png","CNRSlogo.png");
+		$zip->addFile("latex/signature.jpg","signature.jpg");
+
+		foreach($docs as $doc)
 		{
-			$contentElem = $xml->createElement($fieldID);
-			$data = $xml->createCDATASection ($row->$fieldID);
+			$node =$doc->getElementsByTagName("rapport");
+			if($node)
+				$filename = filename_from_node($node->item(0)).".tex";		
+			$type = type_from_node($doc);
+			$zip->addFromString($filename,$processors[$type]->transformToXML($doc));
+		}
+
+		$zip->close();
+		return "reports_latex.zip";
+
+	}
+	return "";
+}
+
+function xml_to_zipped_pdf($docs)
+{
+	$xsl = new DOMDocument();
+	$xsl->load("xslt/html.xsl");
+	$proc_eval = new XSLTProcessor();
+	$proc_eval->importStyleSheet($xsl);
+
+	$proc = $proc_eval;
+
+	$processors = array(
+			'Evaluation-Vague' => $proc_eval,
+			'Evaluation-MiVague' => $proc_eval,
+			'Promotion' => $proc,
+			'Candidature' => $proc,
+			'Suivi-PostEvaluation' => $proc,
+			'Titularisation' => $proc,
+			'Confirmation-Affectation' => $proc,
+			'Changement-Direction' => $proc,
+			'Renouvellement' => $proc,
+			'Expertise' => $proc,
+			'Ecole' => $proc,
+			'Comité-Evaluation' => $proc,
+			'' => $proc
+	);
+
+	$zip = new ZipArchive();
+	if($zip->open('reports_pdf.zip',ZipArchive::OVERWRITE))
+	{
+		$i = 0;
+		foreach($docs as $doc)
+		{
+			set_time_limit(0);
+			$node =$doc->getElementsByTagName("rapport");
+			if($node)
+				$filename = filename_from_node($node->item(0)).".pdf";
+			$type = type_from_node($doc);
+			$html = $processors[$type]->transformToXML($doc);
+			$pdf = HTMLToPDF($html);
+			$zip->addFromString($filename,$pdf->Output("","S"));
+			$i++;
+		}
+
+		$zip->close();
+		return "reports_pdf.zip";
+
+	}
+	return "";
+}
+
+function appendRowToXMLDoc($row, $sessions, $units, DOMDocument $doc)
+{
+	global $fieldsAll;
+	global $typesEval;
+	global $typesEvalUpperCase;
+
+	if(!$sessions)
+		$sessions = sessionArrays();
+
+	if(!$units)
+		$units = unitsList();
+
+
+	$rapportElem = $doc->createElement("rapport");
+
+	$fieldsspecial = array('unite','date','type');
+	
+	$rapportElem->setAttribute("id",$row->id_origine);
+
+	foreach ($fieldsAll as $fieldID => $title)
+	{
+		if(!in_array($fieldID,$fieldsspecial))
+		{
+			$contentElem = $doc->createElement($fieldID);
+			$data = $doc->createCDATASection ($row->$fieldID);
 			$contentElem->appendChild($data);
 			$rapportElem->appendChild($contentElem);
 		}
-		$root->appendChild($rapportElem);
 	}
-	$xml->appendChild($root);
-	return $xml;
+
+	//On ajoute le nickname du labo
+	$contentElem = $doc->createElement("unite");
+	if(array_key_exists($row->unite,$units))
+	{
+		$data = $doc->createCDATASection($row->unite." (".$units[$row->unite].")");
+		$contentElem->appendChild($data);
+	}
+	else
+	{
+		$data = $doc->createCDATASection($row->unite);
+		$contentElem->appendChild($data);
+	}
+
+	$rapportElem->appendChild($contentElem);
+
+	//On ajoute la date du jour
+	$contentElem = $doc->createElement("date");
+	setlocale(LC_TIME, "fr_FR");
+	$data = $doc->createCDATASection(strftime("%e %B %Y",time()));
+	$contentElem->appendChild($data);
+	$rapportElem->appendChild($contentElem);
+
+	//On ajoute la date du jour
+	$contentElem = $doc->createElement("type");
+	$data = $doc->createCDATASection($typesEval[$row->type]);
+	$contentElem->appendChild($data);
+	$rapportElem->appendChild($contentElem);
+
+	//On ajoute la date du jour
+	$contentElem = $doc->createElement("UPPERCASETYPE");
+	$data = $doc->createCDATASection($typesEvalUpperCase[$row->type]);
+	$contentElem->appendChild($data);
+	$rapportElem->appendChild($contentElem);
+
+	//On ajoute le nickname de la session
+	$contentElem = $doc->createElement("session");
+	$data = $doc->createCDATASection ($sessions[$row->id_session]);
+	$contentElem->appendChild($data);
+	$rapportElem->appendChild($contentElem);
+
+	//On ajoute le numero de la section
+	$contentElem = $doc->createElement("section_nb");
+	$data = $doc->createCDATASection (section_nb);
+	$contentElem->appendChild($data);
+	$rapportElem->appendChild($contentElem);
+
+	//On ajoute l'intitulé de la section
+	$contentElem = $doc->createElement("section_intitule");
+	$data = $doc->createCDATASection (section_intitule);
+	$contentElem->appendChild($data);
+	$rapportElem->appendChild($contentElem);
+
+	//On ajoute le nom du signataire
+	$contentElem = $doc->createElement("signataire");
+	$data = $doc->createCDATASection (president);
+	$contentElem->appendChild($data);
+	$rapportElem->appendChild($contentElem);
+
+	$contentElem = $doc->createElement("signataire_titre");
+	$data = $doc->createCDATASection (president_titre);
+	$contentElem->appendChild($data);
+	$rapportElem->appendChild($contentElem);
+
+	return $rapportElem;
+
+}
+
+function rowToXMLDoc($row, $sessions = null, $units = null)
+{
+	$doc = new DOMDocument();
+	$root = $doc->createElement("rapports");
+	$elem = appendRowToXMLDoc($row, $sessions, $units, $doc);
+	$root->appendChild($elem);
+	$doc->appendChild($root);
+	return $doc;
+}
+
+function XMLToHTML(DOMDocument $doc)
+{
+	$xsl = new DOMDocument();
+	$xsl->load('xslt/html.xsl');
+	$proc = new XSLTProcessor();
+	$proc->importStyleSheet($xsl);
+	$html = $proc->transformToXML($doc);
+	return $html;
+}
+
+function HTMLToPDF($html)
+{
+	// create new PDF document
+	$pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+
+	// set document information
+	$pdf->SetCreator(secretaire);
+	$pdf->SetAuthor(section_fullname);
+	$pdf->SetTitle('Rapport de la '.section_fullname);
+	$pdf->SetSubject('Rapport de la '.section_fullname);
+	$pdf->SetKeywords('Rapport de la '.section_fullname);
+
+	// set default monospaced font
+	$pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
+
+	// remove default header/footer
+	$pdf->setPrintHeader(false);
+	$pdf->setPrintFooter(false);
+
+	//set margins
+	$pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
+	$pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
+	$pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
+
+	//set auto page breaks
+	$pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+
+	//set image scale factor
+	$pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+
+	$l = Array(
+			'a_meta_charset' => 'UTF-8',
+			'a_meta_dir' => 'ltr',
+			'a_meta_language' => 'fr',
+			'w_page' => 'page'
+	);
+	//set some language-dependent strings
+	$pdf->setLanguageArray($l);
+
+	// ---------------------------------------------------------
+
+	// set default font subsetting mode
+	$pdf->setFontSubsetting(true);
+
+	// Set font
+	// dejavusans is a UTF-8 Unicode font, if you only need to
+	// print standard ASCII chars, you can use core fonts like
+	// helvetica or times to reduce file size.
+	$pdf->SetFont('dejavusans', '', 11, '', true);
+
+	// Add a page
+	// This method has several options, check the source code documentation for more information.
+	$pdf->AddPage();
+
+
+	$pdf->writeHTML($html);
+
+	$pdf->Close();
+	return $pdf;
 }
 ?>

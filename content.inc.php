@@ -1,4 +1,5 @@
- <div class="left">
+
+<div class="left">
 
  <!-- 
 	<div class="header">
@@ -66,6 +67,10 @@
 			$id_nouveau = update($id_origine);
 			displayReport($id_nouveau);
 		}
+		else
+		{
+			echo "Update action cannot do nothing because no id_origine provided";
+		}
 	}
 	else if ($action=="new")
 	{
@@ -77,19 +82,10 @@
 		newReport($type_eval);
 	}
 	else if ($action=="add")
-	{	global $typesEvalUnit;
+	{	
+		global $typesEvalUnit;
 		$id_nouveau = addReport();
-		
-		$is_unite = in_array(mysql_real_escape_string($_REQUEST["fieldtype"]),$typesEvalUnit);
-		
-		if($is_unite)
-		{
-			displayUnitReport($id_nouveau);
-		}
-		else 
-		{
-			displayIndividualReport($id_nouveau);
-		}
+		displayReport($id_nouveau);
 	}
 	else if ($action=="newpwd" or $action=="adminnewpwd")
 	{

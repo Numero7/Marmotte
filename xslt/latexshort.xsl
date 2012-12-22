@@ -26,6 +26,7 @@
 	\begin{framed}
 		\noindent Prérapport : <xsl:value-of select="prerapport"/>
 	\end{framed}
+	\noindent Session : <xsl:value-of select="session"/>\\
 	\noindent Ancienneté : <xsl:value-of select="anciennete_grade"/> (Recrutement en <xsl:value-of select="date_recrutement"/>)\\
 	\noindent Production {\bf <xsl:value-of select="production"/>} : <xsl:value-of select="production_notes"/>\\
 	\noindent Transfert {\bf <xsl:value-of select="transfert"/>} : <xsl:value-of select="transfert_notes"/>\\
