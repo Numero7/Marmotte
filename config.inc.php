@@ -12,6 +12,11 @@
 						"xsl" => "xslt/latexshort.xsl",
 						"name" => "Latex",
 					),
+		"htmlmin" => 	array(
+						"mime" => "text/html",		
+						"xsl" => "xslt/htmlminimaledit.xsl",
+						"name" => "Html",
+					),
 	);
 	
 	$fieldsSummary = array(

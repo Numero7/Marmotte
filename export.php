@@ -55,7 +55,6 @@ function xml_to_zipped_tex(DOMDocument $xml)
 
 }
 ?>
-
 <?php
 include("utils.inc.php");
 
@@ -98,16 +97,7 @@ if($dbh!=0)
 			$mime = $conf["mime"];
 			$xslpath = $conf["xsl"];
 
-			if($type=="xml")
-			{
-				header("Content-type: $mime; charset=utf-8");
-				$xsl = new DOMDocument();
-				$xsl->load($xslpath);
-				$proc = new XSLTProcessor();
-				$proc->importStyleSheet($xsl);
-				echo $proc->transformToXML($xml);
-			}
-			else if($type=="latex")
+			if($type=="latex")
 			{
 				$filename=xml_to_zipped_tex($xml);
 				$filepath="./";
@@ -136,6 +126,15 @@ if($dbh!=0)
 				flush();
 				readfile($file);
 				*/
+			}
+			else
+			{
+				header("Content-type: $mime; charset=utf-8");
+				$xsl = new DOMDocument();
+				$xsl->load($xslpath);
+				$proc = new XSLTProcessor();
+				$proc->importStyleSheet($xsl);
+				echo $proc->transformToXML($xml);
 			}
 
 		}

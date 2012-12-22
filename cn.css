@@ -95,3 +95,101 @@ table.compo a {
 .avert{
 	color:#FF0000;
 }
+
+.examplevaleur {
+    padding-left:1em;
+    font-style: italic;
+    color: #63C3DC;
+}
+
+#authbar{
+	background: #63C3DC;
+	color: #FFFFFF;
+	padding: 8px;
+	font-weight:bold;
+	font-size: 150%;
+	text-align: right;
+	margin-bottom:1em;
+	border: 1px solid #002A4C;
+  }
+
+.login{
+	border: 2px solid #ffffff;
+	padding: 3px;
+	font-weight:bold;
+	margin-right:1em;
+}
+
+.summary{
+  width:100%;
+}
+.tools{
+  float:right;
+  border: 1px solid #002A4C;
+  padding: 5px;
+}
+
+.history{
+  border: 1px solid #002A4C;
+  background: #EEEEEE;
+  padding:1em;
+  margin-bottom:1em;
+}
+
+.highlight{
+	color:#FF0000;
+}
+
+.faded{
+	color:#999999;
+}
+
+.inputreport{
+	width:100%;
+}
+
+.inputreport td{
+	text-align:left;
+}
+
+.inputreport td input, .inputreport td select{
+	width:15em;
+}
+
+
+/* Rapports synthetiques*/
+
+.rapportshort{
+  border:solid 1px #000;
+  font-size:14pt;
+  font-style:italic;
+  margin-bottom:20px;
+  padding-left:10px;
+  padding-bottom:10px;
+}
+
+.identiterapportshort{
+  padding-top:10px;
+  padding-bottom:10px;
+  font-style:normal;
+  font-size:15pt;
+}
+
+.typerapportshort{
+  float:right;
+  text-align: right;
+  border-left:solid 1px #000;
+  border-bottom:solid 1px #000;
+  padding:10px;
+  font-size:13pt;
+  margin:0;
+}
+
+.evaltitlerapportshort{
+  font-style:normal;
+}
+
+.evalrapportshort{
+  margin-top:5px;
+  margin-bottom:5px;
+}

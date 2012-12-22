@@ -99,17 +99,19 @@ function parseSortCriteria($sort_crit)
 function showCriteria($sortCrit, $crit)
 {
 	$order = "";
+	$index = -1;
 	if (isset($sortCrit[$crit]))
 	{
 		$order = $sortCrit[$crit];
+		$index = array_search($crit, array_keys($sortCrit))+1;
 	}
 	if ($order=="ASC")
 	{
-		return "<img src=\"img/sortup.png\" alt=\"$crit sorted ascendently\">";
+		return "<img src=\"img/sortup.png\" alt=\"$crit sorted ascendently\"><span style=\"text-decoration:none;\">($index)</span>";
 	}
 	else if ($order=="DESC")
 	{
-		return "<img src=\"img/sortdown.png\" alt=\"$crit sorted descendently\">";
+		return "<img src=\"img/sortdown.png\" alt=\"$crit sorted descendently\"><span style=\"text-decoration:none;\">($index)</span>";
 	}
 	else
 	{  return "<img src=\"img/sortneutral.png\" alt=\"$crit sorted neutrally\">";
@@ -537,7 +539,7 @@ Exporter :
 foreach($typeExports as $idexp => $exp)
 {
 	$expname= $exp["name"];
-	echo " <a href=\"export.php?id_session=$id_session&amp;type_eval=$type_eval&amp;sort_crit=$sort_crit&amp;login_rapp=$login_rapp&amp;type=$idexp\">$expname</a>";
+	echo " <a href=\"export.php?id_session=$id_session&amp;type_eval=$type_eval&amp;sort_crit=$sort_crit&amp;login_rapp=$login_rapp&amp;type=$idexp\" target=\"_blank\">$expname</a>";
 }
 } ;
 
@@ -1148,10 +1150,15 @@ function getReportsAsXML($id_session=-1, $type_eval="", $sort_crit="", $login_ra
 	global $fieldsAll;
 	$xml = new DOMDocument();
 	$root = $xml->createElement("rapports");
+	$root->setAttribute("id_session",$id_session);
+	$root->setAttribute("type_eval",$type_eval);
+	$root->setAttribute("sort_crit",$sort_crit);
+	$root->setAttribute("login_rapp",$login_rapp);
 	$result = filterSortReports($id_session, $type_eval, $sort_crit, $login_rapp);
 	while ($row = mysql_fetch_object($result))
 	{
 		$rapportElem = $xml->createElement("rapport");
+		$rapportElem->setAttribute('id',$row->id_origine);
 		foreach ($fieldsAll as $fieldID => $desc)
 		{
 			$contentElem = $xml->createElement($fieldID);
