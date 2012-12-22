@@ -185,6 +185,8 @@
 			'Comité-Evaluation' => 'Comité d\'Evaluation'
 	);
 	
+	$typesEval = array_merge($typesEvalIndividual, $typesEvalUnit);
+	
 	$grades = array(
 		'CR2' => 'Chargé de Recherche 2ème classe (CR2)',
 		'CR1' => 'Chargé de Recherche 1ère classe (CR1)',

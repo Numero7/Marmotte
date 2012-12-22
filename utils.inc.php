@@ -1307,6 +1307,7 @@ function xml_to_zipped_pdf($docs)
 function appendRowToXMLDoc($row, $sessions, $units, DOMDocument $doc)
 {
 	global $fieldsAll;
+	global $typesEval;
 	
 	if(!$sessions)
 		$sessions = sessionArrays();
@@ -1317,7 +1318,7 @@ function appendRowToXMLDoc($row, $sessions, $units, DOMDocument $doc)
 	
 	$rapportElem = $doc->createElement("rapport");
 	
-	$fieldsspecial = array('unite','date');
+	$fieldsspecial = array('unite','date','type');
 	
 	foreach ($fieldsAll as $fieldID => $title)
 	{
@@ -1349,6 +1350,12 @@ function appendRowToXMLDoc($row, $sessions, $units, DOMDocument $doc)
 	$contentElem = $doc->createElement("date");
 	setlocale(LC_TIME, "fr_FR");
 	$data = $doc->createCDATASection(strftime("%e %B %Y",time()));
+	$contentElem->appendChild($data);
+	$rapportElem->appendChild($contentElem);
+
+	//On ajoute la date du jour
+	$contentElem = $doc->createElement("type");
+	$data = $doc->createCDATASection($typesEval[$row->type]);
 	$contentElem->appendChild($data);
 	$rapportElem->appendChild($contentElem);
 	
