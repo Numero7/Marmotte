@@ -1133,6 +1133,27 @@ function deleteSession($id)
 }
 
 
+function getReportsAsXMLArray($id_session=-1, $type_eval="", $sort_crit="", $login_rapp="")
+{
+	global $fieldsAll;
+	$result = filterSortReports($id_session, $type_eval, $sort_crit, $login_rapp);
+
+	//to map id_session s to session nicknames
+	$sessions = sessionArrays();
+	$units = unitsList();
+
+	$docs = array();
+	while ($row = mysql_fetch_object($result))
+	{	
+		$doc = new DOMDocument();
+		$root = $doc->createElement("rapports");
+		appendRowToXMLDoc($row, $sessions,$units,$doc);
+		$docs[] = $doc;
+	}
+
+	return $docs;
+}
+
 function getReportsAsXML($id_session=-1, $type_eval="", $sort_crit="", $login_rapp="")
 {
 	global $fieldsAll;
@@ -1145,9 +1166,8 @@ function getReportsAsXML($id_session=-1, $type_eval="", $sort_crit="", $login_ra
 	$units = unitsList();
 
 	while ($row = mysql_fetch_object($result))
-		$root->appendChild( rowToXMLNode($row, $sessions,$units,$doc));
+		appendRowToXMLDoc($row, $sessions,$units,$doc);
 
-	$doc->appendChild($root);
 	return $doc;
 }
 
@@ -1189,7 +1209,7 @@ function type_from_node(DOMNode $node)
 }
 
 
-function xml_to_zipped_tex(DOMDocument $doc)
+function xml_to_zipped_tex($docs)
 {
 	$xsl = new DOMDocument();
 	$xsl->load("xslt/latex_eval.xsl");
@@ -1221,7 +1241,6 @@ function xml_to_zipped_tex(DOMDocument $doc)
 		$zip->addFile("latex/CNRSlogo.png","CNRSlogo.png");
 		$zip->addFile("latex/signature.jpg","signature.jpg");
 
-		$docs = $doc->getElementsByTagName("rapport");
 		foreach($docs as $doc)
 		{
 			$filename = filename_from_node($doc).".tex";
@@ -1236,7 +1255,7 @@ function xml_to_zipped_tex(DOMDocument $doc)
 	return "";
 }
 
-function xml_to_zipped_pdf(DOMDocument $doc)
+function xml_to_zipped_pdf($docs)
 {
 	$xsl = new DOMDocument();
 	$xsl->load("xslt/html.xsl");
@@ -1264,15 +1283,18 @@ function xml_to_zipped_pdf(DOMDocument $doc)
 	$zip = new ZipArchive();
 	if($zip->open('reports_pdf.zip',ZipArchive::OVERWRITE))
 	{
-		$docs = $doc->getElementsByTagName("rapport");
+		$i = 0;
 		foreach($docs as $doc)
 		{
 			set_time_limit(0);
-			$filename = filename_from_node($doc).".pdf";
+			$node =$doc->getElementsByTagName("rapport");
+			if($node)
+				$filename = filename_from_node($node->item(0)).".pdf";
 			$type = type_from_node($doc);
 			$html = $processors[$type]->transformToXML($doc);
 			$pdf = HTMLToPDF($html);
 			$zip->addFromString($filename,$pdf->Output("","S"));
+			$i++;
 		}
 		
 		$zip->close();
@@ -1282,7 +1304,7 @@ function xml_to_zipped_pdf(DOMDocument $doc)
 	return "";
 }
 
-function rowToXMLNode($row, $sessions, $units, DOMDocument $doc)
+function appendRowToXMLDoc($row, $sessions, $units, DOMDocument $doc)
 {
 	global $fieldsAll;
 	
@@ -1359,15 +1381,14 @@ function rowToXMLNode($row, $sessions, $units, DOMDocument $doc)
 	$contentElem->appendChild($data);
 	$rapportElem->appendChild($contentElem);
 	
-	return $rapportElem;
+	$doc->appendChild($rapportElem);
 	
 }
 
 function rowToXMLDoc($row, $sessions = null, $units = null)
 {
 	$doc = new DOMDocument();
-	$node = rowToXMLNode($row, $sessions, $units, $doc);
-	$doc->appendChild($node);
+	appendRowToXMLDoc($row, $sessions, $units, $doc);
 	return $doc;
 }
 
@@ -1377,8 +1398,8 @@ function XMLToHTML(DOMDocument $doc)
 	$xsl->load('xslt/html.xsl');
 	$proc = new XSLTProcessor();
 	$proc->importStyleSheet($xsl);
-	$xml = $proc->transformToXML($doc);
-	return $xml;
+	$html = $proc->transformToXML($doc);
+	return $html;
 }
 
 function HTMLToPDF($html)

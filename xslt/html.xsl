@@ -3,7 +3,7 @@
 <xsl:stylesheet version="1.0" 
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
-<xsl:template match="/">
+<xsl:template match="rapport">
 
 
 <table cellpadding="5" cellspacing="1" border="1" style="text-align:center;">

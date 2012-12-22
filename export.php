@@ -6,18 +6,24 @@ require_once('tcpdf/tcpdf.php');
 function viewReportAsPdf($id_rapport)
 {
 	$row = getReport($id_rapport);
-	
+
 	if(!$row)
 	{
 		echo 'Pas de rapport avec id '.$id_rapport;
 		return;
 	}
-	
+
 	$doc = rowToXMLDoc($row);
+	if(!$doc)
+	{
+		echo 'Impossible de convertir la requete en xml';
+		return;
+	}
+
 	$html = XMLToHTML($doc);
-	
+
 	$pdf = HTMLToPDF($html);
-	
+
 	$pdf->Output('rapport.pdf', 'I');
 };
 
@@ -71,7 +77,7 @@ if($dbh!=0)
 				{
 					$sort_crit = $_REQUEST["sort"];
 				}
-				$xml = getReportsAsXML($id_session,$type_eval,$sort_crit,$login_rapp);
+
 
 				$conf = $typeExports[$type];
 				$mime = $conf["mime"];
@@ -79,6 +85,7 @@ if($dbh!=0)
 
 				if($type=="xml")
 				{
+					$xml = getReportsAsXML($id_session,$type_eval,$sort_crit,$login_rapp);
 					header("Content-type: $mime; charset=utf-8");
 					$xsl = new DOMDocument();
 					$xsl->load($xslpath);
@@ -88,12 +95,14 @@ if($dbh!=0)
 				}
 				else if($type=="latex" || $type=="pdf")
 				{
+					$xmls = getReportsAsXMLArray($id_session,$type_eval,$sort_crit,$login_rapp);
+					
 					$filename = "";
 					if($type=="latex")
-						$filename=xml_to_zipped_tex($xml);
+						$filename=xml_to_zipped_tex($xmls);
 					else
-						$filename=xml_to_zipped_pdf($xml);
-						
+						$filename=xml_to_zipped_pdf($xmls);
+
 					$filepath="./";
 
 					header("Pragma: public");
@@ -109,7 +118,7 @@ if($dbh!=0)
 					flush();
 					readfile($filename);
 				}
-				
+
 			}
 			?>
 <html>
