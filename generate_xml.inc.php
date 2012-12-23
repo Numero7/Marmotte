@@ -20,20 +20,28 @@ function getReportsAsXMLArray($id_session=-1, $type_eval="", $sort_crit="", $log
 	return $docs;
 }
 
-function getReportsAsXML($id_session=-1, $type_eval="", $sort_crit="", $login_rapp="")
+function getReportsAsXML($id_session=-1, $type_eval="", $sort_crit="", $login_rapp="",$id_origine=-1)
 {
 	global $fieldsAll;
 	$doc = new DOMDocument();
 	$root = $doc->createElement("rapports");
-	$result = filterSortReports($id_session, $type_eval, $sort_crit, $login_rapp);
+	$result = filterSortReports($id_session, $type_eval, $sort_crit, $login_rapp,$id_origine);
+	$root->setAttribute("id_session",$id_session);
+	$root->setAttribute("type_eval",$type_eval);
+	$root->setAttribute("sort_crit",$sort_crit);
+	$root->setAttribute("login_rapp",$login_rapp);
+	$root->setAttribute("id_edit",$id_origine);
 
 	//to map id_session s to session nicknames
 	$sessions = sessionArrays();
 	$units = unitsList();
 
 	while ($row = mysql_fetch_object($result))
-		appendRowToXMLDoc($row, $sessions,$units,$doc);
-
+	{
+		$elem = createXMLReportElem($row, $sessions,$units,$doc);
+		$root->appendChild($elem);
+	}
+	$doc->appendChild($root);
 	return $doc;
 }
 
@@ -46,7 +54,7 @@ function appendLeaf($fieldname, $fieldvalue, DOMDocument $doc, DOMElement $node)
 	$node->appendChild($leaf);
 }
 
-function appendRowToXMLDoc($row, $sessions, $units, DOMDocument $doc)
+function createXMLReportElem($row, $sessions, $units, DOMDocument $doc)
 {
 	global $fieldsAll;
 	global $typesEval;
@@ -60,6 +68,8 @@ function appendRowToXMLDoc($row, $sessions, $units, DOMDocument $doc)
 
 
 	$rapportElem = $doc->createElement("rapport");
+	$rapportElem->setAttribute("id",$row->id);
+	$rapportElem->setAttribute("id_origine",$row->id_origine);
 
 	$fieldsspecial = array('unite','date','type');
 
@@ -110,14 +120,15 @@ function appendRowToXMLDoc($row, $sessions, $units, DOMDocument $doc)
 	appendLeaf("signataire", president, $doc, $rapportElem);
 	appendLeaf("signataire_titre", president_titre, $doc, $rapportElem);
 
-	$doc->appendChild($rapportElem);
+	return $rapportElem;
 
 }
 
 function rowToXMLDoc($row, $sessions = null, $units = null)
 {
 	$doc = new DOMDocument();
-	appendRowToXMLDoc($row, $sessions, $units, $doc);
+	$elem = createXMLReportElem($row, $sessions, $units, $doc);
+	$doc->appendChild($elem);
 	return $doc;
 }
 

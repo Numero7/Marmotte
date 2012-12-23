@@ -987,7 +987,7 @@ function updateRapportAvis($id_origine,$avis,$rapport)
 		}
 	}
 	$sql = "INSERT INTO evaluations ($fields) VALUES ($values);";
-	echo $sql."<br>";
+	//echo $sql."<br>";
 	mysql_query($sql);		
 }
 

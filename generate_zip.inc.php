@@ -53,6 +53,7 @@ function xmls_to_zipped_tex($docs)
 	$proc_eval = new XSLTProcessor();
 	$proc_eval->importStyleSheet($xsl);
 
+	$proc = $proc_eval;
 	$processors = array(
 			'Evaluation-Vague' => $proc_eval,
 			'Evaluation-MiVague' => $proc_eval,
@@ -80,9 +81,15 @@ function xmls_to_zipped_tex($docs)
 
 		foreach($docs as $doc)
 		{
-			$filename = "reports/".filename_from_node($doc).".tex";
-			$type = type_from_node($doc);
-			$zip->addFromString($filename,$processors[$type]->transformToXML($doc));
+			set_time_limit(0);
+			$nodes =$doc->getElementsByTagName("rapport");
+			if($nodes)
+			{
+				$node = $nodes->item(0);
+				$filename = "reports/".filename_from_node($node).".tex";
+				$type = type_from_node($node);
+				$zip->addFromString($filename,$processors[$type]->transformToXML($node));
+			}
 		}
 
 		$zip->close();

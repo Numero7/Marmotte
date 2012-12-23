@@ -17,10 +17,10 @@
 	<div class="full">
 	<div class="content"> 
 	<xsl:for-each select="rapports/rapport">
-	<div class="rapportshort"><a name="anchor{@id}"></a>
+	<div class="rapportshort"><a name="anchor{@id_origine}"></a>
 		<div class="typerapportshort">
 			<xsl:value-of select="type"/><br/>
-			par <xsl:value-of select="rapporteur"/>
+			par <xsl:value-of select="rapporteur"/> (ID#<xsl:value-of select="@id"/>/<xsl:value-of select="@id_origine"/>)
 		</div>
 		<div class="identiterapportshort">
 			<xsl:if test="(prenom!='') or (nom!='') or (grade!='')">
@@ -72,14 +72,14 @@
 			<span class="evaltitlerapportshort">Rayonnement <xsl:value-of select="rayonnement"/> : </span> <xsl:value-of select="rayonnement_notes"/><br/>
 		</div>
 		</xsl:if>
-		<xsl:if test="(../@id_edit=@id)">
-			<form action="export.php#anchor{@id}" method="get">
+		<xsl:if test="(../@id_edit=@id_origine)">
+			<form action="export.php#anchor{@id_origine}" method="post">
 				<span class="evaltitlerapportshort">Avis :</span> 
 				<input name="avis" value="{avis}" /><br/>
 				<span class="evaltitlerapportshort">Rapport  : </span>
 				<textarea name="rapport"><xsl:value-of select="rapport"/></textarea><br/>
 				<input type="hidden" name="action" value="group"/>
-				<input type="hidden" name="save" value="{@id}"/>
+				<input type="hidden" name="save" value="{@id_origine}"/>
 				<input type="hidden" name="id_edit" value="-1"/>
 				<input type="hidden" name="id_session" value="{../@id_session}"/>
 				<input type="hidden" name="type_eval"  value="{../@type_eval}"/>
@@ -89,13 +89,13 @@
 				<input type="submit" value="Sauvegarder"/>
 			</form>
 		</xsl:if>
-		<xsl:if test="(../@id_edit!=@id)">
+		<xsl:if test="(../@id_edit!=@id_origine)">
 			<div class="rapportrapportshort">
 			<span class="evaltitlerapportshort">Avis :</span> <xsl:value-of select="avis"/><br/>
 			<span class="evaltitlerapportshort">Rapport  : </span><xsl:value-of select="rapport"/>
-			<form action="export.php#anchor{@id}"  method="get">
+			<form action="export.php#anchor{@id_origine}"  method="post">
 				<input type="hidden" name="action" value="group"/>
-				<input type="hidden" name="id_edit" value="{@id}"/>
+				<input type="hidden" name="id_edit" value="{@id_origine}"/>
 				<input type="hidden" name="id_session" value="{../@id_session}"/>
 				<input type="hidden" name="type_eval"  value="{../@type_eval}"/>
 				<input type="hidden" name="sort_crit"  value="{../@sort_crit}"/>

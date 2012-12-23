@@ -191,5 +191,12 @@ table.compo a {
 
 .evalrapportshort{
   margin-top:5px;
-  margin-bottom:5px;
+  margin-bottom:10px;
+}
+
+.rapportrapportshort{
+  border:solid 1px #000;
+  margin-top:5px;
+  padding:5px;
+  margin-right:5px;
 }
