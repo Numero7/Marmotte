@@ -7,7 +7,6 @@ require_once('generate_xml.inc.php');
 require_once('generate_pdf.inc.php');
 require_once('generate_zip.inc.php');
 
-
 $dbh = db_connect($servername,$dbname,$serverlogin,$serverpassword);
 if($dbh!=0)
 {
@@ -30,6 +29,13 @@ if($dbh!=0)
 		}
 		else if($action=="group")
 		{
+			if (isset($_REQUEST["save"]) and isset($_REQUEST["avis"]) and isset($_REQUEST["rapport"]))
+			{
+				$idtosave = $_REQUEST["save"];
+				$avis = $_REQUEST["avis"];
+				$rapport = $_REQUEST["rapport"];
+				updateRapportAvis($idtosave,$avis,$rapport);
+			}
 			$type = "xml";
 			if (isset($_REQUEST["type"]))
 			{
@@ -58,23 +64,17 @@ if($dbh!=0)
 				{
 					$sort_crit = $_REQUEST["sort"];
 				}
-
+				$id_edit = -1;
+				if (isset($_REQUEST["id_edit"]))
+				{
+					$id_edit = $_REQUEST["id_edit"];
+				}
 
 				$conf = $typeExports[$type];
 				$mime = $conf["mime"];
 				$xslpath = $conf["xsl"];
 
-				if($type=="xml")
-				{
-					$xml = getReportsAsXML($id_session,$type_eval,$sort_crit,$login_rapp);
-					header("Content-type: $mime; charset=utf-8");
-					$xsl = new DOMDocument();
-					$xsl->load($xslpath);
-					$proc = new XSLTProcessor();
-					$proc->importStyleSheet($xsl);
-					echo $proc->transformToXML($xml);
-				}
-				else if($type=="latex" || $type=="pdf")
+				if($type=="latex" || $type=="pdf")
 				{
 					$xmls = getReportsAsXMLArray($id_session,$type_eval,$sort_crit,$login_rapp);
 					
@@ -106,8 +106,19 @@ if($dbh!=0)
 					flush();
 					readfile($filename);
 				}
-
+				else
+				{
+					$xml = getReportsAsXML($id_session,$type_eval,$sort_crit,$login_rapp,$id_edit);
+					header("Content-type: $mime; charset=utf-8");
+					$xsl = new DOMDocument();
+					$xsl->load($xslpath);
+					$proc = new XSLTProcessor();
+					$proc->importStyleSheet($xsl);
+					echo $proc->transformToXML($xml);
+				}
 			}
+			else
+			{
 			?>
 <html>
 <head>
@@ -118,9 +129,9 @@ if($dbh!=0)
 	</strong> n'est pas un type d'export valide.
 </body>
 </html>
-<?php				
+<?php		
+			}		
 		}
-
 	}
 }
 ?>

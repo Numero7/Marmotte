@@ -117,6 +117,11 @@ h1,h2,h3,h4 {
 	margin: 0 10% 20px 10%;
 }
 
+.full {
+	margin: 10px;
+	padding:0;
+}
+
 .content {
 	margin-bottom: 100px;
 }
@@ -325,63 +330,4 @@ h1,h2,h3,h4 {
     padding: 2px 4px;
 }
 
-.examplevaleur {
-    padding-left:1em;
-    font-style: italic;
-    color: #63C3DC;
-}
-
-#authbar{
-	background: #63C3DC;
-	color: #FFFFFF;
-	padding: 8px;
-	font-weight:bold;
-	font-size: 150%;
-	text-align: right;
-	margin-bottom:1em;
-	border: 1px solid #002A4C;
-  }
-
-.login{
-	border: 2px solid #ffffff;
-	padding: 3px;
-	font-weight:bold;
-	margin-right:1em;
-}
-
-.summary{
-  width:100%;
-}
-.tools{
-  float:right;
-  border: 1px solid #002A4C;
-  padding: 5px;
-}
-
-.history{
-  border: 1px solid #002A4C;
-  background: #EEEEEE;
-  padding:1em;
-  margin-bottom:1em;
-}
-
-.highlight{
-	color:#FF0000;
-}
-
-.faded{
-	color:#999999;
-}
-
-.inputreport{
-	width:100%;
-}
-
-.inputreport td{
-	text-align:left;
-}
-
-.inputreport td input, .inputreport td select{
-	width:15em;
-}
 

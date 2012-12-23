@@ -70,7 +70,7 @@ Les avis émis par les sections ne préjugent pas de la décision qui sera prise
 
 \bigskip
 
-<xsl:value-of select="rapport"/>
+<xsl:value-of select="rapports/rapport"/>
 
 \bigskip\bigskip  \hfill 
 \begin{tabular}{cp{5cm}}

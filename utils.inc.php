@@ -56,17 +56,19 @@ function parseSortCriteria($sort_crit)
 function showCriteria($sortCrit, $crit)
 {
 	$order = "";
+	$index = -1;
 	if (isset($sortCrit[$crit]))
 	{
 		$order = $sortCrit[$crit];
+		$index = array_search($crit, array_keys($sortCrit))+1;
 	}
 	if ($order=="ASC")
 	{
-		return "<img src=\"img/sortup.png\" alt=\"$crit sorted ascendently\">";
+		return "<img src=\"img/sortup.png\" alt=\"$crit sorted ascendently\"><span style=\"text-decoration:none;\">($index)</span>";
 	}
 	else if ($order=="DESC")
 	{
-		return "<img src=\"img/sortdown.png\" alt=\"$crit sorted descendently\">";
+		return "<img src=\"img/sortdown.png\" alt=\"$crit sorted descendently\"><span style=\"text-decoration:none;\">($index)</span>";
 	}
 	else
 	{  return "<img src=\"img/sortneutral.png\" alt=\"$crit sorted neutrally\">";
@@ -318,7 +320,7 @@ function highlightDiff(&$prevVals,$key,$val)
 	return $val;
 }
 
-function filterSortReports($id_session, $type_eval, $sort_crit, $login_rapp)
+function filterSortReports($id_session, $type_eval, $sort_crit, $login_rapp, $id_origin=-1)
 {
 	$sortCrit = parseSortCriteria($sort_crit);
 
@@ -326,6 +328,10 @@ function filterSortReports($id_session, $type_eval, $sort_crit, $login_rapp)
 	if ($id_session!=-1)
 	{
 		$sql .= " AND id_session=$id_session ";
+	}
+	if ($id_origin!=-1)
+	{
+		$sql .= " AND id_origine=$id_origin ";
 	}
 	if ($type_eval!="")
 	{
@@ -492,7 +498,7 @@ function displaySummary($id_session, $type_eval, $sort_crit, $login_rapp)
 	?>
 
 </table>
-<?php 
+<?php
 } ;
 
 function showSessions()
@@ -955,6 +961,34 @@ foreach($fieldsAll as  $fieldID => $title)
 $sql = "INSERT INTO evaluations ($fields) VALUES ($values);";
 mysql_query($sql);
 return mysql_insert_id ();
+}
+
+function updateRapportAvis($id_origine,$avis,$rapport)
+{
+	$result = filterSortReports(-1, "", "", "", $id_origine);
+	global $fieldsAll;
+	$tab = mysql_fetch_array($result);
+	$specialRule = array(
+			"auteur"=>0,
+			"date"=>0,
+			"avis"=>0,
+			"rapport"=>0,
+		);
+	$fields = "auteur,id_session,id_origine,avis,rapport";
+	$values = "\"".mysql_real_escape_string($_SESSION["login"])."\",".$tab["id_session"].",".$tab["id_origine"].",\"".mysql_real_escape_string($avis)."\",\"".mysql_real_escape_string($rapport)."\"";
+	foreach($fieldsAll as  $fieldID => $title)
+	{
+		if (!isset($specialRule[$fieldID]))
+		{
+			$fields.=",";
+			$fields.=$fieldID;
+			$values.=",";
+			$values.="\"".mysql_real_escape_string($tab[$fieldID])."\"";
+		}
+	}
+	$sql = "INSERT INTO evaluations ($fields) VALUES ($values);";
+	echo $sql."<br>";
+	mysql_query($sql);		
 }
 
 

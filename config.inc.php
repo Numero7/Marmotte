@@ -17,6 +17,11 @@
 						"xsl" => "",
 						"name" => "Zip",
 					),
+		"htmlmin" => 	array(
+						"mime" => "text/html",		
+						"xsl" => "xslt/htmlminimaledit.xsl",
+						"name" => "Html",
+					),
 	);
 	
 	$fieldsSummary = array(
@@ -32,12 +37,10 @@
 	$fieldsAll = array(
 		"nom" => "Nom",
 		"prenom" => "Prenom",
-		"grade" => "Grade",
 		"unite" => "Unité",
+		"grade" => "Grade",
 		"type" => "Type",
 		"rapporteur" => "Rapporteur",
-		"avis" => "Proposition d'avis",
-		"rapport" => "Proposition de rapport",
 		"prerapport" => "Points marquants",
 		"anciennete_grade" => "Ancienneté dans grade",
 		"date_recrutement" => "Date de recrutement",
@@ -55,6 +58,8 @@
 		"animation_notes" => "Détails sur l'animation",
 		"rayonnement" => "Rayonnement",		
 		"rayonnement_notes" => "Détails sur le rayonnement",		
+		"rapport" => "Proposition de rapport",
+		"avis" => "Proposition d'avis",
 		"auteur" => "Auteur Dernière(s) modif(s)",
 		"date" => "Date modification",
 	);
