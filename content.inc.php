@@ -83,7 +83,6 @@
 	}
 	else if ($action=="add")
 	{	
-		global $typesEvalUnit;
 		$id_nouveau = addReport();
 		displayReport($id_nouveau);
 	}

@@ -1,28 +1,15 @@
 <?php
 	include "configDB.inc.php";
 	
-	$typeExports = array(
-		"pdf" => 	array(
-					"mime" => "application/x-pdf",
-					"xsl" => "",
-					"name" => "XML",
-		),
-		"xml" => 	array(
-						"mime" => "text/xml",		
-						"xsl" => "xslt/xmlidentity.xsl",
-						"name" => "XML",
-					),
-		"latex" => 	array(
-						"mime" => "application/x-latex",		
-						"xsl" => "",
-						"name" => "Zip",
-					),
-		"htmlmin" => 	array(
-						"mime" => "text/html",		
-						"xsl" => "xslt/htmlminimaledit.xsl",
-						"name" => "Html",
-					),
-	);
+	
+	define("president","Frédérique Bassino");
+	define("president_titre","Présidente de la Section 6");
+	define("secretaire","Hugo Gimbert");
+	define("section_nb","6");
+	define("section_fullname","Section 6 du CoNRS");
+	define("section_intitule","Sciences de l'information : fondements de l'informatique, calculs, algorithmes, représentations, exploitations");
+	
+	
 	
 	$fieldsSummary = array(
 		"nom",
@@ -173,17 +160,17 @@
 		"prenom" => "Prenom",
 	);
 	
-	$typesEvalIndividual = array(
+	$typesRapportsIndividuels = array(
 		'Evaluation-Vague' => 'Evaluation à Vague',
 		'Evaluation-MiVague' => 'Evaluation à Mi-Vague',
 		'Promotion' => 'Promotion',
 		'Candidature' => 'Candidature',
 		'Suivi-PostEvaluation' => 'Suivi Post-Evaluation',
 		'Titularisation' => 'Titularisation',
-		'Confirmation-Affectation' => 'Confirmation d\'Affectation'
+		'Affectation' => 'Confirmation d\'Affectation'
 	);
 
-	$typesEvalUnit = array(
+	$typesRapportsUnites = array(
 			'Changement-Direction' => 'Changement de Direction',
 			'Renouvellement' => 'Renouvellement',
 			'Expertise' => 'Expertise',
@@ -191,21 +178,11 @@
 			'Comite-Evaluation' => 'Comité d\'Evaluation'
 	);
 	
-	$typesEval = array_merge($typesEvalIndividual, $typesEvalUnit);
+	$typesRapports = array_merge($typesRapportsIndividuels, $typesRapportsUnites);
 	
 	$typesEvalUpperCase = array(
 			'Evaluation-Vague' => 'EVALUATION A VAGUE DE CHERCHEUR',
 			'Evaluation-MiVague' => 'EVALUATION A MI-VAGUE DE CHERCHEUR',
-			'Promotion' => '',
-			'Candidature' => '',
-			'Suivi-PostEvaluation' => '',
-			'Titularisation' => '',
-			'Confirmation-Affectation' => '',
-			'Changement-Direction' => '',
-			'Renouvellement' => '',
-			'Expertise' => '',
-			'Ecole' => '',
-			'Comite-Evaluation' => ''
 	);
 	
 	
@@ -232,7 +209,7 @@
 			"favorable" => "Favorable",
 			"reserve" => "Réservé",
 			"differe" => "Différé",
-			"so" => "Pas d'avis"
+			"sansavis" => "Pas d'avis"
 	);
 
 	$avis_ternaire = array(
@@ -241,7 +218,7 @@
 			"favorable" => "Favorable",
 			"reserve" => "Réservé",
 			"differe" => "Différé",
-			"so" => "Pas d'avis"
+			"sansavis" => "Pas d'avis"
 	);
 
 	$avis_ecoles = array(
@@ -249,25 +226,76 @@
 			"tresfavorable" => "Très Favorable",
 			"favorable" => "Favorable",
 			"defavorable" => "Défavorable",
-			"so" => "Pas d'avis"
+			"sansavis" => "Pas d'avis"
 	);
 	
-	
-	$typesEvalToAvis = array(
-	'Evaluation-Vague' => $avis_eval,
-	'Evaluation-MiVague' => $avis_eval,
-	'Promotion' => $avis_classement,
-	'Candidature' => $avis_candidature,
-	'Suivi-PostEvaluation' => $avis_vide,
-	'Affectation' => $avis_binaire,
-	'Titularisation' => $avis_binaire,
-	'Confirmation-Affectation' => $avis_binaire,
-	'Changement-Direction' => $avis_ternaire,
-	'Renouvellement' => $avis_ternaire,
-	'Expertise' => $avis_ternaire,
-	'Ecole' => $avis_ecoles,
-	'Comite-Evaluation' => $avis_binaire
+	$avis_pertinence = array(
+			""=>"",
+			"tresfavorable" => "Très Favorable",
+			"favorable" => "Favorable",
+			"defavorable" => "Défavorable",
+			"reserve" => "Réservé",
+			"sansavis" => "Pas d'avis"
 	);
+	
+	$typesRapportToAvis = array(
+		'Evaluation-Vague' => $avis_eval,
+		'Evaluation-MiVague' => $avis_eval,
+		'Promotion' => $avis_classement,
+		'Candidature' => $avis_candidature,
+		'Suivi-PostEvaluation' => $avis_vide,
+		'Affectation' => $avis_binaire,
+		'Titularisation' => $avis_binaire,
+		'Changement-Direction' => $avis_pertinence,
+		'Renouvellement' => $avis_pertinence,
+		'Expertise' => $avis_pertinence,
+		'Ecole' => $avis_ecoles,
+		'Comite-Evaluation' => $avis_binaire
+	);
+	
+
+/* Definition des checkboxes à la fin de certains rapports*/
+	$evalCheckboxes = array(
+			"favorable" => "Favorable",
+			"differe" => "Différé",
+			"reserve" => "Réservé",
+			"alerte" => "Alerte");
+
+	$pertinenceCheckboxes = array(
+			"tresfavorable" => "Très Favorable",
+			"favorable" => "Favorable",
+			"defavorable" => "Défavorable",
+			"reserve" => "Réservé",
+			"sansavis" => "Pas d'avis"
+		);
+
+	$ecoleCheckboxes = array(
+			"tresfavorable" => "Très Favorable",
+			"favorable" => "Favorable",
+			"defavorable" => "Défavorable"
+	);
+	
+	$typesEvalToCheckboxes = array(
+	'Evaluation-Vague' => $evalCheckboxes,
+	'Evaluation-MiVague' => $evalCheckboxes,
+	'Renouvellement' => $pertinenceCheckboxes,
+	'Expertise' => $pertinenceCheckboxes,
+	'Ecole' => $ecoleCheckboxes
+	);
+	
+
+/* Definition des formaules standards à la fin de certains rapports*/
+	
+	$promotionFormula = array(
+			'non'=> 'Le faible nombre de possibilités de promotions DR1 cette année ne permet malheureusement pas à la Section 6 du Comité National de proposer ce chercheur à la Direction Générale du CNRS pour une promotion cette année.'
+			);
+	
+	$typesEvalToFormula = array(
+		'Promotion' => $promotionFormula,
+			);
+
+	
+/* Definition des différents grades*/
 	
 	$grades = array(
 		'CR2' => 'Chargé de Recherche 2ème classe (CR2)',
@@ -276,9 +304,18 @@
 		'DR1' => 'Directeur de Recherche 1ère classe (DR2)',
 		'DRCE1'  => 'Dir. de Recherche Classe Except. 1er échelon (DRCE1)',
 		'DRCE2'  => 'Dir. de Recherche Classe Except. 2ème échelon (DRCE2)',
+		'ChaireMC' => 'Chaire MC',
+		'ChairePR' => 'Chaire PR',
+		'Emerite' => 'Emerite',
+		'MC' => 'MC',
+		'PR' => 'PR',
+		'PhD' => 'PhD',
+		'HDR' => 'Habilité à diriger des recherches',
+		'None' => 'Pas de grade'
 	);
 	
-	$evaluations = array(
+/* Definition des différentes notes*/
+	$notes = array(
 		' ',
 		'A+',
 		'A',
@@ -297,12 +334,27 @@
 		'edit'  => "Modifier"
 	);
 	
-
-	define("president","Frédérique Bassino");
-	define("president_titre","Présidente de la Section 6");
-	define("secretaire","Hugo Gimbert");
-	define("section_nb","6");
-	define("section_fullname","Section 6 du CoNRS");
-	define("section_intitule","Sciences de l'information : fondements de l'informatique, calculs, algorithmes, représentations, exploitations");
-		
+	$typeExports = array(
+			"pdf" => 	array(
+					"mime" => "application/x-pdf",
+					"xsl" => "",
+					"name" => "XML",
+			),
+			"xml" => 	array(
+					"mime" => "text/xml",
+					"xsl" => "xslt/xmlidentity.xsl",
+					"name" => "XML",
+			),
+			"latex" => 	array(
+					"mime" => "application/x-latex",
+					"xsl" => "",
+					"name" => "Zip",
+			),
+			"htmlmin" => 	array(
+					"mime" => "text/html",
+					"xsl" => "xslt/htmlminimaledit.xsl",
+					"name" => "Html",
+			),
+	);
+	
 ?>

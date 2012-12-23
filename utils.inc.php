@@ -207,18 +207,18 @@ function displayIndividualReport($row)
 
 function displayReport($id_rapport)
 {
-	global $typesEvalUnit;
-	global $typesEvalIndividual;
+	global $typesRapportsUnites;
+	global $typesRapportsIndividuels;
 
 	$sql = "SELECT tt.*, ss.nom AS nom_session, ss.date AS date_session FROM evaluations tt, sessions ss WHERE tt.id=$id_rapport AND tt.id_session=ss.id;";
 	$result=mysql_query($sql);
 	if ($row = mysql_fetch_object($result))
 	{
-		if(array_key_exists($row->type,$typesEvalUnit))
+		if(array_key_exists($row->type,$typesRapportsUnites))
 		{
 			displayUnitReport($row);
 		}
-		else if(array_key_exists($row->type,$typesEvalIndividual))
+		else if(array_key_exists($row->type,$typesRapportsIndividuels))
 		{
 			displayIndividualReport($row);
 		}
@@ -353,7 +353,7 @@ function displaySummary($id_session, $type_eval, $sort_crit, $login_rapp)
 	global $fieldsSummary;
 	global $fieldsAll;
 	global $actions;
-	global $typesEval;
+	global $typesRapports;
 	global $typeExports;
 
 	$result = filterSortReports($id_session, $type_eval, $sort_crit, $login_rapp);
@@ -413,7 +413,7 @@ function displaySummary($id_session, $type_eval, $sort_crit, $login_rapp)
 			<td><select name="type_eval">
 					<option value="">Tous les types</option>
 					<?php
-					foreach ($typesEval as $ty => $value)
+					foreach ($typesRapports as $ty => $value)
 					{
 						$sel = "";
 						if ($ty==$type_eval)
@@ -638,7 +638,6 @@ function newReport($type_rapport)
 	global $fieldsAll;
 	global $fieldsTypes;
 	global $grades;
-	global $evaluations;
 	global $actions;
 	global $empty_report;
 
@@ -654,12 +653,12 @@ function displayEditableReport($row, $actioname)
 	global $fieldsUnites;
 	global $fieldsTypes;
 	global $actions;
-	global $typesEvalUnit;
-	global $typesEval;
+	global $typesRapportsUnites;
+	global $typesRapports;
 	global $grades;
-	global $evaluations;
+	global $notes;
 	global $avis_eval;
-	global $typesEvalToAvis;
+	global $typesRapportToAvis;
 
 	$specialRule = array(
 			"auteur"=>0,
@@ -671,11 +670,15 @@ function displayEditableReport($row, $actioname)
 		);
 
 			$eval_type = $row->type;
-			$is_unite = in_array($eval_type,$typesEvalUnit);
+			$is_unite = in_array($eval_type,$typesRapportsUnites);
+			
 			$eval_name = "";
-			$eval_name = $typesEval[$eval_type];
+			if(array_key_exists($eval_type, $typesRapports))
+				$eval_name = $typesRapports[$eval_type];
 
-			$avis_possibles = $typesEvalToAvis[$eval_type];
+			$avis_possibles = array();
+			if(array_key_exists($eval_type, $typesRapportToAvis))
+				$avis_possibles = $typesRapportToAvis[$eval_type];
 
 			?>
 <h1>
@@ -805,7 +808,7 @@ function displayEditableReport($row, $actioname)
 			<td style="width: 30em;"><select name="field<?php echo $fieldID;?>"
 				style="width: 100%;">
 					<?php
-					foreach($evaluations as $val)
+					foreach($notes as $val)
 					{
 						$sel = "";
 						if ($row->$fieldID==$val)

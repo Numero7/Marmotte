@@ -57,8 +57,8 @@ function appendLeaf($fieldname, $fieldvalue, DOMDocument $doc, DOMElement $node)
 function createXMLReportElem($row, $sessions, $units, DOMDocument $doc)
 {
 	global $fieldsAll;
-	global $typesEval;
-	global $typesEvalUpperCase;
+	global $typesRapports;
+	global $typesRapportsUpperCase;
 
 	if(!$sessions)
 		$sessions = sessionArrays();
@@ -94,14 +94,14 @@ function createXMLReportElem($row, $sessions, $units, DOMDocument $doc)
 	
 	appendLeaf("type", $row->type, $doc, $rapportElem);
 	
-	if(array_key_exists($row->type,$typesEval))
-		$value = $typesEval[$row->type];
+	if(array_key_exists($row->type,$typesRapports))
+		$value = $typesRapports[$row->type];
 	else
 		$value = $row->type;
 	appendLeaf("prettytype", $value, $doc, $rapportElem);
 	
-	if(array_key_exists($row->type,$typesEvalUpperCase))
-		$value = $typesEvalUpperCase[$row->type];
+	if(array_key_exists($row->type,$typesRapportsUpperCase))
+		$value = $typesRapportsUpperCase[$row->type];
 	else
 		$value = $row->type;
 	appendLeaf("uppercasetype", $value, $doc, $rapportElem);

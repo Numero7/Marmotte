@@ -7,7 +7,7 @@ require_once('config.inc.php');
 //Returns the name of the zip file
 function filename_from_node(DOMNode $node)
 {
-	global $typesEvalUnit;
+	global $typesRapportsUnites;
 	
 	$nom = "";
 	$prenom = "";
@@ -32,7 +32,7 @@ function filename_from_node(DOMNode $node)
 			$session = $child->nodeValue;
 	}
 
-	if(array_key_exists($type,$typesEvalUnit))
+	if(array_key_exists($type,$typesRapportsUnites))
 		return $session."-".$type."-".$unite;
 	else
 		return $session." - ".$type." - ".$grade." - ".$nom."_".$prenom;
