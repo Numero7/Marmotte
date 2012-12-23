@@ -180,7 +180,7 @@
 	
 	$typesRapports = array_merge($typesRapportsIndividuels, $typesRapportsUnites);
 	
-	$typesEvalUpperCase = array(
+	$typesRapportsUpperCase = array(
 			'Evaluation-Vague' => 'EVALUATION A VAGUE DE CHERCHEUR',
 			'Evaluation-MiVague' => 'EVALUATION A MI-VAGUE DE CHERCHEUR',
 	);
@@ -275,7 +275,7 @@
 			"defavorable" => "Défavorable"
 	);
 	
-	$typesEvalToCheckboxes = array(
+	$typesRapportsToCheckboxes = array(
 	'Evaluation-Vague' => $evalCheckboxes,
 	'Evaluation-MiVague' => $evalCheckboxes,
 	'Renouvellement' => $pertinenceCheckboxes,
@@ -290,7 +290,7 @@
 			'non'=> 'Le faible nombre de possibilités de promotions DR1 cette année ne permet malheureusement pas à la Section 6 du Comité National de proposer ce chercheur à la Direction Générale du CNRS pour une promotion cette année.'
 			);
 	
-	$typesEvalToFormula = array(
+	$typesRapportsToFormula = array(
 		'Promotion' => $promotionFormula,
 			);
 
