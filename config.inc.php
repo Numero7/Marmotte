@@ -128,7 +128,8 @@
 		"rapport" => "",
 		"avis" => "",
 		"auteur" => "",
-		"date" => date_default_timezone_get()
+		"date" => date(DATE_RSS),
+		"id_origine" => "-1"
 	);
 		
 	$fieldsTypes = array(
@@ -206,8 +207,8 @@
 	$avis_eval = array(
 			""=>"",
 			"favorable" => "Favorable",
-			"reserve" => "Réservé",
 			"differe" => "Différé",
+			"reserve" => "Réservé",
 			"alerte" => "Alerte"
 	);
 

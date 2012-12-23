@@ -21,52 +21,6 @@ function db_disconnect(&$dbh)
 	$dbh=0;
 } ;
 
-function addCredentials($login,$pwd)
-{
-	$_SESSION['login'] = $login;
-	$_SESSION['pass'] = $pwd;
-} ;
-
-function removeCredentials()
-{
-	unset($_SESSION['login']);
-	unset($_SESSION['pass']);
-} ;
-
-function authenticateBase($login,$pwd)
-{
-	$realPassHash = getPassHash($login);
-	if ($realPassHash != NULL)
-	{
-		if (crypt($pwd, $realPassHash) == $realPassHash)
-		{
-			return true;
-		}
-	}
-	return false;
-}
-
-function authenticate()
-{
-	if (isset($_SESSION['login']) and isset($_SESSION['pass']))
-	{
-		$login  = $_SESSION['login'];
-		$pwd = $_SESSION['pass'];
-		return authenticateBase($login,$pwd);
-	}
-	return false;
-} ;
-
-function getPassHash($login)
-{
-	$sql = "SELECT * FROM users WHERE login='$login';";
-	$result=mysql_query($sql);
-	if ($row = mysql_fetch_object($result))
-	{
-		return $row->passHash;
-	}
-	return NULL;
-} ;
 
 function getDescription($login)
 {
@@ -203,7 +157,7 @@ function displayIndividualReport($row)
 			"nom_session"=>0,
 			"date_session"=>0,
 	);
-		?>
+	?>
 <div class="tools">
 	<?php
 	foreach($actions as $action => $actionTitle)
@@ -253,7 +207,7 @@ function displayReport($id_rapport)
 {
 	global $typesEvalUnit;
 	global $typesEvalIndividual;
-	
+
 	$sql = "SELECT tt.*, ss.nom AS nom_session, ss.date AS date_session FROM evaluations tt, sessions ss WHERE tt.id=$id_rapport AND tt.id_session=ss.id;";
 	$result=mysql_query($sql);
 	if ($row = mysql_fetch_object($result))
@@ -267,7 +221,7 @@ function displayReport($id_rapport)
 			displayIndividualReport($row);
 		}
 		else
-		{			
+		{
 			echo "Unknown report type ".$row->type;
 		}
 	}
@@ -275,7 +229,7 @@ function displayReport($id_rapport)
 	{
 		echo "No report with if ".$is_rapport;
 	}
-	
+
 }
 
 function displayUnitReport($row)
@@ -684,6 +638,7 @@ function newReport($type_rapport)
 
 	$row = (object) $empty_report;
 	$row->type = $type_rapport;
+	$row->id_origine = -1;
 	displayEditableReport($row, "add");
 } ;
 
@@ -725,12 +680,11 @@ function displayEditableReport($row, $actioname)
 
 <form method="post" action="index.php" style="width: 100%">
 	<tr>
-		<td colspan="2">
-		<input type="submit"
+		<td colspan="2"><input type="submit"
 			value="<?php echo (($actioname == "add") ? "Ajouter" : "Modifier")." ".$eval_type;?>">
 			<input type="hidden" name="action" value=<?php echo $actioname?>>
 			<input type="hidden" name="id_origine" value="<?php echo $row->id_origine;?>">
-			</td>
+		</td>
 	</tr>
 
 	<table class="inputreport">
@@ -946,11 +900,15 @@ function displayEditableReport($row, $actioname)
 		}
 		?>
 		<tr>
-			<td colspan="2"><input type="submit"
-				value="Ajouter <?php echo $eval_type;?>"> <input type="hidden"
-				name="action" value=<?php echo $actioname?>></td>
-		</tr>
+		<td colspan="2"><input type="submit"
+			value="<?php echo (($actioname == "add") ? "Ajouter" : "Modifier")." ".$eval_type;?>">
+			<input type="hidden" name="action" value=<?php echo $actioname?>> <input
+			type="hidden" name="id_origine"
+			value="<?php echo $row->id_origine;?>">
+		</td>
+	</tr>
 	</table>
+	
 </form>
 <?php 
 }
@@ -1008,32 +966,6 @@ function addReport()
 	return $newid;
 };
 
-function isSuperUser($login = "")
-{
-	if ($login=="")
-	{
-		if (isset($_SESSION["login"]))
-		{
-			$login = $_SESSION["login"];
-		}
-		else return false;
-	}
-	return $login == "admin";
-};
-
-function listUsers()
-{
-	$users = array();
-	$sql = "SELECT login FROM users ORDER BY login ASC;";
-	if($result=mysql_query($sql))
-	{
-		while ($row = mysql_fetch_object($result))
-		{
-			$users[] = $row->login;
-		}
-	}
-	return $users;
-}
 
 function unitsList()
 {
@@ -1049,382 +981,13 @@ function unitsList()
 	return $units;
 }
 
-function sessionArrays()
-{
-	$sessions = array();
-	$sql = "SELECT * FROM sessions ORDER BY id ASC;";
-	if($result=mysql_query($sql))
-	{
-		while ($row = mysql_fetch_object($result))
-		{
-			$sessions[$row->id] = $row->nom." ".date("Y", strtotime($row->date));
-		}
-	}
-	return $sessions;
-}
 
 
-function changePwd($login,$old,$new1,$new2)
-{
-	if (isset($_SESSION["login"]))
-	{
-		$currLogin = $_SESSION["login"];
-		if ($currLogin==$login or isSuperUser())
-		{
-			if (authenticateBase($login,$old) or isSuperUser())
-			{
-				$oldPassHash = getPassHash($login);
-				if ($oldPassHash != NULL)
-				{
-					$newPassHash = crypt($new1, $oldPassHash);
-					$sql = "UPDATE users SET passHash='$newPassHash' WHERE login='$login';";
-					mysql_query($sql);
-					return true;
-				}
-			}
-			else
-			{
-				echo "<p><strong>Erreur :</strong> La saisie du mot de passe courant est incorrecte, veuillez réessayer.</p>";
-				return false;
-			};
-		}
-		else
-		{
-			echo "<p><strong>Erreur :</strong> Seuls les administrateurs du site peuvent modifier les mots de passes d'autres utilisateurs, veuillez nous contacter (Yann ou Hugo) en cas de difficultés.</p>";
-			return false;
-		}
-	}
-	else
-	{
-		echo "<p><strong>Erreur :</strong> Login manquant, veuillez vous reconnecter.</p>";
-		return false;
-	}
-}
-function createUser($login,$pwd,$desc)
-{
-	if (isSuperUser())
-	{
-		$passHash = crypt($pwd);
-		$sql = "INSERT INTO users(login,passHash,description) VALUES ('".mysql_real_escape_string($login)."','".mysql_real_escape_string($passHash)."','".mysql_real_escape_string($desc)."');";
-		mysql_query($sql);
-		return true;
-	}
-}
-
-function deleteUser($login)
-{
-	if (isSuperUser())
-	{
-		$sql = "DELETE FROM users WHERE login='".mysql_real_escape_string($login)."';";
-		mysql_query($sql);
-	}
-}
-
-function createSession($name,$date)
-{
-	if (isSuperUser())
-	{
-		echo $date."<br>";
-		echo strtotime($date)."<br>";
-		echo date("Y-m-d h:m:s",strtotime($date));
-		$sql = "INSERT INTO sessions(nom,date) VALUES ('".mysql_real_escape_string($name)."','".date("Y-m-d h:m:s",strtotime($date))."');";
-		mysql_query($sql);
-		return true;
-	}
-}
-
-function deleteSession($id)
-{
-	if (isSuperUser())
-	{
-		$sql = "DELETE FROM sessions WHERE id=$id;";
-		mysql_query($sql);
-	}
-}
 
 
-function getReportsAsXMLArray($id_session=-1, $type_eval="", $sort_crit="", $login_rapp="")
-{
-	global $fieldsAll;
-	$result = filterSortReports($id_session, $type_eval, $sort_crit, $login_rapp);
-
-	//to map id_session s to session nicknames
-	$sessions = sessionArrays();
-	$units = unitsList();
-
-	$docs = array();
-	while ($row = mysql_fetch_object($result))
-	{
-		$doc = new DOMDocument();
-		$root = $doc->createElement("rapports");
-		appendRowToXMLDoc($row, $sessions,$units,$doc);
-		$docs[] = $doc;
-	}
-
-	return $docs;
-}
-
-function getReportsAsXML($id_session=-1, $type_eval="", $sort_crit="", $login_rapp="")
-{
-	global $fieldsAll;
-	$doc = new DOMDocument();
-	$root = $doc->createElement("rapports");
-	$result = filterSortReports($id_session, $type_eval, $sort_crit, $login_rapp);
-
-	//to map id_session s to session nicknames
-	$sessions = sessionArrays();
-	$units = unitsList();
-
-	while ($row = mysql_fetch_object($result))
-		appendRowToXMLDoc($row, $sessions,$units,$doc);
-
-	return $doc;
-}
-
-//Returns the name of the zip file
-function filename_from_node(DOMNode $node)
-{
-	$nom = "";
-	$prenom = "";
-	$grade = "";
-	$unite = "";
-	$type = "";
-
-	foreach($node->childNodes as $child)
-	{
-		if($child->nodeName == "nom")
-			$nom = $child->nodeValue;
-		else if($child->nodeName == "prenom")
-			$prenom = $child->nodeValue;
-		else if($child->nodeName == "grade")
-			$grade = $child->nodeValue;
-		else if($child->nodeName == "unite")
-			$unite = $child->nodeValue;
-		else if($child->nodeName == "type")
-			$type = $child->nodeValue;
-	}
-
-	if($unite != "")
-		return $type."_".$unite;
-	else
-		return $type."_".$grade." ".$nom." ".$prenom.".tex";
-}
-
-function type_from_node(DOMNode $node)
-{
-	foreach($node->childNodes as $child)
-		if($child->nodeName == "type")
-		return $child->nodeValue;
-	return "";
-}
 
 
-function xml_to_zipped_tex($docs)
-{
-	$xsl = new DOMDocument();
-	$xsl->load("xslt/latex_eval.xsl");
-	$proc_eval = new XSLTProcessor();
-	$proc_eval->importStyleSheet($xsl);
 
-	$processors = array(
-			'Evaluation-Vague' => $proc_eval,
-			'Evaluation-MiVague' => $proc_eval,
-			'Promotion' => $proc,
-			'Candidature' => $proc,
-			'Suivi-PostEvaluation' => $proc,
-			'Titularisation' => $proc,
-			'Confirmation-Affectation' => $proc,
-			'Changement-Direction' => $proc,
-			'Renouvellement' => $proc,
-			'Expertise' => $proc,
-			'Ecole' => $proc,
-			'Comité-Evaluation' => $proc,
-			'' => $proc
-	);
-
-	$zip = new ZipArchive();
-	if($zip->open('reports_latex.zip',ZipArchive::OVERWRITE))
-	{
-
-		$zip->addFromString("compile.bat", "for /r %%x in (*.tex) do pdflatex \"%%x\"\r\ndel *.log\r\ndel *.aux");
-		$zip->addFile("latex/CN.png","CN.png");
-		$zip->addFile("latex/CNRSlogo.png","CNRSlogo.png");
-		$zip->addFile("latex/signature.jpg","signature.jpg");
-
-		foreach($docs as $doc)
-		{
-			$filename = filename_from_node($doc).".tex";
-			$type = type_from_node($doc);
-			$zip->addFromString($filename,$processors[$type]->transformToXML($doc));
-		}
-
-		$zip->close();
-		return "reports_latex.zip";
-
-	}
-	return "";
-}
-
-function xml_to_zipped_pdf($docs)
-{
-	$xsl = new DOMDocument();
-	$xsl->load("xslt/html.xsl");
-	$proc_eval = new XSLTProcessor();
-	$proc_eval->importStyleSheet($xsl);
-
-	$proc = $proc_eval;
-
-	$processors = array(
-			'Evaluation-Vague' => $proc_eval,
-			'Evaluation-MiVague' => $proc_eval,
-			'Promotion' => $proc,
-			'Candidature' => $proc,
-			'Suivi-PostEvaluation' => $proc,
-			'Titularisation' => $proc,
-			'Confirmation-Affectation' => $proc,
-			'Changement-Direction' => $proc,
-			'Renouvellement' => $proc,
-			'Expertise' => $proc,
-			'Ecole' => $proc,
-			'Comité-Evaluation' => $proc,
-			'' => $proc
-	);
-
-	$zip = new ZipArchive();
-	if($zip->open('reports_pdf.zip',ZipArchive::OVERWRITE))
-	{
-		$i = 0;
-		foreach($docs as $doc)
-		{
-			set_time_limit(0);
-			$node =$doc->getElementsByTagName("rapport");
-			if($node)
-				$filename = filename_from_node($node->item(0)).".pdf";
-			$type = type_from_node($doc);
-			$html = $processors[$type]->transformToXML($doc);
-			$pdf = HTMLToPDF($html);
-			$zip->addFromString($filename,$pdf->Output("","S"));
-			$i++;
-		}
-
-		$zip->close();
-		return "reports_pdf.zip";
-
-	}
-	return "";
-}
-
-function appendRowToXMLDoc($row, $sessions, $units, DOMDocument $doc)
-{
-	global $fieldsAll;
-	global $typesEval;
-	global $typesEvalUpperCase;
-
-	if(!$sessions)
-		$sessions = sessionArrays();
-
-	if(!$units)
-		$units = unitsList();
-
-
-	$rapportElem = $doc->createElement("rapport");
-
-	$fieldsspecial = array('unite','date','type');
-
-	foreach ($fieldsAll as $fieldID => $title)
-	{
-		if(!in_array($fieldID,$fieldsspecial))
-		{
-			$contentElem = $doc->createElement($fieldID);
-			$data = $doc->createCDATASection ($row->$fieldID);
-			$contentElem->appendChild($data);
-			$rapportElem->appendChild($contentElem);
-		}
-	}
-
-	//On ajoute le nickname du labo
-	$contentElem = $doc->createElement("unite");
-	if(array_key_exists($row->unite,$units))
-	{
-		$data = $doc->createCDATASection($row->unite." (".$units[$row->unite].")");
-		$contentElem->appendChild($data);
-	}
-	else
-	{
-		$data = $doc->createCDATASection($row->unite);
-		$contentElem->appendChild($data);
-	}
-
-	$rapportElem->appendChild($contentElem);
-
-	//On ajoute la date du jour
-	$contentElem = $doc->createElement("date");
-	setlocale(LC_TIME, "fr_FR");
-	$data = $doc->createCDATASection(strftime("%e %B %Y",time()));
-	$contentElem->appendChild($data);
-	$rapportElem->appendChild($contentElem);
-
-	//On ajoute la date du jour
-	$contentElem = $doc->createElement("type");
-	$data = $doc->createCDATASection($typesEval[$row->type]);
-	$contentElem->appendChild($data);
-	$rapportElem->appendChild($contentElem);
-
-	//On ajoute la date du jour
-	$contentElem = $doc->createElement("UPPERCASETYPE");
-	$data = $doc->createCDATASection($typesEvalUpperCase[$row->type]);
-	$contentElem->appendChild($data);
-	$rapportElem->appendChild($contentElem);
-
-	//On ajoute le nickname de la session
-	$contentElem = $doc->createElement("session");
-	$data = $doc->createCDATASection ($sessions[$row->id_session]);
-	$contentElem->appendChild($data);
-	$rapportElem->appendChild($contentElem);
-
-	//On ajoute le numero de la section
-	$contentElem = $doc->createElement("section_nb");
-	$data = $doc->createCDATASection (section_nb);
-	$contentElem->appendChild($data);
-	$rapportElem->appendChild($contentElem);
-
-	//On ajoute l'intitulé de la section
-	$contentElem = $doc->createElement("section_intitule");
-	$data = $doc->createCDATASection (section_intitule);
-	$contentElem->appendChild($data);
-	$rapportElem->appendChild($contentElem);
-
-	//On ajoute le nom du signataire
-	$contentElem = $doc->createElement("signataire");
-	$data = $doc->createCDATASection (president);
-	$contentElem->appendChild($data);
-	$rapportElem->appendChild($contentElem);
-
-	$contentElem = $doc->createElement("signataire_titre");
-	$data = $doc->createCDATASection (president_titre);
-	$contentElem->appendChild($data);
-	$rapportElem->appendChild($contentElem);
-
-	$doc->appendChild($rapportElem);
-
-}
-
-function rowToXMLDoc($row, $sessions = null, $units = null)
-{
-	$doc = new DOMDocument();
-	appendRowToXMLDoc($row, $sessions, $units, $doc);
-	return $doc;
-}
-
-function XMLToHTML(DOMDocument $doc)
-{
-	$xsl = new DOMDocument();
-	$xsl->load('xslt/html.xsl');
-	$proc = new XSLTProcessor();
-	$proc->importStyleSheet($xsl);
-	$html = $proc->transformToXML($doc);
-	return $html;
-}
 
 function HTMLToPDF($html)
 {
@@ -1446,12 +1009,12 @@ function HTMLToPDF($html)
 	$pdf->setPrintFooter(false);
 
 	//set margins
-	$pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
+	$pdf->SetMargins(PDF_MARGIN_LEFT, "15", PDF_MARGIN_RIGHT);
 	$pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
 	$pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
 
 	//set auto page breaks
-	$pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+	$pdf->SetAutoPageBreak(TRUE, "15");
 
 	//set image scale factor
 	$pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);

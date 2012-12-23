@@ -2,30 +2,11 @@
 require_once("utils.inc.php");
 require_once('tcpdf/config/lang/eng.php');
 require_once('tcpdf/tcpdf.php');
+require_once('manage_users.inc.php');
+require_once('generate_xml.inc.php');
+require_once('generate_pdf.inc.php');
+require_once('generate_zip.inc.php');
 
-function viewReportAsPdf($id_rapport)
-{
-	$row = getReport($id_rapport);
-
-	if(!$row)
-	{
-		echo 'Pas de rapport avec id '.$id_rapport;
-		return;
-	}
-
-	$doc = rowToXMLDoc($row);
-	if(!$doc)
-	{
-		echo 'Impossible de convertir la requete en xml';
-		return;
-	}
-
-	$html = XMLToHTML($doc);
-
-	$pdf = HTMLToPDF($html);
-
-	$pdf->Output('rapport.pdf', 'I');
-};
 
 $dbh = db_connect($servername,$dbname,$serverlogin,$serverpassword);
 if($dbh!=0)
@@ -99,10 +80,17 @@ if($dbh!=0)
 					
 					$filename = "";
 					if($type=="latex")
-						$filename=xml_to_zipped_tex($xmls);
-					else
-						$filename=xml_to_zipped_pdf($xmls);
+						$filename=xmls_to_zipped_tex($xmls);
 
+					if($type=="pdf")
+						$filename=xmls_to_zipped_pdf($xmls);
+
+					if($filename == "")
+					{
+						echo "Failed to generate zip file";
+						return;
+					}
+					
 					$filepath="./";
 
 					header("Pragma: public");

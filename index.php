@@ -14,7 +14,8 @@
 </head>
 <body>
 	<?php
-	include("utils.inc.php");
+	require_once("utils.inc.php");
+	require_once("manage_users.inc.php");
 	$dbh = db_connect($servername,$dbname,$serverlogin,$serverpassword);
     if($dbh!=0)
     {
