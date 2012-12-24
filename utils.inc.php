@@ -163,7 +163,7 @@ function displayIndividualReport($row)
 	{
 		if ($action!="details")
 		{
-			echo "<a href=\"?action=$action&amp;id=".$row->id."&amp;id_origine=".$row->id_origine."\">$actionTitle <img class=\"icon\" src=\"img/$action-icon.png\" alt=\"$action\"></a>";
+			echo "<a href=\"?action=$action&amp;id=".$row->id."&amp;id_origine=".$row->id_origine."\">$actionTitle <img class=\"icon\" src=\"img/$action-icon-24px.png\" alt=\"$action\"></a>";
 		}
 	}
 	?>
@@ -226,7 +226,7 @@ function displayReport($id_rapport)
 	}
 	else
 	{
-		echo "No report with if ".$is_rapport;
+		echo "No report with id ".$is_rapport;
 	}
 
 }
@@ -252,7 +252,7 @@ function displayUnitReport($row)
 	{
 		if ($action!="details")
 		{
-			echo "<a href=\"?action=$action&amp;id=".$row->id."&amp;id_origine=".$row->id_origine."\">$actionTitle <img class=\"icon\" src=\"img/$action-icon.png\" alt=\"$action\"></a>";
+			echo "<a href=\"?action=$action&amp;id=".$row->id."&amp;id_origine=".$row->id_origine."\">$actionTitle <img class=\"icon\" src=\"img/$action-icon-24px.png\" alt=\"$action\"></a>";
 		}
 	}
 	?>
@@ -439,7 +439,7 @@ function displaySummary($id_session, $type_eval, $sort_crit, $login_rapp)
 	foreach($typeExports as $idexp => $exp)
 	{
 		$expname= $exp["name"];
-		echo " <a href=\"export.php?action=group&amp;id_session=$id_session&amp;type_eval=$type_eval&amp;sort_crit=$sort_crit&amp;login_rapp=$login_rapp&amp;type=$idexp\"><img class=\"icon\" width=\"50\" height=\"50\" src=\"img/$idexp-icon.png\" alt=\"$expname\"></a>";
+		echo " <a href=\"export.php?action=group&amp;id_session=$id_session&amp;type_eval=$type_eval&amp;sort_crit=$sort_crit&amp;login_rapp=$login_rapp&amp;type=$idexp\"><img class=\"icon\" width=\"50\" height=\"50\" src=\"img/$idexp-icon-50px.png\" alt=\"$expname\"></a>";
 	}
 	?>
 </p>
@@ -483,10 +483,10 @@ function displaySummary($id_session, $type_eval, $sort_crit, $login_rapp)
 		}
 		foreach($actions as $action => $actionTitle)
 		{
-			echo "<td><a href=\"?action=$action&amp;id=".$row->id."&amp;id_origine=".$row->id_origine."\"><img class=\"icon\" width=\"24\" height=\"24\" src=\"img/$action-icon.png\" alt=\"$actionTitle\"></a></td>";
+			echo "<td><a href=\"?action=$action&amp;id=".$row->id."&amp;id_origine=".$row->id_origine."\"><img class=\"icon\" width=\"24\" height=\"24\" src=\"img/$action-icon-24px.png\" alt=\"$actionTitle\"></a></td>";
 		}
-		echo "<td><a href=\"export.php?action=viewpdf&amp;id=".$row->id."&amp;id_origine=".$row->id_origine."\"><img class=\"icon\" width=\"24\" height=\"24\" src=\"img/pdf-icon.png\" alt=\"$actionTitle\"></a></td>";
-		echo "<td><a href=\"export.php?action=viewhtml&amp;id=".$row->id."&amp;id_origine=".$row->id_origine."\"><img class=\"icon\" width=\"24\" height=\"24\" src=\"img/html-icon.png\" alt=\"$actionTitle\"></a></td>";
+		echo "<td><a href=\"export.php?action=viewpdf&amp;id=".$row->id."&amp;id_origine=".$row->id_origine."\"><img class=\"icon\" width=\"24\" height=\"24\" src=\"img/pdf-icon-24px.png\" alt=\"$actionTitle\"></a></td>";
+		echo "<td><a href=\"export.php?action=viewhtml&amp;id=".$row->id."&amp;id_origine=".$row->id_origine."\"><img class=\"icon\" width=\"24\" height=\"24\" src=\"img/html-icon-24px.png\" alt=\"$actionTitle\"></a></td>";
 		?>
 	
 	
@@ -542,7 +542,7 @@ function historyReport($id_origine)
 	{
 		if ($action!="history")
 		{
-			echo "<a href=\"?action=$action&amp;id=".$row->id."&amp;id_origine=".$id_origine."\">$actionTitle <img class=\"icon\" src=\"img/$action-icon.png\" alt=\"$action\"></a>";
+			echo "<a href=\"?action=$action&amp;id=".$row->id."&amp;id_origine=".$id_origine."\">$actionTitle <img class=\"icon\" src=\"img/$action-icon-24px.png\" alt=\"$action\"></a>";
 		}
 	}
 	?>

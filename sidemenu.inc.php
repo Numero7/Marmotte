@@ -19,11 +19,31 @@ include_once("config.inc.php");
 			<a href="?">Accueil</a>
 		</h1>
 		<hr>
-				<h1>
-			<a href="?action=view">Tous les rapports</a>
-		</h1>
+				<h1>Afficher rapports</h1>
+		<?php
+		$sessions = showSessions();
+		foreach($sessions as $s)
+		{
+			$typesRapports = getTypesEval($s["id"]);
+			?>
+		<h2>
+			<?php echo "<a href=\"?action=view&amp;id_session=".$s["id"]."\">".$s["nom"]." ".date("Y",strtotime($s["date"]))."</a>"; ?>
+		</h2>
+		<ul>
+			<?php
+			foreach($typesRapports as $typeEval)
+			{
+				echo "\t\t<li><a href=\"?action=view&amp;id_session=".$s["id"]."&amp;type_eval=".urlencode($typeEval)."\">$typeEval</a></li>\n";
+			}
+			?>
+		</ul>
+		<?php
+		}
+		?>
+		<h2><a href="?action=view">Tous les rapports</a></h2>
 		<hr>
-		<h1>Ajouter Rapport Chercheur</h1>
+		<h1>Ajouter Rapport</h1>
+		<h2>Rapport Chercheur</h2>
 		<ul>
 		<?php 
 		foreach($typesRapportsIndividuels as $typeEval => $value)
@@ -36,7 +56,7 @@ include_once("config.inc.php");
 		?>
 		</ul>
 		<hr>
-		<h1>Ajouter Rapport Unité</h1>
+		<h2>Rapport Unité</h2>
 		<ul>
 		<?php 
 		foreach($typesRapportsUnites as $typeEval => $value)
@@ -49,28 +69,7 @@ include_once("config.inc.php");
 		}
 		?>
 		</ul>
-		<hr>
-		<?php
-		$sessions = showSessions();
-		foreach($sessions as $s)
-		{
-			$typesRapports = getTypesEval($s["id"]);
-			?>
-		<h1>
-			<?php echo "<a href=\"?action=view&amp;id_session=".$s["id"]."\">".$s["nom"]." ".date("Y",strtotime($s["date"]))."</a>"; ?>
-		</h1>
-		<ul>
-			<?php
-			foreach($typesRapports as $typeEval)
-			{
-				echo "\t\t<li><a href=\"?action=view&amp;id_session=".$s["id"]."&amp;type_eval=".urlencode($typeEval)."\">$typeEval</a></li>\n";
-			}
-			?>
-		</ul>
-		<?php
-		}
-		?>
-		<hr>
+
 	</div>
 	<div class="round">
 		<div class="roundbl">
