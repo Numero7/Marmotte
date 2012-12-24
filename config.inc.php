@@ -64,7 +64,6 @@
 			"unite",
 			"grade",
 			"anciennete_grade",
-			"rapporteur",
 			"avis",
 			"rapport",
 			"prerapport",
@@ -89,7 +88,6 @@
 			"concours",
 			"nom",
 			"prenom",
-			"rapporteur",
 			"avis",
 			"rapport",
 			"prerapport",
@@ -111,12 +109,9 @@
 	
 	$fieldsUnites = array(
 		"unite",
-		"rapporteur",
-		"rapport",
-		"prerapport",
 		"avis",
-		"auteur",
-		"date"
+		"rapport",
+		"prerapport"
 	);
 
 	$fieldsEcoles = array(
@@ -124,12 +119,9 @@
 			"nom",
 			"prenom",
 			"unite",
-			"rapporteur",
-			"rapport",
-			"prerapport",
 			"avis",
-			"auteur",
-			"date"
+			"rapport",
+			"prerapport"
 	);
 	
 	$examples = array(

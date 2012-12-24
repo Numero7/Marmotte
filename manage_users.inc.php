@@ -27,6 +27,14 @@ function isSuperUser($login = "")
 	return $login == "admin";
 };
 
+function getLogin()
+{
+	if (isset($_SESSION["login"]))
+		return $_SESSION["login"];
+	else
+		return "Unknown";
+}
+
 function addCredentials($login,$pwd)
 {
 	$_SESSION['login'] = $login;
