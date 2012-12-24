@@ -18,7 +18,7 @@ if($dbh!=0)
 			$action = $_REQUEST["action"];
 		}
 
-		if($action=="single")
+		if($action=="viewpdf")
 		{
 			$id="-1";
 			if (isset($_REQUEST["id"]))
@@ -27,6 +27,16 @@ if($dbh!=0)
 			}
 			viewReportAsPdf($id);
 		}
+		if($action=="viewhtml")
+		{
+			$id="-1";
+			if (isset($_REQUEST["id"]))
+			{
+				$id = $_REQUEST["id"];
+			}
+			viewReportAsHtml($id);
+		}
+		
 		else if($action=="group")
 		{
 			if (isset($_REQUEST["save"]) and isset($_REQUEST["avis"]) and isset($_REQUEST["rapport"]))

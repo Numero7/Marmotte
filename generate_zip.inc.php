@@ -33,7 +33,7 @@ function filename_from_node(DOMNode $node)
 	}
 
 	if(array_key_exists($type,$typesRapportsUnites))
-		return $session."-".$type."-".$unite;
+		return $session." - ".$type." - ".$unite;
 	else
 		return $session." - ".$type." - ".$grade." - ".$nom."_".$prenom;
 }
@@ -102,25 +102,25 @@ function xmls_to_zipped_tex($docs)
 function xmls_to_zipped_pdf($docs)
 {
 	$xsl = new DOMDocument();
-	$xsl->load("xslt/html.xsl");
-	$proc_eval = new XSLTProcessor();
-	$proc_eval->importStyleSheet($xsl);
-
-	$proc = $proc_eval;
+	$xsl->load("xslt/html2.xsl");
+	$proc = new XSLTProcessor();
+	$proc->importStyleSheet($xsl);
 
 	$processors = array(
-			'Evaluation-Vague' => $proc_eval,
-			'Evaluation-MiVague' => $proc_eval,
+			'Evaluation-Vague' => $proc,
+			'Evaluation-MiVague' => $proc,
 			'Promotion' => $proc,
 			'Candidature' => $proc,
 			'Suivi-PostEvaluation' => $proc,
 			'Titularisation' => $proc,
-			'Confirmation-Affectation' => $proc,
-			'Changement-Direction' => $proc,
+			'Affectation' => $proc,
+			'Changement-Directeur' => $proc,
+			'Changement-Directeur-Adjoint' => $proc,
 			'Renouvellement' => $proc,
 			'Expertise' => $proc,
 			'Ecole' => $proc,
-			'Comité-Evaluation' => $proc,
+			'Comite-Evaluation' => $proc,
+			'Generique' => $proc,
 			'' => $proc
 	);
 

@@ -75,7 +75,6 @@ function showCriteria($sortCrit, $crit)
 	}
 }
 
-
 function dumpEditedCriteria($sortCrit, $edit_crit)
 {
 	$result = "";
@@ -131,8 +130,6 @@ function sortCriteriaToSQL($sortCrit)
 	}
 	return $sql;
 }
-
-
 
 function getTypesEval($id_session){
 	$finalResult = array();
@@ -224,7 +221,7 @@ function displayReport($id_rapport)
 		}
 		else
 		{
-			echo "Unknown report type ".$row->type;
+			echo "Unknown report type : ".$row->type. "(id) ".$id_rapport."<br/>";
 		}
 	}
 	else
@@ -488,7 +485,8 @@ function displaySummary($id_session, $type_eval, $sort_crit, $login_rapp)
 		{
 			echo "<td><a href=\"?action=$action&amp;id=".$row->id."&amp;id_origine=".$row->id_origine."\"><img class=\"icon\" width=\"24\" height=\"24\" src=\"img/$action-icon.png\" alt=\"$actionTitle\"></a></td>";
 		}
-		echo "<td><a href=\"export.php?action=single&amp;id=".$row->id."&amp;id_origine=".$row->id_origine."\"><img class=\"icon\" width=\"24\" height=\"24\" src=\"img/pdf-icon.png\" alt=\"$actionTitle\"></a></td>";
+		echo "<td><a href=\"export.php?action=viewpdf&amp;id=".$row->id."&amp;id_origine=".$row->id_origine."\"><img class=\"icon\" width=\"24\" height=\"24\" src=\"img/pdf-icon.png\" alt=\"$actionTitle\"></a></td>";
+		echo "<td><a href=\"export.php?action=viewhtml&amp;id=".$row->id."&amp;id_origine=".$row->id_origine."\"><img class=\"icon\" width=\"24\" height=\"24\" src=\"img/html-icon.png\" alt=\"$actionTitle\"></a></td>";
 		?>
 	
 	
@@ -624,8 +622,6 @@ function getReport($id_rapport)
 	return mysql_fetch_object($result);
 }
 
-
-
 function editReport($id_rapport)
 {
 	$row = getReport($id_rapport);
@@ -643,15 +639,17 @@ function newReport($type_rapport)
 
 	$row = (object) $empty_report;
 	$row->type = $type_rapport;
-	$row->id_origine = -1;
 	displayEditableReport($row, "add");
 } ;
 
 function displayEditableReport($row, $actioname)
 {
 	global $fieldsAll;
+	global $fieldsIndividual;
 	global $fieldsUnites;
+	global $fieldsEcoles;
 	global $fieldsTypes;
+	global $fieldsCandidat;
 	global $actions;
 	global $typesRapportsUnites;
 	global $typesRapports;
@@ -659,28 +657,23 @@ function displayEditableReport($row, $actioname)
 	global $notes;
 	global $avis_eval;
 	global $typesRapportToAvis;
+	global $concours_ouverts;
 
-	$specialRule = array(
-			"auteur"=>0,
-			"date"=>0,
-			"nom_session"=>0,
-			"date_session"=>0,
-			"type"=>0,
-			"grade" => 0,
-		);
 
-			$eval_type = $row->type;
-			$is_unite = in_array($eval_type,$typesRapportsUnites);
-			
-			$eval_name = "";
-			if(array_key_exists($eval_type, $typesRapports))
-				$eval_name = $typesRapports[$eval_type];
+	$eval_type = $row->type;
+	$is_unite = array_key_exists($eval_type,$typesRapportsUnites);
+	$is_ecole = ($eval_type == 'Ecole');
+	$is_candidat = ($eval_type == 'Candidature');
+	
+	$eval_name = $eval_type;
+	if(array_key_exists($eval_type, $typesRapports))
+		$eval_name = $typesRapports[$eval_type];
 
-			$avis_possibles = array();
-			if(array_key_exists($eval_type, $typesRapportToAvis))
-				$avis_possibles = $typesRapportToAvis[$eval_type];
+	$avis_possibles = array();
+	if(array_key_exists($eval_type, $typesRapportToAvis))
+		$avis_possibles = $typesRapportToAvis[$eval_type];
 
-			?>
+	?>
 <h1>
 	<?php 
 	echo ($is_unite ? "Unite : " : "Chercheur : ").$eval_name;
@@ -688,23 +681,17 @@ function displayEditableReport($row, $actioname)
 </h1>
 
 <form method="post" action="index.php" style="width: 100%">
+	<input type="hidden" name="action" value=<?php echo $actioname?>> <input
+		type="hidden" name="id_origine" value="<?php echo $row->id_origine;?>">
+	<input type="hidden" name="fieldtype" value="<?php echo $row->type;?>">
+
 	<tr>
 		<td colspan="2"><input type="submit"
 			value="<?php echo (($actioname == "add") ? "Ajouter" : "Modifier")." ".$eval_type;?>">
-			<input type="hidden" name="action" value=<?php echo $actioname?>>
-			<input type="hidden" name="id_origine" value="<?php echo $row->id_origine;?>">
 		</td>
 	</tr>
 
 	<table class="inputreport">
-		<tr>
-			<td>Type d'évaluation</td>
-			<td><select name="fieldtype" style="width: 100%;">
-					<?php
-					echo "\t\t\t\t\t<option value=\"$eval_type\">$eval_name</option>";
-					?>
-			</select></td>
-		</tr>
 		<tr>
 			<td>Session</td>
 			<td><select name="fieldid_session" style="width: 100%;">
@@ -724,44 +711,34 @@ function displayEditableReport($row, $actioname)
 			</select></td>
 		</tr>
 		<?php 
-		if(!$is_unite)
+
+		$active_fields = $fieldsIndividual;
+		if($is_unite)
+			$active_fields = $fieldsUnites;
+		if($is_ecole)
+			$active_fields = $fieldsEcoles;
+		if($is_candidat)
+			$active_fields = $fieldsCandidat;
+		
+			
+
+		foreach($active_fields as  $fieldID)
 		{
-			?>
-		<tr>
-			<td>Grade</td>
-			<td><select name="fieldgrade" style="width: 100%;">
-					<?php
-					foreach($grades as $idg => $txtg)
-					{
-						$sel = "";
-						if ($row->grade==$idg)
-						{
-							$sel = "selected=\"selected\"";
-						}
-						echo  "\t\t\t\t\t<option value=\"$idg\" $sel>$txtg</option>";
-					}
-					?>
-			</select></td>
-		</tr>
-		<?php
-		}
-		foreach($fieldsAll as  $fieldID => $title)
-		{
-			if (!isset($specialRule[$fieldID]))
+			$title = $fieldsAll[$fieldID];
+			
+			if(!in_array($fieldID,$active_fields))
+				continue;
+
+			$type = "";
+			if (isset($fieldsTypes[$fieldID]))
 			{
-				$type = "";
-				if (isset($fieldsTypes[$fieldID]))
-				{
-					$type = $fieldsTypes[$fieldID];
-				}
-				if($is_unite && !in_array($fieldID,$fieldsUnites))
-					continue;
-				?>
+				$type = $fieldsTypes[$fieldID];
+			}
+			?>
 		<tr>
 			<td style="width: 17em;"><span><?php echo $title;?> </span>
 			</td>
 			<?php
-
 			if ($type=="long")
 			{
 				?>
@@ -785,14 +762,12 @@ function displayEditableReport($row, $actioname)
 			</td>
 		</tr>
 		<tr>
-			<td colspan="3"><textarea rows=10 name="field<?php echo $fieldID;?>"
-					style="width: 100%;">
-					<?php echo $row->$fieldID;?>
-				</textarea>
+			<td colspan="3">
+			<textarea rows=10 name="field<?php echo $fieldID;?>" style="width: 100%;"><?php echo $row->$fieldID;?></textarea>
 			</td>
 			<?php
 			}
-			else if ($type=="short")
+			elseif ($type=="short")
 			{
 				?>
 			<td style="width: 30em;"><input name="field<?php echo $fieldID;?>"
@@ -802,7 +777,7 @@ function displayEditableReport($row, $actioname)
 			</td>
 			<?php
 			}
-			else if ($type=="evaluation")
+			elseif ($type=="evaluation")
 			{
 				?>
 			<td style="width: 30em;"><select name="field<?php echo $fieldID;?>"
@@ -822,7 +797,7 @@ function displayEditableReport($row, $actioname)
 			</td>
 			<?php
 			}
-			else if ($type=="rapporteur")
+			elseif ($type=="rapporteur")
 			{
 				?>
 			<td style="width: 30em;"><select name="field<?php echo $fieldID;?>"
@@ -846,7 +821,7 @@ function displayEditableReport($row, $actioname)
 			</td>
 			<?php
 			}
-			else if ($type=="avis")
+			elseif ($type=="avis")
 			{
 				?>
 			<td style="width: 30em;"><select name="field<?php echo $fieldID;?>"
@@ -866,63 +841,87 @@ function displayEditableReport($row, $actioname)
 			</td>
 			<?php
 			}
-			else if ($type=="unit")
+			elseif ($type=="unit")
 			{
 				?>
 			<td style="width: 30em;"><select name="field<?php echo $fieldID;?>"
 				style="width: 100%;">
 					<?php
 					$units = unitsList();
-					foreach($units as $code => $nickname)
+					foreach($units as $unite)
 					{
 						$sel = "";
-						if ($row->$fieldID==$nickname)
+						if (($row->unite) == ($unite->code))
 						{
 							$sel = "selected=\"selected\"";
 						}
-						echo  "\t\t\t\t\t<option value=\"$code\" $sel>$nickname</option>";
+						echo  "\t\t\t\t\t<option value=\"".($unite->code)."\"".$sel.">".($unite->code)." - ".($unite->nickname)."</option>";
 					}
 					?>
 			</select>
 			</td>
 			<?php
 			}
-
-			else
+			elseif ($type =="grade")
 			{
 				?>
-			<td colspan="2"><span class="examplevaleur"><?php echo getExample($fieldID);?>
-			</span>
+		
+		
+			<td><select name="fieldgrade" style="width: 100%;">
+					<?php
+					foreach($grades as $idg => $txtg)
+					{
+						$sel = "";
+						if ($row->grade==$idg)
+						{
+							$sel = "selected=\"selected\"";
+						}
+						echo  "\t\t\t\t\t<option value=\"$idg\" $sel>$txtg</option>";
+					}
+					?>
+			</select></td>
+		<?php
+			}
+			elseif ($type =="concours")
+			{
+				?>
+			<td><select name="fieldconcours" style="width: 100%;">
+					<?php
+					foreach($concours_ouverts as $concours)
+					{
+						$sel = "";
+						if ($row->concours==$concours)
+						{
+							$sel = "selected=\"selected\"";
+						}
+						echo  "\t\t\t\t\t<option value=\"$concours\" $sel>$concours</option>";
+					}
+					?>
+			</select></td>
+		<?php
+			}elseif($type =="ecole")
+			{
+				?>
+			<td colspan="3"><input name="fieldecole"
+				value="<?php echo $row->ecole ?>" style="width: 100%;">
 			</td>
-		</tr>
-		<tr>
-			<td><textarea name="field<?php echo $fieldID;?>">
-					<?php echo $row->$fieldID;?>
-				</textarea>
-			</td>
-			<?php
+		<?php
 			}
 			?>
 		</tr>
 		<?php
-			}
 		}
 		?>
 		<tr>
-		<td colspan="2"><input type="submit"
-			value="<?php echo (($actioname == "add") ? "Ajouter" : "Modifier")." ".$eval_type;?>">
-			<input type="hidden" name="action" value=<?php echo $actioname?>> <input
-			type="hidden" name="id_origine"
-			value="<?php echo $row->id_origine;?>">
-		</td>
-	</tr>
+			<td colspan="2"><input type="submit"
+				value="<?php echo (($actioname == "add") ? "Ajouter" : "Modifier")." ".$eval_type;?>">
+			</td>
+		</tr>
 	</table>
-	
+
 </form>
 <?php 
 }
-
-
 
 function update($id_origine)
 {
@@ -946,6 +945,7 @@ foreach($fieldsAll as  $fieldID => $title)
 $values = mysql_real_escape_string($_REQUEST["fieldid_session"]);
 $values .= ",".mysql_real_escape_string($id_origine);
 $values .= ",\"".mysql_real_escape_string($_SESSION["login"])."\"";
+
 foreach($fieldsAll as  $fieldID => $title)
 {
 	if (!isset($specialRule[$fieldID]) )
@@ -963,7 +963,7 @@ foreach($fieldsAll as  $fieldID => $title)
 }
 $sql = "INSERT INTO evaluations ($fields) VALUES ($values);";
 mysql_query($sql);
-return mysql_insert_id ();
+return mysql_insert_id();
 }
 
 function updateRapportAvis($id_origine,$avis,$rapport)
@@ -991,9 +991,8 @@ function updateRapportAvis($id_origine,$avis,$rapport)
 	}
 	$sql = "INSERT INTO evaluations ($fields) VALUES ($values);";
 	//echo $sql."<br>";
-	mysql_query($sql);		
+	mysql_query($sql);
 }
-
 
 function addReport()
 {
@@ -1012,7 +1011,7 @@ function unitsList()
 	{
 		while ($row = mysql_fetch_object($result))
 		{
-			$units[$row->code] = $row->nickname;
+			$units[$row->code] = $row;
 		}
 	}
 	return $units;
