@@ -433,7 +433,7 @@ function displaySummary($id_session, $type_eval, $sort_crit, $login_rapp)
 </form>
 <br>
 <br>
-<h2>Exporter :</h2>
+<h2>Exporter/Editer tous</h2>
 <p>
 	<?php
 	foreach($typeExports as $idexp => $exp)

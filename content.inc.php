@@ -155,6 +155,27 @@
 		  echo "<p>Vous n'avez pas les droits nécessaires pour effectuer cette action, veuillez nous contacter (Yann ou Hugo) en cas de difficultés.</p>";
 		}		
 	}
+	else if ($action=="adminnewpermissions")
+	{
+		if (isSuperUser())
+		{
+			if (isset($_REQUEST["login"]) and isset($_REQUEST["permissions"]))
+			{
+				$login = $_REQUEST["login"];
+				$permissions = $_REQUEST["permissions"];
+				changeUserPermissions($login,$permissions);
+			}
+			else
+			{
+				echo "<p><strong>Erreur :</strong> Vous n'avez fourni toutes les informations nécessaires pour modifier les droits de cet utilisateur, veuillez nous contacter (Yann ou Hugo) en cas de difficultés.</p>";
+			}
+			include "admin.inc.php";				
+		}
+		else
+		{
+		  echo "<p>Vous n'avez pas les droits nécessaires pour effectuer cette action, veuillez nous contacter (Yann ou Hugo) en cas de difficultés.</p>";
+		}		
+	}	
 	else if ($action=="adminnewaccount")
 	{
 		if (isSuperUser())

@@ -518,4 +518,16 @@
 	$uploaded_csv_files = array(
 					'labos' => 'uploads/labos.csv'
 				);
+	
+	define("NIVEAU_PERMISSION_BASE", 0);
+	define("NIVEAU_PERMISSION_BUREAU", 100);
+	define("NIVEAU_PERMISSION_PRESIDENT_SECRETAIRE", 500);
+	define("NIVEAU_PERMISSION_SUPER_UTILISATEUR", 1000);
+	
+	$permission_levels = array(
+		NIVEAU_PERMISSION_BASE => "rapporteur",
+		NIVEAU_PERMISSION_BUREAU => "bureau",
+		NIVEAU_PERMISSION_PRESIDENT_SECRETAIRE => "secrétaire/président(e)",
+		NIVEAU_PERMISSION_SUPER_UTILISATEUR => "super utilisateur",
+	);
 ?>

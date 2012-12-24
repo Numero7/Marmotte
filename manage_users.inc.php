@@ -3,7 +3,7 @@
 function listUsers()
 {
 	$users = array();
-	$sql = "SELECT * FROM users ORDER BY login ASC;";
+	$sql = "SELECT * FROM users ORDER BY description ASC;";
 	if($result=mysql_query($sql))
 	{
 		while ($row = mysql_fetch_object($result))
@@ -14,7 +14,7 @@ function listUsers()
 	return $users;
 }
 
-function isSuperUser($login = "")
+function getUserPermissionLevel($login = "")
 {
 	if ($login=="")
 	{
@@ -22,10 +22,38 @@ function isSuperUser($login = "")
 		{
 			$login = $_SESSION["login"];
 		}
-		else return false;
 	}
-	return $login == "admin";
+	if ($login == "admin")
+		return NIVEAU_PERMISSION_SUPER_UTILISATEUR;
+	$users = listUsers();
+	if (isset($users[$login]))
+	{
+		$data = $users[$login];
+		return $data->permissions;
+	}
+	return -1;
+}
+
+function isSuperUser($login = "")
+{
+	return getUserPermissionLevel($login) >= NIVEAU_PERMISSION_SUPER_UTILISATEUR;
 };
+
+function isBureauPresidencyUser($login = "")
+{
+	return getUserPermissionLevel($login) >= NIVEAU_PERMISSION_PRESIDENT_SECRETAIRE;
+};
+
+function isBureauUser($login = "")
+{
+	return getUserPermissionLevel($login) >= NIVEAU_PERMISSION_BUREAU;
+};
+
+function isRapporteurUser($login = "")
+{
+	return getUserPermissionLevel($login) >= NIVEAU_PERMISSION_BASE;
+};
+
 
 function addCredentials($login,$pwd)
 {
@@ -114,6 +142,24 @@ function changePwd($login,$old,$new1,$new2)
 		return false;
 	}
 }
+
+
+function changeUserPermissions($login,$permissions)
+{
+	if (isSuperUser())
+	{
+		if ($permissions<=getUserPermissionLevel())
+		{
+			$sql = "UPDATE users SET permissions=$permissions WHERE login='$login';";
+			mysql_query($sql);
+		}
+	}
+	else
+	{
+		echo "<p><strong>Erreur :</strong> Seuls les administrateurs du site peuvent modifier les mots de passes d'autres utilisateurs, veuillez nous contacter (Yann ou Hugo) en cas de difficultés.</p>";
+	}
+}
+
 function createUser($login,$pwd,$desc)
 {
 	if (isSuperUser())

@@ -59,7 +59,7 @@
 				<input type="hidden" name="type_eval"  value="{../@type_eval}"/>
 				<input type="hidden" name="sort_crit"  value="{../@sort_crit}"/>
 				<input type="hidden" name="login_rapp" value="{../@login_rapp}"/>
-				<input type="hidden" name="type" value="htmlmin"/><br/>
+				<input type="hidden" name="type" value="htmledit"/><br/>
 				<input type="submit" value="Sauvegarder"/>
 				<input type="submit" name="cancel" value="Annuler"/>
 			</form>
@@ -76,7 +76,7 @@
 				<input type="hidden" name="type_eval"  value="{../@type_eval}"/>
 				<input type="hidden" name="sort_crit"  value="{../@sort_crit}"/>
 				<input type="hidden" name="login_rapp" value="{../@login_rapp}"/>
-				<input type="hidden" name="type" value="htmlmin"/>
+				<input type="hidden" name="type" value="htmledit"/>
 				<input type="submit" value="Editer"/>
 			</form>
 			</div>

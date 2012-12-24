@@ -241,7 +241,7 @@ h1,h2,h3,h4 {
 	padding: 12px 12px 0;
 }
 .subnav h1 {
-	color: #63C3DC;
+	color: #c1e0e8;
 	font-size: 1.4em;
 	height: 20px;
 	padding:0;
@@ -249,11 +249,11 @@ h1,h2,h3,h4 {
 }
 
 .subnav h1 a{
-	color: #63C3DC;
+	color: #c1e0e8;
 }
 
 .subnav h2 {
-	color: #63C3DC;
+	color: #c1e0e8;
 	font-size: 1.2em;
 	height: 20px;
 	padding:0;
@@ -262,7 +262,7 @@ h1,h2,h3,h4 {
 
 .subnav h2 a{
 	padding:0;
-	color: #63C3DC;
+	color: #c1e0e8;
 }
 
 .subnav ul {

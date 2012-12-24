@@ -11,8 +11,8 @@
 			$users = listUsers();
 			foreach($users as $user => $data)
 			{
-				if (!isSuperUser($user))
-				echo "<option value=\"$user\">".ucfirst($user)."</option>";
+				if ($data->permissions <= getUserPermissionLevel())
+				echo "<option value=\"$user\">".ucfirst($data->description)."</option>";
 			}
 		?>
 		</select></td>
@@ -68,7 +68,7 @@
 			$users = listUsers();
 			foreach($users as $user => $data)
 			{
-			  echo "<option value=\"$user\">".ucfirst($user)."</option>";
+			  echo "<option value=\"$user\">".ucfirst($data->description)."</option>";
 			}
 		?>
 		</select></td>
@@ -86,6 +86,42 @@
 		</td>
 		<td><input type="submit" value="Valider modification"></td>
 	</tr>
+</table>
+</form>
+</p>
+
+<h2>Modifier les droits</h2>
+<p>
+<form method="get">
+<table class="inputreport">
+		<?php 
+			$users = listUsers();
+			foreach($users as $user => $data)
+			{
+			  if ($data->permissions <= getUserPermissionLevel())
+			  {
+				echo "<tr><td style=\"width:20em;\">".ucfirst($data->description)."</td>";
+				echo "<td><form><select name=\"permissions\">";
+				foreach($permission_levels as $val => $level)
+				{
+					if ($val<=getUserPermissionLevel())
+					{
+						$sel = "";
+						if ($val==$data->permissions)
+						{
+							$sel = " selected=\"selected\"";
+						}
+						echo "<option value=\"$val\"$sel>".ucfirst($level)."</option>";
+					}
+				}
+				echo "</select>";
+				echo "<input type=\"hidden\" name=\"login\" value=\"$user\">";
+				echo "<input type=\"hidden\" name=\"action\" value=\"adminnewpermissions\">";
+				echo " <input type=\"submit\" value=\"Valider\">";
+				echo "</form></td></tr>";
+			  }
+			}
+		?>
 </table>
 </form>
 </p>
@@ -141,7 +177,7 @@
 </table>
 </form>
 </p>
-
+<hr>
 <h2>Ajout de labos par csv</h2>
 <p>
 Upload de fichier csv avec séparateur , entrées encadrées par des "", encodé en utf-8
