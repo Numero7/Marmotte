@@ -64,7 +64,6 @@
 			"unite",
 			"grade",
 			"anciennete_grade",
-			"rapporteur",
 			"avis",
 			"rapport",
 			"prerapport",
@@ -89,7 +88,6 @@
 			"concours",
 			"nom",
 			"prenom",
-			"rapporteur",
 			"avis",
 			"rapport",
 			"prerapport",
@@ -111,12 +109,9 @@
 	
 	$fieldsUnites = array(
 		"unite",
-		"rapporteur",
-		"rapport",
-		"prerapport",
 		"avis",
-		"auteur",
-		"date"
+		"rapport",
+		"prerapport"
 	);
 
 	$fieldsEcoles = array(
@@ -124,12 +119,9 @@
 			"nom",
 			"prenom",
 			"unite",
-			"rapporteur",
-			"rapport",
-			"prerapport",
 			"avis",
-			"auteur",
-			"date"
+			"rapport",
+			"prerapport"
 	);
 	
 	$examples = array(
@@ -449,7 +441,7 @@
 		'CR2' => 'Chargé de Recherche 2ème classe (CR2)',
 		'CR1' => 'Chargé de Recherche 1ère classe (CR1)',
 		'DR2' => 'Directeur de Recherche 2ème classe (DR2)',
-		'DR1' => 'Directeur de Recherche 1ère classe (DR2)',
+		'DR1' => 'Directeur de Recherche 1ère classe (DR1)',
 		'DRCE1'  => 'Dir. de Recherche Classe Except. 1er échelon (DRCE1)',
 		'DRCE2'  => 'Dir. de Recherche Classe Except. 2ème échelon (DRCE2)',
 		'ChaireMC' => 'Chaire MC',

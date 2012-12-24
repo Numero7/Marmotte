@@ -39,6 +39,14 @@ function isSuperUser($login = "")
 	return getUserPermissionLevel($login) >= NIVEAU_PERMISSION_SUPER_UTILISATEUR;
 };
 
+function getLogin()
+{
+	if (isset($_SESSION["login"]))
+		return $_SESSION["login"];
+	else
+		return "Unknown";
+}
+
 function isBureauPresidencyUser($login = "")
 {
 	return getUserPermissionLevel($login) >= NIVEAU_PERMISSION_PRESIDENT_SECRETAIRE;

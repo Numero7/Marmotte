@@ -122,7 +122,7 @@ CREATE TABLE IF NOT EXISTS `sessions` (
 
 INSERT INTO `sessions` (`id`, `nom`, `date`) VALUES
 (1, 'Automne', '2012-11-22 15:48:04'),
-(2, 'Concours', '2013-01-14 12:53:00');
+(2, 'Concours', '2013-01-14 12:53:00'),
 (3, 'Printemps', '2013-04-14 12:53:00');
 
 -- --------------------------------------------------------

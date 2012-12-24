@@ -3,6 +3,7 @@ session_start();
 require_once('tcpdf/config/lang/eng.php');
 require_once('tcpdf/tcpdf.php');
 require_once('config.inc.php');
+require_once('manage_users.inc.php');
 
 function db_connect($serverName,$dbname,$login,$password)
 {
@@ -684,7 +685,8 @@ function displayEditableReport($row, $actioname)
 	<input type="hidden" name="action" value=<?php echo $actioname?>> <input
 		type="hidden" name="id_origine" value="<?php echo $row->id_origine;?>">
 	<input type="hidden" name="fieldtype" value="<?php echo $row->type;?>">
-
+	<input type="hidden" name="fieldrapporteur" value="<?php echo getLogin();?>">
+	
 	<tr>
 		<td colspan="2"><input type="submit"
 			value="<?php echo (($actioname == "add") ? "Ajouter" : "Modifier")." ".$eval_type;?>">
@@ -747,10 +749,7 @@ function displayEditableReport($row, $actioname)
 			</td>
 		</tr>
 		<tr>
-			<td colspan="3"><textarea name="field<?php echo $fieldID;?>"
-					style="width: 100%;">
-					<?php echo $row->$fieldID;?>
-				</textarea>
+			<td colspan="3"><textarea name="field<?php echo $fieldID;?>" style="width: 100%;"><?php echo $row->$fieldID;?></textarea>
 			</td>
 			<?php
 			}
@@ -762,10 +761,7 @@ function displayEditableReport($row, $actioname)
 			</td>
 		</tr>
 		<tr>
-			<td colspan="3"><textarea rows=10 name="field<?php echo $fieldID;?>"
-					style="width: 100%;">
-					<?php echo $row->$fieldID;?>
-				</textarea>
+			<td colspan="3"><textarea rows=10 name="field<?php echo $fieldID;?>" style="width: 100%;"><?php echo $row->$fieldID;?></textarea>
 			</td>
 			<?php
 			}
@@ -793,30 +789,6 @@ function displayEditableReport($row, $actioname)
 							$sel = "selected=\"selected\"";
 						}
 						echo  "\t\t\t\t\t<option value=\"$val\" $sel>$val</option>";
-					}
-					?>
-			</select>
-			</td>
-			<?php
-			}
-			elseif ($type=="rapporteur")
-			{
-				?>
-			<td style="width: 30em;"><select name="field<?php echo $fieldID;?>"
-				style="width: 100%;">
-					<?php
-					$users = listUsers();
-					foreach($users as $val => $data)
-					{
-						if($val!="admin")
-						{
-							$sel = "";
-							if ($row->$fieldID==$val)
-							{
-								$sel = "selected=\"selected\"";
-							}
-							echo  "\t\t\t\t\t<option value=\"$val\" $sel>".($data->description==""?$val:$data->description)."</option>";
-						}
 					}
 					?>
 			</select>
