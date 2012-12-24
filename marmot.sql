@@ -34,8 +34,10 @@ CREATE TABLE IF NOT EXISTS `evaluations` (
   `nom` varchar(40) CHARACTER SET utf8 NOT NULL,
   `prenom` varchar(40) CHARACTER SET utf8 NOT NULL,
   `unite` varchar(50) CHARACTER SET utf8 NOT NULL,
-  `grade` varchar(10) CHARACTER SET utf8 NOT NULL,
-  `type` enum('Evaluation-Vague','Evaluation-MiVague','Promotion','Candidature','Suivi-PostEvaluation','Titularisation','ConfirmationAffectation') CHARACTER SET utf8 NOT NULL,
+  `ecole` text CHARACTER SET utf8 NOT NULL,
+  `grade` enum('CR2','CR1','DR2','DR1','DRCE1','DRCE2','ChaireMC','ChairePR','Emerite','MC','PR','PhD','HDR','None') CHARACTER SET utf8 NOT NULL,
+  `type` enum('Evaluation-Vague','Evaluation-MiVague','Promotion','Candidature','Suivi-PostEvaluation','Titularisation','Affectation','Changement-Directeur','Changement-Directeur-Adjoint','Renouvellement','Expertise','Ecole','Comite-Evaluation','Generique') CHARACTER SET utf8 NOT NULL,
+  `concours` text CHARACTER SET utf8 NOT NULL,
   `rapporteur` text CHARACTER SET utf8 NOT NULL,
   `prerapport` text CHARACTER SET utf8 NOT NULL,
   `anciennete_grade` text CHARACTER SET utf8 NOT NULL,
@@ -64,7 +66,7 @@ CREATE TABLE IF NOT EXISTS `evaluations` (
 --
 -- Dumping data for table `evaluations`
 --
-
+/*
 INSERT INTO `evaluations` (`id_session`, `id`, `id_origine`, `nom`, `prenom`, `unite`, `grade`, `type`, `rapporteur`, `prerapport`, `anciennete_grade`, `date_recrutement`, `production`, `production_notes`, `transfert`, `transfert_notes`, `encadrement`, `encadrement_notes`, `responsabilites`, `responsabilites_notes`, `mobilite`, `mobilite_notes`, `animation`, `animation_notes`, `rayonnement`, `rayonnement_notes`, `rapport`, `avis`, `auteur`, `date`) VALUES
 (1, 1, 1, 'Pass', 'Joe', 'UMR 7172', 'CR2', 'Evaluation-Vague', 'John', 'Blabla', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', 'La section 06 ...', 'Tres favorable', 'john', '2012-11-21 09:17:26'),
 (1, 2, 1, 'Pass', 'Joe', 'UMR 7172', 'CR2', 'Evaluation-Vague', 'John', 'Quand meme, je trouve que....', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', 'La section 6 du com...', 'Reservé', 'jim', '2012-11-22 12:12:50'),
@@ -99,7 +101,7 @@ INSERT INTO `evaluations` (`id_session`, `id`, `id_origine`, `nom`, `prenom`, `u
 (1, 31, 31, 'Jo', 'wede', 'oijoih', 'oj', '', 'a', 'oij', 'oh', 'oh', 'ihoonb', 'ohin', 'oi', 'oihj', 'oih', 'oih', 'oih', 'oih', 'oih', 'oih', 'oi', 'ho', 'i', 'hoi', 'h', 'oih', 'admin', '2012-11-23 01:19:52'),
 (1, 32, 30, 'Jo', 'wede', 'oijoih', 'oj', 'Candidature', 'a', 'oij', 'oh', 'oh', 'ihoonb', 'ohin', 'oi', 'oihj', 'oih', 'oih', 'oih', 'oih', 'oih', 'oih', 'oi', 'ho', 'i', 'hoi', 'h', 'oih', 'admin', '2012-11-23 01:20:57'),
 (1, 33, 31, 'Jo', 'wede', 'oijoih', 'oj', 'Evaluation-Vague', 'a', 'oij', 'oh', 'oh', 'ihoonb', 'ohin', 'oi', 'oihj', 'oih', 'oih', 'oih', 'oih', 'oih', 'oih', 'oi', 'ho', 'i', 'hoi', 'h', 'oih', 'admin', '2012-11-23 01:30:23');
-
+*/
 -- --------------------------------------------------------
 
 --
@@ -120,7 +122,8 @@ CREATE TABLE IF NOT EXISTS `sessions` (
 
 INSERT INTO `sessions` (`id`, `nom`, `date`) VALUES
 (1, 'Automne', '2012-11-22 15:48:04'),
-(2, 'Printemps', '2013-04-14 12:53:00');
+(2, 'Concours', '2013-01-14 12:53:00');
+(3, 'Printemps', '2013-04-14 12:53:00');
 
 -- --------------------------------------------------------
 
@@ -159,7 +162,7 @@ CREATE TABLE IF NOT EXISTS `users` (
 --
 
 INSERT INTO `users` (`login`, `passHash`, `description`) VALUES
-('admin', '$1$/t..az..$dacFT5V./AWiz2RLbvaAp0', 'Administrateur (Yann ou Hugo)');
+('admin', '$1$II0.x4/.$wcsKcSZ6Z0bMUUlWp/cS0/', 'Administrateur (Yann ou Hugo)');
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

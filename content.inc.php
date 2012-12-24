@@ -10,6 +10,7 @@
 	<div class="content"> 
 		
  <?php 
+ 	require_once('manage_sessions.inc.php');
 	if ($action=="view")
 	{
 		$id_session = -1;
@@ -74,16 +75,18 @@
 	}
 	else if ($action=="new")
 	{
-		$type_eval = "";
 		if (isset($_REQUEST["type_eval"]))
 		{
 			$type_eval = $_REQUEST["type_eval"];
+			newReport($type_eval);
 		}
-		newReport($type_eval);
+		else
+		{
+			echo "Cannot create new document because no type_eval provided";
+		}
 	}
 	else if ($action=="add")
 	{	
-		global $typesEvalUnit;
 		$id_nouveau = addReport();
 		displayReport($id_nouveau);
 	}

@@ -26,7 +26,7 @@ include_once("config.inc.php");
 		<h1>Ajouter Rapport Chercheur</h1>
 		<ul>
 		<?php 
-		foreach($typesEvalIndividual as $typeEval => $value)
+		foreach($typesRapportsIndividuels as $typeEval => $value)
 		{
 			?>
 		<li><a href="?action=new&type_eval=<?php echo $typeEval ?>"><?php echo $value?>
@@ -39,7 +39,7 @@ include_once("config.inc.php");
 		<h1>Ajouter Rapport Unité</h1>
 		<ul>
 		<?php 
-		foreach($typesEvalUnit as $typeEval => $value)
+		foreach($typesRapportsUnites as $typeEval => $value)
 		{
 			?>
 			<li>
@@ -54,14 +54,14 @@ include_once("config.inc.php");
 		$sessions = showSessions();
 		foreach($sessions as $s)
 		{
-			$typesEval = getTypesEval($s["id"]);
+			$typesRapports = getTypesEval($s["id"]);
 			?>
 		<h1>
 			<?php echo "<a href=\"?action=view&amp;id_session=".$s["id"]."\">".$s["nom"]." ".date("Y",strtotime($s["date"]))."</a>"; ?>
 		</h1>
 		<ul>
 			<?php
-			foreach($typesEval as $typeEval)
+			foreach($typesRapports as $typeEval)
 			{
 				echo "\t\t<li><a href=\"?action=view&amp;id_session=".$s["id"]."&amp;type_eval=".urlencode($typeEval)."\">$typeEval</a></li>\n";
 			}
