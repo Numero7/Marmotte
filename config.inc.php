@@ -513,6 +513,9 @@
 	
 	$concours_ouverts = array(
 			"",	"06/01", "06/02", "06/03"
-			)
+			);
 	
+	$uploaded_csv_files = array(
+					'labos' => 'uploads/labos.csv'
+				);
 ?>
