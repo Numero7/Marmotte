@@ -74,7 +74,7 @@
 		</xsl:if>
 		<xsl:if test="(../@id_edit=@id_origine)">
 			<form action="export.php#anchor{@id_origine}" method="post">
-				<span class="evaltitlerapportshort">Avis :</span> 
+				<span class="evaltitlerapportshort">Avis/Classement :</span> 
 				<input name="avis" value="{avis}" /><br/>
 				<span class="evaltitlerapportshort">Rapport  : </span>
 				<textarea name="rapport"><xsl:value-of select="rapport"/></textarea><br/>
@@ -91,7 +91,7 @@
 		</xsl:if>
 		<xsl:if test="(../@id_edit!=@id_origine)">
 			<div class="rapportrapportshort">
-			<span class="evaltitlerapportshort">Avis :</span> <xsl:value-of select="avis"/><br/>
+			<span class="evaltitlerapportshort">Avis/Classement :</span> <xsl:value-of select="avis"/><br/>
 			<span class="evaltitlerapportshort">Rapport  : </span><xsl:value-of select="rapport"/>
 			<form action="export.php#anchor{@id_origine}"  method="post">
 				<input type="hidden" name="action" value="group"/>
