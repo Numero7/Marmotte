@@ -9,7 +9,7 @@
 		<td><select name="login"> 
 		<?php 
 			$users = listUsers();
-			foreach($users as $user)
+			foreach($users as $user => $data)
 			{
 				if (!isSuperUser($user))
 				echo "<option value=\"$user\">".ucfirst($user)."</option>";
@@ -66,7 +66,7 @@
 		<td><select name="login"> 
 		<?php 
 			$users = listUsers();
-			foreach($users as $user)
+			foreach($users as $user => $data)
 			{
 			  echo "<option value=\"$user\">".ucfirst($user)."</option>";
 			}
