@@ -44,7 +44,10 @@ if($dbh!=0)
 				$idtosave = $_REQUEST["save"];
 				$avis = $_REQUEST["avis"];
 				$rapport = $_REQUEST["rapport"];
-				updateRapportAvis($idtosave,$avis,$rapport);
+				if (!isset($_REQUEST["cancel"]))
+				{
+					updateRapportAvis($idtosave,$avis,$rapport);
+				}
 			}
 			$type = "xml";
 			if (isset($_REQUEST["type"]))

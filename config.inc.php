@@ -498,16 +498,16 @@
 					"xsl" => "",
 					"name" => "Zip",
 			),
+			"html" => 	array(
+					"mime" => "text/html",
+					"xsl" => "xslt/html2.xsl",
+					"name" => "Html",
+			),
 			"htmlmin" => 	array(
 					"mime" => "text/html",
 					"xsl" => "xslt/htmlminimaledit.xsl",
 					"name" => "Html",
 			),
-			"html" => 	array(
-					"mime" => "text/html",
-					"xsl" => "xslt/html2.xsl",
-					"name" => "Html",
-			)
 	);
 	
 	

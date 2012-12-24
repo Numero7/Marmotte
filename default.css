@@ -244,14 +244,29 @@ h1,h2,h3,h4 {
 	color: #63C3DC;
 	font-size: 1.4em;
 	height: 20px;
-	margin-left: 8px;
+	padding:0;
+	margin-left: 6px;
 }
 
 .subnav h1 a{
 	color: #63C3DC;
 }
+
+.subnav h2 {
+	color: #63C3DC;
+	font-size: 1.2em;
+	height: 20px;
+	padding:0;
+	margin-left: 12px;
+}
+
+.subnav h2 a{
+	padding:0;
+	color: #63C3DC;
+}
+
 .subnav ul {
-	margin: 0 0 16px;
+	margin-left: 18px;
 	padding: 0;
 }
 .subnav li { 
@@ -263,7 +278,8 @@ h1,h2,h3,h4 {
 	color: #fff;
 	display: block;
 	font-size: 0.9em;
-	padding: 3px 6px 3px 8px;
+	padding: 0;
+	margin-bottom:3px;
 	text-decoration: none;
 }
 .subnav li a:hover {

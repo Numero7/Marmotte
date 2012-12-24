@@ -161,21 +161,22 @@ table.compo a {
 
 .rapportshort{
   border:solid 1px #000;
-  font-size:14pt;
+font-family: Georgia, Times, "Times New Roman", serif;  font-size:14pt;
+font-family: Helvetica, Arial, sans-serif;
   font-style:italic;
   margin-bottom:20px;
   padding-left:10px;
   padding-bottom:10px;
 }
 
-.identiterapportshort{
+.rapportshort .identite{
   padding-top:10px;
   padding-bottom:10px;
   font-style:normal;
   font-size:15pt;
 }
 
-.typerapportshort{
+.rapportshort .type{
   float:right;
   text-align: right;
   border-left:solid 1px #000;
@@ -185,18 +186,18 @@ table.compo a {
   margin:0;
 }
 
-.evaltitlerapportshort{
+.rapportshort .evaltitle{
   font-style:normal;
 }
 
-.evalrapportshort{
+.rapportshort .eval{
   margin-top:5px;
   margin-bottom:10px;
 }
 
-.rapportrapportshort{
+.rapportshort .rapport{
   border:solid 1px #000;
   margin-top:5px;
   padding:5px;
-  margin-right:5px;
+  margin-right:10px;
 }

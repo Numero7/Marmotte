@@ -116,5 +116,6 @@ Les avis émis par les sections ne préjugent pas de la décision qui sera prise
 </xsl:if>
 </td></tr>
 </table>
+<xsl:if test="position()!=last()"><hr/></xsl:if>
 </xsl:template>
 </xsl:stylesheet>

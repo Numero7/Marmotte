@@ -18,11 +18,11 @@
 	<div class="content"> 
 	<xsl:for-each select="rapports/rapport">
 	<div class="rapportshort"><a name="anchor{@id_origine}"></a>
-		<div class="typerapportshort">
+		<div class="type">
 			<xsl:value-of select="type"/><br/>
 			par <xsl:value-of select="rapporteur"/> (ID#<xsl:value-of select="@id"/>/<xsl:value-of select="@id_origine"/>)
 		</div>
-		<div class="identiterapportshort">
+		<div class="identite">
 			<xsl:if test="(prenom!='') or (nom!='') or (grade!='')">
 				<xsl:value-of select="prenom"/>&#xA0;<span style="font-variant: small-caps;"><xsl:value-of select="nom"/></span> (<xsl:value-of select="grade"/>) -
 			</xsl:if>
@@ -34,49 +34,49 @@
 		</xsl:if>
 		</div>
 		<div class="clearer"></div>
-		<div class="prerapportrapportshort">
-			<span class="evaltitlerapportshort">Pré-rapport : </span><xsl:value-of select="prerapport"/>
+		<div class="prerapport">
+			<span class="evaltitle">Points marquants : </span><xsl:value-of select="prerapport"/>
 		</div>
 		<xsl:if test="(production!='') or (production_notes!='')">
-		<div class="evalrapportshort">
-			<span class="evaltitlerapportshort">Production <xsl:value-of select="production"/> : </span> <xsl:value-of select="production_notes"/><br/>
+		<div class="eval">
+			<span class="evaltitle">Production <xsl:value-of select="production"/> : </span> <xsl:value-of select="production_notes"/><br/>
 		</div>
 		</xsl:if>
 		<xsl:if test="(transfert!='') or (transfert_notes!='')">
-		<div class="evalrapportshort">
-			<span class="evaltitlerapportshort">Transfert <xsl:value-of select="transfert"/> : </span> <xsl:value-of select="transfert_notes"/><br/>
+		<div class="eval">
+			<span class="evaltitle">Transfert <xsl:value-of select="transfert"/> : </span> <xsl:value-of select="transfert_notes"/><br/>
 		</div>
 		</xsl:if>
 		<xsl:if test="(encadrement!='') or (encadrement_notes!='')">
-		<div class="evalrapportshort">
-			<span class="evaltitlerapportshort">Encadrement <xsl:value-of select="encadrement"/> : </span> <xsl:value-of select="encadrement_notes"/><br/>
+		<div class="eval">
+			<span class="evaltitle">Encadrement <xsl:value-of select="encadrement"/> : </span> <xsl:value-of select="encadrement_notes"/><br/>
 		</div>
 		</xsl:if>
 		<xsl:if test="(responsabilites!='') or (responsabilites_notes!='')">
-		<div class="evalrapportshort">
-			<span class="evaltitlerapportshort">Responsabilités <xsl:value-of select="responsabilites"/> : </span> <xsl:value-of select="responsabilites_notes"/><br/>
+		<div class="eval">
+			<span class="evaltitle">Responsabilités <xsl:value-of select="responsabilites"/> : </span> <xsl:value-of select="responsabilites_notes"/><br/>
 		</div>
 		</xsl:if>
 		<xsl:if test="(mobilite!='') or (mobilite_notes!='')">
-		<div class="evalrapportshort">
-			<span class="evaltitlerapportshort">Mobilité <xsl:value-of select="mobilite"/> : </span> <xsl:value-of select="mobilite_notes"/><br/>
+		<div class="eval">
+			<span class="evaltitle">Mobilité <xsl:value-of select="mobilite"/> : </span> <xsl:value-of select="mobilite_notes"/><br/>
 		</div>
 		</xsl:if>
 		<xsl:if test="(animation!='') or (animation_notes!='')">
-		<div class="evalrapportshort">
-			<span class="evaltitlerapportshort">Animation <xsl:value-of select="animation"/> : </span> <xsl:value-of select="animation_notes"/><br/>
+		<div class="eval">
+			<span class="evaltitle">Animation <xsl:value-of select="animation"/> : </span> <xsl:value-of select="animation_notes"/><br/>
 		</div>
 		</xsl:if>
 		<xsl:if test="(rayonnement!='') or (rayonnement_notes!='')">
-		<div class="evalrapportshort">
-			<span class="evaltitlerapportshort">Rayonnement <xsl:value-of select="rayonnement"/> : </span> <xsl:value-of select="rayonnement_notes"/><br/>
+		<div class="eval">
+			<span class="evaltitle">Rayonnement <xsl:value-of select="rayonnement"/> : </span> <xsl:value-of select="rayonnement_notes"/><br/>
 		</div>
 		</xsl:if>
 		<xsl:if test="(../@id_edit=@id_origine)">
 			<form action="export.php#anchor{@id_origine}" method="post">
-				<span class="evaltitlerapportshort">Avis :</span> 
+				<span class="evaltitle">Avis/Classement : </span> 
 				<input name="avis" value="{avis}" /><br/>
-				<span class="evaltitlerapportshort">Rapport  : </span>
+				<span class="evaltitle">Rapport  : </span>
 				<textarea name="rapport"><xsl:value-of select="rapport"/></textarea><br/>
 				<input type="hidden" name="action" value="group"/>
 				<input type="hidden" name="save" value="{@id_origine}"/>
@@ -87,12 +87,13 @@
 				<input type="hidden" name="login_rapp" value="{../@login_rapp}"/>
 				<input type="hidden" name="type" value="htmlmin"/>
 				<input type="submit" value="Sauvegarder"/>
+				<input type="submit" name="cancel" value="Annuler"/>
 			</form>
 		</xsl:if>
 		<xsl:if test="(../@id_edit!=@id_origine)">
-			<div class="rapportrapportshort">
-			<span class="evaltitlerapportshort">Avis :</span> <xsl:value-of select="avis"/><br/>
-			<span class="evaltitlerapportshort">Rapport  : </span><xsl:value-of select="rapport"/>
+			<div class="rapport">
+			<span class="evaltitle">Avis/Classement : </span> <xsl:value-of select="avis"/><br/>
+			<span class="evaltitle">Rapport  : </span><xsl:value-of select="rapport"/>
 			<form action="export.php#anchor{@id_origine}"  method="post">
 				<input type="hidden" name="action" value="group"/>
 				<input type="hidden" name="id_edit" value="{@id_origine}"/>
