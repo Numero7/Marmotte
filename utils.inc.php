@@ -483,10 +483,10 @@ function displaySummary($id_session, $type_eval, $sort_crit, $login_rapp)
 		}
 		foreach($actions as $action => $actionTitle)
 		{
-			echo "<td><a href=\"?action=$action&amp;id=".$row->id."&amp;id_origine=".$row->id_origine."\"><img class=\"icon\" width=\"24\" height=\"24\" src=\"img/$action-icon-24px.png\" alt=\"$actionTitle\"></a></td>";
+			echo "<td><a href=\"?action=$action&amp;id=".$row->id."&amp;id_origine=".$row->id_origine."\"><img class=\"icon\" height=\"24\" src=\"img/$action-icon-24px.png\" alt=\"$actionTitle\"></a></td>";
 		}
-		echo "<td><a href=\"export.php?action=viewpdf&amp;id=".$row->id."&amp;id_origine=".$row->id_origine."\"><img class=\"icon\" width=\"24\" height=\"24\" src=\"img/pdf-icon-24px.png\" alt=\"$actionTitle\"></a></td>";
-		echo "<td><a href=\"export.php?action=viewhtml&amp;id=".$row->id."&amp;id_origine=".$row->id_origine."\"><img class=\"icon\" width=\"24\" height=\"24\" src=\"img/html-icon-24px.png\" alt=\"$actionTitle\"></a></td>";
+		echo "<td><a href=\"export.php?action=viewpdf&amp;id=".$row->id."&amp;id_origine=".$row->id_origine."\"><img class=\"icon\" height=\"24\" src=\"img/pdf-icon-24px.png\" alt=\"$actionTitle\"></a></td>";
+		echo "<td><a href=\"export.php?action=viewhtml&amp;id=".$row->id."&amp;id_origine=".$row->id_origine."\"><img class=\"icon\" height=\"24\" src=\"img/html-icon-24px.png\" alt=\"$actionTitle\"></a></td>";
 		?>
 	
 	
@@ -804,7 +804,7 @@ function displayEditableReport($row, $actioname)
 				style="width: 100%;">
 					<?php
 					$users = listUsers();
-					foreach($users as $val)
+					foreach($users as $val => $data)
 					{
 						if($val!="admin")
 						{
@@ -813,7 +813,7 @@ function displayEditableReport($row, $actioname)
 							{
 								$sel = "selected=\"selected\"";
 							}
-							echo  "\t\t\t\t\t<option value=\"$val\" $sel>$val</option>";
+							echo  "\t\t\t\t\t<option value=\"$val\" $sel>".($data->description==""?$val:$data->description)."</option>";
 						}
 					}
 					?>
@@ -953,7 +953,7 @@ foreach($fieldsAll as  $fieldID => $title)
 		$values.=",";
 		if(isset($_REQUEST["field".$fieldID]))
 		{
-			$values.="\"".mysql_real_escape_string($_REQUEST["field".$fieldID])."\"";
+			$values.="\"".mysql_real_escape_string(trim($_REQUEST["field".$fieldID]))."\"";
 		}
 		else
 		{
@@ -978,7 +978,7 @@ function updateRapportAvis($id_origine,$avis,$rapport)
 			"rapport"=>0,
 		);
 	$fields = "auteur,id_session,id_origine,avis,rapport";
-	$values = "\"".mysql_real_escape_string($_SESSION["login"])."\",".$tab["id_session"].",".$tab["id_origine"].",\"".mysql_real_escape_string($avis)."\",\"".mysql_real_escape_string($rapport)."\"";
+	$values = "\"".mysql_real_escape_string($_SESSION["login"])."\",".$tab["id_session"].",".$tab["id_origine"].",\"".mysql_real_escape_string(trim($avis))."\",\"".mysql_real_escape_string(trim($rapport))."\"";
 	foreach($fieldsAll as  $fieldID => $title)
 	{
 		if (!isset($specialRule[$fieldID]))
@@ -986,7 +986,7 @@ function updateRapportAvis($id_origine,$avis,$rapport)
 			$fields.=",";
 			$fields.=$fieldID;
 			$values.=",";
-			$values.="\"".mysql_real_escape_string($tab[$fieldID])."\"";
+			$values.="\"".mysql_real_escape_string(trim($tab[$fieldID]))."\"";
 		}
 	}
 	$sql = "INSERT INTO evaluations ($fields) VALUES ($values);";

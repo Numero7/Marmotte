@@ -346,4 +346,6 @@ h1,h2,h3,h4 {
     padding: 2px 4px;
 }
 
-
+input{
+  padding:2px;
+}

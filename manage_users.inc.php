@@ -3,12 +3,12 @@
 function listUsers()
 {
 	$users = array();
-	$sql = "SELECT login FROM users ORDER BY login ASC;";
+	$sql = "SELECT * FROM users ORDER BY login ASC;";
 	if($result=mysql_query($sql))
 	{
 		while ($row = mysql_fetch_object($result))
 		{
-			$users[] = $row->login;
+			$users[$row->login] = $row;
 		}
 	}
 	return $users;

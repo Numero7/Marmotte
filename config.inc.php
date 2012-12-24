@@ -486,7 +486,7 @@
 			"pdf" => 	array(
 					"mime" => "application/x-pdf",
 					"xsl" => "",
-					"name" => "XML",
+					"name" => "PDF",
 			),
 			"xml" => 	array(
 					"mime" => "text/xml",
@@ -503,7 +503,7 @@
 					"xsl" => "xslt/html2.xsl",
 					"name" => "Html",
 			),
-			"htmlmin" => 	array(
+			"htmledit" => 	array(
 					"mime" => "text/html",
 					"xsl" => "xslt/htmlminimaledit.xsl",
 					"name" => "Html",
