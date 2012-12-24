@@ -664,7 +664,7 @@ function displayEditableReport($row, $actioname)
 	$is_unite = array_key_exists($eval_type,$typesRapportsUnites);
 	$is_ecole = ($eval_type == 'Ecole');
 	$is_candidat = ($eval_type == 'Candidature');
-	
+
 	$eval_name = $eval_type;
 	if(array_key_exists($eval_type, $typesRapports))
 		$eval_name = $typesRapports[$eval_type];
@@ -719,13 +719,13 @@ function displayEditableReport($row, $actioname)
 			$active_fields = $fieldsEcoles;
 		if($is_candidat)
 			$active_fields = $fieldsCandidat;
-		
+
 			
 
 		foreach($active_fields as  $fieldID)
 		{
 			$title = $fieldsAll[$fieldID];
-			
+
 			if(!in_array($fieldID,$active_fields))
 				continue;
 
@@ -762,8 +762,10 @@ function displayEditableReport($row, $actioname)
 			</td>
 		</tr>
 		<tr>
-			<td colspan="3">
-			<textarea rows=10 name="field<?php echo $fieldID;?>" style="width: 100%;"><?php echo $row->$fieldID;?></textarea>
+			<td colspan="3"><textarea rows=10 name="field<?php echo $fieldID;?>"
+					style="width: 100%;">
+					<?php echo $row->$fieldID;?>
+				</textarea>
 			</td>
 			<?php
 			}
@@ -865,8 +867,8 @@ function displayEditableReport($row, $actioname)
 			elseif ($type =="grade")
 			{
 				?>
-		
-		
+
+
 			<td><select name="fieldgrade" style="width: 100%;">
 					<?php
 					foreach($grades as $idg => $txtg)
@@ -880,7 +882,7 @@ function displayEditableReport($row, $actioname)
 					}
 					?>
 			</select></td>
-		<?php
+			<?php
 			}
 			elseif ($type =="concours")
 			{
@@ -898,14 +900,14 @@ function displayEditableReport($row, $actioname)
 					}
 					?>
 			</select></td>
-		<?php
+			<?php
 			}elseif($type =="ecole")
 			{
 				?>
 			<td colspan="3"><input name="fieldecole"
 				value="<?php echo $row->ecole ?>" style="width: 100%;">
 			</td>
-		<?php
+			<?php
 			}
 			?>
 		</tr>

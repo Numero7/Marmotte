@@ -141,3 +141,21 @@
 </table>
 </form>
 </p>
+
+<h2>Ajout de labos par csv</h2>
+<p>
+Upload de fichier csv avec séparateur , entrées encadrées par des "", encodé en utf-8
+et champs dans l'ordre CodeUnite/NomUnite/Nickname/Directeur.
+Les données d'un labo avec le même code seront remplacées.
+<!--
+ onsubmit="return confirm('Etes vous sur de vouloir uploader ce fichier labos?');">
+ -->
+<p>
+<form enctype="multipart/form-data" action="index.php" method="POST">
+<input type="hidden" name="type" value=labos>
+<input type="hidden" name="action" value=upload> <input
+<input type="hidden" name="MAX_FILE_SIZE" value="100000" />
+Fichier csv: <input name="uploadedfile" type="file" /><br />
+<input type="submit" value="Envoyer le fichier" />
+</form>
+</p>

@@ -29,7 +29,11 @@
 		{
 			removeCredentials();
 		}
-		if ($action=="auth" and isset($_REQUEST["login"]) and isset($_REQUEST["password"]))
+		else if ($action=="upload")
+		{
+			include("upload.inc.php");
+		}
+		else if ($action=="auth" and isset($_REQUEST["login"]) and isset($_REQUEST["password"]))
 		{
 			$login =  $_REQUEST["login"];
 			$pwd =  $_REQUEST["password"];
