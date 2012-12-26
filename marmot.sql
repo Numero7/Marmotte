@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 23, 2012 at 02:38 AM
+-- Generation Time: Dec 26, 2012 at 03:20 PM
 -- Server version: 5.5.27-log
 -- PHP Version: 5.4.6
 
@@ -26,7 +26,6 @@ SET time_zone = "+00:00";
 -- Table structure for table `evaluations`
 --
 
-DROP TABLE IF EXISTS `evaluations`;
 CREATE TABLE IF NOT EXISTS `evaluations` (
   `id_session` int(11) NOT NULL,
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -61,69 +60,62 @@ CREATE TABLE IF NOT EXISTS `evaluations` (
   `auteur` varchar(40) CHARACTER SET utf8 NOT NULL,
   `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=34 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=61 ;
 
 --
 -- Dumping data for table `evaluations`
 --
-/*
-INSERT INTO `evaluations` (`id_session`, `id`, `id_origine`, `nom`, `prenom`, `unite`, `grade`, `type`, `rapporteur`, `prerapport`, `anciennete_grade`, `date_recrutement`, `production`, `production_notes`, `transfert`, `transfert_notes`, `encadrement`, `encadrement_notes`, `responsabilites`, `responsabilites_notes`, `mobilite`, `mobilite_notes`, `animation`, `animation_notes`, `rayonnement`, `rayonnement_notes`, `rapport`, `avis`, `auteur`, `date`) VALUES
-(1, 1, 1, 'Pass', 'Joe', 'UMR 7172', 'CR2', 'Evaluation-Vague', 'John', 'Blabla', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', 'La section 06 ...', 'Tres favorable', 'john', '2012-11-21 09:17:26'),
-(1, 2, 1, 'Pass', 'Joe', 'UMR 7172', 'CR2', 'Evaluation-Vague', 'John', 'Quand meme, je trouve que....', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', 'La section 6 du com...', 'Reservé', 'jim', '2012-11-22 12:12:50'),
-(1, 3, 3, 'Summer', 'Dona', 'UMR 6666', 'DR2', 'Promotion', 'Jim', 'rgaqerg', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', 'ergqegqge', '', '2012-11-22 12:18:18'),
-(1, 4, 1, 'Pass', 'Joe', 'UMR 7172', 'CR2', 'Evaluation-Vague', 'John', 'Quand meme, je trouve que....', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', 'La section 6 du com...', 'Reservé', '', '2012-11-22 17:15:20'),
-(1, 5, 1, 'Pass', 'Joe', 'UMR 7172', 'CR2', 'Evaluation-Vague', 'John', 'D''accord, mais alors', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', 'La section 6 du com...', 'Favorable', '', '2012-11-22 17:22:02'),
-(1, 6, 1, 'Pass', 'Joe', 'UMR 7172', 'CR2', 'Evaluation-Vague', 'John', 'Quand meme, je trouve que dfvergfer....', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', 'La section 6 du com...', 'Reservé', '', '2012-11-22 17:22:59'),
-(1, 7, 1, 'Pass', 'Joe', 'UMR 7172', 'CR2', 'Evaluation-Vague', 'John', 'Quand meme, je trouve que dfvergfer....', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', 'La section 6 du com...', 'Reservé', '', '2012-11-22 17:24:23'),
-(1, 8, 3, 'Summer', 'Dona', 'UMR 6666', 'DR2', 'Promotion', 'Jim', 'rgaqerg', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', 'ergqegqge', 'admin', '2012-11-22 17:32:39'),
-(1, 9, 1, 'Pass', 'Joe', 'UMR 7172', 'CR2', 'Evaluation-Vague', 'John', 'Quand meme, je trouve que dfvergfer....', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', 'La section 6 du com...', 'Reservé', 'admin', '2012-11-22 17:51:17'),
-(1, 10, 3, 'Summer', 'Dona', 'UMR 6666', 'DR2', 'Promotion', 'Jim', 'rgaqerg', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', 'ewrwr', 'ergqegqge', 'admin', '2012-11-22 19:52:44'),
-(1, 11, 1, 'Pass', 'Joe', 'UMR 7172', 'CR2', 'Evaluation-Vague', 'John', 'Quand meme, je trouve que dfvergfer....', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', 'La section 6 du com...', 'Reservé', 'admin', '2012-11-22 19:53:20'),
-(1, 12, 3, 'Summer', 'Dona', 'UMR 6666', 'DR2', 'Promotion', 'Jim', 'rgaqerg', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', 'ewrwr', 'ergqegqge', 'admin', '2012-11-22 19:53:35'),
-(1, 13, 3, 'Summer', 'Dona', 'UMR 6666', 'DR2', 'Promotion', 'Jim', 'rgaqerg', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', 'ewrwr', 'ergqegqge', 'admin', '2012-11-22 19:53:58'),
-(2, 14, 1, 'Pass', 'Joe', 'UMR 7172', 'CR2', 'Evaluation-Vague', 'John', 'Quand meme, je trouve que dfvergfer....', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', 'La section 6 du com...', 'Reservé', 'admin', '2012-11-22 20:04:14'),
-(2, 15, 1, 'Pass', 'Joe', 'UMR 7172', 'CR2', 'Evaluation-Vague', 'John', 'Quand meme, je trouve que dfvergfer....', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', 'La section 6 du com...', 'Reservé', 'admin', '2012-11-22 20:04:24'),
-(1, 16, 1, 'Pass', 'Joe', 'UMR 7172', 'CR2', 'Evaluation-Vague', 'John', 'Quand meme, je trouve que dfvergfer....', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', 'La section 6 du com...', 'Reservé', 'admin', '2012-11-22 20:04:45'),
-(1, 17, 1, 'Pass', 'Joe', 'UMR 7172', 'CR2', 'Evaluation-Vague', 'John', 'Quand meme, je trouve que dfvergfer....', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', 'La section 6 du com...', 'Reservé', 'admin', '2012-11-22 20:05:22'),
-(2, 18, 1, 'Pass', 'Joe', 'UMR 7172', 'CR2', 'Evaluation-Vague', 'John', 'Quand meme, je trouve que dfvergfer....', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', 'La section 6 du com...', 'Reservé', 'admin', '2012-11-22 20:05:55'),
-(2, 19, 1, 'Pass', 'Joe', 'UMR 7172', 'CR2', 'Evaluation-Vague', 'John', 'Quand meme, je trouve que dfvergfer....', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', 'La section 6 du com...', 'Reservé', 'admin', '2012-11-22 20:06:57'),
-(1, 20, 1, 'Pass', 'Joe', 'UMR 7172', 'CR2', 'Evaluation-Vague', 'John', 'Quand meme, je trouve que dfvergfer....', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', 'La section 6 du com...', 'Reservé', 'admin', '2012-11-22 20:08:14'),
-(2, 21, 3, 'Summer', 'Dona', 'UMR 6666', 'DR2', 'Promotion', 'Jim', 'rgaqerg', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', 'ewrwr', 'ergqegqge', 'admin', '2012-11-22 20:08:21'),
-(1, 22, 3, 'Summer', 'Dona', 'UMR 6666', 'DR2', 'Promotion', 'Jim', 'rgaqerg', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', 'ewrwr', 'ergqegqge', 'admin', '2012-11-22 20:09:43'),
-(2, 23, 3, 'Summer', 'Dona', 'UMR 6666', 'DR2', 'Promotion', 'Jim', 'rgaqerg', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', 'ewrwr', 'ergqegqge', 'admin', '2012-11-22 20:09:47'),
-(1, 24, 3, 'Summer', 'Dona', 'UMR 6666', 'DR2', 'Evaluation-Vague', 'Jim', 'rgaqerg', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', 'ewrwr', 'ergqegqge', 'admin', '2012-11-22 20:10:36'),
-(2, 25, 1, 'Pass', 'Joe', 'UMR 7172', 'CR2', 'Evaluation-Vague', 'John', 'Quand meme, je trouve que dfvergfer.... mais en meme temps on peut dire que', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', 'La section 6 du com...', 'Moyen bof', 'admin', '2012-11-22 20:18:28'),
-(2, 26, 26, 'earg', 'er', 'erg', 'erg', '', 'erg', 'erg', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', 'eg', 'etg', 'admin', '2012-11-22 20:37:55'),
-(2, 27, 26, 'Blunt', 'James', 'UMR 7773', 'CR1', 'Evaluation-MiVague', 'Jules', '2-3 trucs assez cools', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', 'La section ', 'Assez favorable', 'admin', '2012-11-22 20:38:56'),
-(2, 28, 1, 'Pass', 'Joe', 'UMR 7172', 'CR2', 'Evaluation-MiVague', 'John', 'Quand meme, je trouve que dfvergfer.... mais en meme temps on peut dire que', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', 'La section 6 du com...', 'Moyen bof', 'admin', '2012-11-22 20:46:45'),
-(2, 29, 26, 'Blunt', 'James', 'UMR 7773', 'CR1', 'Promotion', 'Jules', '2-3 trucs assez cools', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', 'La section ', 'Assez favorable', 'admin', '2012-11-23 00:17:03'),
-(1, 30, 30, 'Jo', 'wede', 'oijoih', 'oj', '', 'a', 'oij', 'oh', 'oh', 'ihoonb', 'ohin', 'oi', 'oihj', 'oih', 'oih', 'oih', 'oih', 'oih', 'oih', 'oi', 'ho', 'i', 'hoi', 'h', 'oih', 'admin', '2012-11-23 01:19:40'),
-(1, 31, 31, 'Jo', 'wede', 'oijoih', 'oj', '', 'a', 'oij', 'oh', 'oh', 'ihoonb', 'ohin', 'oi', 'oihj', 'oih', 'oih', 'oih', 'oih', 'oih', 'oih', 'oi', 'ho', 'i', 'hoi', 'h', 'oih', 'admin', '2012-11-23 01:19:52'),
-(1, 32, 30, 'Jo', 'wede', 'oijoih', 'oj', 'Candidature', 'a', 'oij', 'oh', 'oh', 'ihoonb', 'ohin', 'oi', 'oihj', 'oih', 'oih', 'oih', 'oih', 'oih', 'oih', 'oi', 'ho', 'i', 'hoi', 'h', 'oih', 'admin', '2012-11-23 01:20:57'),
-(1, 33, 31, 'Jo', 'wede', 'oijoih', 'oj', 'Evaluation-Vague', 'a', 'oij', 'oh', 'oh', 'ihoonb', 'ohin', 'oi', 'oihj', 'oih', 'oih', 'oih', 'oih', 'oih', 'oih', 'oi', 'ho', 'i', 'hoi', 'h', 'oih', 'admin', '2012-11-23 01:30:23');
-*/
+
+/*INSERT INTO `evaluations` (`id_session`, `id`, `id_origine`, `nom`, `prenom`, `unite`, `ecole`, `grade`, `type`, `concours`, `rapporteur`, `prerapport`, `anciennete_grade`, `date_recrutement`, `production`, `production_notes`, `transfert`, `transfert_notes`, `encadrement`, `encadrement_notes`, `responsabilites`, `responsabilites_notes`, `mobilite`, `mobilite_notes`, `animation`, `animation_notes`, `rayonnement`, `rayonnement_notes`, `rapport`, `avis`, `auteur`, `date`) VALUES
+(3, 34, 34, 'Pass', 'Joe', 'UMR5800', '', 'Emerite', 'Evaluation-Vague', '', '', 'sdfsdfsdfsd', '3 ans', '2007', 'B+', '									', 'C+', '									', 'A', '									', 'A+', '									', 'B-', '									', 'C-', '									', 'C+', '									', ';dsf', 'differe', 'admin', '2012-12-24 08:52:09'),
+(3, 35, 34, 'Pass', 'Joe', 'UMR5800', '', 'Emerite', 'Evaluation-Vague', '', '', 'sdfsdfsdfsd', '3 ans', '2007', 'B+', '									', 'C+', '									', 'A', '									', 'A+', '									', 'B-', '									', 'C-', '									', 'C+', '									', 'La section vous recommande la plus grande vigilance dans le choix de vos collaborateurs.', 'differe', 'admin', '2012-12-24 08:54:20'),
+(1, 36, 36, 'Vaughan', 'Sarah', 'UMR5800', '', 'DRCE1', 'Titularisation', '', 'yawn', 'blala', '7', '1935', 'C+', '									', 'A-', '									', 'C+', '									', 'C', '									', 'C+', '									', 'A+', '									', 'A+', '									', 'blala', 'favorable', 'yawn', '2012-12-24 08:59:07'),
+(3, 37, 34, 'Pass', 'Joe', 'UMR5800', '', 'Emerite', 'Evaluation-Vague', '', '', 'sdfsdfsdfsd', '3 ans', '2007', 'B+', '									', 'C+', '									', 'A', '									', 'A+', '									', 'B-', '									', 'C-', '									', 'C+', '									', 'La section vous recommande la plus grande vigilance dans le choix de vos collaborateurs.', 'differe', 'admin', '2012-12-24 10:13:07'),
+(3, 38, 34, 'Pass', 'Joe', 'UMR5800', '', 'Emerite', 'Evaluation-Vague', '', '', 'sdfsdfsdfsd', '3 ans', '2007', 'B+', '									', 'C+', '									', 'A', '									', 'A+', '									', 'B-', '									', 'C-', '									', 'C+', '									', 'La section vous recommande la qweplus grande vigilance dans le choix de vos collaborateurs.', 'differe', 'admin', '2012-12-24 10:22:59'),
+(3, 39, 34, 'Pass', 'Joe', 'UMR5800', '', 'Emerite', 'Evaluation-Vague', '', '', 'sdfsdfsdfsd', '3 ans', '2007', 'B+', '									', 'C+', '									', 'A', '									', 'A+', '									', 'B-', '									', 'C-', '									', 'C+', '									', 'La section vous recommande la plus grande vigilance dans le choix de vos collaborateurs.', 'differe', 'admin', '2012-12-24 10:23:05'),
+(3, 40, 34, 'Pass', 'Joe', 'UMR5800', '', 'Emerite', 'Evaluation-Vague', '', '', 'sdfsdfsdfsd', '3 ans', '2007', 'B+', '									', 'C+', '									', 'A', '									', 'A+', '									', 'B-', '									', 'C-', '									', 'C+', '									', 'La section vous recommande la plus grande vigilance dans le choix de vos collaborateurs.', 'differe', 'admin', '2012-12-24 10:23:30'),
+(3, 41, 34, 'Pass', 'Joe', 'UMR5800', '', 'Emerite', 'Evaluation-Vague', '', '', 'sdfsdfsdfsd', '3 ans', '2007', 'B+', '									', 'C+', '									', 'A', '									', 'A+', '									', 'B-', '									', 'C-', '									', 'C+', '									', 'La section vous recommande la plus grande vigilance dans le choix de vos collaborateurs.', 'differe', 'admin', '2012-12-24 10:27:35'),
+(3, 42, 34, 'Pass', 'Joe', 'UMR5800', '', 'Emerite', 'Evaluation-Vague', '', '', 'sdfsdfsdfsd', '3 ans', '2007', 'B+', '									', 'C+', '									', 'A', '									', 'A+', '									', 'B-', '									', 'C-', '									', 'C+', '									', 'La section vous recommande la plus grande vigilance dans le choix de vos collaborateurs.', 'differe', 'admin', '2012-12-24 10:28:04'),
+(3, 43, 34, 'Pass', 'Joe', 'UMR5800', '', 'Emerite', 'Evaluation-Vague', '', '', 'sdfsdfsdfsd', '3 ans', '2007', 'B+', '									', 'C+', '									', 'A', '									', 'A+', '									', 'B-', '									', 'C-', '									', 'C+', '									', 'La section vous recommande la plus grande vigilance dans le choix de vos collaborateurs.', 'differe', 'admin', '2012-12-24 10:28:41'),
+(3, 44, 34, 'Pass', 'Joe', 'UMR5800', '', 'Emerite', 'Evaluation-Vague', '', '', 'sdfsdfsdfsd', '3 ans', '2007', 'B+', '									', 'C+', '									', 'A', '									', 'A+', '									', 'B-', '									', 'C-', '									', 'C+', '									', 'La section vous recommande la plus grande vigilance dans le choix de vos collaborateurs.', 'differe', 'admin', '2012-12-24 10:28:51'),
+(3, 45, 34, 'Pass', 'Joe', 'UMR5800', '', 'Emerite', 'Evaluation-Vague', '', '', 'sdfsdfsdfsd', '3 ans', '2007', 'B+', '									', 'C+', '									', 'A', '									', 'A+', '									', 'B-', '									', 'C-', '									', 'C+', '									', 'La section vous recommande la plus grande vigilance dans le choix de vos collaborateurs.', 'differe', 'admin', '2012-12-24 10:29:04'),
+(3, 46, 34, 'Pass', 'Joe', 'UMR5800', '', 'Emerite', 'Evaluation-Vague', '', 'joe', 'sdfsdfsdfsd', '3 ans', '2007', 'B+', '', 'C+', '', 'A', '', 'A+', '', 'B-', '', 'C-', '', 'C+', '', 'La section vous recommande la plus grande vigilance dans le choix de vos collaborateurs.', 'differe', 'admin', '2012-12-24 11:02:12'),
+(1, 47, 36, 'Vaughan', 'Sarah', 'UMR5800', '', 'DRCE1', 'Titularisation', '', 'yawn', 'blala', '7', '1935', 'C+', '', 'A-', '', 'C+', '', 'C', '', 'C+', '', 'A+', '', 'A+', '', 'Super cool !', 'favorable', 'admin', '2012-12-24 11:44:59'),
+(1, 48, 36, 'Vaughan', 'Sarah', 'UMR5800', '', 'DRCE1', 'Titularisation', '', 'yawn', 'blala', '7', '1935', 'C+', '', 'A-', '', 'C+', '', 'C', '', 'C+', '', 'A+', '', 'A+', '', 'Super cool !', 'favorable', 'admin', '2012-12-24 11:45:33'),
+(1, 49, 36, 'Vaughan', 'Sarah', 'UMR5800', '', 'DRCE1', 'Titularisation', '', 'yawn', 'blala', '7', '1935', 'C+', '', 'A-', '', 'C+', '', 'C', '', 'C+', '', 'A+', '', 'A+', '', 'Super cool !', 'favorable', 'admin', '2012-12-24 11:46:44'),
+(1, 50, 36, 'Vaughan', 'Sarah', 'UMR5800', '', 'DRCE1', 'Titularisation', '', 'yawn', 'blala', '7', '1935', 'C+', '', 'A-', '', 'C+', '', 'C', '', 'C+', '', 'A+', '', 'A+', '', 'Super cool !', 'favorable', 'admin', '2012-12-24 11:46:52'),
+(1, 51, 36, 'Vaughan', 'Sarah', 'UMR5800', '', 'DRCE1', 'Titularisation', '', 'yawn', 'blala', '7', '1935', 'C+', '', 'A-', '', 'C+', '', 'C', '', 'C+', '', 'A+', '', 'A+', '', 'Super cool ! llbl', 'favorable', 'admin', '2012-12-24 14:04:03'),
+(3, 52, 52, 'Young', 'Neil', '', '', '', 'Candidature', '06/02', 'yawn', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '9', 'yawn', '2012-12-26 13:13:10'),
+(1, 53, 36, 'Vaughan', 'Sarah', 'UMR5800', '', 'DRCE1', 'Titularisation', '', 'yawn', 'blala', '7', '1935', 'C+', '', 'A-', '', 'C+', '', 'C', '', 'C+', '', 'A+', '', 'A+', '', 'Super cool ! llbl', 'favorable', 'yawn', '2012-12-26 13:16:50'),
+(1, 54, 36, 'Vaughan', 'Sarah', 'UMR5800', '', 'DRCE1', 'Titularisation', '', 'yawn', 'blala', '7', '1935', 'C+', '', 'A-', '', 'C+', '', 'C', '', 'C+', '', 'A+', '', 'A+', '', 'Super cool ! llbl', 'favorable', 'yawn', '2012-12-26 13:18:39'),
+(3, 55, 52, 'Young', 'Neil', '', '', '', 'Candidature', '06/02', 'yawn', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', 'Un excellent candidat, plus tout jeune', '9', 'yawn', '2012-12-26 13:19:00'),
+(3, 56, 34, 'Pass', 'Joe', 'UMR5800', '', 'Emerite', 'Evaluation-Vague', '', 'joe', 'sdfsdfsdfsd', '3 ans', '2007', 'B+', '', 'C+', '', 'A', '', 'A+', '', 'B-', '', 'C-', '', 'C+', '', 'La section vous recommande la plus grande vigilance dans le choix de vos collaborateurs, mais plutot pas mal quand même ...', 'differe', 'yawn', '2012-12-26 13:19:24'),
+(3, 57, 34, 'Pass', 'Joe', 'UMR5800', '', 'Emerite', 'Evaluation-Vague', '', 'joe', 'sdfsdfsdfsd', '3 ans', '2007', 'B+', '', 'C+', '', 'A', '', 'A+', '', 'B-', '', 'C-', '', 'C+', '', 'La section vous recommande la plus grande vigilance dans le choix de vos collaborateurs, mais plutot pas mal quand même ...', 'differe', 'yawn', '2012-12-26 13:19:49'),
+(3, 58, 34, 'Pass', 'Joe', 'UMR5800', '', 'Emerite', 'Evaluation-Vague', '', 'joe', 'sdfsdfsdfsd', '3 ans', '2007', 'B+', '', 'C+', '', 'A', '', 'A+', '', 'B-', '', 'C-', '', 'C+', '', 'La section vous recommande la plus grande vigilance dans le choix de vos collaborateurs, mais plutot pas mal quand même ...', 'differe', 'yawn', '2012-12-26 13:40:42'),
+(3, 59, 34, 'Pass', 'Joe', 'UMR5800', '', 'Emerite', 'Evaluation-Vague', '', 'joe', 'sdfsdfsdfsd', '3 ans', '2007', 'B+', '', 'C+', '', 'A', '', 'A+', '', 'B-', '', 'C-', '', 'C+', '', 'La section vous recommande la plus grande vigilance dans le choix de vos collaborateurs, mais plutot pas mal quand même ...', 'differe', 'yawn', '2012-12-26 13:41:23'),
+(3, 60, 34, 'Pass', 'Joe', 'UMR5800', '', 'Emerite', 'Evaluation-Vague', '', 'joe', 'sdfsdfsdfsd', '3 ans', '2007', 'B+', '', 'C+', '', 'A', '', 'A+', '', 'B-', '', 'C-', '', 'C+', '', 'La section vous recommande la plus grande vigilance dans le choix de vos collaborateurs, mais plutot pas mal quand même ...', 'differe', 'yawn', '2012-12-26 13:42:14');*/
+
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `sessions`
 --
 
-DROP TABLE IF EXISTS `sessions`;
 CREATE TABLE IF NOT EXISTS `sessions` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `nom` varchar(60) CHARACTER SET utf8 NOT NULL,
   `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
 
 --
 -- Dumping data for table `sessions`
 --
 
-INSERT INTO `sessions` (`id`, `nom`, `date`) VALUES
+/*INSERT INTO `sessions` (`id`, `nom`, `date`) VALUES
 (1, 'Automne', '2012-11-22 15:48:04'),
 (2, 'Concours', '2013-01-14 12:53:00'),
-(3, 'Printemps', '2013-04-14 12:53:00');
+(3, 'Printemps', '2013-04-14 12:53:00');*/
 
 -- --------------------------------------------------------
 
@@ -131,7 +123,6 @@ INSERT INTO `sessions` (`id`, `nom`, `date`) VALUES
 -- Table structure for table `units`
 --
 
-DROP TABLE IF EXISTS `units`;
 CREATE TABLE IF NOT EXISTS `units` (
   `nickname` text CHARACTER SET utf8 NOT NULL,
   `code` text CHARACTER SET utf8 NOT NULL,
@@ -139,10 +130,13 @@ CREATE TABLE IF NOT EXISTS `units` (
   `directeur` text CHARACTER SET utf8 NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+--
+-- Dumping data for table `units`
+--
 
-INSERT INTO `units` (`nickname`, `code`, `fullname`, `directeur`) VALUES
-('LaBRI', 'UMR5800', 'Laboratoire Bordelais de Recherche en Informatique','Pascal WEIL' ),
-('LIX', 'UMR7161', 'Laboratoire d''Informatique de l''Ecole Polytechnique','Olivier BOURNEZ');
+/*INSERT INTO `units` (`nickname`, `code`, `fullname`, `directeur`) VALUES
+('LaBRI', 'UMR5800', 'Laboratoire Bordelais de Recherche en Informatique', 'Pascal WEIL'),
+('LIX', 'UMR7161', 'Laboratoire d''Informatique de l''Ecole Polytechnique', 'Olivier BOURNEZ');*/
 
 -- --------------------------------------------------------
 
@@ -150,19 +144,21 @@ INSERT INTO `units` (`nickname`, `code`, `fullname`, `directeur`) VALUES
 -- Table structure for table `users`
 --
 
-DROP TABLE IF EXISTS `users`;
 CREATE TABLE IF NOT EXISTS `users` (
   `login` varchar(40) CHARACTER SET utf8 NOT NULL,
   `passHash` varchar(40) CHARACTER SET utf8 NOT NULL,
-  `description` text CHARACTER SET utf8 NOT NULL
+  `description` text CHARACTER SET utf8 NOT NULL,
+  `permissions` int(11) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`login`, `passHash`, `description`) VALUES
-('admin', '$1$II0.x4/.$wcsKcSZ6Z0bMUUlWp/cS0/', 'Administrateur (Yann ou Hugo)');
+/*INSERT INTO `users` (`login`, `passHash`, `description`, `permissions`) VALUES
+('admin', '$1$yT3.Th..$oxCqn2cZoa/51YBXMIxpS/', 'Administrateur (Yann ou Hugo)', 1000),
+('yawn', '$1$/A..aK2.$B2tvrj3auxM2p.T7QXc9Z.', 'Yann Ponty', 0),
+('joe', '$1$ga5.pN4.$B6/b..AiAheVuj8t25kA70', 'Jonhattan Wilkinson', 100);*/
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

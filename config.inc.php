@@ -474,31 +474,42 @@
 		'edit'  => "Modifier"
 	);
 	
+	define("NIVEAU_PERMISSION_BASE", 0);
+	define("NIVEAU_PERMISSION_BUREAU", 100);
+	define("NIVEAU_PERMISSION_PRESIDENT_SECRETAIRE", 500);
+	define("NIVEAU_PERMISSION_SUPER_UTILISATEUR", 1000);
+	
+
 	$typeExports = array(
 			"pdf" => 	array(
 					"mime" => "application/x-pdf",
 					"xsl" => "",
 					"name" => "PDF",
+					"permissionlevel" => NIVEAU_PERMISSION_PRESIDENT_SECRETAIRE,
 			),
 			"xml" => 	array(
 					"mime" => "text/xml",
 					"xsl" => "xslt/xmlidentity.xsl",
 					"name" => "XML",
+					"permissionlevel" => NIVEAU_PERMISSION_BASE,
 			),
 			"latex" => 	array(
 					"mime" => "application/x-latex",
 					"xsl" => "",
 					"name" => "Zip",
+					"permissionlevel" => NIVEAU_PERMISSION_BASE,
 			),
 			"html" => 	array(
 					"mime" => "text/html",
 					"xsl" => "xslt/html2.xsl",
 					"name" => "Html",
+					"permissionlevel" => NIVEAU_PERMISSION_BASE,
 			),
 			"htmledit" => 	array(
 					"mime" => "text/html",
 					"xsl" => "xslt/htmlminimaledit.xsl",
 					"name" => "Html",
+					"permissionlevel" => NIVEAU_PERMISSION_BASE,
 			),
 	);
 	
@@ -510,11 +521,6 @@
 	$uploaded_csv_files = array(
 					'labos' => 'uploads/labos.csv'
 				);
-	
-	define("NIVEAU_PERMISSION_BASE", 0);
-	define("NIVEAU_PERMISSION_BUREAU", 100);
-	define("NIVEAU_PERMISSION_PRESIDENT_SECRETAIRE", 500);
-	define("NIVEAU_PERMISSION_SUPER_UTILISATEUR", 1000);
 	
 	$permission_levels = array(
 		NIVEAU_PERMISSION_BASE => "rapporteur",

@@ -127,6 +127,10 @@ if($dbh!=0)
 					$xsl->load($xslpath);
 					$proc = new XSLTProcessor();
 					$proc->importStyleSheet($xsl);
+					foreach ($typesRapportToAvis as $key => $val)
+					{
+						$proc->setParameter('', $key, implode_with_keys($val));
+					}
 					echo $proc->transformToXML($xml);
 				}
 			}
