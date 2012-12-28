@@ -148,7 +148,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `login` varchar(40) CHARACTER SET utf8 NOT NULL,
   `passHash` varchar(40) CHARACTER SET utf8 NOT NULL,
   `description` text CHARACTER SET utf8 NOT NULL,
-  `permissions` int(11) NOT NULL DEFAULT '0'
+  `permissions` int(11) NOT NULL DEFAULT '0',
   `email` text CHARACTER SET utf8 NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -158,8 +158,9 @@ CREATE TABLE IF NOT EXISTS `users` (
 
 INSERT INTO `users` (`login`, `passHash`, `description`,`permissions`,`email`) VALUES
 ('admin', '$1$II0.x4/.$wcsKcSZ6Z0bMUUlWp/cS0/', 'Administrateur (Yann ou Hugo)',1000,'cn6@labri.fr'),
-('yawn', '$1$/A..aK2.$B2tvrj3auxM2p.T7QXc9Z.', 'Yann Ponty', 0),
-('Frederique', '$1$FG7ncZxg$XC5sy9HLHxKDqs3SbANyZ0', 'Frédérique',1000,'Frederique.Bassino@lipn.univ-paris13.fr'),
+('hugo', '$1$jEk9YVFR$9AQw.nttY7jPKkAlzCX.K/', 'Hugo',1000,'hugo.gimbert@labri.fr'),
+('yawn', '$1$/A..aK2.$B2tvrj3auxM2p.T7QXc9Z.', 'Yann Ponty', 0, 'yann.ponty@lix.polytechnique.fr'),
+('Frederique', '$1$FG7ncZxg$XC5sy9HLHxKDqs3SbANyZ0', 'Frédérique',1000,'Frederique.Bassino@lipn.univ-paris13.fr');
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
