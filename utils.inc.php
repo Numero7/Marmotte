@@ -129,6 +129,10 @@ function sortCriteriaToSQL($sortCrit)
 		}
 		$sql .= $crit." ".$order;
 	}
+	if ($sql =="")
+	{
+	  $sql = "ORDER BY id_origine ";
+	}
 	return $sql;
 }
 
@@ -440,7 +444,11 @@ function displaySummary($id_session, $type_eval, $sort_crit, $login_rapp)
 	foreach($typeExports as $idexp => $exp)
 	{
 		$expname= $exp["name"];
-		echo " <a href=\"export.php?action=group&amp;id_session=$id_session&amp;type_eval=$type_eval&amp;sort_crit=$sort_crit&amp;login_rapp=$login_rapp&amp;type=$idexp\"><img class=\"icon\" width=\"50\" height=\"50\" src=\"img/$idexp-icon-50px.png\" alt=\"$expname\"></a>";
+		$level = $exp["permissionlevel"];
+		if (getUserPermissionLevel()>=$level)
+		{
+			echo " <a href=\"export.php?action=group&amp;id_session=$id_session&amp;type_eval=$type_eval&amp;sort_crit=$sort_crit&amp;login_rapp=$login_rapp&amp;type=$idexp\"><img class=\"icon\" width=\"50\" height=\"50\" src=\"img/$idexp-icon-50px.png\" alt=\"$expname\"></a>";
+		}
 	}
 	?>
 </p>

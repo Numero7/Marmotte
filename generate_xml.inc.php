@@ -20,6 +20,14 @@ function getReportsAsXMLArray($id_session=-1, $type_eval="", $sort_crit="", $log
 	return $docs;
 }
 
+function implode_with_keys($assoc,$inglue=':',$outglue=','){
+    $res=array();
+    foreach($assoc as $tk=>$tv){
+        $res[] = $tk.$inglue.$tv;
+    }
+    return implode($outglue,$res);
+}
+
 function getReportsAsXML($id_session=-1, $type_eval="", $sort_crit="", $login_rapp="",$id_origine=-1)
 {
 	global $fieldsAll;
