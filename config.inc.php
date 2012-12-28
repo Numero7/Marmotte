@@ -351,7 +351,7 @@
 			"favorable" => "<B>Avis favorable</B>",
 			"defavorable" => "<B>Avis défavorable</B>",
 			"reserve" => "<B>Avis réservé</B>",
-			"sansavis" => "Pas d'avis"
+			"sansavis" => "<B>Pas d'avis</B>"
 		);
 
 	/* Pour les écoles thématiques*/

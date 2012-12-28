@@ -60,7 +60,7 @@ Les avis émis par les sections ne préjugent pas de la décision qui sera prise
 
 
 <p>
-<xsl:value-of select="rapport"/>
+<xsl:value-of disable-output-escaping="yes" select="rapport"/>
 </p>
 
 </td>

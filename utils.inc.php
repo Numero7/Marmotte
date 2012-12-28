@@ -761,7 +761,7 @@ function displayEditableReport($row, $actioname)
 			</td>
 		</tr>
 		<tr>
-			<td colspan="3"><textarea name="field<?php echo $fieldID;?>" style="width: 100%;"><?php echo $row->$fieldID;?></textarea>
+			<td colspan="3"><textarea name="field<?php echo $fieldID;?>" style="width: 100%;"><?php echo strip_tags($row->$fieldID);?></textarea>
 			</td>
 			<?php
 			}
@@ -773,7 +773,7 @@ function displayEditableReport($row, $actioname)
 			</td>
 		</tr>
 		<tr>
-			<td colspan="3"><textarea rows=10 name="field<?php echo $fieldID;?>" style="width: 100%;"><?php echo $row->$fieldID;?></textarea>
+			<td colspan="3"><textarea rows=10 name="field<?php echo $fieldID;?>" style="width: 100%;"><?php echo strip_tags($row->$fieldID);?></textarea>
 			</td>
 			<?php
 			}
@@ -939,7 +939,7 @@ foreach($fieldsAll as  $fieldID => $title)
 		$values.=",";
 		if(isset($_REQUEST["field".$fieldID]))
 		{
-			$values.="\"".mysql_real_escape_string(trim($_REQUEST["field".$fieldID]))."\"";
+			$values.="\"".mysql_real_escape_string(nl2br(trim($_REQUEST["field".$fieldID]), true))."\"";
 		}
 		else
 		{
