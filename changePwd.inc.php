@@ -1,5 +1,9 @@
 <h2>Modifier votre mot de passe</h2>
 <p>
+Les mots de passes passent par une fonction de hachage avant d'être stockés sur le serveur
+et ne sont donc pas consultables par les administrateurs du site.
+</p>
+<p>
 <form method="post">
 <table class="inputreport">
 	<tr>

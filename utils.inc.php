@@ -39,25 +39,6 @@ function getDescription($login)
 	return NULL;
 } ;
 
-function parseSortCriteria($sort_crit)
-{
-	$result = array();
-	$pieces = explode(";", $sort_crit);
-	foreach($pieces as $crit)
-	{
-		$firstChar = substr($crit,0,1);
-		$crit = substr($crit,1);
-		if ($firstChar=="*")
-		{
-			$result[$crit]= "ASC";
-		}
-		else if ($firstChar=="-")
-		{
-			$result[$crit]= "DESC";
-		}
-	}
-	return $result;
-}
 
 function showCriteria($sortCrit, $crit)
 {
@@ -120,26 +101,6 @@ function dumpEditedCriteria($sortCrit, $edit_crit)
 	return urlencode($result);
 }
 
-function sortCriteriaToSQL($sortCrit)
-{
-	$sql = "";
-	foreach($sortCrit as $crit => $order)
-	{
-		if ($sql == "")
-		{
-			$sql = "ORDER BY ";
-		}
-		else
-		{ $sql .= ", ";
-		}
-		$sql .= $crit." ".$order;
-	}
-	if ($sql =="")
-	{
-	  $sql = "ORDER BY id_origine ";
-	}
-	return $sql;
-}
 
 function getTypesEval($id_session){
 	$finalResult = array();
@@ -327,33 +288,6 @@ function highlightDiff(&$prevVals,$key,$val)
 	return $val;
 }
 
-function filterSortReports($id_session, $type_eval, $sort_crit, $login_rapp, $id_origin=-1)
-{
-	$sortCrit = parseSortCriteria($sort_crit);
-
-	$sql = "SELECT tt.*, ss.nom AS nom_session, ss.date AS date_session FROM evaluations tt INNER JOIN ( SELECT id, MAX(date) AS date FROM evaluations GROUP BY id_origine) mostrecent ON tt.date = mostrecent.date, sessions ss WHERE ss.id=tt.id_session ";
-	if ($id_session!=-1)
-	{
-		$sql .= " AND id_session=$id_session ";
-	}
-	if ($id_origin >= 0)
-	{
-		$sql .= " AND id_origine=$id_origin ";
-	}
-	if ($type_eval!="")
-	{
-		$sql .= " AND type=\"$type_eval\" ";
-	}
-	if ($login_rapp!="")
-	{
-		$sql .= " AND rapporteur=\"$login_rapp\" ";
-	}
-	$sql .= sortCriteriaToSQL($sortCrit);
-	$sql .= ";";
-	//echo $sql;
-	$result=mysql_query($sql);
-	return $result;
-}
 
 function displaySummary($id_session, $type_eval, $sort_crit, $login_rapp)
 {
@@ -364,6 +298,11 @@ function displaySummary($id_session, $type_eval, $sort_crit, $login_rapp)
 	global $typeExports;
 
 	$result = filterSortReports($id_session, $type_eval, $sort_crit, $login_rapp);
+	if($result == false)
+	{
+		echo "Could not process sql query <br/>";
+		return;
+	}
 	$sortCrit = parseSortCriteria($sort_crit);
 	$rapporteurs = array();
 	$sessions = showSessions();

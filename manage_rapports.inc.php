@@ -8,6 +8,78 @@ function getReport($id_rapport)
 	return mysql_fetch_object($result);
 }
 
+function filterSortReports($id_session, $type_eval, $sort_crit, $login_rapp, $id_origin=-1)
+{
+	$sortCrit = parseSortCriteria($sort_crit);
+
+	$sql = "SELECT tt.*, ss.nom AS nom_session, ss.date AS date_session FROM evaluations tt INNER JOIN ( SELECT id, MAX(date) AS date FROM evaluations GROUP BY id_origine) mostrecent ON tt.date = mostrecent.date, sessions ss WHERE ss.id=tt.id_session ";
+	if ($id_session!=-1)
+	{
+		$sql .= " AND id_session=$id_session ";
+	}
+	if ($id_origin >= 0)
+	{
+		$sql .= " AND id_origine=$id_origin ";
+	}
+	if ($type_eval!="")
+	{
+		$sql .= " AND type=\"$type_eval\" ";
+	}
+	if ($login_rapp!="")
+	{
+		$sql .= " AND rapporteur=\"$login_rapp\" ";
+	}
+	$sql .= " AND tt.id>0 ";
+	
+	$sql .= sortCriteriaToSQL($sortCrit);
+	$sql .= ";";
+	//echo $sql;
+	$result=mysql_query($sql);
+	if($result == false)
+		echo "Failed to process query <br/>".$sql."<br/>";
+	return $result;
+}
+
+function parseSortCriteria($sort_crit)
+{
+	$result = array();
+	$pieces = explode(";", $sort_crit);
+	foreach($pieces as $crit)
+	{
+		$firstChar = substr($crit,0,1);
+		$crit = substr($crit,1);
+		if ($firstChar=="*")
+		{
+			$result[$crit]= "ASC";
+		}
+		else if ($firstChar=="-")
+		{
+			$result[$crit]= "DESC";
+		}
+	}
+	return $result;
+}
+
+function sortCriteriaToSQL($sortCrit)
+{
+	$sql = "";
+	foreach($sortCrit as $crit => $order)
+	{
+		if ($sql == "")
+		{
+			$sql = "ORDER BY ";
+		}
+		else
+		{ $sql .= ", ";
+		}
+		$sql .= $crit." ".$order;
+	}
+	if ($sql =="")
+	{
+		$sql = "ORDER BY id_origine ";
+	}
+	return $sql;
+}
 
 function updateRapportAvis($id_origine,$avis,$rapport)
 {
@@ -50,15 +122,15 @@ function deleteReport($id_rapport, $login)
 	$report = getReport($id_rapport);
 	if(($report->rapporteur == $login) || (isSuperUser($login)))
 	{
-		$sql = "DELETE FROM evaluations WHERE id=$id_rapport;";
+		$sql = "UPDATE evaluations SET id=-".$id_rapport." WHERE id=".$id_rapport.";";
 		if(mysql_query($sql) != false)
 			return "Deleted report ".$id_rapport." <br/>";
 		else
-			return "Failed to delete report: failed to process sql query for report ".$id_rapport;
+			return "Failed to delete report: failed to process sql query ".$sql.".<br/>";
 	}
 	else
 	{
-		return "You dont own enough permissions to delete this report from ".$login ." <br/>";
+		return "You dont own enough permissions to delete this report from ".$login .".<br/>";
 	}
 		
 };
