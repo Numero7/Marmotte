@@ -1,5 +1,6 @@
 <?php
 
+require_once('manage_unites.inc.php');
 
 /*
  * Upload de fichier csv avec séparateur ; entrées encadrées par des "", encodé en utf-8
@@ -10,31 +11,17 @@ function process_labos_csv($filename)
 {
 	if($file = fopen ( $filename , 'r') )
 	{
-		$fields = "code, fullname, nickname, directeur";
-		$insertcoma = false;
+		
 		$nb = 0;
 		while(($data = fgetcsv ( $file, 0, ',' , '"' )) != false)
 		{
 			$nb++;
-			$values ="";
 			$num = count($data);
 			if($num != 4)
 				continue;
-			$sql = "DELETE FROM units WHERE code = \"".$data[0]."\";";
-			mysql_query($sql);
-
-			for($i = 0; $i <4; $i++)
-			{
-				$values .= "\"".mysql_real_escape_string($data[$i])."\"";
-				if($i < 3)
-					$values .= ",";
-			}
 			
-			$sql = "INSERT INTO units ($fields) VALUES ($values);";
-			$result = mysql_query($sql);
-			
-			if($result = false)
-				return "Failed to process query ".$sql;
+			if(ajout_unite($data[2],$data[0],$data[1],$data[3]) == false)
+				return "Failed to add unit ".$data[0];
 		}
 		return "Uploaded ".$nb." labs information to units database";
 	}

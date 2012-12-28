@@ -1,6 +1,7 @@
 <?php 
 
 require_once('manage_sessions.inc.php');
+require_once('manage_unites.inc.php');
 
 function getReportsAsXMLArray($id_session=-1, $type_eval="", $sort_crit="", $login_rapp="")
 {

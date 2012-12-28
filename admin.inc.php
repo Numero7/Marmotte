@@ -193,20 +193,48 @@
 </form>
 </p>
 <hr>
-<h2>Ajout de labos par csv</h2>
+<h2>Ajout d'une unité</h2>
+<p>
+<form enctype="multipart/form-data" action="index.php" method="POST";">
+
+<table class="inputreport" >
+	<tr>
+		<td style="width:20em;">Acronyme</td>
+		<td style="width:20em;"><input name="nickname"></td>
+		<td><span class="examplevaleur">Exemple : LaBRI</span></td>
+	</tr>
+	<tr>
+		<td style="width:20em;">Code</td>
+		<td style="width:20em;"><input name="code"></td>
+		<td><span class="examplevaleur">Exemple : UMR5800</span></td>
+	</tr>
+	<tr>
+		<td style="width:20em;">Nom Complet</td>
+		<td style="width:20em;"><input name="fullname"></td>
+		<td><span class="examplevaleur">Exemple : Labratoire Bordelais de Recherche en Informatique</span></td>
+	</tr>
+	<tr>
+		<td style="width:20em;">Directeur</td>
+		<td style="width:20em;"><input name="directeur"></td>
+		<td><span class="examplevaleur">Exemple : Pascal Weil</span></td>
+	</tr>
+	</table>
+<input type="hidden" name="type" value=labo>
+<input type="hidden" name="action" value=ajoutlabo> <input
+<input type="submit" value="Ajouter unité" />
+</form>
+</p>
+<h2>Ajout de plusieurs unités</h2>
 <p>
 Upload de fichier csv avec séparateur , entrées encadrées par des "", encodé en utf-8
-et champs dans l'ordre CodeUnite/NomUnite/Nickname/Directeur.
+et champs dans l'ordre CodeUnite/NomUnite/Acronyme/Directeur.<br/>
 Les données d'un labo avec le même code seront remplacées.
-<!--
- onsubmit="return confirm('Etes vous sur de vouloir uploader ce fichier labos?');">
- -->
-<p>
-<form enctype="multipart/form-data" action="index.php" method="POST">
+</p>
+<form enctype="multipart/form-data" action="index.php" method="POST"  onsubmit="return confirm('Etes vous sur de vouloir uploader ce fichier labos?');">
 <input type="hidden" name="type" value=labos>
 <input type="hidden" name="action" value=upload> <input
 <input type="hidden" name="MAX_FILE_SIZE" value="100000" />
 Fichier csv: <input name="uploadedfile" type="file" /><br />
-<input type="submit" value="Envoyer le fichier" />
+<input type="submit" value="Ajouter unités" />
 </form>
 </p>

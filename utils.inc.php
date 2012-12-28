@@ -4,6 +4,10 @@ require_once('tcpdf/config/lang/eng.php');
 require_once('tcpdf/tcpdf.php');
 require_once('config.inc.php');
 require_once('manage_users.inc.php');
+require_once('manage_unites.inc.php');
+
+//set_exception_handler('exception_handler');
+//set_error_handler('error_handler');
 
 function db_connect($serverName,$dbname,$login,$password)
 {
@@ -985,27 +989,6 @@ function addReport()
 };
 
 
-function unitsList()
-{
-	$units = array();
-	$sql = "SELECT * FROM units ORDER BY nickname ASC;";
-	if($result=mysql_query($sql))
-	{
-		while ($row = mysql_fetch_object($result))
-		{
-			$units[$row->code] = $row;
-		}
-	}
-	return $units;
-}
-
-
-
-
-
-
-
-
 
 function HTMLToPDF($html)
 {
@@ -1068,12 +1051,29 @@ function HTMLToPDF($html)
 	return $pdf;
 }
 
+function message_handler($subject,$body)
+{
+	$headers = 'From: '.webmaster. "\r\n" . 'Reply-To: '.webmaster. "\r\n" .'X-Mailer: PHP/' . phpversion()."\r\n";
+	mail(webmaster, $subject, "\r\n".$body."\r\n", $headers);
+}
 
 function email_handler($recipient,$subject,$body)
 {
-	$headers = 'From: '.webmaster. "\r\n" . 'Reply-To: '.webmaster. "\r\n" .'X-Mailer: PHP/' . phpversion()."\r\n";
+	$headers = 'From: '.webmaster. "\r\n" . 'Reply-To: '.webmaster. "\r\n".'Content-Type: text/plain; charset="UTF-8"\r\n'.'X-Mailer: PHP/' . phpversion()."\r\n";
 		
 	return mail($recipient, $subject, "\r\n".$body."\r\n", $headers);
+}
+
+function exception_handler($exception)
+{
+	message_handler("Marmotte webpage :exception ",$exception->getMessage());
+}
+
+
+function error_handler($errno, $errstr, $errfile, $errline)
+{
+	$body= "Number:".$errno."\r\n String:".$errstr."\r\n File:".$errfile."\r\n Line:".$errline;
+	message_handler("Marmotte webpage :error ",$body);
 }
 
 ?>

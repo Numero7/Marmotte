@@ -29,6 +29,7 @@ include_once("config.inc.php");
 		<h2>
 			<?php echo "<a href=\"?action=view&amp;id_session=".$s["id"]."\">".$s["nom"]." ".date("Y",strtotime($s["date"]))."</a>"; ?>
 		</h2>
+		<!-- 
 		<ul>
 			<?php
 			foreach($typesRapports as $typeEval)
@@ -37,6 +38,7 @@ include_once("config.inc.php");
 			}
 			?>
 		</ul>
+		 -->
 		<?php
 		}
 		?>

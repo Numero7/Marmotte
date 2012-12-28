@@ -243,7 +243,7 @@
 			'Changement-Directeur' => 'Changement de Directeur',
 			'Changement-Directeur-Adjoint' => 'Changement de Directeur Adjoint',
 			'Renouvellement' => 'Renouvellement',
-			'Expertise' => 'Expertise',
+			'Association' => 'Association',
 			'Ecole' => 'Ecole Thematique',
 			'Comite-Evaluation' => 'Comité d\'Evaluation',
 			'Generique' => 'Générique'
@@ -325,7 +325,7 @@
 		'Changement-Directeur' => $avis_pertinence,
 		'Changement-Directeur-Adjoint' => $avis_pertinence,
 		'Renouvellement' => $avis_pertinence,
-		'Expertise' => $avis_pertinence,
+		'Association' => $avis_pertinence,
 		'Ecole' => $avis_ecoles,
 		'Comite-Evaluation' => $avis_binaire,
 		'Generique' => $avis_vide,
@@ -365,7 +365,7 @@
 	'Evaluation-Vague' => $evalCheckboxes,
 	'Evaluation-MiVague' => $evalCheckboxes,
 	'Renouvellement' => $pertinenceCheckboxes,
-	'Expertise' => $pertinenceCheckboxes,
+	'Association' => $pertinenceCheckboxes,
 	'Ecole' => $ecoleCheckboxes
 	);
 
@@ -373,7 +373,7 @@
 			'Evaluation-Vague' => '<B>EVALUATION A VAGUE DE CHERCHEUR<br/>Avis de la section sur l’activité du chercheur</B>',
 			'Evaluation-MiVague' => '<B>EVALUATION A MI-VAGUE DE CHERCHEUR<br/>Avis de la section sur l’activité du chercheur</B>',
 			'Renouvellement' => '<B>AVIS DE PERTINENCE DU SOUTIEN DU CNRS AUX UNITES</B>',
-			'Expertise' => '<B>AVIS DE PERTINENCE DU SOUTIEN DU CNRS AUX UNITES</B>',
+			'Association' => '<B>AVIS DE PERTINENCE DU SOUTIEN DU CNRS AUX UNITES</B>',
 			'Ecole' => '<B>AVIS SUR L\'ECOLE</B>'
 	);
 	
@@ -390,7 +390,6 @@
 			'Changement-Directeur-Adjoint' =>  '<B>Objet de l’évaluation :</B><br/>Changement de directeur adjoint',
 			'Renouvellement' => '<B>Objet de l’examen :</B> <EM>avis de pertinence d’association au CNRS : renouvellement</EM>',
 			'Association' => '<B>Objet de l’examen :</B> <EM>avis de pertinence d’association au CNRS : projet d\'association</EM>',
-			'Expertise' => '<B>Objet de l’examen :</B> <EM>expertise</EM>',
 			'Ecole' => '<B>Objet de l’évaluation :</B><br/> Ecole Thématique',
 			'Comite-Evaluation' => '<B>Objet de l’examen :</B> Comité d\'évaluation',
 			'Generique' => '<B>Rapport</B>',
@@ -417,7 +416,6 @@
 			'Changement-Directeur-Adjoint' =>  'Unite',
 			'Renouvellement' => 'Unite',
 			'Association' => 'Unite',
-			'Expertise' => 'Unite',
 			'Ecole' => 'Ecole',
 			'Comite-Evaluation' => 'Unite',
 			'Generique' => '',
@@ -519,7 +517,8 @@
 			);
 	
 	$uploaded_csv_files = array(
-					'labos' => 'uploads/labos.csv'
+					'labos' => 'uploads/labos.csv',
+					'rapporteurs' => 'uploads/rapporteurs.csv'
 				);
 	
 	$permission_levels = array(

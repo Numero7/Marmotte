@@ -26,6 +26,8 @@ SET time_zone = "+00:00";
 -- Table structure for table `evaluations`
 --
 
+DROP TABLE IF EXISTS `evaluations`;
+
 CREATE TABLE IF NOT EXISTS `evaluations` (
   `id_session` int(11) NOT NULL,
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -35,7 +37,7 @@ CREATE TABLE IF NOT EXISTS `evaluations` (
   `unite` varchar(50) CHARACTER SET utf8 NOT NULL,
   `ecole` text CHARACTER SET utf8 NOT NULL,
   `grade` enum('CR2','CR1','DR2','DR1','DRCE1','DRCE2','ChaireMC','ChairePR','Emerite','MC','PR','PhD','HDR','None') CHARACTER SET utf8 NOT NULL,
-  `type` enum('Evaluation-Vague','Evaluation-MiVague','Promotion','Candidature','Suivi-PostEvaluation','Titularisation','Affectation','Changement-Directeur','Changement-Directeur-Adjoint','Renouvellement','Expertise','Ecole','Comite-Evaluation','Generique') CHARACTER SET utf8 NOT NULL,
+  `type` enum('Evaluation-Vague','Evaluation-MiVague','Promotion','Candidature','Suivi-PostEvaluation','Titularisation','Affectation','Changement-Directeur','Changement-Directeur-Adjoint','Renouvellement','Association','Ecole','Comite-Evaluation','Generique') CHARACTER SET utf8 NOT NULL,
   `concours` text CHARACTER SET utf8 NOT NULL,
   `rapporteur` text CHARACTER SET utf8 NOT NULL,
   `prerapport` text CHARACTER SET utf8 NOT NULL,
