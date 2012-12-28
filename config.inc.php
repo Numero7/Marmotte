@@ -469,7 +469,8 @@
 	$actions = array(
 		'details' => "Détails", 
 		'history' => "Historique", 
-		'edit'  => "Modifier"
+		'edit'  => "Modifier",
+		'delete'  => "Supprimer"
 	);
 	
 	define("NIVEAU_PERMISSION_BASE", 0);

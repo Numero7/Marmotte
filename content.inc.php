@@ -12,9 +12,17 @@
 		<?php 
 		require_once('manage_sessions.inc.php');
 		require_once('manage_unites.inc.php');
-		
+		require_once('manage_rapports.inc.php');
+
+		$id_rapport = "";
+		if (isset($_REQUEST["id"]))
+			$id_rapport = $_REQUEST["id"];
+
 		switch($action)
 		{
+			case 'delete':
+				echo deleteReport($id_rapport,$_SESSION['login']);
+			
 			case 'view':
 				{
 					$id_session = -1;
@@ -42,22 +50,10 @@
 				}
 				break;
 			case 'details':
-				{
-					if (isset($_REQUEST["id"]))
-					{
-						$id_rapport = $_REQUEST["id"];
-						displayReport($id_rapport);
-					}
-				}
+				displayReport($id_rapport);
 				break;
 			case 'edit':
-				{
-					if (isset($_REQUEST["id"]))
-					{
-						$id_rapport = $_REQUEST["id"];
-						editReport($id_rapport);
-					}
-				}
+				editReport($id_rapport);
 				break;
 			case 'history':
 				{
@@ -73,7 +69,7 @@
 					if (isset($_REQUEST["id_origine"]))
 					{
 						$id_origine = $_REQUEST["id_origine"];
-						$id_nouveau = update($id_origine);
+						$id_nouveau = update($id_origine, $_REQUEST, $_SESSION["login"]);
 						displayReport($id_nouveau);
 					}
 					else
@@ -97,7 +93,7 @@
 				break;
 			case 'add':
 				{
-					$id_nouveau = addReport();
+					$id_nouveau = addReport($_REQUEST, $_SESSION["login"]);
 					displayReport($id_nouveau);
 				}
 				break;
@@ -297,16 +293,15 @@
 		<p>Bienvenue sur le nouveau site d'édition des prérapports de la
 			section 06.</p>
 		<p>
-			Le <b>menu situé à droite de cette page</b> vous permettra de <a
-				href="?action=view">consulter les rapports renseignés</a> et/ou en <a
-				href="?action=view">saisir un nouveau</a>.
+			Le <b>menu situé à droite de cette page</b> vous permettra de
+			consulter, éditer ou créer des rapports.
 		</p>
 		<p>N'hésitez pas à nous contacter (Yann ou Hugo) en cas de
 			difficultés.</p>
 		<?php
-	}
-	break;
- 	}
-?>
+				}
+				break;
+		}
+		?>
 	</div>
 </div>

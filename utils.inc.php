@@ -5,6 +5,7 @@ require_once('tcpdf/tcpdf.php');
 require_once('config.inc.php');
 require_once('manage_users.inc.php');
 require_once('manage_unites.inc.php');
+require_once('manage_rapports.inc.php');
 
 //set_exception_handler('exception_handler');
 //set_error_handler('error_handler');
@@ -335,7 +336,7 @@ function filterSortReports($id_session, $type_eval, $sort_crit, $login_rapp, $id
 	{
 		$sql .= " AND id_session=$id_session ";
 	}
-	if ($id_origin!=-1)
+	if ($id_origin >= 0)
 	{
 		$sql .= " AND id_origine=$id_origin ";
 	}
@@ -628,32 +629,6 @@ $first = false;
 	}
 }
 
-function getReport($id_rapport)
-{
-	$sql = "SELECT tt.*, ss.nom AS nom_session, ss.date AS date_session FROM evaluations tt, sessions ss WHERE tt.id=$id_rapport ORDER BY date DESC LIMIT 1;";
-	$result=mysql_query($sql);
-	return mysql_fetch_object($result);
-}
-
-function editReport($id_rapport)
-{
-	$row = getReport($id_rapport);
-	if($row)
-		displayEditableReport($row, "update");
-};
-
-function newReport($type_rapport)
-{
-	global $fieldsAll;
-	global $fieldsTypes;
-	global $grades;
-	global $actions;
-	global $empty_report;
-
-	$row = (object) $empty_report;
-	$row->type = $type_rapport;
-	displayEditableReport($row, "add");
-} ;
 
 function displayEditableReport($row, $actioname)
 {
@@ -909,147 +884,27 @@ function displayEditableReport($row, $actioname)
 <?php 
 }
 
-function update($id_origine)
-{
-	global $fieldsAll;
-	$specialRule = array(
-			"auteur"=>0,
-			"date"=>0,
-			"nom_session"=>0,
-			"date_session"=>0,
-		);
 
-$fields = "id_session, id_origine, auteur";
-foreach($fieldsAll as  $fieldID => $title)
+function editReport($id_rapport)
 {
-	if (!isset($specialRule[$fieldID]))
-	{
-		$fields.=",";
-		$fields.=$fieldID;
-	}
-}
-$values = mysql_real_escape_string($_REQUEST["fieldid_session"]);
-$values .= ",".mysql_real_escape_string($id_origine);
-$values .= ",\"".mysql_real_escape_string($_SESSION["login"])."\"";
-
-foreach($fieldsAll as  $fieldID => $title)
-{
-	if (!isset($specialRule[$fieldID]) )
-	{
-		$values.=",";
-		if(isset($_REQUEST["field".$fieldID]))
-		{
-			$values.="\"".mysql_real_escape_string(nl2br(trim($_REQUEST["field".$fieldID]), true))."\"";
-		}
-		else
-		{
-			$values.="\"".mysql_real_escape_string("")."\"";
-		}
-	}
-}
-$sql = "INSERT INTO evaluations ($fields) VALUES ($values);";
-mysql_query($sql);
-return mysql_insert_id();
-}
-
-function updateRapportAvis($id_origine,$avis,$rapport)
-{
-	$result = filterSortReports(-1, "", "", "", $id_origine);
-	global $fieldsAll;
-	$tab = mysql_fetch_array($result);
-	$specialRule = array(
-			"auteur"=>0,
-			"date"=>0,
-			"avis"=>0,
-			"rapport"=>0,
-		);
-	$fields = "auteur,id_session,id_origine,avis,rapport";
-	$values = "\"".mysql_real_escape_string($_SESSION["login"])."\",".$tab["id_session"].",".$tab["id_origine"].",\"".mysql_real_escape_string(trim($avis))."\",\"".mysql_real_escape_string(trim($rapport))."\"";
-	foreach($fieldsAll as  $fieldID => $title)
-	{
-		if (!isset($specialRule[$fieldID]))
-		{
-			$fields.=",";
-			$fields.=$fieldID;
-			$values.=",";
-			$values.="\"".mysql_real_escape_string(trim($tab[$fieldID]))."\"";
-		}
-	}
-	$sql = "INSERT INTO evaluations ($fields) VALUES ($values);";
-	//echo $sql."<br>";
-	mysql_query($sql);
-}
-
-function addReport()
-{
-	$newid = update(0);
-	$sql = "UPDATE evaluations SET id_origine=$newid WHERE id=$newid;";
-	mysql_query($sql);
-	return $newid;
+	$row = getReport($id_rapport);
+	if($row)
+		displayEditableReport($row, "update");
 };
 
-
-
-function HTMLToPDF($html)
+function newReport($type_rapport)
 {
-	// create new PDF document
-	$pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+	global $fieldsAll;
+	global $fieldsTypes;
+	global $grades;
+	global $actions;
+	global $empty_report;
 
-	// set document information
-	$pdf->SetCreator(secretaire);
-	$pdf->SetAuthor(section_fullname);
-	$pdf->SetTitle('Rapport de la '.section_fullname);
-	$pdf->SetSubject('Rapport de la '.section_fullname);
-	$pdf->SetKeywords('Rapport de la '.section_fullname);
+	$row = (object) $empty_report;
+	$row->type = $type_rapport;
+	displayEditableReport($row, "add");
+} ;
 
-	// set default monospaced font
-	$pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
-
-	// remove default header/footer
-	$pdf->setPrintHeader(false);
-	$pdf->setPrintFooter(false);
-
-	//set margins
-	$pdf->SetMargins(PDF_MARGIN_LEFT, "15", PDF_MARGIN_RIGHT);
-	$pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
-	$pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
-
-	//set auto page breaks
-	$pdf->SetAutoPageBreak(TRUE, "15");
-
-	//set image scale factor
-	$pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
-
-	$l = Array(
-			'a_meta_charset' => 'UTF-8',
-			'a_meta_dir' => 'ltr',
-			'a_meta_language' => 'fr',
-			'w_page' => 'page'
-	);
-	//set some language-dependent strings
-	$pdf->setLanguageArray($l);
-
-	// ---------------------------------------------------------
-
-	// set default font subsetting mode
-	$pdf->setFontSubsetting(true);
-
-	// Set font
-	// dejavusans is a UTF-8 Unicode font, if you only need to
-	// print standard ASCII chars, you can use core fonts like
-	// helvetica or times to reduce file size.
-	$pdf->SetFont('dejavusans', '', 11, '', true);
-
-	// Add a page
-	// This method has several options, check the source code documentation for more information.
-	$pdf->AddPage();
-
-
-	$pdf->writeHTML($html);
-
-	$pdf->Close();
-	return $pdf;
-}
 
 function message_handler($subject,$body)
 {
