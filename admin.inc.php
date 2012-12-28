@@ -1,3 +1,8 @@
+<?php
+		$password = genere_motdepasse();
+		include_once('config.inc.php');		
+ ?>
+
 <h1>Interface d'administration</h1>
 
 <h2>Suppression d'un rapporteur</h2>
@@ -32,26 +37,36 @@
 <table class="inputreport">
 	<tr>
 		<td style="width:20em;">Identifiant</td>
-		<td style="width:20em;"><input name="login"></td>
+		<td style="width:20em;"><input name="login" value="<?php if(isset($login)) echo $login; ?>"></td>
 		<td><span class="examplevaleur">Exemple : jdoe</span></td>
 	</tr>
 	<tr>
 		<td style="width:20em;">Description</td>
-		<td style="width:20em;"><input name="description"></td>
+		<td style="width:20em;"><input name="description" value="<?php if(isset($description)) echo $description; ?>"></td>
 		<td><span class="examplevaleur">Exemple : The honourable John Doe, PhD</span></td>
 	</tr>
 	<tr>
+		<td style="width:20em;">Email</td>
+		<td style="width:20em;"><input name="email" value="<?php if(isset($email)) echo $email; ?>"></td>
+	</tr>
+	<tr>
 		<td>Nouveau mot de passe</td>
-		<td><input name="newpwd1" type="password"></td>
+		<td><input name="newpwd1" value="<?php if(isset($password)) echo $password; ?>"></td>
 	</tr>
 	<tr>
 		<td>Confirmer mot de passe</td>
-		<td><input name="newpwd2" type="password"></td>
+		<td><input name="newpwd2" value="<?php if(isset($password)) echo $password; ?>"></td>
 	</tr>
 	<tr>
-	    <td><input type="hidden" name="oldpwd" value=""><input type="hidden" name="action" value="adminnewaccount">
+	    <td>
+	    <input type="hidden" name="oldpwd" value="">
+	    <input type="hidden" name="action" value="adminnewaccount">
 		</td>
-		<td><input type="submit" value="Ajouter rapporteur"></td>
+		<td>
+		<input type="submit" value="Ajouter rapporteur"></td><td>
+		<p>		<input type="checkbox" name="envoiparemail" checked='checked' style="width: 10px;">
+		Prévenir par email</p>
+		</td>
 	</tr>
 </table>
 </form>

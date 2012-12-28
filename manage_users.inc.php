@@ -34,6 +34,12 @@ function getUserPermissionLevel($login = "")
 	return -1;
 }
 
+function genere_motdepasse($len=10)
+{
+	/*return openssl_random_pseudo_bytes($len);*/
+	return substr(crypt(date("%l %u")),3,13);
+}
+
 function isSuperUser($login = "")
 {
 	return getUserPermissionLevel($login) >= NIVEAU_PERMISSION_SUPER_UTILISATEUR;
@@ -168,13 +174,24 @@ function changeUserPermissions($login,$permissions)
 	}
 }
 
-function createUser($login,$pwd,$desc)
+function createUser($login,$pwd,$desc,$email, $envoiparemail)
 {
 	if (isSuperUser())
 	{
 		$passHash = crypt($pwd);
-		$sql = "INSERT INTO users(login,passHash,description) VALUES ('".mysql_real_escape_string($login)."','".mysql_real_escape_string($passHash)."','".mysql_real_escape_string($desc)."');";
+		$sql = "INSERT INTO users(login,passHash,description,email) VALUES ('".mysql_real_escape_string($login)."','".mysql_real_escape_string($passHash)."','".mysql_real_escape_string($desc)."','".mysql_real_escape_string($email)."');";
 		mysql_query($sql);
+		if(false and $envoiparemail) 
+		{
+			$body = "\tMarmotte est un site web créé par Yann Ponty et Hugo Gimbert pour faciliter le travail du comité national.\r\n";
+			$body .= "Le site est accessible à l'adresse \r\n\t\t\t".addresse_du_site."\r\n";
+			$body .= "L'accès au site est restreint aux membres de la section ".section_nb." qui doivent s'authentifier pour y accéder et déposer, éditer ou consulter des rapports.\r\n";
+			$body .= "\r\nUn compte Marmotte vient d'être créé pour vous:\r\n\r\n";
+			$body .= "\t\t\t login: '".$login."'\r\n";
+			$body .= "\t\t\t motdepasse: '".$pwd."'\r\n";
+			if($canSendEmail)
+					email_handler($email,"Votre compte Marmotte",$body);
+		}
 		return true;
 	}
 }

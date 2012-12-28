@@ -1059,4 +1059,13 @@ function HTMLToPDF($html)
 	$pdf->Close();
 	return $pdf;
 }
+
+
+function email_handler($recipient,$subject,$body)
+{
+	$headers = 'From: '.webmaster. "\r\n" . 'Reply-To: '.webmaster. "\r\n" .'X-Mailer: PHP/' . phpversion()."\r\n";
+		
+	return mail($recipient, $subject, "\r\n".$body."\r\n", $headers);
+}
+
 ?>

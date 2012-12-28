@@ -180,15 +180,18 @@
 	{
 		if (isSuperUser())
 		{
-			if (isset($_REQUEST["description"]) and isset($_REQUEST["newpwd1"]) and isset($_REQUEST["newpwd2"]) and isset($_REQUEST["login"]))
+			if (isset($_REQUEST["envoiparemail"]) and isset($_REQUEST["email"]) and isset($_REQUEST["description"]) and isset($_REQUEST["newpwd1"]) and isset($_REQUEST["newpwd2"]) and isset($_REQUEST["login"]))
 			{
 				$desc = $_REQUEST["description"];
 				$pwd1 = $_REQUEST["newpwd1"];
 				$pwd2 = $_REQUEST["newpwd2"];
 				$login = $_REQUEST["login"];
+				$email = $_REQUEST["email"];
+				$envoiparemail = $_REQUEST["envoiparemail"];
+				
 				if (($pwd1==$pwd2))
 				{
-					if (createUser($login,$pwd2,$desc))
+					if (createUser($login,$pwd2,$desc, $email, $envoiparemail))
 					{
 						echo "<p><strong>Utilisateur $login crée avec succès.</strong></p>";
 					}

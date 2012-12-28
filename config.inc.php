@@ -8,9 +8,9 @@
 	define("section_nb","6");
 	define("section_fullname","Section 6 du CoNRS");
 	define("section_intitule","Sciences de l'information : fondements de l'informatique, calculs, algorithmes, représentations, exploitations");
-	
-	
-	
+	define("webmaster","hugo.gimbert@labri.fr");
+	define("addresse_du_site","http://cn6.labri.fr/Marmotte");
+		
 	$fieldsSummary = array(
 		"nom",
 		"prenom",
