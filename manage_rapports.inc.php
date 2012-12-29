@@ -12,6 +12,7 @@ function getReport($id_rapport)
 
 function filterSortReports($statut, $id_session, $type_eval, $sort_crit, $login_rapp, $id_origin=-1)
 {
+	
 	$sortCrit = parseSortCriteria($sort_crit);
 
 	$sql = "SELECT * FROM evaluations WHERE date = (SELECT MAX(date) FROM evaluations AS mostrecent WHERE mostrecent.id_origine = evaluations.id_origine)";
@@ -112,16 +113,17 @@ function updateRapportAvis($id_origine,$avis,$rapport)
 	
 	$specialRule = array(
 			"auteur"=>0,
-			"date"=>0,
-			"avis"=>0,
-			"rapport"=>0,
+			"date"=>0
 	);
+	
+	$row->avis = $avis;
+	$row->rapport = $rapport;
 	
 	if($row->statut == "vierge")
 		$row->statut = "prerapport";
 	
-	$fields = "auteur,id_session,id_origine,avis,rapport";
-	$values = "\"".mysql_real_escape_string($_SESSION["login"])."\",".$row->id_session.",".$row->id_origine.",\"".mysql_real_escape_string(trim($avis))."\",\"".mysql_real_escape_string(trim($rapport))."\"";
+	$fields = "auteur,id_session,id_origine";
+	$values = "\"".getLogin()."\",".$row->id_session.",".$row->id_origine;
 	foreach($fieldsAll as  $fieldID => $title)
 	{
 		if (!isset($specialRule[$fieldID]))
@@ -283,6 +285,55 @@ function update($id_origine, $request)
 	
 	return $new_id;
 }
+
+/* Hugo could be optimized in one sql update request?*/
+function change_statuts($new_statut, $old_statut, $id_session,$type_eval,$login_rapp)
+{
+	//echo "Changing status to " .$new_statut." <br/>";
+	
+	$rows = filterSortReports($old_statut, $id_session, $type_eval, "", $login_rapp);
+	
+	foreach($rows as $row)
+		change_statut($row->id, $new_statut);
+}
+
+function change_statut($id_origine, $statut)
+{
+	global $fieldsAll;
+	
+	//echo "Changing status of ".$id_origine." to " .$statut." <br/>";
+	$row = getReport($id_origine);
+		
+	$specialRule = array(
+			"auteur"=>0,
+			"date"=>0,
+	);
+	
+	$row->statut = $statut;
+	
+	$fields = "auteur,id_session,id_origine";
+	$values = "\"".getLogin()."\",".$row->id_session.",".$row->id_origine;
+	foreach($fieldsAll as  $fieldID => $title)
+	{
+		if (!isset($specialRule[$fieldID]))
+		{
+			$fields.=",";
+			$fields.=$fieldID;
+			$values.=",";
+			$values.="\"".mysql_real_escape_string(trim($row->$fieldID))."\"";
+		}
+	}
+	$sql = "INSERT INTO evaluations ($fields) VALUES ($values);";
+	//echo $sql."<br>";
+	mysql_query($sql);
+	
+	$newid = mysql_insert_id();
+	$sql = "UPDATE evaluations SET id_origine=$newid WHERE id_origine=$id_origine;";
+	mysql_query($sql);
+}
+
+
+
 
 
 ?>

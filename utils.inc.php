@@ -404,6 +404,32 @@ function displaySummary($statut, $id_session, $type_eval, $sort_crit, $login_rap
 			}
 			?>
 		</td>
+		<td align="center">
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			<form method="get">
+			<select name="new_statut">
+			<?php
+			foreach ($statutsRapports as $val => $nom)
+			{
+				$sel = "";
+				if ($val==$statut)
+				{
+					$sel = " selected=\"selected\"";
+				}
+				echo "<option value=\"".$val."\" $sel>".$nom."</option>\n";
+			}
+			?>
+									</select>
+									<input type="hidden" name="action" value="change_statut">
+									<input type="hidden" name="sort_crit" value="<?php echo $sort_crit;?>">
+									<input type="hidden" name="statut" value="<?php echo $statut;?>">
+									<input type="hidden" name="id_session" value="<?php echo $id_session;?>">
+									<input type="hidden" name="type_eval" value="<?php echo $type_eval;?>">
+									<input type="hidden" name="login_rapp" value="<?php echo $login_rapp;?>">
+								<input type="submit" value="Changer statut">
+									</form>
+		</td>
+		
 	</tr>
 </table>
 <hr>

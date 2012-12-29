@@ -22,7 +22,22 @@
 		{
 			case 'delete':
 				echo deleteReport($id_rapport);
-			
+					
+			case 'change_statut':
+				{
+					if(isset($_REQUEST["new_statut"]))
+					{
+						$new_statut =  $_REQUEST["new_statut"];
+						$statut = isset($_REQUEST["statut"]) ? $_REQUEST["statut"] : "";
+						$id_session = isset($_REQUEST["id_session"]) ? $_REQUEST["id_session"] : -1;
+						$type_eval = isset($_REQUEST["type_eval"]) ? $_REQUEST["type_eval"] : "";
+						$login_rapp = isset($_REQUEST["login_rapp"]) ? $_REQUEST["login_rapp"] : "";
+						$sort_crit = isset($_REQUEST["sort"]) ? $_REQUEST["sort"] : "";
+						change_statuts($new_statut, $statut, $id_session,$type_eval,$login_rapp);
+						displaySummary($new_statut, $id_session,$type_eval,$sort_crit,$login_rapp);
+					}
+				}
+				break;
 			case 'view':
 				{
 					$statut = isset($_REQUEST["statut"]) ? $_REQUEST["statut"] : "";
@@ -270,8 +285,7 @@
 			default:
 				{
 					?>
-		<p>Bienvenue sur le site de gestion des rapports de la
-			section 6.</p>
+		<p>Bienvenue sur le site de gestion des rapports de la section 6.</p>
 		<p>
 			Le <b>menu situé à droite de cette page</b> vous permettra de
 			consulter ou éditer des rapports.
