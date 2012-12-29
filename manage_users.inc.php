@@ -42,6 +42,8 @@ function genere_motdepasse($len=10)
 
 function isSuperUser($login = "")
 {
+	if($login == "")
+		$login = getLogin();
 	return getUserPermissionLevel($login) >= NIVEAU_PERMISSION_SUPER_UTILISATEUR;
 };
 
@@ -50,7 +52,7 @@ function getLogin()
 	if (isset($_SESSION["login"]))
 		return $_SESSION["login"];
 	else
-		return "Unknown";
+		return "";
 }
 
 function isBureauPresidencyUser($login = "")

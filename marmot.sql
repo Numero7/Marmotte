@@ -29,6 +29,7 @@ SET time_zone = "+00:00";
 DROP TABLE IF EXISTS `evaluations`;
 
 CREATE TABLE IF NOT EXISTS `evaluations` (
+`statut` enum('vierge','prerapport','rapport','publie') CHARACTER SET utf8 NOT NULL,
   `id_session` int(11) NOT NULL,
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `id_origine` int(11) NOT NULL,

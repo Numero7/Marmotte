@@ -12,34 +12,15 @@ if($dbh!=0)
 {
 	if (authenticate())
 	{
-		$action="single";
-		if (isset($_REQUEST["action"]))
-		{
-			$action = $_REQUEST["action"];
-		}
-
+		$action = isset($_REQUEST["action"]) : $_REQUEST["action"] : "single";
+		$id= isset($_REQUEST["id"]) ? $_REQUEST["id"] : "-1";
+		
 		switch($action)
 		{
 			case 'viewpdf':
-				{
-					$id="-1";
-					if (isset($_REQUEST["id"]))
-					{
-						$id = $_REQUEST["id"];
-					}
-					viewReportAsPdf($id);
-				}
-				break;
+					viewReportAsPdf($id); break;
 			case 'viewhtml':
-				{
-					$id="-1";
-					if (isset($_REQUEST["id"]))
-					{
-						$id = $_REQUEST["id"];
-					}
-					viewReportAsHtml($id);
-				}
-				break;
+					viewReportAsHtml($id);	break;
 			case 'group':
 				{
 					if (isset($_REQUEST["save"]) and isset($_REQUEST["avis"]) and isset($_REQUEST["rapport"]))
@@ -52,39 +33,15 @@ if($dbh!=0)
 							updateRapportAvis($idtosave,$avis,$rapport);
 						}
 					}
-					$type = "xml";
-					if (isset($_REQUEST["type"]))
-					{
-						$type = $_REQUEST["type"];
-					}
+					$type = isset($_REQUEST["type"]) : $_REQUEST["type"] :  "xml";
 					if (isset($typeExports[$type]))
 					{
-						$id_session = -1;
-						if (isset($_REQUEST["id_session"]))
-						{
-							$id_session = $_REQUEST["id_session"];
-						}
-						$type_eval = "";
-						if (isset($_REQUEST["type_eval"]))
-						{
-							$type_eval = $_REQUEST["type_eval"];
-						}
-						$login_rapp = "";
-						if (isset($_REQUEST["login_rapp"]))
-						{
-							$login_rapp = $_REQUEST["login_rapp"];
-						}
-
-						$sort_crit = "";
-						if (isset($_REQUEST["sort"]))
-						{
-							$sort_crit = $_REQUEST["sort"];
-						}
-						$id_edit = -1;
-						if (isset($_REQUEST["id_edit"]))
-						{
-							$id_edit = $_REQUEST["id_edit"];
-						}
+						$statut = isset($_REQUEST["statut"]) ? $_REQUEST["statut"] : "";
+						$id_session = isset($_REQUEST["id_session"]) ? $_REQUEST["id_session"] : -1;
+						$type_eval = isset($_REQUEST["type_eval"]) ? $_REQUEST["type_eval"] : "";
+						$login_rapp = isset($_REQUEST["login_rapp"]) ? $_REQUEST["login_rapp"] : "";
+						$sort_crit = isset($_REQUEST["sort"]) ? $_REQUEST["sort"] : "";
+						$id_edit = isset($_REQUEST["id_edit"]) ? $_REQUEST["id_edit"] : -1;
 
 						$conf = $typeExports[$type];
 						$mime = $conf["mime"];
@@ -92,7 +49,7 @@ if($dbh!=0)
 
 						if($type=="latex" || $type=="pdf")
 						{
-							$xmls = getReportsAsXMLArray($id_session,$type_eval,$sort_crit,$login_rapp);
+							$xmls = getReportsAsXMLArray($statut, $id_session,$type_eval,$sort_crit,$login_rapp);
 
 							$filename = "";
 							if($type=="latex")
@@ -124,7 +81,7 @@ if($dbh!=0)
 						}
 						else
 						{
-							$xml = getReportsAsXML($id_session,$type_eval,$sort_crit,$login_rapp,$id_edit);
+							$xml = getReportsAsXML($statut,$id_session,$type_eval,$sort_crit,$login_rapp,$id_edit);
 							header("Content-type: $mime; charset=utf-8");
 							$xsl = new DOMDocument();
 							$xsl->load($xslpath);
@@ -139,10 +96,6 @@ if($dbh!=0)
 					}
 				}
 				break;
-			case 'delete':
-				{
-					
-				}
 			default:
 				break;
 		}

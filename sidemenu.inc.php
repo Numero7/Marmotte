@@ -1,6 +1,7 @@
 
 <?php 
-include_once("config.inc.php");
+require_once("config.inc.php");
+require_once("manage_users.inc.php");
 ?>
 <div class="right">
 	<div class="round">
@@ -19,58 +20,65 @@ include_once("config.inc.php");
 			<a href="?">Accueil</a>
 		</h1>
 		<hr>
-				<h1>Afficher rapports</h1>
+		<h1>Afficher</h1>
 		<?php
 		$sessions = showSessions();
+		foreach($statutsRapportsPluriel as $statut => $nom)
+			echo "<h2><a href=\"?action=view&amp;login_rapp=".getLogin()."&amp;statut=".$statut."\">Mes ".$nom."</a></h2>";
 		foreach($sessions as $s)
 		{
 			$typesRapports = getTypesEval($s["id"]);
-			?>
-		<h2>
-			<?php echo "<a href=\"?action=view&amp;id_session=".$s["id"]."\">".$s["nom"]." ".date("Y",strtotime($s["date"]))."</a>"; ?>
-		</h2>
-		<!-- 
-		<ul>
+			echo "<h2><a href=\"?action=view&amp;id_session=".$s["id"]."\">".$s["nom"]." ".date("Y",strtotime($s["date"]))."</a></h2>";
+			/*			?>
+			 <!--
+			<ul>
 			<?php
 			foreach($typesRapports as $typeEval)
-			{
 				echo "\t\t<li><a href=\"?action=view&amp;id_session=".$s["id"]."&amp;type_eval=".urlencode($typeEval)."\">$typeEval</a></li>\n";
-			}
 			?>
-		</ul>
+			</ul>
 		 -->
-		<?php
+			<?php
+			*/
 		}
 		?>
-		<h2><a href="?action=view">Tous les rapports</a></h2>
-		<hr>
-		<h1>Ajouter Rapport</h1>
-		<h2>Rapport Chercheur</h2>
-		<ul>
+		<h2>
+			<a href="?action=view">Tous les rapports</a>
+		</h2>
 		<?php 
-		foreach($typesRapportsIndividuels as $typeEval => $value)
+		if(isSuperUser())
 		{
 			?>
-		<li><a href="?action=new&type_eval=<?php echo $typeEval ?>"><?php echo $value?>
-		</a></li>
-		<?php
-		}
-		?>
+		<hr>
+		<h1>Ajouter</h1>
+		<h2>Rapport Chercheur</h2>
+		<ul>
+			<?php 
+			foreach($typesRapportsIndividuels as $typeEval => $value)
+			{
+				?>
+			<li><a href="?action=new&type_eval=<?php echo $typeEval ?>"><?php echo $value?>
+			</a></li>
+			<?php
+			}
+			?>
 		</ul>
 		<hr>
 		<h2>Rapport Unité</h2>
 		<ul>
-		<?php 
-		foreach($typesRapportsUnites as $typeEval => $value)
-		{
+			<?php 
+			foreach($typesRapportsUnites as $typeEval => $value)
+			{
+				?>
+			<li><a href="?action=new&type_eval=<?php echo $typeEval ?>"><?php echo $value?>
+			</a></li>
+			<?php
+			}
 			?>
-			<li>
-		<a href="?action=new&type_eval=<?php echo $typeEval ?>"><?php echo $value?>
-		</a></li>
-		<?php
+		</ul>
+		<?php 
 		}
 		?>
-		</ul>
 
 	</div>
 	<div class="round">

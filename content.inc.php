@@ -25,28 +25,13 @@
 			
 			case 'view':
 				{
-					$id_session = -1;
-					if (isset($_REQUEST["id_session"]))
-					{
-						$id_session = $_REQUEST["id_session"];
-					}
-					$type_eval = "";
-					if (isset($_REQUEST["type_eval"]))
-					{
-						$type_eval = $_REQUEST["type_eval"];
-					}
-					$login_rapp = "";
-					if (isset($_REQUEST["login_rapp"]))
-					{
-						$login_rapp = $_REQUEST["login_rapp"];
-					}
-
-					$sort_crit = "";
-					if (isset($_REQUEST["sort"]))
-					{
-						$sort_crit = $_REQUEST["sort"];
-					}
-					displaySummary($id_session,$type_eval,$sort_crit,$login_rapp);
+					$statut = isset($_REQUEST["statut"]) ? $_REQUEST["statut"] : "";
+					echo "statut: ".$statut;
+					$id_session = isset($_REQUEST["id_session"]) ? $_REQUEST["id_session"] : -1;
+					$type_eval = isset($_REQUEST["type_eval"]) ? $_REQUEST["type_eval"] : "";
+					$login_rapp = isset($_REQUEST["login_rapp"]) ? $_REQUEST["login_rapp"] : "";
+					$sort_crit = isset($_REQUEST["sort"]) ? $_REQUEST["sort"] : "";
+					displaySummary($statut, $id_session,$type_eval,$sort_crit,$login_rapp);
 				}
 				break;
 			case 'details':
@@ -294,7 +279,7 @@
 			section 6.</p>
 		<p>
 			Le <b>menu situé à droite de cette page</b> vous permettra de
-			consulter, éditer ou créer des rapports.
+			consulter ou éditer des rapports.
 		</p>
 		<p>N'hésitez pas à nous contacter (Yann ou Hugo) en cas de
 			difficultés.</p>

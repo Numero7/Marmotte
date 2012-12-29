@@ -289,15 +289,16 @@ function highlightDiff(&$prevVals,$key,$val)
 }
 
 
-function displaySummary($id_session, $type_eval, $sort_crit, $login_rapp)
+function displaySummary($statut, $id_session, $type_eval, $sort_crit, $login_rapp)
 {
 	global $fieldsSummary;
 	global $fieldsAll;
 	global $actions;
 	global $typesRapports;
 	global $typeExports;
+	global $statutsRapports;
 
-	$result = filterSortReports($id_session, $type_eval, $sort_crit, $login_rapp);
+	$result = filterSortReports($statut, $id_session, $type_eval, $sort_crit, $login_rapp);
 	if($result == false)
 	{
 		echo "Could not process sql query <br/>";
@@ -317,88 +318,95 @@ function displaySummary($id_session, $type_eval, $sort_crit, $login_rapp)
 	$rapporteurs = $krapp;
 
 	?>
-	<table >
-	<tr><td>
-<h2>Filtrage</h2>
-<form method="get">
-	<table class="inputreport">
-		<tr>
-			<td style="width: 20em;">Session</td>
-			<td><select name="id_session">
-					<option value="-1">Toutes les sessions</option>
-					<?php
-					foreach ($sessions as $val)
-					{
-						$sel = "";
-						if ($val["id"]==$id_session)
-						{
-							$sel = " selected=\"selected\"";
-						}
-						echo "<option value=\"".$val["id"]."\" $sel>".ucfirst($val["nom"])." ".date("Y",strtotime($val["date"]))."</option>";
-					}
-					?>
-			</select></td>
-		</tr>
-		<tr>
-			<td>Rapporteur</td>
-			<td><select name="login_rapp">
-					<option value="">Tous les rapporteurs</option>
-					<?php
-					foreach ($rapporteurs as $rapp)
-					{
-						$sel = "";
-						if ($rapp==$login_rapp)
-						{
-							$sel = " selected=\"selected\"";
-						}
-						echo "<option value=\"$rapp\"$sel>".ucfirst($rapp)."</option>";
-					}
-					?>
-			</select></td>
-		</tr>
-		<tr>
-			<td>Type évaluation</td>
-			<td><select name="type_eval">
-					<option value="">Tous les types</option>
-					<?php
-					foreach ($typesRapports as $ty => $value)
-					{
-						$sel = "";
-						if ($ty==$type_eval)
-						{
-							$sel = " selected=\"selected\"";
-						}
-						echo "<option value=\"$ty\"$sel>".ucfirst($value)."</option>";
-					}
-					?>
-			</select></td>
-		</tr>
-		<tr>
-			<td></td>
-			<td><input type="hidden" name="sort_crit"
-				value="<?php echo $sort_crit;?>"> <input type="hidden" name="action"
-				value="view"> <input type="submit" value="Filtrer">
-			</td>
-		</tr>
-	</table>
-</form>
-</td>
-<td><p>&nbsp;</p></td>
-<td align="center">
-<h2>Exporter/Editer tous</h2>
-<?php
-	foreach($typeExports as $idexp => $exp)
-	{
-		$expname= $exp["name"];
-		$level = $exp["permissionlevel"];
-		if (getUserPermissionLevel()>=$level)
-		{
-			echo " <a href=\"export.php?action=group&amp;id_session=$id_session&amp;type_eval=$type_eval&amp;sort_crit=$sort_crit&amp;login_rapp=$login_rapp&amp;type=$idexp\"><img class=\"icon\" width=\"50\" height=\"50\" src=\"img/$idexp-icon-50px.png\" alt=\"$expname\"></a>";
-		}
-	}
-	?>
-</td>
-</tr>
+<table>
+	<tr>
+		<td>
+			<h2>Filtrage</h2>
+			<form method="get">
+				<table class="inputreport">
+					<tr>
+						<td style="width: 20em;">Statuts</td>
+						<td><select name="statut">
+								<option value="">Tous les statuts</option>
+								<?php
+								foreach ($statutsRapports as $val => $nom)
+								{
+									$sel = "";
+									if ($val==$statut)
+									{
+										$sel = " selected=\"selected\"";
+									}
+									echo "<option value=\"".$val."\" $sel>".$nom."</option>\n";
+								}
+								?>
+						</select></td>
+					</tr>
+					<tr>
+						<td style="width: 20em;">Session</td>
+						<td><select name="id_session">
+								<option value="-1">Toutes les sessions</option>
+								<?php
+								foreach ($sessions as $val)
+								{
+									$sel = ($val["id"]==$id_session) ? " selected=\"selected\"" : "";
+									echo "<option value=\"".$val["id"]."\" $sel>".ucfirst($val["nom"])." ".date("Y",strtotime($val["date"]))."</option>\n";
+								}
+								?>
+						</select></td>
+					</tr>
+					<tr>
+						<td>Rapporteur</td>
+						<td><select name="login_rapp">
+								<option value="">Tous les rapporteurs</option>
+								<?php
+								foreach ($rapporteurs as $rapp)
+								{
+									$sel = ($rapp==$login_rapp) ? " selected=\"selected\"" : "";
+									echo "<option value=\"$rapp\"$sel>".ucfirst($rapp)."</option>\n";
+								}
+								?>
+						</select></td>
+					</tr>
+					<tr>
+						<td>Type évaluation</td>
+						<td><select name="type_eval">
+								<option value="">Tous les types</option>
+								<?php
+								foreach ($typesRapports as $ty => $value)
+								{
+									$sel = ($ty==$type_eval) ? " selected=\"selected\"": "";
+									echo "<option value=\"$ty\"$sel>".ucfirst($value)."</option>\n";
+								}
+								?>
+						</select></td>
+					</tr>
+					<tr>
+						<td></td>
+						<td>
+						<input type="hidden" name="sort_crit" value="<?php echo $sort_crit;?>">
+						<input type="hidden" name="action" value="view"> <input type="submit" value="Filtrer">
+						</td>
+					</tr>
+				</table>
+			</form>
+		</td>
+		<td><p>&nbsp;</p></td>
+		<td align="center">
+			<h2>Exporter/Editer tous</h2>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			<?php
+			foreach($typeExports as $idexp => $exp)
+			{
+				$expname= $exp["name"];
+				$level = $exp["permissionlevel"];
+				if (getUserPermissionLevel()>=$level)
+				{
+					echo " <a href=\"export.php?action=group&amp;statut=$statut;id_session=$id_session&amp;type_eval=$type_eval&amp;sort_crit=$sort_crit&amp;login_rapp=$login_rapp&amp;type=$idexp\"><img class=\"icon\" width=\"50\" height=\"50\" src=\"img/$idexp-icon-50px.png\" alt=\"$expname\"></a>";
+				}
+			}
+			?>
+		</td>
+	</tr>
 </table>
 <hr>
 <table class="summary">
@@ -410,6 +418,7 @@ function displaySummary($id_session, $type_eval, $sort_crit, $login_rapp)
 			?>
 		<th><span class="nomColonne"><?php
 		echo "<a href=\"?action=view";
+		echo "&amp;statut=$statut";
 		echo "&amp;id_session=$id_session";
 		echo "&amp;type_eval=$type_eval";
 		echo "&amp;login_rapp=$login_rapp";
@@ -580,13 +589,15 @@ function displayEditableReport($row, $actioname)
 	global $avis_eval;
 	global $typesRapportToAvis;
 	global $concours_ouverts;
-
+	global $statutsRapports;
 
 	$eval_type = $row->type;
 	$is_unite = array_key_exists($eval_type,$typesRapportsUnites);
 	$is_ecole = ($eval_type == 'Ecole');
 	$is_candidat = ($eval_type == 'Candidature');
 
+	$statut = $row->statut;
+	
 	$eval_name = $eval_type;
 	if(array_key_exists($eval_type, $typesRapports))
 		$eval_name = $typesRapports[$eval_type];
@@ -598,23 +609,35 @@ function displayEditableReport($row, $actioname)
 	?>
 <h1>
 	<?php 
-	echo ($is_unite ? "Unite : " : "Chercheur : ").$eval_name;
+	echo ($statutsRapports[$statut])." / ".($is_unite ? "Unite / " : "Chercheur / ").$eval_name;
 	?>
 </h1>
 
 <form method="post" action="index.php" style="width: 100%">
-	<input type="hidden" name="action" value=<?php echo $actioname?>> <input
-		type="hidden" name="id_origine" value="<?php echo $row->id_origine;?>">
+	<input type="hidden" name="action" value=<?php echo $actioname?>>
+	<input type="hidden" name="id_origine" value="<?php echo $row->id_origine;?>">
 	<input type="hidden" name="fieldtype" value="<?php echo $row->type;?>">
 	<input type="hidden" name="fieldrapporteur" value="<?php echo getLogin();?>">
-	
-	<tr>
-		<td colspan="2"><input type="submit"
-			value="<?php echo (($actioname == "add") ? "Ajouter" : "Modifier")." ".$eval_type;?>">
-		</td>
-	</tr>
+
+	<input type="submit" value="<?php echo (($actioname == "add") ? "Ajouter" : "Enregistrer");?>">
 
 	<table class="inputreport">
+	<?php 
+	if(isSuperUSer())
+	{
+		echo "<tr><td>Statut</td><td><select name=\"fieldstatut\" style=\"width: 100%;\">";
+		foreach($statutsRapports as $val => $nom)
+		{
+			$sel = ($row->statut==$val) ? "selected=\"selected\"" : "";
+			echo  "\t\t\t\t\t<option value=\"$val\" $sel>$nom</option>\n";
+		}
+		echo "</select></td></tr>";
+	}
+	else
+	{
+		echo '<input type="hidden" name="fieldstatut" value="'.$row->statut.'>';
+	}
+	?>
 		<tr>
 			<td>Session</td>
 			<td><select name="fieldid_session" style="width: 100%;">
@@ -622,13 +645,8 @@ function displayEditableReport($row, $actioname)
 					$sessions = showSessions();
 					foreach($sessions as $s)
 					{
-						$sel = "";
-						if ($row->id_session==$s["id"])
-						{
-							$sel = "selected=\"selected\"";
-						}
-
-						echo  "\t\t\t\t\t<option value=\"".$s["id"]."\" $sel>".$s["nom"]." ".date("Y",strtotime($s["date"]))."</option>";
+						$sel = ($row->id_session==$s["id"]) ? "selected=\"selected\"" : "";
+						echo  "\t\t\t\t\t<option value=\"".$s["id"]."\" $sel>".$s["nom"]." ".date("Y",strtotime($s["date"]))."</option>\n";
 					}
 					?>
 			</select></td>
@@ -648,160 +666,130 @@ function displayEditableReport($row, $actioname)
 		foreach($active_fields as  $fieldID)
 		{
 			$title = $fieldsAll[$fieldID];
-
 			if(!in_array($fieldID,$active_fields))
 				continue;
-
-			$type = "";
-			if (isset($fieldsTypes[$fieldID]))
-			{
-				$type = $fieldsTypes[$fieldID];
-			}
+			$type = isset($fieldsTypes[$fieldID]) ?  $fieldsTypes[$fieldID] : "";
 			?>
 		<tr>
 			<td style="width: 17em;"><span><?php echo $title;?> </span>
 			</td>
 			<?php
-			if ($type=="long")
+			switch($type)
 			{
-				?>
+				case "long":
+					{
+						?>
 			<td colspan="2"><span class="examplevaleur"><?php echo getExample($fieldID);?>
 			</span>
 			</td>
 		</tr>
 		<tr>
-			<td colspan="3"><textarea name="field<?php echo $fieldID;?>" style="width: 100%;"><?php echo strip_tags($row->$fieldID);?></textarea>
+			<td colspan="3">
+			<textarea name="field<?php echo $fieldID;?>" style="width: 100%;"><?php echo strip_tags($row->$fieldID);?></textarea>
 			</td>
 			<?php
-			}
-			elseif ($type=="treslong")
-			{
-				?>
+					}
+					break;
+case "treslong":
+	{
+		?>
 			<td colspan="2"><span class="examplevaleur"><?php echo getExample($fieldID);?>
 			</span>
 			</td>
 		</tr>
 		<tr>
-			<td colspan="3"><textarea rows=10 name="field<?php echo $fieldID;?>" style="width: 100%;"><?php echo strip_tags($row->$fieldID);?></textarea>
+			<td colspan="3">
+			<textarea rows=10 name="field<?php echo $fieldID;?>" style="width: 100%;"><?php echo strip_tags($row->$fieldID);?></textarea>
 			</td>
 			<?php
-			}
-			elseif ($type=="short")
-			{
-				?>
+	}break;
+case "short":
+	{
+		?>
 			<td style="width: 30em;"><input name="field<?php echo $fieldID;?>"
 				value="<?php echo $row->$fieldID;?>" style="width: 100%;">
 			</td>
 			<td><span class="examplevaleur"><?php echo getExample($fieldID);?> </span>
 			</td>
 			<?php
-			}
-			elseif ($type=="evaluation")
-			{
-				?>
+	}break;
+case "evaluation":
+	{
+		?>
 			<td style="width: 30em;"><select name="field<?php echo $fieldID;?>"
 				style="width: 100%;">
 					<?php
 					foreach($notes as $val)
 					{
-						$sel = "";
-						if ($row->$fieldID==$val)
-						{
-							$sel = "selected=\"selected\"";
-						}
-						echo  "\t\t\t\t\t<option value=\"$val\" $sel>$val</option>";
+						$sel = ($row->$fieldID==$val) ? $sel = "selected=\"selected\"" : "";
+						echo  "\t\t\t\t\t<option value=\"$val\" $sel>$val</option>\n";
 					}
 					?>
 			</select>
 			</td>
 			<?php
-			}
-			elseif ($type=="avis")
-			{
-				?>
+	}
+	break;
+case "avis":
+	{
+		?>
 			<td style="width: 30em;"><select name="field<?php echo $fieldID;?>"
 				style="width: 100%;">
 					<?php
 					foreach($avis_possibles as $avis => $prettyprint)
 					{
-						$sel = "";
-						if ($row->$fieldID==$avis)
-						{
-							$sel = "selected=\"selected\"";
-						}
-						echo  "\t\t\t\t\t<option value=\"$avis\" $sel>$prettyprint</option>";
+						$sel = ($row->$fieldID==$avis) ? $sel = "selected=\"selected\"" : "";
+						echo  "\t\t\t\t\t<option value=\"$avis\" $sel>$prettyprint</option>\n";
 					}
 					?>
 			</select>
 			</td>
 			<?php
-			}
-			elseif ($type=="unit")
-			{
-				?>
+	}
+	break;
+case "unit":
+	{
+		?>
 			<td style="width: 30em;"><select name="field<?php echo $fieldID;?>"
 				style="width: 100%;">
 					<?php
 					$units = prettyUnitsList();
 					foreach($units as $unite)
 					{
-						$sel = "";
-						if (($row->unite) == ($unite->code))
-						{
-							$sel = "selected=\"selected\"";
-						}
-						echo  "\t\t\t\t\t<option value=\"".($unite->code)."\"".$sel.">".($unite->nickname)."</option>";
+						$sel = (($row->unite) == ($unite->code)) ? "selected=\"selected\"" : "";
+						echo  "\t\t\t\t\t<option value=\"".($unite->code)."\"".$sel.">".($unite->nickname)."</option>\n";
 					}
 					?>
 			</select>
 			</td>
 			<?php
-			}
-			elseif ($type =="grade")
-			{
-				?>
-
-
-			<td><select name="fieldgrade" style="width: 100%;">
-					<?php
-					foreach($grades as $idg => $txtg)
-					{
-						$sel = "";
-						if ($row->grade==$idg)
-						{
-							$sel = "selected=\"selected\"";
-						}
-						echo  "\t\t\t\t\t<option value=\"$idg\" $sel>$txtg</option>";
-					}
-					?>
-			</select></td>
-			<?php
-			}
-			elseif ($type =="concours")
-			{
-				?>
-			<td><select name="fieldconcours" style="width: 100%;">
-					<?php
-					foreach($concours_ouverts as $concours)
-					{
-						$sel = "";
-						if ($row->concours==$concours)
-						{
-							$sel = "selected=\"selected\"";
-						}
-						echo  "\t\t\t\t\t<option value=\"$concours\" $sel>$concours</option>";
-					}
-					?>
-			</select></td>
-			<?php
-			}elseif($type =="ecole")
-			{
-				?>
-			<td colspan="3"><input name="fieldecole"
-				value="<?php echo $row->ecole ?>" style="width: 100%;">
-			</td>
-			<?php
-			}
+	}
+	break;
+case "grade":
+	{
+		echo '<td><select name="fieldgrade" style="width: 100%;">';
+		foreach($grades as $idg => $txtg)
+		{
+			$sel = ($row->grade==$idg) ? 'selected="selected"' : "";
+			echo  "\t\t\t\t\t<option value=\"$idg\" $sel>$txtg</option>\n";
+		}
+		echo '</select></td>';
+	}
+	break;
+case "concours":
+	{
+		echo '<td><select name="fieldconcours" style="width: 100%;">';
+		foreach($concours_ouverts as $concours)
+		{
+			$sel = ($row->concours==$concours) ? "selected=\"selected\"" : "";
+			echo  "\t\t\t\t\t<option value=\"$concours\" $sel>$concours</option>\n";
+		}
+		echo '</select></td>';
+	}
+	break;
+case "ecole":
+	echo '<td colspan="3"><input name="fieldecole" value="<?php echo $row->ecole ?>" style="width: 100%;"> </td>';
+	break;			}
 			?>
 		</tr>
 		<?php
@@ -809,7 +797,7 @@ function displayEditableReport($row, $actioname)
 		?>
 		<tr>
 			<td colspan="2"><input type="submit"
-				value="<?php echo (($actioname == "add") ? "Ajouter" : "Modifier")." ".$eval_type;?>">
+				value="<?php echo (($actioname == "add") ? "Ajouter" : "Enregistrer");?>">
 			</td>
 		</tr>
 	</table>
@@ -850,7 +838,7 @@ function message_handler($subject,$body)
 function email_handler($recipient,$subject,$body)
 {
 	$headers = 'From: '.webmaster. "\r\n" . 'Reply-To: '.webmaster. "\r\n".'Content-Type: text/plain; charset="UTF-8"\r\n'.'X-Mailer: PHP/' . phpversion()."\r\n";
-		
+
 	return mail($recipient, $subject, "\r\n".$body."\r\n", $headers);
 }
 

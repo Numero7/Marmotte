@@ -12,16 +12,21 @@
 	define("addresse_du_site","http://cn6.labri.fr/Marmotte");
 		
 	$fieldsSummary = array(
+			"statut",
+		"type",
+		"rapporteur",
 		"nom",
 		"prenom",
 		"grade",
 		"unite",
-		"type",
-		"rapporteur",
 		"date",
 	);
 
+	$statutsRapports = array( 'vierge' => "Rapport vierge", 'prerapport'=>'Prérapport', 'rapport'=>"Rapport", 'publie'=>"Rapport publié");
+	$statutsRapportsPluriel = array( 'vierge' => "rapports vierges", 'prerapport'=>'prérapports', 'rapport'=>"rapports", 'publie'=>"rapport publiés");
+	
 	$fieldsAll = array(
+		"statut" => "Statut",
 		"concours" => "Concours",
 		"ecole" => "Ecole",
 		"nom" => "Nom",

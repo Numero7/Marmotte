@@ -8,11 +8,15 @@ function getReport($id_rapport)
 	return mysql_fetch_object($result);
 }
 
-function filterSortReports($id_session, $type_eval, $sort_crit, $login_rapp, $id_origin=-1)
+function filterSortReports($statut, $id_session, $type_eval, $sort_crit, $login_rapp, $id_origin=-1)
 {
 	$sortCrit = parseSortCriteria($sort_crit);
 
 	$sql = "SELECT tt.*, ss.nom AS nom_session, ss.date AS date_session FROM evaluations tt INNER JOIN ( SELECT id, MAX(date) AS date FROM evaluations GROUP BY id_origine) mostrecent ON tt.date = mostrecent.date, sessions ss WHERE ss.id=tt.id_session ";
+	if($statut != "")
+	{
+		$sql .= " AND statut=\"$statut\" ";
+	}
 	if ($id_session!=-1)
 	{
 		$sql .= " AND id_session=$id_session ";
@@ -83,7 +87,7 @@ function sortCriteriaToSQL($sortCrit)
 
 function updateRapportAvis($id_origine,$avis,$rapport)
 {
-	$result = filterSortReports(-1, "", "", "", $id_origine);
+	$result = filterSortReports(-1,-1, "", "", "", $id_origine);
 	global $fieldsAll;
 	$tab = mysql_fetch_array($result);
 	$specialRule = array(
@@ -111,14 +115,35 @@ function updateRapportAvis($id_origine,$avis,$rapport)
 
 function addReport($request, $login)
 {
+	if(!isSuperUser($login))
+	{
+		echo "Le compte ".$login." n'a pas la permission de créer un rapport.<br/>";
+		return false;
+	}
 	$newid = update(0,$request, $login);
 	$sql = "UPDATE evaluations SET id_origine=$newid WHERE id=$newid;";
 	mysql_query($sql);
 	return $newid;
 };
 
+function getStatus($id_rapport)
+{
+	$report = getReport($id_rapport);
+	return $report->statut;
+}
+
+function isReportEditable($rapport, $login)
+{
+	return isSuperUser($login) || ( ($report->rapporteur == $login)  && ($report->statut == 'vierge' || $report->statut == 'prerapport'));
+}
+
+
 function deleteReport($id_rapport, $login)
 {
+	$report = getReport($id_rapport);
+	if(!isReportEditable($report,$login))
+		return "Le compte ".$login." n'a pas la permission d'effacer ce rapport.<br/>";
+			
 	$report = getReport($id_rapport);
 	if(($report->rapporteur == $login) || (isSuperUser($login)))
 	{
@@ -130,13 +155,23 @@ function deleteReport($id_rapport, $login)
 	}
 	else
 	{
-		return "You dont own enough permissions to delete this report from ".$login .".<br/>";
+		
 	}
 		
 };
 
 function update($id_origine, $request, $login)
 {
+	$report = getReport($id_origine);
+	if($report && !isReportEditable($report,$login))
+	{
+		echo "Le compte ".$login." n'a pas la permission de mettre à jour ce rapport.<br/>";
+		return false;
+	}
+	
+	if($request["fieldstatut"] == "vierge" && ($id_origine != 0))
+		$request["fieldstatut"] = "prerapport";
+				
 	global $fieldsAll;
 	$specialRule = array(
 			"auteur"=>0,
@@ -164,13 +199,9 @@ function update($id_origine, $request, $login)
 		{
 			$values.=",";
 			if(isset($request["field".$fieldID]))
-			{
 				$values.="\"".mysql_real_escape_string(nl2br(trim($request["field".$fieldID]), true))."\"";
-			}
 			else
-			{
 				$values.="\"".mysql_real_escape_string("")."\"";
-			}
 		}
 	}
 	$sql = "INSERT INTO evaluations ($fields) VALUES ($values);";
