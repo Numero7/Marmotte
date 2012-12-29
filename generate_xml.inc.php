@@ -161,7 +161,8 @@ function createXMLReportElem($row, $sessions, $units, DOMDocument $doc)
 	global $typesRapportsToEnteteDroit;
 	global $typesRapportsToCheckboxes;
 	global $typesRapportsToCheckboxesTitles;
-
+	global $typesRapportsToFormula;
+	
 	if(!$sessions)
 		$sessions = sessionArrays();
 
@@ -177,6 +178,20 @@ function createXMLReportElem($row, $sessions, $units, DOMDocument $doc)
 
 	$fieldsspecial = array('unite','date','type');
 
+	//On ajoute une formule à la fin du rapport si nécessaire
+	if(array_key_exists($row->type,$typesRapportsToFormula))
+	{
+		$formulas = $typesRapportsToFormula[$row->type];
+		
+		if(array_key_exists($row->avis,$formulas))
+		{
+			$formula = $formulas[$row->avis];
+			$row->rapport .= "<br/><br/>".$formula;
+			
+		}
+	}
+	
+	
 	//On ajoute tous les fields pas spéciaux
 	foreach ($fieldsAll as $fieldID => $title)
 		if(!in_array($fieldID,$fieldsspecial))
@@ -202,6 +217,7 @@ function createXMLReportElem($row, $sessions, $units, DOMDocument $doc)
 	//On ajoute la date du jour
 	appendLeaf("date", date("j/m/Y"), $doc, $rapportElem);
 
+	
 
 	//On ajoute les cases à choix multiple, si nécessaires
 	if(array_key_exists($row->type,$typesRapportsToCheckboxes))
@@ -258,6 +274,51 @@ function XMLToHTML(DOMDocument $doc)
 	$proc->importStyleSheet($xsl);
 	$html = $proc->transformToXML($doc);
 	return $html;
+}
+
+//Returns the name of the file
+function filename_from_node(DOMNode $node)
+{
+	global $typesRapportsUnites;
+
+	$nom = "";
+	$prenom = "";
+	$grade = "";
+	$unite = "";
+	$type = "";
+	$session = "Session";
+	$avis = "";
+
+	foreach($node->childNodes as $child)
+	{
+		switch($child->nodeName)
+		{
+			case "nom": $nom = mb_convert_case(replace_accents($child->nodeValue), MB_CASE_TITLE); break;
+			case "prenom": $prenom = mb_convert_case(replace_accents($child->nodeValue), MB_CASE_TITLE); break;
+			case "grade": $grade = $child->nodeValue; break;
+			case "unite": $unite = $child->nodeValue; break;
+			case "type": $type = $child->nodeValue; break;
+			case "session": $session = $child->nodeValue; break;
+			case "avis": $avis = $child->nodeValue; break;
+		}
+	}
+
+	if($type == "Promotion")
+	{
+		switch($grade)
+		{
+			case "CR2": $grade = "CR1"; break;
+			case "DR2": $grade = "DR1"; break;
+			case "DR1": $grade = "DRCE1"; break;
+			case "DRCE1": $grade = "DRCE2"; break;
+		}
+		$grade .= " - ".$avis;
+	}
+
+	if(array_key_exists($type,$typesRapportsUnites))
+		return $session." - ".$type." - ".$unite;
+	else
+		return $session." - ".$type." - ".$grade." - ".$nom."_".$prenom;
 }
 
 ?>

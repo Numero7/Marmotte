@@ -4,39 +4,6 @@ require_once('generate_pdf.inc.php');
 require_once('generate_xml.inc.php');
 require_once('config.inc.php');
 
-//Returns the name of the zip file
-function filename_from_node(DOMNode $node)
-{
-	global $typesRapportsUnites;
-	
-	$nom = "";
-	$prenom = "";
-	$grade = "";
-	$unite = "";
-	$type = "";
-	$session = "Session";
-
-	foreach($node->childNodes as $child)
-	{
-		if($child->nodeName == "nom")
-			$nom = $child->nodeValue;
-		else if($child->nodeName == "prenom")
-			$prenom = $child->nodeValue;
-		else if($child->nodeName == "grade")
-			$grade = $child->nodeValue;
-		else if($child->nodeName == "unite")
-			$unite = $child->nodeValue;
-		else if($child->nodeName == "type")
-			$type = $child->nodeValue;
-		else if($child->nodeName == "session")
-			$session = $child->nodeValue;
-	}
-
-	if(array_key_exists($type,$typesRapportsUnites))
-		return $session." - ".$type." - ".$unite;
-	else
-		return $session." - ".$type." - ".$grade." - ".$nom."_".$prenom;
-}
 
 function type_from_node(DOMNode $node)
 {
@@ -117,7 +84,7 @@ function xmls_to_zipped_pdf($docs)
 			'Changement-Directeur' => $proc,
 			'Changement-Directeur-Adjoint' => $proc,
 			'Renouvellement' => $proc,
-			'Expertise' => $proc,
+			'Association' => $proc,
 			'Ecole' => $proc,
 			'Comite-Evaluation' => $proc,
 			'Generique' => $proc,
@@ -135,8 +102,8 @@ function xmls_to_zipped_pdf($docs)
 			if($nodes)
 			{
 				$node = $nodes->item(0);
-				$filename = filename_from_node($node).".pdf";
-				$local_filename = "reports/".$filename;
+				$filename = replace_accents(filename_from_node($node)).".pdf";
+				$local_filename = replace_accents("reports/".$filename);
 				$type = type_from_node($node);
 				$html = $processors[$type]->transformToXML($node);
 				$pdf = HTMLToPDF($html);

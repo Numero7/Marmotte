@@ -317,6 +317,8 @@ function displaySummary($id_session, $type_eval, $sort_crit, $login_rapp)
 	$rapporteurs = $krapp;
 
 	?>
+	<table >
+	<tr><td>
 <h2>Filtrage</h2>
 <form method="get">
 	<table class="inputreport">
@@ -380,11 +382,11 @@ function displaySummary($id_session, $type_eval, $sort_crit, $login_rapp)
 		</tr>
 	</table>
 </form>
-<br>
-<br>
+</td>
+<td><p>&nbsp;</p></td>
+<td align="center">
 <h2>Exporter/Editer tous</h2>
-<p>
-	<?php
+<?php
 	foreach($typeExports as $idexp => $exp)
 	{
 		$expname= $exp["name"];
@@ -395,7 +397,9 @@ function displaySummary($id_session, $type_eval, $sort_crit, $login_rapp)
 		}
 	}
 	?>
-</p>
+</td>
+</tr>
+</table>
 <hr>
 <table class="summary">
 	<tr>
@@ -452,15 +456,6 @@ function displaySummary($id_session, $type_eval, $sort_crit, $login_rapp)
 <?php
 } ;
 
-function showSessions()
-{
-	$finalResult = array(); $sql = "SELECT * FROM sessions ORDER BY date DESC;"; $result=mysql_query($sql);
-	while ($row = mysql_fetch_object($result))
-	{
-		$finalResult[] = array( "id" => $row->id, "nom" => $row->nom, "date" => $row->date, );
-	}
-	return	$finalResult;
-} ;
 
 function fieldDiffers($prevVals,$key,$val)
 {
@@ -747,7 +742,7 @@ function displayEditableReport($row, $actioname)
 			<td style="width: 30em;"><select name="field<?php echo $fieldID;?>"
 				style="width: 100%;">
 					<?php
-					$units = unitsList();
+					$units = prettyUnitsList();
 					foreach($units as $unite)
 					{
 						$sel = "";
@@ -755,7 +750,7 @@ function displayEditableReport($row, $actioname)
 						{
 							$sel = "selected=\"selected\"";
 						}
-						echo  "\t\t\t\t\t<option value=\"".($unite->code)."\"".$sel.">".($unite->code)." - ".($unite->nickname)."</option>";
+						echo  "\t\t\t\t\t<option value=\"".($unite->code)."\"".$sel.">".($unite->nickname)."</option>";
 					}
 					?>
 			</select>
@@ -841,6 +836,7 @@ function newReport($type_rapport)
 
 	$row = (object) $empty_report;
 	$row->type = $type_rapport;
+	$row->id_session = current_session_id();
 	displayEditableReport($row, "add");
 } ;
 
@@ -869,5 +865,11 @@ function error_handler($errno, $errstr, $errfile, $errline)
 	$body= "Number:".$errno."\r\n String:".$errstr."\r\n File:".$errfile."\r\n Line:".$errline;
 	message_handler("Marmotte webpage :error ",$body);
 }
+
+function replace_accents($string)
+{
+	return str_replace( array('à','á','â','ã','ä', 'ç', 'è','é','ê','ë', 'ì','í','î','ï', 'ñ', 'ò','ó','ô','õ','ö', 'ù','ú','û','ü', 'ý','ÿ', 'À','Á','Â','Ã','Ä', 'Ç', 'È','É','Ê','Ë', 'Ì','Í','Î','Ï', 'Ñ', 'Ò','Ó','Ô','Õ','Ö', 'Ù','Ú','Û','Ü', 'Ý'), array('a','a','a','a','a', 'c', 'e','e','e','e', 'i','i','i','i', 'n', 'o','o','o','o','o', 'u','u','u','u', 'y','y', 'A','A','A','A','A', 'C', 'E','E','E','E', 'I','I','I','I', 'N', 'O','O','O','O','O', 'U','U','U','U', 'Y'), $string);
+}
+
 
 ?>

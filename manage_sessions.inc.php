@@ -3,7 +3,7 @@
 function sessionArrays()
 {
 	$sessions = array();
-	$sql = "SELECT * FROM sessions ORDER BY id ASC;";
+	$sql = "SELECT * FROM sessions ORDER BY date DESC;";
 	if($result=mysql_query($sql))
 	{
 		while ($row = mysql_fetch_object($result))
@@ -13,6 +13,34 @@ function sessionArrays()
 	}
 	return $sessions;
 }
+
+function current_session_id()
+{
+	$sessions = sessionArrays();
+	foreach($sessions as $id => $nom)
+		if($nom == current_session())
+			return $id;
+	return "1";
+}
+
+function current_session()
+{
+	return $_SESSION['current_session'];
+}
+
+function showSessions()
+{
+	$finalResult = array();
+	$sql = "SELECT * FROM sessions ORDER BY date DESC;";
+	if($result=mysql_query($sql))
+	{
+		while ($row = mysql_fetch_object($result))
+		{
+			$finalResult[] = array( "id" => $row->id, "nom" => $row->nom, "date" => $row->date, );
+		}
+	}
+	return	$finalResult;
+} ;
 
 
 

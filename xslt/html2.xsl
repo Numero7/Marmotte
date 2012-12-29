@@ -65,9 +65,10 @@ Les avis émis par les sections ne préjugent pas de la décision qui sera prise
 
 </td>
 </tr>
-
 <tr>
 <td>
+<br/>
+<br/>
 <table>
 <tr>
 	<td><xsl:text> </xsl:text></td>

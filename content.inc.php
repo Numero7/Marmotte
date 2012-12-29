@@ -290,8 +290,8 @@
 			default:
 				{
 					?>
-		<p>Bienvenue sur le nouveau site d'édition des prérapports de la
-			section 06.</p>
+		<p>Bienvenue sur le site de gestion des rapports de la
+			section 6.</p>
 		<p>
 			Le <b>menu situé à droite de cette page</b> vous permettra de
 			consulter, éditer ou créer des rapports.

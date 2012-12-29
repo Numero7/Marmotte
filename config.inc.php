@@ -425,12 +425,14 @@
 /* Definition des formaules standards à la fin de certains rapports*/
 	
 	$promotionFormula = array(
-			'non'=> 'Le faible nombre de possibilités de promotions DR1 cette année ne permet malheureusement pas à la Section 6 du Comité National de proposer ce chercheur à la Direction Générale du CNRS pour une promotion cette année.'
+			'oui'=> 'La section donne un avis favorable à la demande de promotion.',
+			'non'=> 'Le faible nombre de possibilités de promotions cette année ne permet malheureusement pas à la Section 6 du Comité National de proposer ce chercheur à la Direction Générale du CNRS pour une promotion cette année.'
 			);
 	
 	$typesRapportsToFormula = array(
 		'Promotion' => $promotionFormula,
-			);
+		'Titularisation' => array('favorable'=> 'La section donne un avis favorable à la titularisation.')
+	);
 
 	
 /* Definition des différents grades*/
@@ -528,4 +530,8 @@
 		NIVEAU_PERMISSION_PRESIDENT_SECRETAIRE => "secrétaire/président(e)",
 		NIVEAU_PERMISSION_SUPER_UTILISATEUR => "super utilisateur",
 	);
+	
+	if(!isset($_SESSION['current_session']))
+		$_SESSION['current_session'] = "Automne 2012";
+	
 ?>

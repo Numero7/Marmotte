@@ -32,6 +32,11 @@
 				removeCredentials();
 				break;
 			
+			case 'change_current_session':
+				if(isset($_REQUEST["current_session"]))
+					$_SESSION['current_session'] = $_REQUEST["current_session"];
+				break;
+				
 			case 'upload':
 				include("upload.inc.php");
 				break;
@@ -51,9 +56,9 @@
 		
 		if (authenticate())
 		{
+			include("authbar.inc.php");
 			include("content.inc.php");
 			include("sidemenu.inc.php");
-			include("authbar.inc.php");
 		}
 		else
 		{

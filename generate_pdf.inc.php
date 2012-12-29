@@ -2,7 +2,7 @@
 
 require_once('generate_xml.inc.php');
 
-function getReportAsHtml($id_rapport)
+function getReportAsDOMDoc($id_rapport)
 {
 	$row = getReport($id_rapport);
 	
@@ -14,11 +14,14 @@ function getReportAsHtml($id_rapport)
 	
 	$doc = rowToXMLDoc($row);
 	if(!$doc)
-	{
 		echo 'Impossible de convertir la requete en xml';
-		return;
-	}
-	
+
+	return $doc;	
+}
+
+function getReportAsHtml($id_rapport)
+{
+	$doc = getReportAsDOMDoc($id_rapport);
 	$html = XMLToHTML($doc);
 	
 	return $html;
@@ -36,11 +39,18 @@ function viewReportAsHtml($id_rapport)
 function viewReportAsPdf($id_rapport)
 {
 
-	$html = getReportAsHtml($id_rapport);
+	$doc = getReportAsDOMDoc($id_rapport);
+	
+	$html = XMLToHTML($doc);
 	
 	$pdf = HTMLToPDF($html);
 
-	$pdf->Output('rapport.pdf', 'I');
+	$nodes =$doc->getElementsByTagName("rapport");
+	if($nodes)
+	{
+		$filename = filename_from_node($nodes->item(0)).".pdf";
+		$pdf->Output($filename, 'D');
+	}
 };
 
 
