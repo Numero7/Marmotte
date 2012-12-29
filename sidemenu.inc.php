@@ -46,7 +46,7 @@ require_once("manage_users.inc.php");
 			<a href="?action=view">Tous les rapports</a>
 		</h2>
 		<?php 
-		if(isSuperUser())
+		if(isSecretaire())
 		{
 			?>
 		<hr>

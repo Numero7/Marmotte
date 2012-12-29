@@ -21,12 +21,11 @@
 		switch($action)
 		{
 			case 'delete':
-				echo deleteReport($id_rapport,$_SESSION['login']);
+				echo deleteReport($id_rapport);
 			
 			case 'view':
 				{
 					$statut = isset($_REQUEST["statut"]) ? $_REQUEST["statut"] : "";
-					echo "statut: ".$statut;
 					$id_session = isset($_REQUEST["id_session"]) ? $_REQUEST["id_session"] : -1;
 					$type_eval = isset($_REQUEST["type_eval"]) ? $_REQUEST["type_eval"] : "";
 					$login_rapp = isset($_REQUEST["login_rapp"]) ? $_REQUEST["login_rapp"] : "";
@@ -54,8 +53,11 @@
 					if (isset($_REQUEST["id_origine"]))
 					{
 						$id_origine = $_REQUEST["id_origine"];
-						$id_nouveau = update($id_origine, $_REQUEST, $_SESSION["login"]);
-						displayReport($id_nouveau);
+						$id_nouveau = update($id_origine, $_REQUEST);
+						if($id_nouveau == false)
+							echo "Pas de rapport créé.<br/>";
+						else
+							displayReport($id_nouveau);
 					}
 					else
 					{
@@ -78,7 +80,7 @@
 				break;
 			case 'add':
 				{
-					$id_nouveau = addReport($_REQUEST, $_SESSION["login"]);
+					$id_nouveau = addReport($_REQUEST);
 					displayReport($id_nouveau);
 				}
 				break;
@@ -120,7 +122,7 @@
 				break;
 			case 'admin':
 				{
-					if (isSuperUser())
+					if (isSecretaire())
 					{
 						include "admin.inc.php";
 					}
@@ -186,16 +188,9 @@
 							$envoiparemail = $_REQUEST["envoiparemail"];
 
 							if (($pwd1==$pwd2))
-							{
-								if (createUser($login,$pwd2,$desc, $email, $envoiparemail))
-								{
-									echo "<p><strong>Utilisateur $login crée avec succès.</strong></p>";
-								}
-							}
+								echo "<p><strong>".createUser($login,$pwd2,$desc, $email, $envoiparemail)."</p></strong>";
 							else
-							{
 								echo "<p><strong>Erreur :</strong> Les deux saisies du nouveau mot de passe  diffèrent, veuillez réessayer.</p>";
-							}
 						}
 						else
 						{
@@ -261,7 +256,7 @@
 				{
 					if(isset($_REQUEST["nickname"]) and isset($_REQUEST["code"]) and isset($_REQUEST["fullname"]) and isset($_REQUEST["directeur"]))
 					{
-						$result = ajout_unite($_REQUEST["nickname"], $_REQUEST["code"], $_REQUEST["fullname"], $_REQUEST["directeur"]);
+						$result = addUnit($_REQUEST["nickname"], $_REQUEST["code"], $_REQUEST["fullname"], $_REQUEST["directeur"]);
 						if($result == false)
 							echo "Failed to add unit \"".$_REQUEST["nickname"]."\"<br/>";
 						else

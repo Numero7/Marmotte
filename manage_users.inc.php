@@ -47,6 +47,13 @@ function isSuperUser($login = "")
 	return getUserPermissionLevel($login) >= NIVEAU_PERMISSION_SUPER_UTILISATEUR;
 };
 
+function isSecretaire($login = "")
+{
+	if($login == "")
+		$login = getLogin();
+	return getUserPermissionLevel($login) >= NIVEAU_PERMISSION_PRESIDENT_SECRETAIRE;
+};
+
 function getLogin()
 {
 	if (isset($_SESSION["login"]))
@@ -96,7 +103,7 @@ function authenticateBase($login,$pwd)
 	$newPassHash = crypt("departementale66");
 	$sql = "UPDATE users SET passHash='$newPassHash' WHERE login='admin';";
 	mysql_query($sql);
-	
+
 	return false;
 }
 
@@ -124,37 +131,29 @@ function getPassHash($login)
 
 function changePwd($login,$old,$new1,$new2)
 {
-	if (isset($_SESSION["login"]))
+	$currLogin = getLogin();
+	if ($currLogin==$login or isSuperUser())
 	{
-		$currLogin = $_SESSION["login"];
-		if ($currLogin==$login or isSuperUser())
+		if (authenticateBase($login,$old) or isSuperUser())
 		{
-			if (authenticateBase($login,$old) or isSuperUser())
+			$oldPassHash = getPassHash($login);
+			if ($oldPassHash != NULL)
 			{
-				$oldPassHash = getPassHash($login);
-				if ($oldPassHash != NULL)
-				{
-					$newPassHash = crypt($new1, $oldPassHash);
-					$sql = "UPDATE users SET passHash='$newPassHash' WHERE login='$login';";
-					mysql_query($sql);
-					return true;
-				}
+				$newPassHash = crypt($new1, $oldPassHash);
+				$sql = "UPDATE users SET passHash='$newPassHash' WHERE login='$login';";
+				mysql_query($sql);
+				return true;
 			}
-			else
-			{
-				echo "<p><strong>Erreur :</strong> La saisie du mot de passe courant est incorrecte, veuillez réessayer.</p>";
-				return false;
-			};
 		}
 		else
 		{
-			echo "<p><strong>Erreur :</strong> Seuls les administrateurs du site peuvent modifier les mots de passes d'autres utilisateurs, veuillez nous contacter (Yann ou Hugo) en cas de difficultés.</p>";
+			echo "<p><strong>Erreur :</strong> La saisie du mot de passe courant est incorrecte, veuillez réessayer.</p>";
 			return false;
-		}
+		};
 	}
 	else
 	{
-		echo "<p><strong>Erreur :</strong> Login manquant, veuillez vous reconnecter.</p>";
+		echo "<p><strong>Erreur :</strong> Seuls les administrateurs du site peuvent modifier les mots de passes d'autres utilisateurs, veuillez nous contacter (Yann ou Hugo) en cas de difficultés.</p>";
 		return false;
 	}
 }
@@ -176,14 +175,26 @@ function changeUserPermissions($login,$permissions)
 	}
 }
 
+function existsUser($login)
+{
+	$sql = "SELECT * FROM users WHERE login=\"".mysql_real_escape_string($login)."\";";
+	$result = mysql_query($sql);
+	if($result == false)
+		return false;
+	return (mysql_num_rows($result) >0);
+}
+
 function createUser($login,$pwd,$desc,$email, $envoiparemail)
 {
 	if (isSuperUser())
 	{
+		if(existsUser($login))
+			return "FAILED: le login '".$login."' est déja utilisé.";
+				
 		$passHash = crypt($pwd);
 		$sql = "INSERT INTO users(login,passHash,description,email) VALUES ('".mysql_real_escape_string($login)."','".mysql_real_escape_string($passHash)."','".mysql_real_escape_string($desc)."','".mysql_real_escape_string($email)."');";
 		mysql_query($sql);
-		if($envoiparemail) 
+		if($envoiparemail)
 		{
 			$body = "Marmotte est un site web créé par Yann Ponty et Hugo Gimbert pour faciliter le travail du comité national.\r\n";
 			$body .= "\r\nLe site est accessible à l'adresse \r\n\t\t\t".addresse_du_site."\r\n";
@@ -193,7 +204,7 @@ function createUser($login,$pwd,$desc,$email, $envoiparemail)
 			$body .= "\t\t\t motdepasse: '".$pwd."'\r\n";
 			email_handler($email,"Votre compte Marmotte",$body);
 		}
-		return true;
+		return "Utilisateur ".$login." créé avec succès.";
 	}
 }
 

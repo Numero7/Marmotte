@@ -46,7 +46,7 @@ function showSessions()
 
 function createSession($name,$date)
 {
-	if (isSuperUser())
+	if (isSecretaire())
 	{
 		echo $date."<br>";
 		echo strtotime($date)."<br>";

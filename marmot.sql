@@ -23,10 +23,29 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `chercheurs`
+--
+
+
+
+CREATE TABLE IF NOT EXISTS `chercheurs` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `nom` varchar(40) CHARACTER SET utf8 NOT NULL,
+  `prenom` varchar(40) CHARACTER SET utf8 NOT NULL,
+  `unite` varchar(50) CHARACTER SET utf8 NOT NULL,
+  `grade` enum('CR2','CR1','DR2','DR1','DRCE1','DRCE2','ChaireMC','ChairePR','Emerite','MC','PR','PhD','HDR','None') CHARACTER SET utf8 NOT NULL,
+  `date_recrutement` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=61 ;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `evaluations`
 --
 
-DROP TABLE IF EXISTS `evaluations`;
+--DROP TABLE IF EXISTS `evaluations`;
+
 
 CREATE TABLE IF NOT EXISTS `evaluations` (
 `statut` enum('vierge','prerapport','rapport','publie') CHARACTER SET utf8 NOT NULL,

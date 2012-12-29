@@ -34,10 +34,12 @@ require_once('manage_sessions.inc.php');
 		<input type="submit" value="Mot de Passe">
 		</form>
 		<?php 
-		  if (isSuperUser())
+		  if (isSecretaire())
 		  {
 		  ?>
-		  <form method="get" style="display:inline;margin-left:5px; border-left:2px solid #FFF;padding:8px;"><input type="hidden" name="action" value="admin"><input type="submit" value="Administration"></form>
+		  <form method="get" style="display:inline;margin-left:5px; border-left:2px solid #FFF;padding:8px;">
+		  <input type="hidden" name="action" value="admin">
+		  <input type="submit" value="Administration"></form>
 		  <?php
 		  }
 		?>

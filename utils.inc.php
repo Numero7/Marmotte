@@ -180,7 +180,11 @@ function displayReport($id_rapport)
 
 	$sql = "SELECT tt.*, ss.nom AS nom_session, ss.date AS date_session FROM evaluations tt, sessions ss WHERE tt.id=$id_rapport AND tt.id_session=ss.id;";
 	$result=mysql_query($sql);
-	if ($row = mysql_fetch_object($result))
+	if($result == false)
+	{
+		echo "Request <br/>".$sql ."<br/> failed.<br/>";
+	}
+	else if ($row = mysql_fetch_object($result))
 	{
 		if(array_key_exists($row->type,$typesRapportsUnites))
 		{
@@ -298,21 +302,15 @@ function displaySummary($statut, $id_session, $type_eval, $sort_crit, $login_rap
 	global $typeExports;
 	global $statutsRapports;
 
-	$result = filterSortReports($statut, $id_session, $type_eval, $sort_crit, $login_rapp);
-	if($result == false)
-	{
-		echo "Could not process sql query <br/>";
-		return;
-	}
+	
 	$sortCrit = parseSortCriteria($sort_crit);
 	$rapporteurs = array();
 	$sessions = showSessions();
-	$rows = array();
-	while ($row = mysql_fetch_object($result))
-	{
-		$rows[] = $row;
+	
+	$rows = filterSortReports($statut, $id_session, $type_eval, $sort_crit, $login_rapp);
+	foreach($rows as $row)
 		$rapporteurs[$row->rapporteur] = 1;
-	}
+
 	$krapp = array_keys($rapporteurs);
 	natcasesort($krapp);
 	$rapporteurs = $krapp;
@@ -375,7 +373,7 @@ function displaySummary($statut, $id_session, $type_eval, $sort_crit, $login_rap
 								foreach ($typesRapports as $ty => $value)
 								{
 									$sel = ($ty==$type_eval) ? " selected=\"selected\"": "";
-									echo "<option value=\"$ty\"$sel>".ucfirst($value)."</option>\n";
+									echo "<option value=\"$ty\"$sel>".$value."</option>\n";
 								}
 								?>
 						</select></td>
@@ -435,6 +433,7 @@ function displaySummary($statut, $id_session, $type_eval, $sort_crit, $login_rap
 ?>
 	</tr>
 	<?php
+	
 	foreach($rows as $row)
 	{
 		?>
@@ -619,11 +618,15 @@ function displayEditableReport($row, $actioname)
 	<input type="hidden" name="fieldtype" value="<?php echo $row->type;?>">
 	<input type="hidden" name="fieldrapporteur" value="<?php echo getLogin();?>">
 
+	<?php 
+	if(!isSecretaire())
+		echo '<input type="hidden" name="fieldstatut" value="'.$row->statut.'>';
+	?>
+	
 	<input type="submit" value="<?php echo (($actioname == "add") ? "Ajouter" : "Enregistrer");?>">
-
 	<table class="inputreport">
 	<?php 
-	if(isSuperUSer())
+	if(isSecretaire())
 	{
 		echo "<tr><td>Statut</td><td><select name=\"fieldstatut\" style=\"width: 100%;\">";
 		foreach($statutsRapports as $val => $nom)
@@ -632,10 +635,6 @@ function displayEditableReport($row, $actioname)
 			echo  "\t\t\t\t\t<option value=\"$val\" $sel>$nom</option>\n";
 		}
 		echo "</select></td></tr>";
-	}
-	else
-	{
-		echo '<input type="hidden" name="fieldstatut" value="'.$row->statut.'>';
 	}
 	?>
 		<tr>
@@ -816,12 +815,7 @@ function editReport($id_rapport)
 
 function newReport($type_rapport)
 {
-	global $fieldsAll;
-	global $fieldsTypes;
-	global $grades;
-	global $actions;
 	global $empty_report;
-
 	$row = (object) $empty_report;
 	$row->type = $type_rapport;
 	$row->id_session = current_session_id();
@@ -859,5 +853,9 @@ function replace_accents($string)
 	return str_replace( array('à','á','â','ã','ä', 'ç', 'è','é','ê','ë', 'ì','í','î','ï', 'ñ', 'ò','ó','ô','õ','ö', 'ù','ú','û','ü', 'ý','ÿ', 'À','Á','Â','Ã','Ä', 'Ç', 'È','É','Ê','Ë', 'Ì','Í','Î','Ï', 'Ñ', 'Ò','Ó','Ô','Õ','Ö', 'Ù','Ú','Û','Ü', 'Ý'), array('a','a','a','a','a', 'c', 'e','e','e','e', 'i','i','i','i', 'n', 'o','o','o','o','o', 'u','u','u','u', 'y','y', 'A','A','A','A','A', 'C', 'E','E','E','E', 'I','I','I','I', 'N', 'O','O','O','O','O', 'U','U','U','U', 'Y'), $string);
 }
 
+function normalizeName($name)
+{
+	return str_replace('\' ', '\'', ucwords(str_replace('\'', '\' ', strtolower($name))));
+}
 
 ?>

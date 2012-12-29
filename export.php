@@ -12,7 +12,7 @@ if($dbh!=0)
 {
 	if (authenticate())
 	{
-		$action = isset($_REQUEST["action"]) : $_REQUEST["action"] : "single";
+		$action = isset($_REQUEST["action"]) ? $_REQUEST["action"] : "single";
 		$id= isset($_REQUEST["id"]) ? $_REQUEST["id"] : "-1";
 		
 		switch($action)
@@ -33,7 +33,7 @@ if($dbh!=0)
 							updateRapportAvis($idtosave,$avis,$rapport);
 						}
 					}
-					$type = isset($_REQUEST["type"]) : $_REQUEST["type"] :  "xml";
+					$type = isset($_REQUEST["type"]) ? $_REQUEST["type"] :  "xml";
 					if (isset($typeExports[$type]))
 					{
 						$statut = isset($_REQUEST["statut"]) ? $_REQUEST["statut"] : "";

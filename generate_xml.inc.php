@@ -6,18 +6,16 @@ require_once('manage_unites.inc.php');
 function getReportsAsXMLArray($statut, $id_session=-1, $type_eval="", $sort_crit="", $login_rapp="")
 {
 	global $fieldsAll;
-	$result = filterSortReports($statut, $id_session, $type_eval, $sort_crit, $login_rapp);
+	$rows = filterSortReports($statut, $id_session, $type_eval, $sort_crit, $login_rapp);
 
 	//to map id_session s to session nicknames
 	$sessions = sessionArrays();
 	$units = unitsList();
 
 	$docs = array();
-	while ($row = mysql_fetch_object($result))
-	{
+	foreach($rows as $row)
 		$docs[] = rowToXMLDoc($row, $sessions,$units);
-	}
-
+	
 	return $docs;
 }
 
@@ -34,7 +32,7 @@ function getReportsAsXML($statut = "", $id_session=-1, $type_eval="", $sort_crit
 	global $fieldsAll;
 	$doc = new DOMDocument();
 	$root = $doc->createElement("rapports");
-	$result = filterSortReports($statut, $id_session, $type_eval, $sort_crit, $login_rapp,$id_origine);
+	$rows = filterSortReports($statut, $id_session, $type_eval, $sort_crit, $login_rapp,$id_origine);
 	$root->setAttribute("id_session",$id_session);
 	$root->setAttribute("type_eval",$type_eval);
 	$root->setAttribute("sort_crit",$sort_crit);
@@ -45,11 +43,12 @@ function getReportsAsXML($statut = "", $id_session=-1, $type_eval="", $sort_crit
 	$sessions = sessionArrays();
 	$units = unitsList();
 
-	while ($row = mysql_fetch_object($result))
+	foreach($rows as $row)
 	{
 		$elem = createXMLReportElem($row, $sessions,$units,$doc);
 		$root->appendChild($elem);
 	}
+
 	$doc->appendChild($root);
 	return $doc;
 }

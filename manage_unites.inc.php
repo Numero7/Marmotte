@@ -14,6 +14,20 @@ function unitsList()
 	return $units;
 }
 
+function unitExists($code)
+{
+	$sql = "SELECT * FROM units WHERE code=$code;";
+	$result=mysql_query($sql);
+	return ($result != false) && (mysql_num_rows() > 0);
+}
+
+function createUnitIfNeeded($code)
+{
+	if(!unitExists($code))
+		addUnit($code,$code,$code,"");
+}
+
+
 function prettyUnitsList()
 {
 	$units = array();
@@ -38,7 +52,7 @@ function prettyUnitsList()
 	return $units;
 }
 
-function ajout_unite($nickname, $code, $fullname, $directeur)
+function addUnit($nickname, $code, $fullname, $directeur)
 {
 	$sql = "DELETE FROM units WHERE code = \"".$code."\";";
 	mysql_query($sql);

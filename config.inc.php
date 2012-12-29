@@ -162,6 +162,7 @@
 	);
 
 	$empty_report = array(
+		"statut" => "vierge",
 		"id_session" => "",
 		"nom" => "",
 		"prenom" => "",
