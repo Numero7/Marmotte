@@ -28,6 +28,7 @@ if($dbh!=0)
 						$idtosave = $_REQUEST["save"];
 						$avis = $_REQUEST["avis"];
 						$rapport = $_REQUEST["rapport"];
+						//rrr();
 						if (!isset($_REQUEST["cancel"]))
 						{
 							updateRapportAvis($idtosave,$avis,$rapport);
@@ -50,7 +51,7 @@ if($dbh!=0)
 						if($type=="latex" || $type=="pdf")
 						{
 							$xmls = getReportsAsXMLArray($statut, $id_session,$type_eval,$sort_crit,$login_rapp);
-
+							
 							$filename = "";
 							if($type=="latex")
 								$filename=xmls_to_zipped_tex($xmls);

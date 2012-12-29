@@ -399,7 +399,7 @@ function displaySummary($statut, $id_session, $type_eval, $sort_crit, $login_rap
 				$level = $exp["permissionlevel"];
 				if (getUserPermissionLevel()>=$level)
 				{
-					echo " <a href=\"export.php?action=group&amp;statut=$statut;id_session=$id_session&amp;type_eval=$type_eval&amp;sort_crit=$sort_crit&amp;login_rapp=$login_rapp&amp;type=$idexp\"><img class=\"icon\" width=\"50\" height=\"50\" src=\"img/$idexp-icon-50px.png\" alt=\"$expname\"></a>";
+					echo " <a href=\"export.php?action=group&amp;statut=$statut&amp;id_session=$id_session&amp;type_eval=$type_eval&amp;sort_crit=$sort_crit&amp;login_rapp=$login_rapp&amp;type=$idexp\"><img class=\"icon\" width=\"50\" height=\"50\" src=\"img/$idexp-icon-50px.png\" alt=\"$expname\"></a>";
 				}
 			}
 			?>

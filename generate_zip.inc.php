@@ -73,25 +73,9 @@ function xmls_to_zipped_pdf($docs)
 	$proc = new XSLTProcessor();
 	$proc->importStyleSheet($xsl);
 
-	$processors = array(
-			'Evaluation-Vague' => $proc,
-			'Evaluation-MiVague' => $proc,
-			'Promotion' => $proc,
-			'Candidature' => $proc,
-			'Suivi-PostEvaluation' => $proc,
-			'Titularisation' => $proc,
-			'Affectation' => $proc,
-			'Changement-Directeur' => $proc,
-			'Changement-Directeur-Adjoint' => $proc,
-			'Renouvellement' => $proc,
-			'Association' => $proc,
-			'Ecole' => $proc,
-			'Comite-Evaluation' => $proc,
-			'Generique' => $proc,
-			'' => $proc
-	);
-
 	$zip = new ZipArchive();
+	
+	echo "Processing ".count($docs)." docs<br/>";
 	if($zip->open('reports_pdf.zip',ZipArchive::OVERWRITE | ZipArchive::CREATE) == true)
 	{
 		foreach($docs as $doc)
@@ -105,7 +89,7 @@ function xmls_to_zipped_pdf($docs)
 				$filename = replace_accents(filename_from_node($node)).".pdf";
 				$local_filename = replace_accents("reports/".$filename);
 				$type = type_from_node($node);
-				$html = $processors[$type]->transformToXML($node);
+				$html = $proc->transformToXML($node);
 				$pdf = HTMLToPDF($html);
 				$pdf->Output($local_filename,"F");
 				$zip->addFromString($filename, $pdf->Output($local_filename,"S"));

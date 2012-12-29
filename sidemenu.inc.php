@@ -24,7 +24,7 @@ require_once("manage_users.inc.php");
 		<?php
 		$sessions = showSessions();
 		foreach($statutsRapportsPluriel as $statut => $nom)
-			echo "<h2><a href=\"?action=view&amp;login_rapp=".getLogin()."&amp;statut=".$statut."\">Mes ".$nom."</a></h2>";
+			echo "<h2><a href=\"?action=view&amp;login_rapp=".getLogin()."&amp;id_session=".current_session_id()."&amp;statut=".$statut."\">Mes ".$nom."</a></h2>";
 		foreach($sessions as $s)
 		{
 			$typesRapports = getTypesEval($s["id"]);

@@ -500,12 +500,12 @@
 					"name" => "XML",
 					"permissionlevel" => NIVEAU_PERMISSION_BASE,
 			),
-			"latex" => 	array(
+/*			"latex" => 	array(
 					"mime" => "application/x-latex",
 					"xsl" => "",
 					"name" => "Zip",
 					"permissionlevel" => NIVEAU_PERMISSION_BASE,
-			),
+			),*/
 			"html" => 	array(
 					"mime" => "text/html",
 					"xsl" => "xslt/html2.xsl",

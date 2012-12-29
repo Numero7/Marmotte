@@ -49,7 +49,7 @@ function filterSortReports($statut, $id_session, $type_eval, $sort_crit, $login_
 		echo "Failed to process query <br/>".$sql."<br/>";
 
 	$rows = array();
-	echo $sql."<br/>".count($rows)." rows ".mysql_num_rows($result)." sqlrows<br/>";
+	//echo $sql."<br/>".count($rows)." rows ".mysql_num_rows($result)." sqlrows<br/>";
 	
 	while ($row = mysql_fetch_object($result))
 		$rows[] = $row;
@@ -102,9 +102,12 @@ function updateRapportAvis($id_origine,$avis,$rapport)
 {
 	global $fieldsAll;
 	
-	$rows = filterSortReports(-1,-1, "", "", "", $id_origine);
-	if(count($rows)<0)
+	$rows = filterSortReports("",-1, "", "", "", $id_origine);
+	if($rows == false || count($rows)<1)
+	{
+		echo "Cannot update report: no report with id " .$id_origine."<br/>";
 		return;
+	}
 	$row = $rows[0];
 	
 	$specialRule = array(
@@ -113,6 +116,10 @@ function updateRapportAvis($id_origine,$avis,$rapport)
 			"avis"=>0,
 			"rapport"=>0,
 	);
+	
+	if($row->statut == "vierge")
+		$row->statut = "prerapport";
+	
 	$fields = "auteur,id_session,id_origine,avis,rapport";
 	$values = "\"".mysql_real_escape_string($_SESSION["login"])."\",".$row->id_session.",".$row->id_origine.",\"".mysql_real_escape_string(trim($avis))."\",\"".mysql_real_escape_string(trim($rapport))."\"";
 	foreach($fieldsAll as  $fieldID => $title)

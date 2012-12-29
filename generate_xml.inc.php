@@ -8,6 +8,7 @@ function getReportsAsXMLArray($statut, $id_session=-1, $type_eval="", $sort_crit
 	global $fieldsAll;
 	$rows = filterSortReports($statut, $id_session, $type_eval, $sort_crit, $login_rapp);
 
+	
 	//to map id_session s to session nicknames
 	$sessions = sessionArrays();
 	$units = unitsList();
@@ -16,6 +17,8 @@ function getReportsAsXMLArray($statut, $id_session=-1, $type_eval="", $sort_crit
 	foreach($rows as $row)
 		$docs[] = rowToXMLDoc($row, $sessions,$units);
 	
+	
+		
 	return $docs;
 }
 
