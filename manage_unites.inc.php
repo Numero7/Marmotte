@@ -5,12 +5,9 @@ function unitsList()
 	$units = array();
 	$sql = "SELECT * FROM units ORDER BY nickname ASC;";
 	if($result=mysql_query($sql))
-	{
 		while ($row = mysql_fetch_object($result))
-		{
 			$units[$row->code] = $row;
-		}
-	}
+
 	return $units;
 }
 
@@ -32,13 +29,11 @@ function prettyUnitsList()
 {
 	$units = array();
 	$sql = "SELECT * FROM units ORDER BY nickname ASC;";
+	
 	if($result=mysql_query($sql))
-	{
 		while ($row = mysql_fetch_object($result))
-		{
 			$units[$row->code] = $row;
-		}
-	}
+
 	$maxsize = 0;
 	foreach($units as $unit)
 		$maxsize = max($maxsize, strlen($unit->nickname));

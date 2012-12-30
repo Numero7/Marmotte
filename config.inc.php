@@ -488,11 +488,17 @@
 	
 
 	$typeExports = array(
-			"pdf" => 	array(
-					"mime" => "application/x-pdf",
-					"xsl" => "",
-					"name" => "PDF",
-					"permissionlevel" => NIVEAU_PERMISSION_PRESIDENT_SECRETAIRE,
+			"htmledit" => 	array(
+					"mime" => "text/html",
+					"xsl" => "xslt/htmlminimaledit.xsl",
+					"name" => "Html",
+					"permissionlevel" => NIVEAU_PERMISSION_BASE,
+			),
+			"html" => 	array(
+					"mime" => "text/html",
+					"xsl" => "xslt/html2.xsl",
+					"name" => "Html",
+					"permissionlevel" => NIVEAU_PERMISSION_BASE,
 			),
 			"xml" => 	array(
 					"mime" => "text/xml",
@@ -500,24 +506,25 @@
 					"name" => "XML",
 					"permissionlevel" => NIVEAU_PERMISSION_BASE,
 			),
-/*			"latex" => 	array(
-					"mime" => "application/x-latex",
+			"pdf" => 	array(
+					"mime" => "application/x-zip",
+					"xsl" => "",
+					"name" => "PDF",
+					"permissionlevel" => NIVEAU_PERMISSION_PRESIDENT_SECRETAIRE,
+			),
+			"zip" => 	array(
+					"mime" => "application/x-zip",
+					"xsl" => "",
+					"name" => "ZIP",
+					"permissionlevel" => NIVEAU_PERMISSION_PRESIDENT_SECRETAIRE
+			)
+			/*			"latex" => 	array(
+			 "mime" => "application/x-latex",
 					"xsl" => "",
 					"name" => "Zip",
 					"permissionlevel" => NIVEAU_PERMISSION_BASE,
 			),*/
-			"html" => 	array(
-					"mime" => "text/html",
-					"xsl" => "xslt/html2.xsl",
-					"name" => "Html",
-					"permissionlevel" => NIVEAU_PERMISSION_BASE,
-			),
-			"htmledit" => 	array(
-					"mime" => "text/html",
-					"xsl" => "xslt/htmlminimaledit.xsl",
-					"name" => "Html",
-					"permissionlevel" => NIVEAU_PERMISSION_BASE,
-			),
+					
 	);
 	
 	

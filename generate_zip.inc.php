@@ -66,40 +66,64 @@ function xmls_to_zipped_tex($docs)
 	return "";
 }
 
-function xmls_to_zipped_pdf($docs)
+/**
+ * Zip files to an archive
+ * @param filenames array(string -> string) <p>
+ * Collection of pairs of loclfilename and name in the archive.
+ * </p>
+ * @param localname string[optional] <p>
+ * If supplied, this is the local name inside the ZIP archive that will override the filename.
+ * </p>
+ * @param zipfilename string[optional] <p>
+ * the name of the zip file
+ * @return bool Returns zip filename on success or false on failure.
+ */
+function zip_files($filenames,$zipfilename = "reports.zip")
+{
+	$zip = new ZipArchive();
+	if($zip->open($zipfilename,ZipArchive::OVERWRITE | ZipArchive::CREATE) == true)
+	{
+		foreach($filenames as $localfilename => $zipfilename)
+		{
+			if(!$zip->addFile($zipfilename, $localfilename))
+			{
+				echo "Failed to add file ".$zipfilename." to zip file<br/>";
+				return false;
+			}
+		}
+		$zip->close();
+		return $zipfilename;
+	}
+	return false;
+}
+
+function xmls_to_pdfs($docs)
 {
 	$xsl = new DOMDocument();
 	$xsl->load("xslt/html2.xsl");
 	$proc = new XSLTProcessor();
 	$proc->importStyleSheet($xsl);
 
-	$zip = new ZipArchive();
-	
+	$filenames = array();
+
 	echo "Processing ".count($docs)." docs<br/>";
-	if($zip->open('reports_pdf.zip',ZipArchive::OVERWRITE | ZipArchive::CREATE) == true)
+	foreach($docs as $doc)
 	{
-		foreach($docs as $doc)
+		//it takes time so we tell the server the script is still alive
+		set_time_limit(0);
+		$nodes =$doc->getElementsByTagName("rapport");
+		if($nodes)
 		{
-			//it takes time so we tell the server the script is still alive
-			set_time_limit(0);
-			$nodes =$doc->getElementsByTagName("rapport");
-			if($nodes)
-			{
-				$node = $nodes->item(0);
-				$filename = replace_accents(filename_from_node($node)).".pdf";
-				$local_filename = replace_accents("reports/".$filename);
-				$type = type_from_node($node);
-				$html = $proc->transformToXML($node);
-				$pdf = HTMLToPDF($html);
-				$pdf->Output($local_filename,"F");
-				$zip->addFromString($filename, $pdf->Output($local_filename,"S"));
-			}
+			$node = $nodes->item(0);
+			$filename = replace_accents(filename_from_node($node)).".pdf";
+			$local_filename = replace_accents("reports/".$filename);
+			$type = type_from_node($node);
+			$html = $proc->transformToXML($node);
+			$pdf = HTMLToPDF($html);
+			$pdf->Output($local_filename,"F");
+			$filenames[$local_filename] = $filename;
 		}
-
-		$zip->close();
-		return "reports_pdf.zip";
-
 	}
-	return "";
+	return $filenames;
 }
 ?>

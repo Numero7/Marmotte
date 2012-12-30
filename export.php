@@ -14,13 +14,13 @@ if($dbh!=0)
 	{
 		$action = isset($_REQUEST["action"]) ? $_REQUEST["action"] : "single";
 		$id= isset($_REQUEST["id"]) ? $_REQUEST["id"] : "-1";
-		
+
 		switch($action)
 		{
 			case 'viewpdf':
-					viewReportAsPdf($id); break;
+				viewReportAsPdf($id); break;
 			case 'viewhtml':
-					viewReportAsHtml($id);	break;
+				viewReportAsHtml($id);	break;
 			case 'group':
 				{
 					if (isset($_REQUEST["save"]) and isset($_REQUEST["avis"]) and isset($_REQUEST["rapport"]))
@@ -48,37 +48,49 @@ if($dbh!=0)
 						$mime = $conf["mime"];
 						$xslpath = $conf["xsl"];
 
-						if($type=="latex" || $type=="pdf")
+						if($type=="latex" || $type=="pdf" || $type=="zip")
 						{
 							$xmls = getReportsAsXMLArray($statut, $id_session,$type_eval,$sort_crit,$login_rapp);
-							
+								
 							$filename = "";
 							if($type=="latex")
 								$filename=xmls_to_zipped_tex($xmls);
 
-							if($type=="pdf")
-								$filename=xmls_to_zipped_pdf($xmls);
+							if($type == "zip" || $type =="pdf")
+								$filenames = xmls_to_pdfs($xmls);
 
-							if($filename == "")
+							if($type=="zip")
 							{
-								echo "Failed to generate zip file";
-								return;
+								$filename= zip_files($filenames);
+
+								if($filename == "")
+								{
+									echo "Failed to generate zip file";
+									return;
+								}
+
+								$filepath="./";
+
+								header("Pragma: public");
+								header("Expires: 0");
+								header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+								header("Cache-Control: public");
+								header("Content-Description: File Transfer");
+								header("Content-type: application/octet-stream");
+								header("Content-Disposition: attachment; filename=\"".$filename."\"");
+								header("Content-Transfer-Encoding: binary");
+								header("Content-Length: ".filesize($filename));
+								ob_clean();
+								flush();
+								readfile($filename);
 							}
-
-							$filepath="./";
-
-							header("Pragma: public");
-							header("Expires: 0");
-							header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
-							header("Cache-Control: public");
-							header("Content-Description: File Transfer");
-							header("Content-type: application/octet-stream");
-							header("Content-Disposition: attachment; filename=\"".$filename."\"");
-							header("Content-Transfer-Encoding: binary");
-							header("Content-Length: ".filesize($filename));
-							ob_clean();
-							flush();
-							readfile($filename);
+							else
+							{
+								echo '<script type="text/javascript">								
+								window.open( "/zips/" )
+								</script>
+										';
+							}
 						}
 						else
 						{

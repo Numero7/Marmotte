@@ -317,6 +317,9 @@ function filename_from_node(DOMNode $node)
 		$grade .= " - ".$avis;
 	}
 
+	if($type == "Evaluation-Vague" || $type == "Evaluation-MiVague")
+		$type .=  " - ".mb_convert_case($avis,MB_CASE_TITLE);
+	
 	if(array_key_exists($type,$typesRapportsUnites))
 		return $session." - ".$type." - ".$unite;
 	else

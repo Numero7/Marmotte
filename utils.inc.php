@@ -459,7 +459,7 @@ function displaySummary($statut, $id_session, $type_eval, $sort_crit, $login_rap
 ?>
 	</tr>
 	<?php
-	
+	$prettyunits = unitsList();
 	foreach($rows as $row)
 	{
 		?>
@@ -469,7 +469,18 @@ function displaySummary($statut, $id_session, $type_eval, $sort_crit, $login_rap
 		{
 			$title = $fieldsAll[$fieldID];
 			?>
-		<td><span class="valeur"><?php echo $row->$fieldID;?> </span></td>
+		<td><span class="valeur">
+		<?php
+		if($fieldID != "unite")
+		{
+			 echo $row->$fieldID;
+		}
+		else
+		{
+			if(array_key_exists($row->unite,$prettyunits)) echo $prettyunits[$row->unite]->nickname;
+		 	else echo $row->unite;
+		}
+		 ?> </span></td>
 		<?php
 		}
 		foreach($actions as $action => $actionTitle)
@@ -641,7 +652,6 @@ function displayEditableReport($row, $actioname)
 <form method="post" action="index.php" style="width: 100%">
 	<input type="hidden" name="action" value=<?php echo $actioname?>>
 	<input type="hidden" name="id_origine" value="<?php echo $row->id_origine;?>">
-	<input type="hidden" name="fieldtype" value="<?php echo $row->type;?>">
 	<input type="hidden" name="fieldrapporteur" value="<?php echo getLogin();?>">
 
 	<?php 
@@ -661,7 +671,28 @@ function displayEditableReport($row, $actioname)
 			echo  "\t\t\t\t\t<option value=\"$val\" $sel>$nom</option>\n";
 		}
 		echo "</select></td></tr>";
+		
 	}
+	if($eval_type == "Evaluation-Vague" || $eval_type == "Evaluation-MiVague" )
+	{
+		echo "<tr><td>Evaluation</td><td><select name=\"fieldtype\" style=\"width: 100%;\">";
+		$typesRapportsEvals = array(
+				 "Evaluation-Vague" => $typesRapports['Evaluation-Vague'],
+					"Evaluation-MiVague" => $typesRapports['Evaluation-MiVague']
+		);
+
+		foreach($typesRapportsEvals as $val => $nom)
+		{
+			$sel = ($eval_type==$val) ? "selected=\"selected\"" : "";
+			echo  "\t\t\t\t\t<option value=\"$val\" $sel>$nom</option>\n";
+		}
+		echo "</select></td></tr>";
+	}
+	else
+	{
+		echo '<input type="hidden" name="fieldtype" value="'.$row->type.'">';
+	}
+	
 	?>
 		<tr>
 			<td>Session</td>

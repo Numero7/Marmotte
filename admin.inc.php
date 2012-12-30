@@ -68,9 +68,9 @@ if(isSecretaire())
 			</td>
 		</tr>
 	</table>
-	<input type="hidden" name="type" value=labo> <input type="hidden"
-		name="action" value=ajoutlabo> <input<input type="submit"
-		value="Ajouter unité" />
+	<input type="hidden" name="type" value=labo>
+	<input type="hidden" name="action" value=ajoutlabo>
+	<input type="submit" value="Ajouter unité" />
 </form>
 </p>
 <h2>Ajout de plusieurs unités</h2>
