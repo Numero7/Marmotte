@@ -473,18 +473,21 @@
 		'C',
 		'C-',
 	);
-	
-	$actions = array(
-		'details' => "Détails", 
-		'history' => "Historique", 
-		'edit'  => "Modifier",
-		'delete'  => "Supprimer"
-	);
-	
+
 	define("NIVEAU_PERMISSION_BASE", 0);
 	define("NIVEAU_PERMISSION_BUREAU", 100);
 	define("NIVEAU_PERMISSION_PRESIDENT_SECRETAIRE", 500);
 	define("NIVEAU_PERMISSION_SUPER_UTILISATEUR", 1000);
+	
+	$actions = array(
+		'details' => array('title' => "Détails", 'level' => NIVEAU_PERMISSION_BASE, 'page' =>'', 'icon' => 'img/details-icon-24px.png'),
+		'history' => array('title' => "Historique", 'level' => NIVEAU_PERMISSION_BASE, 'page' =>'', 'icon' => 'img/history-icon-24px.png'),
+		'edit' => array('title' => "Modifier", 'level' => NIVEAU_PERMISSION_BASE, 'page' =>'', 'icon' => 'img/edit-icon-24px.png'),
+		'delete' => array('title' => "Supprimer", 'level' => NIVEAU_PERMISSION_PRESIDENT_SECRETAIRE, 'page' =>'', 'icon' => 'img/delete-icon-24px.png'),
+		'viewpdf' => array('title' => "Voir en HTML", 'level' => NIVEAU_PERMISSION_BASE, 'page' =>'export.php', 'icon' => 'img/pdf-icon-24px.png'),
+		'viewhtml' => array('title' => "Voir en PDF", 'level' => NIVEAU_PERMISSION_BASE, 'page' =>'export.php', 'icon' => 'img/html-icon-24px.png'),
+	);
+	
 	
 
 	$typeExports = array(

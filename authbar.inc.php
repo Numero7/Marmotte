@@ -7,6 +7,10 @@ require_once('manage_sessions.inc.php');
 <div class="footer">
 	<div id="authbar">
 		Utilisateur	: <span class='login'><?php echo $_SESSION["login"];?> </span>
+		<?php 
+		  if (isSecretaire())
+		  {
+		  ?>
 		Session	: 
 		<form method="post" style="display:inline;" action="index.php">
 		<input type="hidden" name="action" value="change_current_session">
@@ -25,6 +29,7 @@ require_once('manage_sessions.inc.php');
 			</select>
 			<input type="submit" value="Changer session">
 			</form>
+			<?php }?>
 		<form method="get" style="display:inline;;margin-left:5px; border-left:2px solid #FFF;padding:8px;">
 		<input type="hidden" name="action" value="logout">
 		<input type="submit" name="logout" value="Se Déconnecter">

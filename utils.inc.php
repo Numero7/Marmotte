@@ -292,6 +292,51 @@ function highlightDiff(&$prevVals,$key,$val)
 	return $val;
 }
 
+function displayExport($statut, $id_session, $type_eval, $sort_crit, $login_rapp)
+{
+	global $typeExports;
+	echo '
+	<h2>Exporter/Editer tous</h2>
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				';
+	foreach($typeExports as $idexp => $exp)
+	{
+		$expname= $exp["name"];
+		$level = $exp["permissionlevel"];
+		if (getUserPermissionLevel()>=$level)
+		{
+			echo " <a href=\"export.php?action=group&amp;statut=$statut&amp;id_session=$id_session&amp;type_eval=$type_eval&amp;sort_crit=$sort_crit&amp;login_rapp=$login_rapp&amp;type=$idexp\"><img class=\"icon\" width=\"50\" height=\"50\" src=\"img/$idexp-icon-50px.png\" alt=\"$expname\"></a>";
+		}
+	}
+	echo '</td>';
+	if (getUserPermissionLevel()>= NIVEAU_PERMISSION_PRESIDENT_SECRETAIRE)
+	{
+		echo '
+			<td align="center">
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			<form method="get">
+			<select name="new_statut">';
+		foreach ($statutsRapports as $val => $nom)
+		{
+			$sel = "";
+			if ($val==$statut)
+			{
+				$sel = " selected=\"selected\"";
+			}
+			echo "<option value=\"".$val."\" $sel>".$nom."</option>\n";
+		}
+		echo '
+				</select>
+				<input type="hidden" name="action" value="change_statut">
+				<input type="hidden" name="sort_crit" value="<?php echo $sort_crit;?>">
+				<input type="hidden" name="statut" value="<?php echo $statut;?>">
+				<input type="hidden" name="id_session" value="<?php echo $id_session;?>">
+				<input type="hidden" name="type_eval" value="<?php echo $type_eval;?>">
+				<input type="hidden" name="login_rapp" value="<?php echo $login_rapp;?>">
+				<input type="submit" value="Changer statut">
+				</form>';
+	}
+}
 
 function displaySummary($statut, $id_session, $type_eval, $sort_crit, $login_rapp)
 {
@@ -299,14 +344,13 @@ function displaySummary($statut, $id_session, $type_eval, $sort_crit, $login_rap
 	global $fieldsAll;
 	global $actions;
 	global $typesRapports;
-	global $typeExports;
 	global $statutsRapports;
 
-	
+
 	$sortCrit = parseSortCriteria($sort_crit);
 	$rapporteurs = array();
 	$sessions = showSessions();
-	
+
 	$rows = filterSortReports($statut, $id_session, $type_eval, $sort_crit, $login_rapp);
 	foreach($rows as $row)
 		$rapporteurs[$row->rapporteur] = 1;
@@ -380,56 +424,18 @@ function displaySummary($statut, $id_session, $type_eval, $sort_crit, $login_rap
 					</tr>
 					<tr>
 						<td></td>
-						<td>
-						<input type="hidden" name="sort_crit" value="<?php echo $sort_crit;?>">
-						<input type="hidden" name="action" value="view"> <input type="submit" value="Filtrer">
+						<td><input type="hidden" name="sort_crit"
+							value="<?php echo $sort_crit;?>"> <input type="hidden"
+							name="action" value="view"> <input type="submit" value="Filtrer">
 						</td>
 					</tr>
 				</table>
 			</form>
 		</td>
 		<td><p>&nbsp;</p></td>
-		<td align="center">
-			<h2>Exporter/Editer tous</h2>
-			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-			<?php
-			foreach($typeExports as $idexp => $exp)
-			{
-				$expname= $exp["name"];
-				$level = $exp["permissionlevel"];
-				if (getUserPermissionLevel()>=$level)
-				{
-					echo " <a href=\"export.php?action=group&amp;statut=$statut&amp;id_session=$id_session&amp;type_eval=$type_eval&amp;sort_crit=$sort_crit&amp;login_rapp=$login_rapp&amp;type=$idexp\"><img class=\"icon\" width=\"50\" height=\"50\" src=\"img/$idexp-icon-50px.png\" alt=\"$expname\"></a>";
-				}
-			}
-			?>
+		<td align="center"><?php displayExport($statut, $id_session, $type_eval, $sort_crit, $login_rapp);?>
 		</td>
-		<td align="center">
-			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-			<form method="get">
-			<select name="new_statut">
-			<?php
-			foreach ($statutsRapports as $val => $nom)
-			{
-				$sel = "";
-				if ($val==$statut)
-				{
-					$sel = " selected=\"selected\"";
-				}
-				echo "<option value=\"".$val."\" $sel>".$nom."</option>\n";
-			}
-			?>
-									</select>
-									<input type="hidden" name="action" value="change_statut">
-									<input type="hidden" name="sort_crit" value="<?php echo $sort_crit;?>">
-									<input type="hidden" name="statut" value="<?php echo $statut;?>">
-									<input type="hidden" name="id_session" value="<?php echo $id_session;?>">
-									<input type="hidden" name="type_eval" value="<?php echo $type_eval;?>">
-									<input type="hidden" name="login_rapp" value="<?php echo $login_rapp;?>">
-								<input type="submit" value="Changer statut">
-									</form>
-		</td>
-		
+
 	</tr>
 </table>
 <hr>
@@ -448,7 +454,8 @@ function displaySummary($statut, $id_session, $type_eval, $sort_crit, $login_rap
 		echo "&amp;login_rapp=$login_rapp";
 		echo "&amp;sort=".dumpEditedCriteria($sortCrit, $fieldID)."\">";
 		echo $title.showCriteria($sortCrit, $fieldID);
-		echo "</a>";?> </span></th>
+		echo "</a>";?> </span>
+		</th>
 		<?php
 		}
 		foreach($actions as $action => $actionTitle)
@@ -469,33 +476,43 @@ function displaySummary($statut, $id_session, $type_eval, $sort_crit, $login_rap
 		{
 			$title = $fieldsAll[$fieldID];
 			?>
-		<td><span class="valeur">
-		<?php
+		<td><span class="valeur"> <?php
 		if($fieldID != "unite")
 		{
-			 echo $row->$fieldID;
+			echo $row->$fieldID;
 		}
 		else
 		{
 			if(array_key_exists($row->unite,$prettyunits)) echo $prettyunits[$row->unite]->nickname;
-		 	else echo $row->unite;
+			else echo $row->unite;
 		}
-		 ?> </span></td>
+		?>
+		</span>
+		</td>
 		<?php
 		}
-		foreach($actions as $action => $actionTitle)
+		foreach($actions as $act => $action)
 		{
-			echo "<td><a href=\"?action=$action&amp;id=".$row->id."&amp;id_origine=".$row->id_origine."\"><img class=\"icon\" height=\"24\" src=\"img/$action-icon-24px.png\" alt=\"$actionTitle\"></a></td>";
+			$level = $action['level'];
+			$title = $action['title'];
+			$page = $action['page'];
+			$icon = $action['icon'];
+			if(getUserPermissionLevel() >= $level)
+				echo "<td><a href=\"$page?action=$act&amp;id=".$row->id."&amp;id_origine=".$row->id_origine."\"><img class=\"icon\" height=\"24\" src=\"$icon\" alt=\"$title\"></a></td>";
 		}
-		echo "<td><a href=\"export.php?action=viewpdf&amp;id=".$row->id."&amp;id_origine=".$row->id_origine."\"><img class=\"icon\" height=\"24\" src=\"img/pdf-icon-24px.png\" alt=\"$actionTitle\"></a></td>";
-		echo "<td><a href=\"export.php?action=viewhtml&amp;id=".$row->id."&amp;id_origine=".$row->id_origine."\"><img class=\"icon\" height=\"24\" src=\"img/html-icon-24px.png\" alt=\"$actionTitle\"></a></td>";
 		?>
-	
+
+
+		
 	
 	<tr>
 		<?php
 	}
 	?>
+
+
+
+
 
 </table>
 <?php
@@ -661,22 +678,22 @@ function displayEditableReport($row, $actioname)
 	
 	<input type="submit" value="<?php echo (($actioname == "add") ? "Ajouter" : "Enregistrer");?>">
 	<table class="inputreport">
-	<?php 
-	if(isSecretaire())
-	{
-		echo "<tr><td>Statut</td><td><select name=\"fieldstatut\" style=\"width: 100%;\">";
-		foreach($statutsRapports as $val => $nom)
-		{
-			$sel = ($row->statut==$val) ? "selected=\"selected\"" : "";
-			echo  "\t\t\t\t\t<option value=\"$val\" $sel>$nom</option>\n";
-		}
-		echo "</select></td></tr>";
-		
-	}
-	if($eval_type == "Evaluation-Vague" || $eval_type == "Evaluation-MiVague" )
-	{
-		echo "<tr><td>Evaluation</td><td><select name=\"fieldtype\" style=\"width: 100%;\">";
-		$typesRapportsEvals = array(
+			<?php 
+			if(isSecretaire())
+			{
+				echo "<tr><td>Statut</td><td><select name=\"fieldstatut\" style=\"width: 100%;\">";
+				foreach($statutsRapports as $val => $nom)
+				{
+					$sel = ($row->statut==$val) ? "selected=\"selected\"" : "";
+					echo  "\t\t\t\t\t<option value=\"$val\" $sel>$nom</option>\n";
+				}
+				echo "</select></td></tr>";
+
+			}
+			if($eval_type == "Evaluation-Vague" || $eval_type == "Evaluation-MiVague" )
+			{
+				echo "<tr><td>Evaluation</td><td><select name=\"fieldtype\" style=\"width: 100%;\">";
+				$typesRapportsEvals = array(
 				 "Evaluation-Vague" => $typesRapports['Evaluation-Vague'],
 					"Evaluation-MiVague" => $typesRapports['Evaluation-MiVague']
 		);
@@ -687,83 +704,86 @@ function displayEditableReport($row, $actioname)
 			echo  "\t\t\t\t\t<option value=\"$val\" $sel>$nom</option>\n";
 		}
 		echo "</select></td></tr>";
-	}
-	else
-	{
-		echo '<input type="hidden" name="fieldtype" value="'.$row->type.'">';
-	}
-	
-	?>
-		<tr>
-			<td>Session</td>
-			<td><select name="fieldid_session" style="width: 100%;">
-					<?php 		
-					$sessions = showSessions();
-					foreach($sessions as $s)
-					{
-						$sel = ($row->id_session==$s["id"]) ? "selected=\"selected\"" : "";
-						echo  "\t\t\t\t\t<option value=\"".$s["id"]."\" $sel>".$s["nom"]." ".date("Y",strtotime($s["date"]))."</option>\n";
-					}
-					?>
-			</select></td>
-		</tr>
-		<?php 
+			}
+			else
+			{
+				echo '<input type="hidden" name="fieldtype" value="'.$row->type.'">';
+			}
 
-		$active_fields = $fieldsIndividual;
-		if($is_unite)
-			$active_fields = $fieldsUnites;
-		if($is_ecole)
-			$active_fields = $fieldsEcoles;
-		if($is_candidat)
-			$active_fields = $fieldsCandidat;
-
-			
-
-		foreach($active_fields as  $fieldID)
-		{
-			$title = $fieldsAll[$fieldID];
-			if(!in_array($fieldID,$active_fields))
-				continue;
-			$type = isset($fieldsTypes[$fieldID]) ?  $fieldsTypes[$fieldID] : "";
 			?>
-		<tr>
-			<td style="width: 17em;"><span><?php echo $title;?> </span>
-			</td>
+			<tr>
+				<td>Session</td>
+				<td><select name="fieldid_session" style="width: 100%;">
+						<?php 		
+						$sessions = showSessions();
+						foreach($sessions as $s)
+						{
+							$sel = ($row->id_session==$s["id"]) ? "selected=\"selected\"" : "";
+							echo  "\t\t\t\t\t<option value=\"".$s["id"]."\" $sel>".$s["nom"]." ".date("Y",strtotime($s["date"]))."</option>\n";
+						}
+						?>
+				</select>
+				
+				
+				
+				</td>
+			</tr>
+			<?php 
+
+			$active_fields = $fieldsIndividual;
+			if($is_unite)
+				$active_fields = $fieldsUnites;
+			if($is_ecole)
+				$active_fields = $fieldsEcoles;
+			if($is_candidat)
+				$active_fields = $fieldsCandidat;
+
+
+
+			foreach($active_fields as  $fieldID)
+			{
+				$title = $fieldsAll[$fieldID];
+				if(!in_array($fieldID,$active_fields))
+					continue;
+				$type = isset($fieldsTypes[$fieldID]) ?  $fieldsTypes[$fieldID] : "";
+				?>
+			<tr>
+				<td style="width: 17em;"><span><?php echo $title;?> </span></td>
 			<?php
 			switch($type)
 			{
 				case "long":
 					{
-						?>
-			<td colspan="2"><span class="examplevaleur"><?php echo getExample($fieldID);?>
+						echo '
+			<td colspan="2"><span class="examplevaleur">'.getExample($fieldID).'
 			</span>
 			</td>
 		</tr>
 		<tr>
 			<td colspan="3">
-			<textarea name="field<?php echo $fieldID;?>" style="width: 100%;"><?php echo strip_tags($row->$fieldID);?></textarea>
+			<textarea name="field'.$fieldID.'" style="width: 100%;">'.strip_tags($row->$fieldID).'</textarea>
 			</td>
-			<?php
+		';
 					}
 					break;
 case "treslong":
 	{
-		?>
-			<td colspan="2"><span class="examplevaleur"><?php echo getExample($fieldID);?>
+		echo '
+			<td colspan="2"><span class="examplevaleur">'.getExample($fieldID).'
 			</span>
 			</td>
 		</tr>
 		<tr>
 			<td colspan="3">
-			<textarea rows=10 name="field<?php echo $fieldID;?>" style="width: 100%;"><?php echo strip_tags($row->$fieldID);?></textarea>
+			<textarea rows=10 name="field'.$fieldID.'" style="width: 100%;">'.strip_tags($row->$fieldID).'</textarea>
 			</td>
-			<?php
+			';
 	}break;
 case "short":
 	{
 		?>
 			<td style="width: 30em;"><input name="field<?php echo $fieldID;?>"
-				value="<?php echo $row->$fieldID;?>" style="width: 100%;">
+					value="<?php echo $row->$fieldID;?>" style="width: 100%;">
 			</td>
 			<td><span class="examplevaleur"><?php echo getExample($fieldID);?> </span>
 			</td>
@@ -773,7 +793,7 @@ case "evaluation":
 	{
 		?>
 			<td style="width: 30em;"><select name="field<?php echo $fieldID;?>"
-				style="width: 100%;">
+					style="width: 100%;">
 					<?php
 					foreach($notes as $val)
 					{
@@ -790,7 +810,7 @@ case "avis":
 	{
 		?>
 			<td style="width: 30em;"><select name="field<?php echo $fieldID;?>"
-				style="width: 100%;">
+					style="width: 100%;">
 					<?php
 					foreach($avis_possibles as $avis => $prettyprint)
 					{
@@ -807,7 +827,7 @@ case "unit":
 	{
 		?>
 			<td style="width: 30em;"><select name="field<?php echo $fieldID;?>"
-				style="width: 100%;">
+					style="width: 100%;">
 					<?php
 					$units = prettyUnitsList();
 					foreach($units as $unite)
@@ -845,15 +865,16 @@ case "concours":
 	break;
 case "ecole":
 	echo '<td colspan="3"><input name="fieldecole" value="<?php echo $row->ecole ?>" style="width: 100%;"> </td>';
-	break;			}
+	break;
+			}
 			?>
 		</tr>
 		<?php
-		}
-		?>
+			}
+			?>
 		<tr>
 			<td colspan="2"><input type="submit"
-				value="<?php echo (($actioname == "add") ? "Ajouter" : "Enregistrer");?>">
+					value="<?php echo (($actioname == "add") ? "Ajouter" : "Enregistrer");?>">
 			</td>
 		</tr>
 	</table>
@@ -916,3 +937,7 @@ function normalizeName($name)
 }
 
 ?>
+	
+	
+	
+	

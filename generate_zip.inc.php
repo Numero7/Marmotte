@@ -78,21 +78,22 @@ function xmls_to_zipped_tex($docs)
  * the name of the zip file
  * @return bool Returns zip filename on success or false on failure.
  */
-function zip_files($filenames,$zipfilename = "reports.zip")
+function zip_files($filenames,$zipname = "reports.zip")
 {
 	$zip = new ZipArchive();
-	if($zip->open($zipfilename,ZipArchive::OVERWRITE | ZipArchive::CREATE) == true)
+	if($zip->open($zipname,ZipArchive::OVERWRITE | ZipArchive::CREATE) == true)
 	{
-		foreach($filenames as $localfilename => $zipfilename)
+		foreach($filenames as $localfilename => $shortfilename)
 		{
-			if(!$zip->addFile($zipfilename, $localfilename))
+			set_time_limit(0);
+			if(!$zip->addFile($localfilename, $shortfilename))
 			{
-				echo "Failed to add file ".$zipfilename." to zip file<br/>";
+				echo "Failed to add file ".$shortfilename." to zip file<br/>";
 				return false;
 			}
 		}
 		$zip->close();
-		return $zipfilename;
+		return $zipname;
 	}
 	return false;
 }

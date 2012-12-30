@@ -87,7 +87,7 @@ if($dbh!=0)
 							else
 							{
 								echo '<script type="text/javascript">								
-								window.open( "/zips/" )
+								window.open( "reports/" )
 								</script>
 										';
 							}
