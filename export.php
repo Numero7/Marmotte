@@ -7,6 +7,7 @@ require_once('generate_xml.inc.php');
 require_once('generate_pdf.inc.php');
 require_once('generate_zip.inc.php');
 
+
 $dbh = db_connect($servername,$dbname,$serverlogin,$serverpassword);
 if($dbh!=0)
 {
@@ -16,7 +17,7 @@ if($dbh!=0)
 		$id= isset($_REQUEST["id"]) ? $_REQUEST["id"] : "-1";
 
 		switch($action)
-		{
+		{//Processing
 			case 'viewpdf':
 				viewReportAsPdf($id); break;
 			case 'viewhtml':

@@ -38,7 +38,7 @@ function viewReportAsHtml($id_rapport)
 
 function viewReportAsPdf($id_rapport)
 {
-
+	
 	$doc = getReportAsDOMDoc($id_rapport);
 	
 	$html = XMLToHTML($doc);

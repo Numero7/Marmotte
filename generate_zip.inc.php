@@ -107,7 +107,7 @@ function xmls_to_pdfs($docs)
 
 	$filenames = array();
 
-	echo "Processing ".count($docs)." docs<br/>";
+	//echo "Processing ".count($docs)." docs<br/>";
 	foreach($docs as $doc)
 	{
 		//it takes time so we tell the server the script is still alive
