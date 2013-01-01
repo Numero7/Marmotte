@@ -20,12 +20,8 @@
 	$dbh = db_connect($servername,$dbname,$serverlogin,$serverpassword);
 	if($dbh!=0)
 	{
-		$action="";
 		$errorLogin = 0;
-		if (isset($_REQUEST["action"]))
-		{
-			$action = $_REQUEST["action"];
-		}
+		$action = isset($_REQUEST["action"]) ? $_REQUEST["action"] : "";
 		switch($action)
 		{
 			case 'logout':
@@ -52,6 +48,7 @@
 						$errorLogin = 1;
 					}
 				}
+				break;
 		}
 		
 		if (authenticate())

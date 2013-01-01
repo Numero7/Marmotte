@@ -52,6 +52,10 @@ if($dbh!=0)
 						if($type=="latex" || $type=="pdf" || $type=="zip")
 						{
 							$xmls = getReportsAsXMLArray($statut, $id_session,$type_eval,$sort_crit,$login_rapp);
+							
+							array_map('unlink', glob("reports/*.tex"));
+							array_map('unlink', glob("reports/*.pdf"));
+							array_map('unlink', glob("reports/*.zip"));
 								
 							$filename = "";
 							if($type=="latex")
@@ -88,7 +92,7 @@ if($dbh!=0)
 							else
 							{
 								echo '<script type="text/javascript">								
-								window.open( "reports/" )
+								window.location ="reports/"
 								</script>
 										';
 							}

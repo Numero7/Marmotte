@@ -50,6 +50,7 @@ function viewReportAsPdf($id_rapport)
 	{
 		$filename = filename_from_node($nodes->item(0)).".pdf";
 		$pdf->Output($filename, 'D');
+		rrr();
 	}
 };
 

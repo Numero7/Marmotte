@@ -318,7 +318,7 @@ function displayExport($statut, $id_session, $type_eval, $sort_crit, $login_rapp
 		echo '
 				<td align="center">
 				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				<form method="get">
+				<form method="post">
 				<select name="new_statut">';
 		foreach ($statutsRapports as $val => $nom)
 		{
@@ -332,17 +332,17 @@ function displayExport($statut, $id_session, $type_eval, $sort_crit, $login_rapp
 		echo '
 				</select>
 				<input type="hidden" name="action" value="change_statut">
-				<input type="hidden" name="sort_crit" value="<?php echo $sort_crit;?>">
-				<input type="hidden" name="statut" value="<?php echo $statut;?>">
-				<input type="hidden" name="id_session" value="<?php echo $id_session;?>">
-				<input type="hidden" name="type_eval" value="<?php echo $type_eval;?>">
-				<input type="hidden" name="login_rapp" value="<?php echo $login_rapp;?>">
+				<input type="hidden" name="sort_crit" value="'.$sort_crit.'">
+				<input type="hidden" name="statut" value="'.$statut.'">
+				<input type="hidden" name="id_session" value="'.$id_session.'">
+				<input type="hidden" name="type_eval" value="'.$type_eval.'">
+				<input type="hidden" name="login_rapp" value="'.$login_rapp.'">
 				<input type="submit" value="Changer statut">
 				</form>';
 	}
 }
 
-function displaySummary($statut, $id_session, $type_eval, $sort_crit, $login_rapp)
+function displaySummary($statut = "", $id_session =-1, $type_eval = "", $sort_crit = "", $login_rapp = "")
 {
 	global $fieldsSummary;
 	global $fieldsAll;
@@ -356,6 +356,12 @@ function displaySummary($statut, $id_session, $type_eval, $sort_crit, $login_rap
 	$sessions = showSessions();
 
 	$rows = filterSortReports($statut, $id_session, $type_eval, $sort_crit, $login_rapp);
+	if($rows == false)
+	{
+		echo 'Failed to process request';
+		return;
+	}
+	
 	foreach($rows as $row)
 		$rapporteurs[$row->rapporteur] = 1;
 

@@ -12,7 +12,6 @@ function getReport($id_rapport)
 
 function filterSortReports($statut, $id_session, $type_eval, $sort_crit, $login_rapp, $id_origin=-1)
 {
-	
 	$sortCrit = parseSortCriteria($sort_crit);
 
 	$sql = "SELECT * FROM evaluations WHERE date = (SELECT MAX(date) FROM evaluations AS mostrecent WHERE mostrecent.id_origine = evaluations.id_origine)";
@@ -47,7 +46,10 @@ function filterSortReports($statut, $id_session, $type_eval, $sort_crit, $login_
 	//echo $sql;
 	$result=mysql_query($sql);
 	if($result == false)
+	{
 		echo "Failed to process query <br/>".$sql."<br/>";
+		return false;
+	}
 
 	$rows = array();
 	//echo $sql."<br/>".count($rows)." rows ".mysql_num_rows($result)." sqlrows<br/>";
@@ -60,6 +62,10 @@ function filterSortReports($statut, $id_session, $type_eval, $sort_crit, $login_
 
 function parseSortCriteria($sort_crit)
 {
+	if($sort_crit == "" && isset($_SESSION['$sorting_criteria']))
+		$sort_crit = $_SESSION['$sorting_criteria'];
+	$_SESSION['$sorting_criteria'] = $sort_crit;
+	
 	$result = array();
 	$pieces = explode(";", $sort_crit);
 	foreach($pieces as $crit)
@@ -293,8 +299,13 @@ function change_statuts($new_statut, $old_statut, $id_session,$type_eval,$login_
 	
 	$rows = filterSortReports($old_statut, $id_session, $type_eval, "", $login_rapp);
 	
-	foreach($rows as $row)
-		change_statut($row->id, $new_statut);
+	if($rows == false)
+	{
+		echo 'Failed to change statuts.<br/>';
+		return;
+	}
+		foreach($rows as $row)
+			change_statut($row->id, $new_statut);
 }
 
 function change_statut($id_origine, $statut)

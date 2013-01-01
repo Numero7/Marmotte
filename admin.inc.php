@@ -322,3 +322,60 @@ if(isSecretaire())
 <?php 
 }?>
 
+<?php 
+if(isSecretaire())
+{
+?>
+<h2>Export</h2>
+<p>
+<form method="post" enctype="multipart/form-data" >
+		<table class="inputreport">
+		<tr>
+		<td style="width: 20em;">Data</td>
+		<td>
+		<select name="dbname">
+		<option value="evaluations">Evaluations</option>
+		<option value="units">Unités</option>
+		<option value="users">Users</option>
+				</select>
+				</td>
+			</tr>
+			<tr>
+				<td><input type="hidden" name="action" value="exportdb">
+				</td>
+				<td><input type="submit" value="Exporter la base">
+				</td>
+			</tr>
+		</table>
+	</form>
+	</p>
+	<hr>
+<h2>Import</h2>
+<p>
+<form method="get" enctype="multipart/form-data" >
+		<table class="inputreport">
+		<tr>
+		<td style="width: 20em;">Data</td>
+		<td>
+		<select name="dbname">
+		<option value="evaluations">Evaluations</option>
+		<option value="units">Unités</option>
+		<option value="users">Users</option>
+				</select>
+				</td>
+			</tr>
+			<tr>
+				<td><input type="hidden" name="action" value="importdb">
+				</td>
+				<td><input type="submit" value="Importer la base">
+				</td>
+			</tr>
+		</table>
+	</form>
+	</p>
+	<hr>
+	<?php 
+}
+
+?>
+
