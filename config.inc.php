@@ -432,7 +432,7 @@
 	
 	$promotionFormula = array(
 			'oui'=> 'La section donne un avis favorable à la demande de promotion.',
-			'non'=> 'Le faible nombre de possibilités de promotions cette année ne permet malheureusement pas à la Section 6 du Comité National de proposer ce chercheur à la Direction Générale du CNRS pour une promotion cette année.'
+			'non'=> 'Le faible nombre de possibilités de promotions ne permet malheureusement pas à la Section 6 du Comité National de proposer ce chercheur à la Direction Générale du CNRS pour une promotion cette année.'
 			);
 	
 	$typesRapportsToFormula = array(

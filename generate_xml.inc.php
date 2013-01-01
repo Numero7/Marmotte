@@ -217,7 +217,7 @@ function createXMLReportElem($row, $sessions, $units, DOMDocument $doc)
 	appendLeaf("unite", $value, $doc, $rapportElem);
 
 	//On ajoute la date du jour
-	appendLeaf("date", date("j/m/Y"), $doc, $rapportElem);
+	appendLeaf("date", date("j/m/Y",strtotime($row->date)), $doc, $rapportElem);
 
 	
 
