@@ -8,7 +8,7 @@ if(isSecretaire())
 {
 	?>
 <h1>Interface d'administration</h1>
-<hr>
+<hr/>
 <h2>Creation de rapports vierges</h2>
 <p>
 	Upload de fichier csv avec séparateur , entrées encadrées par des "",
@@ -97,7 +97,7 @@ if(isSecretaire())
 if(isSuperUser())
 {
 	?>
-<hr>
+<hr/>
 <h2>Création nouveau rapporteur</h2>
 <p>
 <form method="post">
@@ -258,7 +258,7 @@ if(isSecretaire())
 {
 	?>
 <br>
-<hr>
+<hr/>
 <h2>Ajout d'une session</h2>
 <p>
 <form method="post"
@@ -318,7 +318,7 @@ if(isSecretaire())
 	</table>
 </form>
 </p>
-<hr>
+<hr/>
 <?php 
 }?>
 
@@ -349,7 +349,7 @@ if(isSecretaire())
 		</table>
 	</form>
 	</p>
-	<hr>
+	<hr/>
 <h2>Import</h2>
 <p>
 <form method="get" enctype="multipart/form-data" >
@@ -373,7 +373,7 @@ if(isSecretaire())
 		</table>
 	</form>
 	</p>
-	<hr>
+	<hr/>
 	<?php 
 }
 

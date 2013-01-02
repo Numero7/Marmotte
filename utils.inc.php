@@ -51,14 +51,14 @@ function showCriteria($sortCrit, $crit)
 	}
 	if ($order=="ASC")
 	{
-		return "<img src=\"img/sortup.png\" alt=\"$crit sorted ascendently\"><span style=\"text-decoration:none;\">($index)</span>";
+		return "<img src=\"img/sortup.png\" alt=\"$crit sorted ascendently\"/><span style=\"text-decoration:none;\">($index)</span>";
 	}
 	else if ($order=="DESC")
 	{
-		return "<img src=\"img/sortdown.png\" alt=\"$crit sorted descendently\"><span style=\"text-decoration:none;\">($index)</span>";
+		return "<img src=\"img/sortdown.png\" alt=\"$crit sorted descendently\"/><span style=\"text-decoration:none;\">($index)</span>";
 	}
 	else
-	{  return "<img src=\"img/sortneutral.png\" alt=\"$crit sorted neutrally\">";
+	{  return "<img src=\"img/sortneutral.png\" alt=\"$crit sorted neutrally\"/>";
 	}
 }
 
@@ -211,7 +211,10 @@ function displayActionsMenu($id,$id_origine, $excludedaction = "")
 			$page = $actiondata['page'];
 			$level = $actiondata['level'];
 			if(getUserPermissionLevel() >= $level)
-				echo "<td><a href=\"$page?action=$action&amp;id=$id&amp;id_origine=$id_origine\"><img class=\"icon\" width=\"24\" height=\"24\" src=\"$icon\" alt=\"$title\"></a></td>";
+			{
+				echo "<td>\n<a href=\"$page?action=$action&amp;id=$id&amp;id_origine=$id_origine\">\n";
+				echo "<img class=\"icon\" width=\"24\" height=\"24\" src=\"$icon\" alt=\"$title\"/>\n</a>\n</td>\n";
+			}
 		}
 }
 
@@ -303,22 +306,26 @@ function displayExport($statut, $id_session, $type_eval, $sort_crit, $login_rapp
 		<h2>Exporter/Editer tous</h2>
 		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 		';
+	if (getUserPermissionLevel()>= NIVEAU_PERMISSION_PRESIDENT_SECRETAIRE)
+		echo '<table><tr><td>';
+		
 	foreach($typeExports as $idexp => $exp)
 	{
 		$expname= $exp["name"];
 		$level = $exp["permissionlevel"];
 		if (getUserPermissionLevel()>=$level)
 		{
-			echo " <a href=\"export.php?action=group&amp;statut=$statut&amp;id_session=$id_session&amp;type_eval=$type_eval&amp;sort_crit=$sort_crit&amp;login_rapp=$login_rapp&amp;type=$idexp\"><img class=\"icon\" width=\"50\" height=\"50\" src=\"img/$idexp-icon-50px.png\" alt=\"$expname\"></a>";
+			echo "<a href=\"export.php?action=group&amp;statut=$statut&amp;id_session=$id_session&amp;type_eval=$type_eval&amp;sort_crit=$sort_crit&amp;login_rapp=$login_rapp&amp;type=$idexp\">";
+			echo "<img class=\"icon\" width=\"40\" height=\"40\" src=\"img/$idexp-icon-50px.png\" alt=\"$expname\"/></a>\"";
 		}
 	}
 	echo '</td>';
 	if (getUserPermissionLevel()>= NIVEAU_PERMISSION_PRESIDENT_SECRETAIRE)
 	{
 		echo '
-				<td align="center">
+				</tr><tr><td align="center">
 				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				<form method="post">
+				<form method="post"  action="index.php">
 				<select name="new_statut">';
 		foreach ($statutsRapports as $val => $nom)
 		{
@@ -331,14 +338,15 @@ function displayExport($statut, $id_session, $type_eval, $sort_crit, $login_rapp
 		}
 		echo '
 				</select>
-				<input type="hidden" name="action" value="change_statut">
-				<input type="hidden" name="sort_crit" value="'.$sort_crit.'">
-				<input type="hidden" name="statut" value="'.$statut.'">
-				<input type="hidden" name="id_session" value="'.$id_session.'">
-				<input type="hidden" name="type_eval" value="'.$type_eval.'">
-				<input type="hidden" name="login_rapp" value="'.$login_rapp.'">
-				<input type="submit" value="Changer statut">
+				<input type="hidden" name="action" value="change_statut"/>
+				<input type="hidden" name="sort_crit" value="'.$sort_crit.'"/>
+				<input type="hidden" name="statut" value="'.$statut.'"/>
+				<input type="hidden" name="id_session" value="'.$id_session.'"/>
+				<input type="hidden" name="type_eval" value="'.$type_eval.'"/>
+				<input type="hidden" name="login_rapp" value="'.$login_rapp.'"/>
+				<input type="submit" value="Changer statut"/>
 				</form>';
+		echo '</td></tr></table>';
 	}
 }
 
@@ -374,7 +382,7 @@ function displaySummary($statut = "", $id_session =-1, $type_eval = "", $sort_cr
 	<tr>
 		<td>
 			<h2>Filtrage</h2>
-			<form method="get">
+			<form method="get" action="index.php">
 				<table class="inputreport">
 					<tr>
 						<td style="width: 20em;">Statuts</td>
@@ -435,8 +443,8 @@ function displaySummary($statut = "", $id_session =-1, $type_eval = "", $sort_cr
 					<tr>
 						<td></td>
 						<td><input type="hidden" name="sort_crit"
-							value="<?php echo $sort_crit;?>"> <input type="hidden"
-							name="action" value="view"> <input type="submit" value="Filtrer">
+							value="<?php echo $sort_crit;?>"/> <input type="hidden"
+							name="action" value="view"/> <input type="submit" value="Filtrer"/>
 						</td>
 					</tr>
 				</table>
@@ -448,7 +456,7 @@ function displaySummary($statut = "", $id_session =-1, $type_eval = "", $sort_cr
 
 	</tr>
 </table>
-<hr>
+<hr/>
 <table class="summary">
 	<tr>
 		<?php
@@ -499,9 +507,7 @@ function displaySummary($statut = "", $id_session =-1, $type_eval = "", $sort_cr
 		}
 		displayActionsMenu($row->id, $row->id_origine);
 		?>
-	
-	
-	<tr>
+	</tr>
 		<?php
 	}
 	?>
@@ -653,18 +659,18 @@ function displayEditableReport($row, $actioname)
 </h1>
 
 <form method="post" action="index.php" style="width: 100%">
-	<input type="hidden" name="action" value=<?php echo $actioname?>> <input
-		type="hidden" name="id_origine" value="<?php echo $row->id_origine;?>">
+	<input type="hidden" name="action" value=<?php echo $actioname?>/> <input
+		type="hidden" name="id_origine" value="<?php echo $row->id_origine;?>"/>
 	<input type="hidden" name="fieldrapporteur"
-		value="<?php echo getLogin();?>">
+		value="<?php echo getLogin();?>"/>
 
 	<?php 
 	if(!isSecretaire())
-		echo '<input type="hidden" name="fieldstatut" value="'.$row->statut.'>';
+		echo '<input type="hidden" name="fieldstatut" value="'.$row->statut.'/>';
 	?>
 
 	<input type="submit"
-		value="<?php echo (($actioname == "add") ? "Ajouter" : "Enregistrer");?>">
+		value="<?php echo (($actioname == "add") ? "Ajouter" : "Enregistrer");?>"/>
 	<table class="inputreport">
 		<?php 
 		if(isSecretaire())
@@ -768,7 +774,7 @@ function displayEditableReport($row, $actioname)
 					{
 						?>
 			<td style="width: 30em;"><input name="field<?php echo $fieldID;?>"
-				value="<?php echo $row->$fieldID;?>" style="width: 100%;">
+				value="<?php echo $row->$fieldID;?>" style="width: 100%;"/>
 			</td>
 			<td><span class="examplevaleur"><?php echo getExample($fieldID);?> </span>
 			</td>
@@ -849,7 +855,7 @@ case "concours":
 	}
 	break;
 case "ecole":
-	echo '<td colspan="3"><input name="fieldecole" value="<?php echo $row->ecole ?>" style="width: 100%;"> </td>';
+	echo '<td colspan="3"><input name="fieldecole" value="<?php echo $row->ecole ?>" style="width: 100%;"/> </td>';
 	break;
 			}
 			?>
@@ -859,7 +865,7 @@ case "ecole":
 		?>
 		<tr>
 			<td colspan="2"><input type="submit"
-				value="<?php echo (($actioname == "add") ? "Ajouter" : "Enregistrer");?>">
+				value="<?php echo (($actioname == "add") ? "Ajouter" : "Enregistrer");?>"/>
 			</td>
 		</tr>
 	</table>
@@ -871,13 +877,24 @@ case "ecole":
 
 function editReport($id_rapport)
 {
-	$row = getReport($id_rapport);
-	if($row)
+	try
+	{
+		$row = getReport($id_rapport);
+		if(!isReportEditable($row))
+			throw new Exception("Droits insuffisants pour éditer le rapport, contacter le bureau si vous nécessitez ces droits.");
 		displayEditableReport($row, "update");
+	}
+	catch(Exception $exc)
+	{
+		throw new Exception("Echec de l'édition du rapport:\n ".$exc->getMessage());
+	}
+
 };
 
 function newReport($type_rapport)
 {
+	if(!isReportCreatable())
+		throw new Exception("Vous n'avez pas les droits nécessaires à la création d'un rapport. Veuillez contacter le secrétaire scientifique.");
 	global $empty_report;
 	$row = (object) $empty_report;
 	$row->type = $type_rapport;

@@ -19,7 +19,7 @@ require_once("manage_users.inc.php");
 		<h1>
 			<a href="?">Accueil</a>
 		</h1>
-		<hr>
+		<hr/>
 		<h1>Afficher</h1>
 		<?php
 		$sessions = showSessions();
@@ -49,7 +49,7 @@ require_once("manage_users.inc.php");
 		if(isSecretaire())
 		{
 			?>
-		<hr>
+		<hr/>
 		<h1>Ajouter</h1>
 		<h2>Rapport Chercheur</h2>
 		<ul>
@@ -57,20 +57,20 @@ require_once("manage_users.inc.php");
 			foreach($typesRapportsIndividuels as $typeEval => $value)
 			{
 				?>
-			<li><a href="?action=new&type_eval=<?php echo $typeEval ?>"><?php echo $value?>
+			<li><a href="?action=new&amp;type_eval=<?php echo $typeEval ?>"><?php echo $value?>
 			</a></li>
 			<?php
 			}
 			?>
 		</ul>
-		<hr>
+		<hr/>
 		<h2>Rapport Unité</h2>
 		<ul>
 			<?php 
 			foreach($typesRapportsUnites as $typeEval => $value)
 			{
 				?>
-			<li><a href="?action=new&type_eval=<?php echo $typeEval ?>"><?php echo $value?>
+			<li><a href="?action=new&amp;type_eval=<?php echo $typeEval ?>"><?php echo $value?>
 			</a></li>
 			<?php
 			}

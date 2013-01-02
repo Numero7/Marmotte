@@ -5,8 +5,12 @@ require_once('manage_unites.inc.php');
 
 function getReport($id_rapport)
 {
-	$sql = "SELECT tt.*, ss.nom AS nom_session, ss.date AS date_session FROM evaluations tt, sessions ss WHERE tt.id=$id_rapport ORDER BY date DESC LIMIT 1;";
+	$sql = "SELECT * FROM evaluations WHERE id=$id_rapport";
 	$result=mysql_query($sql);
+	if($result == false)
+		throw "Fail to process sql request ".$sql;
+	if(mysql_num_rows($result) ==0)
+		throw "No report with id ".$id_rapport;
 	return mysql_fetch_object($result);
 }
 
@@ -46,10 +50,7 @@ function filterSortReports($statut, $id_session, $type_eval, $sort_crit, $login_
 	//echo $sql;
 	$result=mysql_query($sql);
 	if($result == false)
-	{
-		echo "Failed to process query <br/>".$sql."<br/>";
-		return false;
-	}
+		throw new Exception("Echec de l'execution de la requete <br/>".$sql."<br/>");
 
 	$rows = array();
 	//echo $sql."<br/>".count($rows)." rows ".mysql_num_rows($result)." sqlrows<br/>";
@@ -73,13 +74,9 @@ function parseSortCriteria($sort_crit)
 		$firstChar = substr($crit,0,1);
 		$crit = substr($crit,1);
 		if ($firstChar=="*")
-		{
 			$result[$crit]= "ASC";
-		}
 		else if ($firstChar=="-")
-		{
 			$result[$crit]= "DESC";
-		}
 	}
 	return $result;
 }
@@ -109,13 +106,12 @@ function updateRapportAvis($id_origine,$avis,$rapport)
 {
 	global $fieldsAll;
 	
-	$rows = filterSortReports("",-1, "", "", "", $id_origine);
-	if($rows == false || count($rows)<1)
+	$row = getReport($id_origine);
+	if($row == false)
 	{
 		echo "Cannot update report: no report with id " .$id_origine."<br/>";
 		return;
 	}
-	$row = $rows[0];
 	
 	$specialRule = array(
 			"auteur"=>0,
@@ -152,13 +148,9 @@ function updateRapportAvis($id_origine,$avis,$rapport)
 function addReport($request)
 {
 	if(!isReportCreatable())
-	{
-		echo "Le compte ".$login." n'a pas la permission de créer un rapport.<br/>";
-		return false;
-	}
+		throw new Exception("Le compte ".$login." n'a pas la permission de créer un rapport, veuillez contacter le secrétaire scientifique.");
+
 	$newid = update(0,$request);
-	
-	
 	$sql = "UPDATE evaluations SET id_origine=$newid WHERE id=$newid;";
 	mysql_query($sql);
 	
@@ -168,11 +160,8 @@ function addReport($request)
 function addVirginReport($type,$unite,$nom,$prenom,$grade,$rapporteur)
 {
 	if(!isReportCreatable())
-	{
-		echo "Le compte ".$login." n'a pas la permission de créer un rapport.<br/>";
-		return false;
-	}
-	
+		throw new Exception("Le compte ".$login." n'a pas la permission de créer un rapport, veuillez contacter le secrétaire scientifique.");
+		
 	if($grade == "")
 		$grade = "None";
 
@@ -223,8 +212,8 @@ function deleteReport($id_rapport)
 {
 	$report = getReport($id_rapport);
 	if(!isReportDeletable($report))
-		return "Le compte ".getLogin()." n'a pas la permission d'effacer ce rapport.<br/>";
-		
+		throw new Exception("Le compte ".$login." n'a pas la permission de supprimer un rapport, veuillez contacter le secrétaire scientifique.");
+				
 	$report = getReport($id_rapport);
 	$sql = "UPDATE evaluations SET id=-".$id_rapport." WHERE id=".$id_rapport.";";
 	$sql = "UPDATE evaluations SET id_origine=-".$id_rapport." WHERE id_origine=".$id_rapport.";";
@@ -238,13 +227,8 @@ function deleteReport($id_rapport)
 function update($id_origine, $request)
 {
 	$report = getReport($id_origine);
-	if($report && !isReportEditable($report))
-	{
-		echo "Le compte ".getLogin()." n'a pas la permission de mettre à jour ce rapport.<br/>";
-		echo getLogin(). " " .$report->rapporteur ." ". $report->statut."<br/>";
-		unknonw();
-		return false;
-	}
+	if(!isReportEditable($report))
+		throw new Exception("Le compte ".$login." n'a pas la permission de mettre à jour le rapport, veuillez contacter le bureau");
 
 	if($request["fieldstatut"] == "vierge" && ($id_origine != 0))
 		$request["fieldstatut"] = "prerapport";
@@ -296,14 +280,8 @@ function update($id_origine, $request)
 function change_statuts($new_statut, $old_statut, $id_session,$type_eval,$login_rapp)
 {
 	//echo "Changing status to " .$new_statut." <br/>";
-	
 	$rows = filterSortReports($old_statut, $id_session, $type_eval, "", $login_rapp);
 	
-	if($rows == false)
-	{
-		echo 'Failed to change statuts.<br/>';
-		return;
-	}
 		foreach($rows as $row)
 			change_statut($row->id, $new_statut);
 }
