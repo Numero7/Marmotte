@@ -12,6 +12,40 @@ require_once('manage_rapports.inc.php');
 //set_error_handler('error_handler');
 
 
+function getFilterValue($filter_name)
+{
+	global $filters;
+	return isset($_REQUEST[$filter_name]) ? $_REQUEST[$filter_name] : (isset($_SESSION[$filter_name."_filter"]) ? $_SESSION[$filter_name."_filter"] : $filters[$filter_name]['default_value']);
+}
+
+function getFilterValues()
+{
+	global $filters;
+	$filter_values = array();
+	foreach($filters as $filter => $data)
+	{
+		$filter_values[$filter] =  getFilterValue($filter);
+		if(isset($_REQUEST[$filter]))
+			$_SESSION[$filter.'_filter'] = $_REQUEST[$filter];
+	}
+	
+	return $filter_values;
+}
+
+function getSortCriteria()
+{
+	if(isset($_REQUEST['sort']))
+	{
+		$_SESSION['$sorting_criteria'] = $_REQUEST['sort'];
+		return $_REQUEST['sort'];
+	}
+	else
+	{
+		return isset($_SESSION['$sorting_criteria']) ? $_SESSION['$sorting_criteria'] : "";
+	}
+}
+
+
 function getDescription($login)
 {
 	$sql = "SELECT * FROM users WHERE login='$login';";
@@ -287,14 +321,13 @@ function highlightDiff(&$prevVals,$key,$val)
 	return $val;
 }
 
-function displayExport($statut, $id_session, $type_eval, $sort_crit, $login_rapp)
+function displayExport($filter_values)
 {
 	global $typeExports;
 	global $statutsRapports;
-	echo '
-		<h2>Exporter/Editer tous</h2>
-		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-		';
+	global $filters;
+	
+	echo '<h2>Exporter/Editer tous</h2>';
 	if (getUserPermissionLevel()>= NIVEAU_PERMISSION_PRESIDENT_SECRETAIRE)
 		echo '<table><tr><td>';
 		
@@ -304,7 +337,7 @@ function displayExport($statut, $id_session, $type_eval, $sort_crit, $login_rapp
 		$level = $exp["permissionlevel"];
 		if (getUserPermissionLevel()>=$level)
 		{
-			echo "<a href=\"export.php?action=group&amp;statut=$statut&amp;id_session=$id_session&amp;type_eval=$type_eval&amp;sort_crit=$sort_crit&amp;login_rapp=$login_rapp&amp;type=$idexp\">";
+			echo "<a href=\"export.php?action=group&amp;type=$idexp\">";
 			echo "<img class=\"icon\" width=\"40\" height=\"40\" src=\"img/$idexp-icon-50px.png\" alt=\"$expname\"/></a>\"";
 		}
 	}
@@ -313,53 +346,43 @@ function displayExport($statut, $id_session, $type_eval, $sort_crit, $login_rapp
 	{
 		echo '
 				</tr><tr><td align="center">
-				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 				<form method="post"  action="index.php">
 				<select name="new_statut">';
 		foreach ($statutsRapports as $val => $nom)
 		{
 			$sel = "";
-			if ($val==$statut)
-			{
-				$sel = " selected=\"selected\"";
-			}
 			echo "<option value=\"".$val."\" $sel>".$nom."</option>\n";
 		}
 		echo '
 				</select>
 				<input type="hidden" name="action" value="change_statut"/>
-				<input type="hidden" name="sort_crit" value="'.$sort_crit.'"/>
-				<input type="hidden" name="statut" value="'.$statut.'"/>
-				<input type="hidden" name="id_session" value="'.$id_session.'"/>
-				<input type="hidden" name="type_eval" value="'.$type_eval.'"/>
-				<input type="hidden" name="login_rapp" value="'.$login_rapp.'"/>
 				<input type="submit" value="Changer statut"/>
 				</form>';
 		echo '</td></tr></table>';
 	}
 }
 
-function displaySummary($statut = "", $id_session =-1, $type_eval = "", $sort_crit = "", $login_rapp = "")
+function displaySummary($filter_values, $sort_crit)
 {
 	global $fieldsSummary;
 	global $fieldsAll;
 	global $actions;
 	global $typesRapports;
 	global $statutsRapports;
+	global $filters;
 
 
+	$rows = filterSortReports($filter_values, $sort_crit);
 	$sortCrit = parseSortCriteria($sort_crit);
-	$rapporteurs = array();
-	$sessions = showSessions();
-
-	$rows = filterSortReports($statut, $id_session, $type_eval, $sort_crit, $login_rapp);
 	
+	$rapporteurs = array();
 	foreach($rows as $row)
 		$rapporteurs[$row->rapporteur] = 1;
-
 	$krapp = array_keys($rapporteurs);
 	natcasesort($krapp);
-	$rapporteurs = $krapp;
+	$filters['id_session']['liste'] = sessionArrays();
+	$filters['id_session']['login_rapp'] = $krapp;
+	
 
 	?>
 <table>
@@ -368,74 +391,39 @@ function displaySummary($statut = "", $id_session =-1, $type_eval = "", $sort_cr
 			<h2>Filtrage</h2>
 			<form method="get" action="index.php">
 				<table class="inputreport">
+				<?php 
+				foreach($filters as $filter => $data)
+					if(isset($data['liste']))
+				{?>
 					<tr>
-						<td style="width: 20em;">Statuts</td>
-						<td><select name="statut">
-								<option value="">Tous les statuts</option>
+						<td style="width: 20em;"><?php echo $data['name'];?></td>
+						<td><select name="<?php echo $filter?>">
+								<option value="<?php echo $data['default_value']; ?>"><?php echo $data['default_name']; ?></option>
 								<?php
-								foreach ($statutsRapports as $val => $nom)
+								foreach ($data['liste'] as $value => $nomitem)
 								{
 									$sel = "";
-									if ($val==$statut)
-									{
+									if ($value == $filter_values[$filter])
 										$sel = " selected=\"selected\"";
-									}
-									echo "<option value=\"".$val."\" $sel>".$nom."</option>\n";
+									echo "<option value=\"".$value."\" $sel>".$nomitem."</option>\n";
 								}
 								?>
 						</select></td>
 					</tr>
-					<tr>
-						<td style="width: 20em;">Session</td>
-						<td><select name="id_session">
-								<option value="-1">Toutes les sessions</option>
-								<?php
-								foreach ($sessions as $val)
-								{
-									$sel = ($val["id"]==$id_session) ? " selected=\"selected\"" : "";
-									echo "<option value=\"".$val["id"]."\" $sel>".ucfirst($val["nom"])." ".date("Y",strtotime($val["date"]))."</option>\n";
-								}
-								?>
-						</select></td>
-					</tr>
-					<tr>
-						<td>Rapporteur</td>
-						<td><select name="login_rapp">
-								<option value="">Tous les rapporteurs</option>
-								<?php
-								foreach ($rapporteurs as $rapp)
-								{
-									$sel = ($rapp==$login_rapp) ? " selected=\"selected\"" : "";
-									echo "<option value=\"$rapp\"$sel>".ucfirst($rapp)."</option>\n";
-								}
-								?>
-						</select></td>
-					</tr>
-					<tr>
-						<td>Type évaluation</td>
-						<td><select name="type_eval">
-								<option value="">Tous les types</option>
-								<?php
-								foreach ($typesRapports as $ty => $value)
-								{
-									$sel = ($ty==$type_eval) ? " selected=\"selected\"": "";
-									echo "<option value=\"$ty\"$sel>".$value."</option>\n";
-								}
-								?>
-						</select></td>
-					</tr>
+					<?php 
+				}?>
 					<tr>
 						<td></td>
-						<td><input type="hidden" name="sort_crit"
-							value="<?php echo $sort_crit;?>"/> <input type="hidden"
-							name="action" value="view"/> <input type="submit" value="Filtrer"/>
+						<td>
+						<input type="hidden" name="action" value="view"/>
+						<input type="submit" value="Filtrer"/>
 						</td>
 					</tr>
 				</table>
 			</form>
 		</td>
 		<td><p>&nbsp;</p></td>
-		<td align="center"><?php displayExport($statut, $id_session, $type_eval, $sort_crit, $login_rapp);?>
+		<td align="center"><?php displayExport(getFilterValues());?>
 		</td>
 
 	</tr>
@@ -449,14 +437,9 @@ function displaySummary($statut = "", $id_session =-1, $type_eval = "", $sort_cr
 			$title = $fieldsAll[$fieldID];
 			?>
 		<th><span class="nomColonne"><?php
-		echo "<a href=\"?action=view";
-		echo "&amp;statut=$statut";
-		echo "&amp;id_session=$id_session";
-		echo "&amp;type_eval=$type_eval";
-		echo "&amp;login_rapp=$login_rapp";
-		echo "&amp;sort=".dumpEditedCriteria($sortCrit, $fieldID)."\">";
+		echo "<a href=\"?action=view&amp;sort=".dumpEditedCriteria($sortCrit, $fieldID)."\">";
 		echo $title.showCriteria($sortCrit, $fieldID);
-		echo "</a>";?> </span>
+		echo "</a>\n";?> </span>
 		</th>
 		<?php
 		}
@@ -864,8 +847,7 @@ function editReport($id_rapport)
 	try
 	{
 		$row = getReport($id_rapport);
-		if(!isReportEditable($row))
-			throw new Exception("Droits insuffisants pour éditer le rapport, contacter le bureau si vous nécessitez ces droits.");
+		checkReportIsEditable($row);
 		displayEditableReport($row, "update");
 	}
 	catch(Exception $exc)

@@ -16,40 +16,22 @@ function getReport($id_rapport)
 		return $report;
 }
 
-function filterSortReports($statut, $id_session, $type_eval, $sort_crit, $login_rapp, $id_origin=-1)
+function filterSortReports($filter_values, $sort_crit)
 {
-	$sortCrit = parseSortCriteria($sort_crit);
+	global $filters;
 
+	$sortCrit = parseSortCriteria($sort_crit);
+	
 	$sql = "SELECT * FROM evaluations WHERE date = (SELECT MAX(date) FROM evaluations AS mostrecent WHERE mostrecent.id_origine = evaluations.id_origine AND statut!=\"supprime\")";
 	//$sql = "SELECT * FROM ( SELECT id, MAX(date) AS date FROM evaluations GROUP BY id_origine) mostrecent ON tt.date = mostrecent.date";
 	//$sql = "SELECT * FROM evaluations WHERE (SELECT id, MAX(date) AS date FROM evaluations GROuP BY id_origine) AS X "
 	//$sql = "SELECT tt.*, ss.nom AS nom_session, ss.date AS date_session FROM evaluations tt INNER JOIN ( SELECT id, MAX(date) AS date FROM evaluations GROUP BY id_origine) mostrecent ON tt.date = mostrecent.date, sessions ss WHERE ss.id=tt.id_session ";
 	//$sql = "SELECT * FROM evaluations WHERE 1 ";
-	if($statut != "")
-	{
-		$sql .= " AND statut=\"$statut\" ";
-	}
-	else
-	{
-		$sql .= " AND statut!=\"supprime\" ";
-	}
-	if ($id_session!=-1)
-	{
-		$sql .= " AND id_session=$id_session ";
-	}
-	if ($id_origin >= 0)
-	{
-		$sql .= " AND id_origine=$id_origin ";
-	}
-	if ($type_eval!="")
-	{
-		$sql .= " AND type=\"$type_eval\" ";
-	}
-	if ($login_rapp!="")
-	{
-		$sql .= " AND rapporteur=\"$login_rapp\" ";
-	}
-	$sql .= " AND id>0 ";
+	$sql .= " AND statut!=\"supprime\" ";
+
+	foreach($filters as $filter => $data)
+		if($filter_values[$filter] != $data['default_value'])
+			$sql .= " AND ". (isset($data['sql_col']) ?  $data['sql_col'] : $filter)."=\"$filter_values[$filter]\" ";
 
 	$sql .= sortCriteriaToSQL($sortCrit);
 	$sql .= ";";
@@ -69,10 +51,6 @@ function filterSortReports($statut, $id_session, $type_eval, $sort_crit, $login_
 
 function parseSortCriteria($sort_crit)
 {
-	if($sort_crit == "" && isset($_SESSION['$sorting_criteria']))
-		$sort_crit = $_SESSION['$sorting_criteria'];
-	$_SESSION['$sorting_criteria'] = $sort_crit;
-
 	$result = array();
 	$pieces = explode(";", $sort_crit);
 	foreach($pieces as $crit)
@@ -111,14 +89,19 @@ function sortCriteriaToSQL($sortCrit)
 function updateRapportAvis($id_origine,$avis,$rapport)
 {
 	global $fieldsAll;
+	
 
-	$row = getReport($id_origine);
-	if($row == false)
+	try
 	{
-		echo "Cannot update report: no report with id " .$id_origine."<br/>";
-		return;
+		$row = getReport($id_origine);
+	}
+	catch(Exception $exc)
+	{
+		throw new Exception("Cannot update report: ".$exc->getMessage());	
 	}
 
+	checkReportIsEditable($row);
+	
 	$specialRule = array(
 			"auteur"=>0,
 			"date"=>0
@@ -130,7 +113,7 @@ function updateRapportAvis($id_origine,$avis,$rapport)
 	if($row->statut == "vierge")
 		$row->statut = "prerapport";
 
-	$fields = "auteur,id_session,id_origine,date";
+	$fields = "auteur,id_session,id_origine";
 	$values = "\"".getLogin()."\",".$row->id_session.",".$row->id_origine;
 	foreach($fieldsAll as  $fieldID => $title)
 	{
@@ -144,11 +127,28 @@ function updateRapportAvis($id_origine,$avis,$rapport)
 	}
 	$sql = "INSERT INTO evaluations ($fields) VALUES ($values);";
 	//echo $sql."<br>";
-	mysql_query($sql);
+	$result = mysql_query($sql);
 
+	if($result == false)
+	{
+		echo "Failed to update rapport: failed to insert new report in DB: failed to process SQL request".$sql;
+		throw new Exception("Failed to update rapport: failed to insert new report in DB: failed to process SQL request".$sql);
+	}
+
+	//echo $sql;
+	
 	$newid = mysql_insert_id();
 	$sql = "UPDATE evaluations SET id_origine=$newid WHERE id_origine=$id_origine;";
-	mysql_query($sql);
+
+	//echo $sql;
+	
+	$result = mysql_query($sql);
+	if($result == false)
+	{
+		echo "Failed to update rapport: failed to update id_origine: failed to process SQL request".$sql;
+		throw new Exception("Failed to update rapport: failed to update id_origine: failed to process SQL request".$sql);
+	}
+
 }
 
 function addReport($request)
@@ -199,7 +199,7 @@ function getStatus($id_rapport)
 	return $report->statut;
 }
 
-function isReportEditable($rapport)
+function checkReportIsEditable($rapport)
 {
 	if (isSecretaire() && $rapport->statut == 'publie')
 		throw new Exception("Les rapports publies ne sont pas modifiables, changer d'abord le statut du rapport");
@@ -275,7 +275,7 @@ function update($id_origine, $request)
 	if($id_origine != 0)
 	{
 		$report = getReport($id_origine);
-		if(!isReportEditable($report))
+		if(!checkReportIsEditable($report))
 			throw new Exception("Le compte ".$login." n'a pas la permission de mettre à jour le rapport, veuillez contacter le bureau");
 	}
 
@@ -326,10 +326,10 @@ function update($id_origine, $request)
 }
 
 /* Hugo could be optimized in one sql update request?*/
-function change_statuts($new_statut, $old_statut, $id_session,$type_eval,$login_rapp)
+function change_statuts($new_statut, $filter_values)
 {
 	//echo "Changing status to " .$new_statut." <br/>";
-	$rows = filterSortReports($old_statut, $id_session, $type_eval, "", $login_rapp);
+	$rows = filterSortReports($filter_values);
 
 	foreach($rows as $row)
 		change_statut($row->id, $new_statut);

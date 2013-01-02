@@ -3,12 +3,11 @@
 require_once('manage_sessions.inc.php');
 require_once('manage_unites.inc.php');
 
-function getReportsAsXMLArray($statut, $id_session=-1, $type_eval="", $sort_crit="", $login_rapp="")
+function getReportsAsXMLArray($filter_values, $sort_criteria)
 {
 	global $fieldsAll;
-	$rows = filterSortReports($statut, $id_session, $type_eval, $sort_crit, $login_rapp);
+	$rows = filterSortReports($filter_values, $sort_criteria);
 
-	
 	//to map id_session s to session nicknames
 	$sessions = sessionArrays();
 	$units = unitsList();
@@ -16,8 +15,6 @@ function getReportsAsXMLArray($statut, $id_session=-1, $type_eval="", $sort_crit
 	$docs = array();
 	foreach($rows as $row)
 		$docs[] = rowToXMLDoc($row, $sessions,$units);
-	
-	
 		
 	return $docs;
 }
@@ -30,17 +27,20 @@ function implode_with_keys($assoc,$inglue=':',$outglue=','){
     return implode($outglue,$res);
 }
 
-function getReportsAsXML($statut = "", $id_session=-1, $type_eval="", $sort_crit="", $login_rapp="",$id_origine=-1)
+function getReportsAsXML($filter_values, $sort_criteria = "")
 {
 	global $fieldsAll;
+	global $filters;
+	
 	$doc = new DOMDocument();
 	$root = $doc->createElement("rapports");
-	$rows = filterSortReports($statut, $id_session, $type_eval, $sort_crit, $login_rapp,$id_origine);
-	$root->setAttribute("id_session",$id_session);
-	$root->setAttribute("type_eval",$type_eval);
-	$root->setAttribute("sort_crit",$sort_crit);
-	$root->setAttribute("login_rapp",$login_rapp);
-	$root->setAttribute("id_edit",$id_origine);
+	$rows = filterSortReports($filter_values, $sort_criteria);
+	
+	if(isset($filter_values['id_edit']))
+		$root->setAttribute('id_edit',$filter_values['id_edit']);
+		
+	//foreach($filters as $filter => $data)
+		//$root->setAttribute($filter,$filter_values[$filter]);
 
 	//to map id_session s to session nicknames
 	$sessions = sessionArrays();

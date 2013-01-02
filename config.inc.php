@@ -25,6 +25,7 @@
 	$statutsRapports = array( 'vierge' => "Rapport vierge", 'prerapport'=>'Prérapport', 'rapport'=>"Rapport", 'publie'=>"Rapport publié");
 	$statutsRapportsPluriel = array( 'vierge' => "rapports vierges", 'prerapport'=>'prérapports', 'rapport'=>"rapports", 'publie'=>"rapport publiés");
 	
+	
 	$fieldsAll = array(
 		"statut" => "Statut",
 		"concours" => "Concours",
@@ -549,5 +550,24 @@
 	
 	if(!isset($_SESSION['current_session']))
 		$_SESSION['current_session'] = "Automne 2012";
+	
+	$filters = array(
+			'grade' => array('name'=>"Grade" , 'liste' => $grades, 'default_value' => "", 'default_name' => "Tous les grades"),
+			'statut' => array('name'=>"Statut" , 'liste' => $statutsRapports, 'default_value' => "", 'default_name' => "Tous les statuts"),
+			'id_session' => array('name'=>"Session", 'default_value' =>-1, 'default_name' => "Toutes les sessions"),
+			'type_eval' => array('name'=>"Type d'évaluation" , 'sql_col'=>'type', 'liste' => $typesRapports,'default_value' => "", 'default_name' => "Tous les types"),
+			'login_rapp' => array('name'=>"Rapporteur" , 'default_value' =>"", 'default_name' => "Tous les rapporteurs"),
+			'id_origine' => array('default_value' =>-1),
+			'id' => array('default_value' =>-1),
+	);
+	$empty_filter = array(
+			'grade' => "",
+			'statut' => "",
+			'id_session' => -1,
+			'type_eval' => "",
+			'login_rapp' => "",
+			'id_origine' => -1,
+			'id' => -1,
+	);
 	
 ?>
