@@ -364,11 +364,6 @@ function displaySummary($statut = "", $id_session =-1, $type_eval = "", $sort_cr
 	$sessions = showSessions();
 
 	$rows = filterSortReports($statut, $id_session, $type_eval, $sort_crit, $login_rapp);
-	if($rows == false)
-	{
-		echo 'Failed to process request';
-		return;
-	}
 	
 	foreach($rows as $row)
 		$rapporteurs[$row->rapporteur] = 1;

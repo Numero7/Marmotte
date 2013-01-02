@@ -261,7 +261,15 @@
 				case "";
 				break;
 				default:
-					echo 'Unknown action "'.$action.'"<br/>';
+					?>
+							<p>Bienvenue sur le site de gestion des rapports de la section 6.</p>
+							<p>
+								Le <b>menu situé à droite de cette page</b> vous permettra de
+								consulter ou éditer des rapports.
+							</p>
+							<p>N'hésitez pas à nous contacter (Yann ou Hugo) en cas de
+								difficultés.</p>
+								<?php 
 					break;
 			}
 		}
@@ -270,12 +278,5 @@
 			echo '<p><b>Impossible d exécuter l action "'.$action.'"<br/>Exception: '.$exc->getMessage().'<br/></b></p>';
 		}
 		?>
-		<p>Bienvenue sur le site de gestion des rapports de la section 6.</p>
-		<p>
-			Le <b>menu situé à droite de cette page</b> vous permettra de
-			consulter ou éditer des rapports.
-		</p>
-		<p>N'hésitez pas à nous contacter (Yann ou Hugo) en cas de
-			difficultés.</p>
 	</div>
 </div>
