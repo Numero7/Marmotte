@@ -124,7 +124,7 @@ function updateRapportAvis($id_origine,$avis,$rapport)
 	if($row->statut == "vierge")
 		$row->statut = "prerapport";
 	
-	$fields = "auteur,id_session,id_origine";
+	$fields = "auteur,id_session,id_origine,date";
 	$values = "\"".getLogin()."\",".$row->id_session.",".$row->id_origine;
 	foreach($fieldsAll as  $fieldID => $title)
 	{
@@ -195,7 +195,16 @@ function getStatus($id_rapport)
 
 function isReportEditable($rapport)
 {
-	return isSecretaire() || ( ($rapport->rapporteur == getLogin())  && ($rapport->statut == 'vierge' || $rapport->statut == 'prerapport'));
+	if (isSecretaire() && $rapport->statut == 'publie')
+		throw new Exception("Les rapports publies ne sont pas modifiables, changer d'abord le statut du rapport");
+	else if (isSecretaire())
+		return true;
+	else if( $rapport->rapporteur != getLogin())
+		throw new Exception("Le rapporteur de ce rapport est ".$rapport->rapporteur.", veuillez demander un changement de rapporteur au bureau.");
+	else if ($rapport->statut == 'vierge' || $rapport->statut == 'prerapport')
+		throw new Exception("Ce rapport a le statut ".$rapport->statut." et n'est donc pas éditable.");
+	else
+		return true;
 }
 
 function isReportDeletable($rapport)
