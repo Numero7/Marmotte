@@ -14,6 +14,7 @@
 </head>
 <body>
 	<?php
+	require_once("db.inc.php");
 	require_once("utils.inc.php");
 	require_once("manage_users.inc.php");
 
@@ -65,7 +66,7 @@
 	}
 	else
 	{
-		include("errordb.inc.php");
+		echo '<strong>Erreur de connexion à la base de données</strong>\n';
 	}
 	?>
 </body>

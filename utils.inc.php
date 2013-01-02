@@ -3,29 +3,13 @@ session_start();
 require_once('tcpdf/config/lang/eng.php');
 require_once('tcpdf/tcpdf.php');
 require_once('config.inc.php');
+require_once('db.inc.php');
 require_once('manage_users.inc.php');
 require_once('manage_unites.inc.php');
 require_once('manage_rapports.inc.php');
 
 //set_exception_handler('exception_handler');
 //set_error_handler('error_handler');
-
-function db_connect($serverName,$dbname,$login,$password)
-{
-	$dbh = @mysql_connect($serverName, $login, $password);
-	if ($dbh)
-	{
-		@mysql_select_db($dbname, $dbh) or die ("<strong>Error: Could not access the required table!</strong>");
-		mysql_query("SET NAMES utf8;");
-	}
-	return $dbh;
-} ;
-
-function db_disconnect(&$dbh)
-{
-	mysql_close($dbh);
-	$dbh=0;
-} ;
 
 
 function getDescription($login)
@@ -551,7 +535,7 @@ $first = false;
 	 ?>
 <div class="history">
 	<h3>
-		Version modifiée le
+		Version <?php echo ($row->statut=="supprime") ? "<span class=\"highlight\">supprimée</span>" : "modifiée"; ?> le
 		<?php echo $row->date;?>
 		par
 		<?php 
@@ -654,7 +638,7 @@ function displayEditableReport($row, $actioname)
 </h1>
 
 <form method="post" action="index.php" style="width: 100%">
-	<input type="hidden" name="action" value=<?php echo $actioname?>/> <input
+	<input type="hidden" name="action" value="<?php echo $actioname?>"/> <input
 		type="hidden" name="id_origine" value="<?php echo $row->id_origine;?>"/>
 	<input type="hidden" name="fieldrapporteur"
 		value="<?php echo getLogin();?>"/>

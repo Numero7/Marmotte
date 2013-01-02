@@ -8,17 +8,19 @@ function getReport($id_rapport)
 	$sql = "SELECT * FROM evaluations WHERE id=$id_rapport";
 	$result=mysql_query($sql);
 	if($result == false)
-		throw "Fail to process sql request ".$sql;
-	if(mysql_num_rows($result) ==0)
-		throw "No report with id ".$id_rapport;
-	return mysql_fetch_object($result);
+		throw new Exception("Fail to process sql request ".$sql);
+	$report = mysql_fetch_object($result);
+	if($report == false)
+		throw new Exception("No report with id ".$id_rapport);
+	else
+		return $report;
 }
 
 function filterSortReports($statut, $id_session, $type_eval, $sort_crit, $login_rapp, $id_origin=-1)
 {
 	$sortCrit = parseSortCriteria($sort_crit);
 
-	$sql = "SELECT * FROM evaluations WHERE date = (SELECT MAX(date) FROM evaluations AS mostrecent WHERE mostrecent.id_origine = evaluations.id_origine)";
+	$sql = "SELECT * FROM evaluations WHERE date = (SELECT MAX(date) FROM evaluations AS mostrecent WHERE mostrecent.id_origine = evaluations.id_origine AND statut!=\"supprime\")";
 	//$sql = "SELECT * FROM ( SELECT id, MAX(date) AS date FROM evaluations GROUP BY id_origine) mostrecent ON tt.date = mostrecent.date";
 	//$sql = "SELECT * FROM evaluations WHERE (SELECT id, MAX(date) AS date FROM evaluations GROuP BY id_origine) AS X "
 	//$sql = "SELECT tt.*, ss.nom AS nom_session, ss.date AS date_session FROM evaluations tt INNER JOIN ( SELECT id, MAX(date) AS date FROM evaluations GROUP BY id_origine) mostrecent ON tt.date = mostrecent.date, sessions ss WHERE ss.id=tt.id_session ";
@@ -26,6 +28,10 @@ function filterSortReports($statut, $id_session, $type_eval, $sort_crit, $login_
 	if($statut != "")
 	{
 		$sql .= " AND statut=\"$statut\" ";
+	}
+	else
+	{
+		$sql .= " AND statut!=\"supprime\" ";
 	}
 	if ($id_session!=-1)
 	{
@@ -54,7 +60,7 @@ function filterSortReports($statut, $id_session, $type_eval, $sort_crit, $login_
 
 	$rows = array();
 	//echo $sql."<br/>".count($rows)." rows ".mysql_num_rows($result)." sqlrows<br/>";
-	
+
 	while ($row = mysql_fetch_object($result))
 		$rows[] = $row;
 
@@ -66,7 +72,7 @@ function parseSortCriteria($sort_crit)
 	if($sort_crit == "" && isset($_SESSION['$sorting_criteria']))
 		$sort_crit = $_SESSION['$sorting_criteria'];
 	$_SESSION['$sorting_criteria'] = $sort_crit;
-	
+
 	$result = array();
 	$pieces = explode(";", $sort_crit);
 	foreach($pieces as $crit)
@@ -105,25 +111,25 @@ function sortCriteriaToSQL($sortCrit)
 function updateRapportAvis($id_origine,$avis,$rapport)
 {
 	global $fieldsAll;
-	
+
 	$row = getReport($id_origine);
 	if($row == false)
 	{
 		echo "Cannot update report: no report with id " .$id_origine."<br/>";
 		return;
 	}
-	
+
 	$specialRule = array(
 			"auteur"=>0,
 			"date"=>0
 	);
-	
+
 	$row->avis = $avis;
 	$row->rapport = $rapport;
-	
+
 	if($row->statut == "vierge")
 		$row->statut = "prerapport";
-	
+
 	$fields = "auteur,id_session,id_origine,date";
 	$values = "\"".getLogin()."\",".$row->id_session.",".$row->id_origine;
 	foreach($fieldsAll as  $fieldID => $title)
@@ -139,7 +145,7 @@ function updateRapportAvis($id_origine,$avis,$rapport)
 	$sql = "INSERT INTO evaluations ($fields) VALUES ($values);";
 	//echo $sql."<br>";
 	mysql_query($sql);
-	
+
 	$newid = mysql_insert_id();
 	$sql = "UPDATE evaluations SET id_origine=$newid WHERE id_origine=$id_origine;";
 	mysql_query($sql);
@@ -153,7 +159,7 @@ function addReport($request)
 	$newid = update(0,$request);
 	$sql = "UPDATE evaluations SET id_origine=$newid WHERE id=$newid;";
 	mysql_query($sql);
-	
+
 	return $newid;
 };
 
@@ -161,25 +167,25 @@ function addVirginReport($type,$unite,$nom,$prenom,$grade,$rapporteur)
 {
 	if(!isReportCreatable())
 		throw new Exception("Le compte ".$login." n'a pas la permission de créer un rapport, veuillez contacter le secrétaire scientifique.");
-		
+
 	if($grade == "")
 		$grade = "None";
 
-	createUnitIfNeeded($unite);		
-	
+	createUnitIfNeeded($unite);
+
 	$fields = "id_session, id_origine, auteur, nom, prenom, grade, unite, rapporteur, type";
 	$values = current_session_id().",0,\"".getLogin().'","'.$nom.'","'.$prenom.'","'.$grade.'","'.$unite.'","'.$rapporteur.'","'.$type.'"';
-	
+
 	$sql = "INSERT INTO evaluations ($fields) VALUES ($values);";
 	$result = mysql_query($sql);
-	
+
 	if($result == false)
 	{
 		echo "Failed to process sql query ".$sql."<br/>";
 		return false;
 	}
 	echo $sql."<br/>";
-	
+
 	$newid = mysql_insert_id();
 	$sql = "UPDATE evaluations SET id_origine=$newid WHERE id=$newid;";
 	mysql_query($sql);
@@ -200,44 +206,78 @@ function isReportEditable($rapport)
 	else if (isSecretaire())
 		return true;
 	else if( $rapport->rapporteur != getLogin())
-		throw new Exception("Le rapporteur de ce rapport est ".$rapport->rapporteur.", veuillez demander un changement de rapporteur au bureau.");
+		throw new Exception("Le rapporteur de ce rapport est ".$rapport->rapporteur." mais vous êtes loggés sous l'identité ".getLogin().", veuillez demander un changement de rapporteur au bureau.");
 	else if ($rapport->statut == 'vierge' || $rapport->statut == 'prerapport')
 		throw new Exception("Ce rapport a le statut ".$rapport->statut." et n'est donc pas éditable.");
 	else
 		return true;
 }
 
-function isReportDeletable($rapport)
+function checkReportDeletable($rapport)
 {
-	return isSecretaire() || ( ($rapport->rapporteur == getLogin())  && ($rapport->statut == 'prerapport'));
+	if (isSecretaire() && $rapport->statut == 'publie')
+		throw new Exception("Les rapports publies ne sont pas supprimables, changer d'abord le statut du rapport");
+	else if (isSecretaire())
+		return true;
+	else if( $rapport->rapporteur != getLogin())
+		throw new Exception("Le rapporteur de ce rapport est ".$rapport->rapporteur." mais vous êtes loggés sous l'identité ".getLogin());
+	else if ($rapport->statut != 'prerapport')
+		throw new Exception("Ce rapport a le statut ".$rapport->statut." et n'est donc pas supprimable, seuls les prérapports sont supprimables par un rapporteur.");
+	else
+		return true;
 }
 
 function isReportCreatable()
 {
-	return isSecretaire();
+	if(!isSecretaire())
+		throw new Exception("Seuls les présidents et secrétaires ont droits de crétaion de rapports");
+	else return true;
 }
+
+//to migrate from previous system
+//UPDATE evaluations SET statut="supprime" WHERE id<0
+//UPDATE evaluations SET id_origine=-id_origine WHERE id_origine<0
+//UPDATE evaluations SET id=-id WHERE id<0
 
 function deleteReport($id_rapport)
 {
 	$report = getReport($id_rapport);
-	if(!isReportDeletable($report))
-		throw new Exception("Le compte ".$login." n'a pas la permission de supprimer un rapport, veuillez contacter le secrétaire scientifique.");
-				
-	$report = getReport($id_rapport);
-	$sql = "UPDATE evaluations SET id=-".$id_rapport." WHERE id=".$id_rapport.";";
-	$sql = "UPDATE evaluations SET id_origine=-".$id_rapport." WHERE id_origine=".$id_rapport.";";
+	
+	checkReportDeletable($report);
 
-	if(mysql_query($sql) != false)
-		return "Deleted report ".$id_rapport." <br/>";
-	else
-		return "Failed to delete report: failed to process sql query ".$sql.".<br/>";
+	$report = getReport($id_rapport);
+
+	//Finding newest report before this one, if exists, and making it the newest
+	$sql = "SELECT * FROM evaluations WHERE date = (SELECT MAX(date) FROM evaluations AS mostrecent WHERE mostrecent.id_origine=$id_rapport AND mostrecent.id != $id_rapport AND mostrecent.statut!=\"supprime\")";
+	$result=mysql_query($sql);
+	if($result == false)
+		throw "Fail to process sql request ".$sql;
+	$before = mysql_fetch_object($result);
+	if($before != false)
+	{
+		$previous_id = $before->id;
+		$sql = "UPDATE evaluations SET id_origine=$previous_id WHERE id_origine=$id_rapport ;";
+		if(mysql_query($sql) == false)
+			throw new Exception("Failed to delete report: failed to set previous report as newest: failed to process query \"$sql\"");
+	}
+
+	$sql = "UPDATE evaluations SET statut=\"supprime\"WHERE id=$id_rapport ;";
+	if(mysql_query($sql) == false)
+		throw new Exception("Failed to delete report: failed to set status of report to supprime: failed to process query \"$sql\"");
+	$sql = "UPDATE evaluations SET date=NOW() WHERE id=$id_rapport ;";
+	mysql_query($sql);
+
+	return "Deleted report ".$id_rapport." <br/>";
 };
 
 function update($id_origine, $request)
 {
-	$report = getReport($id_origine);
-	if(!isReportEditable($report))
-		throw new Exception("Le compte ".$login." n'a pas la permission de mettre à jour le rapport, veuillez contacter le bureau");
+	if($id_origine != 0)
+	{
+		$report = getReport($id_origine);
+		if(!isReportEditable($report))
+			throw new Exception("Le compte ".$login." n'a pas la permission de mettre à jour le rapport, veuillez contacter le bureau");
+	}
 
 	if($request["fieldstatut"] == "vierge" && ($id_origine != 0))
 		$request["fieldstatut"] = "prerapport";
@@ -276,12 +316,12 @@ function update($id_origine, $request)
 	}
 	$sql = "INSERT INTO evaluations ($fields) VALUES ($values);";
 	mysql_query($sql);
-	
+
 	$new_id = mysql_insert_id();
-	
+
 	$sql = "UPDATE evaluations SET id_origine=$new_id WHERE id_origine=$id_origine;";
 	mysql_query($sql);
-	
+
 	return $new_id;
 }
 
@@ -290,25 +330,25 @@ function change_statuts($new_statut, $old_statut, $id_session,$type_eval,$login_
 {
 	//echo "Changing status to " .$new_statut." <br/>";
 	$rows = filterSortReports($old_statut, $id_session, $type_eval, "", $login_rapp);
-	
-		foreach($rows as $row)
-			change_statut($row->id, $new_statut);
+
+	foreach($rows as $row)
+		change_statut($row->id, $new_statut);
 }
 
 function change_statut($id_origine, $statut)
 {
 	global $fieldsAll;
-	
+
 	//echo "Changing status of ".$id_origine." to " .$statut." <br/>";
 	$row = getReport($id_origine);
-		
+
 	$specialRule = array(
 			"auteur"=>0,
 			"date"=>0,
 	);
-	
+
 	$row->statut = $statut;
-	
+
 	$fields = "auteur,id_session,id_origine";
 	$values = "\"".getLogin()."\",".$row->id_session.",".$row->id_origine;
 	foreach($fieldsAll as  $fieldID => $title)
@@ -324,7 +364,7 @@ function change_statut($id_origine, $statut)
 	$sql = "INSERT INTO evaluations ($fields) VALUES ($values);";
 	//echo $sql."<br>";
 	mysql_query($sql);
-	
+
 	$newid = mysql_insert_id();
 	$sql = "UPDATE evaluations SET id_origine=$newid WHERE id_origine=$id_origine;";
 	mysql_query($sql);

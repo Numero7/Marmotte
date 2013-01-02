@@ -18,12 +18,24 @@
 		$id_rapport = isset($_REQUEST["id"]) ? $_REQUEST["id"] : "";
 		$action = isset($_REQUEST["action"]) ? $_REQUEST["action"] : "";
 
+		function displayReports()
+		{
+			$statut = isset($_REQUEST["statut"]) ? $_REQUEST["statut"] : "";
+			$id_session = isset($_REQUEST["id_session"]) ? $_REQUEST["id_session"] : -1;
+			$type_eval = isset($_REQUEST["type_eval"]) ? $_REQUEST["type_eval"] : "";
+			$login_rapp = isset($_REQUEST["login_rapp"]) ? $_REQUEST["login_rapp"] : "";
+			$sort_crit = isset($_REQUEST["sort"]) ? $_REQUEST["sort"] : "";
+			displaySummary($statut, $id_session,$type_eval,$sort_crit,$login_rapp);
+		};
+		
 		try
 		{
 			switch($action)
 			{
 				case 'delete':
-					echo deleteReport($id_rapport);
+					echo "<p>".deleteReport($id_rapport)."</p>\n";
+					displayReports();
+					break;
 
 				case 'change_statut':
 					if(isset($_REQUEST["new_statut"]))
@@ -39,12 +51,7 @@
 					}
 					break;
 				case 'view':
-					$statut = isset($_REQUEST["statut"]) ? $_REQUEST["statut"] : "";
-					$id_session = isset($_REQUEST["id_session"]) ? $_REQUEST["id_session"] : -1;
-					$type_eval = isset($_REQUEST["type_eval"]) ? $_REQUEST["type_eval"] : "";
-					$login_rapp = isset($_REQUEST["login_rapp"]) ? $_REQUEST["login_rapp"] : "";
-					$sort_crit = isset($_REQUEST["sort"]) ? $_REQUEST["sort"] : "";
-					displaySummary($statut, $id_session,$type_eval,$sort_crit,$login_rapp);
+					displayReports();
 					break;
 				case 'details':
 					displayReport($id_rapport);
@@ -72,6 +79,7 @@
 					else
 					{
 						echo "Update action cannot do nothing because no id_origine provided";
+						displayReports();
 					}
 					break;
 				case 'new':
@@ -83,6 +91,7 @@
 					else
 					{
 						echo "Cannot create new document because no type_eval provided";
+						displayReports();
 					}
 					break;
 				case 'add':
