@@ -28,7 +28,7 @@ function getFilterValues()
 		if(isset($_REQUEST[$filter]))
 			$_SESSION[$filter.'_filter'] = $_REQUEST[$filter];
 	}
-	
+
 	return $filter_values;
 }
 
@@ -99,7 +99,7 @@ function dumpEditedCriteria($sortCrit, $edit_crit)
 	else if ($order=="DESC")
 	{
 		//We want at least one sort criterion
-		//also removes bug 
+		//also removes bug
 		if(count($sortCrit) > 1)
 			unset($sortCrit[$edit_crit]);
 		else
@@ -141,6 +141,7 @@ function displayIndividualReport($row)
 {
 	global $fieldsAll;
 	global $actions;
+	global $typesRapportsIndividuels;
 	$specialRule = array(
 			"nom"=>0,
 			"prenom"=>0,
@@ -150,6 +151,7 @@ function displayIndividualReport($row)
 			"nom_session"=>0,
 			"date_session"=>0,
 	);
+	$sessions = sessionArrays();
 	?>
 <div class="tools">
 	<?php
@@ -165,8 +167,8 @@ function displayIndividualReport($row)
 	<?php echo $row->unite;?>
 </h1>
 <h2>
-	<?php echo $row->type;?>
-	<?php echo $row->nom_session." ".date("Y",strtotime($row->date_session));?>
+	<?php echo $typesRapportsIndividuels[$row->type];?>
+	<?php echo $sessions[$row->id_session];?>
 </h2>
 <dl>
 	<?php
@@ -179,7 +181,7 @@ function displayIndividualReport($row)
 		<?php echo $title;?>
 	</dt>
 	<dd>
-		<?php echo $row->$fieldID;?>
+		<?php echo strip_tags($row->$fieldID);?>
 	</dd>
 	<?php
 		}
@@ -195,32 +197,13 @@ function displayReport($id_rapport)
 	global $typesRapportsUnites;
 	global $typesRapportsIndividuels;
 
-	$sql = "SELECT tt.*, ss.nom AS nom_session, ss.date AS date_session FROM evaluations tt, sessions ss WHERE tt.id=$id_rapport AND tt.id_session=ss.id;";
-	$result=mysql_query($sql);
-	if($result == false)
-	{
-		echo "Request <br/>".$sql ."<br/> failed.<br/>";
-	}
-	else if ($row = mysql_fetch_object($result))
-	{
-		if(array_key_exists($row->type,$typesRapportsUnites))
-		{
-			displayUnitReport($row);
-		}
-		else if(array_key_exists($row->type,$typesRapportsIndividuels))
-		{
-			displayIndividualReport($row);
-		}
-		else
-		{
-			echo "Unknown report type : ".$row->type. "(id) ".$id_rapport."<br/>";
-		}
-	}
+	$row = getReport($id_rapport);
+	if(array_key_exists($row->type,$typesRapportsUnites))
+		displayUnitReport($row);
+	else if(array_key_exists($row->type,$typesRapportsIndividuels))
+		displayIndividualReport($row);
 	else
-	{
-		echo "No report with id ".$is_rapport;
-	}
-
+		echo "Unknown report type : ".$row->type. "(id) ".$id_rapport."<br/>";
 }
 
 function displayActionsMenu($id,$id_origine, $excludedaction = "")
@@ -246,16 +229,18 @@ function displayUnitReport($row)
 	global $fieldsAll;
 	global $fieldsUnites;
 	global $actions;
+	global $typesRapportsUnites;
 	$specialRule = array(
 				"nom"=>0,
 				"prenom"=>0,
 				"grade"=>0,
 				"unite"=>0,
 				"type"=>0,
-				"nom_session"=>0,
+				"id_session"=>0,
 				"date_session"=>0,
 		);
-			?>
+	$sessions = sessionArrays();
+	?>
 <div class="tools">
 	<?php
 	displayActionsMenu($row->id, $row->id_origine, "details");
@@ -265,13 +250,12 @@ function displayUnitReport($row)
 	<?php echo $row->unite;?>
 </h1>
 <h2>
-	<?php echo $row->type;?>
-	<?php echo $row->nom_session." ".date("Y",strtotime($row->date_session));?>
+	<?php echo $typesRapportsUnites[$row->type];?>
+	<?php echo $sessions[$row->id_session];?>
 </h2>
 <dl>
 	<?php
 	foreach($fieldsAll as  $fieldID => $title)
-	{
 		if (!isset($specialRule[$fieldID]) && in_array($fieldID,$fieldsUnites))
 		{
 			?>
@@ -279,12 +263,11 @@ function displayUnitReport($row)
 		<?php echo $title;?>
 	</dt>
 	<dd>
-		<?php echo $row->$fieldID;?>
+		<?php echo strip_tags($row->$fieldID);?>
 	</dd>
 	<?php
 		}
-	}
-	?>
+		?>
 </dl>
 <div></div>
 <?php
@@ -326,11 +309,11 @@ function displayExport($filter_values)
 	global $typeExports;
 	global $statutsRapports;
 	global $filters;
-	
+
 	echo '<h2>Exporter/Editer tous</h2>';
 	if (getUserPermissionLevel()>= NIVEAU_PERMISSION_PRESIDENT_SECRETAIRE)
 		echo '<table><tr><td>';
-		
+
 	foreach($typeExports as $idexp => $exp)
 	{
 		$expname= $exp["name"];
@@ -345,19 +328,19 @@ function displayExport($filter_values)
 	if (getUserPermissionLevel()>= NIVEAU_PERMISSION_PRESIDENT_SECRETAIRE)
 	{
 		echo '
-				</tr><tr><td align="center">
-				<form method="post"  action="index.php">
-				<select name="new_statut">';
+			</tr><tr><td align="center">
+			<form method="post"  action="index.php">
+			<select name="new_statut">';
 		foreach ($statutsRapports as $val => $nom)
 		{
 			$sel = "";
 			echo "<option value=\"".$val."\" $sel>".$nom."</option>\n";
 		}
 		echo '
-				</select>
-				<input type="hidden" name="action" value="change_statut"/>
-				<input type="submit" value="Changer statut"/>
-				</form>';
+			</select>
+			<input type="hidden" name="action" value="change_statut"/>
+			<input type="submit" value="Changer statut"/>
+			</form>';
 		echo '</td></tr></table>';
 	}
 }
@@ -374,15 +357,10 @@ function displaySummary($filter_values, $sort_crit)
 
 	$rows = filterSortReports($filter_values, $sort_crit);
 	$sortCrit = parseSortCriteria($sort_crit);
-	
-	$rapporteurs = array();
-	foreach($rows as $row)
-		$rapporteurs[$row->rapporteur] = 1;
-	$krapp = array_keys($rapporteurs);
-	natcasesort($krapp);
+
 	$filters['id_session']['liste'] = sessionArrays();
-	$filters['id_session']['login_rapp'] = $krapp;
-	
+	$filters['login_rapp']['liste'] = simpleListUsers();
+
 
 	?>
 <table>
@@ -391,14 +369,16 @@ function displaySummary($filter_values, $sort_crit)
 			<h2>Filtrage</h2>
 			<form method="get" action="index.php">
 				<table class="inputreport">
-				<?php 
-				foreach($filters as $filter => $data)
-					if(isset($data['liste']))
+					<?php 
+					foreach($filters as $filter => $data)
+						if(isset($data['liste']))
 				{?>
 					<tr>
 						<td style="width: 20em;"><?php echo $data['name'];?></td>
 						<td><select name="<?php echo $filter?>">
-								<option value="<?php echo $data['default_value']; ?>"><?php echo $data['default_name']; ?></option>
+								<option value="<?php echo $data['default_value']; ?>">
+									<?php echo $data['default_name']; ?>
+								</option>
 								<?php
 								foreach ($data['liste'] as $value => $nomitem)
 								{
@@ -414,9 +394,8 @@ function displaySummary($filter_values, $sort_crit)
 				}?>
 					<tr>
 						<td></td>
-						<td>
-						<input type="hidden" name="action" value="view"/>
-						<input type="submit" value="Filtrer"/>
+						<td><input type="hidden" name="action" value="view" /> <input
+							type="submit" value="Filtrer" />
 						</td>
 					</tr>
 				</table>
@@ -428,7 +407,7 @@ function displaySummary($filter_values, $sort_crit)
 
 	</tr>
 </table>
-<hr/>
+<hr />
 <table class="summary">
 	<tr>
 		<?php
@@ -448,9 +427,11 @@ function displaySummary($filter_values, $sort_crit)
 		echo '</tr>';
 
 		$prettyunits = unitsList();
-	foreach($rows as $row)
-	{
-		?>
+		foreach($rows as $row)
+		{
+			?>
+	
+	
 	<tr>
 		<?php
 		foreach($fieldsSummary as $fieldID)
@@ -475,9 +456,9 @@ function displaySummary($filter_values, $sort_crit)
 		displayActionsMenu($row->id, $row->id_origine);
 		?>
 	</tr>
-		<?php
-	}
-	?>
+	<?php
+		}
+		?>
 
 </table>
 <?php
@@ -523,7 +504,9 @@ $first = false;
 	 ?>
 <div class="history">
 	<h3>
-		Version <?php echo ($row->statut=="supprime") ? "<span class=\"highlight\">supprimée</span>" : "modifiée"; ?> le
+		Version
+		<?php echo ($row->statut=="supprime") ? "<span class=\"highlight\">supprimée</span>" : "modifiée"; ?>
+		le
 		<?php echo $row->date;?>
 		par
 		<?php 
@@ -626,10 +609,10 @@ function displayEditableReport($row, $actioname)
 </h1>
 
 <form method="post" action="index.php" style="width: 100%">
-	<input type="hidden" name="action" value="<?php echo $actioname?>"/> <input
-		type="hidden" name="id_origine" value="<?php echo $row->id_origine;?>"/>
+	<input type="hidden" name="action" value="<?php echo $actioname?>" /> <input
+		type="hidden" name="id_origine" value="<?php echo $row->id_origine;?>" />
 	<input type="hidden" name="fieldrapporteur"
-		value="<?php echo getLogin();?>"/>
+		value="<?php echo getLogin();?>" />
 
 	<?php 
 	if(!isSecretaire())
@@ -637,7 +620,7 @@ function displayEditableReport($row, $actioname)
 	?>
 
 	<input type="submit"
-		value="<?php echo (($actioname == "add") ? "Ajouter" : "Enregistrer");?>"/>
+		value="<?php echo (($actioname == "add") ? "Ajouter" : "Enregistrer");?>" />
 	<table class="inputreport">
 		<?php 
 		if(isSecretaire())
@@ -683,8 +666,7 @@ function displayEditableReport($row, $actioname)
 						echo  "\t\t\t\t\t<option value=\"".$s["id"]."\" $sel>".$s["nom"]." ".date("Y",strtotime($s["date"]))."</option>\n";
 					}
 					?>
-			</select>
-			</td>
+			</select></td>
 		</tr>
 		<?php 
 
@@ -706,7 +688,8 @@ function displayEditableReport($row, $actioname)
 			$type = isset($fieldsTypes[$fieldID]) ?  $fieldsTypes[$fieldID] : "";
 			?>
 		<tr>
-			<td style="width: 17em;"><span><?php echo $title;?> </span></td>
+			<td style="width: 17em;"><span><?php echo $title;?> </span>
+			</td>
 			<?php
 			switch($type)
 			{
@@ -734,14 +717,14 @@ function displayEditableReport($row, $actioname)
 			<tr>
 			<td colspan="3">
 			<textarea rows=10 name="field'.$fieldID.'" style="width: 100%;">'.strip_tags($row->$fieldID).'</textarea>
-				</td>
-				';
+			</td>
+			';
 					}break;
 				case "short":
 					{
 						?>
 			<td style="width: 30em;"><input name="field<?php echo $fieldID;?>"
-				value="<?php echo $row->$fieldID;?>" style="width: 100%;"/>
+				value="<?php echo $row->$fieldID;?>" style="width: 100%;" />
 			</td>
 			<td><span class="examplevaleur"><?php echo getExample($fieldID);?> </span>
 			</td>
@@ -779,6 +762,31 @@ case "avis":
 			</select>
 			</td>
 			<?php
+	}
+	break;
+case "rapporteur":
+	{
+		$users = listUsers();
+		if(isBureauUser())
+		{
+			?>
+			<td style="width: 30em;"><select name="field<?php echo $fieldID;?>"
+				style="width: 100%;">
+					<?php
+					foreach($users as $user => $data)
+					{
+							$sel = (($row->rapporteur) == ($user)) ? "selected=\"selected\"" : "";
+							echo  "\t\t\t\t\t<option value=\"".($user)."\"".$sel.">".($data->description)."</option>\n";
+					}
+					?>
+			</select>
+			</td>
+			<?php
+		}
+		else
+		{
+			echo "<td>".$users[$row->rapporteur]->description."<td/>\n";
+		}
 	}
 	break;
 case "unit":
@@ -832,7 +840,7 @@ case "ecole":
 		?>
 		<tr>
 			<td colspan="2"><input type="submit"
-				value="<?php echo (($actioname == "add") ? "Ajouter" : "Enregistrer");?>"/>
+				value="<?php echo (($actioname == "add") ? "Ajouter" : "Enregistrer");?>" />
 			</td>
 		</tr>
 	</table>
@@ -905,3 +913,6 @@ function normalizeName($name)
 }
 
 ?>
+
+
+

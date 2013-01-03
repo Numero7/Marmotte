@@ -5,12 +5,8 @@ function sessionArrays()
 	$sessions = array();
 	$sql = "SELECT * FROM sessions ORDER BY date DESC;";
 	if($result=mysql_query($sql))
-	{
 		while ($row = mysql_fetch_object($result))
-		{
 			$sessions[$row->id] = $row->nom." ".date("Y", strtotime($row->date));
-		}
-	}
 	return $sessions;
 }
 

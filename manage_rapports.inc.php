@@ -16,12 +16,59 @@ function getReport($id_rapport)
 		return $report;
 }
 
+function reportShortSummary($report)
+{
+	global $typesRapportsUnites;
+
+	$nom = $report->nom;
+	$prenom = $report->prenom;
+	$grade = $report->grade;
+	$unite = $report->unite;
+	$type = $report->type;
+	$session = "Session ".$report->id_session;
+
+	if($type == "Promotion")
+	{
+		switch($grade)
+		{
+			case "CR2": $grade = "CR1"; break;
+			case "DR2": $grade = "DR1"; break;
+			case "DR1": $grade = "DRCE1"; break;
+			case "DRCE1": $grade = "DRCE2"; break;
+		}
+		$grade .= " - ".$avis;
+	}
+
+	if(array_key_exists($type,$typesRapportsUnites))
+		return $session." - ".$type." - ".$report->unite;
+	else
+		return $session." - ".$type." - ".$grade." - ".$nom."_".$prenom;
+
+}
+
+function listOfAllVirginReports()
+{
+	$result = "";
+	$users = listUsers();
+	foreach($users as $rapporteur)
+	{
+		$reports  = getVirginReports($rapporteur);
+		if(count($reports) > 0)
+		{
+			$result .= "<br/><B>Rapporteur \"".$rapporteur->description."\" (". $rapporteur->email.") :</B><br/>";
+			foreach($reports as $report)
+				$result .= reportShortSummary($report)."<br/>";
+		}
+	}
+	return $result;
+}
+
 function filterSortReports($filter_values, $sort_crit)
 {
 	global $filters;
 
 	$sortCrit = parseSortCriteria($sort_crit);
-	
+
 	$sql = "SELECT * FROM evaluations WHERE date = (SELECT MAX(date) FROM evaluations AS mostrecent WHERE mostrecent.id_origine = evaluations.id_origine AND statut!=\"supprime\")";
 	//$sql = "SELECT * FROM ( SELECT id, MAX(date) AS date FROM evaluations GROUP BY id_origine) mostrecent ON tt.date = mostrecent.date";
 	//$sql = "SELECT * FROM evaluations WHERE (SELECT id, MAX(date) AS date FROM evaluations GROuP BY id_origine) AS X "
@@ -89,7 +136,7 @@ function sortCriteriaToSQL($sortCrit)
 function updateRapportAvis($id_origine,$avis,$rapport)
 {
 	global $fieldsAll;
-	
+
 
 	try
 	{
@@ -97,11 +144,11 @@ function updateRapportAvis($id_origine,$avis,$rapport)
 	}
 	catch(Exception $exc)
 	{
-		throw new Exception("Cannot update report: ".$exc->getMessage());	
+		throw new Exception("Cannot update report: ".$exc->getMessage());
 	}
 
 	checkReportIsEditable($row);
-	
+
 	$specialRule = array(
 			"auteur"=>0,
 			"date"=>0
@@ -122,7 +169,7 @@ function updateRapportAvis($id_origine,$avis,$rapport)
 			$fields.=",";
 			$fields.=$fieldID;
 			$values.=",";
-			$values.="\"".mysql_real_escape_string(trim($row->$fieldID))."\"";
+			$values.="\"".mysql_real_escape_string(nl2br(trim($row->$fieldID)))."\"";
 		}
 	}
 	$sql = "INSERT INTO evaluations ($fields) VALUES ($values);";
@@ -136,12 +183,12 @@ function updateRapportAvis($id_origine,$avis,$rapport)
 	}
 
 	//echo $sql;
-	
+
 	$newid = mysql_insert_id();
 	$sql = "UPDATE evaluations SET id_origine=$newid WHERE id_origine=$id_origine;";
 
 	//echo $sql;
-	
+
 	$result = mysql_query($sql);
 	if($result == false)
 	{
@@ -207,7 +254,7 @@ function checkReportIsEditable($rapport)
 		return true;
 	else if( $rapport->rapporteur != getLogin())
 		throw new Exception("Le rapporteur de ce rapport est ".$rapport->rapporteur." mais vous êtes loggés sous l'identité ".getLogin().", veuillez demander un changement de rapporteur au bureau.");
-	else if ($rapport->statut == 'vierge' || $rapport->statut == 'prerapport')
+	else if ($rapport->statut != 'vierge' && $rapport->statut != 'prerapport')
 		throw new Exception("Ce rapport a le statut ".$rapport->statut." et n'est donc pas éditable.");
 	else
 		return true;
@@ -242,7 +289,7 @@ function isReportCreatable()
 function deleteReport($id_rapport)
 {
 	$report = getReport($id_rapport);
-	
+
 	checkReportDeletable($report);
 
 	$report = getReport($id_rapport);
@@ -370,7 +417,15 @@ function change_statut($id_origine, $statut)
 	mysql_query($sql);
 }
 
+function getVirginReports($rapporteur)
+{
+	global $empty_filter;
 
+	$filter_values = $empty_filter;
+	$filter_values['login_rapp'] = $rapporteur->login;
+	$filter_values['statut'] = 'vierge';
+	return filterSortReports($filter_values,"");
+}
 
 
 

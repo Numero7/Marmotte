@@ -27,7 +27,7 @@ function implode_with_keys($assoc,$inglue=':',$outglue=','){
     return implode($outglue,$res);
 }
 
-function getReportsAsXML($filter_values, $sort_criteria = "")
+function getReportsAsXML($filter_values, $sort_criteria = "", $keep_br = true)
 {
 	global $fieldsAll;
 	global $filters;
@@ -48,7 +48,7 @@ function getReportsAsXML($filter_values, $sort_criteria = "")
 
 	foreach($rows as $row)
 	{
-		$elem = createXMLReportElem($row, $sessions,$units,$doc);
+		$elem = createXMLReportElem($row, $sessions,$units,$doc,$keep_br);
 		$root->appendChild($elem);
 	}
 
@@ -154,7 +154,7 @@ function EnteteGauche($row)
 	return $result;
 }
 
-function createXMLReportElem($row, $sessions, $units, DOMDocument $doc)
+function createXMLReportElem($row, $sessions, $units, DOMDocument $doc, $keep_br = true)
 {
 	global $fieldsAll;
 	global $typesRapports;
@@ -197,8 +197,8 @@ function createXMLReportElem($row, $sessions, $units, DOMDocument $doc)
 	//On ajoute tous les fields pas spéciaux
 	foreach ($fieldsAll as $fieldID => $title)
 		if(!in_array($fieldID,$fieldsspecial))
-		appendLeaf($fieldID, $row->$fieldID, $doc, $rapportElem);
-
+			appendLeaf($fieldID, $keep_br ? $row->$fieldID : strip_tags($row->$fieldID), $doc, $rapportElem);
+	
 
 	//On ajoute le type du rapport et le pretty print
 	appendLeaf("type", $row->type, $doc, $rapportElem);

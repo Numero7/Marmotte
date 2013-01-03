@@ -103,7 +103,7 @@ if($dbh!=0)
 						{
 							$filter_values = getFilterValues();
 							$filter_values['id_edit'] = $id_edit; 
-							$xml = getReportsAsXML($filter_values);
+							$xml = getReportsAsXML($filter_values, getSortCriteria(), false);
 							header("Content-type: $mime; charset=utf-8");
 							$xsl = new DOMDocument();
 							$xsl->load($xslpath);

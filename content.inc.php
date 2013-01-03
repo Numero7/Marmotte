@@ -260,8 +260,14 @@
 						echo "Cannot process action ajoutlabo: missing data<br/>";
 					}
 					break;
+				case 'mailing':
+				case 'email_rapporteurs':
+					include 'mailing.inc.php';
+					break;
+
 				case "";
-				break;
+					break;
+
 				default:
 					?>
 		<p>Bienvenue sur le site de gestion des rapports de la section 6.</p>
@@ -277,7 +283,7 @@
 		}
 		catch(Exception $exc)
 		{
-			echo '<p><b>Impossible d exécuter l action "'.$action.'"<br/>Exception: '.$exc->getMessage().'<br/></b></p>';
+			echo '<p><b>Impossible d\'exécuter l\'action "'.$action.'"<br/>Exception: '.$exc->getMessage().'<br/></b></p>';
 		}
 		?>
 	</div>

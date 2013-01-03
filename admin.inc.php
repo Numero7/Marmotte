@@ -9,6 +9,15 @@ if(isSecretaire())
 	?>
 <h1>Interface d'administration</h1>
 <hr/>
+<h2>Mailing rapporteurs</h2>
+<form enctype="multipart/form-data" action="index.php" method="post">
+<p>
+<input type="hidden" name="action" value="mailing"/>
+<input type="submit" value="Mailing rapporteurs" />
+</p>
+</form>
+	<hr/>
+
 <h2>Creation de rapports vierges</h2>
 <p>
 	Upload de fichier csv avec séparateur , entrées encadrées par des "",
@@ -16,8 +25,9 @@ if(isSecretaire())
 	chercheurs et Unite/Rapporteur pour les rapports unites.<br />
 	
 </p>
-<form enctype="multipart/form-data" action="index.php" method="POST"
+<form enctype="multipart/form-data" action="index.php" method="post"
 	onsubmit="return confirm('Etes vous sur de creer ces rapports vierges?');">
+	<p>
 	<select name="subtype">
 		<?php
 		global $typesRapports;
@@ -25,36 +35,39 @@ if(isSecretaire())
 			echo "<option value=\"$ty\"$sel>".$value."</option>\n";
 		?>
 	</select>
-	<input type="hidden" name="type" value=rapporteurs> <input
-		type="hidden" name="action" value=upload> <input<input type="hidden"
-		name="MAX_FILE_SIZE" value="100000" /> Fichier csv: <input
-		name="uploadedfile" type="file" /><br /> <input type="submit"
-		value="Créer rapports" />
+	<input type="hidden" name="type" value="rapporteurs"/>
+	<input type="hidden" name="action" value="upload"/>
+	<input type="hidden" name="MAX_FILE_SIZE" value="100000" />
+	Fichier csv: 
+	<input name="uploadedfile" type="file" />
+	<br/>
+	<input type="submit" value="Créer rapports" />
+	</p>
 </form>
-</p>
+
+<hr/>
 
 <h2>Ajout d'une unité</h2>
+<form enctype="multipart/form-data" action="index.php" method="post">
 <p>
-<form enctype="multipart/form-data" action="index.php" method="POST";">
-
 	<table class="inputreport">
 		<tr>
 			<td style="width: 20em;">Acronyme</td>
-			<td style="width: 20em;"><input name="nickname">
+			<td style="width: 20em;"><input name="nickname"/>
 			</td>
 			<td><span class="examplevaleur">Exemple : LaBRI</span>
 			</td>
 		</tr>
 		<tr>
 			<td style="width: 20em;">Code</td>
-			<td style="width: 20em;"><input name="code">
+			<td style="width: 20em;"><input name="code"/>
 			</td>
 			<td><span class="examplevaleur">Exemple : UMR5800</span>
 			</td>
 		</tr>
 		<tr>
 			<td style="width: 20em;">Nom Complet</td>
-			<td style="width: 20em;"><input name="fullname">
+			<td style="width: 20em;"><input name="fullname"/>
 			</td>
 			<td><span class="examplevaleur">Exemple : Labratoire Bordelais de
 					Recherche en Informatique</span>
@@ -62,17 +75,20 @@ if(isSecretaire())
 		</tr>
 		<tr>
 			<td style="width: 20em;">Directeur</td>
-			<td style="width: 20em;"><input name="directeur">
+			<td style="width: 20em;"><input name="directeur"/>
 			</td>
 			<td><span class="examplevaleur">Exemple : Pascal Weil</span>
 			</td>
 		</tr>
 	</table>
-	<input type="hidden" name="type" value=labo>
-	<input type="hidden" name="action" value=ajoutlabo>
+	<input type="hidden" name="type" value="labo"/>
+	<input type="hidden" name="action" value="ajoutlabo"/>
 	<input type="submit" value="Ajouter unité" />
-</form>
 </p>
+</form>
+
+	<hr/>
+
 <h2>Ajout de plusieurs unités</h2>
 <p>
 	Upload de fichier csv avec séparateur , entrées encadrées par des "",
@@ -80,15 +96,18 @@ if(isSecretaire())
 	CodeUnite/NomUnite/Acronyme/Directeur.<br /> Les données d'un labo avec
 	le même code seront remplacées.
 </p>
-<form enctype="multipart/form-data" action="index.php" method="POST"
+<form enctype="multipart/form-data" action="index.php" method="post"
 	onsubmit="return confirm('Etes vous sur de vouloir uploader ce fichier labos?');">
-	<input type="hidden" name="type" value=labos> <input type="hidden"
-		name="action" value=upload> <input<input type="hidden"
-		name="MAX_FILE_SIZE" value="100000" /> Fichier csv: <input
-		name="uploadedfile" type="file" /><br /> <input type="submit"
-		value="Ajouter unités" />
+	<p>
+	<input type="hidden" name="type" value="labos"/>
+	<input type="hidden" name="action" value="upload"/>
+	<input type="hidden" name="MAX_FILE_SIZE" value="100000"/>
+	Fichier csv:
+	<input name="uploadedfile" type="file"/>
+	<br/>
+	<input type="submit" value="Ajouter unités" />
+	</p>
 </form>
-</p>
 
 
 <?php 
@@ -99,13 +118,13 @@ if(isSuperUser())
 	?>
 <hr/>
 <h2>Création nouveau rapporteur</h2>
-<p>
 <form method="post">
+<p>
 	<table class="inputreport">
 		<tr>
 			<td style="width: 20em;">Identifiant</td>
 			<td style="width: 20em;"><input name="login"
-				value="<?php if(isset($login)) echo $login; ?>">
+				value="<?php if(isset($login)) echo $login; ?>"/>
 			</td>
 			<td><span class="examplevaleur">Exemple : jdoe</span>
 			</td>
@@ -113,7 +132,7 @@ if(isSuperUser())
 		<tr>
 			<td style="width: 20em;">Description</td>
 			<td style="width: 20em;"><input name="description"
-				value="<?php if(isset($description)) echo $description; ?>">
+				value="<?php if(isset($description)) echo $description; ?>"/>
 			</td>
 			<td><span class="examplevaleur">Exemple : The honourable John Doe,
 					PhD</span>
@@ -122,40 +141,45 @@ if(isSuperUser())
 		<tr>
 			<td style="width: 20em;">Email</td>
 			<td style="width: 20em;"><input name="email"
-				value="<?php if(isset($email)) echo $email; ?>">
+				value="<?php if(isset($email)) echo $email; ?>"/>
 			</td>
 		</tr>
 		<tr>
 			<td>Nouveau mot de passe</td>
 			<td><input name="newpwd1"
-				value="<?php if(isset($password)) echo $password; ?>">
+				value="<?php if(isset($password)) echo $password; ?>"/>
 			</td>
 		</tr>
 		<tr>
 			<td>Confirmer mot de passe</td>
 			<td><input name="newpwd2"
-				value="<?php if(isset($password)) echo $password; ?>">
+				value="<?php if(isset($password)) echo $password; ?>"/>
 			</td>
 		</tr>
 		<tr>
-			<td><input type="hidden" name="oldpwd" value=""> <input type="hidden"
-				name="action" value="adminnewaccount"></td>
-			<td><input type="submit" value="Ajouter rapporteur">
+			<td>
+			<input type="hidden" name="oldpwd" value=""/>
+			<input type="hidden" name="action" value="adminnewaccount"/>
+			</td>
+			<td><input type="submit" value="Ajouter rapporteur"/>
 			</td>
 			<td>
 				<p>
-					<input type="checkbox" name="envoiparemail" checked='checked'
-						style="width: 10px;"> Prévenir par email
+					<input type="checkbox" name="envoiparemail" checked='checked' style="width: 10px;"/>
+					Prévenir par email
 				</p>
 			</td>
 		</tr>
 	</table>
+	</p>
 </form>
-</p>
+
+<hr/>
+
 <h2>Suppression d'un rapporteur</h2>
-<p>
 <form method="post"
 	onsubmit="return confirm('Etes vous sur de vouloir supprimer cet utilisateur ?');">
+	<p>
 	<table class="inputreport">
 		<tr>
 			<td style="width: 20em;">Utilisateur</td>
@@ -172,17 +196,19 @@ if(isSuperUser())
 			</td>
 		</tr>
 		<tr>
-			<td><input type="hidden" name="action" value="admindeleteaccount"></td>
-			<td><input type="submit" value="Supprimer rapporteur">
+			<td><input type="hidden" name="action" value="admindeleteaccount"/></td>
+			<td><input type="submit" value="Supprimer rapporteur"/>
 			</td>
 		</tr>
 	</table>
+	</p>
 </form>
-</p>
+
+<hr/>
 
 <h2>Modifier un mot de passe</h2>
-<p>
 <form method="post">
+<p>
 	<table class="inputreport">
 		<tr>
 			<td style="width: 20em;">Utilisateur</td>
@@ -199,27 +225,34 @@ if(isSuperUser())
 		</tr>
 		<tr>
 			<td>Nouveau mot de passe</td>
-			<td><input name="newpwd1" type="password">
+			<td>
+			<input name="newpwd1" type="password"/>
 			</td>
 		</tr>
 		<tr>
 			<td>Confirmer nouveau mot de passe</td>
-			<td><input name="newpwd2" type="password">
+			<td>
+			<input name="newpwd2" type="password"/>
 			</td>
 		</tr>
 		<tr>
-			<td><input type="hidden" name="oldpwd" value=""><input type="hidden"
-				name="action" value="adminnewpwd"></td>
-			<td><input type="submit" value="Valider modification">
+			<td>
+			<input type="hidden" name="oldpwd" value=""/>
+			<input type="hidden" name="action" value="adminnewpwd"/>
+			</td>
+			<td>
+			<input type="submit" value="Valider modification"/>
 			</td>
 		</tr>
 	</table>
+	</p>
 </form>
-</p>
+
+<hr/>
 
 <h2>Modifier les droits</h2>
-<p>
 <form method="get">
+<p>
 	<table class="inputreport">
 		<?php 
 		$users = listUsers();
@@ -242,16 +275,16 @@ if(isSuperUser())
 					}
 				}
 				echo "</select>";
-				echo "<input type=\"hidden\" name=\"login\" value=\"$user\">";
-				echo "<input type=\"hidden\" name=\"action\" value=\"adminnewpermissions\">";
-				echo " <input type=\"submit\" value=\"Valider\">";
+				echo "<input type=\"hidden\" name=\"login\" value=\"$user\"/>";
+				echo "<input type=\"hidden\" name=\"action\" value=\"adminnewpermissions\"/>";
+				echo " <input type=\"submit\" value=\"Valider\"/>";
 				echo "</form></td></tr>";
 			}
 		}
 		?>
 	</table>
+	</p>
 </form>
-</p>
 <?php 
 }
 if(isSecretaire())
@@ -260,13 +293,13 @@ if(isSecretaire())
 <br>
 <hr/>
 <h2>Ajout d'une session</h2>
-<p>
 <form method="post"
 	onsubmit="return confirm('Etes vous sur de vouloir ajouter cette session ?');">
+	<p>
 	<table class="inputreport">
 		<tr>
 			<td style="width: 20em;">Nom de session</td>
-			<td><input name="sessionname">
+			<td><input name="sessionname"/>
 			</td>
 			<td><span class="examplevaleur">Exemple : Automne</span>
 			</td>
@@ -274,24 +307,26 @@ if(isSecretaire())
 		<tr>
 			<td style="width: 20em;">Date <strong>Complète</strong> (Important !)
 			</td>
-			<td style="width: 20em;"><input name="sessiondate">
+			<td style="width: 20em;"><input name="sessiondate"/>
 			</td>
 			<td><span class="examplevaleur">Exemple : 01/03/2014</span>
 			</td>
 		</tr>
 		<tr>
-			<td><input type="hidden" name="action" value="adminnewsession"></td>
-			<td><input type="submit" value="Ajouter session">
+			<td><input type="hidden" name="action" value="adminnewsession"/></td>
+			<td><input type="submit" value="Ajouter session"/>
 			</td>
 		</tr>
 	</table>
+	</p>
 </form>
-</p>
+
+<hr/>
 
 <h2>Suppression d'une session</h2>
-<p>
 <form method="get"
 	onsubmit="return confirm('Etes vous sur de vouloir supprimer cette session ?');">
+	<p>
 	<table class="inputreport">
 		<tr>
 			<td style="width: 20em;">Nom de session</td>
@@ -310,14 +345,14 @@ if(isSecretaire())
 			</td>
 		</tr>
 		<tr>
-			<td><input type="hidden" name="action" value="admindeletesession">
+			<td><input type="hidden" name="action" value="admindeletesession"/>
 			</td>
-			<td><input type="submit" value="Supprimer session">
+			<td><input type="submit" value="Supprimer session"/>
 			</td>
 		</tr>
 	</table>
+	</p>
 </form>
-</p>
 <hr/>
 <?php 
 }?>
@@ -327,32 +362,8 @@ if(isSecretaire())
 {
 ?>
 <h2>Export</h2>
-<p>
 <form method="post" enctype="multipart/form-data" >
-		<table class="inputreport">
-		<tr>
-		<td style="width: 20em;">Data</td>
-		<td>
-		<select name="dbname">
-		<option value="evaluations">Evaluations</option>
-		<option value="units">Unités</option>
-		<option value="users">Users</option>
-				</select>
-				</td>
-			</tr>
-			<tr>
-				<td><input type="hidden" name="action" value="exportdb">
-				</td>
-				<td><input type="submit" value="Exporter la base">
-				</td>
-			</tr>
-		</table>
-	</form>
-	</p>
-	<hr/>
-<h2>Import</h2>
 <p>
-<form method="get" enctype="multipart/form-data" >
 		<table class="inputreport">
 		<tr>
 		<td style="width: 20em;">Data</td>
@@ -365,14 +376,40 @@ if(isSecretaire())
 				</td>
 			</tr>
 			<tr>
-				<td><input type="hidden" name="action" value="importdb">
+				<td><input type="hidden" name="action" value="exportdb"/>
 				</td>
-				<td><input type="submit" value="Importer la base">
+				<td><input type="submit" value="Exporter la base"/>
 				</td>
 			</tr>
 		</table>
+		</p>
 	</form>
-	</p>
+	
+	<hr/>
+
+<h2>Import</h2>
+<form method="get" enctype="multipart/form-data" >
+<p>
+		<table class="inputreport">
+		<tr>
+		<td style="width: 20em;">Data</td>
+		<td>
+		<select name="dbname">
+		<option value="evaluations">Evaluations</option>
+		<option value="units">Unités</option>
+		<option value="users">Users</option>
+				</select>
+				</td>
+			</tr>
+			<tr>
+				<td><input type="hidden" name="action" value="importdb"/>
+				</td>
+				<td><input type="submit" value="Importer la base"/>
+				</td>
+			</tr>
+		</table>
+		</p>
+	</form>
 	<hr/>
 	<?php 
 }

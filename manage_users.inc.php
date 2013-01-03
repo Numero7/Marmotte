@@ -4,25 +4,33 @@ function listUsers()
 {
 	$users = array();
 	$sql = "SELECT * FROM users ORDER BY description ASC;";
-	if($result=mysql_query($sql))
-	{
-		while ($row = mysql_fetch_object($result))
-		{
-			$users[$row->login] = $row;
-		}
-	}
+	$result=mysql_query($sql);
+	if($result ==  false)
+		throw new Exception("Failed to process query sql ".$sql);
+
+	while ($row = mysql_fetch_object($result))
+		$users[$row->login] = $row;
+	return $users;
+}
+
+function simpleListUsers()
+{
+	$users = array();
+	$sql = "SELECT * FROM users ORDER BY description ASC;";
+	$result=mysql_query($sql);
+	if($result ==  false)
+		throw new Exception("Failed to process query sql ".$sql);
+	
+	while ($row = mysql_fetch_object($result))
+		$users[$row->login] = $row->description;
 	return $users;
 }
 
 function getUserPermissionLevel($login = "")
 {
-	if ($login=="")
-	{
-		if (isset($_SESSION["login"]))
-		{
+	if ($login=="" && isset($_SESSION["login"]))
 			$login = $_SESSION["login"];
-		}
-	}
+
 	if ($login == "admin")
 		return NIVEAU_PERMISSION_SUPER_UTILISATEUR;
 	$users = listUsers();
@@ -189,7 +197,10 @@ function createUser($login,$pwd,$desc,$email, $envoiparemail)
 	if (isSuperUser())
 	{
 		if(existsUser($login))
-			return "FAILED: le login '".$login."' est déja utilisé.";
+			throw new Exception("Failed to create user: le login '".$login."' est déja utilisé.");
+		if($desc = "")
+			throw new Exception("Failed to create user: empty description.");
+				
 				
 		$passHash = crypt($pwd);
 		$sql = "INSERT INTO users(login,passHash,description,email) VALUES ('".mysql_real_escape_string($login)."','".mysql_real_escape_string($passHash)."','".mysql_real_escape_string($desc)."','".mysql_real_escape_string($email)."');";

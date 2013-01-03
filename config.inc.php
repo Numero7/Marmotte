@@ -65,6 +65,7 @@
 	);
 
 	$fieldsIndividual = array(
+			"rapporteur",
 			"nom",
 			"prenom",
 			"unite",
@@ -92,6 +93,7 @@
 
 	$fieldsCandidat = array(
 			"concours",
+			"rapporteur",
 			"nom",
 			"prenom",
 			"avis",
@@ -556,10 +558,11 @@
 			'statut' => array('name'=>"Statut" , 'liste' => $statutsRapports, 'default_value' => "", 'default_name' => "Tous les statuts"),
 			'id_session' => array('name'=>"Session", 'default_value' =>-1, 'default_name' => "Toutes les sessions"),
 			'type_eval' => array('name'=>"Type d'évaluation" , 'sql_col'=>'type', 'liste' => $typesRapports,'default_value' => "", 'default_name' => "Tous les types"),
-			'login_rapp' => array('name'=>"Rapporteur" , 'default_value' =>"", 'default_name' => "Tous les rapporteurs"),
+			'login_rapp' => array('name'=>"Rapporteur" , 'sql_col'=>'rapporteur','default_value' =>"", 'default_name' => "Tous les rapporteurs"),
 			'id_origine' => array('default_value' =>-1),
 			'id' => array('default_value' =>-1),
 	);
+	
 	$empty_filter = array(
 			'grade' => "",
 			'statut' => "",
