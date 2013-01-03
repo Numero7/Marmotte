@@ -18,6 +18,14 @@ function getFilterValue($filter_name)
 	return isset($_REQUEST[$filter_name]) ? $_REQUEST[$filter_name] : (isset($_SESSION[$filter_name."_filter"]) ? $_SESSION[$filter_name."_filter"] : $filters[$filter_name]['default_value']);
 }
 
+function resetFilterValues()
+{
+	global $filters;
+	foreach($filters as $filter => $data)
+		if(!isset($_REQUEST[$filter]))
+			$_REQUEST[$filter] = $data['default_value'];
+}
+
 function getFilterValues()
 {
 	global $filters;
@@ -366,7 +374,7 @@ function displaySummary($filter_values, $sort_crit)
 <table>
 	<tr>
 		<td>
-			<h2>Filtrage</h2>
+			<h2>Filtrage (<a href="index.php?action=view&amp;reset_filter=">Reset</a>)</h2>
 			<form method="get" action="index.php">
 				<table class="inputreport">
 					<?php 
@@ -394,8 +402,8 @@ function displaySummary($filter_values, $sort_crit)
 				}?>
 					<tr>
 						<td></td>
-						<td><input type="hidden" name="action" value="view" /> <input
-							type="submit" value="Filtrer" />
+						<td><input type="hidden" name="action" value="view" />
+						<input	type="submit" value="Filtrer" />
 						</td>
 					</tr>
 				</table>

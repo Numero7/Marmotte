@@ -21,14 +21,20 @@ require_once("manage_users.inc.php");
 		</h1>
 		<hr/>
 		<h1>Afficher</h1>
+		<h2>
+			<a href="?action=view">Sélection en cours</a>
+		</h2>
+		<h2>
+			<a href="?action=view&amp;reset_filter=">Tous les rapports</a>
+		</h2>
 		<?php
 		$sessions = showSessions();
 		foreach($statutsRapportsPluriel as $statut => $nom)
-			echo "<h2><a href=\"?action=view&amp;login_rapp=".getLogin()."&amp;id_session=".current_session_id()."&amp;statut=".$statut."\">Mes ".$nom."</a></h2>";
+			echo "<h2><a href=\"?action=view&amp;reset_filter=&amp;login_rapp=".getLogin()."&amp;id_session=".current_session_id()."&amp;statut=".$statut."\">Mes ".$nom."</a></h2>";
 		foreach($sessions as $s)
 		{
 			$typesRapports = getTypesEval($s["id"]);
-			echo "<h2><a href=\"?action=view&amp;id_session=".$s["id"]."\">".$s["nom"]." ".date("Y",strtotime($s["date"]))."</a></h2>";
+			echo "<h2><a href=\"?action=view&amp;reset_filter=&amp;id_session=".$s["id"]."\">".$s["nom"]." ".date("Y",strtotime($s["date"]))."</a></h2>";
 			/*			?>
 			 <!--
 			<ul>
@@ -41,11 +47,6 @@ require_once("manage_users.inc.php");
 			<?php
 			*/
 		}
-		?>
-		<h2>
-			<a href="?action=view">Tous les rapports</a>
-		</h2>
-		<?php 
 		if(isSecretaire())
 		{
 			?>

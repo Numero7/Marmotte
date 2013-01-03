@@ -18,6 +18,9 @@
 		$id_rapport = isset($_REQUEST["id"]) ? $_REQUEST["id"] : "";
 		$action = isset($_REQUEST["action"]) ? $_REQUEST["action"] : "";
 
+		if(isset($_REQUEST["reset_filter"]))
+			resetFilterValues();
+		
 		
 		function displayReports()
 		{
