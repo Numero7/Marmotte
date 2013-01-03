@@ -5,15 +5,16 @@ require_once('manage_rapports.inc.php');
 require_once('utils.inc.php');
 
 
-function mailRapporteur($titre, $body, $rapporteur)
+function mailRapporteur($titre, $body, $email_fin, $rapporteur)
 {
 	$reports  = getVirginReports($rapporteur);
 	if(count($reports) > 0)
 	{
-		echo 'Envoie d\'un email pour '.count($reports).' rapports pour "'.$rapporteur->description.'" ('.$rapporteur->email.')<br/>';
+		echo 'Envoi d\'un email pour '.count($reports).' rapports pour "'.$rapporteur->description.'" ('.$rapporteur->email.')<br/>';
 		foreach($reports as $report)
 		{
 			$body .= reportShortSummary($report)."\r\n";
+			$body .= $email_fin;
 			email_handler($rapporteur->email, $titre, $body);
 		}
 	}
@@ -24,29 +25,32 @@ function mailRapporteur($titre, $body, $rapporteur)
 }
 
 
-function mailAll($titre, $body)
+function mailAll($titre, $body, $email_fin )
 {
 	$users = listUsers();
 	foreach($users as $rapporteur)
-		mailRapporteur($titre,$body,$rapporteur);
+		mailRapporteur($titre,$body,$email_fin, $rapporteur);
 }
 
-function mailIndividualRapporteur($email_titre, $email_body, $rapporteur)
+function mailIndividualRapporteur($email_titre, $email_body, $email_fin, $rapporteur)
 {
 	$users = listUsers();
 	if(isset($users[$rapporteur]))
-		mailRapporteur($email_titre, $email_body, $users[$rapporteur]);
+		mailRapporteur($email_titre, $email_body, $email_fin, $users[$rapporteur]);
 	else
-		throw new Exception("Could not send email, no rapporteur with name ".$rapporteur);
+		throw new Exception("Could not send email, no rapporteur with name \"".$rapporteur."\"");
 }
 
 
-$email_body ="Bonjour,\r\n\r\n\r\n\t veuillez trouver ci-dessous la liste des rapports pour lesquels ";
-$email_body .= "vous avez été désigné comme rapporteur.\r\n\r\n";
-$email_body .= "Merci de vous connecter à l'application Marmotte pour y éditer vos rapports ";
-$email_body .= "avant le 01/01/2013. Bon courage!\r\n\r\nAmicalement, le bureau de la section.\r\n";
-
 $email_titre = "[conrs section ".section_nb."] liste de vos rapports";
+
+$email_body ="Bonjour,\r\n\r\n\r\n\t veuillez trouver ci-dessous la liste des rapports pour lesquels ";
+$email_body .= "vous avez été désigné comme rapporteur et qui ne sont pas encore édités.\r\n\r\n";
+
+$email_fin = "\r\n\r\nMerci de vous connecter à l'application Marmotte\r\n";
+$email_fin .= "\t".addresse_du_site."\r\npour y éditer vos rapports ";
+$email_fin .= "avant le 01/01/2013. Bon courage!\r\n\r\nAmicalement, le bureau de la section.\r\n";
+
 
 $users = simpleListUsers();
 
@@ -57,14 +61,15 @@ $action = isset($_REQUEST["action"]) ? $_REQUEST["action"] : "";
 	{
 		$rapporteur = isset($_REQUEST['rapporteur']) ? $_REQUEST['rapporteur'] : "";
 		$email_body = isset($_REQUEST['email_body']) ? $_REQUEST['email_body'] : "";
+		$email_fin = isset($_REQUEST['email_fin']) ? $_REQUEST['email_fin'] : "";
 		$email_titre = isset($_REQUEST['email_titre']) ? $_REQUEST['email_titre'] : "";
 	
 		try
 		{
 			if($rapporteur == 'allusers')
-				mailAll($email_titre, $email_body);
+				mailAll($email_titre, $email_body, $email_fin);
 			else
-				mailIndividualRapporteur($email_titre, $email_body, $rapporteur);
+				mailIndividualRapporteur($email_titre, $email_body, $email_fin, $rapporteur);
 		}
 		catch(Exception $exc)
 		{
@@ -94,22 +99,23 @@ $action = isset($_REQUEST["action"]) ? $_REQUEST["action"] : "";
 				<?php
 				echo  "\t\t\t\t\t<option value=\"allusers\" selected=\"selected\" >All Users</option>\n";
 				foreach($users as $user => $data)
-					echo  "\t\t\t\t\t<option value=\"".($user).">".$data."</option>\n";
+					echo  "\t\t\t\t\t<option value=\"".($user)."\">".$data."</option>\n";
 				?>
 		</select>
 		</td>
 		<tr>
 			<td>Subject</td>
-			<td><input type="text" name="email_titre" size="80"
-				value="<?php echo $email_titre;?>" /></td>
+			<td><input type="text" name="email_titre" size="80"	value="<?php echo $email_titre;?>" /></td>
 		</tr>
 		<tr>
-			<td>Body</td>
-			<td><textarea rows="15" cols="80" name="email_body">
-					<?php echo $email_body;?>
-				</textarea></td>
+			<td>Debut</td>
+			<td><textarea rows="6" cols="80" name="email_body"><?php echo $email_body;?></textarea></td>
 		</tr>
-	</table>
+		<tr>
+			<td>Fin</td>
+			<td><textarea rows="6" cols="80" name="email_fin"><?php echo $email_fin;?></textarea></td>
+		</tr>
+		</table>
 	</td>
 	</p>
 	<p>
