@@ -45,9 +45,9 @@ function mailIndividualRapporteur($email_titre, $email_body, $email_fin, $rappor
 $email_titre = "[conrs section ".section_nb."] liste de vos rapports";
 
 $email_body ="Bonjour,\r\n\r\n\r\n\t veuillez trouver ci-dessous la liste des rapports pour lesquels ";
-$email_body .= "vous avez été désigné comme rapporteur et qui ne sont pas encore édités.\r\n\r\n";
+$email_body .= "vous avez été désigné comme rapporteur et qui ne sont pas encore édités.\r\n\r\n\r\n\r\n";
 
-$email_fin = "\r\n\r\nMerci de vous connecter à l'application Marmotte\r\n";
+$email_fin = "\r\n\r\n\r\n\r\nMerci de vous connecter à l'application Marmotte\r\n";
 $email_fin .= "\t".addresse_du_site."\r\npour y éditer vos rapports ";
 $email_fin .= "avant le 01/01/2013. Bon courage!\r\n\r\nAmicalement, le bureau de la section.\r\n";
 

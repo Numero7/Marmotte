@@ -198,7 +198,7 @@ function createUser($login,$pwd,$desc,$email, $envoiparemail)
 	{
 		if(existsUser($login))
 			throw new Exception("Failed to create user: le login '".$login."' est déja utilisé.");
-		if($desc = "")
+		if($desc == "")
 			throw new Exception("Failed to create user: empty description.");
 				
 				
@@ -207,12 +207,16 @@ function createUser($login,$pwd,$desc,$email, $envoiparemail)
 		mysql_query($sql);
 		if($envoiparemail)
 		{
-			$body = "Marmotte est un site web créé par Yann Ponty et Hugo Gimbert pour faciliter le travail du comité national.\r\n";
+			$body = "Marmotte est un site web destiné à faciliter la répartition, le dépôt, l'édition et la production\r\n";
+			$body .= "des rapports par les sections du comité national.\r\n";
 			$body .= "\r\nLe site est accessible à l'adresse \r\n\t\t\t".addresse_du_site."\r\n";
+			$body .= "\r\nCe site a été développé Hugo Gimbert et Yann Ponty.\r\n";
 			$body .= "\r\nL'accès au site est restreint aux membres de la section ".section_nb." qui doivent s'authentifier pour y accéder et déposer, éditer ou consulter des rapports.\r\n";
 			$body .= "\r\nUn compte Marmotte vient d'être créé pour vous:\r\n\r\n";
 			$body .= "\t\t\t login: '".$login."'\r\n";
 			$body .= "\t\t\t motdepasse: '".$pwd."'\r\n";
+			$body .= "\r\nLors de votre première connexion vous pourrez changer votre mot de passe.\r\n";
+			$body .= "\r\n\r\n\t Amicalement, ".secretaire.".";
 			email_handler($email,"Votre compte Marmotte",$body);
 		}
 		return "Utilisateur ".$login." créé avec succès.";

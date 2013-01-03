@@ -885,9 +885,12 @@ function message_handler($subject,$body)
 
 function email_handler($recipient,$subject,$body)
 {
-	$headers = 'From: '.webmaster. "\r\n" . 'Reply-To: '.webmaster. "\r\n".'Content-Type: text/plain; charset="UTF-8"\r\n'.'X-Mailer: PHP/' . phpversion()."\r\n";
+	$headers = 'From: '.webmaster. "\r\n" . 'CC :' .webmaster. '\r\n'. 'Reply-To: '.webmaster. "\r\n".'Content-Type: text/plain; charset="UTF-8"\r\n'.'X-Mailer: PHP/' . phpversion()."\r\n";
 
-	return mail($recipient, $subject, "\r\n".$body."\r\n", $headers);
+	$result = mail($recipient, $subject, "\r\n".$body."\r\n", $headers);
+	
+	if($result == false)
+		throw new Exception("Could not send email to ".$recipient." with subject ".$subject);
 }
 
 function exception_handler($exception)
@@ -913,6 +916,3 @@ function normalizeName($name)
 }
 
 ?>
-
-
-
