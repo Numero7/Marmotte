@@ -41,7 +41,7 @@ if($dbh!=0)
 							}
 					}
 					$type = isset($_REQUEST["type"]) ? $_REQUEST["type"] :  "xml";
-						
+
 					if ( array_key_exists($type, $typeExports))
 					{
 						$id_edit = isset($_REQUEST["id_edit"]) ? $_REQUEST["id_edit"] : -1;
@@ -53,19 +53,8 @@ if($dbh!=0)
 						if($type=="latex" || $type=="pdf" || $type=="zip")
 						{
 							$xml_reports = getReportsAsXML(getFilterValues(), getSortCriteria());
-								
-								
-							array_map('unlink', glob("reports/*.tex"));
-							array_map('unlink', glob("reports/*.pdf"));
-							array_map('unlink', glob("reports/*.zip"));
-
 							$filename = "";
-								
-							/*
-							 if($type=="latex")
-								$filename=xmls_to_zipped_tex($xmls);
-							*/
-								
+
 							if($type =="pdf")
 							{
 								$xml_reports->save('reports/reports.xml');
@@ -78,58 +67,23 @@ if($dbh!=0)
 								echo "<script>window.location = 'create_reports.php?zip_files='</script>";
 
 							}
-							/*
-							 if($type=="zip")
-							 {
-							$xml_reports->save('reports.xml');
-							$filenames = xml_to_pdfs($xml_reports);
-							$filename= zip_files($filenames);
-
-							if($filename == "")
-							{
-							echo "Failed to generate zip file";
-							return;
-							}
-
-							$filepath="./";
-
-							header("Pragma: public");
-							header("Expires: 0");
-							header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
-							header("Cache-Control: public");
-							header("Content-Description: File Transfer");
-							header("Content-type: application/octet-stream");
-							header("Content-Disposition: attachment; filename=\"".$filename."\"");
-							header("Content-Transfer-Encoding: binary");
-							header("Content-Length: ".filesize($filename));
-							ob_clean();
-							flush();
-							readfile($filename);
-							*/
 						}
 						else
 						{
-							echo '<script type="text/javascript">
-									window.location ="reports/"
-									</script>
-									';
+							$filter_values = getFilterValues();
+							$filter_values['id_edit'] = $id_edit;
+							$xml = getReportsAsXML($filter_values, getSortCriteria(), false);
+							header("Content-type: $mime; charset=utf-8");
+							$xsl = new DOMDocument();
+							$xsl->load($xslpath);
+							$proc = new XSLTProcessor();
+							$proc->importStyleSheet($xsl);
+							foreach ($typesRapportToAvis as $key => $val)
+							{
+								$proc->setParameter('', $key, implode_with_keys($val));
+							}
+							echo $proc->transformToXML($xml);
 						}
-					}
-					else
-					{
-						$filter_values = getFilterValues();
-						$filter_values['id_edit'] = $id_edit;
-						$xml = getReportsAsXML($filter_values, getSortCriteria(), false);
-						header("Content-type: $mime; charset=utf-8");
-						$xsl = new DOMDocument();
-						$xsl->load($xslpath);
-						$proc = new XSLTProcessor();
-						$proc->importStyleSheet($xsl);
-						foreach ($typesRapportToAvis as $key => $val)
-						{
-							$proc->setParameter('', $key, implode_with_keys($val));
-						}
-						echo $proc->transformToXML($xml);
 					}
 				}
 		}
