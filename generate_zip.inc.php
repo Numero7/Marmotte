@@ -98,6 +98,44 @@ function zip_files($filenames,$zipname = "reports.zip")
 	return false;
 }
 
+/**
+ * 
+ * @param unknown $docs
+ * 
+ * @return javascript to get he reports
+ */
+function xmls_to_pdfs2($docs)
+{
+	$xsl = new DOMDocument();
+	$xsl->load("xslt/html2.xsl");
+	$proc = new XSLTProcessor();
+	$proc->importStyleSheet($xsl);
+	
+	$filenames = array();
+	$script = "";
+	
+	//echo "Processing ".count($docs)." docs<br/>";
+	foreach($docs as $doc)
+	{
+		//it takes time so we tell the server the script is still alive
+		set_time_limit(0);
+		$nodes =$doc->getElementsByTagName("rapport");
+		if($nodes)
+		{
+			$node = $nodes->item(0);
+			$filename = replace_accents(filename_from_node($node)).".pdf";
+			$local_filename = replace_accents("reports/".$filename);
+			$type = type_from_node($node);
+			$html = $proc->transformToXML($node);
+			$pdf = HTMLToPDF($html);
+			$pdf->Output($local_filename,"F");
+			$filenames[$local_filename] = $filename;
+		}
+	}
+	return $filenames;
+	
+}
+
 function xmls_to_pdfs($docs)
 {
 	$xsl = new DOMDocument();
@@ -127,4 +165,6 @@ function xmls_to_pdfs($docs)
 	}
 	return $filenames;
 }
+
+
 ?>

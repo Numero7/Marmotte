@@ -189,7 +189,7 @@ function displayIndividualReport($row)
 		<?php echo $title;?>
 	</dt>
 	<dd>
-		<?php echo strip_tags($row->$fieldID);?>
+		<?php echo remove_br($row->$fieldID);?>
 	</dd>
 	<?php
 		}
@@ -271,7 +271,7 @@ function displayUnitReport($row)
 		<?php echo $title;?>
 	</dt>
 	<dd>
-		<?php echo strip_tags($row->$fieldID);?>
+		<?php echo remove_br($row->$fieldID);?>
 	</dd>
 	<?php
 		}
@@ -575,6 +575,10 @@ $first = false;
 	}
 }
 
+function remove_br($str)
+{
+	return str_replace("<br />","",$str);
+}
 
 function displayEditableReport($row, $actioname)
 {
@@ -584,6 +588,7 @@ function displayEditableReport($row, $actioname)
 	global $fieldsEcoles;
 	global $fieldsTypes;
 	global $fieldsCandidat;
+	global $fieldsGeneric;
 	global $actions;
 	global $typesRapportsUnites;
 	global $typesRapports;
@@ -598,6 +603,7 @@ function displayEditableReport($row, $actioname)
 	$is_unite = array_key_exists($eval_type,$typesRapportsUnites);
 	$is_ecole = ($eval_type == 'Ecole');
 	$is_candidat = ($eval_type == 'Candidature');
+	$is_generic = ($eval_type == 'Generique');
 
 	$statut = $row->statut;
 
@@ -685,7 +691,9 @@ function displayEditableReport($row, $actioname)
 			$active_fields = $fieldsEcoles;
 		if($is_candidat)
 			$active_fields = $fieldsCandidat;
-
+		if($is_generic)
+			$active_fields = $fieldsGeneric;
+				
 
 
 		foreach($active_fields as  $fieldID)
@@ -710,7 +718,7 @@ function displayEditableReport($row, $actioname)
 		</tr>
 		<tr>
 		<td colspan="3">
-		<textarea name="field'.$fieldID.'" style="width: 100%;">'.strip_tags($row->$fieldID).'</textarea>
+		<textarea name="field'.$fieldID.'" style="width: 100%;">'.remove_br($row->$fieldID).'</textarea>
 		</td>
 		';
 					}
@@ -724,7 +732,7 @@ function displayEditableReport($row, $actioname)
 			</tr>
 			<tr>
 			<td colspan="3">
-			<textarea rows=10 name="field'.$fieldID.'" style="width: 100%;">'.strip_tags($row->$fieldID).'</textarea>
+			<textarea rows=10 name="field'.$fieldID.'" style="width: 100%;">'.remove_br($row->$fieldID).'</textarea>
 			</td>
 			';
 					}break;

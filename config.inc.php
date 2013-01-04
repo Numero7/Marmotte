@@ -122,6 +122,15 @@
 		"prerapport"
 	);
 
+	$fieldsGeneric = array (
+		"nom",
+		"prenom",
+		"unite",
+		"avis",
+		"rapport",
+		"prerapport"
+	);
+	
 	$fieldsEcoles = array(
 			"ecole",
 			"nom",
@@ -245,7 +254,8 @@
 		'Candidature' => 'Candidature',
 		'Suivi-PostEvaluation' => 'Suivi Post-Evaluation',
 		'Titularisation' => 'Titularisation',
-		'Affectation' => 'Confirmation d\'Affectation'
+		'Affectation' => 'Confirmation d\'Affectation',
+		'Reconstitution' => 'Reconstitution de Carrière'
 	);
 
 	$typesRapportsUnites = array(
@@ -330,6 +340,7 @@
 		'Candidature' => $avis_candidature,
 		'Suivi-PostEvaluation' => $avis_vide,
 		'Affectation' => $avis_binaire,
+		'Reconstitution' => $avis_vide,
 		'Titularisation' => $avis_binaire,
 		'Changement-Directeur' => $avis_pertinence,
 		'Changement-Directeur-Adjoint' => $avis_pertinence,
@@ -395,13 +406,14 @@
 			'Suivi-PostEvaluation' => '<B>Objet de l’évaluation :</B><br/><EM>Suivi post-évaluation</EM>',
 			'Affectation' => '<B>Objet de l’évaluation :</B><br/>Affectation',
 			'Titularisation' => '<B>Objet de l’évaluation :</B><br/>Titularisation',
+			'Reconstitution' => '<B>Objet :</B><br/>Reconstitution de carrière',
 			'Changement-Directeur' =>  '<B>Objet de l’évaluation :</B><br/>Changement de directeur',
 			'Changement-Directeur-Adjoint' =>  '<B>Objet de l’évaluation :</B><br/>Changement de directeur adjoint',
 			'Renouvellement' => '<B>Objet de l’examen :</B> <EM>avis de pertinence d’association au CNRS : renouvellement</EM>',
 			'Association' => '<B>Objet de l’examen :</B> <EM>avis de pertinence d’association au CNRS : projet d\'association</EM>',
 			'Ecole' => '<B>Objet de l’évaluation :</B><br/> Ecole Thématique',
 			'Comite-Evaluation' => '<B>Objet de l’examen :</B> Comité d\'évaluation',
-			'Generique' => '<B>Rapport</B>',
+			'Generique' => '&nbsp;',
 	);
 
 	$enTetesDroit = array(
@@ -410,7 +422,7 @@
 			'Unite' => '<B>Code, intitulé et nom<br/>du directeur de l’unité :</B><br/>',
 			'Ecole' => '<B>Nom de l\'école et du porteur de projet :</B><br/>',
 			'PromotionDR' => '<B>Classement, nom et unité :</B><br/>',
-			'' => 'Objet'
+			'' => '&nbsp;'
 			);
 	
 	$typesRapportsToEnteteDroit = array(
@@ -421,6 +433,7 @@
 			'Suivi-PostEvaluation' => 'Individu',
 			'Affectation' => 'Individu',
 			'Titularisation' => 'Individu',
+			'Reconstitution' => 'Individu',
 			'Changement-Directeur' =>  'Unite',
 			'Changement-Directeur-Adjoint' =>  'Unite',
 			'Renouvellement' => 'Unite',

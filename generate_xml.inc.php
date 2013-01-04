@@ -15,32 +15,32 @@ function getReportsAsXMLArray($filter_values, $sort_criteria)
 	$docs = array();
 	foreach($rows as $row)
 		$docs[] = rowToXMLDoc($row, $sessions,$units);
-		
+
 	return $docs;
 }
 
 function implode_with_keys($assoc,$inglue=':',$outglue=','){
-    $res=array();
-    foreach($assoc as $tk=>$tv){
-        $res[] = $tk.$inglue.$tv;
-    }
-    return implode($outglue,$res);
+	$res=array();
+	foreach($assoc as $tk=>$tv){
+		$res[] = $tk.$inglue.$tv;
+	}
+	return implode($outglue,$res);
 }
 
 function getReportsAsXML($filter_values, $sort_criteria = "", $keep_br = true)
 {
 	global $fieldsAll;
 	global $filters;
-	
+
 	$doc = new DOMDocument();
 	$root = $doc->createElement("rapports");
 	$rows = filterSortReports($filter_values, $sort_criteria);
-	
+
 	if(isset($filter_values['id_edit']))
 		$root->setAttribute('id_edit',$filter_values['id_edit']);
-		
+
 	//foreach($filters as $filter => $data)
-		//$root->setAttribute($filter,$filter_values[$filter]);
+	//$root->setAttribute($filter,$filter_values[$filter]);
 
 	//to map id_session s to session nicknames
 	$sessions = sessionArrays();
@@ -71,9 +71,9 @@ function EnteteDroit($row, $units)
 	global $typesRapportsToEnteteDroit;
 	global $avis_classement;
 	global $avis_candidature;
-	
+
 	$result = "";
-	
+
 	if( ($row->type == "Promotion") && ($row->grade != "CR2"))
 	{
 		$result = $enTetesDroit['PromotionDR'];
@@ -164,7 +164,7 @@ function createXMLReportElem($row, $sessions, $units, DOMDocument $doc, $keep_br
 	global $typesRapportsToCheckboxes;
 	global $typesRapportsToCheckboxesTitles;
 	global $typesRapportsToFormula;
-	
+
 	if(!$sessions)
 		$sessions = sessionArrays();
 
@@ -184,21 +184,21 @@ function createXMLReportElem($row, $sessions, $units, DOMDocument $doc, $keep_br
 	if(array_key_exists($row->type,$typesRapportsToFormula))
 	{
 		$formulas = $typesRapportsToFormula[$row->type];
-		
+
 		if(array_key_exists($row->avis,$formulas))
 		{
 			$formula = $formulas[$row->avis];
 			$row->rapport .= "<br/><br/>".$formula;
-			
+				
 		}
 	}
-	
-	
+
+
 	//On ajoute tous les fields pas spéciaux
 	foreach ($fieldsAll as $fieldID => $title)
 		if(!in_array($fieldID,$fieldsspecial))
-			appendLeaf($fieldID, $keep_br ? $row->$fieldID : strip_tags($row->$fieldID), $doc, $rapportElem);
-	
+		appendLeaf($fieldID, $keep_br ? $row->$fieldID : remove_br($row->$fieldID), $doc, $rapportElem);
+
 
 	//On ajoute le type du rapport et le pretty print
 	appendLeaf("type", $row->type, $doc, $rapportElem);
@@ -219,7 +219,7 @@ function createXMLReportElem($row, $sessions, $units, DOMDocument $doc, $keep_br
 	//On ajoute la date du jour
 	appendLeaf("date", date("j/n/Y",strtotime($row->date)), $doc, $rapportElem);
 
-	
+
 
 	//On ajoute les cases à choix multiple, si nécessaires
 	if(array_key_exists($row->type,$typesRapportsToCheckboxes))
@@ -319,9 +319,14 @@ function filename_from_node(DOMNode $node)
 
 	if($type == "Evaluation-Vague" || $type == "Evaluation-MiVague")
 		$type .=  " - ".mb_convert_case($avis,MB_CASE_TITLE);
-	
+
 	if(array_key_exists($type,$typesRapportsUnites))
-		return $session." - ".$type." - ".$unite;
+	{
+		if($type == 'Generique')
+			return $session." - ".$nom." ".$prenom." - ".$unite;
+		else
+			return $session." - ".$type." - ".$unite;
+	}
 	else
 		return $session." - ".$type." - ".$grade." - ".$nom."_".$prenom;
 }
