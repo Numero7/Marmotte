@@ -108,10 +108,10 @@ function dumpEditedCriteria($sortCrit, $edit_crit)
 	{
 		//We want at least one sort criterion
 		//also removes bug
-		if(count($sortCrit) > 1)
+		//if(count($sortCrit) > 1)
 			unset($sortCrit[$edit_crit]);
-		else
-			$sortCrit[$edit_crit] = "ASC";
+		//else
+			//$sortCrit[$edit_crit] = "ASC";
 	}
 	foreach($sortCrit as $crit => $order)
 	{
