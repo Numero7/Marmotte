@@ -414,6 +414,7 @@
 			'Ecole' => '<B>Objet de l’évaluation :</B><br/> Ecole Thématique',
 			'Comite-Evaluation' => '<B>Objet de l’examen :</B> Comité d\'évaluation',
 			'Generique' => '&nbsp;',
+			'' => ''
 	);
 
 	$enTetesDroit = array(
@@ -441,6 +442,7 @@
 			'Ecole' => 'Ecole',
 			'Comite-Evaluation' => 'Unite',
 			'Generique' => '',
+			'' => ''
 	);
 	
 	

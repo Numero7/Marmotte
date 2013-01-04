@@ -28,7 +28,7 @@ SET time_zone = "+00:00";
 
 
 
-CREATE TABLE IF NOT EXISTS `chercheurs` (
+CREATE TABLE IF NOT EXISTS `chercheurs2` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `nom` varchar(40) CHARACTER SET utf8 NOT NULL,
   `prenom` varchar(40) CHARACTER SET utf8 NOT NULL,
@@ -47,7 +47,7 @@ CREATE TABLE IF NOT EXISTS `chercheurs` (
 --DROP TABLE IF EXISTS `evaluations`;
 
 
-CREATE TABLE IF NOT EXISTS `evaluations` (
+CREATE TABLE IF NOT EXISTS `evaluations2` (
 `statut` enum('vierge','prerapport','rapport','publie','supprime') CHARACTER SET utf8 NOT NULL,
   `id_session` int(11) NOT NULL,
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -123,7 +123,7 @@ CREATE TABLE IF NOT EXISTS `evaluations` (
 -- Table structure for table `sessions`
 --
 
-CREATE TABLE IF NOT EXISTS `sessions` (
+CREATE TABLE IF NOT EXISTS `sessions2` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `nom` varchar(60) CHARACTER SET utf8 NOT NULL,
   `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -145,7 +145,7 @@ CREATE TABLE IF NOT EXISTS `sessions` (
 -- Table structure for table `units`
 --
 
-CREATE TABLE IF NOT EXISTS `units` (
+CREATE TABLE IF NOT EXISTS `units2` (
   `nickname` text CHARACTER SET utf8 NOT NULL,
   `code` text CHARACTER SET utf8 NOT NULL,
   `fullname` text CHARACTER SET utf8 NOT NULL,
@@ -166,7 +166,7 @@ CREATE TABLE IF NOT EXISTS `units` (
 -- Table structure for table `users`
 --
 
-CREATE TABLE IF NOT EXISTS `users` (
+CREATE TABLE IF NOT EXISTS `users2` (
   `login` varchar(40) CHARACTER SET utf8 NOT NULL,
   `passHash` varchar(40) CHARACTER SET utf8 NOT NULL,
   `description` text CHARACTER SET utf8 NOT NULL,
@@ -178,7 +178,7 @@ CREATE TABLE IF NOT EXISTS `users` (
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`login`, `passHash`, `description`,`permissions`,`email`) VALUES
+INSERT INTO `users2` (`login`, `passHash`, `description`,`permissions`,`email`) VALUES
 ('admin', '$1$II0.x4/.$wcsKcSZ6Z0bMUUlWp/cS0/', 'Administrateur (Yann ou Hugo)',1000,'cn6@labri.fr'),
 ('hugo', '$1$jEk9YVFR$9AQw.nttY7jPKkAlzCX.K/', 'Hugo',1000,'hugo.gimbert@labri.fr'),
 ('yawn', '$1$/A..aK2.$B2tvrj3auxM2p.T7QXc9Z.', 'Yann Ponty', 0, 'yann.ponty@lix.polytechnique.fr'),

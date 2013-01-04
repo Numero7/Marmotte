@@ -1,7 +1,5 @@
 <?php
 session_start();
-require_once('tcpdf/config/lang/eng.php');
-require_once('tcpdf/tcpdf.php');
 require_once('config.inc.php');
 require_once('db.inc.php');
 require_once('manage_users.inc.php');
@@ -329,7 +327,7 @@ function displayExport($filter_values)
 		if (getUserPermissionLevel()>=$level)
 		{
 			echo "<a href=\"export.php?action=group&amp;type=$idexp\">";
-			echo "<img class=\"icon\" width=\"40\" height=\"40\" src=\"img/$idexp-icon-50px.png\" alt=\"$expname\"/></a>\"";
+			echo "<img class=\"icon\" width=\"40\" height=\"40\" src=\"img/$idexp-icon-50px.png\" alt=\"$expname\"/></a>";
 		}
 	}
 	echo '</td>';

@@ -3,22 +3,6 @@
 require_once('manage_sessions.inc.php');
 require_once('manage_unites.inc.php');
 
-function getReportsAsXMLArray($filter_values, $sort_criteria)
-{
-	global $fieldsAll;
-	$rows = filterSortReports($filter_values, $sort_criteria);
-
-	//to map id_session s to session nicknames
-	$sessions = sessionArrays();
-	$units = unitsList();
-
-	$docs = array();
-	foreach($rows as $row)
-		$docs[] = rowToXMLDoc($row, $sessions,$units);
-
-	return $docs;
-}
-
 function implode_with_keys($assoc,$inglue=':',$outglue=','){
 	$res=array();
 	foreach($assoc as $tk=>$tv){
@@ -220,7 +204,6 @@ function createXMLReportElem($row, $sessions, $units, DOMDocument $doc, $keep_br
 	appendLeaf("date", date("j/n/Y",strtotime($row->date)), $doc, $rapportElem);
 
 
-
 	//On ajoute les cases à choix multiple, si nécessaires
 	if(array_key_exists($row->type,$typesRapportsToCheckboxes))
 	{
@@ -256,6 +239,10 @@ function createXMLReportElem($row, $sessions, $units, DOMDocument $doc, $keep_br
 	appendLeaf("signataire", president, $doc, $rapportElem);
 	appendLeaf("signataire_titre", president_titre, $doc, $rapportElem);
 
+	$row->session = $sessions[$row->id_session];
+
+	$rapportElem->setAttribute('filename', filename_from_doc($row));
+	
 	return $rapportElem;
 
 }
@@ -304,7 +291,27 @@ function filename_from_node(DOMNode $node)
 			case "avis": $avis = $child->nodeValue; break;
 		}
 	}
+	
+	return filename_from_params($nom, $prenom, $grade, $unite, $type, $session, $avis);
+}
 
+//Returns the name of the file
+function filename_from_doc($doc)
+{
+	$nom = mb_convert_case(replace_accents($doc->nom), MB_CASE_TITLE);
+	$prenom = mb_convert_case(replace_accents($doc->prenom), MB_CASE_TITLE);
+	$grade = $doc->grade;
+	$unite = $doc->unite;
+	$type = $doc->type;
+	$session = $doc->session;
+	$avis = $doc->avis;
+	return filename_from_params($nom, $prenom, $grade, $unite, $type, $session, $avis);
+}
+
+function filename_from_params($nom, $prenom, $grade, $unite, $type, $session, $avis)
+{
+	global $typesRapportsUnites;
+	
 	if($type == "Promotion")
 	{
 		switch($grade)
@@ -316,10 +323,10 @@ function filename_from_node(DOMNode $node)
 		}
 		$grade .= " - ".$avis;
 	}
-
+	
 	if($type == "Evaluation-Vague" || $type == "Evaluation-MiVague")
 		$type .=  " - ".mb_convert_case($avis,MB_CASE_TITLE);
-
+	
 	if(array_key_exists($type,$typesRapportsUnites))
 	{
 		if($type == 'Generique')
@@ -330,5 +337,4 @@ function filename_from_node(DOMNode $node)
 	else
 		return $session." - ".$type." - ".$grade." - ".$nom."_".$prenom;
 }
-
 ?>
