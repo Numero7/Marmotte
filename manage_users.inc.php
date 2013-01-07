@@ -1,5 +1,13 @@
 <?php
 
+require_once('config.inc.php');
+require_once('manage_sessions.inc.php');
+
+function init_session()
+{
+	set_current_session_id(current_session);
+}
+
 function listUsers()
 {
 	$users = array();

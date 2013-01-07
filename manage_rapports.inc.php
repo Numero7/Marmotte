@@ -248,7 +248,7 @@ function getStatus($id_rapport)
 
 function checkReportIsEditable($rapport)
 {
-	if (isSecretaire() && $rapport->statut == 'publie')
+	if (!isSecretaire() && $rapport->statut == 'publie')
 		throw new Exception("Les rapports publies ne sont pas modifiables, changer d'abord le statut du rapport");
 	else if (isSecretaire())
 		return true;

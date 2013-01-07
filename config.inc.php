@@ -11,6 +11,8 @@
 	define("webmaster","hugo.gimbert@labri.fr");
 	define("addresse_du_site","http://cn6.labri.fr/Marmotte");
 		
+	define("current_session",2);
+	
 	$fieldsSummary = array(
 			"statut",
 		"type",
@@ -116,6 +118,7 @@
 	);
 	
 	$fieldsUnites = array(
+			"rapporteur",
 		"unite",
 		"avis",
 		"rapport",
@@ -123,6 +126,7 @@
 	);
 
 	$fieldsGeneric = array (
+			"rapporteur",
 		"nom",
 		"prenom",
 		"unite",
@@ -132,6 +136,7 @@
 	);
 	
 	$fieldsEcoles = array(
+			"rapporteur",
 			"ecole",
 			"nom",
 			"prenom",

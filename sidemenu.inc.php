@@ -6,13 +6,10 @@ require_once("manage_users.inc.php");
 <div class="right">
 	<div class="round">
 		<div class="roundtl">
-			<span></span>
 		</div>
 		<div class="roundtr">
-			<span></span>
 		</div>
 		<div class="clearer">
-			<span></span>
 		</div>
 	</div>
 	<div class="subnav">
@@ -25,16 +22,16 @@ require_once("manage_users.inc.php");
 			<a href="?action=view">Sélection en cours</a>
 		</h2>
 		<h2>
-			<a href="?action=view&amp;reset_filter=">Tous les rapports</a>
+			<a href="?action=view&amp;reset_filter=">Tous les rapports de la session</a>
 		</h2>
 		<?php
-		$sessions = showSessions();
 		foreach($statutsRapportsPluriel as $statut => $nom)
 			echo "<h2><a href=\"?action=view&amp;reset_filter=&amp;login_rapp=".getLogin()."&amp;id_session=".current_session_id()."&amp;statut=".$statut."\">Mes ".$nom."</a></h2>";
-		foreach($sessions as $s)
+		$sessions = sessionArrays();
+		foreach($sessions as $id => $nom)
 		{
-			$typesRapports = getTypesEval($s["id"]);
-			echo "<h2><a href=\"?action=view&amp;reset_filter=&amp;id_session=".$s["id"]."\">".$s["nom"]." ".date("Y",strtotime($s["date"]))."</a></h2>";
+			//$typesRapports = getTypesEval($s["id"]);
+			echo "<h2><a href=\"?action=view&amp;reset_filter=&amp;id_session=".strval($id)."\">".$nom."</a></h2>";
 			/*			?>
 			 <!--
 			<ul>
@@ -84,11 +81,8 @@ require_once("manage_users.inc.php");
 	</div>
 	<div class="round">
 		<div class="roundbl">
-			<span></span>
 		</div>
 		<div class="roundbr">
-			<span></span>
 		</div>
-		<span class="clearer"></span>
 	</div>
 </div>

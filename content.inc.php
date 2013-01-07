@@ -19,9 +19,9 @@
 		$action = isset($_REQUEST["action"]) ? $_REQUEST["action"] : "";
 
 		if(isset($_REQUEST["reset_filter"]))
-			resetFilterValues();
-		
-		
+			resetFilterValuesExceptSession();
+
+
 		function displayReports()
 		{
 			displaySummary(getFilterValues(), getSortCriteria());
@@ -208,43 +208,24 @@
 					}
 					break;
 				case 'adminnewsession':
-					if (isSuperUser())
+					if (isset($_REQUEST["sessionname"]) and isset($_REQUEST["sessiondate"]))
 					{
-						if (isset($_REQUEST["sessionname"]) and isset($_REQUEST["sessiondate"]))
-						{
-							$name = $_REQUEST["sessionname"];
-							$date = $_REQUEST["sessiondate"];
-							createSession($name,$date);
-						}
-						else
-						{
-							echo "<p><strong>Erreur :</strong> Vous n'avez fourni toutes les informations nécessaires pour créer une session, veuillez nous contacter (Yann ou Hugo) en cas de difficultés.</p>";
-						}
-						include "admin.inc.php";
+						$name = $_REQUEST["sessionname"];
+						$date = $_REQUEST["sessiondate"];
+						createSession($name,$date);
 					}
 					else
 					{
-						echo "<p>Vous n'avez pas les droits nécessaires pour effectuer cette action, veuillez nous contacter (Yann ou Hugo) en cas de difficultés.</p>";
+						echo "<p><strong>Erreur :</strong> Vous n'avez fourni toutes les informations nécessaires pour créer une session, veuillez nous contacter (Yann ou Hugo) en cas de difficultés.</p>";
 					}
+					include "admin.inc.php";
 					break;
 				case 'admindeletesession':
-					if (isSuperUser())
-					{
-						if (isset($_REQUEST["sessionid"]))
-						{
-							$id = $_REQUEST["sessionid"];
-							deleteSession($id);
-						}
-						else
-						{
-							echo "<p><strong>Erreur :</strong> Vous n'avez fourni toutes les informations nécessaires pour supprimer une session, veuillez nous contacter (Yann ou Hugo) en cas de difficultés.</p>";
-						}
-						include "admin.inc.php";
-					}
+					if (isset($_REQUEST["sessionid"]))
+						deleteSession($_REQUEST["sessionid"]);
 					else
-					{
-						echo "<p>Vous n'avez pas les droits nécessaires pour effectuer cette action, veuillez nous contacter (Yann ou Hugo) en cas de difficultés.</p>";
-					}
+						throw new Exception("Vous n'avez fourni toutes les informations nécessaires pour supprimer une session, veuillez nous contacter (Yann ou Hugo) en cas de difficultés.");
+					include "admin.inc.php";
 					break;
 				case 'changepwd':
 					include "changePwd.inc.php";
@@ -269,7 +250,7 @@
 					break;
 
 				case "";
-					break;
+				break;
 
 				default:
 					?>

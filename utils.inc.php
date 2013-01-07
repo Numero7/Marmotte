@@ -13,7 +13,9 @@ require_once('manage_rapports.inc.php');
 function getFilterValue($filter_name)
 {
 	global $filters;
-	return isset($_REQUEST[$filter_name]) ? $_REQUEST[$filter_name] : (isset($_SESSION[$filter_name."_filter"]) ? $_SESSION[$filter_name."_filter"] : $filters[$filter_name]['default_value']);
+	$answer =  isset($_REQUEST[$filter_name]) ? $_REQUEST[$filter_name] : (isset($_SESSION[$filter_name."_filter"]) ? $_SESSION[$filter_name."_filter"] : $filters[$filter_name]['default_value']);
+	$_SESSION[$filter_name.'_filter'] = $answer;
+	return $answer;
 }
 
 function resetFilterValues()
@@ -21,7 +23,15 @@ function resetFilterValues()
 	global $filters;
 	foreach($filters as $filter => $data)
 		if(!isset($_REQUEST[$filter]))
-			$_REQUEST[$filter] = $data['default_value'];
+		$_REQUEST[$filter] = $data['default_value'];
+}
+
+function resetFilterValuesExceptSession()
+{
+	global $filters;
+	foreach($filters as $filter => $data)
+		if($filter != 'id_session' && !isset($_REQUEST[$filter]))
+		$_REQUEST[$filter] = $data['default_value'];
 }
 
 function getFilterValues()
@@ -29,12 +39,7 @@ function getFilterValues()
 	global $filters;
 	$filter_values = array();
 	foreach($filters as $filter => $data)
-	{
 		$filter_values[$filter] =  getFilterValue($filter);
-		if(isset($_REQUEST[$filter]))
-			$_SESSION[$filter.'_filter'] = $_REQUEST[$filter];
-	}
-
 	return $filter_values;
 }
 
@@ -107,9 +112,9 @@ function dumpEditedCriteria($sortCrit, $edit_crit)
 		//We want at least one sort criterion
 		//also removes bug
 		//if(count($sortCrit) > 1)
-			unset($sortCrit[$edit_crit]);
+		unset($sortCrit[$edit_crit]);
 		//else
-			//$sortCrit[$edit_crit] = "ASC";
+		//$sortCrit[$edit_crit] = "ASC";
 	}
 	foreach($sortCrit as $crit => $order)
 	{
@@ -334,9 +339,9 @@ function displayExport($filter_values)
 	if (getUserPermissionLevel()>= NIVEAU_PERMISSION_PRESIDENT_SECRETAIRE)
 	{
 		echo '
-			</tr><tr><td align="center">
-			<form method="post"  action="index.php">
-			<select name="new_statut">';
+				</tr><tr><td align="center">
+				<form method="post"  action="index.php">
+				<select name="new_statut">';
 		foreach ($statutsRapports as $val => $nom)
 		{
 			$sel = "";
@@ -372,7 +377,9 @@ function displaySummary($filter_values, $sort_crit)
 <table>
 	<tr>
 		<td>
-			<h2>Filtrage (<a href="index.php?action=view&amp;reset_filter=">Reset</a>)</h2>
+			<h2>
+				Filtrage (<a href="index.php?action=view&amp;reset_filter=">Reset</a>)
+			</h2>
 			<form method="get" action="index.php">
 				<table class="inputreport">
 					<?php 
@@ -400,8 +407,8 @@ function displaySummary($filter_values, $sort_crit)
 				}?>
 					<tr>
 						<td></td>
-						<td><input type="hidden" name="action" value="view" />
-						<input	type="submit" value="Filtrer" />
+						<td><input type="hidden" name="action" value="view" /> <input
+							type="submit" value="Filtrer" />
 						</td>
 					</tr>
 				</table>
@@ -444,18 +451,16 @@ function displaySummary($filter_values, $sort_crit)
 		{
 			$title = $fieldsAll[$fieldID];
 			?>
-		<td><span class="valeur"> <?php
-		if($fieldID != "unite")
+		<td> <?php
+		$data = $row->$fieldID;
+		if($fieldID == "unite")
 		{
-			echo $row->$fieldID;
+			if(array_key_exists($row->unite,$prettyunits)) $data = $prettyunits[$row->unite]->nickname;
+			else $data = $row->unite;
 		}
-		else
-		{
-			if(array_key_exists($row->unite,$prettyunits)) echo $prettyunits[$row->unite]->nickname;
-			else echo $row->unite;
-		}
+		if($data != "")
+			echo '<span class="valeur">'.$data.'</span>';
 		?>
-		</span>
 		</td>
 		<?php
 		}
@@ -616,21 +621,18 @@ function displayEditableReport($row, $actioname)
 	?>
 <h1>
 	<?php 
-	echo ($statutsRapports[$statut])." / ".($is_unite ? "Unite / " : "Chercheur / ").$eval_name;
+	$sessions = showSessions();
+	echo $sessions[$row->id_session]['prettyprint']." / ".($statutsRapports[$statut])." / ".($is_unite ? "Unite / " : "Chercheur / ").$eval_name;
 	?>
 </h1>
 
 <form method="post" action="index.php" style="width: 100%">
-	<input type="hidden" name="action" value="<?php echo $actioname?>" /> <input
-		type="hidden" name="id_origine" value="<?php echo $row->id_origine;?>" />
-	<input type="hidden" name="fieldrapporteur"
-		value="<?php echo getLogin();?>" />
-
+	<input type="hidden" name="action" value="<?php echo $actioname?>" />
+	<input type="hidden" name="id_origine" value="<?php echo $row->id_origine;?>" />
 	<?php 
 	if(!isSecretaire())
 		echo '<input type="hidden" name="fieldstatut" value="'.$row->statut.'/>';
 	?>
-
 	<input type="submit"
 		value="<?php echo (($actioname == "add") ? "Ajouter" : "Enregistrer");?>" />
 	<table class="inputreport">
@@ -646,32 +648,33 @@ function displayEditableReport($row, $actioname)
 			echo "</select></td></tr>";
 
 		}
+
 		if($eval_type == "Evaluation-Vague" || $eval_type == "Evaluation-MiVague" )
 		{
 			echo "<tr><td>Evaluation</td><td><select name=\"fieldtype\" style=\"width: 100%;\">";
 			$typesRapportsEvals = array(
 				 "Evaluation-Vague" => $typesRapports['Evaluation-Vague'],
-					"Evaluation-MiVague" => $typesRapports['Evaluation-MiVague']
-		);
-
-		foreach($typesRapportsEvals as $val => $nom)
-		{
-			$sel = ($eval_type==$val) ? "selected=\"selected\"" : "";
-			echo  "\t\t\t\t\t<option value=\"$val\" $sel>$nom</option>\n";
-		}
-		echo "</select></td></tr>";
+					"Evaluation-MiVague" => $typesRapports['Evaluation-MiVague']);
+			foreach($typesRapportsEvals as $val => $nom)
+			{
+				$sel = ($eval_type==$val) ? " selected=\"selected\"" : "";
+				echo  "\t\t\t\t\t<option value=\"$val\" $sel>$nom</option>\n";
+			}
+			echo "</select></td></tr>";
 		}
 		else
 		{
 			echo '<input type="hidden" name="fieldtype" value="'.$row->type.'">';
 		}
 
-		?>
+		if(false)
+		{
+			$sessions = showSessions();
+			?>
 		<tr>
 			<td>Session</td>
 			<td><select name="fieldid_session" style="width: 100%;">
 					<?php 		
-					$sessions = showSessions();
 					foreach($sessions as $s)
 					{
 						$sel = ($row->id_session==$s["id"]) ? "selected=\"selected\"" : "";
@@ -681,6 +684,13 @@ function displayEditableReport($row, $actioname)
 			</select></td>
 		</tr>
 		<?php 
+		}
+		else
+		{
+			?>
+			<input type="hidden" name="fieldid_session" value="<?php echo $row->id_session;?>" />
+			<?php 
+		}
 
 		$active_fields = $fieldsIndividual;
 		if($is_unite)
@@ -691,7 +701,7 @@ function displayEditableReport($row, $actioname)
 			$active_fields = $fieldsCandidat;
 		if($is_generic)
 			$active_fields = $fieldsGeneric;
-				
+
 
 
 		foreach($active_fields as  $fieldID)
@@ -701,6 +711,7 @@ function displayEditableReport($row, $actioname)
 				continue;
 			$type = isset($fieldsTypes[$fieldID]) ?  $fieldsTypes[$fieldID] : "";
 			?>
+		
 		<tr>
 			<td style="width: 17em;"><span><?php echo $title;?> </span>
 			</td>
@@ -724,7 +735,7 @@ function displayEditableReport($row, $actioname)
 				case "treslong":
 					{
 						echo '
-		<td colspan="2"><span class="examplevaleur">'.getExample($fieldID).'
+			<td colspan="2"><span class="examplevaleur">'.getExample($fieldID).'
 			</span>
 			</td>
 			</tr>
@@ -784,13 +795,13 @@ case "rapporteur":
 		if(isBureauUser())
 		{
 			?>
-			<td style="width: 30em;"><select name="field<?php echo $fieldID;?>"
+			<td style="width: 30em;"><select name="fieldrapporteur"
 				style="width: 100%;">
 					<?php
 					foreach($users as $user => $data)
 					{
-							$sel = (($row->rapporteur) == ($user)) ? "selected=\"selected\"" : "";
-							echo  "\t\t\t\t\t<option value=\"".($user)."\"".$sel.">".($data->description)."</option>\n";
+						$sel = (($row->rapporteur) == ($user)) ? "selected=\"selected\"" : "";
+						echo  "\t\t\t\t\t<option value=\"".($user)."\" ".$sel.">".($data->description)."</option>\n";
 					}
 					?>
 			</select>
@@ -844,7 +855,7 @@ case "concours":
 	}
 	break;
 case "ecole":
-	echo '<td colspan="3"><input name="fieldecole" value="<?php echo $row->ecole ?>" style="width: 100%;"/> </td>';
+	echo '<td colspan="3"><input name="fieldecole" value="'.$row->ecole.'" style="width: 100%;"/> </td>';
 	break;
 			}
 			?>
@@ -902,7 +913,7 @@ function email_handler($recipient,$subject,$body)
 	$headers = 'From: '.webmaster. "\r\n" . 'CC :' .webmaster. '\r\n'. 'Reply-To: '.webmaster. "\r\n".'Content-Type: text/plain; charset="UTF-8"\r\n'.'X-Mailer: PHP/' . phpversion()."\r\n";
 
 	$result = mail($recipient, $subject, "\r\n".$body."\r\n", $headers);
-	
+
 	if($result == false)
 		throw new Exception("Could not send email to ".$recipient." with subject ".$subject);
 }

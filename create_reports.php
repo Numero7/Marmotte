@@ -118,9 +118,4 @@ else
 <script>window.location = 'reports/'</script>
 <?php
 }
-
-	//look for next doc with no done
-	//if found process and reload self
-	//if not found process zip and create it
-
-	?>
+?>

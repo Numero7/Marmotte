@@ -1,5 +1,7 @@
 <?php
 
+require_once('config.inc.php');
+
 function sessionArrays()
 {
 	$sessions = array();
@@ -7,21 +9,24 @@ function sessionArrays()
 	if($result=mysql_query($sql))
 		while ($row = mysql_fetch_object($result))
 			$sessions[$row->id] = $row->nom." ".date("Y", strtotime($row->date));
+	$sessions[-1] = "Toutes les sessions";
 	return $sessions;
 }
 
 function current_session_id()
 {
-	$sessions = sessionArrays();
-	foreach($sessions as $id => $nom)
-		if($nom == current_session())
-			return $id;
-	return "1";
+	return getFilterValue('id_session');
+}
+
+function set_current_session_id()
+{
+	$_SESSION['id_session_filter'] = $id;
 }
 
 function current_session()
 {
-	return $_SESSION['current_session'];
+	$sessions = sessionArrays();
+	return $sessions[current_session_id()];
 }
 
 function showSessions()
@@ -32,7 +37,7 @@ function showSessions()
 	{
 		while ($row = mysql_fetch_object($result))
 		{
-			$finalResult[] = array( "id" => $row->id, "nom" => $row->nom, "date" => $row->date, );
+			$finalResult[$row->id] = array( "id" => $row->id, "nom" => $row->nom, "date" => $row->date, "prettyprint" => $row->nom.' '.date("Y",strtotime($row->date)));
 		}
 	}
 	return	$finalResult;
@@ -51,14 +56,22 @@ function createSession($name,$date)
 		mysql_query($sql);
 		return true;
 	}
+	else
+	{
+		throw new Exception("Vous n'avez pas les droits suffisants pour creer une session");
+	}
 }
 
 function deleteSession($id)
 {
-	if (isSuperUser())
+	if (isSecretaire())
 	{
 		$sql = "DELETE FROM sessions WHERE id=$id;";
 		mysql_query($sql);
+	}
+	else
+	{
+		throw new Exception("Vous n'avez pas les droits suffisants pour effacer une session");
 	}
 }
 

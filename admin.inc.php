@@ -332,7 +332,7 @@ if(isSecretaire())
 			<td style="width: 20em;">Nom de session</td>
 			<td><select name="sessionid">
 					<?php 
-					$sessions = showSessions();
+					$sessions =  showSessions();
 					foreach($sessions as $session)
 					{
 						$id = $session["id"];
