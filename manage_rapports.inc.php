@@ -74,7 +74,6 @@ function filterSortReports($filter_values, $sort_crit)
 	//$sql = "SELECT * FROM evaluations WHERE (SELECT id, MAX(date) AS date FROM evaluations GROuP BY id_origine) AS X "
 	//$sql = "SELECT tt.*, ss.nom AS nom_session, ss.date AS date_session FROM evaluations tt INNER JOIN ( SELECT id, MAX(date) AS date FROM evaluations GROUP BY id_origine) mostrecent ON tt.date = mostrecent.date, sessions ss WHERE ss.id=tt.id_session ";
 	//$sql = "SELECT * FROM evaluations WHERE 1 ";
-	$sql .= " AND statut!=\"supprime\" ";
 
 	foreach($filters as $filter => $data)
 		if($filter_values[$filter] != $data['default_value'])

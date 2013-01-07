@@ -13,7 +13,11 @@ require_once('manage_rapports.inc.php');
 function getFilterValue($filter_name)
 {
 	global $filters;
-	$answer =  isset($_REQUEST[$filter_name]) ? $_REQUEST[$filter_name] : (isset($_SESSION[$filter_name."_filter"]) ? $_SESSION[$filter_name."_filter"] : $filters[$filter_name]['default_value']);
+	$answer = $filters[$filter_name]['default_value'];
+	if(isset($_REQUEST[$filter_name]))
+		$answer = $_REQUEST[$filter_name] != "" ? $_REQUEST[$filter_name] : $filters[$filter_name]['default_value'];
+	else if(isset($_SESSION[$filter_name."_filter"]))
+		$answer =   $_SESSION[$filter_name."_filter"];
 	$_SESSION[$filter_name.'_filter'] = $answer;
 	return $answer;
 }
@@ -321,7 +325,7 @@ function displayExport($filter_values)
 	global $statutsRapports;
 	global $filters;
 
-	echo '<h2>Exporter/Editer tous</h2>';
+	echo '<h2>Export</h2>';
 	if (getUserPermissionLevel()>= NIVEAU_PERMISSION_PRESIDENT_SECRETAIRE)
 		echo '<table><tr><td>';
 

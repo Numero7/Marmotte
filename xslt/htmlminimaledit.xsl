@@ -205,7 +205,7 @@ extension-element-prefixes="dyn">
 		</xsl:if>
 	</div>
 	</xsl:for-each>
-	<a href="index.php?action=view&amp;id_session={@id_session}&amp;type_eval={@type_eval}&amp;sort_crit={@sort_crit}&amp;login_rapp={@login_rapp};grade={@grade}">Retour à l'interface principale</a>
+	<a href="index.php?action=view">Retour à l'interface principale</a>
 	</xsl:for-each>
 	</div>
 	</div>

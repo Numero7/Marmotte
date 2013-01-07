@@ -86,8 +86,8 @@ if($dbh!=0)
 						}
 					}
 				}
+				break;
 		}
-		break;
 	}
 }
 ?>

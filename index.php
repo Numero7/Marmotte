@@ -48,6 +48,10 @@
 					{
 						$errorLogin = 1;
 					}
+					else
+					{
+						init_session();
+					}
 				}
 				break;
 		}

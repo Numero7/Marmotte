@@ -18,15 +18,24 @@ require_once("manage_users.inc.php");
 		</h1>
 		<hr/>
 		<h1>Afficher</h1>
+		<?php 	echo "<h2><a href=\"?action=view&amp;reset_filter=&amp;login_rapp=".getLogin()."&amp;id_session=".current_session_id()."\">Tous mes rapports</a></h2>";
+		?>
+		<?php 	echo "<h2><a href=\"?action=view&amp;reset_filter=&amp;login_rapp=".getLogin()."&amp;id_session=".current_session_id()."&amp;statut=prerapport\">Mes prérapports</a></h2>";
+		?>
+		<?php 	echo "<h2><a href=\"?action=view&amp;reset_filter=&amp;login_rapp=".getLogin()."&amp;id_session=".current_session_id()."&amp;statut=vierge\">Mes rapports vierges</a></h2>";
+		?>
 		<h2>
 			<a href="?action=view">Sélection en cours</a>
 		</h2>
 		<h2>
 			<a href="?action=view&amp;reset_filter=">Tous les rapports de la session</a>
 		</h2>
+		<hr/>
+		<h1>Sessions</h1>
 		<?php
-		foreach($statutsRapportsPluriel as $statut => $nom)
-			echo "<h2><a href=\"?action=view&amp;reset_filter=&amp;login_rapp=".getLogin()."&amp;id_session=".current_session_id()."&amp;statut=".$statut."\">Mes ".$nom."</a></h2>";
+		//foreach($statutsRapportsPluriel as $statut => $nom)
+			//echo "<h2><a href=\"?action=view&amp;reset_filter=&amp;login_rapp=".getLogin()."&amp;id_session=".current_session_id()."&amp;statut=".$statut."\">Mes ".$nom."</a></h2>";
+		
 		$sessions = sessionArrays();
 		foreach($sessions as $id => $nom)
 		{

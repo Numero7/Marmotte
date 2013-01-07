@@ -13,6 +13,19 @@
 		
 	define("current_session",2);
 	
+	define("welcome_message",
+	"	<p>Bienvenue sur le site de gestion des rapports de la section 6.</p>
+		<p>
+			Le <b>menu situé à droite de cette page</b> vous permettra de
+			consulter ou éditer les rapports qui vous ont été affectés.
+			</p><p>Vous pouvez également consulter les rapports des autres membres de la section.
+		</p>
+<p>
+			Ce menu vous permet également de consulter les rapports des sessions précédentes.
+			</p>
+			<p>N'hésitez pas à nous contacter (Yann ou Hugo) en cas de difficultés.</p>
+		");
+	
 	$fieldsSummary = array(
 			"statut",
 		"type",
@@ -518,7 +531,7 @@
 					"mime" => "text/html",
 					"xsl" => "xslt/htmlminimaledit.xsl",
 					"name" => "Html",
-					"permissionlevel" => NIVEAU_PERMISSION_BASE,
+					"permissionlevel" => NIVEAU_PERMISSION_BUREAU,
 			),
 			"html" => 	array(
 					"mime" => "text/html",
@@ -530,7 +543,7 @@
 					"mime" => "text/xml",
 					"xsl" => "xslt/xmlidentity.xsl",
 					"name" => "XML",
-					"permissionlevel" => NIVEAU_PERMISSION_BASE,
+					"permissionlevel" => NIVEAU_PERMISSION_BUREAU,
 			),
 			"pdf" => 	array(
 					"mime" => "application/x-zip",

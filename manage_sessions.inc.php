@@ -18,7 +18,7 @@ function current_session_id()
 	return getFilterValue('id_session');
 }
 
-function set_current_session_id()
+function set_current_session_id($id)
 {
 	$_SESSION['id_session_filter'] = $id;
 }
@@ -26,7 +26,8 @@ function set_current_session_id()
 function current_session()
 {
 	$sessions = sessionArrays();
-	return $sessions[current_session_id()];
+	$id = current_session_id();
+	return $sessions[$id];
 }
 
 function showSessions()
