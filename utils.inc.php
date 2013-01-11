@@ -411,8 +411,9 @@ function displaySummary($filter_values, $sort_crit)
 				}?>
 					<tr>
 						<td></td>
-						<td><input type="hidden" name="action" value="view" /> <input
-							type="submit" value="Filtrer" />
+						<td>
+						<input type="hidden" name="action" value="view" />
+						<input type="submit" value="Filtrer" />
 						</td>
 					</tr>
 				</table>
@@ -444,12 +445,14 @@ function displaySummary($filter_values, $sort_crit)
 		echo '</tr>';
 
 		$prettyunits = unitsList();
+		$users = listUsers();
+		
 		foreach($rows as $row)
 		{
 			?>
 	
 	
-	<tr>
+	<tr id="t<?php echo $row->id;?>">
 		<?php
 		foreach($fieldsSummary as $fieldID)
 		{
@@ -462,7 +465,30 @@ function displaySummary($filter_values, $sort_crit)
 			if(array_key_exists($row->unite,$prettyunits)) $data = $prettyunits[$row->unite]->nickname;
 			else $data = $row->unite;
 		}
-		if($data != "")
+		if(isSecretaire() && $fieldID=="rapporteur")
+		{
+			?>		
+			<form method="post" action="index.php">
+			<table width = "10"><tr><td>	
+			<input type="hidden" name="action" value="setrapporteur" />
+			<input type="hidden" name="id_toupdate" value="<?php echo $row->id;?>" />
+			<select name="newrapporteur">
+					<?php
+					foreach($users as $user => $data)
+					{
+						$sel = (($row->rapporteur) == ($user)) ? "selected=\"selected\"" : "";
+						echo  "\t\t\t\t\t<option value=\"".($user)."\" ".$sel.">".($data->description)."</option>\n";
+					}
+					?>
+			</select>
+			</td><td>
+			<input type="submit" value="OK"></input>
+			</td>
+			</tr></table>
+			</form>
+			<?php 
+		}
+		else if($data != "")
 			echo '<span class="valeur">'.$data.'</span>';
 		?>
 		</td>

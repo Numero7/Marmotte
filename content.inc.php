@@ -15,7 +15,10 @@
 		require_once('manage_rapports.inc.php');
 		require_once('db.inc.php');
 
-		$id_rapport = isset($_REQUEST["id"]) ? $_REQUEST["id"] : "";
+		$id_rapport = isset($_REQUEST["id"]) ? $_REQUEST["id"] : -1;
+		$id_origine = isset($_REQUEST["id_origine"]) ? $_REQUEST["id_origine"] : -1;
+		$id_toupdate = isset($_REQUEST["id_toupdate"]) ? $_REQUEST["id_toupdate"] : -1;
+		
 		$action = isset($_REQUEST["action"]) ? $_REQUEST["action"] : "";
 
 		if(isset($_REQUEST["reset_filter"]))
@@ -46,6 +49,16 @@
 						displaySummary($filterValues, getSortCriteria());
 					}
 					break;
+				case 'setrapporteur':
+					$newrapporteur = isset($_REQUEST['newrapporteur']) ? $_REQUEST['newrapporteur'] : "";
+					$newid = change_rapporteur($id_toupdate, $newrapporteur);
+					displayReports();
+					?>
+					<script type="text/javascript">
+					document.getElementById("t<?php echo $newid;?>").scrollIntoView();
+					</script>
+					<?php
+					break;
 				case 'view':
 					displayReports();
 					break;
@@ -56,27 +69,14 @@
 					editReport($id_rapport);
 					break;
 				case 'history':
-					if (isset($_REQUEST["id_origine"]))
-					{
-						$id_origine = $_REQUEST["id_origine"];
-						historyReport($id_origine);
-					}
+					historyReport($id_origine);
 					break;
 				case 'update':
-					if (isset($_REQUEST["id_origine"]))
-					{
-						$id_origine = $_REQUEST["id_origine"];
 						$id_nouveau = update($id_origine, $_REQUEST);
 						if($id_nouveau == false)
 							echo "Pas de rapport créé.<br/>";
 						else
 							displayReport($id_nouveau);
-					}
-					else
-					{
-						echo "Update action cannot do nothing because no id_origine provided";
-						displayReports();
-					}
 					break;
 				case 'new':
 					if (isset($_REQUEST["type_eval"]))

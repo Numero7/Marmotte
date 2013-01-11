@@ -83,6 +83,8 @@ function filterSortReports($filter_values, $sort_crit)
 	$sql .= ";";
 	//echo $sql;
 	$result=mysql_query($sql);
+	
+	echo $sql."<br/>";
 	if($result == false)
 		throw new Exception("Echec de l'execution de la requete <br/>".$sql."<br/>");
 
@@ -381,7 +383,17 @@ function change_statuts($new_statut, $filter_values)
 		change_statut($row->id, $new_statut);
 }
 
-function change_statut($id_origine, $statut)
+function change_rapporteur($id, $newrapporteur)
+{
+	return change_property($id, "rapporteur", $newrapporteur);
+}
+
+function change_statut($id, $newstatut)
+{
+	return change_property($id, "statut", $newstatut);
+}
+
+function change_property($id_origine, $property_name, $newvalue)
 {
 	global $fieldsAll;
 
@@ -393,7 +405,10 @@ function change_statut($id_origine, $statut)
 			"date"=>0,
 	);
 
-	$row->statut = $statut;
+	if(! property_exists($row,$property_name))
+		throw new Exception("No property '".$property_name."' in report object");
+	
+	$row->$property_name = $newvalue;
 
 	$fields = "auteur,id_session,id_origine";
 	$values = "\"".getLogin()."\",".$row->id_session.",".$row->id_origine;
@@ -414,6 +429,8 @@ function change_statut($id_origine, $statut)
 	$newid = mysql_insert_id();
 	$sql = "UPDATE evaluations SET id_origine=$newid WHERE id_origine=$id_origine;";
 	mysql_query($sql);
+	
+	return $newid;
 }
 
 function getVirginReports($rapporteur)
