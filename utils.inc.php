@@ -447,7 +447,7 @@ function displaySummary($filters, $filter_values, $sort_crit)
 		$filters['unite']['unite'] = $units;
 	
 	$fields = is_current_session_concours() ? $fieldsSummaryCandidates : $fieldsSummary;
-	displayRows($rows,$fieldsSummary, $filters, $filter_values, $sortCrit);
+	displayRows($rows,$fields, $filters, $filter_values, $sortCrit);
 }
 
 function displayRows($rows, $fields, $filters, $filter_values, $sortCrit)
