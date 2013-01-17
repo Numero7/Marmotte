@@ -1,5 +1,5 @@
 <?php
-	include "configDB.inc.php";
+	require_once("configDB.inc.php");
 	
 	
 	define("president","Frédérique Bassino");
@@ -192,6 +192,7 @@
 			"HDRAnnee",
 			"HDRLieu",
 			"rapport",
+			"prerapport",
 	);
 	
 	$fieldsUnites = array(
@@ -755,5 +756,5 @@
 			'id_origine' => -1,
 			'id' => -1,
 	);
-	
+		
 ?>

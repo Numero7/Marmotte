@@ -143,7 +143,7 @@ function dumpEditedCriteria($sortCrit, $edit_crit)
 function getTypesEval($id_session)
 {
 	$finalResult = array();
-	$sql = "SELECT DISTINCT type FROM (SELECT tt.*, ss.nom AS nom_session, ss.date AS date_session FROM evaluations tt INNER JOIN ( SELECT id, MAX(date) AS date FROM evaluations GROUP BY id_origine) mostrecent ON tt.date = mostrecent.date, sessions ss WHERE ss.id=tt.id_session) difftypes WHERE id_session=$id_session ORDER BY type DESC;";
+	$sql = "SELECT DISTINCT type FROM (SELECT tt.*, ss.nom AS nom_session, ss.date AS date_session FROM ".evaluations_db." tt INNER JOIN ( SELECT id, MAX(date) AS date FROM ".evaluations_db." GROUP BY id_origine) mostrecent ON tt.date = mostrecent.date, ".sessions_db." ss WHERE ss.id=tt.id_session) difftypes WHERE id_session=$id_session ORDER BY type DESC;";
 	$result=mysql_query($sql);
 	while ($row = mysql_fetch_object($result))
 	{
@@ -454,6 +454,7 @@ function displayRows($rows, $fields, $filters, $filter_values, $sortCrit)
 {
 	global $fieldsAll;
 	global $actions;
+	global $fieldsTypes;
 
 	?>
 <table>
@@ -537,11 +538,9 @@ function displayRows($rows, $fields, $filters, $filter_values, $sortCrit)
 			?>
 		<td><?php
 		$data = $row->$fieldID;
-		if($fieldID == "unite")
-		{
-			if(array_key_exists($row->unite,$prettyunits)) $data = $prettyunits[$row->unite]->nickname;
-			else $data = $row->unite;
-		}
+		if(isset($fieldsTypes[$fieldID]) && ($fieldsTypes[$fieldID] == "unit") && isset($prettyunits[$row->$fieldID]))
+			 $data = $prettyunits[$row->$fieldID]->prettyname;
+
 		if(isSecretaire() && $fieldID=="rapporteur")
 		{
 			?>
@@ -603,7 +602,7 @@ function historyReport($id_origine)
 	global $fieldsAll;
 	global $actions;
 	$specialRule = array( "nom"=>0, "prenom"=>0, "grade"=>0, "unite"=>0, "type"=>0, "nom_session"=>0, "date_session"=>0, "date"=>0, "auteur"=>0);
-	$sql = "SELECT tt.*, ss.nom AS nom_session, ss.date AS date_session FROM evaluations tt, sessions ss WHERE tt.id_session=ss.id AND tt.id_origine=$id_origine ORDER BY date DESC;";
+	$sql = "SELECT tt.*, ss.nom AS nom_session, ss.date AS date_session FROM ".evaluations_db." tt, ".sessions_db." ss WHERE tt.id_session=ss.id AND tt.id_origine=$id_origine ORDER BY date DESC;";
 	$result=mysql_query($sql);
 	$prevVals = array();
 	$first = true;
@@ -893,7 +892,7 @@ function display_unit($row, $fieldID)
 <td style="width: 30em;"><select name="field<?php echo $fieldID;?>"
 	style="width: 100%;">
 		<?php
-		$units = prettyUnitsList();
+		$units = unitsList();
 		foreach($units as $unite)
 		{
 			$sel = (($row->$fieldID) == ($unite->code)) ? "selected=\"selected\"" : "";
@@ -912,7 +911,7 @@ function display_topic($row, $fieldID)
 <td style="width: 30em;"><select name="field<?php echo $fieldID;?>"
 	style="width: 100%;">
 		<?php
-		$units = prettyUnitsList();
+		$units = unitsList();
 		foreach($topics as $id =>$topic)
 		{
 			$sel = (($row->$fieldID) == ($id)) ? "selected=\"selected\"" : "";

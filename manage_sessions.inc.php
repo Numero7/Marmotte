@@ -7,7 +7,7 @@ function sessionArrays()
 	if(!isset($_SESSION['all_sessions']))
 	{
 		$sessions = array();
-		$sql = "SELECT * FROM sessions ORDER BY date DESC;";
+		$sql = "SELECT * FROM ".sessions_db." ORDER BY date DESC;";
 		if($result=mysql_query($sql))
 			while ($row = mysql_fetch_object($result))
 			$sessions[$row->id] = $row->nom." ".date("Y", strtotime($row->date));
@@ -48,7 +48,7 @@ function is_current_session_concours()
 function showSessions()
 {
 	$finalResult = array();
-	$sql = "SELECT * FROM sessions ORDER BY date DESC;";
+	$sql = "SELECT * FROM ".sessions_db." ORDER BY date DESC;";
 	if($result=mysql_query($sql))
 	{
 		while ($row = mysql_fetch_object($result))
@@ -68,7 +68,7 @@ function createSession($name,$date)
 		echo $date."<br>";
 		echo strtotime($date)."<br>";
 		echo date("Y-m-d h:m:s",strtotime($date));
-		$sql = "INSERT INTO sessions(nom,date) VALUES ('".mysql_real_escape_string($name)."','".date("Y-m-d h:m:s",strtotime($date))."');";
+		$sql = "INSERT INTO ".sessions_db."(nom,date) VALUES ('".mysql_real_escape_string($name)."','".date("Y-m-d h:m:s",strtotime($date))."');";
 		mysql_query($sql);
 		unset($_SESSION['all_sessions']);
 		return true;
@@ -83,7 +83,7 @@ function deleteSession($id)
 {
 	if (isSecretaire())
 	{
-		$sql = "DELETE FROM sessions WHERE id=$id;";
+		$sql = "DELETE FROM ".sessions_db." WHERE id=$id;";
 		mysql_query($sql);
 		unset($_SESSION['all_sessions']);
 	}

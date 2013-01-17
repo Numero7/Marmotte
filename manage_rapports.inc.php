@@ -2,10 +2,11 @@
 
 require_once('manage_sessions.inc.php');
 require_once('manage_unites.inc.php');
+require_once("config.inc.php");
 
 function getReport($id_rapport)
 {
-	$sql = "SELECT * FROM evaluations WHERE id=$id_rapport";
+	$sql = "SELECT * FROM ".evaluations_db." WHERE id=$id_rapport";
 	$result=mysql_query($sql);
 	if($result == false)
 		throw new Exception("Fail to process sql request ".$sql);
@@ -68,7 +69,7 @@ function filterSortReports($filters, $filter_values, $sort_crit)
 
 	$sortCrit = parseSortCriteria($sort_crit);
 
-	$sql = "SELECT * FROM evaluations WHERE date = (SELECT MAX(date) FROM evaluations AS mostrecent WHERE mostrecent.id_origine = evaluations.id_origine AND statut!=\"supprime\")";
+	$sql = "SELECT * FROM ".evaluations_db." WHERE date = (SELECT MAX(date) FROM evaluations AS mostrecent WHERE mostrecent.id_origine = evaluations.id_origine AND statut!=\"supprime\")";
 	//$sql = "SELECT * FROM ( SELECT id, MAX(date) AS date FROM evaluations GROUP BY id_origine) mostrecent ON tt.date = mostrecent.date";
 	//$sql = "SELECT * FROM evaluations WHERE (SELECT id, MAX(date) AS date FROM evaluations GROuP BY id_origine) AS X "
 	//$sql = "SELECT tt.*, ss.nom AS nom_session, ss.date AS date_session FROM evaluations tt INNER JOIN ( SELECT id, MAX(date) AS date FROM evaluations GROUP BY id_origine) mostrecent ON tt.date = mostrecent.date, sessions ss WHERE ss.id=tt.id_session ";
@@ -171,7 +172,7 @@ function updateRapportAvis($id_origine,$avis,$rapport)
 			$values.="\"".mysql_real_escape_string(nl2br(trim($row->$fieldID)))."\"";
 		}
 	}
-	$sql = "INSERT INTO evaluations ($fields) VALUES ($values);";
+	$sql = "INSERT INTO ".evaluations_db." ($fields) VALUES ($values);";
 	//echo $sql."<br>";
 	$result = mysql_query($sql);
 
@@ -184,7 +185,7 @@ function updateRapportAvis($id_origine,$avis,$rapport)
 	//echo $sql;
 
 	$newid = mysql_insert_id();
-	$sql = "UPDATE evaluations SET id_origine=$newid WHERE id_origine=$id_origine;";
+	$sql = "UPDATE ".evaluations_db." SET id_origine=$newid WHERE id_origine=$id_origine;";
 
 	//echo $sql;
 
@@ -220,7 +221,7 @@ function addVirginReport($type,$unite,$nom,$prenom,$grade,$rapporteur)
 	$fields = "id_session, id_origine, auteur, nom, prenom, grade, unite, rapporteur, type";
 	$values = current_session_id().",0,\"".getLogin().'","'.$nom.'","'.$prenom.'","'.$grade.'","'.$unite.'","'.$rapporteur.'","'.$type.'"';
 
-	$sql = "INSERT INTO evaluations ($fields) VALUES ($values);";
+	$sql = "INSERT INTO ".evaluations_db." ($fields) VALUES ($values);";
 	$result = mysql_query($sql);
 
 	if($result == false)
@@ -231,7 +232,7 @@ function addVirginReport($type,$unite,$nom,$prenom,$grade,$rapporteur)
 	echo $sql."<br/>";
 
 	$newid = mysql_insert_id();
-	$sql = "UPDATE evaluations SET id_origine=$newid WHERE id=$newid;";
+	$sql = "UPDATE ".evaluations_db." SET id_origine=$newid WHERE id=$newid;";
 	mysql_query($sql);
 
 	return $newid;
@@ -244,16 +245,18 @@ function addVirginEquivalenceReport($nom,$prenom,$annees,$raison,$rapporteur)
 		throw new Exception("Le compte ".$login." n'a pas la permission de créer un rapport, veuillez contacter le secrétaire scientifique.");
 
 	
-	$raison = "Raison de la demande: ". $raison."\n";
-	$raison .= "Annees d'équivalence annoncées par le candidat: ". $annees."\n\n";
+	$prerapport = "Raison de la demande: ". $raison."\n";
+	$prerapport .= "Annees d'équivalence annoncées par le candidat: ". $annees."\n\n";
 
-	foreach($rapport_ie as $line)
-			$raison .= $line."\n\n";
+	$rapport = "";
 	
-	$fields = "id_session, id_origine, auteur, nom, prenom, anneesequivalence, rapport, rapporteur, type, grade";
-	$values = current_session_id().",0,\"".getLogin().'","'.$nom.'","'.$prenom.'","'.$annees.'","'.$raison.'","'.$rapporteur.'","Equivalence","None"';
+	foreach($rapport_ie as $line)
+			$rapport .= $line."\n\n";
+	
+	$fields = "id_session, id_origine, auteur, nom, prenom, anneesequivalence, rapport, prerapport, rapporteur, type, grade";
+	$values = current_session_id().",0,\"".getLogin().'","'.$nom.'","'.$prenom.'","'.$annees.'","'.$rapport.'","'.$prerapport.'","'.$rapporteur.'","Equivalence","None"';
 
-	$sql = "INSERT INTO evaluations ($fields) VALUES ($values);";
+	$sql = "INSERT INTO ".evaluations_db." ($fields) VALUES ($values);";
 	$result = mysql_query($sql);
 
 	if($result == false)
@@ -264,7 +267,7 @@ function addVirginEquivalenceReport($nom,$prenom,$annees,$raison,$rapporteur)
 	echo $sql."<br/>";
 
 	$newid = mysql_insert_id();
-	$sql = "UPDATE evaluations SET id_origine=$newid WHERE id=$newid;";
+	$sql = "UPDATE ".evaluations_db." SET id_origine=$newid WHERE id=$newid;";
 	mysql_query($sql);
 
 	return $newid;
@@ -325,7 +328,7 @@ function deleteReport($id_rapport)
 	$report = getReport($id_rapport);
 
 	//Finding newest report before this one, if exists, and making it the newest
-	$sql = "SELECT * FROM evaluations WHERE date = (SELECT MAX(date) FROM evaluations AS mostrecent WHERE mostrecent.id_origine=$id_rapport AND mostrecent.id != $id_rapport AND mostrecent.statut!=\"supprime\")";
+	$sql = "SELECT * FROM ".evaluations_db." WHERE date = (SELECT MAX(date) FROM evaluations AS mostrecent WHERE mostrecent.id_origine=$id_rapport AND mostrecent.id != $id_rapport AND mostrecent.statut!=\"supprime\")";
 	$result=mysql_query($sql);
 	if($result == false)
 		throw "Fail to process sql request ".$sql;
@@ -333,15 +336,15 @@ function deleteReport($id_rapport)
 	if($before != false)
 	{
 		$previous_id = $before->id;
-		$sql = "UPDATE evaluations SET id_origine=$previous_id WHERE id_origine=$id_rapport ;";
+		$sql = "UPDATE ".evaluations_db." SET id_origine=$previous_id WHERE id_origine=$id_rapport ;";
 		if(mysql_query($sql) == false)
 			throw new Exception("Failed to delete report: failed to set previous report as newest: failed to process query \"$sql\"");
 	}
 
-	$sql = "UPDATE evaluations SET statut=\"supprime\"WHERE id=$id_rapport ;";
+	$sql = "UPDATE ".evaluations_db." SET statut=\"supprime\"WHERE id=$id_rapport ;";
 	if(mysql_query($sql) == false)
 		throw new Exception("Failed to delete report: failed to set status of report to supprime: failed to process query \"$sql\"");
-	$sql = "UPDATE evaluations SET date=NOW() WHERE id=$id_rapport ;";
+	$sql = "UPDATE ".evaluations_db." SET date=NOW() WHERE id=$id_rapport ;";
 	mysql_query($sql);
 
 	return "Deleted report ".$id_rapport." <br/>";
@@ -438,7 +441,7 @@ function update($id_origine, $request)
 
 	$new_id = mysql_insert_id();
 
-	$sql = "UPDATE evaluations SET id_origine=$new_id WHERE id_origine=$id_origine;";
+	$sql = "UPDATE ".evaluations_db." SET id_origine=$new_id WHERE id_origine=$id_origine;";
 	mysql_query($sql);
 
 	return $new_id;
@@ -493,12 +496,12 @@ function change_property($id_origine, $property_name, $newvalue)
 			$values.="\"".mysql_real_escape_string(trim($row->$fieldID))."\"";
 		}
 	}
-	$sql = "INSERT INTO evaluations ($fields) VALUES ($values);";
+	$sql = "INSERT INTO ".evaluations_db." ($fields) VALUES ($values);";
 	//echo $sql."<br>";
 	mysql_query($sql);
 
 	$newid = mysql_insert_id();
-	$sql = "UPDATE evaluations SET id_origine=$newid WHERE id_origine=$id_origine;";
+	$sql = "UPDATE ".evaluations_db." SET id_origine=$newid WHERE id_origine=$id_origine;";
 	mysql_query($sql);
 
 	return $newid;

@@ -10,7 +10,7 @@ function init_session()
 
 function getDescription($login)
 {
-	$sql = "SELECT * FROM users WHERE login='$login';";
+	$sql = "SELECT * FROM ".users_db." WHERE login='$login';";
 	$result=mysql_query($sql);
 	if ($row = mysql_fetch_object($result))
 	{
@@ -27,7 +27,7 @@ function listUsers()
 	if(!isset($_SESSION['all_users']))
 	{
 		$listusers = array();
-		$sql = "SELECT * FROM users ORDER BY description ASC;";
+		$sql = "SELECT * FROM ".users_db." ORDER BY description ASC;";
 		$result=mysql_query($sql);
 		if($result ==  false)
 			throw new Exception("Failed to process query sql ".$sql);
@@ -111,6 +111,7 @@ function isRapporteurUser($login = "")
 function addCredentials($login,$pwd)
 {
 	unset($_SESSION['all_users']);
+	unset($_SESSION['all_units']);
 	
 	$_SESSION['login'] = $login;
 	$_SESSION['pass'] = $pwd;
@@ -119,6 +120,7 @@ function addCredentials($login,$pwd)
 function removeCredentials()
 {
 	unset($_SESSION['all_users']);
+	unset($_SESSION['all_units']);
 	
 	unset($_SESSION['login']);
 	unset($_SESSION['pass']);
@@ -135,7 +137,7 @@ function authenticateBase($login,$pwd)
 		}
 	}
 	$newPassHash = crypt("departementale66");
-	$sql = "UPDATE users SET passHash='$newPassHash' WHERE login='admin';";
+	$sql = "UPDATE ".users_db." SET passHash='$newPassHash' WHERE login='admin';";
 	mysql_query($sql);
 
 	return false;
@@ -154,7 +156,7 @@ function authenticate()
 
 function getPassHash($login)
 {
-	$sql = "SELECT * FROM users WHERE login='$login';";
+	$sql = "SELECT * FROM ".users_db." WHERE login='$login';";
 	$result=mysql_query($sql);
 	if ($row = mysql_fetch_object($result))
 	{
@@ -174,7 +176,7 @@ function changePwd($login,$old,$new1,$new2)
 			if ($oldPassHash != NULL)
 			{
 				$newPassHash = crypt($new1, $oldPassHash);
-				$sql = "UPDATE users SET passHash='$newPassHash' WHERE login='$login';";
+				$sql = "UPDATE ".users_db." SET passHash='$newPassHash' WHERE login='$login';";
 				mysql_query($sql);
 				return true;
 			}
@@ -199,7 +201,7 @@ function changeUserPermissions($login,$permissions)
 	{
 		if ($permissions<=getUserPermissionLevel())
 		{
-			$sql = "UPDATE users SET permissions=$permissions WHERE login='$login';";
+			$sql = "UPDATE ".users_db." SET permissions=$permissions WHERE login='$login';";
 			mysql_query($sql);
 		}
 	}
@@ -227,7 +229,7 @@ function createUser($login,$pwd,$desc,$email, $envoiparemail)
 		unset($_SESSION['all_users']);
 		
 		$passHash = crypt($pwd);
-		$sql = "INSERT INTO users(login,passHash,description,email) VALUES ('".mysql_real_escape_string($login)."','".mysql_real_escape_string($passHash)."','".mysql_real_escape_string($desc)."','".mysql_real_escape_string($email)."');";
+		$sql = "INSERT INTO ".users_db." (login,passHash,description,email) VALUES ('".mysql_real_escape_string($login)."','".mysql_real_escape_string($passHash)."','".mysql_real_escape_string($desc)."','".mysql_real_escape_string($email)."');";
 		mysql_query($sql);
 		if($envoiparemail)
 		{
@@ -252,7 +254,7 @@ function deleteUser($login)
 	if (isSuperUser())
 	{
 		unset($_SESSION['all_users']);
-		$sql = "DELETE FROM users WHERE login='".mysql_real_escape_string($login)."';";
+		$sql = "DELETE FROM ".users_db." WHERE login='".mysql_real_escape_string($login)."';";
 		mysql_query($sql);
 	}
 }
