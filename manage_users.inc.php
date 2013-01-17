@@ -8,36 +8,50 @@ function init_session()
 	set_current_session_id(current_session);
 }
 
+function getDescription($login)
+{
+	$sql = "SELECT * FROM users WHERE login='$login';";
+	$result=mysql_query($sql);
+	if ($row = mysql_fetch_object($result))
+	{
+		return $row->description;
+	}
+	return NULL;
+} ;
+
+
+/* Caching users list for performance */
+
 function listUsers()
 {
-	$users = array();
-	$sql = "SELECT * FROM users ORDER BY description ASC;";
-	$result=mysql_query($sql);
-	if($result ==  false)
-		throw new Exception("Failed to process query sql ".$sql);
+	if(!isset($_SESSION['all_users']))
+	{
+		$listusers = array();
+		$sql = "SELECT * FROM users ORDER BY description ASC;";
+		$result=mysql_query($sql);
+		if($result ==  false)
+			throw new Exception("Failed to process query sql ".$sql);
 
-	while ($row = mysql_fetch_object($result))
-		$users[$row->login] = $row;
-	return $users;
+		while ($row = mysql_fetch_object($result))
+			$listusers[$row->login] = $row;
+		$_SESSION['all_users'] = $listusers;
+	}
+	return $_SESSION['all_users'];
 }
 
 function simpleListUsers()
 {
-	$users = array();
-	$sql = "SELECT * FROM users ORDER BY description ASC;";
-	$result=mysql_query($sql);
-	if($result ==  false)
-		throw new Exception("Failed to process query sql ".$sql);
-	
-	while ($row = mysql_fetch_object($result))
-		$users[$row->login] = $row->description;
-	return $users;
+	$users = listUsers();
+	$result = array();
+	foreach($users as $user => $row)
+		$result[$row->login] = $row->description;
+	return $result;
 }
 
 function getUserPermissionLevel($login = "")
 {
 	if ($login=="" && isset($_SESSION["login"]))
-			$login = $_SESSION["login"];
+		$login = $_SESSION["login"];
 
 	if ($login == "admin")
 		return NIVEAU_PERMISSION_SUPER_UTILISATEUR;
@@ -193,23 +207,21 @@ function changeUserPermissions($login,$permissions)
 
 function existsUser($login)
 {
-	$sql = "SELECT * FROM users WHERE login=\"".mysql_real_escape_string($login)."\";";
-	$result = mysql_query($sql);
-	if($result == false)
-		return false;
-	return (mysql_num_rows($result) >0);
+	$users = listUsers();
+	return array_key_exists($login, $users);
 }
 
 function createUser($login,$pwd,$desc,$email, $envoiparemail)
 {
 	if (isSuperUser())
 	{
+		unset($_SESSION['all_users']);
 		if(existsUser($login))
 			throw new Exception("Failed to create user: le login '".$login."' est déja utilisé.");
 		if($desc == "")
 			throw new Exception("Failed to create user: empty description.");
-				
-				
+
+
 		$passHash = crypt($pwd);
 		$sql = "INSERT INTO users(login,passHash,description,email) VALUES ('".mysql_real_escape_string($login)."','".mysql_real_escape_string($passHash)."','".mysql_real_escape_string($desc)."','".mysql_real_escape_string($email)."');";
 		mysql_query($sql);
@@ -235,6 +247,7 @@ function deleteUser($login)
 {
 	if (isSuperUser())
 	{
+		unset($_SESSION['all_users']);
 		$sql = "DELETE FROM users WHERE login='".mysql_real_escape_string($login)."';";
 		mysql_query($sql);
 	}

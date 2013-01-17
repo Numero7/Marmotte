@@ -46,8 +46,7 @@ CREATE TABLE IF NOT EXISTS `chercheurs2` (
 
 --DROP TABLE IF EXISTS `evaluations`;
 
-
-CREATE TABLE IF NOT EXISTS `evaluations2` (
+CREATE TABLE IF NOT EXISTS `evaluations` (
 `statut` enum('vierge','prerapport','rapport','publie','supprime') CHARACTER SET utf8 NOT NULL,
   `id_session` int(11) NOT NULL,
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -65,6 +64,12 @@ CREATE TABLE IF NOT EXISTS `evaluations2` (
   `theseLieu` text CHARACTER SET utf8 NOT NULL,
   `HDRAnnee` text CHARACTER SET utf8 NOT NULL,
   `HDRLieu` text CHARACTER SET utf8 NOT NULL,
+  `labo1` text CHARACTER SET utf8 NOT NULL,
+  `labo2` text CHARACTER SET utf8 NOT NULL,
+  `labo3` text CHARACTER SET utf8 NOT NULL,
+  `theme1` text CHARACTER SET utf8 NOT NULL,
+  `theme2` text CHARACTER SET utf8 NOT NULL,
+  `theme3` text CHARACTER SET utf8 NOT NULL,
   `anciennete_grade` text CHARACTER SET utf8 NOT NULL,
   `date_recrutement` text CHARACTER SET utf8 NOT NULL,
   `production` text CHARACTER SET utf8 NOT NULL,

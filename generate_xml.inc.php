@@ -14,7 +14,6 @@ function implode_with_keys($assoc,$inglue=':',$outglue=','){
 function getReportsAsXML($filter_values, $sort_criteria = "", $keep_br = true)
 {
 	global $fieldsAll;
-	global $filters;
 
 	$doc = new DOMDocument();
 	$root = $doc->createElement("rapports");
@@ -23,10 +22,6 @@ function getReportsAsXML($filter_values, $sort_criteria = "", $keep_br = true)
 	if(isset($filter_values['id_edit']))
 		$root->setAttribute('id_edit',$filter_values['id_edit']);
 
-	//foreach($filters as $filter => $data)
-	//$root->setAttribute($filter,$filter_values[$filter]);
-
-	//to map id_session s to session nicknames
 	$sessions = sessionArrays();
 	$units = unitsList();
 

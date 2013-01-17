@@ -63,9 +63,8 @@ function listOfAllVirginReports()
 	return $result;
 }
 
-function filterSortReports($filter_values, $sort_crit)
+function filterSortReports($filters, $filter_values, $sort_crit)
 {
-	global $filters;
 
 	$sortCrit = parseSortCriteria($sort_crit);
 
@@ -77,14 +76,13 @@ function filterSortReports($filter_values, $sort_crit)
 
 	foreach($filters as $filter => $data)
 		if($filter_values[$filter] != $data['default_value'])
-			$sql .= " AND ". (isset($data['sql_col']) ?  $data['sql_col'] : $filter)."=\"$filter_values[$filter]\" ";
+		$sql .= " AND ". (isset($data['sql_col']) ?  $data['sql_col'] : $filter)."=\"$filter_values[$filter]\" ";
 
 	$sql .= sortCriteriaToSQL($sortCrit);
 	$sql .= ";";
 	//echo $sql;
 	$result=mysql_query($sql);
-	
-	echo $sql."<br/>";
+
 	if($result == false)
 		throw new Exception("Echec de l'execution de la requete <br/>".$sql."<br/>");
 
@@ -205,8 +203,6 @@ function addReport($request)
 		throw new Exception("Le compte ".$login." n'a pas la permission de créer un rapport, veuillez contacter le secrétaire scientifique.");
 
 	$newid = update(0,$request);
-	$sql = "UPDATE evaluations SET id_origine=$newid WHERE id=$newid;";
-	mysql_query($sql);
 
 	return $newid;
 };
@@ -318,8 +314,35 @@ function deleteReport($id_rapport)
 	return "Deleted report ".$id_rapport." <br/>";
 };
 
+function newReport($type_rapport)
+{
+	global $report_prototypes;
+	
+	if(!isReportCreatable())
+		throw new Exception("Vous n'avez pas les droits nécessaires à la création d'un rapport. Veuillez contacter le secrétaire scientifique.");
+	global $empty_report;
+	$row = (object) $empty_report;
+	$row->type = $type_rapport;
+	$row->id_session = current_session_id();
+	$row->auteur = getLogin();
+	
+	if($row->rapport == "" && isset($report_prototypes[$row->type]))
+	{
+		$prototype = $report_prototypes[$row->type];
+		foreach($prototype as $line)
+			$row->rapport .= $line."\n\n";
+	}
+	
+	return $row;
+} ;
+
+
 function update($id_origine, $request)
 {
+	global $empty_report;
+	
+	$row = $empty_report;
+
 	if($id_origine != 0)
 	{
 		$report = getReport($id_origine);
@@ -330,39 +353,54 @@ function update($id_origine, $request)
 	if($request["fieldstatut"] == "vierge" && ($id_origine != 0))
 		$request["fieldstatut"] = "prerapport";
 
+	$type = "";
+	if(isset($request["type"]))
+		$type = $request["type"];
+
+
 	global $fieldsAll;
 	$specialRule = array(
-			"auteur"=>0,
 			"date"=>0,
-			"nom_session"=>0,
-			"date_session"=>0,
+			"id" =>0,
 	);
 
-	$fields = "id_session, id_origine, auteur";
-	foreach($fieldsAll as  $fieldID => $title)
-	{
-		if (!isset($specialRule[$fieldID]))
-		{
-			$fields.=",";
-			$fields.=$fieldID;
-		}
-	}
-	$values = mysql_real_escape_string($request["fieldid_session"]);
-	$values .= ",".mysql_real_escape_string($id_origine);
-	$values .= ",\"".mysql_real_escape_string(getLogin())."\"";
 
-	foreach($fieldsAll as  $fieldID => $title)
+	$row['id_session'] = $request["fieldid_session"];
+	$row['id_origine'] = $id_origine;
+	$row['auteur'] = getLogin();
+	$row['rapporteur'] = getLogin();
+
+	$sqlfields = "";
+	$sqlvalues = "";
+
+	foreach($row as  $field => $value)
+		if (isset($request["field".$field]))
+		$row[$field] = nl2br(trim($request["field".$field]),true);
+
+
+	$first = true;
+	foreach($row as  $field => $value)
 	{
-		if (!isset($specialRule[$fieldID]) )
+		if (!isset($specialRule[$field]))
 		{
-			$values.=",";
-			if(isset($request["field".$fieldID]))
-				$values.="\"".mysql_real_escape_string(nl2br(trim($request["field".$fieldID]), true))."\"";
-			else
-				$values.="\"".mysql_real_escape_string("")."\"";
+			$sqlfields.= ($first ? "" : ",").$field;
+			$first = false;
 		}
 	}
-	$sql = "INSERT INTO evaluations ($fields) VALUES ($values);";
+	
+	$first = true;
+	foreach($row as  $field => $value)
+	{
+		if (!isset($specialRule[$field]))
+		{
+			$sqlvalues.=($first ? "" : ",")."\"".mysql_real_escape_string($value)."\"";
+			$first = false;
+		}
+	}
+	
+	$sql = "INSERT INTO evaluations ($sqlfields) VALUES ($sqlvalues);";
+
+
 	mysql_query($sql);
 
 	$new_id = mysql_insert_id();
@@ -407,7 +445,7 @@ function change_property($id_origine, $property_name, $newvalue)
 
 	if(! property_exists($row,$property_name))
 		throw new Exception("No property '".$property_name."' in report object");
-	
+
 	$row->$property_name = $newvalue;
 
 	$fields = "auteur,id_session,id_origine";
@@ -429,7 +467,7 @@ function change_property($id_origine, $property_name, $newvalue)
 	$newid = mysql_insert_id();
 	$sql = "UPDATE evaluations SET id_origine=$newid WHERE id_origine=$id_origine;";
 	mysql_query($sql);
-	
+
 	return $newid;
 }
 

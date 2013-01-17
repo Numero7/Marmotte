@@ -26,8 +26,33 @@
 			<p>N'hésitez pas à nous contacter (Yann ou Hugo) en cas de difficultés.</p>
 		");
 	
+	$topics = array(
+			"" => "",
+"1a" => "Algorithmique, combinatoire, graphes",
+"1b" => "Automates, systèmes dynamiques discrets",
+"2a" => "Calcul formel et calcul certifié, arithmétique des ordinateurs",
+"2b" => "Codage et cryptographie",
+"3a" => "Logique, complexité algorithmique et structurelle",
+"3b" => "Sémantique, modèles de calcul",
+"4a" => "Programmation, génie logiciel",
+"4b" => "Vérification et preuves",
+"5" => "Recherche opérationnelle, aide à la décision, optimisation discrète et continue, satisfaction de contraintes, SAT",
+"6" => "Systèmes de production, logistique, ordonnancement",
+"7" => "Intelligence artificielle, système multi-agent, ingénierie / représentation et traitement des connaissances, représentation et traitement de l'incertitude, formalisation des raisonnements, fusion information",
+"8" => "Environnements informatiques pour l'apprentissage humain",
+"9a" => "Sûreté de fonctionnement, sécurité informatique, protection de la vie privée",
+"9b" => "Réseaux sociaux",
+"10a" => "Réseaux, télécommunications, réseaux de capteurs",
+"10b" => "Systèmes distribués",
+"11" => "Internet du futur, intelligence ambiante",
+"12a" => "Calcul distribué, grilles, cloud, calcul à haute performance, parallélisme, infrastructures à grande échelle",
+"12b" => "Architecture et compilation",
+"13" => "Cognition, modélisation pour la médecine, neurosciences computationnelles",
+"14" => "Systèmes d'informations, web sémantique, masses de données, fouille de données, base de données, gestion de données, recherche d'informations, apprentissage",
+"15" => "Bioinformatique");
+			
 	$fieldsSummary = array(
-			"statut",
+		"statut",
 		"type",
 		"rapporteur",
 		"nom",
@@ -37,6 +62,21 @@
 		"date",
 	);
 
+	$fieldsSummaryCandidates = array(
+			"statut",
+			"rapporteur",
+			"nom",
+			"prenom",
+			"concours",
+			"grade",
+			"labo1",
+			"labo2",
+			"labo3",
+			"theme1",
+			"theme2",
+			"theme3"
+	);
+	
 	$statutsRapports = array( 'vierge' => "Rapport vierge", 'prerapport'=>'Prérapport', 'rapport'=>"Rapport", 'publie'=>"Rapport publié");
 	$statutsRapportsPluriel = array( 'vierge' => "rapports vierges", 'prerapport'=>'prérapports', 'rapport'=>"rapports", 'publie'=>"rapport publiés");
 	
@@ -49,18 +89,23 @@
 		"prenom" => "Prenom",
 		"unite" => "Unité",
 		"grade" => "Grade",
-			/* paramètre important à mettre en tête*/
 		"anciennete_grade" => "Ancienneté dans grade",
 		"type" => "Type",
 		"rapporteur" => "Rapporteur",
-			/*Hugo: j'ai besoin de l'avis et du rapport en tête pour éditer vite.
-			 * Remarque qu'en plus ça devrait accélérer la présentation des prérapports par les prérapporteurs
-			* qui commenceront par la conclusion puis étayerons avec qques points
-			* au lieu de présenter tout le dossier avant de le synthétiser*/
 			"avis" => "Proposition d'avis",
 			"rapport" => "Proposition de rapport",
 		"prerapport" => "Points marquants",
 		"date_recrutement" => "Date de recrutement",
+		"labo1" => "Labo 1",
+		"labo2" => "Labo 2",
+		"labo3" => "Labo 3",
+			"theme1" => "Theme 1",
+			"theme2" => "Theme 2",
+			"theme3" => "Theme 3",
+			"theseAnnee" => "Annee thèse",
+			"theseLieu" => "Lieu thèse",
+			"HDRAnnee" => "Annee HDR",
+			"HDRLieu" => "Lieu HDR",
 		"production" => "Production scientifique",
 		"production_notes" => "Production scientifique",
 		"transfert" => "Transfert et valorisation",
@@ -87,23 +132,19 @@
 			"grade",
 			"anciennete_grade",
 			"avis",
+			"theme1",
+			"theme2",
+			"theme3",
 			"rapport",
 			"prerapport",
 			"date_recrutement",
 			"production",
-			"production_notes",
 			"transfert",
-			"transfert_notes",
 			"encadrement",
-			"encadrement_notes",
 			"responsabilites",
-			"responsabilites_notes",
 			"mobilite",
-			"mobilite_notes",
 			"animation",
-			"animation_notes",
-			"rayonnement",
-			"rayonnement_notes"
+			"rayonnement"
 	);
 
 	$fieldsCandidat = array(
@@ -114,6 +155,13 @@
 			"avis",
 			"rapport",
 			"prerapport",
+			"grade",
+			"labo1",
+			"labo2",
+			"labo3",
+			"theme1",
+			"theme2",
+			"theme3",
 			"theseAnnee",
 			"theseLieu",
 			"HDRAnnee",
@@ -124,7 +172,27 @@
 			"responsabilites",
 			"mobilite",
 			"animation",
-			"rayonnement",
+			"rayonnement"
+	);
+
+	$fieldsEquivalence = array(
+			"concours",
+			"rapporteur",
+			"nom",
+			"prenom",
+			"avis",
+			"grade",
+			"labo1",
+			"labo2",
+			"labo3",
+			"theme1",
+			"theme2",
+			"theme3",
+			"theseAnnee",
+			"theseLieu",
+			"HDRAnnee",
+			"HDRLieu",
+			"rapport",
 	);
 	
 	$fieldsUnites = array(
@@ -157,10 +225,10 @@
 	);
 	
 	$examples = array(
-		"nom" => "Doe",
-		"prenom" => "John",
-		"grade" => "DRCE",
-		"unite" => "UMR 6666 (HELL)",
+		"nom" => "",
+		"prenom" => "",
+		"grade" => "",
+		"unite" => "",
 		"concours" => "06/01",
 		"ecole" => "Ecole de Pythagore",
 		"type" => "Promotion",
@@ -186,10 +254,17 @@
 		"animation_notes" => "Jongle et joue de l'harmonica tout en présidant son GDR ...",
 		"rayonnement" => "B+",		
 		"rayonnement_notes" => "Travaux assez cités relativement aux pratiques de son domaine ...",		
-		"rapport" => "La section 06 vous invite à renouveler votre garde robe. ..",
+		"rapport" => "",
 		"avis" => "Réservé",
 		"auteur" => "joe",
 		"date" => "3/02/2013",
+			"labo1" => "labo1",
+			"labo2" => "",
+			"labo3" => "",
+			"theme1" => "theme1",
+			"theme2" => "",
+			"theme3" => "",
+				
 	);
 
 	$empty_report = array(
@@ -228,10 +303,27 @@
 		"avis" => "",
 		"auteur" => "",
 		"date" => date(DATE_RSS),
-		"id_origine" => "0"
+		"id_origine" => "0",
+			"labo1" => "",
+			"labo2" => "",
+			"labo3" => "",
+			"theme1" => "",
+			"theme2" => "",
+			"theme3" => ""
 	);
 		
+	$rapport_ie = array(
+			"L'instance d'équivalence est favorable à l'équivalence demandée.",
+			"La qualification professionnelle du candidat n'est pas probante.",
+			"Les travaux scientifiques présentés par le candidat ne sont pas probants.",
+			"Le diplôme étranger dont le candidat est titulaire est insuffisant et n'équivaut pas à un doctorat français.",
+			"L'expérience professionnelle acquise par le candidat n'équivaut pas en quantité et/ou en qualité à 4/8/12 années d'exercice des métiers de la recherche.",
+			"Les titres et/ou travaux dont le candidat est titulaire est /sont insuffisants ou/et n'/ne sont/est pas convaincants.");
 
+	$report_prototypes = array(
+			"Equivalence" => $rapport_ie
+			);
+	
 	$fieldsTypes = array(
 		"ecole" => "ecole",
 		"concours" => "concours",
@@ -266,19 +358,18 @@
 		"rayonnement_notes" => "long",		
 		"auteur" => "short",
 		"date" => "short",
-	);
-	
-	$fieldsEdit = array(
-		"id" => "Identifiant",
-		"nom" => "Nom",
-		"prenom" => "Prenom",
+			"labo1" => "unit",
+			"labo2" => "unit",
+			"labo3" => "unit",
+			"theme1" => "topic",
+			"theme2" => "topic",
+			"theme3" => "topic"
 	);
 	
 	$typesRapportsIndividuels = array(
 		'Evaluation-Vague' => 'Evaluation à Vague',
 		'Evaluation-MiVague' => 'Evaluation à Mi-Vague',
 		'Promotion' => 'Promotion',
-		'Candidature' => 'Candidature',
 		'Suivi-PostEvaluation' => 'Suivi Post-Evaluation',
 		'Titularisation' => 'Titularisation',
 		'Affectation' => 'Confirmation d\'Affectation',
@@ -294,8 +385,13 @@
 			'Comite-Evaluation' => 'Comité d\'Evaluation',
 			'Generique' => 'Générique'
 	);
+
+	$typesRapportsConcours = array(
+		'Candidature' => 'Candidature',
+		'Equivalence' => 'Equivalence',
+	);
 	
-	$typesRapports = array_merge($typesRapportsIndividuels, $typesRapportsUnites);
+	$typesRapports = array_merge($typesRapportsIndividuels, $typesRapportsUnites, $typesRapportsConcours);
 		
 	/* Définition des avis possibles pour chaque type de rapport*/
 	
@@ -325,6 +421,12 @@
 	/* Pour les SPE par exemple*/
 	$avis_vide = array(""=>"");
 
+	$avis_ie = array(
+			""=>"",
+			"favorable" => "Favorable",
+			"defavorable" => "Défavorable"
+	);
+	
 	$avis_binaire = array(
 			""=>"",
 			"favorable" => "Favorable",
@@ -365,7 +467,7 @@
 		'Evaluation-MiVague' => $avis_eval,
 		'Promotion' => $avis_classement,
 		'Candidature' => $avis_candidature,
-		'Equivalence' => $avis_binaire,
+		'Equivalence' => $avis_ie,
 		'Suivi-PostEvaluation' => $avis_vide,
 		'Affectation' => $avis_binaire,
 		'Reconstitution' => $avis_vide,
@@ -442,12 +544,15 @@
 			'Ecole' => '<B>Objet de l’évaluation :</B><br/> Ecole Thématique',
 			'Comite-Evaluation' => '<B>Objet de l’examen :</B> Comité d\'évaluation',
 			'Generique' => '&nbsp;',
+			'Equivalence' => '<B>Objet de l’évaluation :</B><br/><EM>Equivalence titres et travaux</EM>',
+						
 			'' => ''
 	);
 
 	$enTetesDroit = array(
 			'Individu' => '<B>Nom, prénom et affectation du chercheur :</B><br/>',
-			'Concours' => '<B>Classement, nom et prénom du candidat :</B><br/>',
+			'Concours' => '<B>Concours, classement, nom et prénom du candidat :</B><br/>',
+			'Equivalence' => '<B>Concours, nom et prénom du candidat :</B><br/>',
 			'Unite' => '<B>Code, intitulé et nom<br/>du directeur de l’unité :</B><br/>',
 			'Ecole' => '<B>Nom de l\'école et du porteur de projet :</B><br/>',
 			'PromotionDR' => '<B>Classement, nom et unité :</B><br/>',
@@ -459,6 +564,7 @@
 			'Evaluation-MiVague' => 'Individu',
 			'Promotion' => 'Individu',
 			'Candidature' => 'Concours',
+			'Equivalence' => 'Equivalence',
 			'Suivi-PostEvaluation' => 'Individu',
 			'Affectation' => 'Individu',
 			'Titularisation' => 'Individu',
@@ -596,7 +702,7 @@
 	if(!isset($_SESSION['current_session']))
 		$_SESSION['current_session'] = "Automne 2012";
 	
-	$filters = array(
+	$filtersReports = array(
 			'grade' => array('name'=>"Grade" , 'liste' => $grades, 'default_value' => "", 'default_name' => "Tous les grades"),
 			'statut' => array('name'=>"Statut" , 'liste' => $statutsRapports, 'default_value' => "", 'default_name' => "Tous les statuts"),
 			'id_session' => array('name'=>"Session", 'default_value' =>-1, 'default_name' => "Toutes les sessions"),
@@ -605,12 +711,42 @@
 			'id_origine' => array('default_value' =>-1),
 			'id' => array('default_value' =>-1),
 	);
+
+	$filtersConcours = array(
+			'labo1' => array('name'=>"Labo1" , 'default_value' => "", 'default_name' => ""),
+			'labo2' => array('name'=>"Labo2" , 'default_value' => "", 'default_name' => ""),
+			'labo3' => array('name'=>"Labo3" , 'default_value' => "", 'default_name' => ""),
+			'theme1' => array('name'=>"Theme1" , 'default_value' => "", 'default_name' => ""),
+			'theme2' => array('name'=>"Theme2" , 'default_value' => "", 'default_name' => ""),
+			'theme3' => array('name'=>"Theme3" , 'default_value' => "", 'default_name' => ""),
+			'statut' => array('name'=>"Statut" , 'liste' => $statutsRapports, 'default_value' => "", 'default_name' => "Tous les statuts"),
+			'id_session' => array('name'=>"Session", 'default_value' =>-1, 'default_name' => "Toutes les sessions"),
+			'login_rapp' => array('name'=>"Rapporteur" , 'sql_col'=>'rapporteur','default_value' =>"", 'default_name' => "Tous les rapporteurs"),
+			'id_origine' => array('default_value' =>-1),
+			'id' => array('default_value' =>-1),
+	);
+	
+	$filtersAll = array_merge($filtersReports, $filtersConcours);
 	
 	$empty_filter = array(
 			'grade' => "",
 			'statut' => "",
 			'id_session' => -1,
 			'type_eval' => "",
+			'login_rapp' => "",
+			'id_origine' => -1,
+			'id' => -1,
+	);
+
+	$empty_filter_concours = array(
+			'labo1' => "",
+			'labo2' => "",
+			'labo3' => "",
+			'theme1' => "",
+			'theme2' => "",
+			'theme3' => "",
+			'statut' => "",
+			'id_session' => -1,
 			'login_rapp' => "",
 			'id_origine' => -1,
 			'id' => -1,

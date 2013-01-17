@@ -27,7 +27,7 @@
 
 		function displayReports()
 		{
-			displaySummary(getFilterValues(), getSortCriteria());
+			displaySummary(getCurrentFiltersList(), getFilterValues(), getSortCriteria());
 		};
 
 		try
@@ -46,7 +46,7 @@
 						$new_statut =  $_REQUEST["new_statut"];
 						change_statuts($new_statut, $filterValues);
 						$filterValues['statut']	 = $new_statut;
-						displaySummary($filterValues, getSortCriteria());
+						displaySummary(getCurrentFiltersList(), $filterValues, getSortCriteria());
 					}
 					break;
 				case 'setrapporteur':
@@ -82,7 +82,8 @@
 					if (isset($_REQUEST["type_eval"]))
 					{
 						$type_eval = $_REQUEST["type_eval"];
-						newReport($type_eval);
+						$report = newReport($type_eval);
+						displayEditableReport($report, "add");
 					}
 					else
 					{

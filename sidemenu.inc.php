@@ -2,21 +2,19 @@
 <?php 
 require_once("config.inc.php");
 require_once("manage_users.inc.php");
+require_once("manage_sessions.inc.php");
 ?>
 <div class="right">
 	<div class="round">
-		<div class="roundtl">
-		</div>
-		<div class="roundtr">
-		</div>
-		<div class="clearer">
-		</div>
+		<div class="roundtl"></div>
+		<div class="roundtr"></div>
+		<div class="clearer"></div>
 	</div>
 	<div class="subnav">
 		<h1>
 			<a href="?">Accueil</a>
 		</h1>
-		<hr/>
+		<hr />
 		<h1>Afficher</h1>
 		<?php 	echo "<h2><a href=\"?action=view&amp;reset_filter=&amp;login_rapp=".getLogin()."&amp;id_session=".current_session_id()."\">Tous mes rapports</a></h2>";
 		?>
@@ -28,14 +26,15 @@ require_once("manage_users.inc.php");
 			<a href="?action=view">Sélection en cours</a>
 		</h2>
 		<h2>
-			<a href="?action=view&amp;reset_filter=">Tous les rapports de la session</a>
+			<a href="?action=view&amp;reset_filter=">Tous les rapports de la
+				session</a>
 		</h2>
-		<hr/>
+		<hr />
 		<h1>Sessions</h1>
 		<?php
 		//foreach($statutsRapportsPluriel as $statut => $nom)
-			//echo "<h2><a href=\"?action=view&amp;reset_filter=&amp;login_rapp=".getLogin()."&amp;id_session=".current_session_id()."&amp;statut=".$statut."\">Mes ".$nom."</a></h2>";
-		
+		//echo "<h2><a href=\"?action=view&amp;reset_filter=&amp;login_rapp=".getLogin()."&amp;id_session=".current_session_id()."&amp;statut=".$statut."\">Mes ".$nom."</a></h2>";
+
 		$sessions = sessionArrays();
 		foreach($sessions as $id => $nom)
 		{
@@ -53,11 +52,33 @@ require_once("manage_users.inc.php");
 			<?php
 			*/
 		}
+		
 		if(isSecretaire())
 		{
 			?>
-		<hr/>
+		<hr />
 		<h1>Ajouter</h1>
+		<?php 
+		if(is_current_session_concours())
+		{
+			?>
+		<h2>Rapport Concours</h2>
+		<ul>
+			<?php 
+			foreach($typesRapportsConcours as $typeEval => $value)
+			{
+				?>
+			<li><a href="?action=new&amp;type_eval=<?php echo $typeEval ?>"><?php echo $value?>
+			</a></li>
+			<?php
+			}
+			?>
+		</ul>
+		<?php 
+		}
+		else
+		{
+			?>
 		<h2>Rapport Chercheur</h2>
 		<ul>
 			<?php 
@@ -70,7 +91,7 @@ require_once("manage_users.inc.php");
 			}
 			?>
 		</ul>
-		<hr/>
+		<hr />
 		<h2>Rapport Unité</h2>
 		<ul>
 			<?php 
@@ -85,13 +106,12 @@ require_once("manage_users.inc.php");
 		</ul>
 		<?php 
 		}
+		}
 		?>
 
 	</div>
 	<div class="round">
-		<div class="roundbl">
-		</div>
-		<div class="roundbr">
-		</div>
+		<div class="roundbl"></div>
+		<div class="roundbr"></div>
 	</div>
 </div>
