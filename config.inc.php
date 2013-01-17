@@ -106,6 +106,7 @@
 			"theseLieu" => "Lieu thèse",
 			"HDRAnnee" => "Annee HDR",
 			"HDRLieu" => "Lieu HDR",
+			"anneesequivalence" => "Années d'équivalence",
 		"production" => "Production scientifique",
 		"production_notes" => "Production scientifique",
 		"transfert" => "Transfert et valorisation",
@@ -176,12 +177,10 @@
 	);
 
 	$fieldsEquivalence = array(
-			"concours",
 			"rapporteur",
 			"nom",
 			"prenom",
 			"avis",
-			"grade",
 			"labo1",
 			"labo2",
 			"labo3",
@@ -237,6 +236,7 @@
 			"theseLieu" => "Université de Turin",
 			"HDRAnnee" => "1985",
 			"HDRLieu" => "Université Bordeaux 1",
+			"anneesequivalence" => "0",
 		"prerapport" => "Candidat au fort potentiel, proche de la retraite ...",
 		"anciennete_grade" => "~4 ans",
 		"date_recrutement" => "1999",
@@ -281,6 +281,7 @@
 			"theseLieu" => "",
 		"HDRAnnee" => "",
 			"HDRLieu" => "",
+			"anneesequivalence" => "0",
 		"rapporteur" => "",
 		"prerapport" => "",
 		"anciennete_grade" => "",
@@ -313,7 +314,7 @@
 	);
 		
 	$rapport_ie = array(
-			"L'instance d'équivalence est favorable à l'équivalence demandée.",
+			"La section réunie en instance d'équivalence considère que la somme des titres et travaux présentés dans le dossier du candidat est équivalente à au moins 4/8/12 années d'exercice des métiers de la recherche.",
 			"La qualification professionnelle du candidat n'est pas probante.",
 			"Les travaux scientifiques présentés par le candidat ne sont pas probants.",
 			"Le diplôme étranger dont le candidat est titulaire est insuffisant et n'équivaut pas à un doctorat français.",
@@ -363,7 +364,8 @@
 			"labo3" => "unit",
 			"theme1" => "topic",
 			"theme2" => "topic",
-			"theme3" => "topic"
+			"theme3" => "topic",
+			"anneesequivalence" =>"short"
 	);
 	
 	$typesRapportsIndividuels = array(
@@ -684,7 +686,7 @@
 	
 	
 	$concours_ouverts = array(
-			"",	"06/01", "06/02", "06/03"
+			"06/01" => "DR2 (06/01)", "06/02" => "CR1 (06/02)", "06/03" => "CR2 (06/03)"
 			);
 	
 	$uploaded_csv_files = array(
@@ -713,14 +715,16 @@
 	);
 
 	$filtersConcours = array(
+			'statut' => array('name'=>"Statut" , 'liste' => $statutsRapports, 'default_value' => "", 'default_name' => "Tous les statuts"),
+			'concours' => array('name'=>"Concours" , 'liste' => $concours_ouverts, 'default_value' => "", 'default_name' => "Tous les concours"),
+			'type_eval_concours' => array('name'=>"Type d'évaluation" , 'sql_col'=>'type', 'liste' => $typesRapportsConcours,'default_value' => "", 'default_name' => "Tous les types"),
+			'id_session' => array('name'=>"Session", 'default_value' =>-1, 'default_name' => "Toutes les sessions"),
 			'labo1' => array('name'=>"Labo1" , 'default_value' => "", 'default_name' => ""),
 			'labo2' => array('name'=>"Labo2" , 'default_value' => "", 'default_name' => ""),
 			'labo3' => array('name'=>"Labo3" , 'default_value' => "", 'default_name' => ""),
-			'theme1' => array('name'=>"Theme1" , 'default_value' => "", 'default_name' => ""),
-			'theme2' => array('name'=>"Theme2" , 'default_value' => "", 'default_name' => ""),
-			'theme3' => array('name'=>"Theme3" , 'default_value' => "", 'default_name' => ""),
-			'statut' => array('name'=>"Statut" , 'liste' => $statutsRapports, 'default_value' => "", 'default_name' => "Tous les statuts"),
-			'id_session' => array('name'=>"Session", 'default_value' =>-1, 'default_name' => "Toutes les sessions"),
+			'theme1' => array('name'=>"Theme1" , 'liste' => $topics, 'default_value' => "", 'default_name' => ""),
+			'theme2' => array('name'=>"Theme2" , 'liste' => $topics, 'default_value' => "", 'default_name' => ""),
+			'theme3' => array('name'=>"Theme3" , 'liste' => $topics, 'default_value' => "", 'default_name' => ""),
 			'login_rapp' => array('name'=>"Rapporteur" , 'sql_col'=>'rapporteur','default_value' =>"", 'default_name' => "Tous les rapporteurs"),
 			'id_origine' => array('default_value' =>-1),
 			'id' => array('default_value' =>-1),

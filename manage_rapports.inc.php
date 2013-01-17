@@ -237,6 +237,39 @@ function addVirginReport($type,$unite,$nom,$prenom,$grade,$rapporteur)
 	return $newid;
 }
 
+function addVirginEquivalenceReport($nom,$prenom,$annees,$raison,$rapporteur)
+{
+	global $rapport_ie;
+	if(!isReportCreatable())
+		throw new Exception("Le compte ".$login." n'a pas la permission de créer un rapport, veuillez contacter le secrétaire scientifique.");
+
+	
+	$raison = "Raison de la demande: ". $raison."\n";
+	$raison .= "Annees d'équivalence annoncées par le candidat: ". $annees."\n\n";
+
+	foreach($rapport_ie as $line)
+			$raison .= $line."\n\n";
+	
+	$fields = "id_session, id_origine, auteur, nom, prenom, anneesequivalence, rapport, rapporteur, type, grade";
+	$values = current_session_id().",0,\"".getLogin().'","'.$nom.'","'.$prenom.'","'.$annees.'","'.$raison.'","'.$rapporteur.'","Equivalence","None"';
+
+	$sql = "INSERT INTO evaluations ($fields) VALUES ($values);";
+	$result = mysql_query($sql);
+
+	if($result == false)
+	{
+		echo "Failed to process sql query ".$sql."<br/>";
+		return false;
+	}
+	echo $sql."<br/>";
+
+	$newid = mysql_insert_id();
+	$sql = "UPDATE evaluations SET id_origine=$newid WHERE id=$newid;";
+	mysql_query($sql);
+
+	return $newid;
+}
+
 function getStatus($id_rapport)
 {
 	$report = getReport($id_rapport);
@@ -415,7 +448,7 @@ function update($id_origine, $request)
 function change_statuts($new_statut, $filter_values)
 {
 	//echo "Changing status to " .$new_statut." <br/>";
-	$rows = filterSortReports($filter_values);
+	$rows = filterSortReports(getCurrentFiltersList(), $filter_values, getSortCriteria());
 
 	foreach($rows as $row)
 		change_statut($row->id, $new_statut);
@@ -478,7 +511,7 @@ function getVirginReports($rapporteur)
 	$filter_values = $empty_filter;
 	$filter_values['login_rapp'] = $rapporteur->login;
 	$filter_values['statut'] = 'vierge';
-	return filterSortReports($filter_values,"");
+	return filterSortReports(getCurrentFiltersList(), $filter_values,getSortCriteria());
 }
 
 

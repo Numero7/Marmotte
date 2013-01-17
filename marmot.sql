@@ -46,6 +46,29 @@ CREATE TABLE IF NOT EXISTS `chercheurs2` (
 
 --DROP TABLE IF EXISTS `evaluations`;
 
+/*
+ALTER TABLE `evaluations`
+  ADD `labo1` text CHARACTER SET utf8 NOT NULL;
+ALTER TABLE `evaluations`
+  ADD `labo2` text CHARACTER SET utf8 NOT NULL;
+ALTER TABLE `evaluations`
+  ADD `labo3` text CHARACTER SET utf8 NOT NULL;
+ALTER TABLE `evaluations`
+  ADD `theme1` text CHARACTER SET utf8 NOT NULL;
+ALTER TABLE `evaluations`
+  ADD `theme2` text CHARACTER SET utf8 NOT NULL;
+ALTER TABLE `evaluations`
+  ADD `theme3` text CHARACTER SET utf8 NOT NULL;
+ALTER TABLE `evaluations`
+  ADD `theseAnnee` text CHARACTER SET utf8 NOT NULL;
+ALTER TABLE `evaluations`
+  ADD `theseLieu` text CHARACTER SET utf8 NOT NULL;
+ALTER TABLE `evaluations`
+  ADD `HDRAnnee` text CHARACTER SET utf8 NOT NULL;
+ALTER TABLE `evaluations`
+  ADD `HDRLieu` text CHARACTER SET utf8 NOT NULL;
+  */
+  
 CREATE TABLE IF NOT EXISTS `evaluations` (
 `statut` enum('vierge','prerapport','rapport','publie','supprime') CHARACTER SET utf8 NOT NULL,
   `id_session` int(11) NOT NULL,

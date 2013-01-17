@@ -425,6 +425,7 @@ function displayExport($filter_values)
 function displaySummary($filters, $filter_values, $sort_crit)
 {
 	global $fieldsSummary;
+	global $fieldsSummaryCandidates;
 	global $typesRapports;
 	global $statutsRapports;
 	global $filtersReports;
@@ -433,10 +434,20 @@ function displaySummary($filters, $filter_values, $sort_crit)
 	$rows = filterSortReports($filters, $filter_values, $sort_crit);
 	$sortCrit = parseSortCriteria($sort_crit);
 
-	$filters['id_session']['liste'] = sessionArrays();
 	$filters['login_rapp']['liste'] = simpleListUsers();
-
-	displayRows($rows,$fieldsSummary, getCurrentFiltersList(), $filter_values, $sortCrit);
+	
+	$units = simpleUnitsList();
+	if(array_key_exists('labo1', $filters))
+		$filters['labo1']['liste'] = $units;
+	if(array_key_exists('labo2', $filters))
+		$filters['labo2']['liste'] = $units;
+	if(array_key_exists('labo3', $filters))
+		$filters['labo3']['liste'] = $units;
+	if(array_key_exists('unite', $filters))
+		$filters['unite']['unite'] = $units;
+	
+	$fields = is_current_session_concours() ? $fieldsSummaryCandidates : $fieldsSummary;
+	displayRows($rows,$fieldsSummary, $filters, $filter_values, $sortCrit);
 }
 
 function displayRows($rows, $fields, $filters, $filter_values, $sortCrit)
@@ -1102,7 +1113,7 @@ function message_handler($subject,$body)
 
 function email_handler($recipient,$subject,$body)
 {
-	$headers = 'From: '.webmaster. "\r\n" . 'CC :' .webmaster. '\r\n'. 'Reply-To: '.webmaster. "\r\n".'Content-Type: text/plain; charset="UTF-8"\r\n'.'X-Mailer: PHP/' . phpversion()."\r\n";
+	$headers = 'From: '.webmaster. "\r\n" . 'CC: ' .webmaster. "\r\n". 'Reply-To: '.webmaster. "\r\n".'Content-Type: text/plain; charset="UTF-8"\r\n'.'X-Mailer: PHP/' . phpversion()."\r\n";
 
 	$result = mail($recipient, $subject, "\r\n".$body."\r\n", $headers);
 

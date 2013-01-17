@@ -47,6 +47,15 @@ function prettyUnitsList()
 	return $units;
 }
 
+function simpleUnitsList()
+{
+	$units = prettyUnitsList();
+	$result = array();
+	foreach($units as $unit => $row)
+		$result[$unit] = $row->nickname;
+	return $result;
+}
+
 function addUnit($nickname, $code, $fullname, $directeur)
 {
 	$sql = "DELETE FROM units WHERE code = \"".$code."\";";

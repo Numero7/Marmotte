@@ -40,7 +40,9 @@ function is_current_session_concours()
 	if(current_session() == "")
 		return false;
 	$pref = substr(current_session(),0,4);
-	return  $pref == "Conc" || $pref == "conc";
+	$result =  ($pref == "Conc") || ($pref == "conc");
+	return $result;
+	
 }
 
 function showSessions()

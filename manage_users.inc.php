@@ -110,12 +110,16 @@ function isRapporteurUser($login = "")
 
 function addCredentials($login,$pwd)
 {
+	unset($_SESSION['all_users']);
+	
 	$_SESSION['login'] = $login;
 	$_SESSION['pass'] = $pwd;
 } ;
 
 function removeCredentials()
 {
+	unset($_SESSION['all_users']);
+	
 	unset($_SESSION['login']);
 	unset($_SESSION['pass']);
 } ;
@@ -215,13 +219,13 @@ function createUser($login,$pwd,$desc,$email, $envoiparemail)
 {
 	if (isSuperUser())
 	{
-		unset($_SESSION['all_users']);
 		if(existsUser($login))
 			throw new Exception("Failed to create user: le login '".$login."' est déja utilisé.");
 		if($desc == "")
 			throw new Exception("Failed to create user: empty description.");
 
-
+		unset($_SESSION['all_users']);
+		
 		$passHash = crypt($pwd);
 		$sql = "INSERT INTO users(login,passHash,description,email) VALUES ('".mysql_real_escape_string($login)."','".mysql_real_escape_string($passHash)."','".mysql_real_escape_string($desc)."','".mysql_real_escape_string($email)."');";
 		mysql_query($sql);
@@ -230,7 +234,7 @@ function createUser($login,$pwd,$desc,$email, $envoiparemail)
 			$body = "Marmotte est un site web destiné à faciliter la répartition, le dépôt, l'édition et la production\r\n";
 			$body .= "des rapports par les sections du comité national.\r\n";
 			$body .= "\r\nLe site est accessible à l'adresse \r\n\t\t\t".addresse_du_site."\r\n";
-			$body .= "\r\nCe site a été développé Hugo Gimbert et Yann Ponty.\r\n";
+			$body .= "\r\nCe site a été développé par Hugo Gimbert et Yann Ponty.\r\n";
 			$body .= "\r\nL'accès au site est restreint aux membres de la section ".section_nb." qui doivent s'authentifier pour y accéder et déposer, éditer ou consulter des rapports.\r\n";
 			$body .= "\r\nUn compte Marmotte vient d'être créé pour vous:\r\n\r\n";
 			$body .= "\t\t\t login: '".$login."'\r\n";

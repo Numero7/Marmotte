@@ -17,7 +17,7 @@ function getReportsAsXML($filter_values, $sort_criteria = "", $keep_br = true)
 
 	$doc = new DOMDocument();
 	$root = $doc->createElement("rapports");
-	$rows = filterSortReports($filter_values, $sort_criteria);
+	$rows = filterSortReports(getCurrentFiltersList(), $filter_values, $sort_criteria);
 
 	if(isset($filter_values['id_edit']))
 		$root->setAttribute('id_edit',$filter_values['id_edit']);
