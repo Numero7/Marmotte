@@ -37,6 +37,8 @@
 			{
 				case 'delete':
 					echo "<p>".deleteReport($id_rapport)."</p>\n";
+					unset($_REQUEST['id']);
+					unset($_REQUEST['id_origine']);
 					displayReports();
 					break;
 
@@ -73,11 +75,8 @@
 					historyReport($id_origine);
 					break;
 				case 'update':
-						$id_nouveau = update($id_origine, $_REQUEST);
-						if($id_nouveau == false)
-							echo "Pas de rapport créé.<br/>";
-						else
-							displayReport($id_nouveau);
+					$id_nouveau = addReportFromRequest($id_origine,$_REQUEST);
+					displayReport($id_nouveau);
 					break;
 				case 'new':
 					if (isset($_REQUEST["type_eval"]))
@@ -93,7 +92,7 @@
 					}
 					break;
 				case 'add':
-					$id_nouveau = addReport($_REQUEST);
+					$id_nouveau = addReportFromRequest($id_origine,$_REQUEST);
 					displayReport($id_nouveau);
 					break;
 				case'newpwd':
@@ -248,6 +247,17 @@
 					break;
 				case 'extrairecandidats':
 					echo extraction_candidats();
+					break;
+				case 'sqlrequest':
+					if(isset($_REQUEST['formula']))
+					{
+						sql_request($_REQUEST['formula']);
+						echo "Successfully processed <br/>".$_REQUEST['formula'];
+					}
+					else 
+					{
+						echo "Empty formula";
+					}
 					break;
 				case 'mailing':
 				case 'email_rapporteurs':

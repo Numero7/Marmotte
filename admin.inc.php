@@ -32,10 +32,10 @@ if(isSecretaire())
 		<?php
 		global $typesRapports;
 		foreach ($typesRapports as $ty => $value)
-			echo "<option value=\"$ty\"$sel>".$value."</option>\n";
+			echo "<option value=\"$ty\">".$value."</option>\n";
 		?>
 	</select>
-	<input type="hidden" name="type" value="rapporteurs"/>
+	<input type="hidden" name="type" value="rapports"/>
 	<input type="hidden" name="action" value="upload"/>
 	<input type="hidden" name="MAX_FILE_SIZE" value="100000" />
 	Fichier csv: 
@@ -56,6 +56,7 @@ if(isSecretaire())
 </p>
 
 <hr/>
+
 
 <h2>Ajout d'une unité</h2>
 <form enctype="multipart/form-data" action="index.php" method="post">
@@ -109,7 +110,7 @@ if(isSecretaire())
 <form enctype="multipart/form-data" action="index.php" method="post"
 	onsubmit="return confirm('Etes vous sur de vouloir uploader ce fichier labos?');">
 	<p>
-	<input type="hidden" name="type" value="labos"/>
+	<input type="hidden" name="type" value="unites"/>
 	<input type="hidden" name="action" value="upload"/>
 	<input type="hidden" name="MAX_FILE_SIZE" value="100000"/>
 	Fichier csv:
@@ -421,6 +422,23 @@ if(isSecretaire())
 		</p>
 	</form>
 	<hr/>
+	
+	
+<h2>Requete sql générique</h2>
+<p>
+<form enctype="multipart/form-data" action="index.php" method="post">
+	<table class="inputreport">
+			</tr>
+		<tr>
+		<textarea name="formula" rows=15 cols=100></textarea>
+		</td>
+		</tr>
+		</table>
+	<input type="hidden" name="action" value="sqlrequest"/>
+	<input type="submit" value="Executer la requete" />
+	</form>
+</p>
+	
 	<?php 
 }
 

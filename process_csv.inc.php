@@ -9,152 +9,105 @@ require_once('manage_rapports.inc.php');
 et champs dans l'ordre CodeUnite/NomUnite/Nickname/Directeur.
 Les données d'un labo avec le même code seront remplacées.
 */
-function process_csv($type,$filename,$subtype = "")
+function process_csv($type,$filename, $subtype, $fields="")
 {
-	switch($type)
-	{
-		case 'labos':
-			return process_labos_csv($filename); break;
-		case 'rapporteurs':
-			return process_rapporteurs_csv($filename,$subtype); break;
-	}
-}
+	global $type_rapport_to_csv_fields;
 
-function process_labos_csv($filename)
-{
+	if($fields == "")
+	{
+		if(!isset($type_rapport_to_csv_fields[$subtype]))
+			throw new Exception("No fields provided and no default csv import fields for report typ \'".$type."\'");
+		else
+			$fields = $type_rapport_to_csv_fields[$subtype];
+	}
+	$nbfields = count($fields);
+
 	if($file = fopen ( $filename , 'r') )
 	{
-
 		$nb = 0;
+		$errors = "";
 		while(($data = fgetcsv ( $file, 0, ',' , '"' )) != false)
 		{
 			$nb++;
-			$num = count($data);
-			if($num != 4)
-				continue;
-
-			if(addUnit($data[2],$data[0],$data[1],$data[3]) == false)
-				return "Failed to add unit ".$data[0];
+			try
+			{
+				set_time_limit(0);
+				if($type == 'rapports')
+					addCsvReport($subtype, $data, $fields);
+				else if ($type == 'unite')
+					addCsvUnite($data, $fields);
+				else
+					throw new Exception("Unknown generic csv report type \'".$type."\'");
+			}
+			catch(Exception $exc)
+			{
+				$error .= "\t".$exc."\n";
+			}
 		}
-		return "Uploaded ".$nb." labs information to units database";
+		if($errors != "")
+			return "Uploaded ".$nb." reports of type ".$type."/".$subtype." to database with errors:\n\t".$errors;
+		else
+			return "Uploaded ".$nb." labs information to units database";
 	}
 	else
 	{
-		return "Failed to open file ".$filename." for reading";
+		throw new Exception("Failed to open file ".$filename." for reading");
 	}
 }
 
-function process_equivalence_csv($file)
+function addToReport($report, $field, $data)
 {
-	$annees = "";
-	$nom = "";
-	$prenom = "";
-	$rapporteur = "";
-	$raison = "";
+	global $csv_composite_fields;
+	global $csv_preprocessing;
 
+	if(isset($csv_composite_fields[$field]))
+	{
+		$subfields = $csv_composite_fields[$field];
+		$pieces = explode(" ",$data, count($subfields));
+		for($i = 0; $i < count($pieces); $i++)
+			addToReport($report, $subfields[i], $pieces[i]);
+	}
+	else
+	{
+		if(isset($report->$field))
+		{
+			if(isset($csv_preprocessing[$field]))
+				$data = $csv_preprocessing[$field]($data);
+			$report->$field .= $data;
+		}
+	}
+}
 
-	$nb =0;
+function getDocFromCsv($data, $fields)
+{
+	global $empty_report;
+
+	$report = (object) $empty_report;
+
+	$m = min(count($data), count($fields));
+	for($i = 0; $i < $m; $i++)
+		addToReport($report,$fields[$i], $data[$i]);
 	
-	while(($data = fgetcsv ( $file, 0, ',' , '"' )) != false)
-	{
-		set_time_limit(0);
-		$nb++;
-		$num = count($data);
-		if($num <3 )
-		{
-			echo "Wrong number ".$num." of data cols in csv for equivalence entry.<br/>";
-			continue;
-		}
-		else
-		{
-			$pieces = explode(" ",$data[0]);
-			$raison = $data[1];
-			$annees = $data[2];
-			if($num >=4)
-				$rapporteur = $data[3];
-			else
-				$rapporteur = "";
-			if(count($pieces) >1)
-				$nom = normalizeName($pieces[1]);
-			if(count($pieces) >2)
-				$prenom = normalizeName($pieces[2]);
-		}
-
-		if(addVirginEquivalenceReport($nom,$prenom,$annees,$raison,$rapporteur) == false)
-			throw new Exception("Failed to add report ".$subtype." ".$unite." ".$nom." ".$prenom);
-	}
-	return $nb;
+	return $report;
+	
 }
 
-function process_generic_csv($file)
+function addCsvReport($type, $data, $fields)
 {
-	$unite = "";
-	$nom = "";
-	$prenom = "";
-	$rapporteur = "";
-	$grade = "";
-	$nb = 0;
-
-
-	while(($data = fgetcsv ( $file, 0, ',' , '"' )) != false)
-	{
-		set_time_limit(0);
-		$nb++;
-		$num = count($data);
-		if($is_unite)
-		{
-			if($num != 2) continue;
-			else
-			{
-				$unite = $data[0];
-				$rapporteur = $data[1];
-			}
-		}
-		else
-		{
-			if($num != 4)
-			{
-				echo "Wrong number ".$num." of data cols in csv for people entry.<br/>";
-				continue;
-			}
-			else
-			{
-				$pieces = explode(" ",$data[0]);
-				$unite = $data[1];
-				$grade = $data[2];
-				$rapporteur = $data[3];
-				if(count($pieces) >0)
-					$nom = normalizeName($pieces[0]);
-				if(count($pieces) >1)
-					$prenom = normalizeName($pieces[1]);
-			}
-		}
-
-		if(addVirginReport($subtype,$unite,$nom,$prenom,$grade,$rapporteur) == false)
-			throw new Exception("Failed to add report ".$subtype." ".$unite." ".$nom." ".$prenom);
-	}
-	return $nb;
+	global $report_prototypes;
+	
+	$report = getDocFromCsv($data,$fields);
+	$report->statut = 'vierge';
+	$report->type = $type;
+	addReport($report,false);
 }
 
-function process_rapporteurs_csv($filename,$subtype)
+function addCsvUnite($type, $data, $fields)
 {
-	global $typesRapportsUnites;
-	$is_unite = array_key_exists($subtype, $typesRapportsUnites);
-
-	if($file = fopen ( $filename , 'r') )
-	{
-
-		$nb = 0;
-		if($subtype == "Equivalence")
-			$nb = process_equivalence_csv($file);
-		else
-			$nb = process_generic_csv($file);
-		return "Uploaded ".$nb." new virgin reports to evaluations database";
-	}
-	else
-	{
-		return "Failed to open file ".$filename." for reading";
-	}
+	$unite = getDocFromCsv($data,$fields);
+	insertUniteInDatabase($report);
 }
+
+
 
 ?>

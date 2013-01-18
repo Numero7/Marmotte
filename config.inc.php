@@ -6,6 +6,7 @@
 	define("president_titre","Présidente de la Section 6");
 	define("secretaire","Hugo Gimbert");
 	define("section_nb","6");
+	define("section_shortname","Section 6");
 	define("section_fullname","Section 6 du CoNRS");
 	define("section_intitule","Sciences de l'information : fondements de l'informatique, calculs, algorithmes, représentations, exploitations");
 	define("webmaster","hugo.gimbert@labri.fr");
@@ -52,7 +53,6 @@
 "15" => "Bioinformatique");
 			
 	$fieldsSummary = array(
-		"statut",
 		"type",
 		"rapporteur",
 		"nom",
@@ -60,22 +60,24 @@
 		"grade",
 		"unite",
 		"date",
+		"statut"
 	);
-
+	
 	$fieldsSummaryCandidates = array(
-			"statut",
+			"type",
 			"rapporteur",
 			"nom",
 			"prenom",
+			"grade",
 			"concours",
 			"avis",
-			"grade",
 			"labo1",
 			"labo2",
 			"labo3",
 			"theme1",
 			"theme2",
-			"theme3"
+			"theme3",
+			"statut"
 	);
 	
 	$statutsRapports = array( 'vierge' => "Rapport vierge", 'prerapport'=>'Prérapport', 'rapport'=>"Rapport", 'publie'=>"Rapport publié");
@@ -126,6 +128,10 @@
 		"date" => "Date modification",
 	);
 
+	$specialtr_fields = array("labo1","labo2","labo3");
+	$start_tr_fields = array("labo1");
+	$end_tr_fields = array("labo3");
+	
 	$fieldsIndividual = array(
 			"rapporteur",
 			"nom",
@@ -155,8 +161,6 @@
 			"nom",
 			"prenom",
 			"avis",
-			"rapport",
-			"prerapport",
 			"grade",
 			"labo1",
 			"labo2",
@@ -168,6 +172,8 @@
 			"theseLieu",
 			"HDRAnnee",
 			"HDRLieu",
+			"prerapport",
+			"rapport",
 			"production",
 			"transfert",
 			"encadrement",
@@ -205,6 +211,7 @@
 			"rapporteur",
 			"nom",
 			"prenom",
+			"grade",
 			"avis",
 			"labo1",
 			"labo2",
@@ -339,18 +346,19 @@
 			"theme3" => ""
 	);
 		
-	$rapport_ie = array(
-			"La section réunie en instance d'équivalence considère que la somme des titres et travaux présentés dans le dossier du candidat est équivalente à un doctorat d'une université française.",
-			"La section réunie en instance d'équivalence considère que la somme des titres et travaux présentés dans le dossier du candidat est équivalente à plus de 4/8/12 années d'exercice des métiers de la recherche.",
-			"La qualification professionnelle du candidat n'est pas probante.",
-			"Les travaux scientifiques présentés par le candidat ne sont pas probants.",
-			"Le diplôme étranger dont le candidat est titulaire est insuffisant et n'équivaut pas à un doctorat français.",
-			"L'expérience professionnelle acquise par le candidat n'équivaut pas en quantité et/ou en qualité à 4/8/12 années d'exercice des métiers de la recherche.",
-			"Les titres et/ou travaux dont le candidat est titulaire est /sont insuffisants ou/et n'/ne sont/est pas convaincants.");
+	
+	$virgin_report_equivalence = 
+			"La ".section_shortname." réunie en instance d'équivalence considère que la somme des titres et travaux présentés dans le dossier du candidat est équivalente à un doctorat d'une université française.\n\n".
+			"La ".section_shortname." réunie en instance d'équivalence considère que la somme des titres et travaux présentés dans le dossier du candidat est équivalente à plus de 4/8/12 années d'exercice des métiers de la recherche.\n\n".
+			"La qualification professionnelle du candidat n'est pas probante.\n\n".
+			"Les travaux scientifiques présentés par le candidat ne sont pas probants.\n\n".
+			"Le diplôme étranger dont le candidat est titulaire est insuffisant et n'équivaut pas à un doctorat français.\n\n".
+			"L'expérience professionnelle acquise par le candidat n'équivaut pas en quantité et/ou en qualité à 4/8/12 années d'exercice des métiers de la recherche.\n\n".
+			"Les titres et/ou travaux dont le candidat est titulaire est /sont insuffisants ou/et n'/ne sont/est pas convaincants.";
 
 	$report_prototypes = array(
-			"Equivalence" => $rapport_ie
-			);
+			'Equivalence' => array('rapport' => $virgin_report_equivalence)
+	);
 	
 	$fieldsTypes = array(
 		"ecole" => "ecole",
@@ -615,10 +623,16 @@
 			'oui'=> 'La section donne un avis favorable à la demande de promotion.',
 			'non'=> 'Le faible nombre de possibilités de promotions ne permet malheureusement pas à la Section 6 du Comité National de proposer ce chercheur à la Direction Générale du CNRS pour une promotion cette année.'
 			);
+
+	$equivalenceFormula = array(
+			'favorable'=> 'La section donne un avis favorable à la demande d\'équivalence.',
+			'defavorable'=> 'La section donne un avis défavorable à la demande d\'équivalence.'
+	);
 	
 	$typesRapportsToFormula = array(
 		'Promotion' => $promotionFormula,
-		'Titularisation' => array('favorable'=> 'La section donne un avis favorable à la titularisation.')
+		'Equivalence' =>$equivalenceFormula,
+			'Titularisation' => array('favorable'=> 'La section donne un avis favorable à la titularisation.')
 	);
 
 	
@@ -716,11 +730,6 @@
 			"06/01" => "DR2 (06/01)", "06/02" => "CR1 (06/02)", "06/03" => "CR2 (06/03)"
 			);
 	
-	$uploaded_csv_files = array(
-					'labos' => 'uploads/labos.csv',
-					'rapporteurs' => 'uploads/rapporteurs.csv'
-				);
-	
 	$permission_levels = array(
 		NIVEAU_PERMISSION_BASE => "rapporteur",
 		NIVEAU_PERMISSION_BUREAU => "bureau",
@@ -782,5 +791,47 @@
 			'id_origine' => -1,
 			'id' => -1,
 	);
-		
+	
+	
+	$labos_csv  = array ('code', 'fullname', 'nickname', 'directeur');
+	$equivalence_csv  = array ('titrenomprenom', 'prerapport', 'annnesequivalence', 'rapporteur');
+	$candidature_csv  = array ('nom', 'prenom', 'prerapport', 'grade', 'concours', 'prerapport');
+	$chercheur_csv  = array ('nomprenom', 'unite', 'grade', 'rapporteur');
+	
+	$csv_composite_fields = array(
+			'titrenomprenom' => array('','nom','prenom') ,
+			 'nomprenom' => array('nom','prenom'),
+	);
+	
+	
+	$csv_fields = array_merge($labos_csv,$equivalence_csv, $chercheur_csv, $candidature_csv);
+	
+	$csv_preprocessing = array('nom' => 'normalizename', 'prenom' => 'normalizename');
+	
+	$uploaded_csv_files = array(
+			'unites' => 'uploads/labos.csv',
+			'rapports' => 'uploads/rapports.csv'
+	);
+	
+	
+	$type_rapport_to_csv_fields = array(
+	'Evaluation-Vague' => $chercheur_csv,
+	'Evaluation-MiVague' => $chercheur_csv,
+	'Promotion' => $chercheur_csv,
+	'Suivi-PostEvaluation' => $chercheur_csv,
+	'Titularisation' => $chercheur_csv,
+	'Affectation' => $chercheur_csv,
+	'Reconstitution' => $chercheur_csv,
+			'Changement-Directeur' => $labos_csv,
+			'Changement-Directeur-Adjoint' => $labos_csv,
+			'Renouvellement' => $labos_csv,
+			'Association' => $labos_csv,
+			'Ecole' => $labos_csv,
+			'Comite-Evaluation' => $labos_csv,
+			'Generique' => $labos_csv,
+			'Candidature' => $candidature_csv,
+			'Equivalence' => $equivalence_csv,
+	);
+	
+	$users_not_rapporteur = array('admin');
 ?>

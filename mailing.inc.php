@@ -21,6 +21,7 @@ function mailRapporteur($titre, $body, $email_fin, $rapporteur)
 	else
 	{
 		echo 'Pas d\'email pour "'.$rapporteur->description.'"<br/>';
+		echo 'Avec les rapports '.$body;
 	}
 }
 

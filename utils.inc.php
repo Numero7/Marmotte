@@ -435,7 +435,7 @@ function displaySummary($filters, $filter_values, $sort_crit)
 	$sortCrit = parseSortCriteria($sort_crit);
 
 	$filters['login_rapp']['liste'] = simpleListUsers();
-	
+
 	$units = simpleUnitsList();
 	if(array_key_exists('labo1', $filters))
 		$filters['labo1']['liste'] = $units;
@@ -445,7 +445,7 @@ function displaySummary($filters, $filter_values, $sort_crit)
 		$filters['labo3']['liste'] = $units;
 	if(array_key_exists('unite', $filters))
 		$filters['unite']['unite'] = $units;
-	
+
 	$fields = is_current_session_concours() ? $fieldsSummaryCandidates : $fieldsSummary;
 	displayRows($rows,$fields, $filters, $filter_values, $sortCrit);
 }
@@ -523,7 +523,7 @@ function displayRows($rows, $fields, $filters, $filter_values, $sortCrit)
 		echo '</tr>';
 
 		$prettyunits = unitsList();
-		$users = listUsers();
+		$users = listRapporteurs();
 
 		foreach($rows as $row)
 		{
@@ -539,7 +539,7 @@ function displayRows($rows, $fields, $filters, $filter_values, $sortCrit)
 		<td><?php
 		$data = $row->$fieldID;
 		if(isset($fieldsTypes[$fieldID]) && ($fieldsTypes[$fieldID] == "unit") && isset($prettyunits[$row->$fieldID]))
-			 $data = $prettyunits[$row->$fieldID]->nickname;
+			$data = $prettyunits[$row->$fieldID]->nickname;
 
 		if(isSecretaire() && $fieldID=="rapporteur")
 		{
@@ -777,8 +777,9 @@ function displaySessionField($row)
 	if(session_to_choose($row))
 	{
 		?>
-<input type="hidden"
-	name="fieldid_session" value="<?php echo $row->id_session;?>" />
+<input
+	type="hidden" name="fieldid_session"
+	value="<?php echo $row->id_session;?>" />
 <?php 
 	}
 }
@@ -803,8 +804,8 @@ function display_treslong($row, $fieldID)
 		<tr>
 		<td colspan="3">
 		<textarea rows=15 cols=100 name="field'.$fieldID.'" >'.remove_br($row->$fieldID).'</textarea>
-				</td>
-				';
+			</td>
+			';
 }
 
 function display_short($row, $fieldID)
@@ -863,7 +864,7 @@ function display_avis($row, $fieldID)
 
 function display_rapporteur($row, $fieldID)
 {
-	$users = listUsers();
+	$users = listRapporteurs();
 	if(isBureauUser())
 	{
 		?>
@@ -889,8 +890,7 @@ function display_rapporteur($row, $fieldID)
 function display_unit($row, $fieldID)
 {
 	?>
-<td style="width: 30em;"><select name="field<?php echo $fieldID;?>"
-	style="width: 100%;">
+<td><select name="field<?php echo $fieldID;?>" >
 		<?php
 		$units = unitsList();
 		foreach($units as $unite)
@@ -992,25 +992,29 @@ function displayEditableReport($row, $actioname)
 	<input type="hidden" name="fieldtype" value="<?php echo $row->type;?>" />
 	<?php 
 		}
-		 if(! session_to_choose($row))
+		if(! session_to_choose($row))
 		{
-		?>
-	<input type="hidden" name="fieldid_session" value="<?php echo $row->id_session;?>" />
+			?>
+	<input type="hidden" name="fieldid_session"
+		value="<?php echo $row->id_session;?>" />
 	<?php 
 		}
-		 if(! statut_to_choose($row))
+		if(! statut_to_choose($row))
 		{
-		?>
-<input type="hidden" name="fieldstatut" value="<?php echo $row->statut; ?>"/>
+			?>
+	<input type="hidden" name="fieldstatut"
+		value="<?php echo $row->statut; ?>" />
 	<?php 
 		}
+		if(!session_to_choose($row))
+			displaySessionField($row);
 		?>
-		
-		
 
-			<input type="submit"
+
+
+	<input type="submit"
 		value="<?php echo (($actioname == "add") ? "Ajouter" : "Enregistrer");?>" />
-		
+
 	<table class="inputreport">
 		<?php 
 
@@ -1019,8 +1023,12 @@ function displayEditableReport($row, $actioname)
 
 		displayTypeField($row);
 
-		displaySessionField($row);
+		if(session_to_choose($row))
+			displaySessionField($row);
 
+		global $specialtr_fields;
+		global $start_tr_fields;
+		global $end_tr_fields;
 
 
 		foreach($active_fields as  $fieldID)
@@ -1029,50 +1037,55 @@ function displayEditableReport($row, $actioname)
 			if(!in_array($fieldID,$active_fields))
 				continue;
 			$type = isset($fieldsTypes[$fieldID]) ?  $fieldsTypes[$fieldID] : "";
+			if(in_array($fieldID, $start_tr_fields))
+				echo '<td></td><td><table><tr>';
+			if(!in_array($fieldID, $specialtr_fields))
+				echo '<tr>';
 			?>
-
-		<tr>
-			<td style="width: 17em;"><span><?php echo $title;?> </span>
-			</td>
-			<?php
-			switch($type)
-			{
-				case "topic":
-					display_topic($row, $fieldID);
-					break;
-				case "long":
-					display_long($row, $fieldID);
-					break;
-				case "treslong":
-					display_treslong($row, $fieldID);
-					break;
-				case "short":
-					display_short($row, $fieldID);
-					break;
-				case "evaluation":
-					display_evaluation($row, $fieldID);
-					break;
-				case "avis":
-					display_avis($row, $fieldID);
-					break;
-				case "rapporteur":
-					display_rapporteur($row, $fieldID);
-					break;
-				case "unit":
-					display_unit($row, $fieldID);
-					break;
-				case "grade":
-					display_grade($row, $fieldID);
-					break;
-				case "concours":
-					display_concours($row, $fieldID);
-					break;
-				case "ecole":
-					display_ecole($row, $fieldID);
-					break;
-			}
+		<td style="width: 10em;"><span><?php echo $title;?> </span>
+		</td>
+		<?php
+		switch($type)
+		{
+			case "topic":
+				display_topic($row, $fieldID);
+				break;
+			case "long":
+				display_long($row, $fieldID);
+				break;
+			case "treslong":
+				display_treslong($row, $fieldID);
+				break;
+			case "short":
+				display_short($row, $fieldID);
+				break;
+			case "evaluation":
+				display_evaluation($row, $fieldID);
+				break;
+			case "avis":
+				display_avis($row, $fieldID);
+				break;
+			case "rapporteur":
+				display_rapporteur($row, $fieldID);
+				break;
+			case "unit":
+				display_unit($row, $fieldID);
+				break;
+			case "grade":
+				display_grade($row, $fieldID);
+				break;
+			case "concours":
+				display_concours($row, $fieldID);
+				break;
+			case "ecole":
+				display_ecole($row, $fieldID);
+				break;
+		}
+		if(in_array($fieldID, $end_tr_fields))
+			echo '</tr></table></td>';
+		if(!in_array($fieldID, $specialtr_fields))
+				echo '<tr>';
 			?>
-		</tr>
 		<?php
 		}
 		?>
@@ -1092,8 +1105,9 @@ function editReport($id_rapport)
 {
 	try
 	{
-		$row = getReport($id_rapport);
-		checkReportIsEditable($row);
+		$report = getReport($id_rapport);
+		checkReportIsEditable($report);
+		$row = normalizeReport($report);
 		displayEditableReport($row, "update");
 	}
 	catch(Exception $exc)
@@ -1140,6 +1154,15 @@ function replace_accents($string)
 function normalizeName($name)
 {
 	return str_replace('\' ', '\'', ucwords(str_replace('\'', '\' ', strtolower($name))));
+}
+
+function sql_request($sql)
+{
+	$result = mysql_query($sql);
+	if($result == false)
+		throw new Exception("Failed to process sql query: \n\t".mysql_error()."\n\n".$sql);
+	else
+		return $result;
 }
 
 ?>

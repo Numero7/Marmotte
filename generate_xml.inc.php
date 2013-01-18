@@ -130,10 +130,15 @@ function EnteteGauche($row)
 			$newgrade = "DRCE2";
 		$result .= "<br/>".$newgrade;
 	}
-	if($row->type == "Candidature")
+	else if($row->type == "Candidature")
 	{
 		$result .= "<br/>".$row->concours;
 	}
+	else if($row->type == "Equivalence")
+	{
+		$result .= "<br/>pour les concours ".$row->grade;
+	}
+	
 	return $result;
 }
 

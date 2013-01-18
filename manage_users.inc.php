@@ -22,6 +22,20 @@ function getDescription($login)
 
 /* Caching users list for performance */
 
+function listRapporteurs()
+{
+	global $users_not_rapporteur;
+	
+	$empty[''] = (object) array();
+	$empty['']->description = "Pas de rapporteur";
+	$result = array_merge($empty,listUsers());
+	
+	foreach($users_not_rapporteur as $user)
+		unset($result[$user]);
+
+	return $result;
+}
+
 function listUsers()
 {
 	if(!isset($_SESSION['all_users']))
@@ -110,20 +124,14 @@ function isRapporteurUser($login = "")
 
 function addCredentials($login,$pwd)
 {
-	unset($_SESSION['all_users']);
-	unset($_SESSION['all_units']);
-	
+	$_SESSION = array();
 	$_SESSION['login'] = $login;
 	$_SESSION['pass'] = $pwd;
 } ;
 
 function removeCredentials()
 {
-	unset($_SESSION['all_users']);
-	unset($_SESSION['all_units']);
-	
-	unset($_SESSION['login']);
-	unset($_SESSION['pass']);
+	$_SESSION = array();
 } ;
 
 function authenticateBase($login,$pwd)
