@@ -13,6 +13,7 @@
 		require_once('manage_sessions.inc.php');
 		require_once('manage_unites.inc.php');
 		require_once('manage_rapports.inc.php');
+		require_once('manage_candidates.inc.php');
 		require_once('db.inc.php');
 
 		$id_rapport = isset($_REQUEST["id"]) ? $_REQUEST["id"] : -1;
@@ -244,6 +245,9 @@
 					{
 						echo "Cannot process action ajoutlabo: missing data<br/>";
 					}
+					break;
+				case 'extrairecandidats':
+					echo extraction_candidats();
 					break;
 				case 'mailing':
 				case 'email_rapporteurs':

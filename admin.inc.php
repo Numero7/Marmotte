@@ -47,6 +47,16 @@ if(isSecretaire())
 
 <hr/>
 
+<h2>Extraire liste candidats</h2>
+<p>
+<form enctype="multipart/form-data" action="index.php" method="post">
+	<input type="hidden" name="action" value="extrairecandidats"/>
+	<input type="submit" value="Extraire candidats" />
+	</form>
+</p>
+
+<hr/>
+
 <h2>Ajout d'une unité</h2>
 <form enctype="multipart/form-data" action="index.php" method="post">
 <p>

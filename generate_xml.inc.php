@@ -79,6 +79,10 @@ function EnteteDroit($row, $units)
 				else
 					$result .= " ".$row->unite;
 			}
+			else if($type == 'Equivalence')
+			{
+				$result .= $row->nom." ".$row->prenom."<br/>";
+			}
 			else if($type == 'Concours')
 			{
 				$result .= $avis_candidature[$row->avis];

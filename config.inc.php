@@ -38,7 +38,7 @@
 "4b" => "Vérification et preuves",
 "5" => "Recherche opérationnelle, aide à la décision, optimisation discrète et continue, satisfaction de contraintes, SAT",
 "6" => "Systèmes de production, logistique, ordonnancement",
-"7" => "Intelligence artificielle, système multi-agent, ingénierie / représentation et traitement des connaissances, représentation et traitement de l'incertitude, formalisation des raisonnements, fusion information",
+"7" => "I.A., système multi-agent, ingénierie / rep. et trait. des connaissances, de l'incertitude, form. des raisonnements, fusion information",
 "8" => "Environnements informatiques pour l'apprentissage humain",
 "9a" => "Sûreté de fonctionnement, sécurité informatique, protection de la vie privée",
 "9b" => "Réseaux sociaux",
@@ -68,6 +68,7 @@
 			"nom",
 			"prenom",
 			"concours",
+			"avis",
 			"grade",
 			"labo1",
 			"labo2",
@@ -148,7 +149,7 @@
 			"rayonnement"
 	);
 
-	$fieldsCandidat = array(
+	$fieldsConcours = array(
 			"concours",
 			"rapporteur",
 			"nom",
@@ -176,6 +177,30 @@
 			"rayonnement"
 	);
 
+	$fieldsCandidat = array(
+			"rapporteur",
+			"nom",
+			"prenom",
+			"grade",
+			"labo1",
+			"labo2",
+			"labo3",
+			"theme1",
+			"theme2",
+			"theme3",
+			"theseAnnee",
+			"theseLieu",
+			"HDRAnnee",
+			"HDRLieu",
+			"production",
+			"transfert",
+			"encadrement",
+			"responsabilites",
+			"mobilite",
+			"animation",
+			"rayonnement"
+	);
+	
 	$fieldsEquivalence = array(
 			"rapporteur",
 			"nom",
@@ -315,7 +340,8 @@
 	);
 		
 	$rapport_ie = array(
-			"La section réunie en instance d'équivalence considère que la somme des titres et travaux présentés dans le dossier du candidat est équivalente à au moins 4/8/12 années d'exercice des métiers de la recherche.",
+			"La section réunie en instance d'équivalence considère que la somme des titres et travaux présentés dans le dossier du candidat est équivalente à un doctorat d'une université française.",
+			"La section réunie en instance d'équivalence considère que la somme des titres et travaux présentés dans le dossier du candidat est équivalente à plus de 4/8/12 années d'exercice des métiers de la recherche.",
 			"La qualification professionnelle du candidat n'est pas probante.",
 			"Les travaux scientifiques présentés par le candidat ne sont pas probants.",
 			"Le diplôme étranger dont le candidat est titulaire est insuffisant et n'équivaut pas à un doctorat français.",
@@ -555,7 +581,7 @@
 	$enTetesDroit = array(
 			'Individu' => '<B>Nom, prénom et affectation du chercheur :</B><br/>',
 			'Concours' => '<B>Concours, classement, nom et prénom du candidat :</B><br/>',
-			'Equivalence' => '<B>Concours, nom et prénom du candidat :</B><br/>',
+			'Equivalence' => '<B>Nom et prénom du candidat :</B><br/>',
 			'Unite' => '<B>Code, intitulé et nom<br/>du directeur de l’unité :</B><br/>',
 			'Ecole' => '<B>Nom de l\'école et du porteur de projet :</B><br/>',
 			'PromotionDR' => '<B>Classement, nom et unité :</B><br/>',

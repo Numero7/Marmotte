@@ -141,8 +141,6 @@ CREATE TABLE IF NOT EXISTS `candidats` (
   `mobilite` text CHARACTER SET utf8 NOT NULL,
   `animation` text CHARACTER SET utf8 NOT NULL,
   `rayonnement` text CHARACTER SET utf8 NOT NULL,
-  `rapport` text CHARACTER SET utf8 NOT NULL,
-  `avis` text CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL,
   `auteur` varchar(40) CHARACTER SET utf8 NOT NULL,
   `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)

@@ -16,8 +16,8 @@ function unitsList()
 		foreach($units as $unit)
 		{
 			$l = strlen($unit->nickname);
-			$unit->prettyname .= str_pad("", $maxsize +10 - $l , " ")."(".$unit->code.")";
 			$unit->prettyname = str_replace(" ","&nbsp;", $unit->nickname);
+			$unit->prettyname .= str_pad("", $maxsize +10 - $l , " ")."(".$unit->code.")";
 		}
 		
 		$_SESSION['all_units'] = $units;
@@ -36,12 +36,12 @@ function createUnitIfNeeded($code)
 		addUnit($code,$code,$code,"");
 }
 
-function simpleUnitsList()
+function simpleUnitsList($short = false)
 {
 	$units = unitsList();
 	$result = array();
 	foreach($units as $unit => $row)
-		$result[$unit] = $row->nickname;
+		$result[$unit] = $short ? $row->nickname : $row->prettyname;
 	return $result;
 }
 

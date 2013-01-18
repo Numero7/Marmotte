@@ -212,7 +212,7 @@ function displayIndividualReport($row)
 
 function displayConcoursReport($row)
 {
-	global $fieldsCandidat;
+	global $fieldsConcours;
 	global $fieldsAll;
 	global $actions;
 	global $typesRapportsConcours;
@@ -245,7 +245,7 @@ function displayConcoursReport($row)
 </h2>
 <dl>
 	<?php
-	foreach($fieldsCandidat as  $fieldID)
+	foreach($fieldsConcours as  $fieldID)
 	{
 		if (!isset($specialRule[$fieldID]))
 		{
@@ -539,7 +539,7 @@ function displayRows($rows, $fields, $filters, $filter_values, $sortCrit)
 		<td><?php
 		$data = $row->$fieldID;
 		if(isset($fieldsTypes[$fieldID]) && ($fieldsTypes[$fieldID] == "unit") && isset($prettyunits[$row->$fieldID]))
-			 $data = $prettyunits[$row->$fieldID]->prettyname;
+			 $data = $prettyunits[$row->$fieldID]->nickname;
 
 		if(isSecretaire() && $fieldID=="rapporteur")
 		{
@@ -695,7 +695,7 @@ function get_active_fields($row)
 	global $fieldsIndividual;
 	global $fieldsUnites;
 	global $fieldsEcoles;
-	global $fieldsCandidat;
+	global $fieldsConcours;
 	global $fieldsGeneric;
 	global $fieldsEquivalence;
 
@@ -711,7 +711,7 @@ function get_active_fields($row)
 	else if(array_key_exists($eval_type,$typesRapportsIndividuels))
 		return $fieldsIndividual;
 	else if($eval_type == 'Candidature')
-		return $fieldsCandidat;
+		return $fieldsConcours;
 	else if($eval_type == 'Equivalence')
 		return $fieldsEquivalence;
 	else

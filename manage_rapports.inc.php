@@ -4,6 +4,22 @@ require_once('manage_sessions.inc.php');
 require_once('manage_unites.inc.php');
 require_once("config.inc.php");
 
+function normalizeReport($report)
+{
+	global $rapport_ie;
+	if($report->type == "Equivalence" && $report->statut == "vierge")
+	{
+		//$report->prerapport = "Raison de la demande: ". $raison."\n";
+		$report->prerapport .= "Annees d'équivalence annoncées par le candidat: ". $report->anneesequivalence;
+		
+		$report->rapport = "";
+		
+		foreach($rapport_ie as $line)
+			$report->rapport .= $line."\n\n";
+	}
+	return $report;
+}
+
 function getReport($id_rapport)
 {
 	$sql = "SELECT * FROM ".evaluations_db." WHERE id=$id_rapport";
@@ -11,6 +27,9 @@ function getReport($id_rapport)
 	if($result == false)
 		throw new Exception("Fail to process sql request ".$sql);
 	$report = mysql_fetch_object($result);
+	
+	$report = normalizeReport($report);
+	
 	if($report == false)
 		throw new Exception("No report with id ".$id_rapport);
 	else
@@ -64,9 +83,22 @@ function listOfAllVirginReports()
 	return $result;
 }
 
-function filterSortReports($filters, $filter_values, $sort_crit)
+function getAllReportsOfType($type,$id_session=-1)
 {
 
+	if($id_session==-1)
+		$id_session = current_session_id();
+	$filter_values = array('type'=> $type,'id_session' => $id_session);
+	
+	return filterSortReports("", $filter_values, "");
+}
+
+function filterSortReports($filters, $filter_values, $sort_crit)
+{
+	global $filtersAll;
+	if($filters == "")
+		$filters = $filtersAll;
+	
 	$sortCrit = parseSortCriteria($sort_crit);
 
 	$sql = "SELECT * FROM ".evaluations_db." WHERE date = (SELECT MAX(date) FROM evaluations AS mostrecent WHERE mostrecent.id_origine = evaluations.id_origine AND statut!=\"supprime\")";
@@ -76,7 +108,7 @@ function filterSortReports($filters, $filter_values, $sort_crit)
 	//$sql = "SELECT * FROM evaluations WHERE 1 ";
 
 	foreach($filters as $filter => $data)
-		if($filter_values[$filter] != $data['default_value'])
+		if(isset($filter_values[$filter]) && ($filter_values[$filter] != $data['default_value']))
 		$sql .= " AND ". (isset($data['sql_col']) ?  $data['sql_col'] : $filter)."=\"$filter_values[$filter]\" ";
 
 	$sql .= sortCriteriaToSQL($sortCrit);
@@ -434,7 +466,7 @@ function update($id_origine, $request)
 		}
 	}
 	
-	$sql = "INSERT INTO evaluations ($sqlfields) VALUES ($sqlvalues);";
+	$sql = "INSERT INTO ".evaluations_db." ($sqlfields) VALUES ($sqlvalues);";
 
 
 	mysql_query($sql);
