@@ -57,6 +57,9 @@ if(isSecretaire())
 
 <hr/>
 
+<table>
+<tr>
+<td>
 
 <h2>Ajout d'une unité</h2>
 <form enctype="multipart/form-data" action="index.php" method="post">
@@ -98,8 +101,8 @@ if(isSecretaire())
 </p>
 </form>
 
-	<hr/>
-
+</td>
+<td>
 <h2>Ajout de plusieurs unités</h2>
 <p>
 	Upload de fichier csv avec séparateur , entrées encadrées par des "",
@@ -119,7 +122,9 @@ if(isSecretaire())
 	<input type="submit" value="Ajouter unités" />
 	</p>
 </form>
-
+</td>
+</tr>
+</table>
 
 <?php 
 }
@@ -128,7 +133,10 @@ if(isSuperUser())
 {
 	?>
 <hr/>
+<table>
 <h2>Création nouveau rapporteur</h2>
+<tr>
+<td>
 <form method="post">
 <p>
 	<table class="inputreport">
@@ -137,16 +145,11 @@ if(isSuperUser())
 			<td style="width: 20em;"><input name="login"
 				value="<?php if(isset($login)) echo $login; ?>"/>
 			</td>
-			<td><span class="examplevaleur">Exemple : jdoe</span>
-			</td>
 		</tr>
 		<tr>
 			<td style="width: 20em;">Description</td>
 			<td style="width: 20em;"><input name="description"
 				value="<?php if(isset($description)) echo $description; ?>"/>
-			</td>
-			<td><span class="examplevaleur">Exemple : The honourable John Doe,
-					PhD</span>
 			</td>
 		</tr>
 		<tr>
@@ -185,15 +188,14 @@ if(isSuperUser())
 	</p>
 </form>
 
-<hr/>
-
+</td>
+<td>
 <h2>Suppression d'un rapporteur</h2>
 <form method="post"
 	onsubmit="return confirm('Etes vous sur de vouloir supprimer cet utilisateur ?');">
 	<p>
 	<table class="inputreport">
 		<tr>
-			<td style="width: 20em;">Utilisateur</td>
 			<td><select name="login">
 					<?php 
 					$users = listUsers();
@@ -207,16 +209,15 @@ if(isSuperUser())
 			</td>
 		</tr>
 		<tr>
-			<td><input type="hidden" name="action" value="admindeleteaccount"/></td>
-			<td><input type="submit" value="Supprimer rapporteur"/>
+			<td><input type="hidden" name="action" value="admindeleteaccount"/>
+			<input type="submit" value="Supprimer rapporteur"/>
 			</td>
 		</tr>
 	</table>
 	</p>
 </form>
-
-<hr/>
-
+</td>
+<td>
 <h2>Modifier un mot de passe</h2>
 <form method="post">
 <p>
@@ -258,6 +259,9 @@ if(isSuperUser())
 	</table>
 	</p>
 </form>
+</td>
+</tr>
+</table>
 
 <hr/>
 
@@ -303,6 +307,9 @@ if(isSecretaire())
 	?>
 <br>
 <hr/>
+<table>
+<tr><td>
+
 <h2>Ajout d'une session</h2>
 <form method="post"
 	onsubmit="return confirm('Etes vous sur de vouloir ajouter cette session ?');">
@@ -332,8 +339,8 @@ if(isSecretaire())
 	</p>
 </form>
 
-<hr/>
-
+</td>
+<td>
 <h2>Suppression d'une session</h2>
 <form method="get"
 	onsubmit="return confirm('Etes vous sur de vouloir supprimer cette session ?');">
@@ -364,6 +371,10 @@ if(isSecretaire())
 	</table>
 	</p>
 </form>
+</td>
+</tr>
+</table>
+
 <hr/>
 <?php 
 }?>
@@ -372,6 +383,8 @@ if(isSecretaire())
 if(isSecretaire())
 {
 ?>
+<table>
+<tr><td>
 <h2>Export</h2>
 <form method="post" enctype="multipart/form-data" >
 <p>
@@ -396,8 +409,8 @@ if(isSecretaire())
 		</p>
 	</form>
 	
-	<hr/>
-
+	</td>
+	<td>
 <h2>Import</h2>
 <form method="get" enctype="multipart/form-data" >
 <p>
@@ -421,6 +434,9 @@ if(isSecretaire())
 		</table>
 		</p>
 	</form>
+	</td>
+	</tr>
+	</table>
 	<hr/>
 	
 	

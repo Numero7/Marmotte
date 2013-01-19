@@ -400,11 +400,10 @@ function displayExport($filter_values)
 			echo "<img class=\"icon\" width=\"40\" height=\"40\" src=\"img/$idexp-icon-50px.png\" alt=\"$expname\"/></a>";
 		}
 	}
-	echo '</td>';
 	if (getUserPermissionLevel()>= NIVEAU_PERMISSION_PRESIDENT_SECRETAIRE)
 	{
 		echo '
-		</tr><tr><td align="center">
+		</td></tr><tr><td align="center">
 		<form method="post"  action="index.php">
 		<select name="new_statut">';
 		foreach ($statutsRapports as $val => $nom)
@@ -459,7 +458,7 @@ function displayRows($rows, $fields, $filters, $filter_values, $sortCrit)
 	?>
 <table>
 	<tr>
-		<td>
+		<td style="padding: 2.25em;">
 			<h2>
 				Filtrage (<a href="index.php?action=view&amp;reset_filter=">Reset</a>)
 			</h2>
@@ -497,10 +496,9 @@ function displayRows($rows, $fields, $filters, $filter_values, $sortCrit)
 				</table>
 			</form>
 		</td>
-		<td><p>&nbsp;</p></td>
-		<td align="center"><?php displayExport(getFilterValues());?>
+		<td align="center" style="padding: 2.5em;"><?php displayExport(getFilterValues());?>
 		</td>
-
+		<td style="padding: 2.25em;"></td>
 	</tr>
 </table>
 <hr />
@@ -538,23 +536,25 @@ function displayRows($rows, $fields, $filters, $filter_values, $sortCrit)
 			?>
 		<td><?php
 		$data = $row->$fieldID;
-		if(isset($fieldsTypes[$fieldID]) && ($fieldsTypes[$fieldID] == "unit") && isset($prettyunits[$row->$fieldID]))
+		$type = isset($fieldsTypes[$fieldID]) ?  $fieldsTypes[$fieldID] : "";
+		if( ($type == "unit") && isset($prettyunits[$row->$fieldID]))
 			$data = $prettyunits[$row->$fieldID]->nickname;
 
-		if(isSecretaire() && $fieldID=="rapporteur")
+		if(isSecretaire() &&  isset($fieldsTypes[$fieldID]) && $fieldsTypes[$fieldID]=="rapporteur")
 		{
 			?>
 			<form method="post" action="index.php">
 				<table width="10">
 					<tr>
-						<td><input type="hidden" name="action" value="setrapporteur" /> <input
-							type="hidden" name="id_toupdate" value="<?php echo $row->id;?>" />
-							<select name="newrapporteur">
+						<td><input type="hidden" name="action"
+							value="set<?php echo $fieldID;?>" /> <input type="hidden"
+							name="id_toupdate" value="<?php echo $row->id;?>" /> <select
+							name="new<?php echo $fieldID;?>">
 								<?php
 								foreach($users as $user => $data)
 								{
-									$sel = (($row->rapporteur) == ($user)) ? "selected=\"selected\"" : "";
-									echo  "\t\t\t\t\t<option value=\"".($user)."\" ".$sel.">".($data->description)."</option>\n";
+									$sel = (($row->$fieldID) == ($user)) ? "selected=\"selected\"" : "";
+									echo  "\t\t\t\t\t<option value=\"".($user)."\" ".$sel.">".($data->description)."&nbsp;</option>\n";
 								}
 								?>
 						</select>
@@ -566,7 +566,18 @@ function displayRows($rows, $fields, $filters, $filter_values, $sortCrit)
 			</form> <?php 
 		}
 		else if($data != "")
+		{
+			if($fieldID=="nom")
+			{
+			echo "<a href=\"?action=edit&amp;id=".($row->id)."&amp;id_origine=".$row->id_origine."\">";
 			echo '<span class="valeur">'.$data.'</span>';
+			echo '</a>';
+			}
+			else
+			{
+				echo '<span class="valeur">'.$data.'</span>';
+			}
+		}
 		?>
 		</td>
 		<?php
@@ -777,9 +788,8 @@ function displaySessionField($row)
 	if(session_to_choose($row))
 	{
 		?>
-<input
-	type="hidden" name="fieldid_session"
-	value="<?php echo $row->id_session;?>" />
+<input type="hidden"
+	name="fieldid_session" value="<?php echo $row->id_session;?>" />
 <?php 
 	}
 }
@@ -862,18 +872,23 @@ function display_avis($row, $fieldID)
 <?php
 }
 
+function rapporteur_to_choose($row)
+{
+	return isBureauUser();
+}
+
 function display_rapporteur($row, $fieldID)
 {
 	$users = listRapporteurs();
-	if(isBureauUser())
+	if(rapporteur_to_choose($row))
 	{
 		?>
-<td style="width: 30em;"><select name="fieldrapporteur"
+<td style="width: 30em;"><select name="field<?php echo $fieldID;?>"
 	style="width: 100%;">
 		<?php
 		foreach($users as $user => $data)
 		{
-			$sel = (($row->rapporteur) == ($user)) ? "selected=\"selected\"" : "";
+			$sel = (($row->$fieldID) == ($user)) ? "selected=\"selected\"" : "";
 			echo  "\t\t\t\t\t<option value=\"".($user)."\" ".$sel.">".($data->description)."</option>\n";
 		}
 		?>
@@ -883,20 +898,20 @@ function display_rapporteur($row, $fieldID)
 	}
 	else
 	{
-		echo "<td>".$users[$row->rapporteur]->description."</td>\n";
+		echo "<td>".$users[$row->$fieldID]->description."</td>\n";
 	}
 }
 
 function display_unit($row, $fieldID)
 {
 	?>
-<td><select name="field<?php echo $fieldID;?>" >
+<td><select name="field<?php echo $fieldID;?>">
 		<?php
 		$units = unitsList();
 		foreach($units as $unite)
 		{
 			$sel = (($row->$fieldID) == ($unite->code)) ? "selected=\"selected\"" : "";
-			echo  "\t\t\t\t\t<option value=\"".($unite->code)."\"".$sel.">".($unite->nickname)."</option>\n";
+			echo  "\t\t\t\t\t<option value=\"".($unite->code)."\"".$sel.">".($unite->nickname)."&nbsp;</option>\n";
 		}
 		?>
 </select>
@@ -955,7 +970,7 @@ function display_ecole($row, $fieldID)
 	echo '<td colspan="3"><input name="fieldecole" value="'.$row->ecole.'" style="width: 100%;"/> </td>';
 }
 
-function displayEditableReport($row, $actioname)
+function displayEditableReport($row, $actioname, $create_new = true)
 {
 	global $fieldsAll;
 	global $fieldsTypes;
@@ -975,17 +990,34 @@ function displayEditableReport($row, $actioname)
 	if(array_key_exists($eval_type, $typesRapports))
 		$eval_name = $typesRapports[$eval_type];
 
+	$next = -1;
+	if(isset($_SESSION['rows_id']) && ($actioname != "add"))
+	{
+		$rows_id = $_SESSION['rows_id'];
+		$id_origine = $row->id_origine;
+		$n = count($rows_id) -1;
+		for($i = 0; $i < $n; $i++)
+		{
+			if($rows_id[$i] == $id_origine)
+			{
+				$next = $rows_id[$i+1];
+				break;
+			}
+		}
+	}
+
 
 	?>
 <h1>
 	<?php 
 	$sessions = showSessions();
-	echo $sessions[$row->id_session]['prettyprint']." / ".($statutsRapports[$statut])." / ".($is_unite ? "Unite / " : "Chercheur / ").$eval_name;
+	echo $sessions[$row->id_session]['prettyprint']." / ".($is_unite ? "Unite / " : "Chercheur / ").$eval_name. " / #".(isset($row->id) ? $row->id : "New");
 	?>
 </h1>
 
 <form method="post" action="index.php" style="width: 100%">
 	<input type="hidden" name="action" value="<?php echo $actioname?>" /> <input
+		type="hidden" name="create_new" value="<?php echo $create_new?>" /> <input
 		type="hidden" name="id_origine" value="<?php echo $row->id_origine;?>" />
 	<?php if(! type_to_choose($row))
 		{?>
@@ -1006,15 +1038,34 @@ function displayEditableReport($row, $actioname)
 		value="<?php echo $row->statut; ?>" />
 	<?php 
 		}
-		if(!session_to_choose($row))
+		if(! rapporteur_to_choose($row))
+		{
+			?>
+	<input type="hidden" name="fieldrapporteur"
+		value="<?php echo $row->rapporteur; ?>" /> <input type="hidden"
+		name="fieldrapporteur2" value="<?php echo $row->rapporteur2; ?>" />
+	<?php 
+		}
+		if(session_to_choose($row))
 			displaySessionField($row);
 		?>
 
 
 
-	<input type="submit"
+	<input type="submit" name="submitandkeepediting"
 		value="<?php echo (($actioname == "add") ? "Ajouter" : "Enregistrer");?>" />
-
+	<input type="submit" name="submitandview"
+		value="<?php echo (($actioname == "add") ? "Ajouter et voir" : "Enregistrer et voir");?>" />
+	<?php 
+	if($next != -1)
+	{
+		?>
+	<input type="hidden" name="next_id" value="<?php echo $next; ?>" /> <input
+		type="submit" name="submitandeditnext"
+		value="<?php echo (($actioname == "add") ? "Ajouter et éditer le suivant" : "Enregistrer et éditer le suivant");?>" />
+	<?php 
+	}
+	?>
 	<table class="inputreport">
 		<?php 
 
@@ -1030,7 +1081,6 @@ function displayEditableReport($row, $actioname)
 		global $start_tr_fields;
 		global $end_tr_fields;
 
-
 		foreach($active_fields as  $fieldID)
 		{
 			$title = $fieldsAll[$fieldID];
@@ -1042,7 +1092,7 @@ function displayEditableReport($row, $actioname)
 			if(!in_array($fieldID, $specialtr_fields))
 				echo '<tr>';
 			?>
-		<td style="width: 10em;"><span><?php echo $title;?> </span>
+		<td style="width: 15em;"><span><?php echo $title;?> </span>
 		</td>
 		<?php
 		switch($type)
@@ -1084,14 +1134,22 @@ function displayEditableReport($row, $actioname)
 		if(in_array($fieldID, $end_tr_fields))
 			echo '</tr></table></td>';
 		if(!in_array($fieldID, $specialtr_fields))
-				echo '<tr>';
-			?>
+			echo '<tr>';
+		?>
 		<?php
 		}
 		?>
 		<tr>
 			<td colspan="2"><input type="submit"
 				value="<?php echo (($actioname == "add") ? "Ajouter" : "Enregistrer");?>" />
+				<?php 
+				if($next != -1)
+				{
+					?> <input type="submit" name="submitandeditnext"
+				value="<?php echo (($actioname == "add") ? "Ajouter et éditer le suivant" : "Enregistrer et éditer le suivant");?>" />
+				<?php 
+				}
+				?>
 			</td>
 		</tr>
 	</table>
@@ -1101,14 +1159,14 @@ function displayEditableReport($row, $actioname)
 }
 
 
-function editReport($id_rapport)
+function editReport($id_rapport, $create_new = true)
 {
 	try
 	{
 		$report = getReport($id_rapport);
 		checkReportIsEditable($report);
 		$row = normalizeReport($report);
-		displayEditableReport($row, "update");
+		displayEditableReport($row, "update", $create_new);
 	}
 	catch(Exception $exc)
 	{

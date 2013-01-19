@@ -210,7 +210,8 @@ function changeUserPermissions($login,$permissions)
 		if ($permissions<=getUserPermissionLevel())
 		{
 			$sql = "UPDATE ".users_db." SET permissions=$permissions WHERE login='$login';";
-			mysql_query($sql);
+			sql_request($sql);
+			unset($_SESSION['all_users']);
 		}
 	}
 	else

@@ -6,7 +6,7 @@ require_once("config.inc.php");
 
 /*
  * returns an object
- */
+*/
 function getReport($id_rapport)
 {
 	$sql = "SELECT * FROM ".evaluations_db." WHERE id=$id_rapport";
@@ -96,23 +96,39 @@ function filterSortReports($filters, $filter_values, $sort_crit)
 
 	foreach($filters as $filter => $data)
 		if(isset($filter_values[$filter]) && ($filter_values[$filter] != $data['default_value']))
-		$sql .= " AND ". (isset($data['sql_col']) ?  $data['sql_col'] : $filter)."=\"$filter_values[$filter]\" ";
+		{
+			if($filter == "login_rapp")
+			{
+				$val = $filter_values[$filter];
+				$sql .= " AND (rapporteur=\"".$val."\" OR rapporteur2=\"".$val."\") ";
+			}
+			else if($filter !="rapporteur2")
+			{
+				$sql .= " AND ". (isset($data['sql_col']) ?  $data['sql_col'] : $filter)."=\"$filter_values[$filter]\" ";
+			}
 
-	$sql .= sortCriteriaToSQL($sortCrit);
-	$sql .= ";";
-	//echo $sql;
-	$result=mysql_query($sql);
+		}
 
-	if($result == false)
-		throw new Exception("Echec de l'execution de la requete <br/>".$sql."<br/>");
+		$sql .= sortCriteriaToSQL($sortCrit);
+		$sql .= ";";
+		//echo $sql;
+		$result=mysql_query($sql);
 
-	$rows = array();
-	//echo $sql."<br/>".count($rows)." rows ".mysql_num_rows($result)." sqlrows<br/>";
+		if($result == false)
+			throw new Exception("Echec de l'execution de la requete <br/>".$sql."<br/>");
 
-	while ($row = mysql_fetch_object($result))
-		$rows[] = $row;
+		$rows = array();
+		//echo $sql."<br/>".count($rows)." rows ".mysql_num_rows($result)." sqlrows<br/>";
 
-	return $rows;
+		while ($row = mysql_fetch_object($result))
+			$rows[] = $row;
+
+		$rows_id = array();
+		foreach($rows as $row)
+			$rows_id[] = $row->id;
+		$_SESSION['rows_id'] = $rows_id;
+
+		return $rows;
 }
 
 function parseSortCriteria($sort_crit)
@@ -217,72 +233,6 @@ function updateRapportAvis($id_origine,$avis,$rapport)
 
 }
 
-
-function addVirginReport($type,$unite,$nom,$prenom,$grade,$rapporteur)
-{
-	if(!isReportCreatable())
-		throw new Exception("Le compte ".$login." n'a pas la permission de créer un rapport, veuillez contacter le secrétaire scientifique.");
-
-	if($grade == "")
-		$grade = "None";
-
-	createUnitIfNeeded($unite);
-
-	$fields = "id_session, id_origine, auteur, nom, prenom, grade, unite, rapporteur, type";
-	$values = current_session_id().",0,\"".getLogin().'","'.$nom.'","'.$prenom.'","'.$grade.'","'.$unite.'","'.$rapporteur.'","'.$type.'"';
-
-	$sql = "INSERT INTO ".evaluations_db." ($fields) VALUES ($values);";
-	$result = mysql_query($sql);
-
-	if($result == false)
-	{
-		echo "Failed to process sql query ".$sql."<br/>";
-		return false;
-	}
-	echo $sql."<br/>";
-
-	$newid = mysql_insert_id();
-	$sql = "UPDATE ".evaluations_db." SET id_origine=$newid WHERE id=$newid;";
-	mysql_query($sql);
-
-	return $newid;
-}
-
-function addVirginEquivalenceReport($nom,$prenom,$annees,$raison,$rapporteur)
-{
-	global $rapport_ie;
-	if(!isReportCreatable())
-		throw new Exception("Le compte ".$login." n'a pas la permission de créer un rapport, veuillez contacter le secrétaire scientifique.");
-
-
-	$prerapport = "Raison de la demande: ". $raison."\n";
-	$prerapport .= "Annees d'équivalence annoncées par le candidat: ". $annees."\n\n";
-
-	$rapport = "";
-
-	foreach($rapport_ie as $line)
-		$rapport .= $line."\n\n";
-
-	$fields = "id_session, id_origine, auteur, nom, prenom, anneesequivalence, rapport, prerapport, rapporteur, type, grade";
-	$values = current_session_id().",0,\"".getLogin().'","'.$nom.'","'.$prenom.'","'.$annees.'","'.$rapport.'","'.$prerapport.'","'.$rapporteur.'","Equivalence","None"';
-
-	$sql = "INSERT INTO ".evaluations_db." ($fields) VALUES ($values);";
-	$result = mysql_query($sql);
-
-	if($result == false)
-	{
-		echo "Failed to process sql query ".$sql."<br/>";
-		return false;
-	}
-	echo $sql."<br/>";
-
-	$newid = mysql_insert_id();
-	$sql = "UPDATE ".evaluations_db." SET id_origine=$newid WHERE id=$newid;";
-	mysql_query($sql);
-
-	return $newid;
-}
-
 function getStatus($id_rapport)
 {
 	$report = getReport($id_rapport);
@@ -291,16 +241,31 @@ function getStatus($id_rapport)
 
 function checkReportIsEditable($rapport)
 {
+	return true;
+	
 	if (!isSecretaire() && $rapport->statut == 'publie')
+	{
 		throw new Exception("Les rapports publies ne sont pas modifiables, changer d'abord le statut du rapport");
+	}
 	else if (isSecretaire())
+	{
 		return true;
-	else if( $rapport->rapporteur != getLogin())
-		throw new Exception("Le rapporteur de ce rapport est ".$rapport->rapporteur." mais vous êtes loggés sous l'identité ".getLogin().", veuillez demander un changement de rapporteur au bureau.");
+	}
+	else if( ($rapport->rapporteur != "") && ($rapport->rapporteur != getLogin()) && ($rapport->rapporteur2 != getLogin()))
+	{
+		if($rapport->rapporteur2 != "")
+			throw new Exception("Les rapporteurs de ce rapport sont ".$rapport->rapporteur." et ".$rapport->rapporteur2." mais vous êtes loggés sous l'identité ".getLogin().", veuillez demander un changement de rapporteur au bureau.");
+		else
+			throw new Exception("Le rapporteur de ce rapport est ".$rapport->rapporteur." mais vous êtes loggés sous l'identité ".getLogin().", veuillez demander un changement de rapporteur au bureau.");
+	}
 	else if ($rapport->statut != 'vierge' && $rapport->statut != 'prerapport')
+	{
 		throw new Exception("Ce rapport a le statut ".$rapport->statut." et n'est donc pas éditable.");
+	}
 	else
+	{
 		return true;
+	}
 }
 
 function checkReportDeletable($rapport)
@@ -376,9 +341,6 @@ function addReport($report)
 	if(!isReportCreatable())
 		throw new Exception("Le compte ".$login." n'a pas la permission de créer un rapport, veuillez contacter le secrétaire scientifique.");
 
-	if($report->statut == "vierge" && $report->id_origine != 0)
-		$report->statut = "prerapport";
-	
 	return addReportToDatabase($report);
 };
 
@@ -390,19 +352,18 @@ function addReportFromRequest($id_origine, $request)
 		if(!checkReportIsEditable($report))
 			throw new Exception("Le compte ".$login." n'a pas la permission de mettre à jour le rapport, veuillez contacter le bureau");
 	}
-	
+
 	$report = createReportFromRequest($id_origine, $request);
-		
-	if($report->statut == "vierge" && $report->id_origine != 0)
-		$report->statut = "prerapport";
-	
-	return addReportToDatabase($report);
+
+	$create_new = isset($request['create_new']) ? $request['create_new'] : true;
+
+	return addReportToDatabase($report, $create_new);
 }
 
 function createReportFromRequest($id_origine, $request)
 {
 	global $empty_report;
-	
+
 	$row = $empty_report;
 
 	$type = "";
@@ -416,7 +377,7 @@ function createReportFromRequest($id_origine, $request)
 	foreach($row as  $field => $value)
 		if (isset($request["field".$field]))
 		$row[$field] = nl2br(trim($request["field".$field]),true);
-	
+
 	return $row;
 
 }
@@ -425,19 +386,19 @@ function normalizeReport($report)
 {
 	global $report_prototypes;
 	global $empty_report;
-	
+
 	$report = (object) $report;
 
-	if(!isset($report->id_session))
+	if(!isset($report->id_session) || ($report->id_session == $empty_report['id_session']))
 		$report->id_session = current_session_id();
 
-	if(!isset($report->auteur))
+	if(!isset($report->auteur) || ($report->auteur == $empty_report['auteur']))
 		$report->auteur = getLogin();
 
 	foreach($empty_report as $field => $value)
 		if(!key_exists($field, $report))
 		$report->$field = $value;
-	
+
 	if($report->statut == "vierge")
 	{
 		if(isset($report_prototypes[$report->type]))
@@ -456,10 +417,15 @@ function normalizeReport($report)
 }
 
 
-function addReportToDatabase($report)
+function addReportToDatabase($report, $create_new = true)
 {
 	$report = normalizeReport($report);
-	
+
+	if($report->statut == "vierge" && $report->id_origine != 0)
+		$report->statut = "prerapport";
+
+	createUnitIfNeeded($report->unite);
+
 	$id_origine = isset($report->id_origine) ? $report->id_origine : 0;
 
 	global $fieldsAll;
@@ -468,39 +434,78 @@ function addReportToDatabase($report)
 			"id" =>0,
 	);
 
-	$sqlfields = "";
-	$sqlvalues = "";
-
-	$first = true;
-	foreach($report as  $field => $value)
+	if($create_new)
 	{
-		if (!isset($specialRule[$field]))
+
+		$sqlfields = "";
+		$sqlvalues = "";
+
+		$first = true;
+		foreach($report as  $field => $value)
 		{
-			$sqlfields.= ($first ? "" : ",").$field;
-			$first = false;
+			if (!isset($specialRule[$field]))
+			{
+				$sqlfields.= ($first ? "" : ",").$field;
+				$first = false;
+			}
 		}
+
+		$first = true;
+		foreach($report as  $field => $value)
+		{
+			if (!isset($specialRule[$field]))
+			{
+				$sqlvalues.=($first ? "" : ",")."\"".mysql_real_escape_string($value)."\"";
+				$first = false;
+			}
+		}
+
+		$sql = "INSERT INTO ".evaluations_db." ($sqlfields) VALUES ($sqlvalues);";
+
+		sql_request($sql);
+
+		$new_id = mysql_insert_id();
+
+		$sql = "UPDATE ".evaluations_db." SET id_origine=$new_id WHERE id_origine=$id_origine;";
+		sql_request($sql);
+
+		if(isset($_SESSION['rows_id']))
+		{
+			$rows_id = $_SESSION['rows_id'];
+			$n = count($rows_id) -1;
+			for($i = 0; $i < $n; $i++)
+			{
+				if($rows_id[$i] == $id_origine)
+				{
+					$_SESSION['rows_id'][$i] = $new_id;
+					break;
+				}
+			}
+		}
+
+		return $new_id;
+
+	}
+	else
+	{
+		$sqldata = "";
+
+
+		$first = true;
+		foreach($report as  $field => $value)
+		{
+			if (!isset($specialRule[$field]))
+			{
+				$sqldata.= ($first ? "" : ",").$field."=\"".$value."\" ";
+				$first = false;
+			}
+		}
+
+		$sql = "UPDATE ".evaluations_db." SET ".$sqldata." WHERE id_origine=$id_origine;";
+		sql_request($sql);
+		return $id_origine;
 	}
 
-	$first = true;
-	foreach($report as  $field => $value)
-	{
-		if (!isset($specialRule[$field]))
-		{
-			$sqlvalues.=($first ? "" : ",")."\"".mysql_real_escape_string($value)."\"";
-			$first = false;
-		}
-	}
-
-	$sql = "INSERT INTO ".evaluations_db." ($sqlfields) VALUES ($sqlvalues);";
-
-	sql_request($sql);
-	
-	$new_id = mysql_insert_id();
-
-	$sql = "UPDATE ".evaluations_db." SET id_origine=$new_id WHERE id_origine=$id_origine;";
-	sql_request($sql);
-
-	return $new_id;
 }
 
 
@@ -519,6 +524,11 @@ function change_rapporteur($id, $newrapporteur)
 	return change_property($id, "rapporteur", $newrapporteur);
 }
 
+function change_rapporteur2($id, $newrapporteur)
+{
+	return change_property($id, "rapporteur2", $newrapporteur);
+}
+
 function change_statut($id, $newstatut)
 {
 	return change_property($id, "statut", $newstatut);
@@ -534,6 +544,7 @@ function change_property($id_origine, $property_name, $newvalue)
 	$specialRule = array(
 			"auteur"=>0,
 			"date"=>0,
+			"id"=>0,
 	);
 
 	if(! property_exists($row,$property_name))
@@ -555,11 +566,12 @@ function change_property($id_origine, $property_name, $newvalue)
 	}
 	$sql = "INSERT INTO ".evaluations_db." ($fields) VALUES ($values);";
 	//echo $sql."<br>";
-	mysql_query($sql);
+	sql_request($sql);
 
 	$newid = mysql_insert_id();
 	$sql = "UPDATE ".evaluations_db." SET id_origine=$newid WHERE id_origine=$id_origine;";
 	mysql_query($sql);
+	sql_request($sql);
 
 	return $newid;
 }
@@ -571,7 +583,14 @@ function getVirginReports($rapporteur)
 	$filter_values = $empty_filter;
 	$filter_values['login_rapp'] = $rapporteur->login;
 	$filter_values['statut'] = 'vierge';
-	return filterSortReports(getCurrentFiltersList(), $filter_values,getSortCriteria());
+	$liste1 =  filterSortReports(getCurrentFiltersList(), $filter_values,getSortCriteria());
+
+	$filter_values = $empty_filter;
+	$filter_values['login_rapp2'] = $rapporteur->login;
+	$filter_values['statut'] = 'vierge';
+	$liste12 =  filterSortReports(getCurrentFiltersList(), $filter_values,getSortCriteria());
+
+	return array_merge($liste1,$liste2);
 }
 
 

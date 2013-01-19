@@ -3,43 +3,52 @@
 require_once("config.inc.php");
 require_once("manage_users.inc.php");
 require_once("manage_sessions.inc.php");
+
+global $typesRapportsConcours;
+global $typesRapportsIndividuels;
+
 ?>
-<div class="right">
-	<div class="round">
-		<div class="roundtl"></div>
-		<div class="roundtr"></div>
-		<div class="clearer"></div>
-	</div>
-	<div class="subnav">
-		<h1>
-			<a href="?">Accueil</a>
-		</h1>
-		<hr />
-		<h1>Afficher</h1>
-		<?php 	echo "<h2><a href=\"?action=view&amp;reset_filter=&amp;login_rapp=".getLogin()."&amp;id_session=".current_session_id()."\">Tous mes rapports</a></h2>";
+		<h2>Raccourcis</h2>
+		<ul>
+		<?php 	echo "<li><a href=\"?action=view&amp;reset_filter=&amp;login_rapp=".getLogin()."&amp;id_session=".current_session_id()."\">Mes rapports</a></li>";
 		?>
-		<?php 	echo "<h2><a href=\"?action=view&amp;reset_filter=&amp;login_rapp=".getLogin()."&amp;id_session=".current_session_id()."&amp;statut=prerapport\">Mes prérapports</a></h2>";
-		?>
-		<?php 	echo "<h2><a href=\"?action=view&amp;reset_filter=&amp;login_rapp=".getLogin()."&amp;id_session=".current_session_id()."&amp;statut=vierge\">Mes rapports vierges</a></h2>";
-		?>
-		<h2>
+		 						<li>
 			<a href="?action=view">Sélection en cours</a>
-		</h2>
-		<h2>
-			<a href="?action=view&amp;reset_filter=">Tous les rapports de la
-				session</a>
-		</h2>
-		<hr />
-		<h1>Sessions</h1>
+		</li>
+		<li>
+			<a href="?action=view&amp;reset_filter=">Tous</a>
+		</li>
+		 
 		<?php
-		//foreach($statutsRapportsPluriel as $statut => $nom)
-		//echo "<h2><a href=\"?action=view&amp;reset_filter=&amp;login_rapp=".getLogin()."&amp;id_session=".current_session_id()."&amp;statut=".$statut."\">Mes ".$nom."</a></h2>";
+		if(is_current_session_concours())
+		{
+			foreach($typesRapportsConcours as $typeEval => $value)
+		 	echo "<li><a href=\"?action=view&amp;reset_filter=&amp;id_session=".current_session_id()."&amp;type_eval_concours=".urlencode($value)."\">".$value."s</a></li>";
+		}
+		else
+		{
+		foreach($typesRapportsIndividuels as $typeEval => $value)
+		{
+			?>
+		<li>
+			<a href="?action=new&amp;type_eval=<?php echo $typeEval ?>"><?php echo $value?>
+			</a>
+		</li>
+		<?php
+		}
+		}
+		?>
+			</ul>
+			</td><td>
+			<ul>
+					<h2>Sessions</h2>
+			<?php
 
 		$sessions = sessionArrays();
 		foreach($sessions as $id => $nom)
 		{
 			//$typesRapports = getTypesEval($s["id"]);
-			echo "<h2><a href=\"?action=view&amp;reset_filter=&amp;id_session=".strval($id)."\">".$nom."</a></h2>";
+			echo "<li><a href=\"?action=view&amp;reset_filter=&amp;id_session=".strval($id)."\">".$nom."</a></li>";
 			/*			?>
 			 <!--
 			<ul>
@@ -52,7 +61,9 @@ require_once("manage_sessions.inc.php");
 			<?php
 			*/
 		}
-		
+		?>
+		</ul>
+		<?php 
 		if(isSecretaire())
 		{
 			?>
@@ -108,10 +119,3 @@ require_once("manage_sessions.inc.php");
 		}
 		}
 		?>
-
-	</div>
-	<div class="round">
-		<div class="roundbl"></div>
-		<div class="roundbr"></div>
-	</div>
-</div>

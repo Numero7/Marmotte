@@ -15,16 +15,8 @@
 	define("current_session",2);
 	
 	define("welcome_message",
-	"	<p>Bienvenue sur le site de gestion des rapports de la section 6.</p>
-		<p>
-			Le <b>menu situé à droite de cette page</b> vous permettra de
-			consulter ou éditer les rapports qui vous ont été affectés.
-			</p><p>Vous pouvez également consulter les rapports des autres membres de la section.
-		</p>
-<p>
-			Ce menu vous permet également de consulter les rapports des sessions précédentes.
-			</p>
-			<p>N'hésitez pas à nous contacter (Yann ou Hugo) en cas de difficultés.</p>
+	"	<p>Bienvenue sur le site de gestion des rapports de la section 6.
+			N'hésitez pas à nous contacter (Yann ou Hugo) en cas de difficultés.</p>
 		");
 	
 	$topics = array(
@@ -55,17 +47,19 @@
 	$fieldsSummary = array(
 		"type",
 		"rapporteur",
+		"rapporteur2",
 		"nom",
 		"prenom",
 		"grade",
 		"unite",
 		"date",
-		"statut"
+			"id"
 	);
 	
 	$fieldsSummaryCandidates = array(
 			"type",
 			"rapporteur",
+			"rapporteur2",
 			"nom",
 			"prenom",
 			"grade",
@@ -77,7 +71,7 @@
 			"theme1",
 			"theme2",
 			"theme3",
-			"statut"
+			"id"
 	);
 	
 	$statutsRapports = array( 'vierge' => "Rapport vierge", 'prerapport'=>'Prérapport', 'rapport'=>"Rapport", 'publie'=>"Rapport publié");
@@ -95,9 +89,10 @@
 		"anciennete_grade" => "Ancienneté dans grade",
 		"type" => "Type",
 		"rapporteur" => "Rapporteur",
+		"rapporteur2" => "Rapporteur2",
 			"avis" => "Proposition d'avis",
 			"rapport" => "Proposition de rapport",
-		"prerapport" => "Points marquants",
+		"prerapport" => "Prérapport/Remarques",
 		"date_recrutement" => "Date de recrutement",
 		"labo1" => "Labo 1",
 		"labo2" => "Labo 2",
@@ -126,6 +121,7 @@
 		"rayonnement_notes" => "Détails sur le rayonnement",		
 		"auteur" => "Auteur Dernière(s) modif(s)",
 		"date" => "Date modification",
+		"id" => "Id",
 	);
 
 	$specialtr_fields = array("labo1","labo2","labo3");
@@ -134,6 +130,7 @@
 	
 	$fieldsIndividual = array(
 			"rapporteur",
+			"rapporteur2",
 			"nom",
 			"prenom",
 			"unite",
@@ -158,6 +155,7 @@
 	$fieldsConcours = array(
 			"concours",
 			"rapporteur",
+			"rapporteur2",
 			"nom",
 			"prenom",
 			"avis",
@@ -185,6 +183,7 @@
 
 	$fieldsCandidat = array(
 			"rapporteur",
+			"rapporteur2",
 			"nom",
 			"prenom",
 			"grade",
@@ -209,6 +208,7 @@
 	
 	$fieldsEquivalence = array(
 			"rapporteur",
+			"rapporteur2",
 			"nom",
 			"prenom",
 			"grade",
@@ -229,7 +229,8 @@
 	
 	$fieldsUnites = array(
 			"rapporteur",
-		"unite",
+			"rapporteur2",
+			"unite",
 		"avis",
 		"rapport",
 		"prerapport"
@@ -237,7 +238,8 @@
 
 	$fieldsGeneric = array (
 			"rapporteur",
-		"nom",
+			"rapporteur2",
+			"nom",
 		"prenom",
 		"unite",
 		"avis",
@@ -247,6 +249,7 @@
 	
 	$fieldsEcoles = array(
 			"rapporteur",
+			"rapporteur2",
 			"ecole",
 			"nom",
 			"prenom",
@@ -265,6 +268,7 @@
 		"ecole" => "Ecole de Pythagore",
 		"type" => "Promotion",
 		"rapporteur" => "Anne ONYME",
+		"rapporteur2" => "Anne ONYME",
 			"theseAnnee" => "1979",
 			"theseLieu" => "Université de Turin",
 			"HDRAnnee" => "1985",
@@ -316,7 +320,8 @@
 			"HDRLieu" => "",
 			"anneesequivalence" => "0",
 		"rapporteur" => "",
-		"prerapport" => "",
+		"rapporteur2" => "",
+			"prerapport" => "",
 		"anciennete_grade" => "",
 		"date_recrutement" => "",
 		"production" => "",
@@ -369,7 +374,8 @@
 		"unite" => "unit",
 		"type" => "short",
 		"rapporteur" => "rapporteur",
-		"avis" => "avis",
+		"rapporteur2" => "rapporteur",
+			"avis" => "avis",
 		"rapport" => "treslong",
 		"prerapport" => "treslong",
 		"anciennete_grade" => "short",
@@ -400,7 +406,8 @@
 			"theme1" => "topic",
 			"theme2" => "topic",
 			"theme3" => "topic",
-			"anneesequivalence" =>"short"
+			"anneesequivalence" =>"short",
+			"id" =>"short"
 	);
 	
 	$typesRapportsIndividuels = array(
@@ -675,9 +682,9 @@
 	define("NIVEAU_PERMISSION_SUPER_UTILISATEUR", 1000);
 	
 	$actions = array(
+		'edit' => array('title' => "Modifier", 'level' => NIVEAU_PERMISSION_BASE, 'page' =>'', 'icon' => 'img/edit-icon-24px.png'),
 		'details' => array('title' => "Détails", 'level' => NIVEAU_PERMISSION_BASE, 'page' =>'', 'icon' => 'img/details-icon-24px.png'),
 		'history' => array('title' => "Historique", 'level' => NIVEAU_PERMISSION_BASE, 'page' =>'', 'icon' => 'img/history-icon-24px.png'),
-		'edit' => array('title' => "Modifier", 'level' => NIVEAU_PERMISSION_BASE, 'page' =>'', 'icon' => 'img/edit-icon-24px.png'),
 		'delete' => array('title' => "Supprimer", 'level' => NIVEAU_PERMISSION_PRESIDENT_SECRETAIRE, 'page' =>'', 'icon' => 'img/delete-icon-24px.png'),
 		'viewpdf' => array('title' => "Voir en PDF", 'level' => NIVEAU_PERMISSION_BASE, 'page' =>'export.php', 'icon' => 'img/pdf-icon-24px.png'),
 		'viewhtml' => array('title' => "Voir en HTML", 'level' => NIVEAU_PERMISSION_BASE, 'page' =>'export.php', 'icon' => 'img/html-icon-24px.png'),
@@ -746,6 +753,7 @@
 			'id_session' => array('name'=>"Session", 'default_value' =>-1, 'default_name' => "Toutes les sessions"),
 			'type_eval' => array('name'=>"Type d'évaluation" , 'sql_col'=>'type', 'liste' => $typesRapports,'default_value' => "", 'default_name' => "Tous les types"),
 			'login_rapp' => array('name'=>"Rapporteur" , 'sql_col'=>'rapporteur','default_value' =>"", 'default_name' => "Tous les rapporteurs"),
+			'login_rapp2' => array('name'=>"Rapporteur2" , 'sql_col'=>'rapporteur2','default_value' =>"", 'default_name' => "Tous les rapporteurs"),
 			'id_origine' => array('default_value' =>-1),
 			'id' => array('default_value' =>-1),
 	);
@@ -762,6 +770,7 @@
 			'theme2' => array('name'=>"Theme2" , 'liste' => $topics, 'default_value' => "", 'default_name' => ""),
 			'theme3' => array('name'=>"Theme3" , 'liste' => $topics, 'default_value' => "", 'default_name' => ""),
 			'login_rapp' => array('name'=>"Rapporteur" , 'sql_col'=>'rapporteur','default_value' =>"", 'default_name' => "Tous les rapporteurs"),
+			'login_rapp2' => array('name'=>"Rapporteur2" , 'sql_col'=>'rapporteur2','default_value' =>"", 'default_name' => "Tous les rapporteurs"),
 			'id_origine' => array('default_value' =>-1),
 			'id' => array('default_value' =>-1),
 	);
@@ -795,14 +804,13 @@
 	
 	$labos_csv  = array ('code', 'fullname', 'nickname', 'directeur');
 	$equivalence_csv  = array ('titrenomprenom', 'prerapport', 'annnesequivalence', 'rapporteur');
-	$candidature_csv  = array ('nom', 'prenom', 'prerapport', 'grade', 'concours', 'prerapport');
-	$chercheur_csv  = array ('nomprenom', 'unite', 'grade', 'rapporteur');
+	$candidature_csv  = array ('nom', 'prenom', 'prerapport', 'grade', 'concours', 'prerapport', 'rapporteur', 'rapporteur2');
+	$chercheur_csv  = array ('nomprenom', 'unite', 'grade', 'rapporteur', 'rapporteur2');
 	
 	$csv_composite_fields = array(
 			'titrenomprenom' => array('','nom','prenom') ,
 			 'nomprenom' => array('nom','prenom'),
 	);
-	
 	
 	$csv_fields = array_merge($labos_csv,$equivalence_csv, $chercheur_csv, $candidature_csv);
 	

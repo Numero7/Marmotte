@@ -41,13 +41,13 @@ function process_csv($type,$filename, $subtype, $fields="")
 			}
 			catch(Exception $exc)
 			{
-				$error .= "\t".$exc."\n";
+				$errors .= "\t".$exc."\n";
 			}
 		}
 		if($errors != "")
 			return "Uploaded ".$nb." reports of type ".$type."/".$subtype." to database with errors:\n\t".$errors;
 		else
-			return "Uploaded ".$nb." labs information to units database";
+			return "Uploaded ".$nb." reports of type ".$type."/".$subtype." to database";
 	}
 	else
 	{
@@ -59,17 +59,19 @@ function addToReport($report, $field, $data)
 {
 	global $csv_composite_fields;
 	global $csv_preprocessing;
+	global $fieldsAll;
 
 	if(isset($csv_composite_fields[$field]))
 	{
 		$subfields = $csv_composite_fields[$field];
 		$pieces = explode(" ",$data, count($subfields));
+		$i;
 		for($i = 0; $i < count($pieces); $i++)
-			addToReport($report, $subfields[i], $pieces[i]);
+			addToReport($report, $subfields[$i], $pieces[$i]);
 	}
 	else
 	{
-		if(isset($report->$field))
+		if(key_exists($field, $fieldsAll))
 		{
 			if(isset($csv_preprocessing[$field]))
 				$data = $csv_preprocessing[$field]($data);
@@ -80,9 +82,8 @@ function addToReport($report, $field, $data)
 
 function getDocFromCsv($data, $fields)
 {
-	global $empty_report;
 
-	$report = (object) $empty_report;
+	$report = (object) array();
 
 	$m = min(count($data), count($fields));
 	for($i = 0; $i < $m; $i++)

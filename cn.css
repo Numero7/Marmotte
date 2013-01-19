@@ -3,6 +3,28 @@
 }
 
 
+table.toptable
+{
+	    text-align: top;
+		text-color: #FFFFFF;
+	
+}
+
+table.toptable td
+{
+    padding-left: 10px;	
+}
+
+table.toptable tr
+{
+	valign :top;
+}
+
+table.toptable table
+{
+	valign :top;
+}
+
 table.emploidutemps
 {
 	width : 150%;
@@ -107,13 +129,14 @@ table.compo a {
 	color: #FFFFFF;
 	padding: 8px;
 	font-weight:bold;
-	font-size: 150%;
-	text-align: right;
+	font-size: 110%;
+	text-align: left;
 	margin-bottom:1em;
 	border: 1px solid #002A4C;
   }
 
 .login{
+		  text-align: top;
 	border: 2px solid #ffffff;
 	padding: 3px;
 	font-weight:bold;

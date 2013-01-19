@@ -1,5 +1,5 @@
 
-<div class="left">
+<div class="large">
 
 	<!-- 
 	<div class="header">
@@ -62,7 +62,17 @@
 					</script>
 					<?php
 					break;
-				case 'view':
+				case 'setrapporteur2':
+					$newrapporteur = isset($_REQUEST['newrapporteur2']) ? $_REQUEST['newrapporteur2'] : "";
+					$newid = change_rapporteur2($id_toupdate, $newrapporteur);
+					displayReports();
+					?>
+					<script type="text/javascript">
+					document.getElementById("t<?php echo $newid;?>").scrollIntoView();
+					</script>
+					<?php
+					break;
+					case 'view':
 					displayReports();
 					break;
 				case 'details':
@@ -76,7 +86,19 @@
 					break;
 				case 'update':
 					$id_nouveau = addReportFromRequest($id_origine,$_REQUEST);
-					displayReport($id_nouveau);
+					if(isset($_REQUEST["submitandeditnext"]) && 	isset($_REQUEST["next_id"]))
+					{
+						$next_id = $_REQUEST["next_id"];
+						editReport($next_id);
+					}
+					else if(isset($_REQUEST["submitandview"]))
+					{
+						displayReport($id_nouveau);
+					}
+					else
+					{
+						editReport($id_nouveau,false);
+					}
 					break;
 				case 'new':
 					if (isset($_REQUEST["type_eval"]))
@@ -93,7 +115,14 @@
 					break;
 				case 'add':
 					$id_nouveau = addReportFromRequest($id_origine,$_REQUEST);
-					displayReport($id_nouveau);
+					if(isset($_REQUEST["submitandview"]))
+					{
+						displayReport($id_nouveau);
+					}
+					else
+					{
+						editReport($id_nouveau,false);
+					}
 					break;
 				case'newpwd':
 				case 'adminnewpwd':
@@ -183,14 +212,14 @@
 				case 'adminnewaccount':
 					if (isSuperUser())
 					{
-						if (isset($_REQUEST["envoiparemail"]) and isset($_REQUEST["email"]) and isset($_REQUEST["description"]) and isset($_REQUEST["newpwd1"]) and isset($_REQUEST["newpwd2"]) and isset($_REQUEST["login"]))
+						if (isset($_REQUEST["email"]) and isset($_REQUEST["description"]) and isset($_REQUEST["newpwd1"]) and isset($_REQUEST["newpwd2"]) and isset($_REQUEST["login"]))
 						{
 							$desc = $_REQUEST["description"];
 							$pwd1 = $_REQUEST["newpwd1"];
 							$pwd2 = $_REQUEST["newpwd2"];
 							$login = $_REQUEST["login"];
 							$email = $_REQUEST["email"];
-							$envoiparemail = $_REQUEST["envoiparemail"];
+							$envoiparemail = isset($_REQUEST["envoiparemail"])  ? $_REQUEST["envoiparemail"] : false;
 
 							if (($pwd1==$pwd2))
 								echo "<p><strong>".createUser($login,$pwd2,$desc, $email, $envoiparemail)."</p></strong>";
@@ -267,6 +296,7 @@
 				case "";
 				default:
 					echo welcome_message;
+					displayReports();
 					break;
 			}
 		}

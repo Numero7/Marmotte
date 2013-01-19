@@ -60,7 +60,6 @@
 		{
 			include("authbar.inc.php");
 			include("content.inc.php");
-			include("sidemenu.inc.php");
 		}
 		else
 		{
