@@ -4,6 +4,7 @@ require_once('tcpdf/config/lang/eng.php');
 require_once('tcpdf/tcpdf.php');
 require_once('manage_users.inc.php');
 require_once('generate_xml.inc.php');
+require_once('generate_csv.inc.php');
 require_once('generate_pdf.inc.php');
 require_once('generate_zip.inc.php');
 
@@ -22,7 +23,7 @@ if($dbh!=0)
 				viewReportAsPdf($id); break;
 			case 'viewhtml':
 				viewReportAsHtml($id);	break;
-			case 'group':
+			case 'export':
 				{
 					if (isset($_REQUEST["save"]) and isset($_REQUEST["avis"]) and isset($_REQUEST["rapport"]))
 					{
@@ -66,6 +67,38 @@ if($dbh!=0)
 								$xml_reports->save('reports/reports.xml');
 								echo "<script>window.location = 'create_reports.php?zip_files='</script>";
 
+							}
+						}
+						else if($type =="csv")
+						{
+							$csv_reports = getReportsAsCSV(getFilterValues(), getSortCriteria());
+								
+							$filename = "zips/reports.csv";
+								
+							if($handle = fopen($filename, 'w'))
+							{
+								fwrite ($handle, $csv_reports);
+								fclose($handle);
+									
+								header("Pragma: public");
+								header("Expires: 0");
+								header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+								header("Cache-Control: public");
+								header("Content-Description: File Transfer");
+								header("Content-type: application/octet-stream");
+								header("Content-Disposition: attachment; filename=\"reports.csv\"");
+								header("Content-Transfer-Encoding: binary");
+								header("Content-Length: ".strlen($csv_reports));
+
+								ob_clean();
+								flush();
+
+									
+								readfile($filename);
+							}
+							else
+							{
+								throw new Exception("Cant create file ".$filename);
 							}
 						}
 						else

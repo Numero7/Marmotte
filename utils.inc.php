@@ -396,7 +396,7 @@ function displayExport($filter_values)
 		$level = $exp["permissionlevel"];
 		if (getUserPermissionLevel()>=$level)
 		{
-			echo "<a href=\"export.php?action=group&amp;type=$idexp\">";
+			echo "<a href=\"export.php?action=export&amp;type=$idexp\">";
 			echo "<img class=\"icon\" width=\"40\" height=\"40\" src=\"img/$idexp-icon-50px.png\" alt=\"$expname\"/></a>";
 		}
 	}
@@ -454,7 +454,10 @@ function displayRows($rows, $fields, $filters, $filter_values, $sortCrit)
 	global $fieldsAll;
 	global $actions;
 	global $fieldsTypes;
-
+	global $specialtr_fields;
+	global $start_tr_fields;
+	global $end_tr_fields;
+	
 	?>
 <table>
 	<tr>
@@ -467,8 +470,12 @@ function displayRows($rows, $fields, $filters, $filter_values, $sortCrit)
 					<?php 
 					foreach($filters as $filter => $data)
 						if(isset($data['liste']))
-				{?>
-					<tr>
+				{
+					if(in_array($filter, $start_tr_fields))
+						echo '<tr><td></td><td><table><tr>';
+					if(!in_array($filter, $specialtr_fields))
+						echo '<tr>';
+				?>
 						<td style="width: 20em;"><?php echo $data['name'];?></td>
 						<td><select name="<?php echo $filter?>">
 								<option value="<?php echo $data['default_value']; ?>">
@@ -484,8 +491,11 @@ function displayRows($rows, $fields, $filters, $filter_values, $sortCrit)
 								}
 								?>
 						</select></td>
-					</tr>
 					<?php 
+					if(!in_array($filter, $specialtr_fields))
+						echo '</tr>';
+					if(in_array($filter, $end_tr_fields))
+						echo '</tr></table></td></tr>';
 				}?>
 					<tr>
 						<td></td>
@@ -813,7 +823,7 @@ function display_treslong($row, $fieldID)
 		</tr>
 		<tr>
 		<td colspan="3">
-		<textarea rows=15 cols=100 name="field'.$fieldID.'" >'.remove_br($row->$fieldID).'</textarea>
+		<textarea rows="15" cols="100" name="field'.$fieldID.'" >'.remove_br($row->$fieldID).'</textarea>
 			</td>
 			';
 }
@@ -908,10 +918,10 @@ function display_unit($row, $fieldID)
 <td><select name="field<?php echo $fieldID;?>">
 		<?php
 		$units = unitsList();
-		foreach($units as $unite)
+		foreach($units as $unite =>$valeur)
 		{
-			$sel = (($row->$fieldID) == ($unite->code)) ? "selected=\"selected\"" : "";
-			echo  "\t\t\t\t\t<option value=\"".($unite->code)."\"".$sel.">".($unite->nickname)."&nbsp;</option>\n";
+			$sel = (($row->$fieldID) == ($valeur->code)) ? "selected=\"selected\"" : "";
+			echo  "\t\t\t\t\t<option value=\"".($valeur->code)."\"".$sel.">".$valeur->prettyname."&nbsp;</option>\n";
 		}
 		?>
 </select>
@@ -991,17 +1001,26 @@ function displayEditableReport($row, $actioname, $create_new = true)
 		$eval_name = $typesRapports[$eval_type];
 
 	$next = -1;
+	$previous = -1;
 	if(isset($_SESSION['rows_id']) && ($actioname != "add"))
 	{
 		$rows_id = $_SESSION['rows_id'];
 		$id_origine = $row->id_origine;
-		$n = count($rows_id) -1;
+		$n = count($rows_id) ;
 		for($i = 0; $i < $n; $i++)
 		{
 			if($rows_id[$i] == $id_origine)
 			{
-				$next = $rows_id[$i+1];
+				if($i < $n - 1)
+					$next = $rows_id[$i+1];
+				else
+					$next = $rows_id[0];
+				if($i > 0)
+					$previous = $rows_id[$i-1];
+				else
+					$previous = $rows_id[$n-1];
 				break;
+				
 			}
 		}
 	}
@@ -1052,21 +1071,28 @@ function displayEditableReport($row, $actioname, $create_new = true)
 
 
 
+	<input type="hidden" name="next_id" value="<?php echo $next; ?>" />
+	<input type="hidden" name="previous_id" value="<?php echo $previous; ?>" />
+		<input
+		type="submit" name="editprevious"
+		value="<<" />
 	<input type="submit" name="submitandkeepediting"
 		value="<?php echo (($actioname == "add") ? "Ajouter" : "Enregistrer");?>" />
+		<?php 
+		if(isSecretaire())
+		{
+		?>
+	<input type="submit" name="deleteandeditnext"
+		value="Supprimer" />
+		<?php 
+		}
+		?>
 	<input type="submit" name="submitandview"
 		value="<?php echo (($actioname == "add") ? "Ajouter et voir" : "Enregistrer et voir");?>" />
-	<?php 
-	if($next != -1)
-	{
-		?>
-	<input type="hidden" name="next_id" value="<?php echo $next; ?>" /> <input
-		type="submit" name="submitandeditnext"
-		value="<?php echo (($actioname == "add") ? "Ajouter et éditer le suivant" : "Enregistrer et éditer le suivant");?>" />
-	<?php 
-	}
-	?>
-	<table class="inputreport">
+	 <input
+		type="submit" name="editnext"
+		value=">>" />
+		<table class="inputreport">
 		<?php 
 
 
@@ -1074,8 +1100,6 @@ function displayEditableReport($row, $actioname, $create_new = true)
 
 		displayTypeField($row);
 
-		if(session_to_choose($row))
-			displaySessionField($row);
 
 		global $specialtr_fields;
 		global $start_tr_fields;
@@ -1088,11 +1112,11 @@ function displayEditableReport($row, $actioname, $create_new = true)
 				continue;
 			$type = isset($fieldsTypes[$fieldID]) ?  $fieldsTypes[$fieldID] : "";
 			if(in_array($fieldID, $start_tr_fields))
-				echo '<td></td><td><table><tr>';
+				echo '<tr><td></td><td><table><tr>';
 			if(!in_array($fieldID, $specialtr_fields))
 				echo '<tr>';
 			?>
-		<td style="width: 15em;"><span><?php echo $title;?> </span>
+		<td style="width: 10em;"><span><?php echo $title;?> </span>
 		</td>
 		<?php
 		switch($type)
@@ -1131,10 +1155,10 @@ function displayEditableReport($row, $actioname, $create_new = true)
 				display_ecole($row, $fieldID);
 				break;
 		}
-		if(in_array($fieldID, $end_tr_fields))
-			echo '</tr></table></td>';
 		if(!in_array($fieldID, $specialtr_fields))
-			echo '<tr>';
+			echo '</tr>';
+		if(in_array($fieldID, $end_tr_fields))
+			echo '</tr></table></td></tr>';
 		?>
 		<?php
 		}

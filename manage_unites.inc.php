@@ -17,7 +17,7 @@ function unitsList()
 		{
 			$l = strlen($unit->nickname);
 			$unit->prettyname = str_replace(" ","&nbsp;", $unit->nickname);
-			$unit->prettyname .= str_pad("", $maxsize +10 - $l , " ")."(".$unit->code.")";
+			$unit->prettyname .= str_pad("", $maxsize +10 - $l , " ")."- ".$unit->code;
 		}
 		
 		$_SESSION['all_units'] = $units;

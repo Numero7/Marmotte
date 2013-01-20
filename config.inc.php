@@ -124,9 +124,9 @@
 		"id" => "Id",
 	);
 
-	$specialtr_fields = array("labo1","labo2","labo3");
-	$start_tr_fields = array("labo1");
-	$end_tr_fields = array("labo3");
+	$specialtr_fields = array("labo1","labo2","labo3","theme1","theme2","theme3");
+	$start_tr_fields = array("labo1","theme1");
+	$end_tr_fields = array("labo3","theme3");
 	
 	$fieldsIndividual = array(
 			"rapporteur",
@@ -722,7 +722,14 @@
 					"xsl" => "",
 					"name" => "ZIP",
 					"permissionlevel" => NIVEAU_PERMISSION_PRESIDENT_SECRETAIRE
+			),
+			"csv" => 	array(
+					"mime" => "application/x-text",
+					"xsl" => "",
+					"name" => "CSV",
+					"permissionlevel" => NIVEAU_PERMISSION_PRESIDENT_SECRETAIRE
 			)
+				
 			/*			"latex" => 	array(
 			 "mime" => "application/x-latex",
 					"xsl" => "",

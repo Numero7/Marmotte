@@ -18,7 +18,7 @@ if (isset($_FILES['uploadedfile']))
 			if(move_uploaded_file($filename,$target_path))
 			{
 				echo "<p>File uploaded and stored as ".$target_path."</p>";
-				echo "<p>".process_csv($type,$target_path,$subtype,"")."</p>";
+				echo "<p>".process_csv($type,$target_path,$subtype)."</p>";
 			}
 			else
 				echo 'Failed to store uploaded file '.$filename.' to '.$target_path;

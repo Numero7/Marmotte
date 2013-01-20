@@ -242,7 +242,7 @@ function getStatus($id_rapport)
 function checkReportIsEditable($rapport)
 {
 	return true;
-	
+
 	if (!isSecretaire() && $rapport->statut == 'publie')
 	{
 		throw new Exception("Les rapports publies ne sont pas modifiables, changer d'abord le statut du rapport");
@@ -304,25 +304,49 @@ function deleteReport($id_rapport)
 
 	//Finding newest report before this one, if exists, and making it the newest
 	$sql = "SELECT * FROM ".evaluations_db." WHERE date = (SELECT MAX(date) FROM evaluations AS mostrecent WHERE mostrecent.id_origine=$id_rapport AND mostrecent.id != $id_rapport AND mostrecent.statut!=\"supprime\")";
-	$result=mysql_query($sql);
-	if($result == false)
-		throw "Fail to process sql request ".$sql;
+	$result= sql_request($sql);
+
 	$before = mysql_fetch_object($result);
 	if($before != false)
 	{
 		$previous_id = $before->id;
 		$sql = "UPDATE ".evaluations_db." SET id_origine=$previous_id WHERE id_origine=$id_rapport ;";
-		if(mysql_query($sql) == false)
-			throw new Exception("Failed to delete report: failed to set previous report as newest: failed to process query \"$sql\"");
+		sql_request($sql);
+		if(isset($_SESSION['rows_id']))
+		{
+			$rows_id = $_SESSION['rows_id'];
+			for($i = 0; $i < count($rows_id); $i++)
+			{
+				if($rows_id[$i] == $id_rapport)
+				{
+					$_SESSION['rows_id'][$i] = $before->id;
+					break;
+				}
+			}
+		}
+	}
+	else
+	{
+		if(isset($_SESSION['rows_id']))
+		{
+			$rows_id = $_SESSION['rows_id'];
+			for($i = 0; $i < count($rows_id); $i++)
+			{
+				if($rows_id[$i] == $id_rapport)
+				{
+					array_splice($_SESSION['rows_id'],$i,1);
+					break;
+				}
+			}
+		}
 	}
 
 	$sql = "UPDATE ".evaluations_db." SET statut=\"supprime\"WHERE id=$id_rapport ;";
-	if(mysql_query($sql) == false)
-		throw new Exception("Failed to delete report: failed to set status of report to supprime: failed to process query \"$sql\"");
+	sql_request($sql);
 	$sql = "UPDATE ".evaluations_db." SET date=NOW() WHERE id=$id_rapport ;";
-	mysql_query($sql);
+	sql_request($sql);
 
-	return "Deleted report ".$id_rapport." <br/>";
+	return ($before !=false) ? $before->id : -1;
 };
 
 
