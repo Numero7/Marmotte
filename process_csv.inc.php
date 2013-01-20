@@ -21,7 +21,7 @@ function process_csv($type,$filename, $subtype)
 		$fields = fgetcsv ( $file, 0, ',' , '"' );
 		foreach($fields as $field)
 			if($field != "" && !key_exists($field, $fieldsAll) && !key_exists($field, $csv_composite_fields))
-			throw new Exception("No field with name ". $fields." in evaluations or in composite fields list");
+			throw new Exception("No field with name ". $field." in evaluations or in composite fields list");
 		$nbfields = count($fields);
 		
 		$nb = 0;
@@ -60,6 +60,7 @@ function addToReport($report, $field, $data)
 	global $csv_composite_fields;
 	global $csv_preprocessing;
 	global $fieldsAll;
+	global $fieldsTypes;
 
 	if(isset($csv_composite_fields[$field]))
 	{
@@ -73,12 +74,36 @@ function addToReport($report, $field, $data)
 	{
 		if(key_exists($field, $fieldsAll))
 		{
-			if(isset($csv_preprocessing[$field]))
-				$data = $csv_preprocessing[$field]($data);
-			$report->$field .= $data;
+			$preproc = preprocess($field, $data);
+			$report->$field .= $preproc;
 		}
 	}
 }
+
+function preprocess($field, $data)
+{
+	global $csv_preprocessing;
+	global $fieldsTypes;
+	
+	$result = $data;
+	
+	if(isset($csv_preprocessing[$field]))
+	{
+		$result = call_user_func($csv_preprocessing[$field],$data);
+	}
+	else if(isset($fieldsTypes[$field]))
+	{
+		$type = $fieldsTypes[$field];
+		if(isset($csv_preprocessing[$type]))
+			$result =  call_user_func($csv_preprocessing[$type],$data);
+	}
+	else
+	{
+		$result = $data;
+	}
+	return $result;	
+}
+
 
 function getDocFromCsv($data, $fields)
 {
@@ -99,7 +124,8 @@ function addCsvReport($type, $data, $fields)
 	
 	$report = getDocFromCsv($data,$fields);
 	$report->statut = 'vierge';
-	$report->type = $type;
+	if($type != "")
+		$report->type = $type;
 	addReport($report,false);
 }
 

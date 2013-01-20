@@ -18,11 +18,11 @@ if(isSecretaire())
 </form>
 	<hr/>
 
-<h2>Creation de rapports vierges</h2>
+<h2>Import de rapports</h2>
 <p>
 	Upload de fichier csv avec séparateur , entrées encadrées par des "",
-	encodé en utf-8 et champs dans l'ordre Nom Prenom/Unite/Grade/Rapporteur pour les rapports
-	chercheurs et Unite/Rapporteur pour les rapports unites.<br />
+	encodé en utf-8.
+	La première ligne doit contenir les champs.
 	
 </p>
 <form enctype="multipart/form-data" action="index.php" method="post"
@@ -31,13 +31,14 @@ if(isSecretaire())
 	<select name="subtype">
 		<?php
 		global $typesRapports;
+		echo "<option value=\"\">Spécifié dans le csv</option>\n";
 		foreach ($typesRapports as $ty => $value)
 			echo "<option value=\"$ty\">".$value."</option>\n";
 		?>
 	</select>
 	<input type="hidden" name="type" value="rapports"/>
 	<input type="hidden" name="action" value="upload"/>
-	<input type="hidden" name="MAX_FILE_SIZE" value="100000" />
+	<input type="hidden" name="MAX_FILE_SIZE" value="10000000" />
 	Fichier csv: 
 	<input name="uploadedfile" type="file" />
 	<br/>

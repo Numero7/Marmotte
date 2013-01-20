@@ -100,7 +100,7 @@
 			"theme1" => "Theme 1",
 			"theme2" => "Theme 2",
 			"theme3" => "Theme 3",
-			"theseAnnee" => "Annee thèse",
+			"theseAnnee" => "Année+mois thèse",
 			"theseLieu" => "Lieu thèse",
 			"HDRAnnee" => "Annee HDR",
 			"HDRLieu" => "Lieu HDR",
@@ -143,13 +143,13 @@
 			"rapport",
 			"prerapport",
 			"date_recrutement",
-			"production",
-			"transfert",
-			"encadrement",
-			"responsabilites",
-			"mobilite",
-			"animation",
-			"rayonnement"
+			"production_notes",
+			"transfert_notes",
+			"encadrement_notes",
+			"responsabilites_notes",
+			"mobilite_notes",
+			"animation_notes",
+			"rayonnement_notes"
 	);
 
 	$fieldsConcours = array(
@@ -172,13 +172,13 @@
 			"HDRLieu",
 			"prerapport",
 			"rapport",
-			"production",
-			"transfert",
-			"encadrement",
-			"responsabilites",
-			"mobilite",
-			"animation",
-			"rayonnement"
+			"production_notes",
+			"transfert_notes",
+			"encadrement_notes",
+			"responsabilites_notes",
+			"mobilite_notes",
+			"animation_notes",
+			"rayonnement_notes"
 	);
 
 	$fieldsCandidat = array(
@@ -197,13 +197,13 @@
 			"theseLieu",
 			"HDRAnnee",
 			"HDRLieu",
-			"production",
-			"transfert",
-			"encadrement",
-			"responsabilites",
-			"mobilite",
-			"animation",
-			"rayonnement"
+			"production_notes",
+			"transfert_notes",
+			"encadrement_notes",
+			"responsabilites_notes",
+			"mobilite_notes",
+			"animation_notes",
+			"rayonnement_notes"
 	);
 	
 	$fieldsEquivalence = array(
@@ -821,7 +821,7 @@
 	
 	$csv_fields = array_merge($labos_csv,$equivalence_csv, $chercheur_csv, $candidature_csv);
 	
-	$csv_preprocessing = array('nom' => 'normalizename', 'prenom' => 'normalizename');
+	$csv_preprocessing = array('nom' => 'normalizeName', 'prenom' => 'normalizeName','unit' => 'fromunittocode');
 	
 	$uploaded_csv_files = array(
 			'unites' => 'uploads/labos.csv',

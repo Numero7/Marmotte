@@ -286,11 +286,8 @@ case 'changepwd':
 case 'ajoutlabo':
 	if(isset($_REQUEST["nickname"]) and isset($_REQUEST["code"]) and isset($_REQUEST["fullname"]) and isset($_REQUEST["directeur"]))
 	{
-		$result = addUnit($_REQUEST["nickname"], $_REQUEST["code"], $_REQUEST["fullname"], $_REQUEST["directeur"]);
-		if($result == false)
-			echo "Failed to add unit \"".$_REQUEST["nickname"]."\"<br/>";
-		else
-			echo "Added unit \"".$_REQUEST["nickname"]."\"<br/>";
+		addUnit($_REQUEST["nickname"], $_REQUEST["code"], $_REQUEST["fullname"], $_REQUEST["directeur"]);
+		echo "Added unit \"".$_REQUEST["nickname"]."\"<br/>";
 	}
 	else
 	{
