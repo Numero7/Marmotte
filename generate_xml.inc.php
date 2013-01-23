@@ -3,52 +3,31 @@
 require_once('manage_sessions.inc.php');
 require_once('manage_unites.inc.php');
 
-function getReportsAsXMLArray($statut, $id_session=-1, $type_eval="", $sort_crit="", $login_rapp="")
-{
-	global $fieldsAll;
-	$rows = filterSortReports($statut, $id_session, $type_eval, $sort_crit, $login_rapp);
-
-	
-	//to map id_session s to session nicknames
-	$sessions = sessionArrays();
-	$units = unitsList();
-
-	$docs = array();
-	foreach($rows as $row)
-		$docs[] = rowToXMLDoc($row, $sessions,$units);
-	
-	
-		
-	return $docs;
-}
-
 function implode_with_keys($assoc,$inglue=':',$outglue=','){
-    $res=array();
-    foreach($assoc as $tk=>$tv){
-        $res[] = $tk.$inglue.$tv;
-    }
-    return implode($outglue,$res);
+	$res=array();
+	foreach($assoc as $tk=>$tv){
+		$res[] = $tk.$inglue.$tv;
+	}
+	return implode($outglue,$res);
 }
 
-function getReportsAsXML($statut = "", $id_session=-1, $type_eval="", $sort_crit="", $login_rapp="",$id_origine=-1)
+function getReportsAsXML($filter_values, $sort_criteria = "", $keep_br = true)
 {
 	global $fieldsAll;
+
 	$doc = new DOMDocument();
 	$root = $doc->createElement("rapports");
-	$rows = filterSortReports($statut, $id_session, $type_eval, $sort_crit, $login_rapp,$id_origine);
-	$root->setAttribute("id_session",$id_session);
-	$root->setAttribute("type_eval",$type_eval);
-	$root->setAttribute("sort_crit",$sort_crit);
-	$root->setAttribute("login_rapp",$login_rapp);
-	$root->setAttribute("id_edit",$id_origine);
+	$rows = filterSortReports(getCurrentFiltersList(), $filter_values, $sort_criteria);
 
-	//to map id_session s to session nicknames
+	if(isset($filter_values['id_edit']))
+		$root->setAttribute('id_edit',$filter_values['id_edit']);
+
 	$sessions = sessionArrays();
 	$units = unitsList();
 
 	foreach($rows as $row)
 	{
-		$elem = createXMLReportElem($row, $sessions,$units,$doc);
+		$elem = createXMLReportElem($row, $sessions,$units,$doc,$keep_br);
 		$root->appendChild($elem);
 	}
 
@@ -71,9 +50,9 @@ function EnteteDroit($row, $units)
 	global $typesRapportsToEnteteDroit;
 	global $avis_classement;
 	global $avis_candidature;
-	
+
 	$result = "";
-	
+
 	if( ($row->type == "Promotion") && ($row->grade != "CR2"))
 	{
 		$result = $enTetesDroit['PromotionDR'];
@@ -99,6 +78,10 @@ function EnteteDroit($row, $units)
 					$result .= " ".$row->unite." (".$units[$row->unite]->nickname.")";
 				else
 					$result .= " ".$row->unite;
+			}
+			else if($type == 'Equivalence')
+			{
+				$result .= $row->nom." ".$row->prenom."<br/>";
 			}
 			else if($type == 'Concours')
 			{
@@ -147,14 +130,19 @@ function EnteteGauche($row)
 			$newgrade = "DRCE2";
 		$result .= "<br/>".$newgrade;
 	}
-	if($row->type == "Candidature")
+	else if($row->type == "Candidature")
 	{
 		$result .= "<br/>".$row->concours;
 	}
+	else if($row->type == "Equivalence")
+	{
+		$result .= "<br/>pour les concours ".$row->grade;
+	}
+	
 	return $result;
 }
 
-function createXMLReportElem($row, $sessions, $units, DOMDocument $doc)
+function createXMLReportElem($row, $sessions, $units, DOMDocument $doc, $keep_br = true)
 {
 	global $fieldsAll;
 	global $typesRapports;
@@ -164,7 +152,7 @@ function createXMLReportElem($row, $sessions, $units, DOMDocument $doc)
 	global $typesRapportsToCheckboxes;
 	global $typesRapportsToCheckboxesTitles;
 	global $typesRapportsToFormula;
-	
+
 	if(!$sessions)
 		$sessions = sessionArrays();
 
@@ -184,20 +172,20 @@ function createXMLReportElem($row, $sessions, $units, DOMDocument $doc)
 	if(array_key_exists($row->type,$typesRapportsToFormula))
 	{
 		$formulas = $typesRapportsToFormula[$row->type];
-		
+
 		if(array_key_exists($row->avis,$formulas))
 		{
 			$formula = $formulas[$row->avis];
 			$row->rapport .= "<br/><br/>".$formula;
-			
+				
 		}
 	}
-	
-	
+
+
 	//On ajoute tous les fields pas spéciaux
 	foreach ($fieldsAll as $fieldID => $title)
 		if(!in_array($fieldID,$fieldsspecial))
-		appendLeaf($fieldID, $row->$fieldID, $doc, $rapportElem);
+		appendLeaf($fieldID, $keep_br ? $row->$fieldID : remove_br($row->$fieldID), $doc, $rapportElem);
 
 
 	//On ajoute le type du rapport et le pretty print
@@ -217,9 +205,8 @@ function createXMLReportElem($row, $sessions, $units, DOMDocument $doc)
 	appendLeaf("unite", $value, $doc, $rapportElem);
 
 	//On ajoute la date du jour
-	appendLeaf("date", date("j/m/Y",strtotime($row->date)), $doc, $rapportElem);
+	appendLeaf("date", date("j/n/Y",strtotime($row->date)), $doc, $rapportElem);
 
-	
 
 	//On ajoute les cases à choix multiple, si nécessaires
 	if(array_key_exists($row->type,$typesRapportsToCheckboxes))
@@ -256,6 +243,10 @@ function createXMLReportElem($row, $sessions, $units, DOMDocument $doc)
 	appendLeaf("signataire", president, $doc, $rapportElem);
 	appendLeaf("signataire_titre", president_titre, $doc, $rapportElem);
 
+	$row->session = $sessions[$row->id_session];
+
+	$rapportElem->setAttribute('filename', filename_from_doc($row));
+	
 	return $rapportElem;
 
 }
@@ -304,7 +295,27 @@ function filename_from_node(DOMNode $node)
 			case "avis": $avis = $child->nodeValue; break;
 		}
 	}
+	
+	return filename_from_params($nom, $prenom, $grade, $unite, $type, $session, $avis);
+}
 
+//Returns the name of the file
+function filename_from_doc($doc)
+{
+	$nom = mb_convert_case(replace_accents($doc->nom), MB_CASE_TITLE);
+	$prenom = mb_convert_case(replace_accents($doc->prenom), MB_CASE_TITLE);
+	$grade = $doc->grade;
+	$unite = $doc->unite;
+	$type = $doc->type;
+	$session = $doc->session;
+	$avis = $doc->avis;
+	return filename_from_params($nom, $prenom, $grade, $unite, $type, $session, $avis);
+}
+
+function filename_from_params($nom, $prenom, $grade, $unite, $type, $session, $avis)
+{
+	global $typesRapportsUnites;
+	
 	if($type == "Promotion")
 	{
 		switch($grade)
@@ -316,14 +327,18 @@ function filename_from_node(DOMNode $node)
 		}
 		$grade .= " - ".$avis;
 	}
-
+	
 	if($type == "Evaluation-Vague" || $type == "Evaluation-MiVague")
 		$type .=  " - ".mb_convert_case($avis,MB_CASE_TITLE);
 	
 	if(array_key_exists($type,$typesRapportsUnites))
-		return $session." - ".$type." - ".$unite;
+	{
+		if($type == 'Generique')
+			return $session." - ".$nom." ".$prenom." - ".$unite;
+		else
+			return $session." - ".$type." - ".$unite;
+	}
 	else
 		return $session." - ".$type." - ".$grade." - ".$nom."_".$prenom;
 }
-
 ?>

@@ -4,6 +4,7 @@ require_once('tcpdf/config/lang/eng.php');
 require_once('tcpdf/tcpdf.php');
 require_once('manage_users.inc.php');
 require_once('generate_xml.inc.php');
+require_once('generate_csv.inc.php');
 require_once('generate_pdf.inc.php');
 require_once('generate_zip.inc.php');
 
@@ -22,27 +23,28 @@ if($dbh!=0)
 				viewReportAsPdf($id); break;
 			case 'viewhtml':
 				viewReportAsHtml($id);	break;
-			case 'group':
+			case 'export':
 				{
 					if (isset($_REQUEST["save"]) and isset($_REQUEST["avis"]) and isset($_REQUEST["rapport"]))
 					{
-						$idtosave = $_REQUEST["save"];
+						$idtosave = intval($_REQUEST["save"]);
 						$avis = $_REQUEST["avis"];
 						$rapport = $_REQUEST["rapport"];
 						//rrr();
 						if (!isset($_REQUEST["cancel"]))
-						{
-							updateRapportAvis($idtosave,$avis,$rapport);
-						}
+							try
+							{
+								updateRapportAvis($idtosave,$avis,$rapport);
+							}
+							catch(Exception $exc)
+							{
+								echo "<p><B>Echec de la mise a jour du rapport: ".$exc->getMessage()."<br/></B></p>";
+							}
 					}
 					$type = isset($_REQUEST["type"]) ? $_REQUEST["type"] :  "xml";
-					if (isset($typeExports[$type]))
+
+					if ( array_key_exists($type, $typeExports))
 					{
-						$statut = isset($_REQUEST["statut"]) ? $_REQUEST["statut"] : "";
-						$id_session = isset($_REQUEST["id_session"]) ? $_REQUEST["id_session"] : -1;
-						$type_eval = isset($_REQUEST["type_eval"]) ? $_REQUEST["type_eval"] : "";
-						$login_rapp = isset($_REQUEST["login_rapp"]) ? $_REQUEST["login_rapp"] : "";
-						$sort_crit = isset($_REQUEST["sort"]) ? $_REQUEST["sort"] : "";
 						$id_edit = isset($_REQUEST["id_edit"]) ? $_REQUEST["id_edit"] : -1;
 
 						$conf = $typeExports[$type];
@@ -51,55 +53,59 @@ if($dbh!=0)
 
 						if($type=="latex" || $type=="pdf" || $type=="zip")
 						{
-							$xmls = getReportsAsXMLArray($statut, $id_session,$type_eval,$sort_crit,$login_rapp);
-							
-							array_map('unlink', glob("reports/*.tex"));
-							array_map('unlink', glob("reports/*.pdf"));
-							array_map('unlink', glob("reports/*.zip"));
-								
+							$xml_reports = getReportsAsXML(getFilterValues(), getSortCriteria());
 							$filename = "";
-							if($type=="latex")
-								$filename=xmls_to_zipped_tex($xmls);
 
-							if($type == "zip" || $type =="pdf")
-								$filenames = xmls_to_pdfs($xmls);
+							if($type =="pdf")
+							{
+								$xml_reports->save('reports/reports.xml');
+								echo "<script>window.location = 'create_reports.php'</script>";
+							}
 
 							if($type=="zip")
 							{
-								$filename= zip_files($filenames);
+								$xml_reports->save('reports/reports.xml');
+								echo "<script>window.location = 'create_reports.php?zip_files='</script>";
 
-								if($filename == "")
-								{
-									echo "Failed to generate zip file";
-									return;
-								}
-
-								$filepath="./";
-
+							}
+						}
+						else if($type =="csv")
+						{
+							$csv_reports = getReportsAsCSV(getFilterValues(), getSortCriteria());
+								
+							$filename = "zips/reports.csv";
+								
+							if($handle = fopen($filename, 'w'))
+							{
+								fwrite ($handle, $csv_reports);
+								fclose($handle);
+									
 								header("Pragma: public");
 								header("Expires: 0");
 								header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
 								header("Cache-Control: public");
 								header("Content-Description: File Transfer");
 								header("Content-type: application/octet-stream");
-								header("Content-Disposition: attachment; filename=\"".$filename."\"");
+								header("Content-Disposition: attachment; filename=\"reports.csv\"");
 								header("Content-Transfer-Encoding: binary");
-								header("Content-Length: ".filesize($filename));
+								header("Content-Length: ".strlen($csv_reports));
+
 								ob_clean();
 								flush();
+
+									
 								readfile($filename);
 							}
 							else
 							{
-								echo '<script type="text/javascript">								
-								window.location ="reports/"
-								</script>
-										';
+								throw new Exception("Cant create file ".$filename);
 							}
 						}
 						else
 						{
-							$xml = getReportsAsXML($statut,$id_session,$type_eval,$sort_crit,$login_rapp,$id_edit);
+							$filter_values = getFilterValues();
+							$filter_values['id_edit'] = $id_edit;
+							$xml = getReportsAsXML($filter_values, getSortCriteria(), false);
 							header("Content-type: $mime; charset=utf-8");
 							$xsl = new DOMDocument();
 							$xsl->load($xslpath);
@@ -113,8 +119,6 @@ if($dbh!=0)
 						}
 					}
 				}
-				break;
-			default:
 				break;
 		}
 	}

@@ -2,33 +2,53 @@
 <?php 
 require_once("config.inc.php");
 require_once("manage_users.inc.php");
+require_once("manage_sessions.inc.php");
+
+global $typesRapportsConcours;
+global $typesRapportsIndividuels;
+
 ?>
-<div class="right">
-	<div class="round">
-		<div class="roundtl">
-			<span></span>
-		</div>
-		<div class="roundtr">
-			<span></span>
-		</div>
-		<div class="clearer">
-			<span></span>
-		</div>
-	</div>
-	<div class="subnav">
-		<h1>
-			<a href="?">Accueil</a>
-		</h1>
-		<hr/>
-		<h1>Afficher</h1>
+		<h2>Raccourcis</h2>
+		<ul>
+		<?php 	echo "<li><a href=\"?action=view&amp;reset_filter=&amp;login_rapp=".getLogin()."&amp;id_session=".current_session_id()."\">Mes rapports</a></li>";
+		?>
+		 						<li>
+			<a href="?action=view">Sélection en cours</a>
+		</li>
+		<li>
+			<a href="?action=view&amp;reset_filter=">Tous</a>
+		</li>
+		 
 		<?php
-		$sessions = showSessions();
-		foreach($statutsRapportsPluriel as $statut => $nom)
-			echo "<h2><a href=\"?action=view&amp;login_rapp=".getLogin()."&amp;id_session=".current_session_id()."&amp;statut=".$statut."\">Mes ".$nom."</a></h2>";
-		foreach($sessions as $s)
+		if(is_current_session_concours())
 		{
-			$typesRapports = getTypesEval($s["id"]);
-			echo "<h2><a href=\"?action=view&amp;id_session=".$s["id"]."\">".$s["nom"]." ".date("Y",strtotime($s["date"]))."</a></h2>";
+			foreach($typesRapportsConcours as $typeEval => $value)
+		 	echo "<li><a href=\"?action=view&amp;reset_filter=&amp;id_session=".current_session_id()."&amp;type_eval_concours=".urlencode($value)."\">".$value."s</a></li>";
+		}
+		else
+		{
+		foreach($typesRapportsIndividuels as $typeEval => $value)
+		{
+			?>
+		<li>
+			<a href="?action=new&amp;type_eval=<?php echo $typeEval ?>"><?php echo $value?>
+			</a>
+		</li>
+		<?php
+		}
+		}
+		?>
+			</ul>
+			</td><td>
+			<ul>
+					<h2>Sessions</h2>
+			<?php
+
+		$sessions = sessionArrays();
+		foreach($sessions as $id => $nom)
+		{
+			//$typesRapports = getTypesEval($s["id"]);
+			echo "<li><a href=\"?action=view&amp;reset_filter=&amp;id_session=".strval($id)."\">".$nom."</a></li>";
 			/*			?>
 			 <!--
 			<ul>
@@ -42,15 +62,34 @@ require_once("manage_users.inc.php");
 			*/
 		}
 		?>
-		<h2>
-			<a href="?action=view">Tous les rapports</a>
-		</h2>
+		</ul>
 		<?php 
 		if(isSecretaire())
 		{
 			?>
-		<hr/>
+		<hr />
 		<h1>Ajouter</h1>
+		<?php 
+		if(is_current_session_concours())
+		{
+			?>
+		<h2>Rapport Concours</h2>
+		<ul>
+			<?php 
+			foreach($typesRapportsConcours as $typeEval => $value)
+			{
+				?>
+			<li><a href="?action=new&amp;type_eval=<?php echo $typeEval ?>"><?php echo $value?>
+			</a></li>
+			<?php
+			}
+			?>
+		</ul>
+		<?php 
+		}
+		else
+		{
+			?>
 		<h2>Rapport Chercheur</h2>
 		<ul>
 			<?php 
@@ -63,7 +102,7 @@ require_once("manage_users.inc.php");
 			}
 			?>
 		</ul>
-		<hr/>
+		<hr />
 		<h2>Rapport Unité</h2>
 		<ul>
 			<?php 
@@ -78,16 +117,5 @@ require_once("manage_users.inc.php");
 		</ul>
 		<?php 
 		}
+		}
 		?>
-
-	</div>
-	<div class="round">
-		<div class="roundbl">
-			<span></span>
-		</div>
-		<div class="roundbr">
-			<span></span>
-		</div>
-		<span class="clearer"></span>
-	</div>
-</div>

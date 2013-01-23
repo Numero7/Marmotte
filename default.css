@@ -25,7 +25,7 @@ body {
 	background: #FFF url(img/bg.gif) repeat-x;
 	color: #444;
 	font: normal 62.5% "Lucida Sans Unicode",Verdana,sans-serif;
-	padding-top: 40px;
+	padding-top: 5px;
 }
 p,code,ul {
 	font-size: 1.2em;
@@ -85,12 +85,12 @@ h1,h2,h3,h4 {
     background: url(img/stripes.png) no-repeat;
 	border-bottom: 1px solid #EEE;
 	height: 160px;
-	margin-bottom: 24px;
+	margin-bottom: 10px;
 }
 .header h1 {
 	color: #222;
 	font: normal 4em sans-serif;
-	margin-top: 40px;
+	margin-top: 10px;
 	text-align: center;
 }
 .header h1 a {
@@ -114,7 +114,7 @@ h1,h2,h3,h4 {
 }
 
 .large {
-	margin: 0 10% 20px 10%;
+	margin: 10px 5% 10px 5%;
 }
 
 .full {
@@ -123,7 +123,7 @@ h1,h2,h3,h4 {
 }
 
 .content {
-	margin-bottom: 100px;
+	margin-bottom: 10px;
 }
 
 .content .descr {
@@ -180,12 +180,11 @@ h1,h2,h3,h4 {
 
 
 .footer a:link, a:visited {
-	color: #002A4C;
+	color: #000000;
 	text-decoration: none;
 }
 
 .footer a:hover, a:active {
-	color: #63C3DC;
     text-decoration: underline;
 }
 
@@ -254,8 +253,6 @@ h1,h2,h3,h4 {
 
 .subnav h2 {
 	color: #c1e0e8;
-	font-size: 1.2em;
-	height: 20px;
 	padding:0;
 	margin-left: 12px;
 }
@@ -322,7 +319,7 @@ h1,h2,h3,h4 {
 	color: #666;
 	border-top: 1px solid #EEE;
 	font: normal 1em Verdana,sans-serif;
-	margin: 0 26% 0 3%;
+	margin: 0 3% 0 3%;
 	padding: 8px 6px;
 }
 

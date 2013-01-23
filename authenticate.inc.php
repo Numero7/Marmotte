@@ -6,8 +6,7 @@
 
 	<div class="content"> 
  <p>
-   Vous devez être identifié pour pouvoir ajouter/modifier/consulter les prérapports de section. <br>
-   Veuillez vous authentifier avec l'interface ci-dessous :
+   Veuillez vous authentifier.
  </p>
  <form method="POST">
 	<table>

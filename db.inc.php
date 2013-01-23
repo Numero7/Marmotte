@@ -1,6 +1,24 @@
 <?php
 require_once('configDB.inc.php');
 
+function db_connect($serverName,$dbname,$login,$password)
+{
+	$dbh = @mysql_connect($serverName, $login, $password);
+	if ($dbh)
+	{
+		@mysql_select_db($dbname, $dbh) or die ("<strong>Error: Could not access the required table!</strong>");
+		mysql_query("SET NAMES utf8;");
+	}
+	return $dbh;
+} ;
+
+function db_disconnect(&$dbh)
+{
+	mysql_close($dbh);
+	$dbh=0;
+} ;
+
+
 function export_db($tablename)
 {
 	global $servername;
@@ -11,11 +29,13 @@ function export_db($tablename)
 	$filename = $tablename.'.toto.sql';
 	$worked = 0;
 
-	$command='mysqldump --opt -h' .$servername .' -u' .$serverlogin .($serverpassword == "" ? "" : ' -p' .$serverpassword) .' ' .$dbname .' > ~/' .$filename;
+	$command='mysqldump --opt -h' .$servername .' -u' .$serverlogin .($serverpassword == "" ? "" : ' -p' .$serverpassword) .' ' .$dbname;
 	
 	$output=array();
 	
 	exec($command,$output);
+	
+	return implode("\n",$output);
 	
 	switch($worked){
 		case 0:

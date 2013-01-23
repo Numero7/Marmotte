@@ -104,14 +104,15 @@ extension-element-prefixes="dyn">
 	<div class="content"> 
 	<xsl:for-each select="rapports">
 	<xsl:for-each select="rapport">
-	<a href="index.php?action=view&amp;id_session={../@id_session}&amp;type_eval={../@type_eval}&amp;sort_crit={../@sort_crit}&amp;login_rapp={../@login_rapp}">Retour à l'interface principale</a>
+	<a href="index.php?action=view">Retour à l'interface principale</a>
 	<div class="rapportshort"><a name="anchor{@id_origine}"></a>
 		<div class="type">
 			<xsl:value-of select="type"/> <xsl:if test="(concours!='')">
 			<span class="concours">&#xA0;<xsl:value-of select="concours"/></span>
 			</xsl:if>		
 <br/>
-			Rapp. <xsl:value-of select="rapporteur"/><br/><span class="id">id# <xsl:value-of select="@id"/>/<xsl:value-of select="@id_origine"/></span>
+			Rapp. <xsl:value-of select="rapporteur"/><br/>
+			<span class="id">id# <xsl:value-of select="@id"/>/<xsl:value-of select="@id_origine"/></span>
 		</div>
 		<div class="identite">
 			<xsl:if test="(ecole!='')">
@@ -147,13 +148,9 @@ extension-element-prefixes="dyn">
 				</select>
 				
 				<input type="hidden" name="action" value="group"/>
+				<input type="hidden" name="type" value="htmledit"/><br/>
 				<input type="hidden" name="save" value="{@id_origine}"/>
 				<input type="hidden" name="id_edit" value="-1"/>
-				<input type="hidden" name="id_session" value="{../@id_session}"/>
-				<input type="hidden" name="type_eval"  value="{../@type_eval}"/>
-				<input type="hidden" name="sort_crit"  value="{../@sort_crit}"/>
-				<input type="hidden" name="login_rapp" value="{../@login_rapp}"/>
-				<input type="hidden" name="type" value="htmledit"/><br/>
 				<input type="submit" value="Sauvegarder"/>
 				<input type="submit" name="cancel" value="Annuler"/>
 			</form>
@@ -165,12 +162,8 @@ extension-element-prefixes="dyn">
 			<span class="evaltitle">Avis/Classement : </span> <xsl:value-of select="avis"/>
 			<form action="export.php#anchor{@id_origine}"  method="post">
 				<input type="hidden" name="action" value="group"/>
-				<input type="hidden" name="id_edit" value="{@id_origine}"/>
-				<input type="hidden" name="id_session" value="{../@id_session}"/>
-				<input type="hidden" name="type_eval"  value="{../@type_eval}"/>
-				<input type="hidden" name="sort_crit"  value="{../@sort_crit}"/>
-				<input type="hidden" name="login_rapp" value="{../@login_rapp}"/>
 				<input type="hidden" name="type" value="htmledit"/>
+				<input type="hidden" name="id_edit" value="{@id_origine}"/>
 				<input type="submit" value="Editer"/>
 			</form>
 			</div>
@@ -212,7 +205,7 @@ extension-element-prefixes="dyn">
 		</xsl:if>
 	</div>
 	</xsl:for-each>
-	<a href="index.php?action=view&amp;id_session={@id_session}&amp;type_eval={@type_eval}&amp;sort_crit={@sort_crit}&amp;login_rapp={@login_rapp}">Retour à l'interface principale</a>
+	<a href="index.php?action=view">Retour à l'interface principale</a>
 	</xsl:for-each>
 	</div>
 	</div>

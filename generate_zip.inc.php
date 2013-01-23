@@ -71,9 +71,6 @@ function xmls_to_zipped_tex($docs)
  * @param filenames array(string -> string) <p>
  * Collection of pairs of loclfilename and name in the archive.
  * </p>
- * @param localname string[optional] <p>
- * If supplied, this is the local name inside the ZIP archive that will override the filename.
- * </p>
  * @param zipfilename string[optional] <p>
  * the name of the zip file
  * @return bool Returns zip filename on success or false on failure.
@@ -81,24 +78,29 @@ function xmls_to_zipped_tex($docs)
 function zip_files($filenames,$zipname = "reports.zip")
 {
 	$zip = new ZipArchive();
-	if($zip->open($zipname,ZipArchive::OVERWRITE | ZipArchive::CREATE) == true)
+	if($zip->open($zipname,ZipArchive::OVERWRITE | ZipArchive::CREATE) != true)
+		throw new Exception("Failed to create zip file ".$zipname);
+
+	foreach($filenames as $localfilename => $shortfilename)
 	{
-		foreach($filenames as $localfilename => $shortfilename)
+		set_time_limit(0);
+		if(!$zip->addFile($localfilename, $shortfilename))
 		{
-			set_time_limit(0);
-			if(!$zip->addFile($localfilename, $shortfilename))
-			{
-				echo "Failed to add file ".$shortfilename." to zip file<br/>";
-				return false;
-			}
+			echo "Failed to add file ".$shortfilename." to zip file<br/>";
+			return false;
 		}
-		$zip->close();
-		return $zipname;
 	}
-	return false;
+	$zip->close();
+	return $zipname;
 }
 
-function xmls_to_pdfs($docs)
+/**
+ *
+ * @param unknown $docs
+ *
+ * @return javascript to get he reports
+ */
+function xmls_to_pdfs2($docs)
 {
 	$xsl = new DOMDocument();
 	$xsl->load("xslt/html2.xsl");
@@ -106,6 +108,7 @@ function xmls_to_pdfs($docs)
 	$proc->importStyleSheet($xsl);
 
 	$filenames = array();
+	$script = "";
 
 	//echo "Processing ".count($docs)." docs<br/>";
 	foreach($docs as $doc)
@@ -126,5 +129,34 @@ function xmls_to_pdfs($docs)
 		}
 	}
 	return $filenames;
+
 }
+
+function xml_to_pdfs($xml_reports)
+{
+	$xsl = new DOMDocument();
+	$xsl->load("xslt/html2.xsl");
+	$proc = new XSLTProcessor();
+	$proc->importStyleSheet($xsl);
+
+	$filenames = array();
+
+	$rapports = $xml_reports->firstChild->getElementsByTagName("rapport");
+
+	//echo "Processing ".count($docs)." docs<br/>";
+	foreach($rapports as $node)
+	{
+		//it takes time so we tell the server the script is still alive
+		set_time_limit(0);
+		$filename = $node->getAttribute('filename').".pdf";
+		$local_filename = replace_accents("reports/".$filename);
+		$html = $proc->transformToXML($node);
+		$pdf = HTMLToPDF($html);
+		$pdf->Output($local_filename,"F");
+		$filenames[$local_filename] = $filename;
+	}
+	return $filenames;
+}
+
+
 ?>

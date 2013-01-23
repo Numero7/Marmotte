@@ -1,5 +1,6 @@
 <?php
-
+require_once('tcpdf/config/lang/eng.php');
+require_once('tcpdf/tcpdf.php');
 require_once('generate_xml.inc.php');
 
 function getReportAsDOMDoc($id_rapport)
@@ -50,7 +51,6 @@ function viewReportAsPdf($id_rapport)
 	{
 		$filename = filename_from_node($nodes->item(0)).".pdf";
 		$pdf->Output($filename, 'D');
-		rrr();
 	}
 };
 

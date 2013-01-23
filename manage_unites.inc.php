@@ -2,20 +2,32 @@
 
 function unitsList()
 {
-	$units = array();
-	$sql = "SELECT * FROM units ORDER BY nickname ASC;";
-	if($result=mysql_query($sql))
-		while ($row = mysql_fetch_object($result))
+	if(!isset($_SESSION['all_units']))
+	{
+		$units = array();
+		$sql = "SELECT * FROM ".units_db." ORDER BY nickname ASC;";
+		if($result=mysql_query($sql))
+			while ($row = mysql_fetch_object($result))
 			$units[$row->code] = $row;
 
-	return $units;
+		$maxsize = 0;
+		foreach($units as $unit)
+			$maxsize = max($maxsize, strlen($unit->nickname));
+		foreach($units as $unit)
+		{
+			$l = strlen($unit->nickname);
+			$unit->prettyname = str_replace(" ","&nbsp;", $unit->nickname);
+			$unit->prettyname .= str_pad("", $maxsize +10 - $l , " ")."- ".$unit->code;
+		}
+
+		$_SESSION['all_units'] = $units;
+	}
+	return $_SESSION['all_units'];
 }
 
 function unitExists($code)
 {
-	$sql = "SELECT * FROM units WHERE code=$code;";
-	$result=mysql_query($sql);
-	return ($result != false) && (mysql_num_rows() > 0);
+	return array_key_exists($code, unitsList());
 }
 
 function createUnitIfNeeded($code)
@@ -24,41 +36,52 @@ function createUnitIfNeeded($code)
 		addUnit($code,$code,$code,"");
 }
 
-
-function prettyUnitsList()
+function simpleUnitsList($short = false)
 {
-	$units = array();
-	$sql = "SELECT * FROM units ORDER BY nickname ASC;";
-	
-	if($result=mysql_query($sql))
-		while ($row = mysql_fetch_object($result))
-			$units[$row->code] = $row;
-
-	$maxsize = 0;
-	foreach($units as $unit)
-		$maxsize = max($maxsize, strlen($unit->nickname));
-	foreach($units as $unit)
-	{
-		$l = strlen($unit->nickname);
-		$unit->nickname .= str_pad("", $maxsize +10 - $l , " ")."(".$unit->code.")";
-		$unit->nickname = str_replace(" ","&nbsp;", $unit->nickname);
-	}
-	
-	return $units;
+	$units = unitsList();
+	$result = array();
+	foreach($units as $unit => $row)
+		$result[$unit] = $short ? $row->nickname : $row->prettyname;
+	return $result;
 }
 
 function addUnit($nickname, $code, $fullname, $directeur)
 {
-	$sql = "DELETE FROM units WHERE code = \"".$code."\";";
+	unset($_SESSION['all_units']);
+	$sql = "DELETE FROM ".units_db." WHERE code = \"".$code."\";";
 	mysql_query($sql);
-	
+
 	$values = "\"".mysql_real_escape_string($nickname)."\",";
 	$values .= "\"".mysql_real_escape_string($code)."\",";
 	$values .= "\"".mysql_real_escape_string($fullname)."\",";
 	$values .= "\"".mysql_real_escape_string($directeur)."\"";
-			
-	$sql = "INSERT INTO units (nickname, code, fullname, directeur) VALUES ($values);";
-	return mysql_query($sql);
-	
+
+	$sql = "INSERT INTO ".units_db." (nickname, code, fullname, directeur) VALUES ($values);";
+	sql_request($sql);
 }
+
+/*
+ * Unit can be code or nickname
+*/
+function fromunittocode($unitdata)
+{
+	$units = unitsList();
+	if(key_exists($unitdata, $units))
+	{
+		$answer = $unitdata;
+		return $unitdata;
+	}
+	foreach($units as $unit)
+	{
+		if(strcasecmp($unit->nickname,$unitdata) == 0 )
+		{
+			$answer = $unit->code;
+			return $unit->code;
+		}
+	}
+	addUnit($unitdata, $unitdata,$unitdata,"");
+	$answer = $unitdata;
+	return $unitdata;
+}
+
 ?>

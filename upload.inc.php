@@ -5,38 +5,44 @@ require_once 'process_csv.inc.php';
 
 global $uploaded_csv_files;
 
-if (isset($_FILES['uploadedfile']))
+try
 {
-	if (isset($_FILES['uploadedfile']['tmp_name']))
+	if (isset($_FILES['uploadedfile']))
 	{
-		$filename = $_FILES['uploadedfile']['tmp_name'];
-		$type = isset($_REQUEST['type']) ? $_REQUEST['type'] : "";
-		$subtype = isset($_REQUEST['subtype']) ? $_REQUEST['subtype'] : "";
-		if(array_key_exists($type,$uploaded_csv_files))
+		if (isset($_FILES['uploadedfile']['tmp_name']))
 		{
-			$target_path = $uploaded_csv_files[$type];
-			if(move_uploaded_file($filename,$target_path))
+			$filename = $_FILES['uploadedfile']['tmp_name'];
+			$type = isset($_REQUEST['type']) ? $_REQUEST['type'] : "";
+			$subtype = isset($_REQUEST['subtype']) ? $_REQUEST['subtype'] : "";
+			if(array_key_exists($type,$uploaded_csv_files))
 			{
-				echo "<p>File uploaded and stored as ".$target_path."</p>";
-				echo "<p>".process_csv($type,$target_path,$subtype)."</p>";
+				$target_path = $uploaded_csv_files[$type];
+				if(move_uploaded_file($filename,$target_path))
+				{
+					echo "<p>File uploaded and stored as ".$target_path."</p>";
+					echo "<p>".process_csv($type,$target_path,$subtype)."</p>";
+				}
+				else
+					throw new Exception('Failed to store uploaded file "'.$filename.'" of size '.$_FILES['uploadedfile']['size'].' to '.$target_path);
 			}
 			else
-				echo 'Failed to store uploaded file '.$filename.' to '.$target_path;
+			{
+				throw new Exception('Unknown action '.$type.", aborting");
+			}
 		}
 		else
 		{
-			echo 'Unknown action '.$type.", aborting";
+			throw new Exception('No uploaded file name, aborting');
 		}
 	}
 	else
 	{
-		echo 'No uploaded file name, aborting';
+		throw new Exception('No uploaded file, aborting');
 	}
 }
-else
+catch(Exception $exc)
 {
-	echo 'No uploaded file, aborting';
+	echo "Failed to upload data:<br/>".$exc;
 }
-
 
 ?>
