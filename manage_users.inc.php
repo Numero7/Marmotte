@@ -27,7 +27,7 @@ function listRapporteurs()
 	global $users_not_rapporteur;
 	
 	$empty[''] = (object) array();
-	$empty['']->description = "Pas de rapporteur";
+	$empty['']->description = "";
 	$result = array_merge($empty,listUsers());
 	
 	foreach($users_not_rapporteur as $user)
@@ -67,6 +67,8 @@ function getUserPermissionLevel($login = "")
 	if ($login=="" && isset($_SESSION["login"]))
 		$login = $_SESSION["login"];
 
+	$login = strtolower($login);
+	
 	if ($login == "admin")
 		return NIVEAU_PERMISSION_SUPER_UTILISATEUR;
 	$users = listUsers();
@@ -75,7 +77,11 @@ function getUserPermissionLevel($login = "")
 		$data = $users[$login];
 		return $data->permissions;
 	}
-	return -1;
+	else
+	{
+		removeCredentials();
+		throw new Exception("Unknown user");
+	}
 }
 
 function genere_motdepasse($len=10)
@@ -101,7 +107,7 @@ function isSecretaire($login = "")
 function getLogin()
 {
 	if (isset($_SESSION["login"]))
-		return $_SESSION["login"];
+		return strtolower($_SESSION["login"]);
 	else
 		return "";
 }
@@ -144,10 +150,6 @@ function authenticateBase($login,$pwd)
 			return true;
 		}
 	}
-	$newPassHash = crypt("departementale66");
-	$sql = "UPDATE ".users_db." SET passHash='$newPassHash' WHERE login='admin';";
-	mysql_query($sql);
-
 	return false;
 }
 

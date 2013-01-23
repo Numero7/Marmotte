@@ -1,4 +1,30 @@
 
+<script type="text/javascript">
+function alertSize() {
+	var myWidth = 0, myHeight = 0;
+	if( typeof( window.innerWidth ) == 'number' ) {
+		myWidth = window.innerWidth; myHeight = window.innerHeight;
+	} else if( document.documentElement && ( document.documentElement.clientWidth ||document.documentElement.clientHeight ) ) {
+		myWidth = document.documentElement.clientWidth; myHeight = document.documentElement.clientHeight;
+	} else if( document.body && ( document.body.clientWidth || document.body.clientHeight ) ) {
+		myWidth = document.body.clientWidth; myHeight = document.body.clientHeight;
+	}
+	window.alert( 'Width = ' + myWidth + ' and height = ' + myHeight );
+}
+function getScrollXY() {
+	var scrOfX = 0, scrOfY = 0;
+	if( typeof( window.pageYOffset ) == 'number' ) {
+		scrOfY = window.pageYOffset; scrOfX = window.pageXOffset;
+	} else if( document.body && ( document.body.scrollLeft || document.body.scrollTop ) ) {
+		scrOfY = document.body.scrollTop; scrOfX = document.body.scrollLeft;
+	} else if( document.documentElement && ( document.documentElement.scrollLeft || document.documentElement.scrollTop ) ) {
+		scrOfY = document.documentElement.scrollTop; scrOfX = document.documentElement.scrollLeft;
+	}
+	window.alert( 'Horizontal scrolling = ' + scrOfX + '\nVertical scrolling = ' + scrOfY );
+}
+
+</script>
+
 <div class="large">
 
 	<!-- 
@@ -26,9 +52,14 @@
 			resetFilterValuesExceptSession();
 
 
-		function displayReports()
+		function displayReports($centralid = 0)
 		{
-			displaySummary(getCurrentFiltersList(), getFilterValues(), getSortCriteria());
+			displaySummary(getCurrentFiltersList(), getFilterValues(), getSortingValues());
+			echo('
+		<script type="text/javascript">
+	document.getElementById("t'.$centralid.'").scrollIntoView();
+											</script>');
+				
 		};
 
 		try
@@ -36,11 +67,12 @@
 			switch($action)
 			{
 				case 'delete':
-					deleteReport($id_rapport);
+					$next = nextt($id_rapport);
+					$before = deleteReport($id_rapport);
 					echo "<p>Deleted report ".$id_rapport."</p>\n";
 					unset($_REQUEST['id']);
 					unset($_REQUEST['id_origine']);
-					displayReports();
+					displayReports( ($before != -1) ? $before : $next);
 					break;
 
 				case 'change_statut':
@@ -50,279 +82,276 @@
 						$new_statut =  $_REQUEST["new_statut"];
 						change_statuts($new_statut, $filterValues);
 						$filterValues['statut']	 = $new_statut;
-						displaySummary(getCurrentFiltersList(), $filterValues, getSortCriteria());
+						displaySummary(getCurrentFiltersList(), $filterValues, getSortingValues());
 					}
 					break;
-				case 'setrapporteur':
-					$newrapporteur = isset($_REQUEST['newrapporteur']) ? $_REQUEST['newrapporteur'] : "";
-					$newid = change_rapporteur($id_toupdate, $newrapporteur);
+				case 'view':
 					displayReports();
-					?>
-		<script type="text/javascript">
-					document.getElementById("t<?php echo $newid;?>").scrollIntoView();
-					</script>
-		<?php
-		break;
-case 'setrapporteur2':
-	$newrapporteur = isset($_REQUEST['newrapporteur2']) ? $_REQUEST['newrapporteur2'] : "";
-	$newid = change_rapporteur2($id_toupdate, $newrapporteur);
-	displayReports();
-	?>
-		<script type="text/javascript">
-					document.getElementById("t<?php echo $newid;?>").scrollIntoView();
-					</script>
-		<?php
-		break;
-case 'view':
-	displayReports();
-	break;
-case 'details':
-	displayReport($id_rapport);
-	break;
-case 'edit':
-	editReport($id_rapport);
-	break;
-case 'history':
-	historyReport($id_origine);
-	break;
-case 'update':
-	$next = isset($_REQUEST["next_id"]) ? $_REQUEST["next_id"] : 0;
-	$previous = isset($_REQUEST["previous_id"]) ? $_REQUEST["previous_id"] : 0;
+					break;
+				case 'details':
+					displayReport($id_rapport);
+					break;
+				case 'edit':
+					editReport($id_rapport);
+					break;
+				case 'history':
+					historyReport($id_origine);
+					break;
+				case 'update':
+					$next = isset($_REQUEST["next_id"]) ? $_REQUEST["next_id"] : 0;
+					$previous = isset($_REQUEST["previous_id"]) ? $_REQUEST["previous_id"] : 0;
 
-	if(isset($_REQUEST["editnext"]))
-	{
-		editReport($next);
-	}
-	else if(isset($_REQUEST["editprevious"]))
-	{
-		editReport($previous);
-	}
-	else if(isset($_REQUEST["deleteandeditnext"]))
-	{
-		$before = deleteReport($id_origine);
-		if($before != -1)
-			editReport($before);
-		else
-			editReport($next);
-	}
-	else
-	{
-		$id_nouveau = addReportFromRequest($id_origine,$_REQUEST);
-		if(isset($_REQUEST["submitandeditnext"]))
-		{
-			editReport($next);
-		}
-		else if(isset($_REQUEST["submitandview"]))
-		{
-			displayReport($id_nouveau);
-		}
-		else if(isset($_REQUEST["submitandkeepediting"]))
-		{
-			editReport($id_nouveau,false);
-		}
-	}
+					if(isset($_REQUEST["editnext"]))
+					{
+						editReport($next);
+					}
+					else if(isset($_REQUEST["editprevious"]))
+					{
+						editReport($previous);
+					}
+					else if(isset($_REQUEST["deleteandeditnext"]))
+					{
+						$before = deleteReport($id_origine);
+						if($before != -1)
+							editReport($before);
+						else
+							editReport($next);
+					}
+					else if(isset($_REQUEST["retourliste"]))
+					{
+						unset($_REQUEST["id_origine"]);
+						unset($_REQUEST["id"]);
+						displayReports($id_origine);
+					}
+					else
+					{
+						$id_nouveau = addReportFromRequest($id_origine,$_REQUEST);
+						if(isset($_REQUEST["submitandeditnext"]))
+						{
+							editReport($next);
+						}
+						else if(isset($_REQUEST["submitandview"]))
+						{
+							displayReport($id_nouveau);
+						}
+						else if(isset($_REQUEST["submitandkeepediting"]))
+						{
+							editReport($id_nouveau,false);
+						}
+					}
 
-	break;
-case 'new':
-	if (isset($_REQUEST["type_eval"]))
-	{
-		$type_eval = $_REQUEST["type_eval"];
-		$report = newReport($type_eval);
-		displayEditableReport($report, "add");
-	}
-	else
-	{
-		echo "Cannot create new document because no type_eval provided";
-		displayReports();
-	}
-	break;
-case 'add':
-	$id_nouveau = addReportFromRequest($id_origine,$_REQUEST);
-	if(isset($_REQUEST["submitandview"]))
-	{
-		displayReport($id_nouveau);
-	}
-	else
-	{
-		editReport($id_nouveau,false);
-	}
-	break;
-case'newpwd':
-case 'adminnewpwd':
-	if (isset($_REQUEST["oldpwd"]) and isset($_REQUEST["newpwd1"]) and isset($_REQUEST["newpwd2"]) and isset($_REQUEST["login"]))
-	{
-		$old = $_REQUEST["oldpwd"];
-		$pwd1 = $_REQUEST["newpwd1"];
-		$pwd2 = $_REQUEST["newpwd2"];
-		$login = $_REQUEST["login"];
-		if (($pwd1==$pwd2))
-		{
-			if (changePwd($login,$old,$pwd1,$pwd2))
-			{
-				echo "<p><strong>Mot de passe modifié avec succès.</strong></p>";
-				addCredentials($_SESSION["login"],$pwd1);
-			}
-		}
-		else
-		{
-			echo "<p><strong>Erreur :</strong> Les deux saisies du nouveau mot de passe  diffèrent, veuillez réessayer.</p>";
-		}
-	}
-	else
-	{
-		echo "<p><strong>Erreur :</strong> Vous n'avez fourni les informations nécessaires pour modifier votre mot de passe, veuillez nous contacter (Yann ou Hugo) en cas de difficultés.</p>";
-	}
-	break;
-case "newpwd":
-	include "changePwd.inc.php";
-	break;
-case "adminnewpwd":
-	if(isSuperUser())
-		include 'admin.inc.php';
-	break;
-case 'exportdb':
-	$dbname = isset($_REQUEST['dbname']) ? $_REQUEST['dbname'] : "";
-	echo export_db($dbname) . "<br/>";
-	break;
-case 'importdb':
-	$dbname = isset($_REQUEST['dbname']) ? $_REQUEST['dbname'] : "";
-	echo import_db($dbname) . "<br/>";
-	break;
-case 'admin':
-	if (isSecretaire())
-		include "admin.inc.php";
-	else
-		echo "<p>Vous n'avez pas les droits nécessaires pour effectuer cette action, veuillez nous contacter (Yann ou Hugo) en cas de difficultés.</p>";
-	break;
-case 'admindeleteaccount':
-	if (isSuperUser())
-	{
-		if (isset($_REQUEST["login"]))
-		{
-			$login = $_REQUEST["login"];
-			deleteUser($login);
-		}
-		else
-		{
-			echo "<p><strong>Erreur :</strong> Vous n'avez fourni toutes les informations nécessaires pour créer un utilisateur, veuillez nous contacter (Yann ou Hugo) en cas de difficultés.</p>";
-		}
-		include "admin.inc.php";
-	}
-	else
-	{
-		echo "<p>Vous n'avez pas les droits nécessaires pour effectuer cette action, veuillez nous contacter (Yann ou Hugo) en cas de difficultés.</p>";
-	}
-case 'adminnewpermissions':
-	if (isSuperUser())
-	{
-		if (isset($_REQUEST["login"]) and isset($_REQUEST["permissions"]))
-		{
-			$login = $_REQUEST["login"];
-			$permissions = $_REQUEST["permissions"];
-			changeUserPermissions($login,$permissions);
-		}
-		else
-		{
-			echo "<p><strong>Erreur :</strong> Vous n'avez fourni toutes les informations nécessaires pour modifier les droits de cet utilisateur, veuillez nous contacter (Yann ou Hugo) en cas de difficultés.</p>";
-		}
-		include "admin.inc.php";
-	}
-	else
-	{
-		echo "<p>Vous n'avez pas les droits nécessaires pour effectuer cette action, veuillez nous contacter (Yann ou Hugo) en cas de difficultés.</p>";
-	}
-	break;
-case 'adminnewaccount':
-	if (isSuperUser())
-	{
-		if (isset($_REQUEST["email"]) and isset($_REQUEST["description"]) and isset($_REQUEST["newpwd1"]) and isset($_REQUEST["newpwd2"]) and isset($_REQUEST["login"]))
-		{
-			$desc = $_REQUEST["description"];
-			$pwd1 = $_REQUEST["newpwd1"];
-			$pwd2 = $_REQUEST["newpwd2"];
-			$login = $_REQUEST["login"];
-			$email = $_REQUEST["email"];
-			$envoiparemail = isset($_REQUEST["envoiparemail"])  ? $_REQUEST["envoiparemail"] : false;
+					break;
+				case 'new':
+					if (isset($_REQUEST["type"]))
+					{
+						$type = $_REQUEST["type"];
+						$report = newReport($type);
+						displayEditableReport($report, "add");
+					}
+					else
+					{
+						throw new Exception("Cannot create new document because no type_eval provided");
+					}
+					break;
+				case 'add':
+					$id_nouveau = addReportFromRequest($id_origine,$_REQUEST);
+					if(isset($_REQUEST["submitandview"]))
+					{
+						displayReport($id_nouveau);
+					}
+					else
+					{
+						editReport($id_nouveau,false);
+					}
+					break;
+				case'newpwd':
+				case 'adminnewpwd':
+					if (isset($_REQUEST["oldpwd"]) and isset($_REQUEST["newpwd1"]) and isset($_REQUEST["newpwd2"]) and isset($_REQUEST["login"]))
+					{
+						$old = $_REQUEST["oldpwd"];
+						$pwd1 = $_REQUEST["newpwd1"];
+						$pwd2 = $_REQUEST["newpwd2"];
+						$login = $_REQUEST["login"];
+						if (($pwd1==$pwd2))
+						{
+							if (changePwd($login,$old,$pwd1,$pwd2))
+							{
+								echo "<p><strong>Mot de passe modifié avec succès.</strong></p>";
+								addCredentials($_SESSION["login"],$pwd1);
+							}
+						}
+						else
+						{
+							echo "<p><strong>Erreur :</strong> Les deux saisies du nouveau mot de passe  diffèrent, veuillez réessayer.</p>";
+						}
+					}
+					else
+					{
+						echo "<p><strong>Erreur :</strong> Vous n'avez fourni les informations nécessaires pour modifier votre mot de passe, veuillez nous contacter (Yann ou Hugo) en cas de difficultés.</p>";
+					}
+					break;
+				case "newpwd":
+					include "changePwd.inc.php";
+					break;
+				case "adminnewpwd":
+					if(isSuperUser())
+						include 'admin.inc.php';
+					break;
+				case 'exportdb':
+					$dbname = isset($_REQUEST['dbname']) ? $_REQUEST['dbname'] : "";
+					echo export_db($dbname) . "<br/>";
+					break;
+				case 'importdb':
+					$dbname = isset($_REQUEST['dbname']) ? $_REQUEST['dbname'] : "";
+					echo import_db($dbname) . "<br/>";
+					break;
+				case 'admin':
+					if (isSecretaire())
+						include "admin.inc.php";
+					else
+						echo "<p>Vous n'avez pas les droits nécessaires pour effectuer cette action, veuillez nous contacter (Yann ou Hugo) en cas de difficultés.</p>";
+					break;
+				case 'admindeleteaccount':
+					if (isSuperUser())
+					{
+						if (isset($_REQUEST["login"]))
+						{
+							$login = $_REQUEST["login"];
+							deleteUser($login);
+						}
+						else
+						{
+							echo "<p><strong>Erreur :</strong> Vous n'avez fourni toutes les informations nécessaires pour créer un utilisateur, veuillez nous contacter (Yann ou Hugo) en cas de difficultés.</p>";
+						}
+						include "admin.inc.php";
+					}
+					else
+					{
+						echo "<p>Vous n'avez pas les droits nécessaires pour effectuer cette action, veuillez nous contacter (Yann ou Hugo) en cas de difficultés.</p>";
+					}
+				case 'adminnewpermissions':
+					if (isSuperUser())
+					{
+						if (isset($_REQUEST["login"]) and isset($_REQUEST["permissions"]))
+						{
+							$login = $_REQUEST["login"];
+							$permissions = $_REQUEST["permissions"];
+							changeUserPermissions($login,$permissions);
+						}
+						else
+						{
+							echo "<p><strong>Erreur :</strong> Vous n'avez fourni toutes les informations nécessaires pour modifier les droits de cet utilisateur, veuillez nous contacter (Yann ou Hugo) en cas de difficultés.</p>";
+						}
+						include "admin.inc.php";
+					}
+					else
+					{
+						echo "<p>Vous n'avez pas les droits nécessaires pour effectuer cette action, veuillez nous contacter (Yann ou Hugo) en cas de difficultés.</p>";
+					}
+					break;
+				case 'adminnewaccount':
+					if (isSuperUser())
+					{
+						if (isset($_REQUEST["email"]) and isset($_REQUEST["description"]) and isset($_REQUEST["newpwd1"]) and isset($_REQUEST["newpwd2"]) and isset($_REQUEST["login"]))
+						{
+							$desc = $_REQUEST["description"];
+							$pwd1 = $_REQUEST["newpwd1"];
+							$pwd2 = $_REQUEST["newpwd2"];
+							$login = $_REQUEST["login"];
+							$email = $_REQUEST["email"];
+							$envoiparemail = isset($_REQUEST["envoiparemail"])  ? $_REQUEST["envoiparemail"] : false;
 
-			if (($pwd1==$pwd2))
-				echo "<p><strong>".createUser($login,$pwd2,$desc, $email, $envoiparemail)."</p></strong>";
-			else
-				echo "<p><strong>Erreur :</strong> Les deux saisies du nouveau mot de passe  diffèrent, veuillez réessayer.</p>";
-		}
-		else
-		{
-			echo "<p><strong>Erreur :</strong> Vous n'avez fourni toutes les informations nécessaires pour créer un utilisateur, veuillez nous contacter (Yann ou Hugo) en cas de difficultés.</p>";
-		}
-		include "admin.inc.php";
-	}
-	else
-	{
-		echo "<p>Vous n'avez pas les droits nécessaires pour effectuer cette action, veuillez nous contacter (Yann ou Hugo) en cas de difficultés.</p>";
-	}
-	break;
-case 'adminnewsession':
-	if (isset($_REQUEST["sessionname"]) and isset($_REQUEST["sessiondate"]))
-	{
-		$name = $_REQUEST["sessionname"];
-		$date = $_REQUEST["sessiondate"];
-		createSession($name,$date);
-	}
-	else
-	{
-		echo "<p><strong>Erreur :</strong> Vous n'avez fourni toutes les informations nécessaires pour créer une session, veuillez nous contacter (Yann ou Hugo) en cas de difficultés.</p>";
-	}
-	include "admin.inc.php";
-	break;
-case 'admindeletesession':
-	if (isset($_REQUEST["sessionid"]))
-		deleteSession($_REQUEST["sessionid"]);
-	else
-		throw new Exception("Vous n'avez fourni toutes les informations nécessaires pour supprimer une session, veuillez nous contacter (Yann ou Hugo) en cas de difficultés.");
-	include "admin.inc.php";
-	break;
-case 'changepwd':
-	include "changePwd.inc.php";
-	break;
-case 'ajoutlabo':
-	if(isset($_REQUEST["nickname"]) and isset($_REQUEST["code"]) and isset($_REQUEST["fullname"]) and isset($_REQUEST["directeur"]))
-	{
-		addUnit($_REQUEST["nickname"], $_REQUEST["code"], $_REQUEST["fullname"], $_REQUEST["directeur"]);
-		echo "Added unit \"".$_REQUEST["nickname"]."\"<br/>";
-	}
-	else
-	{
-		echo "Cannot process action ajoutlabo: missing data<br/>";
-	}
-	break;
-case 'extrairecandidats':
-	echo extraction_candidats();
-	break;
-case 'sqlrequest':
-	if(isset($_REQUEST['formula']))
-	{
-		sql_request($_REQUEST['formula']);
-		echo "Successfully processed <br/>".$_REQUEST['formula'];
-	}
-	else
-	{
-		echo "Empty formula";
-	}
-	break;
-case 'mailing':
-case 'email_rapporteurs':
-	include 'mailing.inc.php';
-	break;
+							if (($pwd1==$pwd2))
+								echo "<p><strong>".createUser($login,$pwd2,$desc, $email, $envoiparemail)."</p></strong>";
+							else
+								echo "<p><strong>Erreur :</strong> Les deux saisies du nouveau mot de passe  diffèrent, veuillez réessayer.</p>";
+						}
+						else
+						{
+							echo "<p><strong>Erreur :</strong> Vous n'avez fourni toutes les informations nécessaires pour créer un utilisateur, veuillez nous contacter (Yann ou Hugo) en cas de difficultés.</p>";
+						}
+						include "admin.inc.php";
+					}
+					else
+					{
+						echo "<p>Vous n'avez pas les droits nécessaires pour effectuer cette action, veuillez nous contacter (Yann ou Hugo) en cas de difficultés.</p>";
+					}
+					break;
+				case 'adminnewsession':
+					if (isset($_REQUEST["sessionname"]) and isset($_REQUEST["sessiondate"]))
+					{
+						$name = $_REQUEST["sessionname"];
+						$date = $_REQUEST["sessiondate"];
+						createSession($name,$date);
+					}
+					else
+					{
+						echo "<p><strong>Erreur :</strong> Vous n'avez fourni toutes les informations nécessaires pour créer une session, veuillez nous contacter (Yann ou Hugo) en cas de difficultés.</p>";
+					}
+					include "admin.inc.php";
+					break;
+				case 'admindeletesession':
+					if (isset($_REQUEST["sessionid"]))
+						deleteSession($_REQUEST["sessionid"]);
+					else
+						throw new Exception("Vous n'avez fourni toutes les informations nécessaires pour supprimer une session, veuillez nous contacter (Yann ou Hugo) en cas de difficultés.");
+					include "admin.inc.php";
+					break;
+				case 'changepwd':
+					include "changePwd.inc.php";
+					break;
+				case 'ajoutlabo':
+					if(isset($_REQUEST["nickname"]) and isset($_REQUEST["code"]) and isset($_REQUEST["fullname"]) and isset($_REQUEST["directeur"]))
+					{
+						addUnit($_REQUEST["nickname"], $_REQUEST["code"], $_REQUEST["fullname"], $_REQUEST["directeur"]);
+						echo "Added unit \"".$_REQUEST["nickname"]."\"<br/>";
+					}
+					else
+					{
+						echo "Cannot process action ajoutlabo: missing data<br/>";
+					}
+					break;
+				case 'extrairecandidats':
+					echo extraction_candidats();
+					break;
+				case 'sqlrequest':
+					if(isset($_REQUEST['formula']))
+					{
+						sql_request($_REQUEST['formula']);
+						echo "Successfully processed <br/>".$_REQUEST['formula'];
+					}
+					else
+					{
+						echo "Empty formula";
+					}
+					break;
+				case 'mailing':
+				case 'email_rapporteurs':
+					include 'mailing.inc.php';
+					break;
 
-case "";
-default:
-	echo welcome_message;
-	displayReports();
-	break;
+				case "";
+				default:
+					if(substr($action,0,3)=="set")
+					{
+						$fieldId = substr($action,3);
+						$newvalue = isset($_REQUEST['new'.$fieldId]) ? $_REQUEST['new'.$fieldId] : "";
+						$newid = change_property($id_toupdate, $fieldId, $newvalue);
+						displayReports($newid);
+					}
+					else
+					{
+						echo welcome_message;
+						displayReports();
+					}
+					break;
 			}
 		}
 		catch(Exception $exc)
 		{
-			echo '<p><b>Impossible d\'exécuter l\'action "'.$action.'"<br/>Exception: '.$exc->getMessage().'<br/></b></p>';
+			$text = 'Impossible d\'exécuter l\'action "'.$action.'"<br/>Exception: '.$exc->getMessage();
+			echo '<p><b>'.$text.'<br/></b></p>';
+			echo '<script type="text/javascript">window.alert('.$text.');</script>';
 		}
 		?>
 	</div>

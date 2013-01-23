@@ -25,7 +25,7 @@ function current_session_id()
 
 function set_current_session_id($id)
 {
-	$_SESSION['id_session_filter'] = $id;
+	$_SESSION['filter_id_session'] = $id;
 }
 
 function current_session()

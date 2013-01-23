@@ -15,7 +15,7 @@ global $typesRapportsIndividuels;
 	<table class="toptable"><tr><td>
 	<table>
 	<tr><td>
-		Utilisateur	: <span class='login'><?php echo $_SESSION["login"];?> </span>
+		Utilisateur	: <span class='login'><?php echo getLogin();?> </span>
 		</td></tr>
 		<tr><td>
 		<p></p>
@@ -57,13 +57,13 @@ global $typesRapportsIndividuels;
 		<td>
 		Raccourcis
 		<ul>
-		<?php 	echo "<li><a href=\"?action=view&amp;reset_filter=&amp;login_rapp=".getLogin()."&amp;id_session=".current_session_id()."\">Mes rapports</a></li>";
+		<?php 	echo "<li><a href=\"?action=view&amp;reset_filter=&amp;filter_login_rapp=".getLogin()."&amp;filter_id_session=".current_session_id()."\">Mes rapports</a></li>";
 		?>
 		<!-- 
 		<?php
-		 	echo "<li><a href=\"?action=view&amp;reset_filter=&amp;login_rapp=".getLogin()."&amp;id_session=".current_session_id()."&amp;statut=prerapport\">Mes prérapports</a></li>";
+		 	echo "<li><a href=\"?action=view&amp;reset_filter=&amp;filter_login_rapp=".getLogin()."&amp;filter_id_session=".current_session_id()."&amp;filter_statut=prerapport\">Mes prérapports</a></li>";
 		?>
-		<?php 	echo "<li><a href=\"?action=view&amp;reset_filter=&amp;login_rapp=".getLogin()."&amp;id_session=".current_session_id()."&amp;statut=vierge\">Mes rapports vierges</a></li>";
+		<?php 	echo "<li><a href=\"?action=view&amp;reset_filter=&amp;filter_login_rapp=".getLogin()."&amp;filter_id_session=".current_session_id()."&amp;filter_statut=vierge\">Mes rapports vierges</a></li>";
 		?>
 		 -->
 		 						<li>
@@ -85,9 +85,9 @@ global $typesRapportsIndividuels;
 			foreach($typesRapportsConcours as $typeEval => $value)
 			{
 
-				echo "<li><a href=\"?action=view&amp;reset_filter=&amp;id_session=".current_session_id()."&amp;type_eval_concours=".urlencode($value)."\">".$value."s</a>";
+				echo "<li><a href=\"?action=view&amp;reset_filter=&amp;filter_id_session=".current_session_id()."&amp;filter_type=".urlencode($value)."\">".$value."s</a>";
 				if(isSecretaire())
-					echo " <a href=\"?action=new&amp;type_eval=".$typeEval."\">+</a>";
+					echo " <a href=\"?action=new&amp;type=".$typeEval."\">+</a>";
 				echo "</li>";
 			}
 			
@@ -98,11 +98,11 @@ global $typesRapportsIndividuels;
 		{
 			?>
 		<li>
-			<a href="?action=view&amp;type_eval=<?php echo $typeEval ?>"><?php echo $value?>
+			<a href="?action=view&amp;filter_type=<?php echo $typeEval ?>"><?php echo $value?>
 			</a>
 								<?php 
 									if(isSecretaire())
-					echo " <a href=\"?action=new&amp;type_eval=".$typeEval."\">+</a>";
+					echo " <a href=\"?action=new&amp;type=".$typeEval."\">+</a>";
 					?>
 		</li>
 		<?php
@@ -114,11 +114,11 @@ global $typesRapportsIndividuels;
 		foreach($typesRapportsUnites as $typeEval => $value)
 		{
 			?>
-					<li><a href="?action=view&amp;type_eval=<?php echo $typeEval ?>"><?php echo $value?>
+					<li><a href="?action=view&amp;filter_type=<?php echo $typeEval ?>"><?php echo $value?>
 					</a>
 					<?php 
 									if(isSecretaire())
-					echo " <a href=\"?action=new&amp;type_eval=".$typeEval."\">+</a>";
+					echo " <a href=\"?action=new&amp;type=".$typeEval."\">+</a>";
 					?></li>
 					<?php
 					}
@@ -137,7 +137,7 @@ global $typesRapportsIndividuels;
 		foreach($sessions as $id => $nom)
 		{
 			//$typesRapports = getTypesEval($s["id"]);
-			echo "<li><a href=\"?action=view&amp;reset_filter=&amp;id_session=".strval($id)."\">".$nom."</a></li>";
+			echo "<li><a href=\"?action=view&amp;reset_filter=&amp;filter_id_session=".strval($id)."\">".$nom."</a></li>";
 			/*			?>
 			 <!--
 			<ul>

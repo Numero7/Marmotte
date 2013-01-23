@@ -77,16 +77,11 @@ function getAllReportsOfType($type,$id_session=-1)
 		$id_session = current_session_id();
 	$filter_values = array('type'=> $type,'id_session' => $id_session);
 
-	return filterSortReports("", $filter_values, "");
+	return filterSortReports(getCurrentFiltersList(), $filter_values);
 }
 
-function filterSortReports($filters, $filter_values, $sort_crit)
+function filterSortReports($filters, $filter_values = array(), $sorting_values = array())
 {
-	global $filtersAll;
-	if($filters == "")
-		$filters = $filtersAll;
-
-	$sortCrit = parseSortCriteria($sort_crit);
 
 	$sql = "SELECT * FROM ".evaluations_db." WHERE date = (SELECT MAX(date) FROM evaluations AS mostrecent WHERE mostrecent.id_origine = evaluations.id_origine AND statut!=\"supprime\")";
 	//$sql = "SELECT * FROM ( SELECT id, MAX(date) AS date FROM evaluations GROUP BY id_origine) mostrecent ON tt.date = mostrecent.date";
@@ -94,41 +89,28 @@ function filterSortReports($filters, $filter_values, $sort_crit)
 	//$sql = "SELECT tt.*, ss.nom AS nom_session, ss.date AS date_session FROM evaluations tt INNER JOIN ( SELECT id, MAX(date) AS date FROM evaluations GROUP BY id_origine) mostrecent ON tt.date = mostrecent.date, sessions ss WHERE ss.id=tt.id_session ";
 	//$sql = "SELECT * FROM evaluations WHERE 1 ";
 
-	foreach($filters as $filter => $data)
-		if(isset($filter_values[$filter]) && ($filter_values[$filter] != $data['default_value']))
-		{
-			if($filter == "login_rapp")
-			{
-				$val = $filter_values[$filter];
-				$sql .= " AND (rapporteur=\"".$val."\" OR rapporteur2=\"".$val."\") ";
-			}
-			else if($filter !="rapporteur2")
-			{
-				$sql .= " AND ". (isset($data['sql_col']) ?  $data['sql_col'] : $filter)."=\"$filter_values[$filter]\" ";
-			}
 
-		}
+	$sql .= filtersCriteriaToSQL($filters,$filter_values);
+	$sql .= sortCriteriaToSQL($sorting_values);
+	$sql .= ";";
+	//echo $sql;
+	$result=mysql_query($sql);
 
-		$sql .= sortCriteriaToSQL($sortCrit);
-		$sql .= ";";
-		//echo $sql;
-		$result=mysql_query($sql);
+	if($result == false)
+		throw new Exception("Echec de l'execution de la requete <br/>".$sql."<br/>");
 
-		if($result == false)
-			throw new Exception("Echec de l'execution de la requete <br/>".$sql."<br/>");
+	$rows = array();
+	//echo $sql."<br/>".count($rows)." rows ".mysql_num_rows($result)." sqlrows<br/>";
 
-		$rows = array();
-		//echo $sql."<br/>".count($rows)." rows ".mysql_num_rows($result)." sqlrows<br/>";
+	while ($row = mysql_fetch_object($result))
+		$rows[] = $row;
 
-		while ($row = mysql_fetch_object($result))
-			$rows[] = $row;
+	$rows_id = array();
+	foreach($rows as $row)
+		$rows_id[] = $row->id;
+	$_SESSION['rows_id'] = $rows_id;
 
-		$rows_id = array();
-		foreach($rows as $row)
-			$rows_id[] = $row->id;
-		$_SESSION['rows_id'] = $rows_id;
-
-		return $rows;
+	return $rows;
 }
 
 function parseSortCriteria($sort_crit)
@@ -147,10 +129,11 @@ function parseSortCriteria($sort_crit)
 	return $result;
 }
 
-function sortCriteriaToSQL($sortCrit)
+function sortCriteriaToSQL($sorting_values)
 {
 	$sql = "";
-	foreach($sortCrit as $crit => $order)
+		
+	foreach($sorting_values as $crit => $value)
 	{
 		if ($sql == "")
 		{
@@ -159,13 +142,49 @@ function sortCriteriaToSQL($sortCrit)
 		else
 		{ $sql .= ", ";
 		}
-		$sql .= $crit." ".$order;
+		$sql .= $crit." ".( ( substr($sorting_values[$crit],strlen($sorting_values[$crit]) -1) == "+" ) ? "ASC" : "DESC");
 	}
 	if ($sql =="")
 	{
-		$sql = "ORDER BY id_origine ";
+		$sql = "ORDER BY name ";
+	}
+	
+	return $sql;
+}
+
+function filtersCriteriaToSQL($filters, $filter_values)
+{
+	$sql = "";
+	foreach($filters as $filter => $data)
+	{
+		//rrr();
+		if(isset($filter_values[$filter]) && ($filter_values[$filter] != $data['default_value']))
+		{
+			if($filter == "login_rapp")
+			{
+				$val = $filter_values[$filter];
+				$sql .= " AND (rapporteur=\"".$val."\" OR rapporteur2=\"".$val."\") ";
+			}
+			else if($filter !="login_rapp2")
+			{
+				$sql .= " AND ". (isset($data['sql_col']) ?  $data['sql_col'] : $filter)."=\"$filter_values[$filter]\" ";
+			}
+
+		}
 	}
 	return $sql;
+}
+
+function getTriTypes($sorting_values)
+{
+	$result = array();
+	$result[(count($sorting_values) + 5)."+"] = "";
+	for($i = 1; $i < count($sorting_values) + 5 ; $i++)
+	{
+		$result[ $i."+"] = $i."+";
+		$result[ $i."-"] = $i."-";
+	}
+	return $result;
 }
 
 function updateRapportAvis($id_origine,$avis,$rapport)
@@ -241,7 +260,7 @@ function getStatus($id_rapport)
 
 function checkReportIsEditable($rapport)
 {
-	return true;
+	$login = getLogin();
 
 	if (!isSecretaire() && $rapport->statut == 'publie')
 	{
@@ -251,12 +270,12 @@ function checkReportIsEditable($rapport)
 	{
 		return true;
 	}
-	else if( ($rapport->rapporteur != "") && ($rapport->rapporteur != getLogin()) && ($rapport->rapporteur2 != getLogin()))
+	else if( ($rapport->rapporteur != "") && ($rapport->rapporteur != $login) && ($rapport->rapporteur2 != $login))
 	{
 		if($rapport->rapporteur2 != "")
-			throw new Exception("Les rapporteurs de ce rapport sont ".$rapport->rapporteur." et ".$rapport->rapporteur2." mais vous êtes loggés sous l'identité ".getLogin().", veuillez demander un changement de rapporteur au bureau.");
+			throw new Exception("Les rapporteurs de ce rapport sont '".$rapport->rapporteur."' et '".$rapport->rapporteur2."' mais vous êtes loggés sous l'identité '".$login."'.<br/> Si nécessaire veuillez demander un changement de rapporteur au bureau.");
 		else
-			throw new Exception("Le rapporteur de ce rapport est ".$rapport->rapporteur." mais vous êtes loggés sous l'identité ".getLogin().", veuillez demander un changement de rapporteur au bureau.");
+			throw new Exception("Le rapporteur de ce rapport est '".$rapport->rapporteur."' mais vous êtes loggés sous l'identité '".$login."'.<br/> Si nécessaire veuillez demander un changement de rapporteur au bureau.");
 	}
 	else if ($rapport->statut != 'vierge' && $rapport->statut != 'prerapport')
 	{
@@ -429,7 +448,8 @@ function normalizeReport($report)
 		{
 			$prototype = $report_prototypes[$report->type];
 			foreach($prototype as $field => $value)
-				$report->$field = $value;
+				if($report->$field="")
+					$report->$field = $value;
 		}
 		if($report->type == "Equivalence" && $report->prerapport=="")
 		{
@@ -537,7 +557,7 @@ function addReportToDatabase($report, $create_new = true)
 function change_statuts($new_statut, $filter_values)
 {
 	//echo "Changing status to " .$new_statut." <br/>";
-	$rows = filterSortReports(getCurrentFiltersList(), $filter_values, getSortCriteria());
+	$rows = filterSortReports(getCurrentFiltersList(), $filter_values, getSortingValues());
 
 	foreach($rows as $row)
 		change_statut($row->id, $new_statut);
@@ -607,12 +627,12 @@ function getVirginReports($rapporteur)
 	$filter_values = $empty_filter;
 	$filter_values['login_rapp'] = $rapporteur->login;
 	$filter_values['statut'] = 'vierge';
-	$liste1 =  filterSortReports(getCurrentFiltersList(), $filter_values,getSortCriteria());
+	$liste1 =  filterSortReports(getCurrentFiltersList(), $filter_values,getSortingValues());
 
 	$filter_values = $empty_filter;
 	$filter_values['login_rapp2'] = $rapporteur->login;
 	$filter_values['statut'] = 'vierge';
-	$liste12 =  filterSortReports(getCurrentFiltersList(), $filter_values,getSortCriteria());
+	$liste12 =  filterSortReports(getCurrentFiltersList(), $filter_values,getSortingValues());
 
 	return array_merge($liste1,$liste2);
 }

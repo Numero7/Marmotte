@@ -53,7 +53,7 @@ if($dbh!=0)
 
 						if($type=="latex" || $type=="pdf" || $type=="zip")
 						{
-							$xml_reports = getReportsAsXML(getFilterValues(), getSortCriteria());
+							$xml_reports = getReportsAsXML(getFilterValues(), getSortingValues());
 							$filename = "";
 
 							if($type =="pdf")
@@ -71,7 +71,7 @@ if($dbh!=0)
 						}
 						else if($type =="csv")
 						{
-							$csv_reports = getReportsAsCSV(getFilterValues(), getSortCriteria());
+							$csv_reports = getReportsAsCSV(getFilterValues(), getSortingValues());
 								
 							$filename = "zips/reports.csv";
 								
@@ -105,7 +105,7 @@ if($dbh!=0)
 						{
 							$filter_values = getFilterValues();
 							$filter_values['id_edit'] = $id_edit;
-							$xml = getReportsAsXML($filter_values, getSortCriteria(), false);
+							$xml = getReportsAsXML($filter_values, getSortingValues(), false);
 							header("Content-type: $mime; charset=utf-8");
 							$xsl = new DOMDocument();
 							$xsl->load($xslpath);

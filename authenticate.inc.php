@@ -13,7 +13,8 @@
 		<tr>
 			<td><span class="label">Login</span></td>
 			<td><input name="login" type="text"></td>
-			<td rowspan="2"><input type="submit" value="Valider"><input type="hidden" name="action" value="auth"></td>
+			<td rowspan="2"><input type="submit" value="Valider">
+			<input type="hidden" name="action" value="auth"></td>
 		</tr>
 		<tr>
 			<td><span class="label">Mot de passe</span></td>

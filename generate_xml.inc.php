@@ -11,7 +11,7 @@ function implode_with_keys($assoc,$inglue=':',$outglue=','){
 	return implode($outglue,$res);
 }
 
-function getReportsAsXML($filter_values, $sort_criteria = "", $keep_br = true)
+function getReportsAsXML($filter_values, $sort_criteria = array(), $keep_br = true)
 {
 	global $fieldsAll;
 

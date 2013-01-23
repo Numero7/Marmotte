@@ -28,7 +28,7 @@ function getReportsAsCSV($filter_values, $sort_criteria = "", $sep ="," , $del="
 		{
 			if(!in_array($field,$specialfields))
 			{
-				$result.= ($first ? "" : $sep).'"' .$row->$field.'"';
+				$result.= ($first ? "" : $sep).'"' .addslashes($row->$field).'"';
 				$first = false;
 			}
 		}
