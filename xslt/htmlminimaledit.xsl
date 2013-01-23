@@ -115,10 +115,10 @@ extension-element-prefixes="dyn">
 		</div>
 		<div class="identite">
 			<xsl:if test="(ecole!='')">
-			<span class="ecole"><xsl:value-of select="ecole"/></span>
+			<span class="ecole"><xsl:value-of select="ecole"/>&#xA0;</span>
 			</xsl:if>		
 			<xsl:if test="(prenom!='') or (nom!='') or (grade!='')">
-				<span class="prenom"><xsl:value-of select="prenom"/></span>&#xA0;<span class="nom"><xsl:value-of select="nom"/></span> <xsl:if test="(grade!='')">(<xsl:value-of select="grade"/>)</xsl:if> <xsl:if test="(unite!='')">-</xsl:if>
+				<span class="prenom"><xsl:value-of select="prenom"/></span>&#xA0;<span class="nom"><xsl:value-of select="nom"/></span>&#xA0;<xsl:if test="(grade!='')">(<xsl:value-of select="grade"/>)</xsl:if> <xsl:if test="(unite!='')">-</xsl:if>
 			</xsl:if>
 			<xsl:value-of select="unite"/>
 			<div class="subidentite">

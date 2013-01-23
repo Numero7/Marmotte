@@ -44,7 +44,7 @@ CREATE TABLE IF NOT EXISTS `chercheurs` (
 -- Table structure for table `evaluations`
 --
 
---DROP TABLE IF EXISTS `evaluations`;
+DROP TABLE IF EXISTS `evaluations`;
 
 
 CREATE TABLE IF NOT EXISTS `evaluations` (
@@ -123,6 +123,8 @@ CREATE TABLE IF NOT EXISTS `evaluations` (
 -- Table structure for table `sessions`
 --
 
+DROP TABLE `sessions`;
+
 CREATE TABLE IF NOT EXISTS `sessions` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `nom` varchar(60) CHARACTER SET utf8 NOT NULL,
@@ -134,10 +136,10 @@ CREATE TABLE IF NOT EXISTS `sessions` (
 -- Dumping data for table `sessions`
 --
 
-/*INSERT INTO `sessions` (`id`, `nom`, `date`) VALUES
+INSERT INTO `sessions` (`id`, `nom`, `date`) VALUES
 (1, 'Automne', '2012-11-22 15:48:04'),
 (2, 'Concours', '2013-01-14 12:53:00'),
-(3, 'Printemps', '2013-04-14 12:53:00');*/
+(3, 'Printemps', '2013-04-14 12:53:00');
 
 -- --------------------------------------------------------
 
@@ -165,6 +167,7 @@ CREATE TABLE IF NOT EXISTS `units` (
 --
 -- Table structure for table `users`
 --
+DROP TABLE `users`;
 
 CREATE TABLE IF NOT EXISTS `users` (
   `login` varchar(40) CHARACTER SET utf8 NOT NULL,
