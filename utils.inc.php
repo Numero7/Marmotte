@@ -278,7 +278,7 @@ function displayIndividualReport($row)
 
 function displayConcoursReport($row)
 {
-	global $fieldsConcours;
+	global $fieldsCandidat;
 	global $fieldsAll;
 	global $actions;
 	global $typesRapportsConcours;
@@ -311,7 +311,7 @@ function displayConcoursReport($row)
 </h2>
 <dl>
 	<?php
-	foreach($fieldsConcours as  $fieldID)
+	foreach($fieldsCandidat as  $fieldID)
 	{
 		if (!isset($specialRule[$fieldID]))
 		{
@@ -928,7 +928,7 @@ function get_editable_fields($row)
 	global $fieldsIndividual;
 	global $fieldsUnites;
 	global $fieldsEcoles;
-	global $fieldsConcours;
+	global $fieldsCandidat;
 	global $fieldsGeneric;
 	global $fieldsEquivalence;
 
