@@ -425,6 +425,7 @@ function displayActionsMenu($row, $excludedaction = "", $actions)
 			$level = $actiondata['level'];
 			if(getUserPermissionLevel() >= $level || ($action == 'edit' && isReportEditable($row)) )
 			{
+				
 				echo "<td>\n<a href=\"$page?action=$action&amp;id=$id&amp;id_origine=$id_origine\">\n";
 				echo "<img class=\"icon\" width=\"24\" height=\"24\" src=\"$icon\" alt=\"$title\"/>\n</a>\n</td>\n";
 			}
