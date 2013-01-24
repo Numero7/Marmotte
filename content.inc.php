@@ -114,44 +114,48 @@ function getScrollXY() {
 
 
 					if(isset($_REQUEST["editnext"]))
-					{
-						editReport(nextt($id_origine));
+					{	
+						try{editReport(nextt($id_origine));}
+						catch(Exception $e)
+						{displayReport(nextt($id_origine));}
 					}
 					else if(isset($_REQUEST["editprevious"]))
 					{
-						editReport(previouss($id_origine));
+						try{editReport(previouss($id_origine));}
+						catch(Exception $e)
+						{displayReport(previouss($id_origine));}
 					}
-
-					$id_nouveau = addReportFromRequest($id_origine,$_REQUEST);
-					$candidate = updateCandidateFromRequest($_REQUEST);
+					else{
+						$id_nouveau = addReportFromRequest($id_origine,$_REQUEST);
+						$candidate = updateCandidateFromRequest($_REQUEST);
 						
-					if(isset($_REQUEST["deleteandeditnext"]))
-					{
-						$before = deleteReport($id_origine);
-						if($before != -1)
-							editReport($before);
-						else
+						if(isset($_REQUEST["deleteandeditnext"]))
+						{
+							$before = deleteReport($id_origine);
+							if($before != -1)
+								editReport($before);
+							else
+								editReport($next);
+						}
+						else if(isset($_REQUEST["retourliste"]))
+						{
+							unset($_REQUEST["id_origine"]);
+							unset($_REQUEST["id"]);
+							displayReports($id_nouveau);
+						}
+						else if(isset($_REQUEST["submitandeditnext"]))
+						{
 							editReport($next);
+						}
+						else if(isset($_REQUEST["submitandview"]))
+						{
+							displayReport($id_nouveau);
+						}
+						else if(isset($_REQUEST["submitandkeepediting"]))
+						{
+							editReport($id_nouveau);
+						}
 					}
-					else if(isset($_REQUEST["retourliste"]))
-					{
-						unset($_REQUEST["id_origine"]);
-						unset($_REQUEST["id"]);
-						displayReports($id_nouveau);
-					}
-					else if(isset($_REQUEST["submitandeditnext"]))
-					{
-						editReport($next);
-					}
-					else if(isset($_REQUEST["submitandview"]))
-					{
-						displayReport($id_nouveau);
-					}
-					else if(isset($_REQUEST["submitandkeepediting"]))
-					{
-						editReport($id_nouveau);
-					}
-
 					break;
 				case 'new':
 					if (isset($_REQUEST["type"]))
