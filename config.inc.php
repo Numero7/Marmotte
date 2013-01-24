@@ -250,7 +250,6 @@
 			"fichiers" => "Fichiers associés",
 			"cle" => "cle",
 			"avissousjury" => "Avis du sous-jury",
-			"rapporteur" => "Rapporteur",
 	);
 
 	$fieldsCandidatAvantAudition = array(

@@ -1334,6 +1334,7 @@ function previouss($id)
 	return -1;
 }
 
+
 function displayEditableCandidate($candidate,$report = NULL)
 {
 
@@ -1587,7 +1588,7 @@ function displayEditableReport($row)
 <?php 
 
 
-displayEditionFrameStart("",$hidden,$submits);
+displayEditionFrameStart("",$hidden,array());
 
 echo'<table><tr><td VALIGN="top">';
 displayEditableObject("Rapport section", $row,$fieldsRapportsCandidat0);

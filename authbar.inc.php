@@ -27,7 +27,7 @@ global $typesRapportsIndividuels;
 		</td>
 		<td>
 		<table>
-		<tr><td>
+		<tr><td style="text-align:TOP">
 		<form method="get" style="display:inline;;margin-left:5px; border-left:2px solid #FFF;padding:8px;" action="index.php">
 		<input type="hidden" name="action" value="logout"/>
 		<input type="submit" name="logout" value="Se Déconnecter"/>
@@ -50,35 +50,39 @@ global $typesRapportsIndividuels;
 		  }
 		?>		</td></tr></table>
 		</td>
-		<td>
+		<td style="text-align:TOP">
 		
 		<table>
 		<tr>
-		<td>
+		<td style="text-align:TOP">
 		Raccourcis
 		<ul>
-		<?php 	echo "<li><a href=\"?action=view&amp;reset_filter=&amp;filter_login_rapp=".getLogin()."&amp;filter_id_session=".current_session_id()."\">Mes rapports</a></li>";
-		?>
-		<!-- 
-		<?php
-		 	echo "<li><a href=\"?action=view&amp;reset_filter=&amp;filter_login_rapp=".getLogin()."&amp;filter_id_session=".current_session_id()."&amp;filter_statut=prerapport\">Mes prérapports</a></li>";
-		?>
-		<?php 	echo "<li><a href=\"?action=view&amp;reset_filter=&amp;filter_login_rapp=".getLogin()."&amp;filter_id_session=".current_session_id()."&amp;filter_statut=vierge\">Mes rapports vierges</a></li>";
-		?>
-		 -->
-		 						<li>
-			<a href="?action=view">Sélection</a>
-		</li>
-		<li>
+				 <li>
 			<a href="?action=view&amp;reset_filter=">Tous</a>
 		</li>
+		
+				 						<li>
+			<a href="?action=view">Sélection en cours</a>
+		</li>
+		
+		
+		<?php 	echo "<li><a href=\"?action=view&amp;reset_filter=&amp;filter_login_rapp=".getLogin()."&amp;filter_id_session=".current_session_id()."\">Mes rapports</a></li>";
+		if(is_current_session_concours())
+		{
+			foreach($typesRapportsConcours as $typeEval => $value)
+			{
+				echo "<li><a href=\"?action=view&amp;reset_filter=&amp;filter_login_rapp=".getLogin()."&amp;filter_id_session=".current_session_id()."&amp;filter_type=".urlencode($value)."\">Mes ".$value."s</a>";
+				echo "</li>";
+			}
+		}
+		?>
 		</ul>
 		</td>
-		<td>
+		<td style="text-align:TOP">
 
 		Rappports
 		<ul>
-		 
+		
 		<?php
 		if(is_current_session_concours())
 		{
@@ -108,7 +112,7 @@ global $typesRapportsIndividuels;
 		<?php
 		}
 		?>
-		</td><td>
+		</td><td style="text-align:TOP">
 		<ul>
 		<?php
 		foreach($typesRapportsUnites as $typeEval => $value)
