@@ -556,11 +556,7 @@ function addReportToDatabase($report, $create_new = true)
 			$n = count($rows_id) -1;
 			for($i = 0; $i < $n; $i++)
 			{
-				if($rows_id[$i] == $id_origine)
-				{
-					$_SESSION['rows_id'][$i] = $new_id;
-					break;
-				}
+				$_SESSION['rows_id'][$i] = 	getIDOrigine($_SESSION['rows_id'][$i]);
 			}
 		}
 
