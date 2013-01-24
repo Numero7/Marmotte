@@ -27,7 +27,7 @@ global $typesRapportsIndividuels;
 		</td>
 		<td>
 		<table>
-		<tr><td style="text-align:TOP">
+		<tr><td  valign=top>
 		<form method="get" style="display:inline;;margin-left:5px; border-left:2px solid #FFF;padding:8px;" action="index.php">
 		<input type="hidden" name="action" value="logout"/>
 		<input type="submit" name="logout" value="Se Déconnecter"/>
@@ -50,16 +50,13 @@ global $typesRapportsIndividuels;
 		  }
 		?>		</td></tr></table>
 		</td>
-		<td style="text-align:TOP">
+		<td  valign=top>
 		
 		<table>
 		<tr>
-		<td style="text-align:TOP">
+		<td  valign=top>
 		Raccourcis
 		<ul>
-				 <li>
-			<a href="?action=view&amp;reset_filter=">Tous</a>
-		</li>
 		
 				 						<li>
 			<a href="?action=view">Sélection en cours</a>
@@ -78,11 +75,14 @@ global $typesRapportsIndividuels;
 		?>
 		</ul>
 		</td>
-		<td style="text-align:TOP">
+		<td valign=top>
 
 		Rappports
 		<ul>
 		
+				 <li>
+			<a href="?action=view&amp;reset_filter=">Tous</a>
+		</li>
 		<?php
 		if(is_current_session_concours())
 		{
@@ -112,7 +112,7 @@ global $typesRapportsIndividuels;
 		<?php
 		}
 		?>
-		</td><td style="text-align:TOP">
+		</td><td valign=top>
 		<ul>
 		<?php
 		foreach($typesRapportsUnites as $typeEval => $value)
@@ -132,7 +132,7 @@ global $typesRapportsIndividuels;
 		}
 		?>
 			</ul>
-			</td><td>
+			</td><td  valign=top>
 					Sessions
 			<ul>
 			<?php
