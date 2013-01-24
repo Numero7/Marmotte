@@ -239,7 +239,7 @@ function displayIndividualReport($row)
 	?>
 <div class="tools">
 	<?php
-	displayActionsMenu($row->id, $row->id_origine, "details");
+	displayActionsMenu($row->id, $row->id_origine, "details", $actions);
 	?>
 </div>
 <h1>
@@ -295,7 +295,7 @@ function displayConcoursReport($row)
 	?>
 <div class="tools">
 	<?php
-	displayActionsMenu($row->id, $row->id_origine, "details");
+	displayActionsMenu($row->id, $row->id_origine, "details", $actions);
 	?>
 </div>
 <h1>
@@ -357,9 +357,8 @@ function displayReport($id_rapport)
 		throw new Exception("Cannot display report with id".$id_rapport.": unknown report type : '".$row->type."'<br/>");
 }
 
-function displayActionsMenu($id,$id_origine, $excludedaction = "")
+function displayActionsMenu($id,$id_origine, $excludedaction = "", $actions)
 {
-	global $actions;
 	foreach($actions as $action => $actiondata)
 		if ($action!=$excludedaction)
 		{
@@ -394,7 +393,7 @@ function displayUnitReport($row)
 	?>
 <div class="tools">
 	<?php
-	displayActionsMenu($row->id, $row->id_origine, "details");
+	displayActionsMenu($row->id, $row->id_origine, "details", $actions);
 	?>
 </div>
 <h1>
@@ -761,15 +760,16 @@ function displayRows($rows, $fields, $filters, $filter_values, $sort_fields, $so
 	</table>
 	<hr />
 	<table class="summary">
-		<tr>
+		<tr><th></th>
 			<?php
 			foreach($fields as $fieldID)
 			{
 				$title = $fieldsAll[$fieldID];
 				?>
-			<th><span class="nomColonne"> </span> <?php 
+			<th><span class="nomColonne"> <?php 
 			echo $title;
 			?>
+			</span> 
 			</th>
 			<?php
 			}
@@ -778,13 +778,22 @@ function displayRows($rows, $fields, $filters, $filter_values, $sort_fields, $so
 			$prettyunits = unitsList();
 			$users = listRapporteurs();
 
+			global $actions1;
+			global $actions2;
+				
 			foreach($rows as $row)
 			{
+				
 				?>
 		
 		
 		<tr id="t<?php echo $row->id;?>">
 			<?php
+			
+				echo '<td><table><tr>';
+			displayActionsMenu($row->id, $row->id_origine,"", $actions1);
+			echo '</tr></table></td>';
+				
 			foreach($fields as $fieldID)
 			{
 				$title = $fieldsAll[$fieldID];
@@ -817,7 +826,7 @@ function displayRows($rows, $fields, $filters, $filter_values, $sort_fields, $so
 				}
 				echo '</td>';
 			}
-			displayActionsMenu($row->id, $row->id_origine);
+			displayActionsMenu($row->id, $row->id_origine,"", $actions2);
 			?>
 		</tr>
 		<?php
@@ -858,7 +867,7 @@ function historyReport($id_origine)
 	 { ?>
 	<div class="tools">
 		<?php
-		displayActionsMenu($row->id, $row->id_origine, "history");
+		displayActionsMenu($row->id, $row->id_origine, "history", $actions);
 		?>
 	</div>
 	<?php
