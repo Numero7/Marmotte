@@ -51,7 +51,9 @@ function getScrollXY() {
 		if(isset($_REQUEST["reset_filter"]))
 			resetFilterValuesExceptSession();
 
-
+		if(isset($_REQUEST["reset_tri"]))
+			resetOrder();
+		
 		function displayReports($centralid = 0)
 		{
 			displaySummary(getCurrentFiltersList(), getFilterValues(), getSortingValues());

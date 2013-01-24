@@ -26,6 +26,7 @@ function getFilterValue($filter_name)
 
 function setSortingValue($filter_name, $value)
 {
+	
 	$_REQUEST["tri_".$filter_name] = $value;
 	$_SESSION["tri_".$filter_name] = $value;
 }
@@ -39,7 +40,14 @@ function getSortingValue($filter_name)
 		$answer = $_REQUEST["tri_".$filter_name];
 	else if(isset($_SESSION["tri_".$filter_name]))
 		$answer =   $_SESSION["tri_".$filter_name];
+
+	$last = substr($answer,strlen($answer) -1,1);
+	if( $last != "+" && $last != "-")
+		$answer .= "+";
+
 	$_SESSION["tri_".$filter_name] = $answer;
+	
+	
 	return $answer;
 }
 
@@ -47,12 +55,8 @@ function resetOrder()
 {
 	$filters = getCurrentSortingList();
 	foreach($filters as $filter)
-	{
 		if(!isset($_REQUEST["tri_".$filter]))
-		{
-			$_REQUEST["tri_".$filter] = "";
-		}
-	}
+			$_REQUEST["tri_".$filter] = strval(count($filters) + 10)."+";
 }
 
 function resetFilterValues()
@@ -829,7 +833,7 @@ function displayRows($rows, $fields, $filters, $filter_values, $sort_fields, $so
 			$title = $fieldsAll[$fieldID];
 			?>
 		<th><span class="nomColonne"> <?php 
-		echo $title;
+		echo '<a href="?action=view&amp;reset_tri=&amp;tri_'.$fieldID."=1\">".$title.'</a>';
 		?>
 		</span>
 		</th>
