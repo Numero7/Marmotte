@@ -4,13 +4,27 @@ require_once('manage_sessions.inc.php');
 require_once('manage_unites.inc.php');
 require_once("config.inc.php");
 
+
+function getIDOrigine($id_rapport)
+{
+	$sql = "SELECT id_origine FROM ".evaluations_db." WHERE id=$id_rapport";
+	$result=mysql_query($sql);
+	if($result == false)
+		throw new Exception("Fail to process sql request ".$sql);
+	$report = mysql_fetch_object($result);
+	return $report->id_origine;
+
+}
+
 /*
  * returns an object
 */
+
 function getReport($id_rapport)
 {
-	$sql = "SELECT * FROM ".evaluations_db." WHERE id=$id_rapport";
-	$result=mysql_query($sql);
+	$id_origine = getIDOrigine($id_rapport);
+	$sql = "SELECT * FROM ".evaluations_db." WHERE id=$id_origine";
+	$result=sql_request($sql);
 	if($result == false)
 		throw new Exception("Fail to process sql request ".$sql);
 	$report = mysql_fetch_object($result);
@@ -95,7 +109,7 @@ function filterSortReports($filters, $filter_values = array(), $sorting_values =
 	$sql .= sortCriteriaToSQL($sorting_values);
 	$sql .= ";";
 	//echo $sql;
-	$result=mysql_query($sql);
+	$result=sql_request($sql);
 
 	if($result == false)
 		throw new Exception("Echec de l'execution de la requete <br/>".$sql."<br/>");
@@ -229,7 +243,7 @@ function updateRapportAvis($id_origine,$avis,$rapport)
 	}
 	$sql = "INSERT INTO ".evaluations_db." ($fields) VALUES ($values);";
 	//echo $sql."<br>";
-	$result = mysql_query($sql);
+	$result = sql_request($sql);
 
 	if($result == false)
 	{
@@ -244,7 +258,7 @@ function updateRapportAvis($id_origine,$avis,$rapport)
 
 	//echo $sql;
 
-	$result = mysql_query($sql);
+	$result = sql_request($sql);
 	if($result == false)
 	{
 		echo "Failed to update rapport: failed to update id_origine: failed to process SQL request".$sql;
@@ -421,8 +435,12 @@ function addReportFromRequest($id_origine, $request)
 function createReportFromRequest($id_origine, $request)
 {
 	global $empty_report;
+	//$row = $empty_report;
 
-	$row = $empty_report;
+	// Origin ID might have changed while report was being edited
+	$id_origine = getIDOrigine($id_origine);
+	$row = get_object_vars(getReport($id_origine));
+
 
 	$type = "";
 	if(isset($request["type"]))
@@ -527,8 +545,9 @@ function addReportToDatabase($report, $create_new = true)
 		sql_request($sql);
 
 		$new_id = mysql_insert_id();
-
-		$sql = "UPDATE ".evaluations_db." SET id_origine=$new_id WHERE id_origine=$id_origine;";
+		
+		
+		$sql = "UPDATE ".evaluations_db." SET id_origine=$new_id WHERE id_origine=$id_origine OR id=$new_id ;";
 		sql_request($sql);
 
 		if(isset($_SESSION['rows_id']))
@@ -537,11 +556,7 @@ function addReportToDatabase($report, $create_new = true)
 			$n = count($rows_id) -1;
 			for($i = 0; $i < $n; $i++)
 			{
-				if($rows_id[$i] == $id_origine)
-				{
-					$_SESSION['rows_id'][$i] = $new_id;
-					break;
-				}
+				$_SESSION['rows_id'][$i] = 	getIDOrigine($_SESSION['rows_id'][$i]);
 			}
 		}
 
