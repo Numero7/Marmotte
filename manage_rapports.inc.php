@@ -259,6 +259,19 @@ function getStatus($id_rapport)
 	return $report->statut;
 }
 
+function isReportEditable($rapport)
+{
+	try
+	{
+		checkReportIsEditable($rapport);
+		return true;
+	}
+	catch(Exception $exc)
+	{
+		return false;
+	}
+}
+
 function checkReportIsEditable($rapport)
 {
 	$login = getLogin();

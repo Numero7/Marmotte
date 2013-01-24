@@ -144,7 +144,8 @@ CREATE TABLE IF NOT EXISTS `candidats` (
   `projetrecherche` text CHARACTER SET utf8 NOT NULL,
   `concours` text CHARACTER SET utf8 NOT NULL,
   `fichiers` text CHARACTER SET utf8 NOT NULL,
-  `date_recrutement` text CHARACTER SET utf8 NOT NULL
+  `date_recrutement` text CHARACTER SET utf8 NOT NULL,
+  `avissousjury` text CHARACTER SET utf8 NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --

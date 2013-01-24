@@ -17,10 +17,24 @@ function candidateExists($annee,$nom,$prenom)
 	return	(mysql_num_rows($result) > 0);
 }
 
+function normalizeCandidat($data)
+{
+	global $candidat_prototypes;
+	
+	$data2 = $data;
+	
+	foreach($candidat_prototypes as $field => $value)
+		if(isset($data->$field))
+		if($data->$field=="")
+		$data2->$field = $value;
+	
+	return $data2;
+}
+
 function updateCandidateFromRequest($request, $oldannee="")
 {
 	global $fieldsCandidatAll;
-
+	
 	$data = (object) array();
 	
 	
@@ -128,6 +142,8 @@ function add_candidate_to_database($data)
 function get_or_create_candidate($data)
 {
 
+	$data = normalizeCandidat($data);
+	
 	$annee = "0";
 	if(isset($data->id_session))
 		$annee = session_year($data->id_session);
@@ -156,7 +172,7 @@ function get_or_create_candidate($data)
 		}
 
 		mysql_query("UNLOCK TABLES candidates WRITE;");
-		return $cdata;
+		return normalizeCandidat($cdata);
 	}
 	catch(Exception $exc)
 	{
@@ -164,7 +180,6 @@ function get_or_create_candidate($data)
 		throw new Exception("Failed to add candidate from report:<br/>".$exc);
 	}
 }
-
 
 function extraction_candidats()
 {

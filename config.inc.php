@@ -125,7 +125,7 @@
 			"HDRLieu" => "Lieu HDR",
 			"anneesequivalence" => "Années d'équivalence",
 		"production" => "Production scientifique",
-		"productionResume" => "Production scientifique (resume succint pour rapport concours)",
+		"avissousjury" => "Avis du sous-jury (resume succint pour rapport concours)",
 			"production2" => "Production scientifique",
 		"transfert" => "Transfert et valorisation",
 		"transfert2" => "Transfert et valorisation",
@@ -146,17 +146,17 @@
 			"id_origine" => "Id origine",
 			"anneecandidature" => "Année de candidature",
 			"production" => "Production scientifique",
-			"projetrecherche" => "Projet recherche",
-			"parcours" => "Parcours scientifique",
+			"projetrecherche" => "Projet recherche (resume succint pour rapport concours)",
+			"parcours" => "Parcours scientifique (resume succint pour rapport concours)",
 			"concours" => "Concours présentés",
 			"fichiers" => "Fichiers associés",
 			"cle" => "cle"
 	);
 	
 
-	$specialtr_fields = array("parcours","concours", "nom", "date_recrutement", "prenom", "grade", "productionResume", "projetrecherche", "labo1","labo2","labo3","theme1","theme2","theme3", "theseLieu", "HDRAnnee", "theseAnnee","HDRLieu");
-	$start_tr_fields = array("parcours", "grade", "nom", "labo1","theme1", "theseAnnee", "productionResume");
-	$end_tr_fields = array("concours", "date_recrutement", "labo3","theme3", "prenom", "HDRLieu","projetrecherche");
+	$specialtr_fields = array("parcours","concours", "nom", "date_recrutement", "prenom", "grade", "projetrecherche", "labo1","labo2","labo3","theme1","theme2","theme3", "theseLieu", "HDRAnnee", "theseAnnee","HDRLieu");
+	$start_tr_fields = array("projetrecherche", "grade", "nom", "labo1","theme1", "theseAnnee", "productionResume");
+	$end_tr_fields = array("concours", "date_recrutement", "labo3","theme3", "prenom", "HDRLieu");
 	
 	$fieldsIndividual = array(
 			"rapporteur",
@@ -251,7 +251,7 @@
 			"cle" => "cle"
 			);
 
-	$fieldsCandidat = array(
+	$fieldsCandidatAvantAudition = array(
 			"nom",
 			"prenom",
 			"grade",
@@ -266,12 +266,13 @@
 			"theseLieu",
 			"HDRAnnee",
 			"HDRLieu",
-			"productionResume",
 			"projetrecherche",
 			"parcours",
 			"concours",
 			"fichiers"
 	);
+
+	$fieldsCandidat = array_merge($fieldsCandidatAvantAudition, array("avissousjury"));
 	
 	$fieldsEquivalence = array(
 			"rapporteur",
@@ -433,6 +434,21 @@
 	$report_prototypes = array(
 			'Equivalence' => array('rapport' => $virgin_report_equivalence)
 	);
+
+	$candidat_prototypes = array(
+			'avissousjury' => 
+			"[A editer en session]\n"
+			."L'audition du candidat....\n"
+			."Le candidat a une production scientifique de qualité ne lui permettant pas d'être classé.\n"
+			."Le candidat a une production scientifique de qualité exceptionnelle.\n",
+			'projetrecherche' =>
+			"[A editer par les rapporteurs]\n"
+			."Le projet de recherche du candidat s'intitule [] et porte sur [].\n",
+			'parcours' =>
+			 "[A editer par les rapporteurs]\n"
+			."Situation actuelle\n"
+			."Intitulé et lieu de thèse, des postdoc(s) et de(s) postes."
+	);
 	
 	$fieldsTypes = array(
 		"ecole" => "ecole",
@@ -457,7 +473,7 @@
 		"HDRLieu" => "short",
 		"date_recrutement" => "short",
 		"production" => "long",
-		"productionResume" => "long",
+		"avissousjury" => "long",
 			"transfert" => "long",
 		"encadrement" => "long",
 		"responsabilites" => "long",
@@ -486,7 +502,8 @@
 			"projetrecherche" => "long",
 			"parcours" => "long",
 			"concours" => "long",
-			"fichiers" => "files"
+			"fichiers" => "files",
+			"avissousjury" => "long"
 	);
 	
 	$typesRapportsIndividuels = array(
@@ -540,6 +557,8 @@
 			, "10"=>"<span  style=\"font-weight:bold;\" >10</span>", "11"=>"<span  style=\"font-weight:bold;\" >11</span>", "12"=>"<span  style=\"font-weight:bold;\" >12</span>", "13"=>"<span  style=\"font-weight:bold;\" >13</span>", "14"=>"<span  style=\"font-weight:bold;\" >14</span>", "15"=>"<span  style=\"font-weight:bold;\" >15</span>", "16"=>"<span  style=\"font-weight:bold;\" >16</span>",
 			 "17"=>"<span  style=\"font-weight:bold;\" >17</span>", "18"=>"<span  style=\"font-weight:bold;\" >18</span>", "19"=>"<span  style=\"font-weight:bold;\" >19</span>",
 			 "20"=>"<span  style=\"font-weight:bold;\" >20</span>", "21"=>"<span  style=\"font-weight:bold;\" >21</span>", "nonconcur"=>"Non Admis à Concourir");
+	
+	$avis_candidature_necessitant_pas_rapport_sousjury = array("", "adiscuter", "nonauditionne");
 	
 	/* Pour les SPE par exemple*/
 	$avis_vide = array(""=>"");
@@ -762,7 +781,7 @@
 	
 	$actions1 = array(
 		'details' => array('left' => true, 'title' => "Détails", 'level' => NIVEAU_PERMISSION_BASE, 'page' =>'', 'icon' => 'img/details-icon-24px.png'),
-		'edit' => array('left' => true, 'title' => "Modifier", 'level' => NIVEAU_PERMISSION_BASE, 'page' =>'', 'icon' => 'img/edit-icon-24px.png'),
+		'edit' => array('left' => true, 'title' => "Modifier", 'level' => NIVEAU_PERMISSION_PRESIDENT_SECRETAIRE, 'page' =>'', 'icon' => 'img/edit-icon-24px.png'),
 	);
 	$actions2 = array(
 			'history' => array('title' => "Historique", 'level' => NIVEAU_PERMISSION_BASE, 'page' =>'', 'icon' => 'img/history-icon-24px.png'),

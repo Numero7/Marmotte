@@ -49,12 +49,10 @@ if(isSecretaire())
 <hr/>
 
 <h2>Extraire liste candidats</h2>
-<p>
 <form enctype="multipart/form-data" action="index.php" method="post">
 	<input type="hidden" name="action" value="extrairecandidats"/>
 	<input type="submit" value="Extraire candidats" />
 	</form>
-</p>
 
 <hr/>
 
@@ -64,7 +62,6 @@ if(isSecretaire())
 
 <h2>Ajout d'une unité</h2>
 <form enctype="multipart/form-data" action="index.php" method="post">
-<p>
 	<table class="inputreport">
 		<tr>
 			<td style="width: 20em;">Acronyme</td>
@@ -99,7 +96,6 @@ if(isSecretaire())
 	<input type="hidden" name="type" value="labo"/>
 	<input type="hidden" name="action" value="ajoutlabo"/>
 	<input type="submit" value="Ajouter unité" />
-</p>
 </form>
 
 </td>
@@ -139,7 +135,6 @@ if(isSuperUser())
 <tr>
 <td>
 <form method="post">
-<p>
 	<table class="inputreport">
 		<tr>
 			<td style="width: 20em;">Identifiant</td>
@@ -186,7 +181,6 @@ if(isSuperUser())
 			</td>
 		</tr>
 	</table>
-	</p>
 </form>
 
 </td>
@@ -194,7 +188,6 @@ if(isSuperUser())
 <h2>Suppression d'un rapporteur</h2>
 <form method="post"
 	onsubmit="return confirm('Etes vous sur de vouloir supprimer cet utilisateur ?');">
-	<p>
 	<table class="inputreport">
 		<tr>
 			<td><select name="login">
@@ -215,13 +208,11 @@ if(isSuperUser())
 			</td>
 		</tr>
 	</table>
-	</p>
 </form>
 </td>
 <td>
 <h2>Modifier un mot de passe</h2>
 <form method="post">
-<p>
 	<table class="inputreport">
 		<tr>
 			<td style="width: 20em;">Utilisateur</td>
@@ -258,7 +249,6 @@ if(isSuperUser())
 			</td>
 		</tr>
 	</table>
-	</p>
 </form>
 </td>
 </tr>
@@ -268,7 +258,6 @@ if(isSuperUser())
 
 <h2>Modifier les droits</h2>
 <form method="get">
-<p>
 	<table class="inputreport">
 		<?php 
 		$users = listUsers();
@@ -299,7 +288,6 @@ if(isSuperUser())
 		}
 		?>
 	</table>
-	</p>
 </form>
 <?php 
 }
@@ -314,7 +302,6 @@ if(isSecretaire())
 <h2>Ajout d'une session</h2>
 <form method="post"
 	onsubmit="return confirm('Etes vous sur de vouloir ajouter cette session ?');">
-	<p>
 	<table class="inputreport">
 		<tr>
 			<td style="width: 20em;">Nom de session</td>
@@ -337,7 +324,6 @@ if(isSecretaire())
 			</td>
 		</tr>
 	</table>
-	</p>
 </form>
 
 </td>
@@ -345,7 +331,6 @@ if(isSecretaire())
 <h2>Suppression d'une session</h2>
 <form method="get"
 	onsubmit="return confirm('Etes vous sur de vouloir supprimer cette session ?');">
-	<p>
 	<table class="inputreport">
 		<tr>
 			<td style="width: 20em;">Nom de session</td>
@@ -370,7 +355,6 @@ if(isSecretaire())
 			</td>
 		</tr>
 	</table>
-	</p>
 </form>
 </td>
 </tr>
@@ -384,65 +368,7 @@ if(isSecretaire())
 if(isSecretaire())
 {
 ?>
-<table>
-<tr><td>
-<h2>Export</h2>
-<form method="post" enctype="multipart/form-data" >
-<p>
-		<table class="inputreport">
-		<tr>
-		<td style="width: 20em;">Data</td>
-		<td>
-		<select name="dbname">
-		<option value="evaluations">Evaluations</option>
-		<option value="units">Unités</option>
-		<option value="users">Users</option>
-				</select>
-				</td>
-			</tr>
-			<tr>
-				<td><input type="hidden" name="action" value="exportdb"/>
-				</td>
-				<td><input type="submit" value="Exporter la base"/>
-				</td>
-			</tr>
-		</table>
-		</p>
-	</form>
-	
-	</td>
-	<td>
-<h2>Import</h2>
-<form method="get" enctype="multipart/form-data" >
-<p>
-		<table class="inputreport">
-		<tr>
-		<td style="width: 20em;">Data</td>
-		<td>
-		<select name="dbname">
-		<option value="evaluations">Evaluations</option>
-		<option value="units">Unités</option>
-		<option value="users">Users</option>
-				</select>
-				</td>
-			</tr>
-			<tr>
-				<td><input type="hidden" name="action" value="importdb"/>
-				</td>
-				<td><input type="submit" value="Importer la base"/>
-				</td>
-			</tr>
-		</table>
-		</p>
-	</form>
-	</td>
-	</tr>
-	</table>
-	<hr/>
-	
-	
 <h2>Requete sql générique</h2>
-<p>
 <form enctype="multipart/form-data" action="index.php" method="post">
 	<table class="inputreport">
 			</tr>
@@ -454,7 +380,6 @@ if(isSecretaire())
 	<input type="hidden" name="action" value="sqlrequest"/>
 	<input type="submit" value="Executer la requete" />
 	</form>
-</p>
 	
 	<?php 
 }
