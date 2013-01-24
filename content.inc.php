@@ -121,7 +121,13 @@ function getScrollXY() {
 					{
 						editReport(previouss($id_origine));
 					}
-
+					else if(isset($_REQUEST["retourliste"]))
+					{
+						unset($_REQUEST["id_origine"]);
+						unset($_REQUEST["id"]);
+						displayReports($id_origine);
+					}
+						
 					$id_nouveau = addReportFromRequest($id_origine,$_REQUEST);
 					$candidate = updateCandidateFromRequest($_REQUEST);
 						
@@ -132,12 +138,6 @@ function getScrollXY() {
 							editReport($before);
 						else
 							editReport($next);
-					}
-					else if(isset($_REQUEST["retourliste"]))
-					{
-						unset($_REQUEST["id_origine"]);
-						unset($_REQUEST["id"]);
-						displayReports($id_nouveau);
 					}
 					else if(isset($_REQUEST["submitandeditnext"]))
 					{
