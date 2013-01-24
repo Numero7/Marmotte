@@ -123,12 +123,11 @@ CREATE TABLE IF NOT EXISTS `evaluations` (
 
 
 CREATE TABLE IF NOT EXISTS `candidats` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `id_origine` int(11) NOT NULL,
-  `nom` varchar(40) CHARACTER SET utf8 NOT NULL,
-  `prenom` varchar(40) CHARACTER SET utf8 NOT NULL,
+  `cle` text CHARACTER SET utf8 NOT NULL,
+  `anneecandidature` int(11) NOT NULL,
+  `nom` text CHARACTER SET utf8 NOT NULL,
+  `prenom` text CHARACTER SET utf8 NOT NULL,
   `grade` enum('CR2','CR1','DR2','DR1','DRCE1','DRCE2','ChaireMC','ChairePR','Emerite','MC','PR','PhD','HDR','None') CHARACTER SET utf8 NOT NULL,
-  `rapporteur` text CHARACTER SET utf8 NOT NULL,
   `theseAnnee` text CHARACTER SET utf8 NOT NULL,
   `theseLieu` text CHARACTER SET utf8 NOT NULL,
   `HDRAnnee` text CHARACTER SET utf8 NOT NULL,
@@ -139,17 +138,14 @@ CREATE TABLE IF NOT EXISTS `candidats` (
   `theme1` text CHARACTER SET utf8 NOT NULL,
   `theme2` text CHARACTER SET utf8 NOT NULL,
   `theme3` text CHARACTER SET utf8 NOT NULL,
-  `production` text CHARACTER SET utf8 NOT NULL,
-  `transfert` text CHARACTER SET utf8 NOT NULL,
-  `encadrement` text CHARACTER SET utf8 NOT NULL,
-  `responsabilites` text CHARACTER SET utf8 NOT NULL,
-  `mobilite` text CHARACTER SET utf8 NOT NULL,
-  `animation` text CHARACTER SET utf8 NOT NULL,
-  `rayonnement` text CHARACTER SET utf8 NOT NULL,
-  `auteur` varchar(40) CHARACTER SET utf8 NOT NULL,
   `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=61 ;
+  `parcours` text CHARACTER SET utf8 NOT NULL,
+  `productionResume` text CHARACTER SET utf8 NOT NULL,
+  `projetrecherche` text CHARACTER SET utf8 NOT NULL,
+  `concours` text CHARACTER SET utf8 NOT NULL,
+  `fichiers` text CHARACTER SET utf8 NOT NULL,
+  `date_recrutement` text CHARACTER SET utf8 NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `sessions`

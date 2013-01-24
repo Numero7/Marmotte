@@ -83,7 +83,8 @@ function getAllReportsOfType($type,$id_session=-1)
 function filterSortReports($filters, $filter_values = array(), $sorting_values = array())
 {
 
-	$sql = "SELECT * FROM ".evaluations_db." WHERE date = (SELECT MAX(date) FROM evaluations AS mostrecent WHERE mostrecent.id_origine = evaluations.id_origine AND statut!=\"supprime\")";
+	$sql = "SELECT * FROM ".evaluations_db." WHERE id = id_origine AND statut!=\"supprime\"";
+	//$sql = "SELECT * FROM ".evaluations_db." WHERE date = (SELECT MAX(date) FROM evaluations AS mostrecent WHERE mostrecent.id_origine = evaluations.id_origine AND statut!=\"supprime\")";
 	//$sql = "SELECT * FROM ( SELECT id, MAX(date) AS date FROM evaluations GROUP BY id_origine) mostrecent ON tt.date = mostrecent.date";
 	//$sql = "SELECT * FROM evaluations WHERE (SELECT id, MAX(date) AS date FROM evaluations GROuP BY id_origine) AS X "
 	//$sql = "SELECT tt.*, ss.nom AS nom_session, ss.date AS date_session FROM evaluations tt INNER JOIN ( SELECT id, MAX(date) AS date FROM evaluations GROUP BY id_origine) mostrecent ON tt.date = mostrecent.date, sessions ss WHERE ss.id=tt.id_session ";
@@ -132,7 +133,7 @@ function parseSortCriteria($sort_crit)
 function sortCriteriaToSQL($sorting_values)
 {
 	$sql = "";
-		
+
 	foreach($sorting_values as $crit => $value)
 	{
 		if ($sql == "")
@@ -148,7 +149,7 @@ function sortCriteriaToSQL($sorting_values)
 	{
 		$sql = "ORDER BY name ";
 	}
-	
+
 	return $sql;
 }
 
@@ -387,6 +388,7 @@ function addReport($report)
 	return addReportToDatabase($report);
 };
 
+
 function addReportFromRequest($id_origine, $request)
 {
 	if($id_origine != 0)
@@ -413,7 +415,7 @@ function createReportFromRequest($id_origine, $request)
 	if(isset($request["type"]))
 		$type = $request["type"];
 
-	$row['id_session'] = $request["fieldid_session"];
+	$row['id_session'] = current_session_id();
 	$row['id_origine'] = $id_origine;
 	$row['auteur'] = getLogin();
 
@@ -424,6 +426,8 @@ function createReportFromRequest($id_origine, $request)
 	return $row;
 
 }
+
+
 
 function normalizeReport($report)
 {
@@ -448,8 +452,8 @@ function normalizeReport($report)
 		{
 			$prototype = $report_prototypes[$report->type];
 			foreach($prototype as $field => $value)
-				if($report->$field="")
-					$report->$field = $value;
+				if($report->$field=="")
+				$report->$field = $value;
 		}
 		if($report->type == "Equivalence" && $report->prerapport=="")
 		{
@@ -506,6 +510,7 @@ function addReportToDatabase($report, $create_new = true)
 
 		$sql = "INSERT INTO ".evaluations_db." ($sqlfields) VALUES ($sqlvalues);";
 
+		
 		sql_request($sql);
 
 		$new_id = mysql_insert_id();
@@ -565,47 +570,63 @@ function change_statuts($new_statut, $filter_values)
 
 function change_rapporteur($id, $newrapporteur)
 {
-	return change_property($id, "rapporteur", $newrapporteur);
+	return change_report_property($id, "rapporteur", $newrapporteur);
 }
 
 function change_rapporteur2($id, $newrapporteur)
 {
-	return change_property($id, "rapporteur2", $newrapporteur);
+	return change_report_property($id, "rapporteur2", $newrapporteur);
 }
 
 function change_statut($id, $newstatut)
 {
-	return change_property($id, "statut", $newstatut);
+	return change_report_property($id, "statut", $newstatut);
 }
 
-function change_property($id_origine, $property_name, $newvalue)
+function change_report_property($id_origine, $property_name, $newvalue)
+{
+
+	$data = array($property_name => $newvalue);
+
+	change_report_properties($id_origine, $data);
+}
+
+function change_report_properties($id_origine, $data)
 {
 	global $fieldsAll;
 
+	$row = NULL;
 	//echo "Changing status of ".$id_origine." to " .$statut." <br/>";
+	if($id_origine == 0)
+		$id_origine = addReportFromRequest(0,$data);
+
 	$row = getReport($id_origine);
 
-	$specialRule = array(
-			"auteur"=>0,
-			"date"=>0,
-			"id"=>0,
-	);
+	$data["auteur"] = getLogin();
+	$data["id_session"] = $row->id_session;
+	$data["id_origine"] = $id_origine;
 
-	if(! property_exists($row,$property_name))
-		throw new Exception("No property '".$property_name."' in report object");
 
-	$row->$property_name = $newvalue;
+	foreach($data as $property_name => $newvalue)
+	{
+		if(property_exists($row,$property_name))
+			$row->$property_name = $newvalue;
+		else
+			throw new Exception("No property '".$property_name."' in report object");
+	}
 
-	$fields = "auteur,id_session,id_origine";
-	$values = "\"".getLogin()."\",".$row->id_session.",".$row->id_origine;
+	$fields = "";
+	$values = "";
+	$first = true;
 	foreach($fieldsAll as  $fieldID => $title)
 	{
-		if (!isset($specialRule[$fieldID]))
+		if (isset($row->$fieldID) && $fieldID!="id" && $fieldID!="date")
 		{
-			$fields.=",";
+			$fields.=$first ? "" : ",";
 			$fields.=$fieldID;
-			$values.=",";
+			$values.=$first ? "" : ",";
 			$values.="\"".mysql_real_escape_string(trim($row->$fieldID))."\"";
+			$first = false;
 		}
 	}
 	$sql = "INSERT INTO ".evaluations_db." ($fields) VALUES ($values);";
@@ -614,7 +635,7 @@ function change_property($id_origine, $property_name, $newvalue)
 
 	$newid = mysql_insert_id();
 	$sql = "UPDATE ".evaluations_db." SET id_origine=$newid WHERE id_origine=$id_origine;";
-	mysql_query($sql);
+	
 	sql_request($sql);
 
 	return $newid;

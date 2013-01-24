@@ -43,9 +43,9 @@ function getScrollXY() {
 		require_once('db.inc.php');
 
 		$id_rapport = isset($_REQUEST["id"]) ? $_REQUEST["id"] : -1;
-		$id_origine = isset($_REQUEST["id_origine"]) ? $_REQUEST["id_origine"] : -1;
-		$id_toupdate = isset($_REQUEST["id_toupdate"]) ? $_REQUEST["id_toupdate"] : -1;
-
+		$id_origine = isset($_REQUEST["id_origine"]) ? $_REQUEST["id_origine"] : 0;
+		$id_toupdate = isset($_REQUEST["id_toupdate"]) ? $_REQUEST["id_toupdate"] : 0;
+		
 		$action = isset($_REQUEST["action"]) ? $_REQUEST["action"] : "";
 
 		if(isset($_REQUEST["reset_filter"]))
@@ -56,10 +56,10 @@ function getScrollXY() {
 		{
 			displaySummary(getCurrentFiltersList(), getFilterValues(), getSortingValues());
 			echo('
-		<script type="text/javascript">
-	document.getElementById("t'.$centralid.'").scrollIntoView();
-											</script>');
-				
+					<script type="text/javascript">
+					document.getElementById("t'.$centralid.'").scrollIntoView();
+					</script>');
+
 		};
 
 		try
@@ -89,7 +89,18 @@ function getScrollXY() {
 					displayReports();
 					break;
 				case 'details':
-					displayReport($id_rapport);
+					if(isset($_REQUEST["detailsnext"]))
+					{
+						displayReport(nextt($id_rapport));
+					}
+					else if(isset($_REQUEST["detailsprevious"]))
+					{
+						displayReport(previouss($id_rapport));
+					}
+					else
+					{
+						displayReport($id_rapport);
+					}
 					break;
 				case 'edit':
 					editReport($id_rapport);
@@ -98,18 +109,21 @@ function getScrollXY() {
 					historyReport($id_origine);
 					break;
 				case 'update':
-					$next = isset($_REQUEST["next_id"]) ? $_REQUEST["next_id"] : 0;
-					$previous = isset($_REQUEST["previous_id"]) ? $_REQUEST["previous_id"] : 0;
+
 
 					if(isset($_REQUEST["editnext"]))
 					{
-						editReport($next);
+						editReport(nextt($id_origine));
 					}
 					else if(isset($_REQUEST["editprevious"]))
 					{
-						editReport($previous);
+						editReport(previouss($id_origine));
 					}
-					else if(isset($_REQUEST["deleteandeditnext"]))
+
+					$id_nouveau = addReportFromRequest($id_origine,$_REQUEST);
+					$candidate = updateCandidateFromRequest($_REQUEST);
+						
+					if(isset($_REQUEST["deleteandeditnext"]))
 					{
 						$before = deleteReport($id_origine);
 						if($before != -1)
@@ -121,23 +135,19 @@ function getScrollXY() {
 					{
 						unset($_REQUEST["id_origine"]);
 						unset($_REQUEST["id"]);
-						displayReports($id_origine);
+						displayReports($id_nouveau);
 					}
-					else
+					else if(isset($_REQUEST["submitandeditnext"]))
 					{
-						$id_nouveau = addReportFromRequest($id_origine,$_REQUEST);
-						if(isset($_REQUEST["submitandeditnext"]))
-						{
-							editReport($next);
-						}
-						else if(isset($_REQUEST["submitandview"]))
-						{
-							displayReport($id_nouveau);
-						}
-						else if(isset($_REQUEST["submitandkeepediting"]))
-						{
-							editReport($id_nouveau,false);
-						}
+						editReport($next);
+					}
+					else if(isset($_REQUEST["submitandview"]))
+					{
+						displayReport($id_nouveau);
+					}
+					else if(isset($_REQUEST["submitandkeepediting"]))
+					{
+						editReport($id_nouveau);
 					}
 
 					break;
@@ -146,22 +156,11 @@ function getScrollXY() {
 					{
 						$type = $_REQUEST["type"];
 						$report = newReport($type);
-						displayEditableReport($report, "add");
+						displayEditableReport($report);
 					}
 					else
 					{
 						throw new Exception("Cannot create new document because no type_eval provided");
-					}
-					break;
-				case 'add':
-					$id_nouveau = addReportFromRequest($id_origine,$_REQUEST);
-					if(isset($_REQUEST["submitandview"]))
-					{
-						displayReport($id_nouveau);
-					}
-					else
-					{
-						editReport($id_nouveau,false);
 					}
 					break;
 				case'newpwd':
@@ -336,7 +335,7 @@ function getScrollXY() {
 					{
 						$fieldId = substr($action,3);
 						$newvalue = isset($_REQUEST['new'.$fieldId]) ? $_REQUEST['new'.$fieldId] : "";
-						$newid = change_property($id_toupdate, $fieldId, $newvalue);
+						$newid = change_report_property($id_toupdate, $fieldId, $newvalue);
 						displayReports($newid);
 					}
 					else

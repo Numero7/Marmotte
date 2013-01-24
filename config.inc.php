@@ -125,11 +125,12 @@
 			"HDRLieu" => "Lieu HDR",
 			"anneesequivalence" => "Années d'équivalence",
 		"production" => "Production scientifique",
-		"production2" => "Production scientifique",
+		"productionResume" => "Production scientifique (resume succint pour rapport concours)",
+			"production2" => "Production scientifique",
 		"transfert" => "Transfert et valorisation",
-		"transfert2" => "Détails transfert/valorisation",
+		"transfert2" => "Transfert et valorisation",
 		"encadrement" => "Encadrement",
-		"encadrement2" => "Détails sur l'encadrement",
+		"encadrement2" => "Encadrement",
 		"responsabilites" => "Responsabilités collectives",
 		"responsabilites2" => "Responsabilités collectives",
 		"mobilite" => "Mobilité",
@@ -141,11 +142,21 @@
 		"auteur" => "Auteur Dernière(s) modif(s)",
 		"date" => "Date modification",
 		"id" => "Id",
+			"id_session" => "Id session",
+			"id_origine" => "Id origine",
+			"anneecandidature" => "Année de candidature",
+			"production" => "Production scientifique",
+			"projetrecherche" => "Projet recherche",
+			"parcours" => "Parcours scientifique",
+			"concours" => "Concours présentés",
+			"fichiers" => "Fichiers associés",
+			"cle" => "cle"
 	);
+	
 
-	$specialtr_fields = array("labo1","labo2","labo3","theme1","theme2","theme3");
-	$start_tr_fields = array("labo1","theme1");
-	$end_tr_fields = array("labo3","theme3");
+	$specialtr_fields = array("parcours","concours", "nom", "date_recrutement", "prenom", "grade", "productionResume", "projetrecherche", "labo1","labo2","labo3","theme1","theme2","theme3", "theseLieu", "HDRAnnee", "theseAnnee","HDRLieu");
+	$start_tr_fields = array("parcours", "grade", "nom", "labo1","theme1", "theseAnnee", "productionResume");
+	$end_tr_fields = array("concours", "date_recrutement", "labo3","theme3", "prenom", "HDRLieu","projetrecherche");
 	
 	$fieldsIndividual = array(
 			"rapporteur",
@@ -180,28 +191,15 @@
 			"rayonnement2"
 	);
 
-	$fieldsCandidat0 = array(
-			"concours",
+	$fieldsRapportsCandidat0 = array(
 			"rapporteur",
 			"rapporteur2",
-			"nom",
-			"prenom",
 			"avis",
-			"grade",
-			"labo1",
-			"labo2",
-			"labo3",
-			"theme1",
-			"theme2",
-			"theme3",
-			"theseAnnee",
-			"theseLieu",
-			"HDRAnnee",
-			"HDRLieu",
 			"rapport",
 	);
 
-	$fieldsCandidat1 = array(
+	$fieldsRapportsCandidat1 = array(
+			"rapporteur",
 			"avis1",
 			"prerapport",
 			"production",
@@ -213,7 +211,8 @@
 			"rayonnement"
 	);
 
-	$fieldsCandidat2 = array(
+	$fieldsRapportsCandidat2 = array(
+			"rapporteur2",
 			"avis2",
 			"prerapport2",
 			"production2",
@@ -226,7 +225,53 @@
 	);
 	
 	
-	$fieldsCandidat = array_merge($fieldsCandidat0, $fieldsCandidat1, $fieldsCandidat2);
+	$fieldsRapportsCandidat = array_merge($fieldsRapportsCandidat0, $fieldsRapportsCandidat1, $fieldsRapportsCandidat2);
+	
+	$fieldsCandidatAll = array(
+			"anneecandidature" => "Année de candidature",
+			"nom" => "Nom",
+			"prenom" => "Prénom",
+			"grade" => "Grade",
+			"date_recrutement" => "Date de recrutement",
+			"labo1" => "Labo 1",
+			"labo2" => "Labo 2",
+			"labo3" => "Labo 3",
+			"theme1" => "Theme 1",
+			"theme2" => "Theme 2",
+			"theme3" => "Theme 3",
+			"theseAnnee" => "Année+mois thèse",
+			"theseLieu" => "Lieu thèse",
+			"HDRAnnee" => "Annee HDR",
+			"HDRLieu" => "Lieu HDR",
+			"productionResume" => "Production scientifique (pour rapport concours)",
+			"projetrecherche" => "Projet recherche  (pour rapport concours)",
+			"parcours" => "Parcours scientifique  (pour rapport concours)",
+			"concours" => "Concours présentés",
+			"fichiers" => "Fichiers associés",
+			"cle" => "cle"
+			);
+
+	$fieldsCandidat = array(
+			"nom",
+			"prenom",
+			"grade",
+			"date_recrutement",
+			"labo1",
+			"labo2",
+			"labo3",
+			"theme1",
+			"theme2",
+			"theme3",
+			"theseAnnee",
+			"theseLieu",
+			"HDRAnnee",
+			"HDRLieu",
+			"productionResume",
+			"projetrecherche",
+			"parcours",
+			"concours",
+			"fichiers"
+	);
 	
 	$fieldsEquivalence = array(
 			"rapporteur",
@@ -412,7 +457,8 @@
 		"HDRLieu" => "short",
 		"date_recrutement" => "short",
 		"production" => "long",
-		"transfert" => "long",
+		"productionResume" => "long",
+			"transfert" => "long",
 		"encadrement" => "long",
 		"responsabilites" => "long",
 		"mobilite" => "long",
@@ -434,7 +480,13 @@
 			"theme2" => "topic",
 			"theme3" => "topic",
 			"anneesequivalence" =>"short",
-			"id" =>"short"
+			"id" =>"short",
+			"anneecandidature" => "short",
+			"production" => "long",
+			"projetrecherche" => "long",
+			"parcours" => "long",
+			"concours" => "long",
+			"fichiers" => "files"
 	);
 	
 	$typesRapportsIndividuels = array(
@@ -476,18 +528,18 @@
 	);
 
 	/* Pour les promos*/
-	$avis_classement = array(""=>"", "adiscuter"=>"à discuter", "non"=>"<em>non-classé</em>", "oui"=>"Oui", "1"=>"<B>1</B>", "2"=>"<B>2</B>", "3"=>"<B>3</B>", "4"=>"<B>4</B>",
-			 "5"=>"<B>5</B>", "6"=>"<B>6</B>", "7"=>"<B>7</B>" , "8"=>"<B>8</B>", "9"=>"<B>9</B>"
-			, "10"=>"<B>10</B>", "11"=>"<B>11</B>", "12"=>"<B>12</B>", "13"=>"<B>13</B>", "14"=>"<B>14</B>", "15"=>"<B>15</B>", "16"=>"<B>16</B>",
-			 "17"=>"<B>17</B>", "18"=>"<B>18</B>", "19"=>"<B>19</B>",
-			 "20"=>"<B>20</B>", "21"=>"<B>21</B>");
+	$avis_classement = array(""=>"", "adiscuter"=>"à discuter", "non"=>"non-classé", "oui"=>"Oui", "1"=>"<span  style=\"font-weight:bold;\" >1</span>", "2"=>"<span  style=\"font-weight:bold;\" >2</span>", "3"=>"<span  style=\"font-weight:bold;\" >3</span>", "4"=>"<span  style=\"font-weight:bold;\" >4</span>",
+			 "5"=>"<span  style=\"font-weight:bold;\" >5</span>", "6"=>"<span  style=\"font-weight:bold;\" >6</span>", "7"=>"<span  style=\"font-weight:bold;\" >7</span>" , "8"=>"<span  style=\"font-weight:bold;\" >8</span>", "9"=>"<span  style=\"font-weight:bold;\" >9</span>"
+			, "10"=>"<span  style=\"font-weight:bold;\" >10</span>", "11"=>"<span  style=\"font-weight:bold;\" >11</span>", "12"=>"<span  style=\"font-weight:bold;\" >12</span>", "13"=>"<span  style=\"font-weight:bold;\" >13</span>", "14"=>"<span  style=\"font-weight:bold;\" >14</span>", "15"=>"<span  style=\"font-weight:bold;\" >15</span>", "16"=>"<span  style=\"font-weight:bold;\" >16</span>",
+			 "17"=>"<span  style=\"font-weight:bold;\" >17</span>", "18"=>"<span  style=\"font-weight:bold;\" >18</span>", "19"=>"<span  style=\"font-weight:bold;\" >19</span>",
+			 "20"=>"<span  style=\"font-weight:bold;\" >20</span>", "21"=>"<span  style=\"font-weight:bold;\" >21</span>");
 
 	/* Pour les concours*/
-	$avis_candidature = array(""=>"", "adiscuter"=>"à discuter", "nonauditionne"=>"<em>Non Auditionné</em>", "oral"=>"Auditionné", "nonclasse"=>"<em>Non Classé</em>", "1"=>"<B>1</B>", "2"=>"<B>2</B>", "3"=>"<B>3</B>", "4"=>"<B>4</B>",
-			 "5"=>"<B>5</B>", "6"=>"<B>6</B>", "7"=>"<B>7</B>" , "8"=>"<B>8</B>", "9"=>"<B>9</B>"
-			, "10"=>"<B>10</B>", "11"=>"<B>11</B>", "12"=>"<B>12</B>", "13"=>"<B>13</B>", "14"=>"<B>14</B>", "15"=>"<B>15</B>", "16"=>"<B>16</B>",
-			 "17"=>"<B>17</B>", "18"=>"<B>18</B>", "19"=>"<B>19</B>",
-			 "20"=>"<B>20</B>", "21"=>"<B>21</B>", "nonconcur"=>"<em>Non Admis à Concourir</em>");
+	$avis_candidature = array(""=>"", "adiscuter"=>"à discuter", "nonauditionne"=>"Non Auditionné", "oral"=>"Auditionné", "nonclasse"=>"Non Classé", "1"=>"<span  style=\"font-weight:bold;\" >1</span>", "2"=>"<span  style=\"font-weight:bold;\" >2</span>", "3"=>"<span  style=\"font-weight:bold;\" >3</span>", "4"=>"<span  style=\"font-weight:bold;\" >4</span>",
+			 "5"=>"<span  style=\"font-weight:bold;\" >5</span>", "6"=>"<span  style=\"font-weight:bold;\" >6</span>", "7"=>"<span  style=\"font-weight:bold;\" >7</span>" , "8"=>"<span  style=\"font-weight:bold;\" >8</span>", "9"=>"<span  style=\"font-weight:bold;\" >9</span>"
+			, "10"=>"<span  style=\"font-weight:bold;\" >10</span>", "11"=>"<span  style=\"font-weight:bold;\" >11</span>", "12"=>"<span  style=\"font-weight:bold;\" >12</span>", "13"=>"<span  style=\"font-weight:bold;\" >13</span>", "14"=>"<span  style=\"font-weight:bold;\" >14</span>", "15"=>"<span  style=\"font-weight:bold;\" >15</span>", "16"=>"<span  style=\"font-weight:bold;\" >16</span>",
+			 "17"=>"<span  style=\"font-weight:bold;\" >17</span>", "18"=>"<span  style=\"font-weight:bold;\" >18</span>", "19"=>"<span  style=\"font-weight:bold;\" >19</span>",
+			 "20"=>"<span  style=\"font-weight:bold;\" >20</span>", "21"=>"<span  style=\"font-weight:bold;\" >21</span>", "nonconcur"=>"Non Admis à Concourir");
 	
 	/* Pour les SPE par exemple*/
 	$avis_vide = array(""=>"");
@@ -557,29 +609,29 @@
 	
 	/*Pour les evals à vague et mi vague*/
 	$evalCheckboxes = array(
-			"favorable" => "<B>Avis favorable</B>	
+			"favorable" => "<span  style=\"font-weight:bold;\" >Avis favorable</span>	
 	<small> (l’activité du chercheur est conforme à ses obligations statutaires)</small>",
-			"differe" => "<B>Avis différé</B>
+			"differe" => "<span  style=\"font-weight:bold;\" >Avis différé</span>
 <small> (l’évaluation est renvoyée à la session suivante en raison de l’insuffisance ou de l'absence d'éléments du dossier)</small>",
-			"reserve" => "<B>Avis réservé</B>
+			"reserve" => "<span  style=\"font-weight:bold;\" >Avis réservé</span>
 <small> (la section a identifié dans l’activité du chercheur un ou plusieurs éléments qui nécessitent un suivi spécifique)</small>",
-			"alerte" => "<B>Avis d'alerte</B>
+			"alerte" => "<span  style=\"font-weight:bold;\" >Avis d'alerte</span>
 <small> (la section exprime des inquiétudes sur l’évolution de l’activité du chercheur))</small>");
 
 	/* Pour les renouvellements de gdr ou création d'unités*/
 	$pertinenceCheckboxes = array(
-			"tresfavorable" => "<B>Avis très favorable</B>",
-			"favorable" => "<B>Avis favorable</B>",
-			"defavorable" => "<B>Avis défavorable</B>",
-			"reserve" => "<B>Avis réservé</B>",
-			"sansavis" => "<B>Pas d'avis</B>"
+			"tresfavorable" => "<span  style=\"font-weight:bold;\" >Avis très favorable</span>",
+			"favorable" => "<span  style=\"font-weight:bold;\" >Avis favorable</span>",
+			"defavorable" => "<span  style=\"font-weight:bold;\" >Avis défavorable</span>",
+			"reserve" => "<span  style=\"font-weight:bold;\" >Avis réservé</span>",
+			"sansavis" => "<span  style=\"font-weight:bold;\" >Pas d'avis</span>"
 		);
 
 	/* Pour les écoles thématiques*/
 	$ecoleCheckboxes = array(
-			"tresfavorable" => "<B>Avis très favorable</B>",
-			"favorable" => "<B>Avis favorable</B>",
-			"defavorable" => "<B>Avis défavorable</B>"
+			"tresfavorable" => "<span  style=\"font-weight:bold;\" >Avis très favorable</span>",
+			"favorable" => "<span  style=\"font-weight:bold;\" >Avis favorable</span>",
+			"defavorable" => "<span  style=\"font-weight:bold;\" >Avis défavorable</span>"
 	);
 	
 	$typesRapportsToCheckboxes = array(
@@ -591,42 +643,42 @@
 	);
 
 	$typesRapportsToCheckboxesTitles = array(
-			'Evaluation-Vague' => '<B>EVALUATION A VAGUE DE CHERCHEUR<br/>Avis de la section sur l’activité du chercheur</B>',
-			'Evaluation-MiVague' => '<B>EVALUATION A MI-VAGUE DE CHERCHEUR<br/>Avis de la section sur l’activité du chercheur</B>',
-			'Renouvellement' => '<B>AVIS DE PERTINENCE DU SOUTIEN DU CNRS AUX UNITES</B>',
-			'Association' => '<B>AVIS DE PERTINENCE DU SOUTIEN DU CNRS AUX UNITES</B>',
-			'Ecole' => '<B>AVIS SUR L\'ECOLE</B>'
+			'Evaluation-Vague' => '<span  style=\"font-weight:bold;\" >EVALUATION A VAGUE DE CHERCHEUR<br/>Avis de la section sur l’activité du chercheur</span>',
+			'Evaluation-MiVague' => '<span  style=\"font-weight:bold;\" >EVALUATION A MI-VAGUE DE CHERCHEUR<br/>Avis de la section sur l’activité du chercheur</span>',
+			'Renouvellement' => '<span  style=\"font-weight:bold;\" >AVIS DE PERTINENCE DU SOUTIEN DU CNRS AUX UNITES</span>',
+			'Association' => '<span  style=\"font-weight:bold;\" >AVIS DE PERTINENCE DU SOUTIEN DU CNRS AUX UNITES</span>',
+			'Ecole' => '<span  style=\"font-weight:bold;\" >AVIS SUR L\'ECOLE</span>'
 	);
 	
 
 	$typesRapportsToEnteteGauche = array(
-			'Evaluation-Vague' => '<B>Objet de l’évaluation :</B><br/><EM>évaluation à vague de chercheur</EM>',
-			'Evaluation-MiVague' => '<B>Objet de l’évaluation :</B><br/><EM>évaluation à mi-vague de chercheur</EM>',
-			'Promotion' => '<B>Objet de l’évaluation :</B><br/>Avancement de grade<br/><B>Au grade de :</B>',
-			'Candidature' => '<B>Objet de l’évaluation :</B><br/><EM>Candidature au concours</EM>',
-			'Suivi-PostEvaluation' => '<B>Objet de l’évaluation :</B><br/><EM>Suivi post-évaluation</EM>',
-			'Affectation' => '<B>Objet de l’évaluation :</B><br/>Affectation',
-			'Titularisation' => '<B>Objet de l’évaluation :</B><br/>Titularisation',
-			'Reconstitution' => '<B>Objet :</B><br/>Reconstitution de carrière',
-			'Changement-Directeur' =>  '<B>Objet de l’évaluation :</B><br/>Changement de directeur',
-			'Changement-Directeur-Adjoint' =>  '<B>Objet de l’évaluation :</B><br/>Changement de directeur adjoint',
-			'Renouvellement' => '<B>Objet de l’examen :</B> <EM>avis de pertinence d’association au CNRS : renouvellement</EM>',
-			'Association' => '<B>Objet de l’examen :</B> <EM>avis de pertinence d’association au CNRS : projet d\'association</EM>',
-			'Ecole' => '<B>Objet de l’évaluation :</B><br/> Ecole Thématique',
-			'Comite-Evaluation' => '<B>Objet de l’examen :</B> Comité d\'évaluation',
+			'Evaluation-Vague' => '<span  style=\"font-weight:bold;\" >Objet de l’évaluation :</span><br/><EM>évaluation à vague de chercheur</EM>',
+			'Evaluation-MiVague' => '<span  style=\"font-weight:bold;\" >Objet de l’évaluation :</span><br/><EM>évaluation à mi-vague de chercheur</EM>',
+			'Promotion' => '<span  style=\"font-weight:bold;\" >Objet de l’évaluation :</span><br/>Avancement de grade<br/><span  style=\"font-weight:bold;\" >Au grade de :</span>',
+			'Candidature' => '<span  style=\"font-weight:bold;\" >Objet de l’évaluation :</span><br/><EM>Candidature au concours</EM>',
+			'Suivi-PostEvaluation' => '<span  style=\"font-weight:bold;\" >Objet de l’évaluation :</span><br/><EM>Suivi post-évaluation</EM>',
+			'Affectation' => '<span  style=\"font-weight:bold;\" >Objet de l’évaluation :</span><br/>Affectation',
+			'Titularisation' => '<span  style=\"font-weight:bold;\" >Objet de l’évaluation :</span><br/>Titularisation',
+			'Reconstitution' => '<span  style=\"font-weight:bold;\" >Objet :</span><br/>Reconstitution de carrière',
+			'Changement-Directeur' =>  '<span  style=\"font-weight:bold;\" >Objet de l’évaluation :</span><br/>Changement de directeur',
+			'Changement-Directeur-Adjoint' =>  '<span  style=\"font-weight:bold;\" >Objet de l’évaluation :</span><br/>Changement de directeur adjoint',
+			'Renouvellement' => '<span  style=\"font-weight:bold;\" >Objet de l’examen :</span> <EM>avis de pertinence d’association au CNRS : renouvellement</EM>',
+			'Association' => '<span  style=\"font-weight:bold;\" >Objet de l’examen :</span> <EM>avis de pertinence d’association au CNRS : projet d\'association</EM>',
+			'Ecole' => '<span  style=\"font-weight:bold;\" >Objet de l’évaluation :</span><br/> Ecole Thématique',
+			'Comite-Evaluation' => '<span  style=\"font-weight:bold;\" >Objet de l’examen :</span> Comité d\'évaluation',
 			'Generique' => '&nbsp;',
-			'Equivalence' => '<B>Objet de l’évaluation :</B><br/><EM>Equivalence titres et travaux</EM>',
+			'Equivalence' => '<span  style=\"font-weight:bold;\" >Objet de l’évaluation :</span><br/><EM>Equivalence titres et travaux</EM>',
 						
 			'' => ''
 	);
 
 	$enTetesDroit = array(
-			'Individu' => '<B>Nom, prénom et affectation du chercheur :</B><br/>',
-			'Concours' => '<B>Concours, classement, nom et prénom du candidat :</B><br/>',
-			'Equivalence' => '<B>Nom et prénom du candidat :</B><br/>',
-			'Unite' => '<B>Code, intitulé et nom<br/>du directeur de l’unité :</B><br/>',
-			'Ecole' => '<B>Nom de l\'école et du porteur de projet :</B><br/>',
-			'PromotionDR' => '<B>Classement, nom et unité :</B><br/>',
+			'Individu' => '<span  style=\"font-weight:bold;\" >Nom, prénom et affectation du chercheur :</span><br/>',
+			'Concours' => '<span  style=\"font-weight:bold;\" >Concours, classement, nom et prénom du candidat :</span><br/>',
+			'Equivalence' => '<span  style=\"font-weight:bold;\" >Nom et prénom du candidat :</span><br/>',
+			'Unite' => '<span  style=\"font-weight:bold;\" >Code, intitulé et nom<br/>du directeur de l’unité :</span><br/>',
+			'Ecole' => '<span  style=\"font-weight:bold;\" >Nom de l\'école et du porteur de projet :</span><br/>',
+			'PromotionDR' => '<span  style=\"font-weight:bold;\" >Classement, nom et unité :</span><br/>',
 			'' => '&nbsp;'
 			);
 	

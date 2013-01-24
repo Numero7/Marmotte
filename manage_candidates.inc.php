@@ -3,14 +3,67 @@
 require_once('config.inc.php');
 require_once('manage_sessions.inc.php');
 
-function checkIfCandidateExists($nom,$prenom)
+function generateKey($annee, $nom,$prenom)
 {
-	$sql = "SELECT * FROM ".candidates_db.' WHERE nom="'.$nom.'" AND prenom="'.$prenom.'";';
-	$result=mysql_query($sql);
-	
-	if($result == false)
-		throw new Exception("Failed to process sql query ".$sql);
+	return mb_strtolower(replace_accents(trim($annee.$nom.$prenom," '-")));
+}
+
+function candidateExists($annee,$nom,$prenom)
+{
+	$key = generateKey($annee, $nom, $prenom);
+	$sql = "SELECT * FROM ".candidates_db.' WHERE cle="'.$key.'";';
+
+	$result = sql_request($sql);
 	return	(mysql_num_rows($result) > 0);
+}
+
+function updateCandidateFromRequest($request, $oldannee="")
+{
+	global $fieldsCandidatAll;
+
+	$data = (object) array();
+	
+	
+	foreach($fieldsCandidatAll as  $field => $value)
+		if (isset($request["field".$field]))
+		$data->$field = nl2br(trim($request["field".$field]),true);
+
+	$annee = $data->anneecandidature;
+	$nom = $data->nom;
+	$prenom = $data->prenom;
+	
+	$cle = generateKey($annee,$nom ,$prenom );
+
+	
+	$candidate = get_or_create_candidate($data );
+	
+	$sqlcore = "";
+	
+	$first = true;
+	foreach($data as  $field => $value)
+	{
+			$sqlcore.=$first ? "" : ",";
+			$sqlcore.=$field.'="'.mysql_real_escape_string($value).'" ';
+			$first = false;
+	}
+	$sql = "UPDATE ".candidates_db." SET ".$sqlcore." WHERE cle=\"".$cle."\";";
+
+	sql_request($sql);
+	
+		
+	$candidate = get_or_create_candidate($data );
+	
+	$previouskey = isset($request['previouscandidatekey']) ? $request['previouscandidatekey'] : $cle;
+	if($previouskey != $candidate->cle)
+		deleteCandidate($previouskey);
+	
+	return $candidate;
+	
+}
+
+function deleteCandidate($key)
+{
+	sql_request("DELETE FROM ".candidates_db." WHERE cle=\"".$key."\";");
 }
 
 function getAllCandidates()
@@ -27,15 +80,24 @@ function getAllCandidates()
 	return $rows;
 }
 
-function add_candidate($data)
+function add_candidate_to_database($data)
 {
-	global $fieldsCandidat;
+	global $fieldsCandidatAll;
 
+	$annee = "0";
+	if(isset($data->id_session))
+		$annee = session_year($data->id_session);
+	if(isset($data->anneecandidature))
+		$annee = $data->anneecandidature;
+	
+	$key = generateKey($annee, $data->nom, $data->prenom);
+	$data->cle = $key;
+	
 	$sqlvalues = "";
 	$sqlfields = "";
 	$first = true;
 
-	foreach($fieldsCandidat as $field)
+	foreach($fieldsCandidatAll as $field => $desc)
 	{
 		if(isset($data->$field))
 		{
@@ -43,18 +105,66 @@ function add_candidate($data)
 			$sqlvalues .= ($first ? "" : ",") .'"'.$data->$field.'"';
 			$first = false;
 		}
-
 	}
 
 	$sql = "INSERT INTO ".candidates_db." ($sqlfields) VALUES ($sqlvalues);";
+	sql_request($sql);
 
-	$result=mysql_query($sql);
-	if($result == false)
-		throw new Exception("Failed to process sql query ".$sql);
+	$sql2 = 'SELECT * FROM candidats WHERE cle="'.$key.'";';
+	$result = sql_request($sql2);
+	$candidate = mysql_fetch_object($result);
+	if($candidate == false)
+		throw new Exception("Failed to add candidate with request <br/>".$sql2);
 
-	$new_id = mysql_insert_id();
-	return $new_id;
+	return $candidate;
+
 }
+
+/*
+ * This function will always return a candidate,
+ * created if needed,
+ * or throw an exception
+ */
+function get_or_create_candidate($data)
+{
+
+	$annee = "0";
+	if(isset($data->id_session))
+		$annee = session_year($data->id_session);
+	if(isset($data->anneecandidature))
+		$annee = $data->anneecandidature;
+	
+	$key = generateKey($annee, $data->nom, $data->prenom);
+
+	try
+	{
+		mysql_query("LOCK TABLES candidates WRITE;");
+		$sql = "SELECT * FROM ".candidates_db.' WHERE cle="'.$key.'";';
+		
+		
+		$result = sql_request($sql);
+
+		$cdata = mysql_fetch_object($result);
+		if($cdata == false)
+		{
+			add_candidate_to_database($data);
+			mysql_query("LOCK TABLES candidates WRITE;");
+			$result = sql_request($sql);
+			$cdata = mysql_fetch_object($result);
+			if($cdata == false)
+				throw new Exception("Failed to fetch object from request<br/>".$sql);
+		}
+
+		mysql_query("UNLOCK TABLES candidates WRITE;");
+		return $cdata;
+	}
+	catch(Exception $exc)
+	{
+		mysql_query("UNLOCK TABLES;");
+		throw new Exception("Failed to add candidate from report:<br/>".$exc);
+	}
+}
+
 
 function extraction_candidats()
 {
@@ -63,12 +173,14 @@ function extraction_candidats()
 	try
 	{
 		$reports = getAllReportsOfType("Equivalence", current_session_id() );
+		$reports = array_merge($reports, getAllReportsOfType("Candidature", current_session_id() ));
+
 		foreach($reports as $report)
-			if(!checkIfCandidateExists($report->nom,$report->prenom))
-			{
+		{
+			if(!candidateExists(session_year($report->id_session), $report->nom, $report->prenom))
 				$nb++;
-				add_candidate($report);
-			}
+			get_or_create_candidate($report);
+		}
 	}
 	catch(Exception $exc)
 	{
