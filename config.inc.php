@@ -248,8 +248,10 @@
 			"parcours" => "Parcours scientifique  (pour rapport concours)",
 			"concours" => "Concours présentés",
 			"fichiers" => "Fichiers associés",
-			"cle" => "cle"
-			);
+			"cle" => "cle",
+			"avissousjury" => "Avis du sous-jury",
+			"rapporteur" => "Rapporteur",
+	);
 
 	$fieldsCandidatAvantAudition = array(
 			"nom",

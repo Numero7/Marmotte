@@ -359,7 +359,9 @@ function displayConcoursReport($row)
 	
 <?php 		
 	}
-	foreach($fieldsRapportsCandidat as  $fieldID)
+	$fields = get_editable_fields($row);
+	
+	foreach($fields as  $fieldID)
 	{
 		if (!isset($specialRule[$fieldID]))
 		{
@@ -368,7 +370,7 @@ function displayConcoursReport($row)
 		<?php echo $fieldsAll[$fieldID];?>
 	</th>
 	<td>
-		<?php echo remove_br($row->$fieldID);?>
+		<?php echo valueFromField($fieldID, remove_br($row->$fieldID), $units,$users,$themes);?>
 	</td></tr>
 	<?php
 		}
