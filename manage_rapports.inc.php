@@ -8,9 +8,7 @@ require_once("config.inc.php");
 function getIDOrigine($id_rapport)
 {
 	$sql = "SELECT id_origine FROM ".evaluations_db." WHERE id=$id_rapport";
-	$result=mysql_query($sql);
-	if($result == false)
-		throw new Exception("Fail to process sql request ".$sql);
+	$result=sql_request($sql);
 	$report = mysql_fetch_object($result);
 	return $report->id_origine;
 
@@ -25,16 +23,12 @@ function getReport($id_rapport)
 	$id_origine = getIDOrigine($id_rapport);
 	$sql = "SELECT * FROM ".evaluations_db." WHERE id=$id_origine";
 	$result=sql_request($sql);
-	if($result == false)
-		throw new Exception("Fail to process sql request ".$sql);
 	$report = mysql_fetch_object($result);
-
-	$report = normalizeReport($report);
 
 	if($report == false)
 		throw new Exception("No report with id ".$id_rapport);
 	else
-		return $report;
+		return normalizeReport($report);
 }
 
 function reportShortSummary($report)
@@ -67,22 +61,6 @@ function reportShortSummary($report)
 
 }
 
-function listOfAllVirginReports()
-{
-	$result = "";
-	$users = listUsers();
-	foreach($users as $rapporteur)
-	{
-		$reports  = getVirginReports($rapporteur);
-		if(count($reports) > 0)
-		{
-			$result .= "<br/><B>Rapporteur \"".$rapporteur->description."\" (". $rapporteur->email.") :</B><br/>";
-			foreach($reports as $report)
-				$result .= reportShortSummary($report)."<br/>";
-		}
-	}
-	return $result;
-}
 
 function getAllReportsOfType($type,$id_session=-1)
 {
@@ -128,22 +106,6 @@ function filterSortReports($filters, $filter_values = array(), $sorting_values =
 	return $rows;
 }
 
-function parseSortCriteria($sort_crit)
-{
-	$result = array();
-	$pieces = explode(";", $sort_crit);
-	foreach($pieces as $crit)
-	{
-		$firstChar = substr($crit,0,1);
-		$crit = substr($crit,1);
-		if ($firstChar=="*")
-			$result[$crit]= "ASC";
-		else if ($firstChar=="-")
-			$result[$crit]= "DESC";
-	}
-	return $result;
-}
-
 function sortCriteriaToSQL($sorting_values)
 {
 	$sql = "";
@@ -151,18 +113,13 @@ function sortCriteriaToSQL($sorting_values)
 	foreach($sorting_values as $crit => $value)
 	{
 		if ($sql == "")
-		{
 			$sql = "ORDER BY ";
-		}
 		else
-		{ $sql .= ", ";
-		}
+			$sql .= ", ";
 		$sql .= $crit." ".( ( substr($sorting_values[$crit],strlen($sorting_values[$crit]) -1) == "+" ) ? "ASC" : "DESC");
 	}
 	if ($sql =="")
-	{
 		$sql = "ORDER BY name ";
-	}
 
 	return $sql;
 }
@@ -202,70 +159,6 @@ function getTriTypes($sorting_values)
 	return $result;
 }
 
-function updateRapportAvis($id_origine,$avis,$rapport)
-{
-	global $fieldsAll;
-
-
-	try
-	{
-		$row = getReport($id_origine);
-	}
-	catch(Exception $exc)
-	{
-		throw new Exception("Cannot update report: ".$exc->getMessage());
-	}
-
-	checkReportIsEditable($row);
-
-	$specialRule = array(
-			"auteur"=>0,
-			"date"=>0
-	);
-
-	$row->avis = $avis;
-	$row->rapport = $rapport;
-
-	if($row->statut == "vierge")
-		$row->statut = "prerapport";
-
-	$fields = "auteur,id_session,id_origine";
-	$values = "\"".getLogin()."\",".$row->id_session.",".$row->id_origine;
-	foreach($fieldsAll as  $fieldID => $title)
-	{
-		if (!isset($specialRule[$fieldID]))
-		{
-			$fields.=",";
-			$fields.=$fieldID;
-			$values.=",";
-			$values.="\"".mysql_real_escape_string(nl2br(trim($row->$fieldID)))."\"";
-		}
-	}
-	$sql = "INSERT INTO ".evaluations_db." ($fields) VALUES ($values);";
-	//echo $sql."<br>";
-	$result = sql_request($sql);
-
-	if($result == false)
-	{
-		echo "Failed to update rapport: failed to insert new report in DB: failed to process SQL request".$sql;
-		throw new Exception("Failed to update rapport: failed to insert new report in DB: failed to process SQL request".$sql);
-	}
-
-	//echo $sql;
-
-	$newid = mysql_insert_id();
-	$sql = "UPDATE ".evaluations_db." SET id_origine=$newid WHERE id_origine=$id_origine;";
-
-	//echo $sql;
-
-	$result = sql_request($sql);
-	if($result == false)
-	{
-		echo "Failed to update rapport: failed to update id_origine: failed to process SQL request".$sql;
-		throw new Exception("Failed to update rapport: failed to update id_origine: failed to process SQL request".$sql);
-	}
-
-}
 
 function getStatus($id_rapport)
 {
@@ -596,6 +489,12 @@ function change_statuts($new_statut, $filter_values)
 		change_statut($row->id, $new_statut);
 }
 
+function updateRapportAvis($id,$avis,$rapport)
+{
+	$data = array("avis" => $avis, "rapport" => $rapport);
+	return change_report_properties($id, $data);
+}
+
 function change_rapporteur($id, $newrapporteur)
 {
 	return change_report_property($id, "rapporteur", $newrapporteur);
@@ -684,6 +583,23 @@ function getVirginReports($rapporteur)
 	$liste12 =  filterSortReports(getCurrentFiltersList(), $filter_values,getSortingValues());
 
 	return array_merge($liste1,$liste2);
+}
+
+function listOfAllVirginReports()
+{
+	$result = "";
+	$users = listUsers();
+	foreach($users as $rapporteur)
+	{
+		$reports  = getVirginReports($rapporteur);
+		if(count($reports) > 0)
+		{
+			$result .= "<br/><B>Rapporteur \"".$rapporteur->description."\" (". $rapporteur->email.") :</B><br/>";
+			foreach($reports as $report)
+				$result .= reportShortSummary($report)."<br/>";
+		}
+	}
+	return $result;
 }
 
 

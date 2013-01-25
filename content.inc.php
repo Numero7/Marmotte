@@ -112,13 +112,25 @@ function getScrollXY() {
 					break;
 				case 'update':
 
+							
 
 					if(isset($_REQUEST["editnext"]))
 					{
-						editReport(nextt($id_origine));
+						//Hugo: tant qu'on est en dev je préfère laisser les exceptions remonter jusqu'à
+						//l'utilisateur/testeur
+						//try{editReport(nextt($id_origine));}
+						//catch(Exception $e)
+						//{displayReport(nextt($id_origine));}
+						displayReport(nextt($id_origine));
+						
 					}
 					else if(isset($_REQUEST["editprevious"]))
 					{
+						//Hugo: tant qu'on est en dev je préfère laisser les exceptions remonter jusqu'à
+						//l'utilisateur/testeur
+						//try{editReport(previouss($id_origine));}
+						//catch(Exception $e)
+						//{displayReport(previouss($id_origine));}
 						editReport(previouss($id_origine));
 					}
 					else if(isset($_REQUEST["retourliste"]))
