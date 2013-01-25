@@ -449,6 +449,7 @@ function addReportToDatabase($report, $create_new = true)
 			$n = count($rows_id) -1;
 			for($i = 0; $i < $n; $i++)
 			{
+				//Hugo: ça fait jusqu'à 300 requêtes sql :-) mais ça a l'air de passer
 				$_SESSION['rows_id'][$i] = 	getIDOrigine($_SESSION['rows_id'][$i]);
 			}
 		}

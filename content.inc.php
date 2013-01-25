@@ -118,11 +118,11 @@ function getScrollXY() {
 					{
 						//Hugo: tant qu'on est en dev je préfère laisser les exceptions remonter jusqu'à
 						//l'utilisateur/testeur
+						//mais je vosis l'idée j'ai modifié editReport en conséquence
 						//try{editReport(nextt($id_origine));}
 						//catch(Exception $e)
 						//{displayReport(nextt($id_origine));}
-						displayReport(nextt($id_origine));
-						
+						editReport(nextt($id_origine));						
 					}
 					else if(isset($_REQUEST["editprevious"]))
 					{
