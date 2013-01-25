@@ -10,18 +10,21 @@ function getIDOrigine($id_rapport)
 	$sql = "SELECT id_origine FROM ".evaluations_db." WHERE id=$id_rapport";
 	$result=sql_request($sql);
 	$report = mysql_fetch_object($result);
-	return $report->id_origine;
-
+	if($report == false)
+		throw new Exception("No report with id ".$id_rapport);
+	else
+		return $report->id_origine;
 }
 
 /*
  * returns an object
 */
 
-function getReport($id_rapport)
+function getReport($id_rapport, $most_recent = true)
 {
-	$id_origine = getIDOrigine($id_rapport);
-	$sql = "SELECT * FROM ".evaluations_db." WHERE id=$id_origine";
+	if($most_recent)
+		$id_rapport = getIDOrigine($id_rapport);
+	$sql = "SELECT * FROM ".evaluations_db." WHERE id=$id_rapport";
 	$result=sql_request($sql);
 	$report = mysql_fetch_object($result);
 
@@ -327,9 +330,12 @@ function addReportFromRequest($id_origine, $request)
 
 function createReportFromRequest($id_origine, $request)
 {
-	global $empty_report;
-	//$row = $empty_report;
+	global $fieldsAll;
 
+	/* Hugo : I changed for the system we discussed
+	 *
+	* also we may have problems whn creating report
+	*
 	// Origin ID might have changed while report was being edited
 	$id_origine = getIDOrigine($id_origine);
 	$row = get_object_vars(getReport($id_origine));
@@ -339,13 +345,16 @@ function createReportFromRequest($id_origine, $request)
 	if(isset($request["type"]))
 		$type = $request["type"];
 
-	$row['id_session'] = current_session_id();
-	$row['id_origine'] = $id_origine;
-	$row['auteur'] = getLogin();
+	*/
+	$row = (object) array();
 
-	foreach($row as  $field => $value)
+	$row->id_session = current_session_id();
+	$row->id_origine = $id_origine;
+	$row->auteur = getLogin();
+
+	foreach($fieldsAll as  $field => $comment)
 		if (isset($request["field".$field]))
-		$row[$field] = nl2br(trim($request["field".$field]),true);
+		$row->$field = nl2br(trim($request["field".$field]),true);
 
 	return $row;
 
@@ -389,95 +398,136 @@ function normalizeReport($report)
 }
 
 
-function addReportToDatabase($report, $create_new = true)
+function addReportToDatabase($report)
 {
+	global $fieldsAll;
+	global $empty_report;
+
+
 	$report = normalizeReport($report);
+
 
 	if($report->statut == "vierge" && $report->id_origine != 0)
 		$report->statut = "prerapport";
 
 	createUnitIfNeeded($report->unite);
 
-	$id_origine = isset($report->id_origine) ? $report->id_origine : 0;
+	$specialRule = array("date","id");
 
-	global $fieldsAll;
-	$specialRule = array(
-			"date"=>0,
-			"id" =>0,
-	);
 
-	if($create_new)
+	mysql_query("LOCK TABLES evaluations WRITE;");
+
+	try
 	{
+
+		$id_origine = isset($report->id_origine) ? $report->id_origine : 0;
+
+		$current_report = $empty_report;
+		try
+		{
+			$previous_report = getReport($id_origine, false);
+			$current_report = getReport($id_origine);
+
+			//echo "id_origine $id_origine current_id ".$current_report->id."<br/>";
+			foreach($fieldsAll as $field => $comment)
+			{
+				if (!in_array($field,$specialRule))
+				{
+					/*
+					 if( isset($current_report->$field) && isset($previous_report->$field) && $previous_report->$field != $current_report->$field)
+					 {
+					echo "Parallel edition of field '".$field."' by '".$current_report->auteur."' changed from '".$previous_report->$field."' to '".$current_report->$field."'<br/>";
+					}
+					*/
+					if( isset($report->$field) && isset($previous_report->$field) && $previous_report->$field != $report->$field)
+					{
+						if( isset($current_report->$field) && ($previous_report->$field != $current_report->$field)  && ($current_report->$field != $report->$field))
+						{
+							global $mergeableTypes;
+							global $fieldsTypes;
+							$type = isset($fieldsTypes[$field]) ? $fieldsTypes[$field] : "";
+							if(in_array($type, $mergeableTypes))
+							{
+								echo "<h2>Merge with parallel edition of field $field by '".$current_report->auteur."':</h2>'".$current_report->$field."'";
+								echo "<h2>Your edition:</h2> '".$report->$field."'";
+								$current_report->$field ="!!!MERGE!!!\n* FROM '".$current_report->auteur."':\n".$current_report->$field;
+								$current_report->$field .= "\n* FROM '".getLogin()."':\n".$report->$field;
+							}
+							else
+							{
+								echo "<h2>Cannot merge with parallel edition of field '$field' by '".$current_report->auteur."':</h2>";
+								echo "<h2>Parallel edition:</h2>".$current_report->$field;
+								echo "<h2>Your edition:</h2>".$report->$field;
+								echo "<h2>Erasing parallel edition...</h2>";
+								$current_report->$field = $report->$field;
+							}
+						}
+						else
+						{
+							//echo "Updating field ".$field." was '".$previous_report->$field."' now '".$report->$field."'<br/>";
+							$current_report->$field = $report->$field;
+						}
+					}
+				}
+			}
+		}
+		catch(Exception $e)
+		{
+			//may happen if $id_origine is 0 for example (when reports are creating)
+			//in that case we create from the empty report
+			foreach($current_report as $field => $value)
+				if(isset($report->$field))
+				$current_report->$field = $report->$field;
+		}
+
 
 		$sqlfields = "";
 		$sqlvalues = "";
 
-		$first = true;
-		foreach($report as  $field => $value)
-		{
-			if (!isset($specialRule[$field]))
-			{
-				$sqlfields.= ($first ? "" : ",").$field;
-				$first = false;
-			}
-		}
 
 		$first = true;
-		foreach($report as  $field => $value)
+		foreach($current_report as  $field => $value)
 		{
-			if (!isset($specialRule[$field]))
+			if (!in_array($field,$specialRule))
 			{
+				$sqlfields.= ($first ? "" : ",").$field;
 				$sqlvalues.=($first ? "" : ",")."\"".mysql_real_escape_string($value)."\"";
 				$first = false;
 			}
 		}
 
 		$sql = "INSERT INTO ".evaluations_db." ($sqlfields) VALUES ($sqlvalues);";
-
-		
 		sql_request($sql);
 
 		$new_id = mysql_insert_id();
-		
-		
-		$sql = "UPDATE ".evaluations_db." SET id_origine=$new_id WHERE id_origine=$id_origine OR id=$new_id ;";
+
+		$current_id = $current_report->id;
+		$sql = "UPDATE ".evaluations_db." SET id_origine=$new_id WHERE id_origine=$id_origine OR id=$new_id OR id=$current_id OR id_origine=$current_id;";
+		//echo $sql;
 		sql_request($sql);
 
-		if(isset($_SESSION['rows_id']))
-		{
-			$rows_id = $_SESSION['rows_id'];
-			$n = count($rows_id) -1;
-			for($i = 0; $i < $n; $i++)
-			{
-				//Hugo: ça fait jusqu'à 300 requêtes sql :-) mais ça a l'air de passer
-				$_SESSION['rows_id'][$i] = 	getIDOrigine($_SESSION['rows_id'][$i]);
-			}
-		}
-
-		return $new_id;
-
 	}
-	else
+	catch(Exception $e)
 	{
-		$sqldata = "";
-
-
-		$first = true;
-		foreach($report as  $field => $value)
-		{
-			if (!isset($specialRule[$field]))
-			{
-				$sqldata.= ($first ? "" : ",").$field."=\"".$value."\" ";
-				$first = false;
-			}
-		}
-
-		$sql = "UPDATE ".evaluations_db." SET ".$sqldata." WHERE id_origine=$id_origine;";
-		sql_request($sql);
-		return $id_origine;
+		mysql_query("UNLOCK TABLES");
+		throw $e;
 	}
+
+	if(isset($_SESSION['rows_id']))
+	{
+		$rows_id = $_SESSION['rows_id'];
+		$n = count($rows_id) -1;
+		for($i = 0; $i < $n; $i++)
+			$_SESSION['rows_id'][$i] = 	getIDOrigine($_SESSION['rows_id'][$i]);
+	}
+
+	sql_request("UNLOCK TABLES");
+
+	return $new_id;
 
 }
+
+
 
 
 /* Hugo could be optimized in one sql update request?*/
@@ -563,7 +613,7 @@ function change_report_properties($id_origine, $data)
 
 	$newid = mysql_insert_id();
 	$sql = "UPDATE ".evaluations_db." SET id_origine=$newid WHERE id_origine=$id_origine;";
-	
+
 	sql_request($sql);
 
 	return $newid;

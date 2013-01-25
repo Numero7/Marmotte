@@ -451,6 +451,8 @@
 			."Intitulé et lieu de thèse, des postdoc(s) et de(s) postes."
 	);
 	
+	$mergeableTypes = array("concours","short","treslong","long","short");
+	
 	$fieldsTypes = array(
 		"ecole" => "ecole",
 		"concours" => "concours",
@@ -489,7 +491,7 @@
 		"animation2" => "long",
 		"rayonnement2" => "long",		
 			"auteur" => "short",
-		"date" => "short",
+		"date" => "date",
 			"labo1" => "unit",
 			"labo2" => "unit",
 			"labo3" => "unit",

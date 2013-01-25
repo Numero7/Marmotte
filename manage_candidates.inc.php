@@ -164,14 +164,13 @@ function get_or_create_candidate($data)
 		if($cdata == false)
 		{
 			add_candidate_to_database($data);
-			mysql_query("LOCK TABLES candidates WRITE;");
 			$result = sql_request($sql);
 			$cdata = mysql_fetch_object($result);
 			if($cdata == false)
 				throw new Exception("Failed to fetch object from request<br/>".$sql);
 		}
 
-		mysql_query("UNLOCK TABLES candidates WRITE;");
+		mysql_query("UNLOCK TABLES");
 		return normalizeCandidat($cdata);
 	}
 	catch(Exception $exc)

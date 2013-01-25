@@ -112,6 +112,8 @@ function getScrollXY() {
 					break;
 				case 'update':
 
+					$next = nextt($id_origine);
+					$previous = previouss($id_origine);
 							
 
 					if(isset($_REQUEST["editnext"]))
@@ -122,7 +124,7 @@ function getScrollXY() {
 						//try{editReport(nextt($id_origine));}
 						//catch(Exception $e)
 						//{displayReport(nextt($id_origine));}
-						editReport(nextt($id_origine));						
+						editReport($next);						
 					}
 					else if(isset($_REQUEST["editprevious"]))
 					{
@@ -131,7 +133,7 @@ function getScrollXY() {
 						//try{editReport(previouss($id_origine));}
 						//catch(Exception $e)
 						//{displayReport(previouss($id_origine));}
-						editReport(previouss($id_origine));
+						editReport($previous);
 					}
 					else if(isset($_REQUEST["retourliste"]))
 					{
