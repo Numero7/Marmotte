@@ -141,7 +141,6 @@ function add_candidate_to_database($data)
  */
 function get_or_create_candidate($data)
 {
-
 	$data = normalizeCandidat($data);
 	
 	$annee = "0";

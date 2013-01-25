@@ -368,6 +368,12 @@ if(isSecretaire())
 if(isSecretaire())
 {
 ?>
+<h2>Ajout de candidats</h2>
+<form action="index.php" method="post">
+	<input type="hidden" name="action" value="creercandidats"/>
+	<input type="submit" value="Créer tous les candidats" />
+	</form>
+	
 <h2>Requete sql générique</h2>
 <form enctype="multipart/form-data" action="index.php" method="post">
 	<table class="inputreport">

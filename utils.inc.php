@@ -398,14 +398,10 @@ function displayReport($id_rapport, $displaymenu = true)
 	{
 		?>
 	<input type="hidden" name="action" value="details" /> <input
-		type="hidden" name="id" value="<?php echo$id_rapport;?>" /> <input
-		type="submit" name="detailsprevious"
-		value="<<" >
-		<input 
-		
-		
-		     type="submit"
-		name="detailsnext" value=">>">
+		type="hidden" name="id" value="<?php echo$id_rapport;?>" />
+		<input type="submit" name="detailsprevious" value="<<" >
+		<input type="submit" name="retourliste" value="Retour à la liste" >
+		<input type="submit"name="detailsnext" value=">>">
 </form>
 <?php 
 	}

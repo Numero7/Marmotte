@@ -122,7 +122,7 @@ function sortCriteriaToSQL($sorting_values)
 		$sql .= $crit." ".( ( substr($sorting_values[$crit],strlen($sorting_values[$crit]) -1) == "+" ) ? "ASC" : "DESC");
 	}
 	if ($sql =="")
-		$sql = "ORDER BY name ";
+		$sql = "ORDER BY nom ";
 
 	return $sql;
 }

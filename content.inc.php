@@ -45,7 +45,7 @@ function getScrollXY() {
 		$id_rapport = isset($_REQUEST["id"]) ? $_REQUEST["id"] : -1;
 		$id_origine = isset($_REQUEST["id_origine"]) ? $_REQUEST["id_origine"] : 0;
 		$id_toupdate = isset($_REQUEST["id_toupdate"]) ? $_REQUEST["id_toupdate"] : 0;
-		
+
 		$action = isset($_REQUEST["action"]) ? $_REQUEST["action"] : "";
 
 		if(isset($_REQUEST["reset_filter"]))
@@ -53,7 +53,7 @@ function getScrollXY() {
 
 		if(isset($_REQUEST["reset_tri"]))
 			resetOrder();
-		
+
 		function displayReports($centralid = 0)
 		{
 			displaySummary(getCurrentFiltersList(), getFilterValues(), getSortingValues());
@@ -99,6 +99,10 @@ function getScrollXY() {
 					{
 						displayReport(previouss($id_rapport));
 					}
+					else if(isset($_REQUEST["retourliste"]))
+					{
+						displayReports();
+					}
 					else
 					{
 						displayReport($id_rapport);
@@ -114,7 +118,7 @@ function getScrollXY() {
 
 					$next = nextt($id_origine);
 					$previous = previouss($id_origine);
-							
+
 
 					if(isset($_REQUEST["editnext"]))
 					{
@@ -124,7 +128,7 @@ function getScrollXY() {
 						//try{editReport(nextt($id_origine));}
 						//catch(Exception $e)
 						//{displayReport(nextt($id_origine));}
-						editReport($next);						
+						editReport($next);
 					}
 					else if(isset($_REQUEST["editprevious"]))
 					{
@@ -141,29 +145,35 @@ function getScrollXY() {
 						unset($_REQUEST["id"]);
 						displayReports($id_origine);
 					}
-						
-					$id_nouveau = addReportFromRequest($id_origine,$_REQUEST);
-					$candidate = updateCandidateFromRequest($_REQUEST);
-						
-					if(isset($_REQUEST["deleteandeditnext"]))
+					else if(isset($_REQUEST["deleteandeditnext"]))
 					{
 						$before = deleteReport($id_origine);
 						if($before != -1)
 							editReport($before);
-						else
+						else if($next != -1)
 							editReport($next);
+						else
+							displayReports();
 					}
-					else if(isset($_REQUEST["submitandeditnext"]))
+					else
 					{
-						editReport($next);
-					}
-					else if(isset($_REQUEST["submitandview"]))
-					{
-						displayReport($id_nouveau);
-					}
-					else if(isset($_REQUEST["submitandkeepediting"]))
-					{
-						editReport($id_nouveau);
+
+							
+						$id_nouveau = addReportFromRequest($id_origine,$_REQUEST);
+						$candidate = updateCandidateFromRequest($_REQUEST);
+
+						if(isset($_REQUEST["submitandeditnext"]))
+						{
+							editReport($next);
+						}
+						else if(isset($_REQUEST["submitandview"]))
+						{
+							displayReport($id_nouveau);
+						}
+						else if(isset($_REQUEST["submitandkeepediting"]))
+						{
+							editReport($id_nouveau);
+						}
 					}
 
 					break;
@@ -344,7 +354,18 @@ function getScrollXY() {
 				case 'email_rapporteurs':
 					include 'mailing.inc.php';
 					break;
-
+				case 'creercandidats':
+					if(isSecretaire())
+					{
+						$reports = getAllReportsOfType("Candidature");
+						foreach($reports as $report)
+							get_or_create_candidate($report);
+						$reports = getAllReportsOfType("Equivalence");
+						foreach($reports as $report)
+							get_or_create_candidate($report);
+					}
+					displayReports();
+					break;
 				case "";
 				default:
 					if(substr($action,0,3)=="set")
