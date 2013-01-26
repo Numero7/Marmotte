@@ -14,13 +14,16 @@
 </head>
 <body>
 	<?php
-	require_once("db.inc.php");
+
 	require_once("utils.inc.php");
+
+	require_once("db.inc.php");
 	require_once("manage_users.inc.php");
 
-	$dbh = db_connect($servername,$dbname,$serverlogin,$serverpassword);
-	if($dbh!=0)
+
+	try
 	{
+		$dbh = db_connect($servername,$dbname,$serverlogin,$serverpassword);
 		$errorLogin = 0;
 		$action = isset($_REQUEST["action"]) ? $_REQUEST["action"] : "";
 		switch($action)
@@ -28,12 +31,12 @@
 			case 'logout':
 				removeCredentials();
 				break;
-			
+					
 			case 'change_current_session':
 				if(isset($_REQUEST["current_session"]))
 					$_SESSION['current_session'] = $_REQUEST["current_session"];
 				break;
-				
+
 			case 'upload':
 				include("upload.inc.php");
 				break;
@@ -55,7 +58,7 @@
 				}
 				break;
 		}
-		
+
 		if (authenticate())
 		{
 			include("authbar.inc.php");
@@ -67,9 +70,9 @@
 		}
 		db_disconnect($dbh);
 	}
-	else
+	catch(Exception $e)
 	{
-		echo '<strong>Erreur de connexion à la base de données</strong>\n';
+		echo $e;
 	}
 	?>
 </body>

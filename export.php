@@ -73,7 +73,7 @@ if($dbh!=0)
 						{
 							$csv_reports = getReportsAsCSV(getFilterValues(), getSortingValues());
 								
-							$filename = "zips/reports.csv";
+							$filename = "csv/reports.csv";
 								
 							if($handle = fopen($filename, 'w'))
 							{

@@ -26,3 +26,7 @@
 /zips
 /reports.zip
 /.htpasswd
+/exemple_unites.csv
+/config.xml
+/exemple.csv
+/config/configDB.inc.php

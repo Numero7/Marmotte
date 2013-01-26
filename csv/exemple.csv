@@ -1,0 +1,15 @@
+"statut";"id_session";"nom";"prenom";"grade";"unite";"ecole";"concours";"type";"theseAnnee";"theseLieu";"HDRAnnee";"HDRLieu";"anneesequivalence";"rapporteur";"rapporteur2";"prerapport";"prerapport2";"anciennete_grade";"date_recrutement";"production";"production2";"transfert";"transfert2";"encadrement";"encadrement2";"responsabilites";"responsabilites2";"mobilite";"mobilite2";"animation";"animation2";"rayonnement";"rayonnement2";"rapport";"avis";"avis1";"avis2";"auteur";"labo1";"labo2";"labo3";"theme1";"theme2";"theme3"
+"supprime";"2";"Addis";"Bernardetta";"CR1";"";"";"06/02";"Equivalence";"2005";"Università degli Studi di Firenze, Italie";"";"";"0";"yann";"";"Diplôme étranger<br />
+ (27/04/2005)";"";"";"";"";"";"";"";"";"0";"";"0";"";"0";"";"0";"";"0";"";"favorable";"";"";"yann";"ERL6305";"UMR8623";"UMR7243";"5";"";""
+"prerapport";"2";"Arrighi";"Pablo";"CR1";"";"";"06/02";"Equivalence";"2004";"Cambridge, UK";"2009";"University of Grenoble I";"0";"yann";"";"Diplôme étranger<br />
+ (21/02/2004)<br />
+2005- Maître de Conférences – Université de Grenoble<br />
+2009-2011 Délégation CNRS & ENS-Lyon for two years: Research in the LIP laboratory<br />
+(ens-lyon.fr/LIP/);";"";"";"";"";"";"";"";"";"0";"";"0";"";"0";"";"0";"";"0";"";"favorable";"";"";"yann";"UMR7161";"UMR5141";"UMR5668";"1b";"3a";"10a"
+"prerapport";"2";"Azad";"Amar Prakash";"CR1";"";"";"06/02";"Equivalence";"2010";"INRIA Sophia/Université d\'Avignon";"";"";"0";"yann";"";"Doctorat<br />
+ (26/11/2010)";"";"";"";"";"";"";"";"";"0";"";"0";"";"0";"";"0";"";"0";"";"favorable";"";"";"yann";"UMR8623";"";"";"";"";""
+"prerapport";"2";"Bencomo";"Nelly";"CR1";"";"";"06/02";"Equivalence";"2008";"University of Lancaster, UK";"";"";"0";"yann";"";"Diplôme étranger<br />
+ (30/03/2008) <br />
+Souhait d\'affectation à projet INRIA ADAM";"";"";"";"";"";"";"";"";"0";"";"0";"";"0";"";"0";"";"0";"";"favorable";"";"";"yann";"UMR8022";"";"";"4a";"7";""
+"prerapport";"2";"Caporuscio";"Mauro";"CR1";"";"";"06/02";"Equivalence";"2006";"University of L\'Aquila, Italia";"";"";"0";"yann";"";"Diplôme étranger<br />
+ (17/01/2006)";"";"";"";"";"";"";"";"";"0";"";"0";"";"0";"";"0";"";"0";"";"favorable";"";"";"yann";"UMR8022";"";"";"4a";"11";""

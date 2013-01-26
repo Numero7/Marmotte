@@ -159,20 +159,22 @@ function getScrollXY() {
 					{
 
 							
-						$id_nouveau = addReportFromRequest($id_origine,$_REQUEST);
-						$candidate = updateCandidateFromRequest($_REQUEST);
+						$report = addReportFromRequest($id_origine,$_REQUEST);
 
+						if(in_array($report->type, $typesRapportsConcours))
+							$candidate = updateCandidateFromRequest($_REQUEST);
+						
 						if(isset($_REQUEST["submitandeditnext"]))
 						{
 							editReport($next);
 						}
 						else if(isset($_REQUEST["submitandview"]))
 						{
-							displayReport($id_nouveau);
+							displayReport($report->id);
 						}
 						else if(isset($_REQUEST["submitandkeepediting"]))
 						{
-							editReport($id_nouveau);
+							editReport($report->id);
 						}
 					}
 
@@ -182,7 +184,7 @@ function getScrollXY() {
 					{
 						$type = $_REQUEST["type"];
 						$report = newReport($type);
-						displayEditableReport($report);
+						displayEditableReport($report,isReportEditable($report));
 					}
 					else
 					{
@@ -335,9 +337,23 @@ function getScrollXY() {
 					{
 						echo "Cannot process action ajoutlabo: missing data<br/>";
 					}
+					include "admin.inc.php";
+					break;
+				case 'deletelabo':
+					if(isset($_REQUEST["unite"]))
+					{
+						deleteUnit($_REQUEST["unite"]);
+						echo "Deleted unit \"".$_REQUEST["unite"]."\"<br/>";
+					}
+					else
+					{
+						echo "Cannot process action ajoutlabo: missing data<br/>";
+					}
+					include "admin.inc.php";
 					break;
 				case 'extrairecandidats':
 					echo extraction_candidats();
+					include "admin.inc.php";
 					break;
 				case 'sqlrequest':
 					if(isset($_REQUEST['formula']))
@@ -349,22 +365,46 @@ function getScrollXY() {
 					{
 						echo "Empty formula";
 					}
+					include "admin.inc.php";
 					break;
 				case 'mailing':
 				case 'email_rapporteurs':
 					include 'mailing.inc.php';
+					break;
+				case 'createhtpasswd':
+					createhtpasswd();
+					displayReports();
+					include "admin.inc.php";
 					break;
 				case 'creercandidats':
 					if(isSecretaire())
 					{
 						$reports = getAllReportsOfType("Candidature");
 						foreach($reports as $report)
-							get_or_create_candidate($report);
+						{
+							$candidate = get_or_create_candidate($report);
+							$concours = $candidate->concours;
+							if($concours =="" )
+								continue;
+							$ok = strpos($concours, $report->concours);
+							if($ok === false)
+							{
+								echo 'Adding concours "'.$report->concours.'" to candidate '.$candidate->cle.' with concours = "'.$concours.'"<br/>';
+								$annee = $annee = session_year($report->id_session);
+								$nom = $candidate->nom;
+								$prenom = $candidate->prenom;
+								$concours .= " ".$report->concours;
+								change_candidate_property($annee, $nom,$prenom,"concours",$concours);
+							}
+						}
 						$reports = getAllReportsOfType("Equivalence");
 						foreach($reports as $report)
 							get_or_create_candidate($report);
 					}
-					displayReports();
+					include "admin.inc.php";
+					break;
+				case "displayunits":
+					include "unites.inc.php";
 					break;
 				case "";
 				default:
@@ -377,7 +417,7 @@ function getScrollXY() {
 					}
 					else
 					{
-						echo welcome_message;
+						echo get_config("welcome_message");
 						displayReports();
 					}
 					break;

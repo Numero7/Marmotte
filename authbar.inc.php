@@ -48,7 +48,15 @@ global $typesRapportsIndividuels;
 		  <input type="submit" value="Administration"/></form>
 		  <?php
 		  }
-		?>		</td></tr></table>
+		  
+		?>
+				  </td></tr>
+		  <tr><td>
+		  <form method="get" style="display:inline;margin-left:5px; border-left:2px solid #FFF;padding:8px;"  action="index.php">
+		  <input type="hidden" name="action" value="displayunits"/>
+		  <input type="submit" value="Unités"/></form>
+		
+				</td></tr></table>
 		</td>
 		<td  valign=top>
 		

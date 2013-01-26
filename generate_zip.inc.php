@@ -13,6 +13,7 @@ function type_from_node(DOMNode $node)
 	return "";
 }
 
+/*
 function xmls_to_zipped_tex($docs)
 {
 	$xsl = new DOMDocument();
@@ -65,6 +66,7 @@ function xmls_to_zipped_tex($docs)
 	}
 	return "";
 }
+*/
 
 /**
  * Zip files to an archive

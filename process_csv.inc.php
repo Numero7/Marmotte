@@ -9,7 +9,7 @@ require_once('manage_rapports.inc.php');
 et champs dans l'ordre CodeUnite/NomUnite/Nickname/Directeur.
 Les données d'un labo avec le même code seront remplacées.
 */
-function process_csv($type,$filename, $subtype)
+function process_csv($type,$filename, $subtype, $sep=";", $del="\n",$enc='"', $esc='\\')
 {
 	global $fieldsAll;
 	global $csv_composite_fields;
@@ -17,8 +17,7 @@ function process_csv($type,$filename, $subtype)
 	
 	if($file = fopen ( $filename , 'r') )
 	{
-
-		$fields = fgetcsv ( $file, 0, ',' , '"' );
+		$fields = fgetcsv ( $file, 0, $sep , $enc, $esc );
 		foreach($fields as $field)
 			if($field != "" && !key_exists($field, $fieldsAll) && !key_exists($field, $csv_composite_fields))
 			throw new Exception("No field with name ". $field." in evaluations or in composite fields list");
@@ -26,7 +25,7 @@ function process_csv($type,$filename, $subtype)
 		
 		$nb = 0;
 		$errors = "";
-		while(($data = fgetcsv ( $file, 0, ',' , '"' )) != false)
+		while(($data = fgetcsv ( $file, 0, $sep , $enc ,$esc)) != false)
 		{
 			$nb++;
 			try

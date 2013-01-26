@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+  <_president>Frédérique Bassino</_president>
+  <_president_titre>Présidente de la Section 6</_president_titre>
+  <_secretaire>Hugo Gimbert</_secretaire>
+  <_section_nb>6</_section_nb>
+  <_section_shortname>Section 6</_section_shortname>
+  <_section_fullname>Section 6</_section_fullname>
+  <_section_intitule>Sciences de l'information : fondements de l'informatique, calculs, algorithmes, représentations, exploitations</_section_intitule>
+  <_webmaster>hugo.gimbert@labri.fr</_webmaster>
+  <_addresse_du_site>http://cn6.labri.fr/Marmotte</_addresse_du_site>
+  <_current_session>2</_current_session>
+  <_welcome_message>Bienvenue sur le site de gestion des rapports de la section 6.
+			N'hésitez pas à nous contacter (Yann ou Hugo) en cas de difficultés.</_welcome_message>
+  <_topics>
+    <_1a>1a  Algorithmique, combinatoire, graphes</_1a>
+    <_1b>1b  Automates, systèmes dynamiques discrets</_1b>
+    <_2a>2a  Calcul formel et calcul certifié, arithmétique des ordinateurs"</_2a>
+    <_2b>2b  Codage et cryptographie</_2b>
+    <_3a>3a  Logique, complexité algorithmique et structurelle</_3a>
+    <_3b>3b  Sémantique, modèles de calcul</_3b>
+    <_4a>4a  Programmation, génie logiciel</_4a>
+    <_4b>4b  Vérification et preuves</_4b>
+    <_5>5   Recherche opérationnelle, aide à la décision, optimisation discrète et continue, satisfaction de contraintes, SAT</_5>
+    <_6>6   Systèmes de production, logistique, ordonnancement"</_6>
+    <_7>7   I.A., système multi-agent, ingénierie / rep. et trait. des connaissances, de l'incertitude, form. des raisonnements, fusion information</_7>
+    <_8>8   Environnements informatiques pour l'apprentissage humain</_8>
+    <_9a>9a  Sûreté de fonctionnement, sécurité informatique, protection de la vie privée</_9a>
+    <_9b>9b  Réseaux sociaux</_9b>
+    <_10a>10a Réseaux, télécommunications, réseaux de capteurs</_10a>
+    <_10b>10b Systèmes distribués</_10b>
+    <_11>11  Internet du futur, intelligence ambiante</_11>
+    <_12a>12a Calcul distribué, grilles, cloud, calcul à haute performance, parallélisme, infrastructures à grande échelle</_12a>
+    <_12b>12b Architecture et compilation</_12b>
+    <_13>13  Cognition, modélisation pour la médecine, neurosciences computationnelles</_13>
+    <_14>14  Systèmes d'informations, web sémantique, masses de données, fouille de données, base de données, gestion de données, recherche d'informations, apprentissage</_14>
+    <_15a>15  Bioinformatique</_15a>
+  </_topics>
+</config>

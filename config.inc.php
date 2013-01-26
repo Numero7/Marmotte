@@ -1,49 +1,21 @@
 <?php
-	require_once("configDB.inc.php");
+
+
+	require_once("config/configDB.inc.php");
+
 	
+	define("config_file",$rootdir."config/config.xml");
+	define("signature_file",$rootdir."img/signature.jpg");
+	define("config_file_save",$rootdir."config/config.sauv.xml");
 	
-	define("president","Frédérique Bassino");
-	define("president_titre","Présidente de la Section 6");
-	define("secretaire","Hugo Gimbert");
-	define("section_nb","6");
-	define("section_shortname","Section 6");
-	define("section_fullname","Section 6 du CoNRS");
-	define("section_intitule","Sciences de l'information : fondements de l'informatique, calculs, algorithmes, représentations, exploitations");
-	define("webmaster","hugo.gimbert@labri.fr");
-	define("addresse_du_site","http://cn6.labri.fr/Marmotte");
-		
-	define("current_session",2);
+	require_once("config.php");
 	
-	define("welcome_message",
-	"	<p>Bienvenue sur le site de gestion des rapports de la section 6.
-			N'hésitez pas à nous contacter (Yann ou Hugo) en cas de difficultés.</p>
-		");
+	load_config(true);
+	save_config();
 	
-	$topics = array(
-			"" => "",
-"1a" => "1a  Algorithmique, combinatoire, graphes",
-"1b" => "1b  Automates, systèmes dynamiques discrets",
-"2a" => "2a  Calcul formel et calcul certifié, arithmétique des ordinateurs",
-"2b" => "2b  Codage et cryptographie",
-"3a" => "3a  Logique, complexité algorithmique et structurelle",
-"3b" => "3b  Sémantique, modèles de calcul",
-"4a" => "4a  Programmation, génie logiciel",
-"4b" => "4b  Vérification et preuves",
-"5" => "5   Recherche opérationnelle, aide à la décision, optimisation discrète et continue, satisfaction de contraintes, SAT",
-"6" => "6   Systèmes de production, logistique, ordonnancement",
-"7" => "7   I.A., système multi-agent, ingénierie / rep. et trait. des connaissances, de l'incertitude, form. des raisonnements, fusion information",
-"8" => "8   Environnements informatiques pour l'apprentissage humain",
-"9a" => "9a  Sûreté de fonctionnement, sécurité informatique, protection de la vie privée",
-"9b" => "9b  Réseaux sociaux",
-"10a" => "10a Réseaux, télécommunications, réseaux de capteurs",
-"10b" => "10b Systèmes distribués",
-"11" => "11  Internet du futur, intelligence ambiante",
-"12a" => "12a Calcul distribué, grilles, cloud, calcul à haute performance, parallélisme, infrastructures à grande échelle",
-"12b" => "12b Architecture et compilation",
-"13" => "13  Cognition, modélisation pour la médecine, neurosciences computationnelles",
-"14" => "14  Systèmes d'informations, web sémantique, masses de données, fouille de données, base de données, gestion de données, recherche d'informations, apprentissage",
-"15" => "15  Bioinformatique");
-			
+
+	//include_once(section_config_file);
+	
 	$fieldsSummary = array(
 		"type",
 		"rapporteur",
@@ -126,19 +98,19 @@
 			"anneesequivalence" => "Années d'équivalence",
 		"production" => "Production scientifique",
 		"avissousjury" => "Avis du sous-jury (resume succint pour rapport concours)",
-			"production2" => "Production scientifique",
+			"production2" => "Production scientifique (rapp. 2)",
 		"transfert" => "Transfert et valorisation",
-		"transfert2" => "Transfert et valorisation",
+		"transfert2" => "Transfert et valorisation (rapp. 2)",
 		"encadrement" => "Encadrement",
-		"encadrement2" => "Encadrement",
+		"encadrement2" => "Encadrement (rapp. 2)",
 		"responsabilites" => "Responsabilités collectives",
-		"responsabilites2" => "Responsabilités collectives",
+		"responsabilites2" => "Responsabilités collectives (rapp. 2)",
 		"mobilite" => "Mobilité",
-		"mobilite2" => "Mobilité",
+		"mobilite2" => "Mobilité (rapp. 2)",
 		"animation" => "Animation scientifique",
-		"animation2" => "Animation scientifique",
+		"animation2" => "Animation scientifique (rapp. 2)",
 		"rayonnement" => "Rayonnement",		
-		"rayonnement2" => "Rayonnement",		
+		"rayonnement2" => "Rayonnement (rapp. 2)",		
 		"auteur" => "Auteur Dernière(s) modif(s)",
 		"date" => "Date modification",
 		"id" => "Id",
@@ -148,7 +120,7 @@
 			"production" => "Production scientifique",
 			"projetrecherche" => "Projet recherche (resume succint pour rapport concours)",
 			"parcours" => "Parcours scientifique (resume succint pour rapport concours)",
-			"concours" => "Concours présentés",
+			"concours" => "Concours",
 			"fichiers" => "Fichiers associés",
 			"cle" => "cle"
 	);
@@ -158,7 +130,7 @@
 	$start_tr_fields = array("projetrecherche", "grade", "nom", "labo1","theme1", "theseAnnee", "productionResume");
 	$end_tr_fields = array("concours", "date_recrutement", "labo3","theme3", "prenom", "HDRLieu");
 	
-	$fieldsIndividual = array(
+	$fieldsIndividual0 = array(
 			"rapporteur",
 			"rapporteur2",
 			"nom",
@@ -167,30 +139,38 @@
 			"grade",
 			"anciennete_grade",
 			"avis",
-			"avis1",
-			"avis2",
 			"theme1",
 			"theme2",
 			"theme3",
 			"rapport",
-			"prerapport",
 			"date_recrutement",
-			"production",
-			"production2",
-			"transfert",
-			"transfert2",
-			"encadrement",
-			"encadrement2",
-			"responsabilites",
-			"responsabilites2",
-			"mobilite",
-			"mobilite2",
-			"animation",
-			"animation2",
-			"rayonnement",
-			"rayonnement2"
 	);
 
+	$fieldsIndividual1 = array(
+			"avis1",
+			"prerapport",
+			"production",
+			"transfert",
+			"encadrement",
+			"responsabilites",
+			"mobilite",
+			"animation",
+			"rayonnement",
+	);
+	$fieldsIndividual2 = array(
+			"avis2",
+			"prerapport2",
+			"production2",
+			"transfert2",
+			"encadrement2",
+			"responsabilites2",
+			"mobilite2",
+			"animation2",
+			"rayonnement2",
+	);
+	
+	$fieldsIndividual = array_merge($fieldsIndividual0, $fieldsIndividual1, $fieldsIndividual2);
+	
 	$fieldsRapportsCandidat0 = array(
 			"rapporteur",
 			"rapporteur2",
@@ -246,7 +226,7 @@
 			"productionResume" => "Production scientifique (pour rapport concours)",
 			"projetrecherche" => "Projet recherche  (pour rapport concours)",
 			"parcours" => "Parcours scientifique  (pour rapport concours)",
-			"concours" => "Concours présentés",
+			"concours" => "Concours",
 			"fichiers" => "Fichiers associés",
 			"cle" => "cle",
 			"avissousjury" => "Avis du sous-jury",
@@ -297,13 +277,19 @@
 	
 	$fieldsUnites = array(
 			"rapporteur",
-			"rapporteur2",
 			"unite",
 		"avis",
 		"rapport",
 		"prerapport"
 	);
 
+	$fieldsUnitsDB = array(
+			"code" => "Code",
+			"nickname" => "Nom",
+			"fullname" => "Nom complet",
+			"directeur" => "Direction"
+			);
+	
 	$fieldsGeneric = array (
 			"rapporteur",
 			"rapporteur2",
@@ -424,8 +410,8 @@
 		
 	
 	$virgin_report_equivalence = 
-			"La ".section_shortname." réunie en instance d'équivalence considère que la somme des titres et travaux présentés dans le dossier du candidat est équivalente à un doctorat d'une université française.\n\n".
-			"La ".section_shortname." réunie en instance d'équivalence considère que la somme des titres et travaux présentés dans le dossier du candidat est équivalente à plus de 4/8/12 années d'exercice des métiers de la recherche.\n\n".
+			"La ".get_config("section_shortname")." réunie en instance d'équivalence considère que la somme des titres et travaux présentés dans le dossier du candidat est équivalente à un doctorat d'une université française.\n\n".
+			"La ".get_config("section_shortname")." réunie en instance d'équivalence considère que la somme des titres et travaux présentés dans le dossier du candidat est équivalente à plus de 4/8/12 années d'exercice des métiers de la recherche.\n\n".
 			"La qualification professionnelle du candidat n'est pas probante.\n\n".
 			"Les travaux scientifiques présentés par le candidat ne sont pas probants.\n\n".
 			"Le diplôme étranger dont le candidat est titulaire est insuffisant et n'équivaut pas à un doctorat français.\n\n".
@@ -763,20 +749,6 @@
 		'None' => 'Pas de grade'
 	);
 	
-/* Definition des différentes notes*/
-	$notes = array(
-		' ',
-		'A+',
-		'A',
-		'A-',
-		'B+',
-		'B',
-		'B-',
-		'C+',
-		'C',
-		'C-',
-	);
-
 	define("NIVEAU_PERMISSION_BASE", 0);
 	define("NIVEAU_PERMISSION_BUREAU", 100);
 	define("NIVEAU_PERMISSION_PRESIDENT_SECRETAIRE", 500);
@@ -869,9 +841,9 @@
 	);
 
 	$filtersConcours = array(
-			'theme1' => array('name'=>"Theme1" , 'liste' => $topics, 'default_value' => "tous", 'default_name' => ""),
-			'theme2' => array('name'=>"Theme2" , 'liste' => $topics, 'default_value' => "tous", 'default_name' => ""),
-			'theme3' => array('name'=>"Theme3" , 'liste' => $topics, 'default_value' => "tous", 'default_name' => ""),
+			'theme1' => array('name'=>"Theme1" , 'liste' => get_config("topics"), 'default_value' => "tous", 'default_name' => ""),
+			'theme2' => array('name'=>"Theme2" , 'liste' => get_config("topics"), 'default_value' => "tous", 'default_name' => ""),
+			'theme3' => array('name'=>"Theme3" , 'liste' => get_config("topics"), 'default_value' => "tous", 'default_name' => ""),
 			'labo1' => array('name'=>"Labo1" , 'default_value' => "tous", 'default_name' => ""),
 			'labo2' => array('name'=>"Labo2" , 'default_value' => "tous", 'default_name' => ""),
 			'labo3' => array('name'=>"Labo3" , 'default_value' => "tous", 'default_name' => ""),

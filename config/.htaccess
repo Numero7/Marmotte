@@ -1,0 +1,8 @@
+AuthUserFile /var/www/cn6/Marmotte/.htpasswd
+AuthGroupFile /var/www/cn6/Marmotte/.htgroup
+AuthName "Vous pénétrez dans une section réservée aux membres, veuillez vous identifier"
+AuthType Basic
+
+<Limit GET>
+require group admin_grp
+</Limit>

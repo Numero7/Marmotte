@@ -2,10 +2,29 @@
 
 require_once('config.inc.php');
 require_once('manage_sessions.inc.php');
+require_once('generate_xml.inc.php');
 
 function init_session()
 {
-	set_current_session_id(current_session);
+	global $current_session;
+	set_current_session_id(get_config("current_session"));
+}
+
+function createhtpasswd()
+{
+	$list = listUsers();
+	if($handle=fopen(".htpasswd","w"))
+	{
+		foreach($list as $user => $data)
+			fwrite($handle,$user.":".$data->passHash."\n");
+		fclose($handle);
+		echo "Generated htpasswd.<br/>";
+	}
+	else
+	{
+		throw new Exception("Failed to open htpasswd file for writing");
+	}
+	
 }
 
 function getDescription($login)
@@ -25,11 +44,11 @@ function getDescription($login)
 function listRapporteurs()
 {
 	global $users_not_rapporteur;
-	
+
 	$empty[''] = (object) array();
 	$empty['']->description = "";
 	$result = array_merge($empty,listUsers());
-	
+
 	foreach($users_not_rapporteur as $user)
 		unset($result[$user]);
 
@@ -68,7 +87,7 @@ function getUserPermissionLevel($login = "")
 		$login = $_SESSION["login"];
 
 	$login = strtolower($login);
-	
+
 	if ($login == "admin")
 		return NIVEAU_PERMISSION_SUPER_UTILISATEUR;
 	$users = listUsers();
@@ -188,6 +207,7 @@ function changePwd($login,$old,$new1,$new2)
 				$newPassHash = crypt($new1, $oldPassHash);
 				$sql = "UPDATE ".users_db." SET passHash='$newPassHash' WHERE login='$login';";
 				mysql_query($sql);
+				createhtpasswd();
 				return true;
 			}
 		}
@@ -238,7 +258,7 @@ function createUser($login,$pwd,$desc,$email, $envoiparemail)
 			throw new Exception("Failed to create user: empty description.");
 
 		unset($_SESSION['all_users']);
-		
+
 		$passHash = crypt($pwd);
 		$sql = "INSERT INTO ".users_db." (login,passHash,description,email) VALUES ('".mysql_real_escape_string($login)."','".mysql_real_escape_string($passHash)."','".mysql_real_escape_string($desc)."','".mysql_real_escape_string($email)."');";
 		mysql_query($sql);
@@ -246,16 +266,17 @@ function createUser($login,$pwd,$desc,$email, $envoiparemail)
 		{
 			$body = "Marmotte est un site web destiné à faciliter la répartition, le dépôt, l'édition et la production\r\n";
 			$body .= "des rapports par les sections du comité national.\r\n";
-			$body .= "\r\nLe site est accessible à l'adresse \r\n\t\t\t".addresse_du_site."\r\n";
+			$body .= "\r\nLe site est accessible à l'adresse \r\n\t\t\t".curPageURL()."\r\n";
 			$body .= "\r\nCe site a été développé par Hugo Gimbert et Yann Ponty.\r\n";
-			$body .= "\r\nL'accès au site est restreint aux membres de la section ".section_nb." qui doivent s'authentifier pour y accéder et déposer, éditer ou consulter des rapports.\r\n";
+			$body .= "\r\nL'accès au site est restreint aux membres de la section ".get_config("section_nb")." qui doivent s'authentifier pour y accéder et déposer, éditer ou consulter des rapports.\r\n";
 			$body .= "\r\nUn compte Marmotte vient d'être créé pour vous:\r\n\r\n";
 			$body .= "\t\t\t login: '".$login."'\r\n";
 			$body .= "\t\t\t motdepasse: '".$pwd."'\r\n";
 			$body .= "\r\nLors de votre première connexion vous pourrez changer votre mot de passe.\r\n";
-			$body .= "\r\n\r\n\t Amicalement, ".secretaire.".";
+			$body .= "\r\n\r\n\t Amicalement, ".get_config("secretaire").".";
 			email_handler($email,"Votre compte Marmotte",$body);
 		}
+		createhtpasswd();
 		return "Utilisateur ".$login." créé avec succès.";
 	}
 }
@@ -267,6 +288,7 @@ function deleteUser($login)
 		unset($_SESSION['all_users']);
 		$sql = "DELETE FROM ".users_db." WHERE login='".mysql_real_escape_string($login)."';";
 		mysql_query($sql);
+		createhtpasswd();
 	}
 }
 

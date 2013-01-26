@@ -253,7 +253,7 @@ function deleteReport($id_rapport)
 	if($before != false)
 	{
 		$previous_id = $before->id;
-		$sql = "UPDATE ".evaluations_db." SET id_origine=$previous_id WHERE id_origine=$id_rapport ;";
+		$sql = "UPDATE ".evaluations_db." SET id_origine=".intval($previous_id)." WHERE id_origine=".intval($id_rapport)." ;";
 		sql_request($sql);
 		if(isset($_SESSION['rows_id']))
 		{
@@ -284,9 +284,9 @@ function deleteReport($id_rapport)
 		}
 	}
 
-	$sql = "UPDATE ".evaluations_db." SET statut=\"supprime\"WHERE id=$id_rapport ;";
+	$sql = "UPDATE ".evaluations_db." SET statut=\"supprime\"WHERE id=".intval($id_rapport)." ;";
 	sql_request($sql);
-	$sql = "UPDATE ".evaluations_db." SET date=NOW() WHERE id=$id_rapport ;";
+	$sql = "UPDATE ".evaluations_db." SET date=NOW() WHERE id=".intval($id_rapport)." ;";
 	sql_request($sql);
 
 	return ($before !=false) ? $before->id : -1;
@@ -325,7 +325,9 @@ function addReportFromRequest($id_origine, $request)
 
 	$create_new = isset($request['create_new']) ? $request['create_new'] : true;
 
-	return addReportToDatabase($report, $create_new);
+	$id_nouveau = addReportToDatabase($report, $create_new);
+	
+	return getReport($id_nouveau);
 }
 
 function createReportFromRequest($id_origine, $request)
@@ -421,8 +423,8 @@ function addReportToDatabase($report)
 	{
 
 		$id_origine = isset($report->id_origine) ? $report->id_origine : 0;
-
-		$current_report = $empty_report;
+		
+		$current_report = (object) $empty_report;
 		try
 		{
 			$previous_report = getReport($id_origine, false);
@@ -501,10 +503,19 @@ function addReportToDatabase($report)
 
 		$new_id = mysql_insert_id();
 
-		$current_id = $current_report->id;
-		$sql = "UPDATE ".evaluations_db." SET id_origine=$new_id WHERE id_origine=$id_origine OR id=$new_id OR id=$current_id OR id_origine=$current_id;";
-		//echo $sql;
-		sql_request($sql);
+		if($id_origine != 0)
+		{
+			$current_id = $current_report->id;
+			$sql = "UPDATE ".evaluations_db." SET id_origine=".intval($new_id)." WHERE id_origine=".intval($id_origine)." OR id=".intval($new_id)." OR id=".intval($current_id)." OR id_origine=".intval($current_id).";";
+			//echo $sql;
+			sql_request($sql);
+		}
+		else
+		{
+			$sql = "UPDATE ".evaluations_db." SET id_origine=".intval($new_id)." WHERE id=".intval($new_id).";";
+			//echo $sql;
+			sql_request($sql);
+		}
 
 	}
 	catch(Exception $e)
@@ -576,9 +587,7 @@ function change_report_properties($id_origine, $data)
 	$row = NULL;
 	//echo "Changing status of ".$id_origine." to " .$statut." <br/>";
 	if($id_origine == 0)
-		$id_origine = addReportFromRequest(0,$data);
-
-	$row = getReport($id_origine);
+		$row = addReportFromRequest(0,$data);
 
 	$data["auteur"] = getLogin();
 	$data["id_session"] = $row->id_session;
@@ -612,7 +621,7 @@ function change_report_properties($id_origine, $data)
 	sql_request($sql);
 
 	$newid = mysql_insert_id();
-	$sql = "UPDATE ".evaluations_db." SET id_origine=$newid WHERE id_origine=$id_origine;";
+	$sql = "UPDATE ".evaluations_db." SET id_origine=".intval($newid)." WHERE id_origine=".intval($id_origine).";";
 
 	sql_request($sql);
 

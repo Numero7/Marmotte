@@ -49,8 +49,8 @@ function addUnit($nickname, $code, $fullname, $directeur)
 {
 	unset($_SESSION['all_units']);
 	$sql = "DELETE FROM ".units_db." WHERE code = \"".$code."\";";
-	mysql_query($sql);
-
+	sql_request($sql);
+	
 	$values = "\"".mysql_real_escape_string($nickname)."\",";
 	$values .= "\"".mysql_real_escape_string($code)."\",";
 	$values .= "\"".mysql_real_escape_string($fullname)."\",";
@@ -59,6 +59,14 @@ function addUnit($nickname, $code, $fullname, $directeur)
 	$sql = "INSERT INTO ".units_db." (nickname, code, fullname, directeur) VALUES ($values);";
 	sql_request($sql);
 }
+
+function deleteUnit($code)
+{
+	unset($_SESSION['all_units']);
+	$sql = "DELETE FROM ".units_db." WHERE code = \"".$code."\";";
+	sql_request($sql);
+}
+
 
 /*
  * Unit can be code or nickname

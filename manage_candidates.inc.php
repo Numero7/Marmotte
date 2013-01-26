@@ -101,8 +101,12 @@ function add_candidate_to_database($data)
 	$annee = "0";
 	if(isset($data->id_session))
 		$annee = session_year($data->id_session);
+
 	if(isset($data->anneecandidature))
 		$annee = $data->anneecandidature;
+	else
+		$data->anneecandidature = $annee;
+			
 	
 	$key = generateKey($annee, $data->nom, $data->prenom);
 	$data->cle = $key;
@@ -156,7 +160,6 @@ function get_or_create_candidate($data)
 		mysql_query("LOCK TABLES candidates WRITE;");
 		$sql = "SELECT * FROM ".candidates_db.' WHERE cle="'.$key.'";';
 		
-		
 		$result = sql_request($sql);
 
 		$cdata = mysql_fetch_object($result);
@@ -201,6 +204,58 @@ function extraction_candidats()
 	}
 
 	return "Added ".$nb." new candidates";
+}
+
+
+function change_candidate_property($annee,$nom,$prenom, $property_name, $newvalue)
+{
+
+	$data = (object) array($property_name => $newvalue);
+
+	change_candidate_properties($annee,$nom,$prenom, $data);
+}
+
+function change_candidate_properties($annee,$nom,$prenom, $data)
+{
+	global $fieldsAll;
+
+	$data = (object) $data;
+	$key = generateKey($annee, $nom, $prenom);
+
+	$sql = "SELECT * FROM ".candidates_db.' WHERE cle="'.$key.'";';
+	$result = sql_request($sql);
+
+	$candidate = mysql_fetch_object($result);
+	if($candidate == false)
+	{
+		$data = (object) array();
+		$data->nom = $nom;
+		$data->prenom = $prenom;
+		$data->anneecandidature = $annee;
+		$candidate = get_or_create_candidate($data);
+	}
+
+	foreach($data as $property_name => $newvalue)
+		if(!property_exists($candidate,$property_name))
+			throw new Exception("No property '".$property_name."' in candidate object");
+
+	$sqlcore = "";
+	$first = true;
+	
+	$sql = "UPDATE ".candidates_db." SET ";
+	foreach($candidate as  $field => $value)
+	{
+		if (isset($candidate->$field) && isset($data->$field))
+		{
+			$sql .=$first ? "" : ",";
+			$sql .= " ".$field.'="'.mysql_real_escape_string(trim($data->$field)).'" ';
+			$first = false;
+		}
+	}
+
+	$sql .= ' WHERE cle="'.$key.'"';
+	sql_request($sql);
+
 }
 
 ?>

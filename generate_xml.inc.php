@@ -2,6 +2,7 @@
 
 require_once('manage_sessions.inc.php');
 require_once('manage_unites.inc.php');
+require_once('manage_users.inc.php');
 
 function implode_with_keys($assoc,$inglue=':',$outglue=','){
 	$res=array();
@@ -144,7 +145,7 @@ function EnteteGauche($row)
 
 function createXMLReportElem($row, $sessions, $units, DOMDocument $doc, $keep_br = true)
 {
-	global $fieldsAll;
+	global $empty_report;
 	global $typesRapports;
 	global $typesRapportsToEnteteGauche;
 	global $enTetesDroit;
@@ -183,7 +184,7 @@ function createXMLReportElem($row, $sessions, $units, DOMDocument $doc, $keep_br
 
 
 	//On ajoute tous les fields pas spéciaux
-	foreach ($fieldsAll as $fieldID => $title)
+	foreach ($empty_report as $fieldID => $title)
 		if(!in_array($fieldID,$fieldsspecial))
 		appendLeaf($fieldID, $keep_br ? $row->$fieldID : remove_br($row->$fieldID), $doc, $rapportElem);
 
@@ -234,14 +235,14 @@ function createXMLReportElem($row, $sessions, $units, DOMDocument $doc, $keep_br
 
 
 	//On ajoute le numero de la section
-	appendLeaf("section_nb", section_nb, $doc, $rapportElem);
+	appendLeaf("section_nb", get_config("section_nb"), $doc, $rapportElem);
 
 	//On ajoute l'intitulé de la section
-	appendLeaf("section_intitule", section_intitule, $doc, $rapportElem);
+	appendLeaf("section_intitule", get_config("section_intitule"), $doc, $rapportElem);
 
 	//On ajoute le nom et le tire du signataire
-	appendLeaf("signataire", president, $doc, $rapportElem);
-	appendLeaf("signataire_titre", president_titre, $doc, $rapportElem);
+	appendLeaf("signataire", get_config("president"), $doc, $rapportElem);
+	appendLeaf("signataire_titre", get_config("president_titre"), $doc, $rapportElem);
 
 	$row->session = $sessions[$row->id_session];
 
@@ -262,7 +263,11 @@ function rowToXMLDoc($row, $sessions = null, $units = null)
 function XMLToHTML(DOMDocument $doc)
 {
 	$xsl = new DOMDocument();
-	$xsl->load('xslt/html2.xsl');
+	if(isSecretaire())
+		$xsl->load('xslt/html2.xsl');
+	else
+		$xsl->load('xslt/html.xsl');
+		
 	$proc = new XSLTProcessor();
 	$proc->importStyleSheet($xsl);
 	$html = $proc->transformToXML($doc);

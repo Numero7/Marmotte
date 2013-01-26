@@ -289,13 +289,13 @@ function valueFromField($field,$value,$units,$users,$themes)
 		switch($fieldsTypes[$field])
 		{
 			case 'unit':
-				return $units[$value]->prettyname;
+				return isset($units[$value]) ? $units[$value]->prettyname : "";
 				break;
 			case 'rapporteur':
-				return $users[$value]->description;
+				return isset($users[$value]->description) ? $users[$value]->description : "";
 				break;
 			case 'topic':
-				return $themes[$value];
+				return isset($themes[$value]) ? $themes[$value] : "";
 				break;
 		}
 	}
@@ -311,7 +311,15 @@ function displayConcoursReport($row)
 
 	global $fieldsCandidat;
 	global $fieldsCandidatAll;
-	global $topics;
+
+	$topics = get_config("topics");
+
+	global $fieldsCandidatAvantAudition;
+	global $avis_candidature_necessitant_pas_rapport_sousjury;
+
+	$fieldsc = $fieldsCandidat;
+	if(in_array($row->avis, $avis_candidature_necessitant_pas_rapport_sousjury))
+		$fieldsc = $fieldsCandidatAvantAudition;
 
 	$units = unitsList();
 	$users = listRapporteurs();
@@ -349,7 +357,7 @@ function displayConcoursReport($row)
 <dl>
 	<table>
 		<?php
-		foreach($fieldsCandidat as  $fieldID)
+		foreach($fieldsc as  $fieldID)
 		{
 			?>
 		<tr>
@@ -398,10 +406,15 @@ function displayReport($id_rapport, $displaymenu = true)
 	{
 		?>
 	<input type="hidden" name="action" value="details" /> <input
-		type="hidden" name="id" value="<?php echo$id_rapport;?>" />
-		<input type="submit" name="detailsprevious" value="<<" >
-		<input type="submit" name="retourliste" value="Retour à la liste" >
-		<input type="submit"name="detailsnext" value=">>">
+		type="hidden" name="id" value="<?php echo$id_rapport;?>" /> <input
+		type="submit" name="detailsprevious"
+		value="<<" >
+		<input 
+		
+		
+		   type="submit" name="retourliste"
+		value="Retour à la liste"> <input type="submit" name="detailsnext"
+		value=">>">
 </form>
 <?php 
 	}
@@ -1101,9 +1114,8 @@ function displaySessionField($row)
 	if(session_to_choose($row))
 	{
 		?>
-<input
-	type="hidden" name="fieldid_session"
-	value="<?php echo $row->id_session;?>" />
+<input type="hidden"
+	name="fieldid_session" value="<?php echo $row->id_session;?>" />
 <?php 
 	}
 }
@@ -1149,26 +1161,6 @@ function display_statut($row, $fieldID)
 	}
 	echo "</select></td></tr>";
 }
-
-function display_evaluation($row, $fieldID)
-{
-	global $notes;
-
-	?>
-<td style="width: 30em;"><select name="field<?php echo $fieldID;?>"
-	style="width: 100%;">
-		<?php
-		foreach($notes as $val)
-		{
-			$sel = ($row->$fieldID==$val) ? $sel = "selected=\"selected\"" : "";
-			echo  "\t\t\t\t\t<option value=\"$val\" $sel>$val</option>\n";
-		}
-		?>
-</select>
-</td>
-<?php
-}
-
 
 function display_avis($row, $fieldID)
 {
@@ -1243,7 +1235,8 @@ function display_unit($row, $fieldID)
 
 function display_topic($row, $fieldID)
 {
-	global $topics;
+	$topics = get_config("topics");
+
 	?>
 <td style="width: 30em;"><select name="field<?php echo $fieldID;?>"
 	style="width: 100%;">
@@ -1398,7 +1391,7 @@ function displayEditionFrameEnd($titlle)
 	echo "<!-- Fin de displayEditableObject ".$titlle." -->\n";
 }
 
-function displayEditableObject($titlle, $row, $fields)
+function displayEditableObject($titlle, $row, $fields,$use_special_tr = true)
 {
 	global $fieldsAll;
 
@@ -1424,14 +1417,14 @@ function displayEditableObject($titlle, $row, $fields)
 		if(!in_array($fieldID,$fields))
 			continue;
 		$type = isset($fieldsTypes[$fieldID]) ?  $fieldsTypes[$fieldID] : "";
-		if(!in_array($fieldID, $specialtr_fields) || in_array($fieldID, $start_tr_fields))
+		if(!$use_special_tr || !in_array($fieldID, $specialtr_fields) || in_array($fieldID, $start_tr_fields))
 			echo '<tr>';
 		?>
 <td style="width: 10em;"><span><?php echo $title;?> </span>
 </td>
 <?php
 
-if(in_array($fieldID, $start_tr_fields))
+if($use_special_tr && in_array($fieldID, $start_tr_fields))
 	echo '<td><table><tr>';
 
 switch($type)
@@ -1447,9 +1440,6 @@ switch($type)
 		break;
 	case "short":
 		display_short($row, $fieldID);
-		break;
-	case "evaluation":
-		display_evaluation($row, $fieldID);
 		break;
 	case "avis":
 		display_avis($row, $fieldID);
@@ -1477,9 +1467,9 @@ switch($type)
 	default:
 		throw new Exception("Unnown data ttype ".$type);
 }
-if(!in_array($fieldID, $specialtr_fields))
+if(!$use_special_tr || !in_array($fieldID, $specialtr_fields))
 	echo '</tr>';
-if(in_array($fieldID, $end_tr_fields))
+if($use_special_tr && in_array($fieldID, $end_tr_fields))
 	echo '</tr></table></td></tr>';
 	}
 
@@ -1494,7 +1484,6 @@ function displayEditableReport($row, $canedit)
 	global $fieldsAll;
 	global $fieldsTypes;
 	global $actions;
-	global $typesRapportsUnites;
 	global $avis_eval;
 
 	global $typesRapports;
@@ -1502,21 +1491,23 @@ function displayEditableReport($row, $canedit)
 
 	global $typesRapportsIndividuels;
 	global $typesRapportsConcours;
-
+	global $typesRapportsUnites;
+	
+	global $fieldsUnites;
 
 	echo '<form method="post" action="index.php" style="width: 100%">'."\n";
 
 	$next = nextt($row->id_origine);
 	$previous = previouss($row->id_origine);
-	
+
 	$hidden = array(
-			"next_id" => strval($next), 
+			"next_id" => strval($next),
 			"previous_id" => strval($previous),
 			"action" => "update",
 			"create_new" => true,
 			"id_origine" => $row->id_origine
 		);
-	
+
 	$submits = array();
 	$submits["editprevious"] = "<<";
 	$submits["submitandkeepediting"] = "Enregistrer";
@@ -1552,95 +1543,139 @@ function displayEditableReport($row, $canedit)
 		}
 		else if(in_array($eval_type,$typesRapportsIndividuels))
 		{
-			$chercheur = chercheur_of_report($row);
-			echo "<hr/>";
-			displayEditableCandidate($candidate);
+			//todo $chercheur = chercheur_of_report($row);
 		}
 
 
 
-			$hidden = array();
-			if(!type_to_choose($row))
-				$hidden["fieldtype"] = $row->type;
-			if(! session_to_choose($row))
-				$hidden["fieldid_session"] = $row->id_session;
-			if(! session_to_choose($row))
-				$hidden["fieldstatut"] = $row->statut;
-			if(! rapporteur_to_choose($row))
+		$hidden = array();
+		if(!type_to_choose($row))
+			$hidden["fieldtype"] = $row->type;
+		if(! session_to_choose($row))
+			$hidden["fieldid_session"] = $row->id_session;
+		if(! session_to_choose($row))
+			$hidden["fieldstatut"] = $row->statut;
+		if(! rapporteur_to_choose($row))
+		{
+			$hidden["fieldrapporteur"] = $row->rapporteur;
+			$hidden["fieldrapporteur2"] = $row->rapporteur2;
+		}
+
+
+
+		if(statut_to_choose($row))
+			$fields[] = "statut";
+
+
+
+
+		if(array_key_exists($eval_type, $typesRapportsConcours))
+		{
+			global $fieldsRapportsCandidat0;
+			global $fieldsRapportsCandidat1;
+			global $fieldsRapportsCandidat2;
+
+
+			echo "<h1>".$eval_name. ": ". $row->nom." ".$row->prenom.(isset($row->concours) ? (" / concours ".$row->concours) : ""). " (#".(isset($row->id) ? $row->id : "New").")</h1>";
+
+			displayEditionFrameStart("",$hidden,array());
+
+			echo'<table><tr><td VALIGN="top">';
+			displayEditableObject("Rapport section", $row,$fieldsRapportsCandidat0);
+
+			if(isSecretaire())
 			{
-				$hidden["fieldrapporteur"] = $row->rapporteur;
-				$hidden["fieldrapporteur2"] = $row->rapporteur2;
+				if($row->rapporteur != "")
+				{
+					echo'</td><td VALIGN="top">';
+					displayEditableObject("Prérapport 1", $row,$fieldsRapportsCandidat1);
+				}
+				if($row->rapporteur2 != "")
+				{
+					echo'</td><td VALIGN="top">';
+					displayEditableObject("Prérapport 2",$row,$fieldsRapportsCandidat2);
+					rrrr();
+				}
 			}
-
-
-
-			if(statut_to_choose($row))
-				$fields[] = "statut";
-
-
-
-
-			if(in_array($eval_type, $typesRapportsConcours))
-			{
-				global $fieldsRapportsCandidat0;
-				global $fieldsRapportsCandidat1;
-				global $fieldsRapportsCandidat2;
-
-
-				?>
-<h1>
-	<?php 
-	echo $eval_name. ": ". $row->nom." ".$row->prenom.(isset($row->concours) ? (" / concours ".$row->concours) : ""). " (#".(isset($row->id) ? $row->id : "New").")";
-	?>
-</h1>
-
-<?php 
-
-
-displayEditionFrameStart("",$hidden,array());
-
-echo'<table><tr><td VALIGN="top">';
-displayEditableObject("Rapport section", $row,$fieldsRapportsCandidat0);
-
-if(isSecretaire())
-{
-	if($row->rapporteur != "")
-	{
-		echo'</td><td VALIGN="top">';
-		displayEditableObject("Prérapport 1", $row,$fieldsRapportsCandidat1);
-	}
-	if($row->rapporteur2 != "")
-	{
-		echo'</td><td VALIGN="top">';
-		displayEditableObject("Prérapport 2",$row,$fieldsRapportsCandidat2);
-	}
-}
-else if(getLogin() == $row->rapporteur)
-{
-	echo "<hr/>";
-	echo'</td><td VALIGN="top">';
-	displayEditableObject("Prérapport 1",$row,$fieldsRapportsCandidat1);
-}
-else if(getLogin() == $row->rapporteur2)
-{
-	echo "<hr/>";
-	echo'</td><td VALIGN="top">';
-	displayEditableObject("Prérapport 2", $row,$fieldsRapportsCandidat2);
-}
-echo'</td></tr></table>';
-
-
-			}
-			else
+			else if(getLogin() == $row->rapporteur)
 			{
 				echo "<hr/>";
-				displayEditionFrameStart("Données rapport",$hidden,$submits);
-				displayEditableObject("Prérapport", $row,$editable_fields,$hidden,$submits);
+				echo'</td><td VALIGN="top">';
+				displayEditableObject("Prérapport 1",$row,$fieldsRapportsCandidat1);
 			}
+			else if(getLogin() == $row->rapporteur2)
+			{
+				echo "<hr/>";
+				echo'</td><td VALIGN="top">';
+				displayEditableObject("Prérapport 2", $row,$fieldsRapportsCandidat2);
+			}
+			echo'</td></tr></table>';
 
-			displayEditionFrameEnd("Données rapport");
 
-			echo "</form>\n";
+		}
+		else if(array_key_exists($eval_type, $typesRapportsIndividuels))
+		{
+			global $fieldsIndividual0;
+			global $fieldsIndividual1;
+			global $fieldsIndividual2;
+
+
+			echo "<h1>".$eval_name. ": ". $row->nom." ".$row->prenom. " (#".(isset($row->id) ? $row->id : "New").")</h1>";
+
+
+			displayEditionFrameStart("",$hidden,array());
+
+			echo'<table><tr><td VALIGN="top">';
+			displayEditableObject("Rapport section", $row,$fieldsIndividual0, false);
+
+			if(isSecretaire())
+			{
+				if($row->rapporteur != "")
+				{
+					echo'</td><td VALIGN="top">';
+					displayEditableObject("Prérapport 1", $row,$fieldsIndividual1, false);
+				}
+				if($row->rapporteur2 != "")
+				{
+					echo'</td><td VALIGN="top">';
+					displayEditableObject("Prérapport 2",$row,$fieldsIndividual2, false);
+				}
+			}
+			else if(getLogin() == $row->rapporteur)
+			{
+				echo "<hr/>";
+				echo'</td><td VALIGN="top">';
+				displayEditableObject("Prérapport 1",$row,$fieldsIndividual1, false);
+			}
+			else if(getLogin() == $row->rapporteur2)
+			{
+				echo "<hr/>";
+				echo'</td><td VALIGN="top">';
+				displayEditableObject("Prérapport 2", $row,$fieldsIndividual2, false);
+			}
+			echo'</td></tr></table>';
+
+
+		}
+		else if(array_key_exists($eval_type, $typesRapportsUnites))
+		{
+			$units = unitsList();
+
+			echo "<h1>".$eval_name. ": ". $row->unite." (#".(isset($row->id) ? $row->id : "New").")</h1>";
+
+			displayEditionFrameStart("",$hidden,array());
+
+			echo'<table><tr><td VALIGN="top">';
+			displayEditableObject("Rapport section", $row,$fieldsUnites, false);
+
+			echo'</td></tr></table>';
+
+
+		}
+
+		displayEditionFrameEnd("Données rapport");
+
+		echo "</form>\n";
 	}
 
 }
@@ -1665,13 +1700,13 @@ function editReport($id_rapport)
 
 function message_handler($subject,$body)
 {
-	$headers = 'From: '.webmaster. "\r\n" . 'Reply-To: '.webmaster. "\r\n" .'X-Mailer: PHP/' . phpversion()."\r\n";
-	mail(webmaster, $subject, "\r\n".$body."\r\n", $headers);
+	$headers = 'From: '.get_config("webmaster"). "\r\n" . 'Reply-To: '.get_config("webmaster"). "\r\n" .'X-Mailer: PHP/' . phpversion()."\r\n";
+	mail(get_config("webmaster"), $subject, "\r\n".$body."\r\n", $headers);
 }
 
 function email_handler($recipient,$subject,$body)
 {
-	$headers = 'From: '.webmaster. "\r\n" . 'CC: ' .webmaster. "\r\n". 'Reply-To: '.webmaster. "\r\n".'Content-Type: text/plain; charset="UTF-8"\r\n'.'X-Mailer: PHP/' . phpversion()."\r\n";
+	$headers = 'From: '.get_config("webmaster"). "\r\n" . 'CC: ' .get_config("webmaster"). "\r\n". 'Reply-To: '.get_config("webmaster"). "\r\n".'Content-Type: text/plain; charset="UTF-8"\r\n'.'X-Mailer: PHP/' . phpversion()."\r\n";
 
 	$result = mail($recipient, $subject, "\r\n".$body."\r\n", $headers);
 
@@ -1679,17 +1714,6 @@ function email_handler($recipient,$subject,$body)
 		throw new Exception("Could not send email to ".$recipient." with subject ".$subject);
 }
 
-function exception_handler($exception)
-{
-	message_handler("Marmotte webpage :exception ",$exception->getMessage());
-}
-
-
-function error_handler($errno, $errstr, $errfile, $errline)
-{
-	$body= "Number:".$errno."\r\n String:".$errstr."\r\n File:".$errfile."\r\n Line:".$errline;
-	message_handler("Marmotte webpage :error ",$body);
-}
 
 function replace_accents($string)
 {
@@ -1711,4 +1735,31 @@ function sql_request($sql)
 		return $result;
 }
 
+function exception_handler($exception)
+{
+	echo "<h1>".$exception."</h1>";
+	//message_handler("Marmotte webpage :exception ",$exception->getMessage());
+}
+
+
+function error_handler($errno, $errstr, $errfile, $errline)
+{
+	$body= "Number:".$errno."\r\n String:".$errstr."\r\n File:".$errfile."\r\n Line:".$errline;
+	echo "<h1>".$body."</h1>";
+	//message_handler("Marmotte webpage :error ",$body);
+}
+
+function curPageURL() {
+	$pageURL = 'http';
+	if (isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == "on") {
+$pageURL .= "s";
+}
+$pageURL .= "://";
+if (isset($_SERVER["SERVER_PORT"]) && $_SERVER["SERVER_PORT"] != "80") {
+		$pageURL .= $_SERVER["SERVER_NAME"].":".$_SERVER["SERVER_PORT"].$_SERVER["REQUEST_URI"];
+	} else {
+		$pageURL .= (isset($_SERVER["SERVER_NAME"]) ? $_SERVER["SERVER_NAME"] : "").(isset($_SERVER["REQUEST_URI"]) ? $_SERVER["REQUEST_URI"] : "");
+	}
+	return $pageURL;
+}
 ?>
