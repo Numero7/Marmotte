@@ -1291,6 +1291,9 @@ function display_ecole($row, $fieldID)
 function display_fichiers($row, $fieldID)
 {
 
+	if($row->$fieldID == "")
+		return;
+	
 	if(isSecretaire())
 		echo '<td colspan="3"><table><tr><td>';
 	
