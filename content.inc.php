@@ -155,6 +155,11 @@ function getScrollXY() {
 						else
 							displayReports();
 					}
+					else if(isset($_REQUEST['ajoutfichier']))
+					{
+						include("upload.inc.php");
+						editReport($id_origine);
+					}
 					else
 					{
 
@@ -239,7 +244,7 @@ function getScrollXY() {
 						echo "<p>Vous n'avez pas les droits nécessaires pour effectuer cette action, veuillez nous contacter (Yann ou Hugo) en cas de difficultés.</p>";
 					break;
 				case 'admindeleteaccount':
-					if (isSuperUser())
+					if (isSecretaire())
 					{
 						if (isset($_REQUEST["login"]))
 						{
@@ -257,7 +262,7 @@ function getScrollXY() {
 						echo "<p>Vous n'avez pas les droits nécessaires pour effectuer cette action, veuillez nous contacter (Yann ou Hugo) en cas de difficultés.</p>";
 					}
 				case 'adminnewpermissions':
-					if (isSuperUser())
+					if (isSecretaire())
 					{
 						if (isset($_REQUEST["login"]) and isset($_REQUEST["permissions"]))
 						{
@@ -277,7 +282,7 @@ function getScrollXY() {
 					}
 					break;
 				case 'adminnewaccount':
-					if (isSuperUser())
+					if (isSecretaire())
 					{
 						if (isset($_REQUEST["email"]) and isset($_REQUEST["description"]) and isset($_REQUEST["newpwd1"]) and isset($_REQUEST["newpwd2"]) and isset($_REQUEST["login"]))
 						{
@@ -376,31 +381,12 @@ function getScrollXY() {
 					displayReports();
 					include "admin.inc.php";
 					break;
+				case 'trouverfichierscandidats':
+					link_files_to_candidates("dossiers/Dossiers/");
+					include "admin.inc.php";
+					break;
 				case 'creercandidats':
-					if(isSecretaire())
-					{
-						$reports = getAllReportsOfType("Candidature");
-						foreach($reports as $report)
-						{
-							$candidate = get_or_create_candidate($report);
-							$concours = $candidate->concours;
-							if($concours =="" )
-								continue;
-							$ok = strpos($concours, $report->concours);
-							if($ok === false)
-							{
-								echo 'Adding concours "'.$report->concours.'" to candidate '.$candidate->cle.' with concours = "'.$concours.'"<br/>';
-								$annee = $annee = session_year($report->id_session);
-								$nom = $candidate->nom;
-								$prenom = $candidate->prenom;
-								$concours .= " ".$report->concours;
-								change_candidate_property($annee, $nom,$prenom,"concours",$concours);
-							}
-						}
-						$reports = getAllReportsOfType("Equivalence");
-						foreach($reports as $report)
-							get_or_create_candidate($report);
-					}
+					creercandidats();
 					include "admin.inc.php";
 					break;
 				case "displayunits":

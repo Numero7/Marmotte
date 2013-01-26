@@ -2,16 +2,18 @@
 
 require_once 'config.inc.php';
 require_once 'process_csv.inc.php';
-
+require_once 'manage_candidates.inc.php';
+		
 global $uploaded_csv_files;
 
 try
 {
 	if (isset($_FILES['uploadedfile']))
 	{
-		if (isset($_FILES['uploadedfile']['tmp_name']))
+		$files = $_FILES['uploadedfile'];
+		if (isset($files['tmp_name']))
 		{
-			$filename = $_FILES['uploadedfile']['tmp_name'];
+			$filename = $files['tmp_name'];
 			$type = isset($_REQUEST['type']) ? $_REQUEST['type'] : "";
 			$subtype = isset($_REQUEST['subtype']) ? $_REQUEST['subtype'] : "";
 			if(array_key_exists($type,$uploaded_csv_files))
@@ -47,6 +49,21 @@ try
 				else
 				{
 					throw new Exception("Failed to store siganture as file ".signature_file);
+				}
+			}
+			else if($type=="candidatefile")
+			{
+				if(isset($_REQUEST["candidatekey"]))
+				{
+					$key = $_REQUEST["candidatekey"];
+					$candidate = get_candidate_from_key($key);
+					if(!move_uploaded_file($filename, $candidate->fichiers."/".$files['name'] ))
+						throw new Exception("Failed to add file to candidate ".$key);
+					echo "Fichier ".$files['name']." ajouté<br/>";						
+				}
+				else
+				{
+					throw new Exception("Cannot add file: no candidate provided");
 				}
 			}
 			else

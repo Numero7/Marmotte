@@ -296,6 +296,8 @@ function valueFromField($field,$value,$units,$users,$themes)
 				break;
 			case 'topic':
 				return isset($themes[$value]) ? $themes[$value] : "";
+			case 'files':
+				return '<a href="'.$value.'">'.$value.'</a>';
 				break;
 		}
 	}
@@ -412,9 +414,9 @@ function displayReport($id_rapport, $displaymenu = true)
 		<input 
 		
 		
-		   type="submit" name="retourliste"
-		value="Retour à la liste"> <input type="submit" name="detailsnext"
-		value=">>">
+		     type="submit"
+		name="retourliste" value="Retour à la liste"> <input type="submit"
+		name="detailsnext" value=">>">
 </form>
 <?php 
 	}
@@ -1114,8 +1116,9 @@ function displaySessionField($row)
 	if(session_to_choose($row))
 	{
 		?>
-<input type="hidden"
-	name="fieldid_session" value="<?php echo $row->id_session;?>" />
+<input
+	type="hidden" name="fieldid_session"
+	value="<?php echo $row->id_session;?>" />
 <?php 
 	}
 }
@@ -1287,7 +1290,29 @@ function display_ecole($row, $fieldID)
 
 function display_fichiers($row, $fieldID)
 {
-	echo '<td colspan="3"><a href="docs/f.doc">test</a></td>';
+
+	if(isSecretaire())
+		echo '<td colspan="3"><table><tr><td>';
+	
+	echo '<td colspan="3"><a href="'.$row->$fieldID.'">Dossier candidat</a></td>';
+
+	
+	if(isSecretaire())
+	{
+		?>
+		<td>
+	<input type="hidden" name="candidatekey" value="<?php echo $row->cle;?>" />
+	<input type="hidden" name="type" value="candidatefile" />
+	<input type="hidden" name="MAX_FILE_SIZE" value="100000" />
+	<input name="uploadedfile" type="file" />
+	<input type="submit" name="ajoutfichier" value="Ajouter fichier" />
+</td>
+</tr>
+</table>
+</td>
+<?php 
+	}
+
 }
 
 function nextt($id)
@@ -1371,6 +1396,7 @@ function displayEditableCandidate($candidate,$report = NULL)
 	displayEditionFrameEnd("Données candidat");
 
 }
+
 
 function displayEditionFrameStart($titlle, $hidden, $submit)
 {
@@ -1492,10 +1518,10 @@ function displayEditableReport($row, $canedit)
 	global $typesRapportsIndividuels;
 	global $typesRapportsConcours;
 	global $typesRapportsUnites;
-	
+
 	global $fieldsUnites;
 
-	echo '<form method="post" action="index.php" style="width: 100%">'."\n";
+	echo '<form enctype="multipart/form-data" method="post" action="index.php" style="width: 100%">'."\n";
 
 	$next = nextt($row->id_origine);
 	$previous = previouss($row->id_origine);

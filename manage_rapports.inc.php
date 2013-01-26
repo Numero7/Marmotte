@@ -588,6 +588,8 @@ function change_report_properties($id_origine, $data)
 	//echo "Changing status of ".$id_origine." to " .$statut." <br/>";
 	if($id_origine == 0)
 		$row = addReportFromRequest(0,$data);
+	else
+		$row  = getReport($id_origine);
 
 	$data["auteur"] = getLogin();
 	$data["id_session"] = $row->id_session;

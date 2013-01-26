@@ -182,6 +182,30 @@ function get_or_create_candidate($data)
 	}
 }
 
+function get_candidate_from_key($key)
+{
+
+	try
+	{
+		mysql_query("LOCK TABLES candidates WRITE;");
+		$sql = "SELECT * FROM ".candidates_db.' WHERE cle="'.$key.'";';
+
+		$result = sql_request($sql);
+
+		$cdata = mysql_fetch_object($result);
+		if($cdata == false)
+			throw new Exception("No candidate from key ".$key);
+
+		mysql_query("UNLOCK TABLES");
+		return normalizeCandidat($cdata);
+	}
+	catch(Exception $exc)
+	{
+		mysql_query("UNLOCK TABLES;");
+		throw new Exception("Failed to add candidate from report:<br/>".$exc);
+	}
+}
+
 function extraction_candidats()
 {
 
@@ -195,7 +219,7 @@ function extraction_candidats()
 		{
 			if(!candidateExists(session_year($report->id_session), $report->nom, $report->prenom))
 				$nb++;
-			get_or_create_candidate($report);
+			$candidat = get_or_create_candidate($report);
 		}
 	}
 	catch(Exception $exc)
@@ -256,6 +280,88 @@ function change_candidate_properties($annee,$nom,$prenom, $data)
 	$sql .= ' WHERE cle="'.$key.'"';
 	sql_request($sql);
 
+}
+
+function link_files_to_candidates($directory)
+{
+	echo "Linking files to candidates<br/>";
+	
+	$candidates = getAllCandidates();
+
+	$directories=array();
+	$files = glob($directory . "*" );
+	echo "Looking for directories in '".$directory."'<br/>";
+	
+	foreach($files as $file)
+	{
+		if(is_dir($file))
+		{
+			// "Found directory '".$file."'<br/>";
+			$directories[]= $file;
+		}
+		else
+		{
+			//echo "Found file '".$file."'<br/>";
+		}
+	}
+
+	$nb = 0;
+	foreach($candidates as $candidate)
+		if(find_files($candidate, $directories)) $nb++;
+	
+	echo "Found files for ".$nb. "/".count($candidates)."  candidates<br/>";
+}
+
+function norm_name($nom)
+{
+	$nom = replace_accents($nom);
+	return strtoupper(str_replace(array(" ","'","-"), array("_","_","_"),$nom));
+}
+
+function find_files($candidate , $directories)
+{
+	if($candidate->nom == "" || $candidate->prenom == "")
+		return;
+	
+	foreach($directories as $directory)
+	{
+		if( strpos(norm_name($directory), norm_name($candidate->nom) ) != false && strpos(norm_name($directory), norm_name($candidate->prenom) ) != false)
+		{
+			echo "Adding directory ".$directory ." to candidate ". $candidate->nom . " " . $candidate->prenom."<br/>";
+			change_candidate_property($candidate->anneecandidature, $candidate->nom, $candidate->prenom, "fichiers",$directory);
+			return true;
+		}
+	}
+	echo "NO DIRECTORY FOR CANDIDATE ". $candidate->nom . " " . $candidate->prenom."<br/>";
+	return false;
+}
+
+function creercandidats()
+{
+	if(isSecretaire())
+	{
+		$reports = getAllReportsOfType("Candidature");
+		foreach($reports as $report)
+		{
+			$candidate = get_or_create_candidate($report);
+			$concours = $candidate->concours;
+			if($concours =="" )
+				continue;
+			$ok = strpos($concours, $report->concours);
+			if($ok === false)
+			{
+				echo 'Adding concours "'.$report->concours.'" to candidate '.$candidate->cle.' with concours = "'.$concours.'"<br/>';
+				$annee = $annee = session_year($report->id_session);
+				$nom = $candidate->nom;
+				$prenom = $candidate->prenom;
+				$concours .= " ".$report->concours;
+				change_candidate_property($annee, $nom,$prenom,"concours",$concours);
+			}
+		}
+		$reports = getAllReportsOfType("Equivalence");
+		foreach($reports as $report)
+			get_or_create_candidate($report);
+	}
 }
 
 ?>

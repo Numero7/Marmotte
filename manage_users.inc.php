@@ -197,9 +197,9 @@ function getPassHash($login)
 function changePwd($login,$old,$new1,$new2)
 {
 	$currLogin = getLogin();
-	if ($currLogin==$login or isSuperUser())
+	if (isSecretaire())
 	{
-		if (authenticateBase($login,$old) or isSuperUser())
+		if (authenticateBase($login,$old) or isSecretaire())
 		{
 			$oldPassHash = getPassHash($login);
 			if ($oldPassHash != NULL)
@@ -219,15 +219,14 @@ function changePwd($login,$old,$new1,$new2)
 	}
 	else
 	{
-		echo "<p><strong>Erreur :</strong> Seuls les administrateurs du site peuvent modifier les mots de passes d'autres utilisateurs, veuillez nous contacter (Yann ou Hugo) en cas de difficultés.</p>";
-		return false;
+		throw new Exception("Seuls les administrateurs du site peuvent modifier les mots de passes d'autres utilisateurs, veuillez nous contacter (Yann ou Hugo) en cas de difficultés.");
 	}
 }
 
 
 function changeUserPermissions($login,$permissions)
 {
-	if (isSuperUser())
+	if (isSecretaire())
 	{
 		if ($permissions<=getUserPermissionLevel())
 		{
@@ -250,7 +249,7 @@ function existsUser($login)
 
 function createUser($login,$pwd,$desc,$email, $envoiparemail)
 {
-	if (isSuperUser())
+	if (isSecretaire())
 	{
 		if(existsUser($login))
 			throw new Exception("Failed to create user: le login '".$login."' est déja utilisé.");
@@ -283,7 +282,7 @@ function createUser($login,$pwd,$desc,$email, $envoiparemail)
 
 function deleteUser($login)
 {
-	if (isSuperUser())
+	if (isSecretaire())
 	{
 		unset($_SESSION['all_users']);
 		$sql = "DELETE FROM ".users_db." WHERE login='".mysql_real_escape_string($login)."';";

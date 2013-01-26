@@ -482,7 +482,7 @@ et pas édités.
 <hr />
 
 
-<h2>Ajout de candidats</h2>
+<h2>Candidats</h2>
 <p>
 Extrait tous les candidats des rapports de candidature et d'équivalence et
 de les injecter dans la base des candidats.
@@ -490,6 +490,15 @@ de les injecter dans la base des candidats.
 <form action="index.php" method="post">
 	<input type="hidden" name="action" value="creercandidats" /> <input
 		type="submit" value="Créer tous les candidats" />
+</form>
+
+<p/>
+<p>
+Cherche les fichiers associés aux candidats.
+</p>
+<form action="index.php" method="post">
+	<input type="hidden" name="action" value="trouverfichierscandidats" /> <input
+		type="submit" value="Trouver les fichiers des candidats" />
 </form>
 
 <p/>
