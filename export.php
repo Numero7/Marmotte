@@ -55,7 +55,9 @@ if($dbh!=0)
 						{
 							$xml_reports = getReportsAsXML(getFilterValues(), getSortingValues());
 							$filename = "";
-
+							
+							$xml_reports->formatOutput = true;
+							
 							if($type =="pdf")
 							{
 								$xml_reports->save('reports/reports.xml');
@@ -107,7 +109,7 @@ if($dbh!=0)
 							$filter_values['id_edit'] = $id_edit;
 							$xml = getReportsAsXML($filter_values, getSortingValues(), false);
 							header("Content-type: $mime; charset=utf-8");
-							$xsl = new DOMDocument();
+							$xsl = new DOMDocument("1.0","utf-8");
 							$xsl->load($xslpath);
 							$proc = new XSLTProcessor();
 							$proc->importStyleSheet($xsl);

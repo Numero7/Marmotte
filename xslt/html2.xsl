@@ -3,8 +3,14 @@
 <xsl:stylesheet version="1.0" 
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
+
+
 <xsl:template match="rapport">
 
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+</head>
 
 <table cellpadding="5" cellspacing="1" border="1" style="text-align:center;">
 	<tr>
@@ -24,14 +30,14 @@
 			<B>Section du Comité national : <xsl:value-of select="section_nb"/></B>
 		</td>
 		<td width="350">
-			<B>Session : <xsl:value-of select="session"/></B>
+			<B>Session : <xsl:value-of disable-output-escaping="yes" select="session"/></B>
 		</td>
 	</tr>
 	<tr>
 		<td colspan="2" width="600">
 		<B>
 		Intitulé de la section:
-		</B> <xsl:value-of select="section_intitule"/>
+		</B> <xsl:value-of disable-output-escaping="yes" select="section_intitule"/>
 		</td>
 	</tr>
 	<tr>
@@ -118,5 +124,8 @@ Les avis émis par les sections ne préjugent pas de la décision qui sera prise
 </td></tr>
 </table>
 <xsl:if test="position()!=last()"><hr/></xsl:if>
+
+</html>
+
 </xsl:template>
 </xsl:stylesheet>

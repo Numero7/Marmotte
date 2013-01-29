@@ -90,9 +90,9 @@ function getCurrentFiltersList()
 function getCurrentSortingList()
 {
 	global $fieldsSummary;
-	global $fieldsTriCandidates;
+	global $fieldsTriConcours;
 	if(is_current_session_concours())
-		return $fieldsTriCandidates;
+		return $fieldsTriConcours;
 	else
 		return $fieldsSummary;
 }
@@ -365,7 +365,7 @@ function displayConcoursReport($row)
 		<tr>
 			<th style="text-align: LEFT"><?php echo $fieldsCandidatAll[$fieldID];?>
 			</th>
-			<td><?php echo valueFromField($fieldID, remove_br($candidat->$fieldID), $units,$users,$themes);?>
+			<td><?php echo valueFromField($fieldID, $candidat->$fieldID, $units,$users,$themes);?>
 			</td>
 		</tr>
 
@@ -382,7 +382,7 @@ function displayConcoursReport($row)
 		<tr>
 			<th style="text-align: LEFT"><?php echo $fieldsAll[$fieldID];?>
 			</th>
-			<td><?php echo valueFromField($fieldID, remove_br($row->$fieldID), $units,$users,$themes);?>
+			<td><?php echo valueFromField($fieldID, $row->$fieldID, $units,$users,$themes);?>
 			</td>
 		</tr>
 		<?php
@@ -414,7 +414,7 @@ function displayReport($id_rapport, $displaymenu = true)
 		<input 
 		
 		
-		     type="submit"
+		           type="submit"
 		name="retourliste" value="Retour à la liste"> <input type="submit"
 		name="detailsnext" value=">>">
 </form>
@@ -576,13 +576,18 @@ function displayExport($filter_values)
 function displaySummary($filters, $filter_values, $sorting_values)
 {
 	global $fieldsSummary;
-	global $fieldsSummaryCandidates;
+	global $fieldsSummaryConcours;
 	global $typesRapports;
 	global $statutsRapports;
 	global $filtersReports;
 	global $fieldsTypes;
 
 	$rows = filterSortReports($filters, $filter_values, $sorting_values);
+
+	$rows_id = array();
+	foreach($rows as $row)
+		$rows_id[] = $row->id;
+	$_SESSION['rows_id'] = $rows_id;
 
 
 	$filters['login_rapp']['liste'] = simpleListUsers();
@@ -592,7 +597,7 @@ function displaySummary($filters, $filter_values, $sorting_values)
 		if($type=='unit' and array_key_exists($field, $filters))
 		$filters[$field]['liste'] = $units;
 
-	$fields = is_current_session_concours() ? $fieldsSummaryCandidates : $fieldsSummary;
+	$fields = is_current_session_concours() ? $fieldsSummaryConcours : $fieldsSummary;
 
 	if($filter_values['type'] != $filters['type']['default_value'] )
 	{
@@ -1116,9 +1121,8 @@ function displaySessionField($row)
 	if(session_to_choose($row))
 	{
 		?>
-<input
-	type="hidden" name="fieldid_session"
-	value="<?php echo $row->id_session;?>" />
+<input type="hidden"
+	name="fieldid_session" value="<?php echo $row->id_session;?>" />
 <?php 
 	}
 }
@@ -1140,7 +1144,7 @@ function display_treslong($row, $fieldID)
 		</tr>
 		<tr>
 		<td colspan="3">
-		<textarea rows="15" cols="50" name="field'.$fieldID.'" >'.remove_br($row->$fieldID).'</textarea>
+		<textarea rows="25" cols="60" name="field'.$fieldID.'" >'.remove_br($row->$fieldID).'</textarea>
 			</td>
 			';
 }
@@ -1293,22 +1297,21 @@ function display_fichiers($row, $fieldID)
 
 	if($row->$fieldID == "")
 		return;
-	
+
 	if(isSecretaire())
 		echo '<td colspan="3"><table><tr><td>';
-	
+
 	echo '<td colspan="3"><a href="'.$row->$fieldID.'">Dossier candidat</a></td>';
 
-	
+
 	if(isSecretaire())
 	{
 		?>
-		<td>
-	<input type="hidden" name="candidatekey" value="<?php echo $row->cle;?>" />
-	<input type="hidden" name="type" value="candidatefile" />
-	<input type="hidden" name="MAX_FILE_SIZE" value="100000" />
-	<input name="uploadedfile" type="file" />
-	<input type="submit" name="ajoutfichier" value="Ajouter fichier" />
+<td><input type="hidden" name="candidatekey"
+	value="<?php echo $row->cle;?>" /> <input type="hidden" name="type"
+	value="candidatefile" /> <input type="hidden" name="MAX_FILE_SIZE"
+	value="100000" /> <input name="uploadedfile" type="file" /> <input
+	type="submit" name="ajoutfichier" value="Ajouter fichier" />
 </td>
 </tr>
 </table>
@@ -1564,10 +1567,15 @@ function displayEditableReport($row, $canedit)
 			$eval_name = $typesRapports[$eval_type];
 
 
+		$other_reports = array();
+
 		if(in_array($eval_type, $typesRapportsConcours))
 		{
 			$candidate = get_or_create_candidate($row);
 			displayEditableCandidate($candidate,$row);
+
+			$other_reports = find_candidate_reports($candidate);
+
 			echo "<br/><hr/><br/>";
 		}
 		else if(in_array($eval_type,$typesRapportsIndividuels))
@@ -1589,6 +1597,7 @@ function displayEditableReport($row, $canedit)
 			$hidden["fieldrapporteur"] = $row->rapporteur;
 			$hidden["fieldrapporteur2"] = $row->rapporteur2;
 		}
+		
 
 
 
@@ -1607,35 +1616,34 @@ function displayEditableReport($row, $canedit)
 
 			echo "<h1>".$eval_name. ": ". $row->nom." ".$row->prenom.(isset($row->concours) ? (" / concours ".$row->concours) : ""). " (#".(isset($row->id) ? $row->id : "New").")</h1>";
 
-			displayEditionFrameStart("",$hidden,array());
+
+
+			$submits = array();
+			
+			
+			foreach($other_reports as $report)
+				if($report->concours != $row->concours)
+				$submits["importconcours".$report->concours] = "Importer données concours ".$report->concours;
+
+			$hidden['fieldconcours'] = $row->concours;
+				
+			displayEditionFrameStart("",$hidden,$submits);
 
 			echo'<table><tr><td VALIGN="top">';
 			displayEditableObject("Rapport section", $row,$fieldsRapportsCandidat0);
 
-			if(isSecretaire())
+
+			if(getLogin() == $row->rapporteur || (isSecretaire() && $row->rapporteur != ""))
 			{
-				if($row->rapporteur != "")
-				{
-					echo'</td><td VALIGN="top">';
-					displayEditableObject("Prérapport 1", $row,$fieldsRapportsCandidat1);
-				}
-				if($row->rapporteur2 != "")
-				{
-					echo'</td><td VALIGN="top">';
-					displayEditableObject("Prérapport 2",$row,$fieldsRapportsCandidat2);
-					rrrr();
-				}
-			}
-			else if(getLogin() == $row->rapporteur)
-			{
-				echo "<hr/>";
 				echo'</td><td VALIGN="top">';
+
 				displayEditableObject("Prérapport 1",$row,$fieldsRapportsCandidat1);
 			}
-			else if(getLogin() == $row->rapporteur2)
+			if(getLogin() == $row->rapporteur2 || (isSecretaire() && $row->rapporteur2 != ""))
 			{
-				echo "<hr/>";
 				echo'</td><td VALIGN="top">';
+
+
 				displayEditableObject("Prérapport 2", $row,$fieldsRapportsCandidat2);
 			}
 			echo'</td></tr></table>';

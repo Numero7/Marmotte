@@ -16,7 +16,7 @@ function getReportsAsXML($filter_values, $sort_criteria = array(), $keep_br = tr
 {
 	global $fieldsAll;
 
-	$doc = new DOMDocument();
+	$doc = new DOMDocument("1.0","UTF-8");
 	$root = $doc->createElement("rapports");
 	$rows = filterSortReports(getCurrentFiltersList(), $filter_values, $sort_criteria);
 
@@ -37,14 +37,54 @@ function getReportsAsXML($filter_values, $sort_criteria = array(), $keep_br = tr
 }
 
 
+function normalizeField($data)
+{
+	return htmlspecialchars_decode(htmlentities(stripInvalidXml($data)), ENT_NOQUOTES);
+}
 function appendLeaf($fieldname, $fieldvalue, DOMDocument $doc, DOMElement $node)
 {
 	$leaf = $doc->createElement($fieldname);
-	$leaf->appendChild($doc->createCDATASection ($fieldvalue));
+	//$leaf->appendChild($doc->createCDATASection ( stripInvalidXml($fieldvalue)));
+	$leaf->appendChild($doc->createCDATASection (normalizeField($fieldvalue)));
 	$node->appendChild($leaf);
 }
 
+/**
+ * Removes invalid XML
+ *
+ * @access public
+ * @param string $value
+ * @return string
+ */
+function stripInvalidXml($value)
+{
+	$ret = "";
+	$current;
+	if (empty($value))
+	{
+		return $ret;
+	}
 
+	$length = strlen($value);
+	for ($i=0; $i < $length; $i++)
+	{
+		$current = ord($value{$i});
+		if (($current == 0x9) ||
+				($current == 0xA) ||
+				($current == 0xD) ||
+				(($current >= 0x20) && ($current <= 0xD7FF)) ||
+				(($current >= 0xE000) && ($current <= 0xFFFD)) ||
+				(($current >= 0x10000) && ($current <= 0x10FFFF)))
+		{
+			$ret .= chr($current);
+		}
+		else
+		{
+			$ret .= " ";
+		}
+	}
+	return $ret;
+}
 function EnteteDroit($row, $units)
 {
 	global $enTetesDroit;
@@ -139,7 +179,7 @@ function EnteteGauche($row)
 	{
 		$result .= "<br/>pour les concours ".$row->grade;
 	}
-	
+
 	return $result;
 }
 
@@ -177,8 +217,8 @@ function createXMLReportElem($row, $sessions, $units, DOMDocument $doc, $keep_br
 		if(array_key_exists($row->avis,$formulas))
 		{
 			$formula = $formulas[$row->avis];
-			$row->rapport .= "<br/><br/>".$formula;
-				
+			$row->rapport .= "<br/><br/>".normalizeField($formula);
+
 		}
 	}
 
@@ -186,7 +226,7 @@ function createXMLReportElem($row, $sessions, $units, DOMDocument $doc, $keep_br
 	//On ajoute tous les fields pas spéciaux
 	foreach ($empty_report as $fieldID => $title)
 		if(!in_array($fieldID,$fieldsspecial))
-		appendLeaf($fieldID, $keep_br ? $row->$fieldID : remove_br($row->$fieldID), $doc, $rapportElem);
+		appendLeaf($fieldID,   $keep_br ? $row->$fieldID : remove_br($row->$fieldID) , $doc, $rapportElem);
 
 
 	//On ajoute le type du rapport et le pretty print
@@ -216,12 +256,12 @@ function createXMLReportElem($row, $sessions, $units, DOMDocument $doc, $keep_br
 		$checkBoxesTitle = $typesRapportsToCheckboxesTitles[$row->type];
 
 		$leaf = $doc->createElement("checkboxes");
-		$leaf->setAttribute("titre", $checkBoxesTitle);
+		$leaf->setAttribute("titre", normalizeField($checkBoxesTitle));
 
 		foreach($checkBoxes as $avis => $intitule)
 		{
 			$subleaf = $doc->createElement("checkbox");
-			$subleaf->appendChild($doc->createCDATASection ($intitule));
+			$subleaf->appendChild($doc->createCDATASection (normalizeField($intitule)));
 			$subleaf->setAttribute("mark", ($avis == $row->avis) ? "checked" : "unchecked");
 			$leaf->appendChild($subleaf);
 		}
@@ -247,14 +287,14 @@ function createXMLReportElem($row, $sessions, $units, DOMDocument $doc, $keep_br
 	$row->session = $sessions[$row->id_session];
 
 	$rapportElem->setAttribute('filename', filename_from_doc($row));
-	
+
 	return $rapportElem;
 
 }
 
 function rowToXMLDoc($row, $sessions = null, $units = null)
 {
-	$doc = new DOMDocument();
+	$doc = new DOMDocument("1.0","UTF-8");
 	$elem = createXMLReportElem($row, $sessions, $units, $doc);
 	$doc->appendChild($elem);
 	return $doc;
@@ -262,12 +302,12 @@ function rowToXMLDoc($row, $sessions = null, $units = null)
 
 function XMLToHTML(DOMDocument $doc)
 {
-	$xsl = new DOMDocument();
+	$xsl = new DOMDocument("1.0","UTF-8");
 	if(isSecretaire())
 		$xsl->load('xslt/html2.xsl');
 	else
 		$xsl->load('xslt/html.xsl');
-		
+
 	$proc = new XSLTProcessor();
 	$proc->importStyleSheet($xsl);
 	$html = $proc->transformToXML($doc);
@@ -300,7 +340,7 @@ function filename_from_node(DOMNode $node)
 			case "avis": $avis = $child->nodeValue; break;
 		}
 	}
-	
+
 	return filename_from_params($nom, $prenom, $grade, $unite, $type, $session, $avis);
 }
 
@@ -320,7 +360,7 @@ function filename_from_doc($doc)
 function filename_from_params($nom, $prenom, $grade, $unite, $type, $session, $avis)
 {
 	global $typesRapportsUnites;
-	
+
 	if($type == "Promotion")
 	{
 		switch($grade)
@@ -332,10 +372,10 @@ function filename_from_params($nom, $prenom, $grade, $unite, $type, $session, $a
 		}
 		$grade .= " - ".$avis;
 	}
-	
+
 	if($type == "Evaluation-Vague" || $type == "Evaluation-MiVague")
 		$type .=  " - ".mb_convert_case($avis,MB_CASE_TITLE);
-	
+
 	if(array_key_exists($type,$typesRapportsUnites))
 	{
 		if($type == 'Generique')

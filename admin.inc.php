@@ -329,24 +329,49 @@ if(isSecretaire())
 					</tr>
 					<tr>
 						<td>Nouveau mot de passe</td>
-						<td><input name="newpwd1" type="password" />
+						<td><input name="newpwd1" value="<?php if(isset($password)) echo $password; ?>"/>
 						</td>
 					</tr>
 					<tr>
 						<td>Confirmer nouveau mot de passe</td>
-						<td><input name="newpwd2" type="password" />
+						<td><input name="newpwd2" value="<?php if(isset($password)) echo $password; ?>"/>
 						</td>
 					</tr>
 					<tr>
-						<td><input type="hidden" name="oldpwd" value="" /> <input
+						<td><input type="hidden" name="oldpwd" value="" />
+						 <input
 							type="hidden" name="action" value="adminnewpwd" />
 						</td>
 						<td><input type="submit" value="Valider modification" />
 						</td>
-					</tr>
+						<td>
+							<input type="checkbox" name="envoiparemail" checked='checked'
+									style="width: 10px;" /> Prévenir par email
+						</td>
+						</tr>
 				</table>
 			</form>
 		</td>
+		<td>
+					<h2>Vérifier un mot de passe</h2>
+			<form method="post" action="index.php">
+				<table class="inputreport">
+					<tr>
+						<td>Mot de passe</td>
+						<td><input name="password" />
+						</td>
+						</tr>
+						<tr>
+						<td>
+												 <input
+							type="hidden" name="action" value="checkpwd" />
+						<td><input type="submit" value="Vérifier" />
+						</td>
+						</tr>
+						</table>
+						</form>
+						</td>
+						
 	</tr>
 </table>
 

@@ -31,7 +31,7 @@
 			"id"
 	);
 	
-	$fieldsSummaryCandidates = array(
+	$fieldsSummaryConcours = array(
 			"type",
 			"nom",
 			"prenom",
@@ -49,7 +49,7 @@
 			"id"
 	);
 
-	$fieldsTriCandidates = array(
+	$fieldsTriConcours = array(
 			"nom",
 			"prenom",
 			"grade",
@@ -72,7 +72,8 @@
 	$fieldsAll = array(
 		"statut" => "Statut",
 		"concours" => "Concours",
-		"ecole" => "Ecole",
+		"concourspresentes" => "Concours Présentés",
+			"ecole" => "Ecole",
 		"nom" => "Nom",
 		"prenom" => "Prénom",
 		"unite" => "Unité",
@@ -123,15 +124,14 @@
 			"production" => "Production scientifique",
 			"projetrecherche" => "Projet recherche (resume succint pour rapport concours)",
 			"parcours" => "Parcours scientifique (resume succint pour rapport concours)",
-			"concours" => "Concours",
 			"fichiers" => "Fichiers associés",
-			"cle" => "cle"
+			"cleindividu" => "cleindividu"
 	);
 	
 
-	$specialtr_fields = array("parcours","concours", "nom", "date_recrutement", "prenom", "grade", "projetrecherche", "labo1","labo2","labo3","theme1","theme2","theme3", "theseLieu", "HDRAnnee", "theseAnnee","HDRLieu");
+	$specialtr_fields = array("parcours","concourspresentes", "nom", "date_recrutement", "prenom", "grade", "projetrecherche", "labo1","labo2","labo3","theme1","theme2","theme3", "theseLieu", "HDRAnnee", "theseAnnee","HDRLieu");
 	$start_tr_fields = array("projetrecherche", "grade", "nom", "labo1","theme1", "theseAnnee", "productionResume");
-	$end_tr_fields = array("concours", "date_recrutement", "labo3","theme3", "prenom", "HDRLieu");
+	$end_tr_fields = array("concourspresentes", "date_recrutement", "labo3","theme3", "prenom", "HDRLieu");
 	
 	$fieldsIndividual0 = array(
 			"rapporteur",
@@ -229,7 +229,7 @@
 			"productionResume" => "Production scientifique (pour rapport concours)",
 			"projetrecherche" => "Projet recherche  (pour rapport concours)",
 			"parcours" => "Parcours scientifique  (pour rapport concours)",
-			"concours" => "Concours",
+			"concourspresentes" => "Concours",
 			"fichiers" => "Fichiers associés",
 			"cle" => "cle",
 			"avissousjury" => "Avis du sous-jury",
@@ -253,7 +253,7 @@
 			"HDRLieu",
 			"projetrecherche",
 			"parcours",
-			"concours"
+			"concourspresentes"
 	);
 
 	$fieldsCandidat = array_merge($fieldsCandidatAvantAudition, array("avissousjury"));
@@ -440,11 +440,13 @@
 			."Intitulé et lieu de thèse, des postdoc(s) et de(s) postes."
 	);
 	
-	$mergeableTypes = array("concours","short","treslong","long","short");
+	$mergeableTypes = array("short","treslong","long","short");
+	$crashableTypes = array("auteur");
 	
 	$fieldsTypes = array(
 		"ecole" => "ecole",
-		"concours" => "concours",
+		"concours" => "long",
+		"concourspresentes" => "long",
 		"nom" => "short",
 		"prenom" => "short",
 		"grade" => "grade",
@@ -479,7 +481,7 @@
 		"mobilite2" => "long",
 		"animation2" => "long",
 		"rayonnement2" => "long",		
-			"auteur" => "short",
+			"auteur" => "auteur",
 		"date" => "date",
 			"labo1" => "unit",
 			"labo2" => "unit",
@@ -493,7 +495,6 @@
 			"production" => "long",
 			"projetrecherche" => "long",
 			"parcours" => "long",
-			"concours" => "long",
 			"fichiers" => "files",
 			"avissousjury" => "long"
 	);
@@ -887,43 +888,17 @@
 	);
 	
 	
-	$labos_csv  = array ('code', 'fullname', 'nickname', 'directeur');
-	$equivalence_csv  = array ('titrenomprenom', 'prerapport', 'annnesequivalence', 'rapporteur');
-	$candidature_csv  = array ('nom', 'prenom', 'prerapport', 'grade', 'concours', 'prerapport', 'rapporteur', 'rapporteur2');
-	$chercheur_csv  = array ('nomprenom', 'unite', 'grade', 'rapporteur', 'rapporteur2');
 	
 	$csv_composite_fields = array(
 			'titrenomprenom' => array('','nom','prenom') ,
 			 'nomprenom' => array('nom','prenom'),
 	);
 	
-	$csv_fields = array_merge($labos_csv,$equivalence_csv, $chercheur_csv, $candidature_csv);
-	
 	$csv_preprocessing = array('nom' => 'normalizeName', 'prenom' => 'normalizeName','unit' => 'fromunittocode');
 	
 	$uploaded_csv_files = array(
 			'unites' => 'uploads/labos.csv',
 			'rapports' => 'uploads/rapports.csv'
-	);
-	
-	
-	$type_rapport_to_csv_fields = array(
-	'Evaluation-Vague' => $chercheur_csv,
-	'Evaluation-MiVague' => $chercheur_csv,
-	'Promotion' => $chercheur_csv,
-	'Suivi-PostEvaluation' => $chercheur_csv,
-	'Titularisation' => $chercheur_csv,
-	'Affectation' => $chercheur_csv,
-	'Reconstitution' => $chercheur_csv,
-			'Changement-Directeur' => $labos_csv,
-			'Changement-Directeur-Adjoint' => $labos_csv,
-			'Renouvellement' => $labos_csv,
-			'Association' => $labos_csv,
-			'Ecole' => $labos_csv,
-			'Comite-Evaluation' => $labos_csv,
-			'Generique' => $labos_csv,
-			'Candidature' => $candidature_csv,
-			'Equivalence' => $equivalence_csv,
 	);
 	
 	$users_not_rapporteur = array('admin');

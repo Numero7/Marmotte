@@ -1,10 +1,11 @@
+<?php header('Content-type: text/html; charset=utf-8');?>
 <?php
 require_once 'utils.inc.php';
 require_once 'generate_pdf.inc.php';
 require_once 'generate_zip.inc.php';
 
 //load xml file
-$doc = new DOMDocument();
+$doc = new DOMDocument("1.0","utf-8");
 $doc->load('reports/reports.xml');
 
 $root = $doc->getElementsByTagName("rapports")->item(0);
@@ -20,6 +21,11 @@ $html  = "<p><table><tr>";
 
 foreach($reports as $report)
 {
+	if(!isset($report->hasAttribute))
+	{
+		continue;
+	}
+	
 	$is_done = $report->hasAttribute('done');
 
 	$filename = $report->getAttribute('filename').".pdf";
@@ -51,24 +57,26 @@ if($next_report != NULL)
 {
 	echo $html;
 
-	$xsl = new DOMDocument();
+	$xsl = new DOMDocument("1.0","UTF-8");
 	$xsl->load("xslt/html2.xsl");
 	$proc = new XSLTProcessor();
 	$proc->importStyleSheet($xsl);
 
 	$filename = 'reports/'.$next_report->getAttribute('filename').".pdf";
 
-	$subreport = new DOMDocument();
+	$subreport = new DOMDocument("1.0","UTF-8");
 	$node = $subreport->importNode($next_report,true);
 	$subreport->appendChild($node);
 	$html = $proc->transformToXML($subreport);
 
+	
 	$pdf = HTMLToPDF($html);
 	$pdf->Output($filename,"F");
 
 	$next_report->setAttribute('done','');
 
 	$doc->save('reports/reports.xml');
+	
 	?>
 <script>window.location = 'create_reports.php<?php if($zip) echo "?zip_files=";?>'</script>
 <?php

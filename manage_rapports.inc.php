@@ -101,10 +101,6 @@ function filterSortReports($filters, $filter_values = array(), $sorting_values =
 	while ($row = mysql_fetch_object($result))
 		$rows[] = $row;
 
-	$rows_id = array();
-	foreach($rows as $row)
-		$rows_id[] = $row->id;
-	$_SESSION['rows_id'] = $rows_id;
 
 	return $rows;
 }
@@ -132,11 +128,11 @@ function filtersCriteriaToSQL($filters, $filter_values)
 	$sql = "";
 	foreach($filters as $filter => $data)
 	{
-		//rrr();
-		if(isset($filter_values[$filter]) && ($filter_values[$filter] != $data['default_value']))
+		if(isset($filter_values[$filter]) && (!isset($data['default_value']) || $filter_values[$filter] != $data['default_value']))
 		{
 			if($filter == "login_rapp")
 			{
+				//dirty hack to have an OR clause on rapporteurs...
 				$val = $filter_values[$filter];
 				$sql .= " AND (rapporteur=\"".$val."\" OR rapporteur2=\"".$val."\") ";
 			}
@@ -323,10 +319,8 @@ function addReportFromRequest($id_origine, $request)
 
 	$report = createReportFromRequest($id_origine, $request);
 
-	$create_new = isset($request['create_new']) ? $request['create_new'] : true;
+	$id_nouveau = addReportToDatabase($report,false);
 
-	$id_nouveau = addReportToDatabase($report, $create_new);
-	
 	return getReport($id_nouveau);
 }
 
@@ -351,13 +345,14 @@ function createReportFromRequest($id_origine, $request)
 	$row = (object) array();
 
 	$row->id_session = current_session_id();
-	$row->id_origine = $id_origine;
-	$row->auteur = getLogin();
 
 	foreach($fieldsAll as  $field => $comment)
 		if (isset($request["field".$field]))
 		$row->$field = nl2br(trim($request["field".$field]),true);
 
+	$row->id_origine = $id_origine;
+	$row->auteur = getLogin();
+	
 	return $row;
 
 }
@@ -400,21 +395,23 @@ function normalizeReport($report)
 }
 
 
-function addReportToDatabase($report)
+function addReportToDatabase($report,$normalize = true)
 {
 	global $fieldsAll;
 	global $empty_report;
 
 
-	$report = normalizeReport($report);
+	if($normalize)
+	 $report = normalizeReport($report);
 
 
-	if($report->statut == "vierge" && $report->id_origine != 0)
+	if(isset($report->statut) && $report->statut == "vierge" && $report->id_origine != 0)
 		$report->statut = "prerapport";
 
-	createUnitIfNeeded($report->unite);
+	if(isset($report->unite))
+		createUnitIfNeeded($report->unite);
 
-	$specialRule = array("date","id");
+	$specialRule = array("date","id","auteur");
 
 
 	mysql_query("LOCK TABLES evaluations WRITE;");
@@ -423,7 +420,7 @@ function addReportToDatabase($report)
 	{
 
 		$id_origine = isset($report->id_origine) ? $report->id_origine : 0;
-		
+
 		$current_report = (object) $empty_report;
 		try
 		{
@@ -446,6 +443,8 @@ function addReportToDatabase($report)
 						if( isset($current_report->$field) && ($previous_report->$field != $current_report->$field)  && ($current_report->$field != $report->$field))
 						{
 							global $mergeableTypes;
+							global $crashableTypes;
+							
 							global $fieldsTypes;
 							$type = isset($fieldsTypes[$field]) ? $fieldsTypes[$field] : "";
 							if(in_array($type, $mergeableTypes))
@@ -455,7 +454,7 @@ function addReportToDatabase($report)
 								$current_report->$field ="!!!MERGE!!!\n* FROM '".$current_report->auteur."':\n".$current_report->$field;
 								$current_report->$field .= "\n* FROM '".getLogin()."':\n".$report->$field;
 							}
-							else
+							else if(!in_array($type, $crashableTypes))
 							{
 								echo "<h2>Cannot merge with parallel edition of field '$field' by '".$current_report->auteur."':</h2>";
 								echo "<h2>Parallel edition:</h2>".$current_report->$field;
@@ -486,6 +485,7 @@ function addReportToDatabase($report)
 		$sqlfields = "";
 		$sqlvalues = "";
 
+		$current_report->auteur = getLogin();
 
 		$first = true;
 		foreach($current_report as  $field => $value)
@@ -524,13 +524,7 @@ function addReportToDatabase($report)
 		throw $e;
 	}
 
-	if(isset($_SESSION['rows_id']))
-	{
-		$rows_id = $_SESSION['rows_id'];
-		$n = count($rows_id) -1;
-		for($i = 0; $i < $n; $i++)
-			$_SESSION['rows_id'][$i] = 	getIDOrigine($_SESSION['rows_id'][$i]);
-	}
+	refresh_row_ids();
 
 	sql_request("UNLOCK TABLES");
 
@@ -538,6 +532,16 @@ function addReportToDatabase($report)
 
 }
 
+function refresh_row_ids()
+{
+	if(isset($_SESSION['rows_id']))
+	{
+		$rows_id = $_SESSION['rows_id'];
+		$n = count($rows_id) -1;
+		for($i = 0; $i < $n; $i++)
+			$_SESSION['rows_id'][$i] = 	getIDOrigine($_SESSION['rows_id'][$i]);
+	}
+}
 
 
 
@@ -577,6 +581,7 @@ function change_report_property($id_origine, $property_name, $newvalue)
 
 	$data = array($property_name => $newvalue);
 
+	//echo "Changing property " .$property_name." of ". $id_origine." for new value ".$newvalue."<br/>";
 	change_report_properties($id_origine, $data);
 }
 
@@ -585,50 +590,22 @@ function change_report_properties($id_origine, $data)
 	global $fieldsAll;
 
 	$row = NULL;
-	//echo "Changing status of ".$id_origine." to " .$statut." <br/>";
-	if($id_origine == 0)
-		$row = addReportFromRequest(0,$data);
-	else
-		$row  = getReport($id_origine);
 
-	$data["auteur"] = getLogin();
-	$data["id_session"] = $row->id_session;
-	$data["id_origine"] = $id_origine;
+	$request = array();
 
+	$report = getReport($id_origine);
 
-	foreach($data as $property_name => $newvalue)
+	foreach($report as $key => $value)
 	{
-		if(property_exists($row,$property_name))
-			$row->$property_name = $newvalue;
-		else
-			throw new Exception("No property '".$property_name."' in report object");
+		if(isset($data[$key]))
+			$request["field".$key] = $data[$key];
 	}
 
-	$fields = "";
-	$values = "";
-	$first = true;
-	foreach($fieldsAll as  $fieldID => $title)
-	{
-		if (isset($row->$fieldID) && $fieldID!="id" && $fieldID!="date")
-		{
-			$fields.=$first ? "" : ",";
-			$fields.=$fieldID;
-			$values.=$first ? "" : ",";
-			$values.="\"".mysql_real_escape_string(trim($row->$fieldID))."\"";
-			$first = false;
-		}
-	}
-	$sql = "INSERT INTO ".evaluations_db." ($fields) VALUES ($values);";
-	//echo $sql."<br>";
-	sql_request($sql);
 
-	$newid = mysql_insert_id();
-	$sql = "UPDATE ".evaluations_db." SET id_origine=".intval($newid)." WHERE id_origine=".intval($id_origine).";";
+	return addReportFromRequest($id_origine,$request);
 
-	sql_request($sql);
-
-	return $newid;
 }
+
 
 function getVirginReports($rapporteur)
 {
@@ -645,6 +622,43 @@ function getVirginReports($rapporteur)
 	$liste12 =  filterSortReports(getCurrentFiltersList(), $filter_values,getSortingValues());
 
 	return array_merge($liste1,$liste2);
+}
+
+function find_candidate_reports($candidate)
+{
+	return  filterSortReports(array("cleindividu"=>""), array("cleindividu"=>$candidate->cle));
+}
+
+function update_report_from_concours($id_origine,$concours,$login)
+{
+	global $fieldsRapportsCandidat;
+	global $fieldsRapportsCandidat1;
+	global $fieldsRapportsCandidat2;
+
+	$report = getReport($id_origine);
+
+	$filters = array("concours"=>"","cleindividu"=>"","type"=>"");
+	$filtersvalues = array("concours" => $concours,"cleindividu" => $report->cleindividu,"type"=>"Candidature");
+	$reports = filterSortReports($filters,$filtersvalues);
+	if(count($reports) < 1)
+		throw new Exception("Cannot update report ".$id_origine." from concours ".$concours." : no such report for candidate ".$report->cle);
+
+	$report2 = $reports[0];
+
+	$fields = array();
+	if($login == $report->rapporteur)
+		$fields = $fieldsRapportsCandidat1;
+	else if ($login == $report->rapporteur2)
+		$fields = $fieldsRapportsCandidat2;
+	else if(isSecretaire($login))
+		$fields = $fieldsRapportsCandidat;
+
+	$data = array();
+	foreach($fields as $field)
+		$data[$field] = $report2->$field;
+
+	return change_report_properties($id_origine,$data);
+
 }
 
 function listOfAllVirginReports()

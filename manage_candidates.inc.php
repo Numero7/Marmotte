@@ -171,7 +171,7 @@ function get_or_create_candidate($data)
 			if($cdata == false)
 				throw new Exception("Failed to fetch object from request<br/>".$sql);
 		}
-
+		
 		mysql_query("UNLOCK TABLES");
 		return normalizeCandidat($cdata);
 	}
@@ -206,6 +206,7 @@ function get_candidate_from_key($key)
 	}
 }
 
+/*
 function extraction_candidats()
 {
 
@@ -220,7 +221,13 @@ function extraction_candidats()
 			if(!candidateExists(session_year($report->id_session), $report->nom, $report->prenom))
 				$nb++;
 			$candidat = get_or_create_candidate($report);
+			
+			change_report_property($report->id, "clecandidat", $candidat->cle);
+			
+			rrr();
 		}
+		
+		
 	}
 	catch(Exception $exc)
 	{
@@ -229,7 +236,7 @@ function extraction_candidats()
 
 	return "Added ".$nb." new candidates";
 }
-
+*/
 
 function change_candidate_property($annee,$nom,$prenom, $property_name, $newvalue)
 {
@@ -336,6 +343,7 @@ function find_files($candidate , $directories)
 	return false;
 }
 
+
 function creercandidats()
 {
 	if(isSecretaire())
@@ -344,8 +352,11 @@ function creercandidats()
 		foreach($reports as $report)
 		{
 			$candidate = get_or_create_candidate($report);
-			$concours = $candidate->concours;
-			if($concours =="" )
+			if($report->cleindividu != $candidate->cle)
+				change_report_property($report->id, "cleindividu", $candidate->cle);
+				
+			$concours = $candidate->concourspresentes;
+			if($concours =="" || $report->concours=="")
 				continue;
 			$ok = strpos($concours, $report->concours);
 			if($ok === false)
@@ -355,12 +366,16 @@ function creercandidats()
 				$nom = $candidate->nom;
 				$prenom = $candidate->prenom;
 				$concours .= " ".$report->concours;
-				change_candidate_property($annee, $nom,$prenom,"concours",$concours);
+				change_candidate_property($annee, $nom,$prenom,"concourspresentes",$concours);
 			}
 		}
 		$reports = getAllReportsOfType("Equivalence");
 		foreach($reports as $report)
-			get_or_create_candidate($report);
+		{
+			$candidate = get_or_create_candidate($report);
+			if($report->cleindividu != $candidate->cle)
+				change_report_property($report->id, "cleindividu", $candidate->cle);
+		}
 	}
 }
 

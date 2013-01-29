@@ -172,6 +172,18 @@ function authenticateBase($login,$pwd)
 	return false;
 }
 
+function checkPasswords($password)
+{
+	$users = listUsers();
+	foreach($users as $login => $data)
+	{
+		if(authenticateBase($login, $password))
+			echo $login." a le mot de passe '". $password."'<br/>";
+		else
+			echo "Checked ".$login."<br/>";
+	}
+}
+
 function authenticate()
 {
 	if (isset($_SESSION['login']) and isset($_SESSION['pass']))
@@ -189,14 +201,17 @@ function getPassHash($login)
 	$result=mysql_query($sql);
 	if ($row = mysql_fetch_object($result))
 	{
-		return $row->passHash;
+		//There is no upper/lower case filter in sql requests
+		if($row->login == $login)
+			return $row->passHash;
 	}
 	return NULL;
 } ;
 
-function changePwd($login,$old,$new1,$new2)
+function changePwd($login,$old,$new1,$new2, $envoiparemail)
 {
 	$currLogin = getLogin();
+	$users = listUsers();
 	if (isSecretaire())
 	{
 		if (authenticateBase($login,$old) or isSecretaire())
@@ -206,21 +221,27 @@ function changePwd($login,$old,$new1,$new2)
 			{
 				$newPassHash = crypt($new1, $oldPassHash);
 				$sql = "UPDATE ".users_db." SET passHash='$newPassHash' WHERE login='$login';";
-				mysql_query($sql);
+				sql_request($sql);
+				
 				createhtpasswd();
+				
+				if($envoiparemail)
+				{
+					$body = "Votre mot de passe pour le site \r\n".curPageURL()."\r\n a été mis à jour:\r\n";
+					$body .= "\t\t\t login: '".$login."'\r\n";
+					$body .= "\t\t\t motdepasse: '".$new1."'\r\n";
+					$body .= "\r\n\r\n\t Amicalement, ".get_config("secretaire").".";
+					email_handler($users[$login]->email,"Votre compte Marmotte",$body);
+				}
+				
 				return true;
 			}
 		}
 		else
-		{
-			echo "<p><strong>Erreur :</strong> La saisie du mot de passe courant est incorrecte, veuillez réessayer.</p>";
-			return false;
-		};
+			throw new Exception("La saisie du mot de passe courant est incorrecte, veuillez réessayer.");
 	}
 	else
-	{
 		throw new Exception("Seuls les administrateurs du site peuvent modifier les mots de passes d'autres utilisateurs, veuillez nous contacter (Yann ou Hugo) en cas de difficultés.");
-	}
 }
 
 
@@ -261,6 +282,9 @@ function createUser($login,$pwd,$desc,$email, $envoiparemail)
 		$passHash = crypt($pwd);
 		$sql = "INSERT INTO ".users_db." (login,passHash,description,email) VALUES ('".mysql_real_escape_string($login)."','".mysql_real_escape_string($passHash)."','".mysql_real_escape_string($desc)."','".mysql_real_escape_string($email)."');";
 		mysql_query($sql);
+		
+		createhtpasswd();
+		
 		if($envoiparemail)
 		{
 			$body = "Marmotte est un site web destiné à faciliter la répartition, le dépôt, l'édition et la production\r\n";
@@ -275,7 +299,6 @@ function createUser($login,$pwd,$desc,$email, $envoiparemail)
 			$body .= "\r\n\r\n\t Amicalement, ".get_config("secretaire").".";
 			email_handler($email,"Votre compte Marmotte",$body);
 		}
-		createhtpasswd();
 		return "Utilisateur ".$login." créé avec succès.";
 	}
 }

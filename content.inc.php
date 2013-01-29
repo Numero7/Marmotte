@@ -162,24 +162,40 @@ function getScrollXY() {
 					}
 					else
 					{
-
-							
-						$report = addReportFromRequest($id_origine,$_REQUEST);
-
-						if(in_array($report->type, $typesRapportsConcours))
-							$candidate = updateCandidateFromRequest($_REQUEST);
+						$done = false;
 						
-						if(isset($_REQUEST["submitandeditnext"]))
+						foreach($concours_ouverts as $concours => $nom)
 						{
-							editReport($next);
+							if(isset($_REQUEST['importconcours'.$concours]))
+							{
+								$done = true;
+								$newreport = update_report_from_concours($id_origine,$concours, getLogin());
+								editReport($newreport->id);
+								break;
+									
+							}
 						}
-						else if(isset($_REQUEST["submitandview"]))
+
+
+						if(!$done)
 						{
-							displayReport($report->id);
-						}
-						else if(isset($_REQUEST["submitandkeepediting"]))
-						{
-							editReport($report->id);
+							$report = addReportFromRequest($id_origine,$_REQUEST);
+
+							if(in_array($report->type, $typesRapportsConcours))
+								$candidate = updateCandidateFromRequest($_REQUEST);
+
+							if(isset($_REQUEST["submitandeditnext"]))
+							{
+								editReport($next);
+							}
+							else if(isset($_REQUEST["submitandview"]))
+							{
+								displayReport($report->id);
+							}
+							else if(isset($_REQUEST["submitandkeepediting"]))
+							{
+								editReport($report->id);
+							}
 						}
 					}
 
@@ -204,44 +220,26 @@ function getScrollXY() {
 						$pwd1 = $_REQUEST["newpwd1"];
 						$pwd2 = $_REQUEST["newpwd2"];
 						$login = $_REQUEST["login"];
+						$envoiparemail = isset($_REQUEST["envoiparemail"])  ? $_REQUEST["envoiparemail"] : false;
+
 						if (($pwd1==$pwd2))
 						{
-							if (changePwd($login,$old,$pwd1,$pwd2))
-							{
+							if (changePwd($login,$old,$pwd1,$pwd2,$envoiparemail))
 								echo "<p><strong>Mot de passe modifié avec succès.</strong></p>";
-								addCredentials($_SESSION["login"],$pwd1);
-							}
 						}
 						else
-						{
-							echo "<p><strong>Erreur :</strong> Les deux saisies du nouveau mot de passe  diffèrent, veuillez réessayer.</p>";
-						}
+							throw new Exception("Erreur :</strong> Les deux saisies du nouveau mot de passe  diffèrent, veuillez réessayer.</p>");
 					}
 					else
-					{
-						echo "<p><strong>Erreur :</strong> Vous n'avez fourni les informations nécessaires pour modifier votre mot de passe, veuillez nous contacter (Yann ou Hugo) en cas de difficultés.</p>";
-					}
-					break;
-				case "newpwd":
-					include "changePwd.inc.php";
-					break;
-				case "adminnewpwd":
-					if(isSuperUser())
-						include 'admin.inc.php';
-					break;
-				case 'exportdb':
-					$dbname = isset($_REQUEST['dbname']) ? $_REQUEST['dbname'] : "";
-					echo export_db($dbname) . "<br/>";
-					break;
-				case 'importdb':
-					$dbname = isset($_REQUEST['dbname']) ? $_REQUEST['dbname'] : "";
-					echo import_db($dbname) . "<br/>";
+						throw new Exception("Erreur :</strong> Vous n'avez fourni les informations nécessaires pour modifier votre mot de passe, veuillez nous contacter (Yann ou Hugo) en cas de difficultés.</p>");
+					include 'admin.inc.php';
+
 					break;
 				case 'admin':
 					if (isSecretaire())
 						include "admin.inc.php";
 					else
-						echo "<p>Vous n'avez pas les droits nécessaires pour effectuer cette action, veuillez nous contacter (Yann ou Hugo) en cas de difficultés.</p>";
+						throw new Exception("<p>Vous n'avez pas les droits nécessaires pour effectuer cette action, veuillez nous contacter (Yann ou Hugo) en cas de difficultés.</p>");
 					break;
 				case 'admindeleteaccount':
 					if (isSecretaire())
@@ -250,17 +248,13 @@ function getScrollXY() {
 						{
 							$login = $_REQUEST["login"];
 							deleteUser($login);
+							include "admin.inc.php";
 						}
 						else
-						{
-							echo "<p><strong>Erreur :</strong> Vous n'avez fourni toutes les informations nécessaires pour créer un utilisateur, veuillez nous contacter (Yann ou Hugo) en cas de difficultés.</p>";
-						}
-						include "admin.inc.php";
+							throw new Exception("<p><strong>Erreur :</strong> Vous n'avez fourni toutes les informations nécessaires pour créer un utilisateur, veuillez nous contacter (Yann ou Hugo) en cas de difficultés.</p>");
 					}
 					else
-					{
-						echo "<p>Vous n'avez pas les droits nécessaires pour effectuer cette action, veuillez nous contacter (Yann ou Hugo) en cas de difficultés.</p>";
-					}
+						throw new Exception("<p>Vous n'avez pas les droits nécessaires pour effectuer cette action, veuillez nous contacter (Yann ou Hugo) en cas de difficultés.</p>");
 				case 'adminnewpermissions':
 					if (isSecretaire())
 					{
@@ -279,6 +273,13 @@ function getScrollXY() {
 					else
 					{
 						echo "<p>Vous n'avez pas les droits nécessaires pour effectuer cette action, veuillez nous contacter (Yann ou Hugo) en cas de difficultés.</p>";
+					}
+					break;
+				case 'checkpwd':
+					if(isset($_REQUEST["password"]))
+					{
+						$password = $_REQUEST["password"];
+						checkPasswords($password);
 					}
 					break;
 				case 'adminnewaccount':
@@ -354,10 +355,6 @@ function getScrollXY() {
 					{
 						echo "Cannot process action ajoutlabo: missing data<br/>";
 					}
-					include "admin.inc.php";
-					break;
-				case 'extrairecandidats':
-					echo extraction_candidats();
 					include "admin.inc.php";
 					break;
 				case 'sqlrequest':

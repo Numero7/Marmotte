@@ -16,7 +16,7 @@ function type_from_node(DOMNode $node)
 /*
 function xmls_to_zipped_tex($docs)
 {
-	$xsl = new DOMDocument();
+	$xsl = new DOMDocument("1.0","UTF-8");
 	$xsl->load("xslt/latex_eval.xsl");
 	$proc_eval = new XSLTProcessor();
 	$proc_eval->importStyleSheet($xsl);
@@ -104,7 +104,7 @@ function zip_files($filenames,$zipname = "reports.zip")
  */
 function xmls_to_pdfs2($docs)
 {
-	$xsl = new DOMDocument();
+	$xsl = new DOMDocument("1.0","utf-8");
 	$xsl->load("xslt/html2.xsl");
 	$proc = new XSLTProcessor();
 	$proc->importStyleSheet($xsl);
@@ -136,7 +136,7 @@ function xmls_to_pdfs2($docs)
 
 function xml_to_pdfs($xml_reports)
 {
-	$xsl = new DOMDocument();
+	$xsl = new DOMDocument("1.0","utf-8");
 	$xsl->load("xslt/html2.xsl");
 	$proc = new XSLTProcessor();
 	$proc->importStyleSheet($xsl);
