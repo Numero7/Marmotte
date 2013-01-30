@@ -30,14 +30,19 @@ function compileObjectAsCSV($fields, $rows,$sep =";" , $enc='"', $del="\n")
 function compileReportsAsCSV($rows)
 {
 	global $empty_report;
-	$specialfields = array("id","id_origine","date");
-
-	$fields = array();
-	foreach($empty_report as $field => $value)
-		if(!in_array($field,$specialfields))
-		$fields[] = $field;
-
-	return compileObjectAsCSV($fields, $rows);
+	global $mandatory_export_fields;
+	
+	if(count($rows) < 1)
+		throw new Exception("Nothing to export");
+	
+	$type = $rows[0]->type;
+	foreach($rows as $report)
+		if($report->type != $type && !isSecretaire())
+			throw new Exception("Cannot export different type of reports as csv, please filter one report type exclusively");
+	
+	$activefields = array_unique(array_merge($mandatory_export_fields, get_editable_fields($rows[0])));
+	
+	return compileObjectAsCSV($activefields, $rows);
 }
 
 function compileUnitsAsCSV($rows)

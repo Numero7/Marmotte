@@ -70,7 +70,7 @@ try
 }
 catch(Exception $e)
 {
-	echo("Watchout: couldn't create exemple csv file ".$e);
+	echo("Watchout: couldn't create exemple csv file ".$e->getMessage());
 }
 
 ?>
@@ -81,24 +81,9 @@ mais il est indispensable de laisser les intitulés des colonnes restantes tels 
 Les différentes entrées sont encadrées par des guillemets par conséquent les champs ne doivent pas contenir
 des guillements non échappés: il faut au préalabale de l'envoi remplacer chaque " par \".<br/>
 <!--  Enfin utiliser de préférence l'encodage utf-8 pour les caractères accentués.<br/> -->
-<form enctype="multipart/form-data" action="index.php" method="post"
-	onsubmit="return confirm('Etes vous sur de creer ces rapports vierges?');">
-	<p>
-	Type de rapports
-		<select name="subtype">
-			<?php
-			global $typesRapports;
-			echo "<option value=\"\">Spécifié dans le csv</option>\n";
-			foreach ($typesRapports as $ty => $value)
-				echo "<option value=\"$ty\">".$value."</option>\n";
-			?>
-		</select> <input type="hidden" name="type" value="rapports" /> <input
-			type="hidden" name="action" value="upload" /> <input type="hidden"
-			name="MAX_FILE_SIZE" value="10000000" /> Fichier csv: <input
-			name="uploadedfile" type="file" /> <br /> <input type="submit"
-			value="Créer rapports" />
-	</p>
-</form>
+<?php 
+displayImport();
+?>
 
 <hr />
 
@@ -196,7 +181,7 @@ try
 }
 catch(Exception $e)
 {
-	echo("Watchout: couldn't create exemple csv file ".$e);
+	echo("Watchout: couldn't create exemple csv file ".$e->getMessage());
 }
 
 ?>

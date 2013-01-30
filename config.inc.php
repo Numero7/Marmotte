@@ -35,18 +35,18 @@
 			"type",
 			"nom",
 			"prenom",
-			"grade",
 			"concours",
 			"rapporteur",
 			"rapporteur2",
 			"theme1",
 			"theme2",
-			"theme3",
 			"labo1",
 			"labo2",
 			"labo3",
 			"avis",
-			"id"
+			"date",
+			"auteur",
+			"id",
 	);
 
 	$fieldsTriConcours = array(
@@ -62,7 +62,8 @@
 			"labo1",
 			"labo2",
 			"labo3",
-			"avis"
+			"avis",
+			"date"
 	);
 	
 	$statutsRapports = array( 'vierge' => "Rapport vierge", 'prerapport'=>'Prérapport', 'rapport'=>"Rapport", 'publie'=>"Rapport publié");
@@ -115,7 +116,7 @@
 		"animation2" => "Animation scientifique (rapp. 2)",
 		"rayonnement" => "Rayonnement",		
 		"rayonnement2" => "Rayonnement (rapp. 2)",		
-		"auteur" => "Auteur Dernière(s) modif(s)",
+		"auteur" => "Auteur dernière modif",
 		"date" => "Date modification",
 		"id" => "Id",
 			"id_session" => "Id session",
@@ -209,6 +210,8 @@
 	
 	
 	$fieldsRapportsCandidat = array_merge($fieldsRapportsCandidat0, $fieldsRapportsCandidat1, $fieldsRapportsCandidat2);
+	
+	$mandatory_export_fields= array('id','nom','prenom','type');
 	
 	$fieldsCandidatAll = array(
 			"anneecandidature" => "Année de candidature",
@@ -757,6 +760,7 @@
 	define("NIVEAU_PERMISSION_BUREAU", 100);
 	define("NIVEAU_PERMISSION_PRESIDENT_SECRETAIRE", 500);
 	define("NIVEAU_PERMISSION_SUPER_UTILISATEUR", 1000);
+	define("NIVEAU_PERMISSION_INFINI", 10000000);
 	
 	$actions1 = array(
 		'details' => array('left' => true, 'title' => "Détails", 'level' => NIVEAU_PERMISSION_BASE, 'page' =>'', 'icon' => 'img/details-icon-24px.png'),
@@ -770,14 +774,33 @@
 	);
 	$actions = array_merge($actions1, $actions2);
 	
+	$fieldsPermissions = array(
+			"statut" => NIVEAU_PERMISSION_PRESIDENT_SECRETAIRE,
+			"concours" => NIVEAU_PERMISSION_PRESIDENT_SECRETAIRE,
+			"type" => NIVEAU_PERMISSION_PRESIDENT_SECRETAIRE,
+			"rapporteur" => NIVEAU_PERMISSION_BUREAU,
+			"rapporteur2" => NIVEAU_PERMISSION_BUREAU,
+			"avis" => NIVEAU_PERMISSION_PRESIDENT_SECRETAIRE,
+			"rapport" => NIVEAU_PERMISSION_PRESIDENT_SECRETAIRE,
+			"auteur" => NIVEAU_PERMISSION_INFINI,
+			"date" => NIVEAU_PERMISSION_INFINI,
+			"id" => NIVEAU_PERMISSION_INFINI,
+			"id_session" => NIVEAU_PERMISSION_INFINI,
+			"id_origine" => NIVEAU_PERMISSION_INFINI,
+			"fichiers" => NIVEAU_PERMISSION_PRESIDENT_SECRETAIRE,
+			"cleindividu" => NIVEAU_PERMISSION_INFINI
+	);
+	
 
 	$typeExports = array(
+			/*
 			"htmledit" => 	array(
 					"mime" => "text/html",
 					"xsl" => "xslt/htmlminimaledit.xsl",
-					"name" => "Html",
+					"name" => "HtmlEdit",
 					"permissionlevel" => NIVEAU_PERMISSION_BUREAU,
 			),
+			*/
 			"html" => 	array(
 					"mime" => "text/html",
 					"xsl" => "xslt/html2.xsl",
@@ -788,7 +811,7 @@
 					"mime" => "text/xml",
 					"xsl" => "xslt/xmlidentity.xsl",
 					"name" => "XML",
-					"permissionlevel" => NIVEAU_PERMISSION_BUREAU,
+					"permissionlevel" => NIVEAU_PERMISSION_BASE,
 			),
 			"pdf" => 	array(
 					"mime" => "application/x-zip",
@@ -806,16 +829,22 @@
 					"mime" => "application/x-text",
 					"xsl" => "",
 					"name" => "CSV",
-					"permissionlevel" => NIVEAU_PERMISSION_PRESIDENT_SECRETAIRE
-			)
-				
-			/*			"latex" => 	array(
-			 "mime" => "application/x-latex",
-					"xsl" => "",
-					"name" => "Zip",
-					"permissionlevel" => NIVEAU_PERMISSION_BASE,
-			),*/
-					
+					"permissionlevel" => NIVEAU_PERMISSION_BASE
+			));
+
+			$typeImports = array(
+					"xml" => 	array(
+							"mime" => "text/xml",
+							"xsl" => "xslt/xmlidentity.xsl",
+							"name" => "XML",
+							"permissionlevel" => NIVEAU_PERMISSION_BASE,
+					),
+					"csv" => 	array(
+							"mime" => "application/x-text",
+							"xsl" => "",
+							"name" => "CSV",
+							"permissionlevel" => NIVEAU_PERMISSION_BASE
+					)
 	);
 	
 	
@@ -895,11 +924,6 @@
 	);
 	
 	$csv_preprocessing = array('nom' => 'normalizeName', 'prenom' => 'normalizeName','unit' => 'fromunittocode');
-	
-	$uploaded_csv_files = array(
-			'unites' => 'uploads/labos.csv',
-			'rapports' => 'uploads/rapports.csv'
-	);
 	
 	$users_not_rapporteur = array('admin');
 ?>

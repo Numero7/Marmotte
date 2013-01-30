@@ -3,6 +3,7 @@
 require_once('manage_sessions.inc.php');
 require_once('manage_unites.inc.php');
 require_once('manage_users.inc.php');
+require_once('xml_tools.inc.php');
 
 function implode_with_keys($assoc,$inglue=':',$outglue=','){
 	$res=array();
@@ -11,6 +12,65 @@ function implode_with_keys($assoc,$inglue=':',$outglue=','){
 	}
 	return implode($outglue,$res);
 }
+
+/*
+ *
+* For exportation
+*/
+function exportReportsAsXML($reports,$filename)
+{
+	global $typesRapportToAvis;
+	global $fieldsTypes;
+	global $mandatory_export_fields;
+
+	$result = "";
+
+	$doc = new DOMDocument("1.0","UTF-8");
+	$root = $doc->createElement("rapports");
+
+	$first = true;
+	$activefields = array();
+
+	foreach($reports as $report)
+	{
+		$node = $doc->createElement("evaluation");
+
+		if($first)
+		{
+			$activefields = array_unique(array_merge($mandatory_export_fields, get_editable_fields($report)));
+			$first = false;
+		}
+
+		$type = $report->type;
+		$avis = $typesRapportToAvis[$type];
+		foreach($activefields as $field)
+		{
+			if($fieldsTypes[$field] == "avis" && $report->$field =="")
+			{
+				$report->$field = "Avis possibles (supprimer avis inutiles)\n";
+				foreach($avis as $key => $value)
+					$report->$field .= $key."\n";
+			}
+		}
+
+		thing_to_xml_node($report,$node, $doc, "", $activefields);
+		$root->appendChild($node);
+	}
+
+	$doc->appendChild($root);
+
+	$doc->formatOutput = true;
+	$ret = $doc->save($filename);
+	if($ret == false)
+		throw string("Failed to save reports as xml");
+	else
+		return $ret;
+}
+
+/*
+ *
+* For xsl processing (should converge with upper)
+*/
 
 function getReportsAsXML($filter_values, $sort_criteria = array(), $keep_br = true)
 {
@@ -37,10 +97,6 @@ function getReportsAsXML($filter_values, $sort_criteria = array(), $keep_br = tr
 }
 
 
-function normalizeField($data)
-{
-	return htmlspecialchars_decode(htmlentities(stripInvalidXml($data)), ENT_NOQUOTES);
-}
 function appendLeaf($fieldname, $fieldvalue, DOMDocument $doc, DOMElement $node)
 {
 	$leaf = $doc->createElement($fieldname);
@@ -49,42 +105,6 @@ function appendLeaf($fieldname, $fieldvalue, DOMDocument $doc, DOMElement $node)
 	$node->appendChild($leaf);
 }
 
-/**
- * Removes invalid XML
- *
- * @access public
- * @param string $value
- * @return string
- */
-function stripInvalidXml($value)
-{
-	$ret = "";
-	$current;
-	if (empty($value))
-	{
-		return $ret;
-	}
-
-	$length = strlen($value);
-	for ($i=0; $i < $length; $i++)
-	{
-		$current = ord($value{$i});
-		if (($current == 0x9) ||
-				($current == 0xA) ||
-				($current == 0xD) ||
-				(($current >= 0x20) && ($current <= 0xD7FF)) ||
-				(($current >= 0xE000) && ($current <= 0xFFFD)) ||
-				(($current >= 0x10000) && ($current <= 0x10FFFF)))
-		{
-			$ret .= chr($current);
-		}
-		else
-		{
-			$ret .= " ";
-		}
-	}
-	return $ret;
-}
 function EnteteDroit($row, $units)
 {
 	global $enTetesDroit;
@@ -284,6 +304,12 @@ function createXMLReportElem($row, $sessions, $units, DOMDocument $doc, $keep_br
 	appendLeaf("signataire", get_config("president"), $doc, $rapportElem);
 	appendLeaf("signataire_titre", get_config("president_titre"), $doc, $rapportElem);
 
+	if(isSecretaire())
+		appendLeaf("signature_source", "img/signature.jpg", $doc, $rapportElem);
+	else
+		appendLeaf("signature_source", "img/signatureX.jpg", $doc, $rapportElem);
+
+
 	$row->session = $sessions[$row->id_session];
 
 	$rapportElem->setAttribute('filename', filename_from_doc($row));
@@ -303,10 +329,7 @@ function rowToXMLDoc($row, $sessions = null, $units = null)
 function XMLToHTML(DOMDocument $doc)
 {
 	$xsl = new DOMDocument("1.0","UTF-8");
-	if(isSecretaire())
-		$xsl->load('xslt/html2.xsl');
-	else
-		$xsl->load('xslt/html.xsl');
+	$xsl->load('xslt/html2.xsl');
 
 	$proc = new XSLTProcessor();
 	$proc->importStyleSheet($xsl);

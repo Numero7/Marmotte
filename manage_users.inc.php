@@ -8,6 +8,10 @@ function init_session()
 {
 	global $current_session;
 	set_current_session_id(get_config("current_session"));
+	
+	ini_set("session.gc_maxlifetime", 3600);
+	//echo "Timeout: ". (ini_get("session.gc_maxlifetime")/60)." minutes<br/>";
+	
 }
 
 function createhtpasswd()

@@ -1,44 +1,7 @@
 <?php 
 
-function xml_node_to_array($node)
-{
-	if($node->hasChildNodes())
-	{
-		$result = array();
-		foreach($node->childNodes as $subnode)
-		{
-			if($subnode->localName != "")
-				$result[trim($subnode->localName,"_")] = xml_node_to_array($subnode);
-		}
-		if(count($result)>0)
-			return $result;
-	}
-	return $node->nodeValue;
-}
+require_once('xml_tools.inc.php');
 
-function thing_to_xml_node($thing,$node, $doc)
-{
-	if(is_array($thing))
-	{
-		foreach($thing as $field => $value)
-		{
-			if($field != "")
-			{
-				$subnode = $doc->createElement("_".$field);
-				thing_to_xml_node($value,$subnode,$doc);
-				$node->appendChild($subnode);
-			}
-			else
-			{
-				$node->nodeValue = $value;
-			}
-		}
-	}
-	else
-	{
-		$node->nodeValue = $thing;
-	}
-}
 
 function load_config($force = false)
 {
@@ -52,7 +15,7 @@ function load_config($force = false)
 	}
 
 	$root = $doc->getElementsByTagName("config")->item(0);
-	$config = xml_node_to_array($root);
+	$config = xml_node_to_array($root,"_");
 	$_SESSION['config'] = $config;
 	return $config;
 }
@@ -68,7 +31,7 @@ function save_config()
 	if(!isset($_SESSION['config']))
 		throw new Exception("No config to save");
 
-	thing_to_xml_node($_SESSION['config'],$root, $doc);
+	thing_to_xml_node($_SESSION['config'],$root, $doc,"_");
 
 	$doc->formatOutput = true;
 	
@@ -81,8 +44,8 @@ function get_config($name)
 	if(isset($_SESSION['config']))
 	{
 		$config = $_SESSION['config'];
-		if(isset($config[$name]))
-			return $config[$name];
+		if(isset($config[trim($name,"_")]))
+			return $config[trim($name,"_")];
 		else
 			throw new Exception("No config item with name '".$name."'");
 	}

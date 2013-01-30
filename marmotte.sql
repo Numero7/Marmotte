@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Serveur: localhost
--- Généré le : Sam 26 Janvier 2013 à 13:47
+-- Généré le : Mar 29 Janvier 2013 à 12:10
 -- Version du serveur: 5.1.63
 -- Version de PHP: 5.3.3-7+squeeze14
 
@@ -25,7 +25,6 @@ SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 -- Structure de la table `candidats`
 --
 
-DROP TABLE IF EXISTS `candidats`;
 CREATE TABLE IF NOT EXISTS `candidats` (
   `cle` text CHARACTER SET utf8 NOT NULL,
   `anneecandidature` int(11) NOT NULL,
@@ -46,7 +45,7 @@ CREATE TABLE IF NOT EXISTS `candidats` (
   `parcours` text CHARACTER SET utf8 NOT NULL,
   `productionResume` text CHARACTER SET utf8 NOT NULL,
   `projetrecherche` text CHARACTER SET utf8 NOT NULL,
-  `concours` text CHARACTER SET utf8 NOT NULL,
+  `concourspresentes` text CHARACTER SET utf8 NOT NULL,
   `fichiers` text CHARACTER SET utf8 NOT NULL,
   `date_recrutement` text CHARACTER SET utf8 NOT NULL,
   `avissousjury` text CHARACTER SET utf8 NOT NULL
@@ -58,7 +57,6 @@ CREATE TABLE IF NOT EXISTS `candidats` (
 -- Structure de la table `chercheurs`
 --
 
-DROP TABLE IF EXISTS `chercheurs`;
 CREATE TABLE IF NOT EXISTS `chercheurs` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `nom` varchar(40) CHARACTER SET utf8 NOT NULL,
@@ -75,7 +73,6 @@ CREATE TABLE IF NOT EXISTS `chercheurs` (
 -- Structure de la table `evaluations`
 --
 
-DROP TABLE IF EXISTS `evaluations`;
 CREATE TABLE IF NOT EXISTS `evaluations` (
   `statut` enum('vierge','prerapport','rapport','publie','supprime') CHARACTER SET utf8 NOT NULL,
   `id_session` int(11) NOT NULL,
@@ -105,19 +102,12 @@ CREATE TABLE IF NOT EXISTS `evaluations` (
   `anciennete_grade` text CHARACTER SET utf8 NOT NULL,
   `date_recrutement` text CHARACTER SET utf8 NOT NULL,
   `production` text CHARACTER SET utf8 NOT NULL,
-  `production_notes` text CHARACTER SET utf8 NOT NULL,
   `transfert` text CHARACTER SET utf8 NOT NULL,
-  `transfert_notes` text CHARACTER SET utf8 NOT NULL,
   `encadrement` text CHARACTER SET utf8 NOT NULL,
-  `encadrement_notes` text CHARACTER SET utf8 NOT NULL,
   `responsabilites` text CHARACTER SET utf8 NOT NULL,
-  `responsabilites_notes` text CHARACTER SET utf8 NOT NULL,
   `mobilite` text CHARACTER SET utf8 NOT NULL,
-  `mobilite_notes` text CHARACTER SET utf8 NOT NULL,
   `animation` text CHARACTER SET utf8 NOT NULL,
-  `animation_notes` text CHARACTER SET utf8 NOT NULL,
   `rayonnement` text CHARACTER SET utf8 NOT NULL,
-  `rayonnement_notes` text CHARACTER SET utf8 NOT NULL,
   `rapport` text CHARACTER SET utf8 NOT NULL,
   `avis` text CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL,
   `auteur` varchar(40) CHARACTER SET utf8 NOT NULL,
@@ -132,8 +122,9 @@ CREATE TABLE IF NOT EXISTS `evaluations` (
   `rayonnement2` text CHARACTER SET utf8 NOT NULL,
   `avis1` text CHARACTER SET utf8 NOT NULL,
   `avis2` text CHARACTER SET utf8 NOT NULL,
+  `cleindividu` text CHARACTER SET utf8 NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=10634 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=11250 ;
 
 -- --------------------------------------------------------
 
@@ -141,7 +132,6 @@ CREATE TABLE IF NOT EXISTS `evaluations` (
 -- Structure de la table `sessions`
 --
 
-DROP TABLE IF EXISTS `sessions`;
 CREATE TABLE IF NOT EXISTS `sessions` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `nom` varchar(60) CHARACTER SET utf8 NOT NULL,
@@ -155,7 +145,6 @@ CREATE TABLE IF NOT EXISTS `sessions` (
 -- Structure de la table `units`
 --
 
-DROP TABLE IF EXISTS `units`;
 CREATE TABLE IF NOT EXISTS `units` (
   `nickname` text CHARACTER SET utf8 NOT NULL,
   `code` text CHARACTER SET utf8 NOT NULL,
@@ -169,7 +158,6 @@ CREATE TABLE IF NOT EXISTS `units` (
 -- Structure de la table `users`
 --
 
-DROP TABLE IF EXISTS `users`;
 CREATE TABLE IF NOT EXISTS `users` (
   `login` varchar(40) CHARACTER SET utf8 NOT NULL,
   `passHash` varchar(40) CHARACTER SET utf8 NOT NULL,

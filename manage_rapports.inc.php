@@ -223,9 +223,12 @@ function checkReportDeletable($rapport)
 
 function isReportCreatable()
 {
+	return isSecretaire();
+	/*
 	if(!isSecretaire())
-		throw new Exception("Seuls les présidents et secrétaires ont droits de crétaion de rapports");
+		throw new Exception("Vous n'avez pas les permissions nécessaires pour créer un rapport<br/>");
 	else return true;
+	*/
 }
 
 //to migrate from previous system
@@ -310,17 +313,26 @@ function addReport($report)
 
 function addReportFromRequest($id_origine, $request)
 {
+	global $typesRapportsConcours;
+	
 	if($id_origine != 0)
 	{
 		$report = getReport($id_origine);
 		if(!checkReportIsEditable($report))
 			throw new Exception("Le compte ".$login." n'a pas la permission de mettre à jour le rapport, veuillez contacter le bureau");
 	}
+	else if(!isReportCreatable())
+		throw new Exception("Le compte ".$login." n'a pas la permission de créer un rapport, veuillez contacter le bureau");
+		
+		
 
 	$report = createReportFromRequest($id_origine, $request);
 
 	$id_nouveau = addReportToDatabase($report,false);
 
+	if(in_array($report->type, $typesRapportsConcours))
+		$candidate = updateCandidateFromRequest($request);
+	
 	return getReport($id_nouveau);
 }
 
@@ -398,7 +410,7 @@ function normalizeReport($report)
 function addReportToDatabase($report,$normalize = true)
 {
 	global $fieldsAll;
-	global $empty_report;
+	global $fieldsPermissions;
 
 
 	if($normalize)
@@ -411,17 +423,18 @@ function addReportToDatabase($report,$normalize = true)
 	if(isset($report->unite))
 		createUnitIfNeeded($report->unite);
 
-	$specialRule = array("date","id","auteur");
+	$specialRule = array("date","id","id_origine","auteur");
 
 
 	mysql_query("LOCK TABLES evaluations WRITE;");
 
+	$level = getUserPermissionLevel();
 	try
 	{
 
 		$id_origine = isset($report->id_origine) ? $report->id_origine : 0;
 
-		$current_report = (object) $empty_report;
+		$current_report = array();
 		try
 		{
 			$previous_report = getReport($id_origine, false);
@@ -432,6 +445,9 @@ function addReportToDatabase($report,$normalize = true)
 			{
 				if (!in_array($field,$specialRule))
 				{
+					if(isset($report->$field) && isset($previous_report->$field) &&($previous_report->$field != $report->$field) && isset($fieldsPermissions[$field]) &&  $fieldsPermissions[$field] > $level)
+						throw new Exception("Vous n'avez pas les autorisations nécessaires (".$level."<".$fieldsPermissions[$field].") pour modifier le champ ".$field);
+						
 					/*
 					 if( isset($current_report->$field) && isset($previous_report->$field) && $previous_report->$field != $current_report->$field)
 					 {
@@ -468,29 +484,31 @@ function addReportToDatabase($report,$normalize = true)
 							//echo "Updating field ".$field." was '".$previous_report->$field."' now '".$report->$field."'<br/>";
 							$current_report->$field = $report->$field;
 						}
+						
 					}
 				}
 			}
 		}
 		catch(Exception $e)
 		{
+			if(!isReportCreatable())
+				throw new Exception("Failed to add report to database<br/>".$e->getMessage());
 			//may happen if $id_origine is 0 for example (when reports are creating)
-			//in that case we create from the empty report
-			foreach($current_report as $field => $value)
-				if(isset($report->$field))
-				$current_report->$field = $report->$field;
+			$current_report = $report;
 		}
 
 
 		$sqlfields = "";
 		$sqlvalues = "";
 
+		$specialRule = array("date","id");
+		
 		$current_report->auteur = getLogin();
 
 		$first = true;
 		foreach($current_report as  $field => $value)
 		{
-			if (!in_array($field,$specialRule))
+			if (key_exists($field, $fieldsAll) && !in_array($field,$specialRule))
 			{
 				$sqlfields.= ($first ? "" : ",").$field;
 				$sqlvalues.=($first ? "" : ",")."\"".mysql_real_escape_string($value)."\"";
@@ -503,7 +521,7 @@ function addReportToDatabase($report,$normalize = true)
 
 		$new_id = mysql_insert_id();
 
-		if($id_origine != 0)
+		if($id_origine != 0 && isset($current_report->id))
 		{
 			$current_id = $current_report->id;
 			$sql = "UPDATE ".evaluations_db." SET id_origine=".intval($new_id)." WHERE id_origine=".intval($id_origine)." OR id=".intval($new_id)." OR id=".intval($current_id)." OR id_origine=".intval($current_id).";";

@@ -42,7 +42,7 @@ function updateCandidateFromRequest($request, $oldannee="")
 		if (isset($request["field".$field]))
 		$data->$field = nl2br(trim($request["field".$field]),true);
 
-	$annee = $data->anneecandidature;
+	$annee = annee_from_data($data);
 	$nom = $data->nom;
 	$prenom = $data->prenom;
 	
@@ -61,9 +61,8 @@ function updateCandidateFromRequest($request, $oldannee="")
 			$first = false;
 	}
 	$sql = "UPDATE ".candidates_db." SET ".$sqlcore." WHERE cle=\"".$cle."\";";
-
-	sql_request($sql);
 	
+	sql_request($sql);	
 		
 	$candidate = get_or_create_candidate($data );
 	
@@ -94,20 +93,24 @@ function getAllCandidates()
 	return $rows;
 }
 
+function annee_from_data($data, $pref = "")
+{
+	$annee = session_year(current_session_id());
+	
+	$champ = $pref."anneecandidature";
+	if(isset($data->$champ))
+		$annee = $data->$champ;
+	else
+		$data->$champ = $annee;
+
+	return $annee;
+}
+
 function add_candidate_to_database($data)
 {
 	global $fieldsCandidatAll;
-
-	$annee = "0";
-	if(isset($data->id_session))
-		$annee = session_year($data->id_session);
-
-	if(isset($data->anneecandidature))
-		$annee = $data->anneecandidature;
-	else
-		$data->anneecandidature = $annee;
 			
-	
+	$annee = annee_from_data($data);
 	$key = generateKey($annee, $data->nom, $data->prenom);
 	$data->cle = $key;
 	
@@ -178,7 +181,7 @@ function get_or_create_candidate($data)
 	catch(Exception $exc)
 	{
 		mysql_query("UNLOCK TABLES;");
-		throw new Exception("Failed to add candidate from report:<br/>".$exc);
+		throw new Exception("Failed to add candidate from report:<br/>".$exc->getMessage());
 	}
 }
 
@@ -202,7 +205,7 @@ function get_candidate_from_key($key)
 	catch(Exception $exc)
 	{
 		mysql_query("UNLOCK TABLES;");
-		throw new Exception("Failed to add candidate from report:<br/>".$exc);
+		throw new Exception("Failed to add candidate from report:<br/>".$exc->getMessage());
 	}
 }
 

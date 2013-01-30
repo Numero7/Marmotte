@@ -79,23 +79,25 @@ Les avis émis par les sections ne préjugent pas de la décision qui sera prise
 <tr>
 	<td><xsl:text> </xsl:text></td>
 	<td>
-		Le <xsl:value-of select="date"/>,
+		Le <xsl:value-of disable-output-escaping="yes" select="date"/>,
 	</td>
 	<td rowspan="3">
-		<img height="150" width="150" src="img/signature.jpg"></img>
+		<img height="150" width="150">
+		<xsl:attribute name="src"><xsl:value-of select="signature_source"/></xsl:attribute>
+		</img>
 	</td>
 	
 </tr>
 <tr>
 	<td><xsl:text> </xsl:text></td>
 	<td>
-		<xsl:value-of select="signataire"/>,
+		<xsl:value-of disable-output-escaping="yes" select="signataire"/>,
 	</td>
 </tr>
 <tr>
 	<td><xsl:text> </xsl:text></td>
 	<td>
-		<xsl:value-of select="signataire_titre"/>.
+		<xsl:value-of disable-output-escaping="yes" select="signataire_titre"/>.
 	</td>
 </tr>
 </table>

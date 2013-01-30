@@ -43,7 +43,22 @@ function getSortingValue($filter_name)
 
 	$last = substr($answer,strlen($answer) -1,1);
 	if( $last != "+" && $last != "-")
-		$answer .= "+";
+	{
+		if(isset($_SESSION["tri_".$filter_name]))
+		{
+			$current = $_SESSION["tri_".$filter_name];
+			if(strlen($current) > 0 && substr($current,strlen($current)-1,1) == "+")
+				$answer .= "-";
+			else if(strlen($current) > 0 && substr($current,strlen($current)-1,1) == "-")
+				$answer .= "+";
+			else
+				$answer .= "+";
+		}
+		else
+		{
+			$answer .= "+";
+		}
+	}
 
 	$_SESSION["tri_".$filter_name] = $answer;
 
@@ -269,7 +284,7 @@ function displayIndividualReport($row)
 		<?php echo $fieldsAll[$fieldID];?>
 	</dt>
 	<dd>
-		<?php echo remove_br($row->$fieldID);?>
+		<?php echo $row->$fieldID;?>
 	</dd>
 	<?php
 		}
@@ -376,7 +391,7 @@ function displayConcoursReport($row)
 
 		foreach($fields as  $fieldID)
 		{
-			if (!isset($specialRule[$fieldID]))
+			if (!isset($specialRule[$fieldID]) && !in_array($fieldID,$fieldsc))
 			{
 				?>
 		<tr>
@@ -414,7 +429,7 @@ function displayReport($id_rapport, $displaymenu = true)
 		<input 
 		
 		
-		           type="submit"
+		             type="submit"
 		name="retourliste" value="Retour à la liste"> <input type="submit"
 		name="detailsnext" value=">>">
 </form>
@@ -533,14 +548,45 @@ function highlightDiff(&$prevVals,$key,$val)
 	return $val;
 }
 
-function displayExport($filter_values)
+function displayImport()
+{
+	global $typeImports;
+
+	?>
+<form enctype="multipart/form-data" action="index.php" method="post">
+	<input type="hidden" name="type" value="evaluations"></input> <input
+		type="hidden" name="action" value="upload" /> <input type="hidden"
+		name="MAX_FILE_SIZE" value="10000000" />
+	<ul>
+		<li>
+		<input name="uploadedfile" type="file" size="5" />
+		<br />
+		</li>
+		<?php if(isSecretaire()){?>
+		<li><a href="">Type</a> <select name="subtype">
+				<?php
+				global $typesRapports;
+				echo "<option value=\"\">Spécifié dans le doc</option>\n";
+				foreach ($typesRapports as $ty => $value)
+					echo "<option value=\"$ty\">".$value."</option>\n";
+				?>
+		</select> <?php }?>
+		
+		<li>
+		
+		<li><input type="submit" value="Importer" /></li>
+	</ul>
+</form>
+
+<?php 
+
+}
+
+function displayExport()
 {
 	global $typeExports;
-	global $statutsRapports;
-	global $filters;
 
-	if (getUserPermissionLevel()>= NIVEAU_PERMISSION_PRESIDENT_SECRETAIRE)
-		echo '<table><tr><td style="width: 10em;"><h2>Export</h2> </td><td>';
+	echo "<ul>";
 
 	foreach($typeExports as $idexp => $exp)
 	{
@@ -548,28 +594,12 @@ function displayExport($filter_values)
 		$level = $exp["permissionlevel"];
 		if (getUserPermissionLevel()>=$level)
 		{
-			echo "<a href=\"export.php?action=export&amp;type=$idexp\">";
-			echo "<img class=\"icon\" width=\"40\" height=\"40\" src=\"img/$idexp-icon-50px.png\" alt=\"$expname\"/></a>";
+			echo "<li><a href=\"export.php?action=export&amp;type=$idexp\">";
+			//echo "<img class=\"icon\" width=\"40\" height=\"40\" src=\"img/$idexp-icon-50px.png\" alt=\"$expname\"/></a>";
+			echo "$expname</a></li>";
 		}
 	}
-	if (getUserPermissionLevel()>= NIVEAU_PERMISSION_PRESIDENT_SECRETAIRE)
-	{
-		echo '
-				</td><td align="center">
-				<form method="post"  action="index.php">
-				<select name="new_statut">';
-		foreach ($statutsRapports as $val => $nom)
-		{
-			$sel = "";
-			echo "<option value=\"".$val."\" $sel>".$nom."</option>\n";
-		}
-		echo '
-			</select>
-			<input type="hidden" name="action" value="change_statut"/>
-			<input type="submit" value="Changer statut"/>
-			</form>';
-		echo '</td></tr></table>';
-	}
+	echo "</ul>";
 }
 
 
@@ -832,8 +862,6 @@ function displayRows($rows, $fields, $filters, $filter_values, $sort_fields, $so
 				</table>
 
 			</td>
-			<td><?php displayExport(getFilterValues());?>
-			</td>
 		</tr>
 		<tr>
 			<td><hr /> <input type="hidden" name="action" value="view" /> <input
@@ -1047,6 +1075,8 @@ function get_editable_fields($row)
 	global $fieldsRapportsCandidat1;
 	global $fieldsRapportsCandidat2;
 
+	global $fieldsCandidat;
+	
 	$eval_type = $row->type;
 
 	if($eval_type == 'Ecole')
@@ -1061,12 +1091,22 @@ function get_editable_fields($row)
 		$f1 = $fieldsRapportsCandidat1;
 		$f2 = $fieldsRapportsCandidat2;
 
-		if(getLogin() == $row->rapporteur)
-			return array_merge($f0,$f1);
+		if(isSecretaire() || $row->statut == "rapport" || $row->statut == "publie")
+		{
+			return array_unique(array_merge($fieldsCandidat, $f0, $f1, $f2));
+		}
+		else if(getLogin() == $row->rapporteur)
+		{
+			return array_unique(array_merge($fieldsCandidat, $f1));
+		}
 		else if(getLogin() == $row->rapporteur2)
-			return array_merge($f0,$f2);
+		{
+			return array_unique(array_merge($fieldsCandidat, $f2));
+		}
 		else
-			return array_merge($f0, $f1, $f2);
+		{
+			return array_unique(array_merge($fieldsCandidat, $f0));
+		}
 	}
 	else if($eval_type == 'Equivalence')
 		return $fieldsEquivalence;
@@ -1121,8 +1161,9 @@ function displaySessionField($row)
 	if(session_to_choose($row))
 	{
 		?>
-<input type="hidden"
-	name="fieldid_session" value="<?php echo $row->id_session;?>" />
+<input
+	type="hidden" name="fieldid_session"
+	value="<?php echo $row->id_session;?>" />
 <?php 
 	}
 }
@@ -1252,7 +1293,7 @@ function display_topic($row, $fieldID)
 		foreach($topics as $id =>$topic)
 		{
 			$sel = (($row->$fieldID) == ($id)) ? "selected=\"selected\"" : "";
-			echo  "\t\t\t\t\t<option value=\"".($id)."\"".$sel.">".$id.". ".$topic."</option>\n";
+			echo  "\t\t\t\t\t<option value=\"".($id)."\"".$sel.">".$topic."</option>\n";
 		}
 		?>
 </select>
@@ -1559,7 +1600,6 @@ function displayEditableReport($row, $canedit)
 	{
 		$eval_type = $row->type;
 		$is_unite = array_key_exists($eval_type,$typesRapportsUnites);
-		$editable_fields = get_editable_fields($row);
 		$statut = $row->statut;
 
 		$eval_name = $eval_type;
@@ -1597,7 +1637,7 @@ function displayEditableReport($row, $canedit)
 			$hidden["fieldrapporteur"] = $row->rapporteur;
 			$hidden["fieldrapporteur2"] = $row->rapporteur2;
 		}
-		
+
 
 
 
@@ -1614,23 +1654,25 @@ function displayEditableReport($row, $canedit)
 			global $fieldsRapportsCandidat2;
 
 
-			echo "<h1>".$eval_name. ": ". $row->nom." ".$row->prenom.(isset($row->concours) ? (" / concours ".$row->concours) : ""). " (#".(isset($row->id) ? $row->id : "New").")</h1>";
+			echo "<h1>".$eval_name. ": ". $row->nom." ".$row->prenom.(isset($row->concours) ? (" / concours ".$row->concours) : ""). " (rapport #".(isset($row->id) ? $row->id : " New").")</h1>";
 
 
 
 			$submits = array();
-			
-			
+				
+				
 			foreach($other_reports as $report)
 				if($report->concours != $row->concours)
 				$submits["importconcours".$report->concours] = "Importer données concours ".$report->concours;
 
 			$hidden['fieldconcours'] = $row->concours;
-				
+
 			displayEditionFrameStart("",$hidden,$submits);
 
 			echo'<table><tr><td VALIGN="top">';
-			displayEditableObject("Rapport section", $row,$fieldsRapportsCandidat0);
+			
+			if(isSecretaire() || $row->statut == "rapport" || $row->statut == "publie")
+				displayEditableObject("Rapport section", $row,$fieldsRapportsCandidat0);
 
 
 			if(getLogin() == $row->rapporteur || (isSecretaire() && $row->rapporteur != ""))
@@ -1774,7 +1816,7 @@ function sql_request($sql)
 
 function exception_handler($exception)
 {
-	echo "<h1>".$exception."</h1>";
+	echo "<h1>".$exception->getMessage()."</h1>";
 	//message_handler("Marmotte webpage :exception ",$exception->getMessage());
 }
 
@@ -1799,4 +1841,5 @@ if (isset($_SERVER["SERVER_PORT"]) && $_SERVER["SERVER_PORT"] != "80") {
 	}
 	return $pageURL;
 }
+
 ?>

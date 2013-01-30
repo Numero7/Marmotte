@@ -35,6 +35,7 @@ function getScrollXY() {
  -->
 	<div class="content">
 
+	
 		<?php 
 		require_once('manage_sessions.inc.php');
 		require_once('manage_unites.inc.php');
@@ -42,6 +43,7 @@ function getScrollXY() {
 		require_once('manage_candidates.inc.php');
 		require_once('db.inc.php');
 
+				
 		$id_rapport = isset($_REQUEST["id"]) ? $_REQUEST["id"] : -1;
 		$id_origine = isset($_REQUEST["id_origine"]) ? $_REQUEST["id_origine"] : 0;
 		$id_toupdate = isset($_REQUEST["id_toupdate"]) ? $_REQUEST["id_toupdate"] : 0;
@@ -180,9 +182,6 @@ function getScrollXY() {
 						if(!$done)
 						{
 							$report = addReportFromRequest($id_origine,$_REQUEST);
-
-							if(in_array($report->type, $typesRapportsConcours))
-								$candidate = updateCandidateFromRequest($_REQUEST);
 
 							if(isset($_REQUEST["submitandeditnext"]))
 							{
