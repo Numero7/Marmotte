@@ -86,33 +86,17 @@ global $typesRapportsIndividuels;
 
 					<table>
 						<tr>
-							<td valign=top>Raccourcis
-								<ul>
-
-									<li><a href="?action=view">Sélection en cours</a>
-									</li>
-
-
-									<?php 	echo "<li><a href=\"?action=view&amp;reset_filter=&amp;filter_login_rapp=".getLogin()."&amp;filter_id_session=".current_session_id()."\">Mes rapports</a></li>";
-									if(is_current_session_concours())
-									{
-										foreach($typesRapportsConcours as $typeEval => $value)
-										{
-											echo "<li><a href=\"?action=view&amp;reset_filter=&amp;filter_login_rapp=".getLogin()."&amp;filter_id_session=".current_session_id()."&amp;filter_type=".urlencode($value)."\">Mes ".$value."s</a>";
-											echo "</li>";
-										}
-									}
-									?>
-								</ul>
-							</td>
 							<td valign=top>Rappports
 								<ul>
 
-									<li><a href="?action=view&amp;reset_filter=">Tous</a>
+									<li><a href="?action=view&amp;reset_filter=">Tous</a></li>
+									<li><a href="?action=view">Sélection en cours</a>
 									</li>
+
 									<?php
 									if(is_current_session_concours())
 									{
+
 										foreach($typesRapportsConcours as $typeEval => $value)
 										{
 
@@ -121,7 +105,6 @@ global $typesRapportsIndividuels;
 												echo " <a href=\"?action=new&amp;type=".$typeEval."\">+</a>";
 											echo "</li>";
 										}
-											
 									}
 									else
 									{
@@ -155,10 +138,29 @@ global $typesRapportsIndividuels;
 									</li>
 									<?php
 									}
-									?>
-								</ul> <?php 	
+									
+								 } ?>
+								</ul>
+							</td>
+							<td valign=top>
+								<ul>
+
+									<?php
+									echo "<li><a href=\"?action=view&amp;reset_filter=&amp;filter_login_rapp=".getLogin()."&amp;filter_id_session=".current_session_id()."\">Mes rapports</a></li>";
+									echo "<li><a href=\"?action=view&amp;reset_filter=&amp;filter_avancement=todo&amp;filter_login_rapp=".getLogin()."&amp;filter_id_session=".current_session_id()."\">Mes rapports à faire</a></li>";
+									echo "<li><a href=\"?action=view&amp;reset_filter=&amp;filter_avancement=done&amp;filter_login_rapp=".getLogin()."&amp;filter_id_session=".current_session_id()."\">Mes rapports faits</a></li>";
+
+									if(is_current_session_concours())
+									{
+										foreach($typesRapportsConcours as $typeEval => $value)
+										{
+											echo "<li><a href=\"?action=view&amp;reset_filter=&amp;filter_login_rapp=".getLogin()."&amp;filter_id_session=".current_session_id()."&amp;filter_type=".urlencode($value)."\">Mes ".$value."s</a>";
+											echo "</li>";
+										}
+											
 									}
 									?>
+
 								</ul>
 							</td>
 							<td valign=top>Sessions
@@ -188,36 +190,35 @@ global $typesRapportsIndividuels;
 							<td valign=top>Export <?php displayExport();?>
 							</td>
 
-							<td valign=top>Import
-							<?php displayImport();?>
-</td>
+							<td valign=top>Import <?php displayImport();?>
+							</td>
 							<?php 
-					if (getUserPermissionLevel()>= NIVEAU_PERMISSION_PRESIDENT_SECRETAIRE)
-	{
-		global $statutsRapports;
-		
-		echo '<td valign=top>Statut
-		
-				<form method="post"  action="index.php">
-		<table><tr><td>
-				<select name="new_statut">';
-		foreach ($statutsRapports as $val => $nom)
-		{
-			$sel = "";
-			echo "<option value=\"".$val."\" $sel>".$nom."</option>\n";
-		}
-		echo '
-			</select>
-				</td></tr>
-				<tr><td>
-			<input type="hidden" name="action" value="change_statut"/>
-			<input type="submit" value="Changer statut"/>
-			</form></td></tr></table>';
-	}
-	?>
-	</td>
+							if (getUserPermissionLevel()>= NIVEAU_PERMISSION_PRESIDENT_SECRETAIRE)
+							{
+								global $statutsRapports;
 
-	</tr>
+								echo '<td valign=top>Statut
+
+		<form method="post"  action="index.php">
+		<table><tr><td>
+		<select name="new_statut">';
+								foreach ($statutsRapports as $val => $nom)
+								{
+									$sel = "";
+									echo "<option value=\"".$val."\" $sel>".$nom."</option>\n";
+								}
+								echo '
+									</select>
+									</td></tr>
+									<tr><td>
+									<input type="hidden" name="action" value="change_statut"/>
+									<input type="submit" value="Changer statut"/>
+									</form></td></tr></table>';
+							}
+							?>
+							</td>
+
+						</tr>
 					</table>
 				</td>
 			</tr>

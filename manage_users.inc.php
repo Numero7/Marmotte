@@ -16,7 +16,7 @@ function init_session()
 
 function createhtpasswd()
 {
-	$list = listUsers();
+	$list = listUsers(true);
 	if($handle=fopen(".htpasswd","w"))
 	{
 		foreach($list as $user => $data)
@@ -59,8 +59,11 @@ function listRapporteurs()
 	return $result;
 }
 
-function listUsers()
+function listUsers($forcenew = false)
 {
+	if($forcenew)
+		unset($_SESSION['all_users']);
+		
 	if(!isset($_SESSION['all_users']))
 	{
 		$listusers = array();
@@ -216,8 +219,6 @@ function changePwd($login,$old,$new1,$new2, $envoiparemail)
 {
 	$currLogin = getLogin();
 	$users = listUsers();
-	if (isSecretaire())
-	{
 		if (authenticateBase($login,$old) or isSecretaire())
 		{
 			$oldPassHash = getPassHash($login);
@@ -229,6 +230,9 @@ function changePwd($login,$old,$new1,$new2, $envoiparemail)
 				
 				createhtpasswd();
 				
+				if(getLogin() == $login)
+					addCredentials($login,$new1);
+					
 				if($envoiparemail)
 				{
 					$body = "Votre mot de passe pour le site \r\n".curPageURL()."\r\n a été mis à jour:\r\n";
@@ -243,9 +247,6 @@ function changePwd($login,$old,$new1,$new2, $envoiparemail)
 		}
 		else
 			throw new Exception("La saisie du mot de passe courant est incorrecte, veuillez réessayer.");
-	}
-	else
-		throw new Exception("Seuls les administrateurs du site peuvent modifier les mots de passes d'autres utilisateurs, veuillez nous contacter (Yann ou Hugo) en cas de difficultés.");
 }
 
 

@@ -96,10 +96,29 @@ function getCurrentFiltersList()
 {
 	global $filtersConcours;
 	global $filtersReports;
+	global $fieldsTypes;
 	if(is_current_session_concours())
-		return $filtersConcours;
+	{
+		$filters = $filtersConcours;
+		$filters['login_rapp']['liste'] = simpleListUsers();
+		
+		$units = simpleUnitsList();
+		foreach($fieldsTypes as $field => $type)
+			if($type=='unit' and array_key_exists($field, $filters))
+			$filters[$field]['liste'] = $units;
+		
+		if(isSecretaire())
+		{
+			global $statutsRapports;
+			$filters['statut'] =  array('name'=>"Statut" , 'liste' => $statutsRapports, 'default_value' => "tous", 'default_name' => "");
+		}
+		return $filters;
+		
+	}
 	else
+	{
 		return $filtersReports;
+	}
 }
 
 function getCurrentSortingList()
@@ -620,15 +639,13 @@ function displaySummary($filters, $filter_values, $sorting_values)
 	$_SESSION['rows_id'] = $rows_id;
 
 
-	$filters['login_rapp']['liste'] = simpleListUsers();
-
-	$units = simpleUnitsList();
-	foreach($fieldsTypes as $field => $type)
-		if($type=='unit' and array_key_exists($field, $filters))
-		$filters[$field]['liste'] = $units;
-
 	$fields = is_current_session_concours() ? $fieldsSummaryConcours : $fieldsSummary;
 
+	if(isSecretaire())
+		$fields = array_unique(array_merge($fields,array("date","auteur","id")));
+	
+	
+	//Remove the type filter if useless
 	if($filter_values['type'] != $filters['type']['default_value'] )
 	{
 		$new_field = array();
@@ -1290,6 +1307,7 @@ function display_topic($row, $fieldID)
 	style="width: 100%;">
 		<?php
 		$units = unitsList();
+		echo  "\t\t\t\t\t<option value=\"\"></option>\n";
 		foreach($topics as $id =>$topic)
 		{
 			$sel = (($row->$fieldID) == ($id)) ? "selected=\"selected\"" : "";
@@ -1467,8 +1485,7 @@ function displayEditionFrameEnd($titlle)
 function displayEditableObject($titlle, $row, $fields,$use_special_tr = true)
 {
 	global $fieldsAll;
-
-
+	
 	if($titlle != "")
 		echo '<table><tr><td><span  style="font-weight:bold;" >'.$titlle.'</span></td></tr>';
 	else
@@ -1614,8 +1631,8 @@ function displayEditableReport($row, $canedit)
 			$candidate = get_or_create_candidate($row);
 			displayEditableCandidate($candidate,$row);
 
-			$other_reports = find_candidate_reports($candidate);
-
+			$other_reports = find_candidate_reports($candidate,$eval_type);
+//rrr();
 			echo "<br/><hr/><br/>";
 		}
 		else if(in_array($eval_type,$typesRapportsIndividuels))
@@ -1663,7 +1680,9 @@ function displayEditableReport($row, $canedit)
 				
 			foreach($other_reports as $report)
 				if($report->concours != $row->concours)
+			{
 				$submits["importconcours".$report->concours] = "Importer données concours ".$report->concours;
+			}
 
 			$hidden['fieldconcours'] = $row->concours;
 

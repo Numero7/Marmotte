@@ -44,11 +44,8 @@
 			"labo2",
 			"labo3",
 			"avis",
-			"date",
-			"auteur",
-			"id",
 	);
-
+	
 	$fieldsTriConcours = array(
 			"nom",
 			"prenom",
@@ -70,10 +67,9 @@
 	$statutsRapportsPluriel = array( 'vierge' => "rapports vierges", 'prerapport'=>'prérapports', 'rapport'=>"rapports", 'publie'=>"rapport publiés");
 	
 	
-	$fieldsAll = array(
+	$fieldsRapportAll = array(
 		"statut" => "Statut",
 		"concours" => "Concours",
-		"concourspresentes" => "Concours Présentés",
 			"ecole" => "Ecole",
 		"nom" => "Nom",
 		"prenom" => "Prénom",
@@ -86,6 +82,7 @@
 			"avis" => "Avis Section",
 			"avis1" => "Avis rapp. 1",
 			"avis2" => "Avis rapp. 2",
+			"avissousjury" => "Avis du sous-jury",
 			"rapport" => "Rapport Section",
 		"prerapport" => "Prérapport/remarques rapp 1.",
 		"prerapport2" => "Prérapport/remarques rapp 2.",
@@ -96,10 +93,6 @@
 			"theme1" => "Theme 1",
 			"theme2" => "Theme 2",
 			"theme3" => "Theme 3",
-			"theseAnnee" => "Année+mois thèse",
-			"theseLieu" => "Lieu thèse",
-			"HDRAnnee" => "Annee HDR",
-			"HDRLieu" => "Lieu HDR",
 			"anneesequivalence" => "Années d'équivalence",
 		"production" => "Production scientifique",
 		"avissousjury" => "Avis du sous-jury (resume succint pour rapport concours)",
@@ -121,11 +114,6 @@
 		"id" => "Id",
 			"id_session" => "Id session",
 			"id_origine" => "Id origine",
-			"anneecandidature" => "Année de candidature",
-			"production" => "Production scientifique",
-			"projetrecherche" => "Projet recherche (resume succint pour rapport concours)",
-			"parcours" => "Parcours scientifique (resume succint pour rapport concours)",
-			"fichiers" => "Fichiers associés",
 			"cleindividu" => "cleindividu"
 	);
 	
@@ -235,9 +223,10 @@
 			"concourspresentes" => "Concours",
 			"fichiers" => "Fichiers associés",
 			"cle" => "cle",
-			"avissousjury" => "Avis du sous-jury",
 	);
 
+	$fieldsAll = array_merge($fieldsRapportAll, $fieldsCandidatAll);
+	
 	$fieldsCandidatAvantAudition = array(
 			"nom",
 			"prenom",
@@ -259,7 +248,7 @@
 			"concourspresentes"
 	);
 
-	$fieldsCandidat = array_merge($fieldsCandidatAvantAudition, array("avissousjury"));
+	$fieldsCandidat = $fieldsCandidatAvantAudition;
 	
 	$fieldsEquivalence = array(
 			"rapporteur",
@@ -553,6 +542,7 @@
 			, "10"=>"<span  style=\"font-weight:bold;\" >10</span>", "11"=>"<span  style=\"font-weight:bold;\" >11</span>", "12"=>"<span  style=\"font-weight:bold;\" >12</span>", "13"=>"<span  style=\"font-weight:bold;\" >13</span>", "14"=>"<span  style=\"font-weight:bold;\" >14</span>", "15"=>"<span  style=\"font-weight:bold;\" >15</span>", "16"=>"<span  style=\"font-weight:bold;\" >16</span>",
 			 "17"=>"<span  style=\"font-weight:bold;\" >17</span>", "18"=>"<span  style=\"font-weight:bold;\" >18</span>", "19"=>"<span  style=\"font-weight:bold;\" >19</span>",
 			 "20"=>"<span  style=\"font-weight:bold;\" >20</span>", "21"=>"<span  style=\"font-weight:bold;\" >21</span>", "nonconcur"=>"Non Admis à Concourir");
+
 	
 	$avis_candidature_necessitant_pas_rapport_sousjury = array("", "adiscuter", "nonauditionne");
 	
@@ -883,9 +873,9 @@
 			'concours' => array('name'=>"Concours" , 'liste' => $concours_ouverts, 'default_value' => "tous", 'default_name' => ""),
 			'login_rapp' => array('name'=>"Rapporteur" , 'sql_col'=>'rapporteur','default_value' =>"tous", 'default_name' => ""),
 			'login_rapp2' => array('name'=>"Rapporteur2" , 'sql_col'=>'rapporteur2','default_value' =>"tous", 'default_name' => ""),
-			'statut' => array('name'=>"Statut" , 'liste' => $statutsRapports, 'default_value' => "tous", 'default_name' => ""),
 			'id_session' => array('name'=>"Session", 'default_value' =>-1, 'default_name' => "Toutes les sessions"),
 			'type' => array('name'=>"Type d'évaluation" , 'liste' => $typesRapportsConcours,'default_value' => "tous", 'default_name' => ""),
+			'avancement' => array('name'=>"Avancement" , 'default_value' => "", 'default_name' => ""),
 			'id_origine' => array('default_value' =>-1),
 			'id' => array('default_value' =>-1),
 	);

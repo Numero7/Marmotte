@@ -46,7 +46,7 @@ if($dbh!=0)
 						throw new Exception("No type specified for exportation");
 					$type = $_REQUEST["type"];
 
-						
+
 					if ( array_key_exists($type, $typeExports))
 					{
 						$id_edit = isset($_REQUEST["id_edit"]) ? $_REQUEST["id_edit"] : -1;
@@ -59,6 +59,10 @@ if($dbh!=0)
 						{
 							case "pdf":
 							case "zip":
+
+								if(!isSecretaire())
+									throw new Exception("Zip and pdf exports are only for secretaray and president");
+
 								$xml_reports = getReportsAsXML(getFilterValues(), getSortingValues());
 								$filename = "";
 									
@@ -76,36 +80,72 @@ if($dbh!=0)
 							case "xml":
 									
 								$size = 0;
+
+
+								$filtervalues = getFilterValues();
+								$filtervalues1 = $filtervalues;
+								$filtervalues2 = $filtervalues;
+								$filtervalues1['login_rapp'] = getLogin();
+								$filtervalues1['login_rapp2'] = 'tous';
+								$filtervalues2['login_rapp2'] = getLogin();
+								$filtervalues2['login_rapp'] = 'tous';
 								$filename = "csv/reports.".$type;
+								$filename1 = "csv/reports_rapporteur1.".$type;
+								$filename2 = "csv/reports_rapporteur2.".$type;
 
-								if($type == "csv")
+								
+								$filenames = array();
+								if(isSecretaire())
 								{
-									$data = getReportsAsCSV(getFilterValues(), getSortingValues());
-									if($handle = fopen($filename, 'w'))
-									{
-										fwrite ($handle, $data);
-										fclose($handle);
-									}
-									else
-									{
-										throw new Exception("Cant create csv file ".$filename);
-									}
-									$size = strlen($data);
+									$items[$filename] = $filtervalues;
 								}
-								if($type == "xml")
+								else
 								{
-									$size = exportReportsAsXML(filterSortReports(getCurrentFiltersList(),  getFilterValues(), getSortingValues()),$filename);
+									$items[$filename1] = $filtervalues1;
+									$items[$filename2] = $filtervalues2;
+								}
+									
+								$filenames = array();
+								
+								
+								foreach($items as $file => $filter)
+								{
+									$reports = filterSortReports(getCurrentFiltersList(),  $filter, getSortingValues(),false);
+									$filenames[$file] = substr($file,4);
+									if($type == "csv")
+									{
+										$data = compileReportsAsCSV($reports);
+										if($handle = fopen($file, 'w'))
+										{
+											fwrite ($handle, $data);
+											fclose($handle);
+										}
+										else
+										{
+											throw new Exception("Cant create csv file ".$file);
+										}
+										$size = strlen($data);
+									}
+									if($type == "xml")
+									{
+										$size = exportReportsAsXML($reports,$file);
+									}
 								}
 
+								
+								$filename = zip_files($filenames,'zips/reports.zip');
 
 
+								if($filename == false)
+									throw new Exception("Failed to zip files");
+								
 								header("Pragma: public");
 								header("Expires: 0");
 								header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
 								header("Cache-Control: public");
 								header("Content-Description: File Transfer");
 								header("Content-type: application/octet-stream");
-								header("Content-Disposition: attachment; filename=\"reports.".$type."\"");
+								header("Content-Disposition: attachment; filename=\"reports.zip\"");
 								header("Content-Transfer-Encoding: binary");
 								header("Content-Length: ".$size);
 

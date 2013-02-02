@@ -58,6 +58,7 @@ function getScrollXY() {
 
 		function displayReports($centralid = 0)
 		{
+			
 			displaySummary(getCurrentFiltersList(), getFilterValues(), getSortingValues());
 			echo('
 					<script type="text/javascript">

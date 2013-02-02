@@ -19,7 +19,7 @@ function compileObjectAsCSV($fields, $rows,$sep =";" , $enc='"', $del="\n")
 		$first = true;
 		foreach($fields as $field)
 		{
-				$result.= ($first ? "" : $sep).$enc.(isset($row->$field) ? addslashes($row->$field) :"").$enc;
+				$result.= ($first ? "" : $sep).$enc.(isset($row->$field) ? str_replace('"', '#', $row->$field) :"").$enc;
 				$first = false;
 		}
 		$result.=$del;
@@ -55,14 +55,5 @@ function compileUnitsAsCSV($rows)
 	return compileObjectAsCSV($fields, $rows);
 }
 
-function getReportsAsCSV($filter_values, $sort_criteria = "")
-{
-	global $fieldsAll;
-
-
-	$rows = filterSortReports(getCurrentFiltersList(), $filter_values, $sort_criteria);
-
-	return compileReportsAsCSV($rows);
-}
 
 ?>

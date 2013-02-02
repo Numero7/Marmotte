@@ -251,8 +251,6 @@ function change_candidate_property($annee,$nom,$prenom, $property_name, $newvalu
 
 function change_candidate_properties($annee,$nom,$prenom, $data)
 {
-	global $fieldsAll;
-
 	$data = (object) $data;
 	$key = generateKey($annee, $nom, $prenom);
 
