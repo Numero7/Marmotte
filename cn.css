@@ -38,6 +38,30 @@ table.calendrier
 	border-collapse : collapse;
 }
 
+table.stats
+{
+	border: 1px solid black;
+	border-collapse : collapse;
+	padding: 5px;
+	valign :top;
+	
+}
+
+table.stats tr{
+	  border:solid 1px gray;
+	  valign :top;
+	  
+}
+table.stats th{
+	  border-right:solid 1px gray;
+	  padding: 2px;
+}
+
+table.stats td{
+	  border-right:solid 1px gray;
+	  padding: 2px;
+}
+
 table.emploidutemps th {
 }
 

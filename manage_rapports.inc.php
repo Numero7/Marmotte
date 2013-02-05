@@ -105,6 +105,7 @@ function filterSortReports($filters, $filter_values = array(), $sorting_values =
 	return $rows;
 }
 
+
 function sortCriteriaToSQL($sorting_values)
 {
 	$sql = "";
@@ -125,6 +126,8 @@ function sortCriteriaToSQL($sorting_values)
 
 function filtersCriteriaToSQL($filters, $filter_values, $rapporteur_or = true)
 {
+	global $fieldsTypes;
+
 	$sql = "";
 	foreach($filters as $filter => $data)
 	{
@@ -136,18 +139,58 @@ function filtersCriteriaToSQL($filters, $filter_values, $rapporteur_or = true)
 				$val = $filter_values[$filter];
 				$sql .= " AND (rapporteur=\"".$val."\" OR rapporteur2=\"".$val."\") ";
 			}
+			else if($rapporteur_or && $filter =="login_rapp2")
+			{
+				continue;
+			}
 			else if($filter == "avancement")
 			{
-				$login = getLogin();
+				$login = "";
+				if(isset($filter_values["login_rapp"]))
+					$login = $filter_values["login_rapp"];
+
 				//dirty hack tfor "Mes rapport sà faire/ faits"
 				$val = $filter_values[$filter];
-				$basesql = "( (rapporteur=\"$login\" AND avis1 != \"\") OR (rapporteur2=\"$login\" AND avis2 != \"\") OR  (rapporteur!=\"$login\" AND rapporteur2!=\"$login\")) ";
+
+				if($login != "")
+					$basesql = "( (rapporteur=\"$login\" AND avis1 != \"\") OR (rapporteur2=\"$login\" AND avis2 != \"\") OR  (rapporteur!=\"$login\" AND rapporteur2!=\"$login\")) ";
+				else
+					$basesql = "( (rapporteur=\"\" OR avis1 != \"\") AND (rapporteur2=\"\" OR avis2 != \"\")) ";
+
+
 				if($val == "todo")
 					$sql .= " AND NOT ".$basesql;
 				else if($val == "done")
 					$sql .= " AND ".$basesql;
 			}
-			else if(!$rapporteur_or || ($filter !="login_rapp2"))
+			else if($filter == "concours")
+			{
+				global $concours_ouverts;
+				if(isset($filter_values[$filter]))
+				{
+					$val = $filter_values[$filter];
+					$listeconcours = array();
+					foreach($concours_ouverts as $code => $intitule)
+						if($val == $code ||  strncmp($intitule, $val, strlen($val)) == 0)
+						$listeconcours[] = $code;
+					if(count($listeconcours) == 0)
+						continue;
+					$first = true;
+					$sql .= " AND (";
+					$field = (isset($data['sql_col']) ?  $data['sql_col'] : $filter); 
+					foreach($listeconcours as $code)
+					{
+						$sql .= ($first ? "" : " OR ") . $field."=\"$code\" ";
+						$first = false;
+					}
+					$sql .= " ) ";
+				}
+			}
+			else if(isset($fieldsTypes[$filter]) && $fieldsTypes[$filter] == "avis" && $filter_values[$filter] == "classe")
+			{
+				$sql .= " AND $filter REGEXP \"^[0-9]\" ";
+			}
+			else
 			{
 				$sql .= " AND ". (isset($data['sql_col']) ?  $data['sql_col'] : $filter)."=\"$filter_values[$filter]\" ";
 			}
@@ -196,6 +239,10 @@ function checkReportIsEditable($rapport)
 	if (isSecretaire())
 	{
 		return true;
+	}
+	else if($rapport->statut != "prerapport")
+	{
+		throw new Exception("Ce rapport n'a plus le statut de prerapport et n'est donc plus éditable par ses rapporteurs. Si nécessaire veuillez demander un changement de statut au secrétaire.");
 	}
 	else if( ($rapport->rapporteur != "") && ($rapport->rapporteur != $login) && ($rapport->rapporteur2 != $login))
 	{
@@ -377,7 +424,7 @@ function createReportFromRequest($id_origine, $request)
 		$cle = generateKey($annee,$nom ,$prenom );
 		$row->cleindividu = $cle;
 	}
-		
+
 	return $row;
 
 }
@@ -473,7 +520,7 @@ function addReportToDatabase($report,$normalize = true)
 						{
 							global $mergeableTypes;
 							global $crashableTypes;
-								
+
 							global $fieldsTypes;
 							$type = isset($fieldsTypes[$field]) ? $fieldsTypes[$field] : "";
 							if(in_array($type, $mergeableTypes))
@@ -655,6 +702,17 @@ function getVirginReports($rapporteur)
 	return array_merge($liste1,$liste2);
 }
 
+function getRapporteurReports($login)
+{
+	return filterSortReports(getCurrentFiltersList(), array("login_rapp" => $login, "id_session=" => current_session_id()) ,getSortingValues() );
+}
+
+function getTodoReports($login)
+{
+	return filterSortReports(getCurrentFiltersList(), array("avancement" => "todo", login_rapp => $login, "id_session=" => current_session_id()) ,getSortingValues() );
+}
+
+
 function find_candidate_reports($candidate,$eval_type = "")
 {
 	if($eval_type == "")
@@ -690,8 +748,8 @@ function update_report_from_concours($id_origine,$concours,$login)
 	$fields[] = "type";
 	$fields[] = "nom";
 	$fields[] = "prenom";
-	
-	
+
+
 	$data = array();
 	foreach($fields as $field)
 		$data[$field] = $report2->$field;

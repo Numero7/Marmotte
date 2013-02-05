@@ -101,19 +101,19 @@ function getCurrentFiltersList()
 	{
 		$filters = $filtersConcours;
 		$filters['login_rapp']['liste'] = simpleListUsers();
-		
+
 		$units = simpleUnitsList();
 		foreach($fieldsTypes as $field => $type)
 			if($type=='unit' and array_key_exists($field, $filters))
 			$filters[$field]['liste'] = $units;
-		
+
 		if(isSecretaire())
 		{
 			global $statutsRapports;
 			$filters['statut'] =  array('name'=>"Statut" , 'liste' => $statutsRapports, 'default_value' => "tous", 'default_name' => "");
 		}
 		return $filters;
-		
+
 	}
 	else
 	{
@@ -441,16 +441,11 @@ function displayReport($id_rapport, $displaymenu = true)
 	if($displaymenu)
 	{
 		?>
-	<input type="hidden" name="action" value="details" /> <input
-		type="hidden" name="id" value="<?php echo$id_rapport;?>" /> <input
-		type="submit" name="detailsprevious"
-		value="<<" >
-		<input 
-		
-		
-		             type="submit"
-		name="retourliste" value="Retour à la liste"> <input type="submit"
-		name="detailsnext" value=">>">
+	<input type="hidden" name="action" value="details"></input> <input
+		type="hidden" name="id" value="<?php echo$id_rapport;?>"></input> <input
+		type="submit" name="detailsprevious" value="<<" ></input><input
+		type="submit" name="retourliste" value="Retour à la liste"></input> <input
+		type="submit" name="detailsnext" value=">>"></input>
 </form>
 <?php 
 	}
@@ -577,9 +572,7 @@ function displayImport()
 		type="hidden" name="action" value="upload" /> <input type="hidden"
 		name="MAX_FILE_SIZE" value="10000000" />
 	<ul>
-		<li>
-		<input name="uploadedfile" type="file" size="5" />
-		<br />
+		<li><input name="uploadedfile" type="file" size="5" /> <br />
 		</li>
 		<?php if(isSecretaire()){?>
 		<li><a href="">Type</a> <select name="subtype">
@@ -590,8 +583,7 @@ function displayImport()
 					echo "<option value=\"$ty\">".$value."</option>\n";
 				?>
 		</select> <?php }?>
-		
-		<li>
+		</li>
 		
 		<li><input type="submit" value="Importer" /></li>
 	</ul>
@@ -642,9 +634,9 @@ function displaySummary($filters, $filter_values, $sorting_values)
 	$fields = is_current_session_concours() ? $fieldsSummaryConcours : $fieldsSummary;
 
 	if(isSecretaire())
-		$fields = array_unique(array_merge($fields,array("date","auteur","id")));
-	
-	
+		$fields = array_unique(array_merge($fields,array("date","auteur","id","statut")));
+
+
 	//Remove the type filter if useless
 	if($filter_values['type'] != $filters['type']['default_value'] )
 	{
@@ -1093,7 +1085,7 @@ function get_editable_fields($row)
 	global $fieldsRapportsCandidat2;
 
 	global $fieldsCandidat;
-	
+
 	$eval_type = $row->type;
 
 	if($eval_type == 'Ecole')
@@ -1178,9 +1170,8 @@ function displaySessionField($row)
 	if(session_to_choose($row))
 	{
 		?>
-<input
-	type="hidden" name="fieldid_session"
-	value="<?php echo $row->id_session;?>" />
+<input type="hidden"
+	name="fieldid_session" value="<?php echo $row->id_session;?>" />
 <?php 
 	}
 }
@@ -1485,7 +1476,7 @@ function displayEditionFrameEnd($titlle)
 function displayEditableObject($titlle, $row, $fields,$use_special_tr = true)
 {
 	global $fieldsAll;
-	
+
 	if($titlle != "")
 		echo '<table><tr><td><span  style="font-weight:bold;" >'.$titlle.'</span></td></tr>';
 	else
@@ -1632,7 +1623,7 @@ function displayEditableReport($row, $canedit)
 			displayEditableCandidate($candidate,$row);
 
 			$other_reports = find_candidate_reports($candidate,$eval_type);
-//rrr();
+			//rrr();
 			echo "<br/><hr/><br/>";
 		}
 		else if(in_array($eval_type,$typesRapportsIndividuels))
@@ -1676,38 +1667,38 @@ function displayEditableReport($row, $canedit)
 
 
 			$submits = array();
-				
-				
+
+
 			foreach($other_reports as $report)
 				if($report->concours != $row->concours)
-			{
-				$submits["importconcours".$report->concours] = "Importer données concours ".$report->concours;
-			}
+				{
+					$submits["importconcours".$report->concours] = "Importer données concours ".$report->concours;
+				}
 
-			$hidden['fieldconcours'] = $row->concours;
+				$hidden['fieldconcours'] = $row->concours;
 
-			displayEditionFrameStart("",$hidden,$submits);
+				displayEditionFrameStart("",$hidden,$submits);
 
-			echo'<table><tr><td VALIGN="top">';
-			
-			if(isSecretaire() || $row->statut == "rapport" || $row->statut == "publie")
-				displayEditableObject("Rapport section", $row,$fieldsRapportsCandidat0);
-
-
-			if(getLogin() == $row->rapporteur || (isSecretaire() && $row->rapporteur != ""))
-			{
-				echo'</td><td VALIGN="top">';
-
-				displayEditableObject("Prérapport 1",$row,$fieldsRapportsCandidat1);
-			}
-			if(getLogin() == $row->rapporteur2 || (isSecretaire() && $row->rapporteur2 != ""))
-			{
-				echo'</td><td VALIGN="top">';
+				echo'<table><tr><td VALIGN="top">';
+					
+				if(isSecretaire() || $row->statut == "rapport" || $row->statut == "publie")
+					displayEditableObject("Rapport section", $row,$fieldsRapportsCandidat0);
 
 
-				displayEditableObject("Prérapport 2", $row,$fieldsRapportsCandidat2);
-			}
-			echo'</td></tr></table>';
+				if(getLogin() == $row->rapporteur || (isSecretaire() && $row->rapporteur != ""))
+				{
+					echo'</td><td VALIGN="top">';
+
+					displayEditableObject("Prérapport 1",$row,$fieldsRapportsCandidat1);
+				}
+				if(getLogin() == $row->rapporteur2 || (isSecretaire() && $row->rapporteur2 != ""))
+				{
+					echo'</td><td VALIGN="top">';
+
+
+					displayEditableObject("Prérapport 2", $row,$fieldsRapportsCandidat2);
+				}
+				echo'</td></tr></table>';
 
 
 		}

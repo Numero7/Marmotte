@@ -478,10 +478,10 @@ if(isSecretaire())
 if(isSecretaire())
 {
 	?>
-<h2>Mailing rapporteurs</h2>
+<h2>Stats rapporteurs</h2>
 <p>
 Envoi d'emails de rappel aux rapporteurs ayant encore des rapports attribués
-et pas édités.
+et à faire.
 </p>
 <form enctype="multipart/form-data" action="index.php" method="post">
 	<p>

@@ -387,9 +387,12 @@ function getScrollXY() {
 					include "admin.inc.php";
 					break;
 				case "displayunits":
-					include "unites.inc.php";
+					include "unites.php";
 					break;
-				case "";
+				case "displaystats":
+					include "stats.php";
+					break;
+					case "";
 				default:
 					if(substr($action,0,3)=="set")
 					{

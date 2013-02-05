@@ -7,7 +7,7 @@ require_once('utils.inc.php');
 
 function mailRapporteur($titre, $body, $email_fin, $rapporteur)
 {
-	$reports  = getVirginReports($rapporteur);
+	$reports  = getTodoReports($rapporteur);
 	if(count($reports) > 0)
 	{
 		echo 'Envoi d\'un email pour '.count($reports).' rapports pour "'.$rapporteur->description.'" ('.$rapporteur->email.')<br/>';

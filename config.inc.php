@@ -530,21 +530,17 @@
 	);
 
 	/* Pour les promos*/
-	$avis_classement = array(""=>"", "adiscuter"=>"à discuter", "non"=>"non-classé", "oui"=>"Oui", "1"=>"<span  style=\"font-weight:bold;\" >1</span>", "2"=>"<span  style=\"font-weight:bold;\" >2</span>", "3"=>"<span  style=\"font-weight:bold;\" >3</span>", "4"=>"<span  style=\"font-weight:bold;\" >4</span>",
-			 "5"=>"<span  style=\"font-weight:bold;\" >5</span>", "6"=>"<span  style=\"font-weight:bold;\" >6</span>", "7"=>"<span  style=\"font-weight:bold;\" >7</span>" , "8"=>"<span  style=\"font-weight:bold;\" >8</span>", "9"=>"<span  style=\"font-weight:bold;\" >9</span>"
-			, "10"=>"<span  style=\"font-weight:bold;\" >10</span>", "11"=>"<span  style=\"font-weight:bold;\" >11</span>", "12"=>"<span  style=\"font-weight:bold;\" >12</span>", "13"=>"<span  style=\"font-weight:bold;\" >13</span>", "14"=>"<span  style=\"font-weight:bold;\" >14</span>", "15"=>"<span  style=\"font-weight:bold;\" >15</span>", "16"=>"<span  style=\"font-weight:bold;\" >16</span>",
-			 "17"=>"<span  style=\"font-weight:bold;\" >17</span>", "18"=>"<span  style=\"font-weight:bold;\" >18</span>", "19"=>"<span  style=\"font-weight:bold;\" >19</span>",
-			 "20"=>"<span  style=\"font-weight:bold;\" >20</span>", "21"=>"<span  style=\"font-weight:bold;\" >21</span>");
+	$avis_classement = array(""=>"", "adiscuter"=>"à discuter", "non"=>"non-classé", "oui"=>"Oui");
+	
 
 	/* Pour les concours*/
-	$avis_candidature = array(""=>"", "adiscuter"=>"à discuter", "nonauditionne"=>"Non Auditionné", "oral"=>"Auditionné", "nonclasse"=>"Non Classé", "1"=>"<span  style=\"font-weight:bold;\" >1</span>", "2"=>"<span  style=\"font-weight:bold;\" >2</span>", "3"=>"<span  style=\"font-weight:bold;\" >3</span>", "4"=>"<span  style=\"font-weight:bold;\" >4</span>",
-			 "5"=>"<span  style=\"font-weight:bold;\" >5</span>", "6"=>"<span  style=\"font-weight:bold;\" >6</span>", "7"=>"<span  style=\"font-weight:bold;\" >7</span>" , "8"=>"<span  style=\"font-weight:bold;\" >8</span>", "9"=>"<span  style=\"font-weight:bold;\" >9</span>"
-			, "10"=>"<span  style=\"font-weight:bold;\" >10</span>", "11"=>"<span  style=\"font-weight:bold;\" >11</span>", "12"=>"<span  style=\"font-weight:bold;\" >12</span>", "13"=>"<span  style=\"font-weight:bold;\" >13</span>", "14"=>"<span  style=\"font-weight:bold;\" >14</span>", "15"=>"<span  style=\"font-weight:bold;\" >15</span>", "16"=>"<span  style=\"font-weight:bold;\" >16</span>",
-			 "17"=>"<span  style=\"font-weight:bold;\" >17</span>", "18"=>"<span  style=\"font-weight:bold;\" >18</span>", "19"=>"<span  style=\"font-weight:bold;\" >19</span>",
-			 "20"=>"<span  style=\"font-weight:bold;\" >20</span>", "21"=>"<span  style=\"font-weight:bold;\" >21</span>", "nonconcur"=>"Non Admis à Concourir");
-
-	
+	$avis_candidature = array(""=>"", "adiscuter"=>"à discuter", "nonauditionne"=>"Non Auditionné", "oral"=>"Auditionné", "nonclasse"=>"Non Classé", "nonconcur"=>"Non Admis à Concourir");
+	$avis_candidature_short = array("tous" => "", "" =>"sans avis", "adiscuter"=>"à discuter", "nonauditionne"=>"Non Auditionné", "oral"=>"Auditionné", "nonclasse"=>"Non Classé", "classe"=>"Classé", "nonconcur"=>"Non Admis à Concourir");
 	$avis_candidature_necessitant_pas_rapport_sousjury = array("", "adiscuter", "nonauditionne");
+
+	$max_classement = 30;
+	for($i = 1; $i <= $max_classement; $i++)
+		$avis_candidature[strval($i)] = $avis_classement[strval($i)] = "<span  style=\"font-weight:bold;\" >$i</span>";
 	
 	/* Pour les SPE par exemple*/
 	$avis_vide = array(""=>"");
@@ -743,7 +739,9 @@
 		'PR' => 'PR',
 		'PhD' => 'PhD',
 		'HDR' => 'Habilité à diriger des recherches',
-		'None' => 'Pas de grade'
+		'chercheur' => 'Chercheur contractuel',
+			'postdoc' => 'Postdoctorant',
+						'None' => 'Pas de grade'
 	);
 	
 	define("NIVEAU_PERMISSION_BASE", 0);
@@ -864,15 +862,19 @@
 	);
 
 	$filtersConcours = array(
+			'avis' => array('name'=>"Avis" , 'liste' => $avis_candidature_short, 'default_value' => "tous", 'default_name' => ""),
+			'avis1' => array('name'=>"Avis Rapp 1" , 'liste' => $avis_candidature_short, 'default_value' => "tous", 'default_name' => ""),
+			'avis2' => array('name'=>"Avis Rapp 2" , 'liste' => $avis_candidature_short, 'default_value' => "tous", 'default_name' => ""),
 			'theme1' => array('name'=>"Theme1" , 'liste' => get_config("topics"), 'default_value' => "tous", 'default_name' => ""),
 			'theme2' => array('name'=>"Theme2" , 'liste' => get_config("topics"), 'default_value' => "tous", 'default_name' => ""),
 			'theme3' => array('name'=>"Theme3" , 'liste' => get_config("topics"), 'default_value' => "tous", 'default_name' => ""),
 			'labo1' => array('name'=>"Labo1" , 'default_value' => "tous", 'default_name' => ""),
 			'labo2' => array('name'=>"Labo2" , 'default_value' => "tous", 'default_name' => ""),
 			'labo3' => array('name'=>"Labo3" , 'default_value' => "tous", 'default_name' => ""),
-			'concours' => array('name'=>"Concours" , 'liste' => $concours_ouverts, 'default_value' => "tous", 'default_name' => ""),
+			'concours' => array('name'=>"Concours" , 'liste' => array_merge($concours_ouverts,array("CR"=>"tous CR","DR"=>"tous DR")), 'default_value' => "tous", 'default_name' => ""),
 			'login_rapp' => array('name'=>"Rapporteur" , 'sql_col'=>'rapporteur','default_value' =>"tous", 'default_name' => ""),
 			'login_rapp2' => array('name'=>"Rapporteur2" , 'sql_col'=>'rapporteur2','default_value' =>"tous", 'default_name' => ""),
+			'grade' => array('name'=>"Grade" , 'liste' => $grades, 'default_value' =>"tous", 'default_name' => "Tous les grades"),
 			'id_session' => array('name'=>"Session", 'default_value' =>-1, 'default_name' => "Toutes les sessions"),
 			'type' => array('name'=>"Type d'évaluation" , 'liste' => $typesRapportsConcours,'default_value' => "tous", 'default_name' => ""),
 			'avancement' => array('name'=>"Avancement" , 'default_value' => "", 'default_name' => ""),

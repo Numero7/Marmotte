@@ -78,8 +78,15 @@ global $typesRapportsIndividuels;
 										type="submit" value="Unités" />
 								</form>
 
+								<form method="get"
+									style="display: inline; margin-left: 5px; border-left: 2px solid #FFF; padding: 8px;"
+									action="index.php">
+									<input type="hidden" name="action" value="displaystats" /> <input
+										type="submit" value="Stats" />
+								</form>
+
 							</td>
-						</tr>
+							</tr>
 					</table>
 				</td>
 				<td valign=top>
@@ -191,7 +198,6 @@ global $typesRapportsIndividuels;
 							</td>
 
 							<td valign=top>Import <?php displayImport();?>
-							</td>
 							<?php 
 							if (getUserPermissionLevel()>= NIVEAU_PERMISSION_PRESIDENT_SECRETAIRE)
 							{
