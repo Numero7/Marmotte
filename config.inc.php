@@ -488,7 +488,8 @@
 			"projetrecherche" => "long",
 			"parcours" => "long",
 			"fichiers" => "files",
-			"avissousjury" => "long"
+			"avissousjury" => "long",
+			"statut" => "statut"
 	);
 	
 	$typesRapportsIndividuels = array(

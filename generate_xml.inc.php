@@ -45,7 +45,7 @@ function exportReportsAsXML($reports,$filename)
 		$avis = $typesRapportToAvis[$type];
 		foreach($activefields as $field)
 		{
-			if($fieldsTypes[$field] == "avis" && $report->$field =="")
+			if(!isSecretaire() && $fieldsTypes[$field] == "avis" && $report->$field =="")
 			{
 				$report->$field = "Avis possibles (supprimer avis inutiles)\n";
 				foreach($avis as $key => $value)

@@ -1310,6 +1310,19 @@ function display_topic($row, $fieldID)
 <?php
 }
 
+function display_statut2($row, $fieldID)
+{
+	global $statutsRapports;
+
+	echo '<td><select name="fieldstatut" style="width: 100%;">';
+	foreach($statutsRapports as $ids => $txts)
+	{
+		$sel = ($row->statut==$ids) ? 'selected="selected"' : "";
+		echo  "\t\t\t\t\t<option value=\"$ids\" $sel>$txts</option>\n";
+	}
+	echo '</select></td>';
+}
+
 function display_grade($row, $fieldID)
 {
 	global $grades;
@@ -1543,6 +1556,8 @@ switch($type)
 	case "files":
 		display_fichiers($row, $fieldID);
 		break;
+	case "statut":
+		display_statut2($row, $fieldID);
 	case "":
 		break;
 	default:
@@ -1682,7 +1697,12 @@ function displayEditableReport($row, $canedit)
 				echo'<table><tr><td VALIGN="top">';
 					
 				if(isSecretaire() || $row->statut == "rapport" || $row->statut == "publie")
-					displayEditableObject("Rapport section", $row,$fieldsRapportsCandidat0);
+				{
+					$fieldssection = $fieldsRapportsCandidat0;
+					if(isSecretaire())
+						$fieldssection = array_merge(array("statut"),$fieldsRapportsCandidat0);
+					displayEditableObject("Rapport section", $row,$fieldssection);
+				}
 
 
 				if(getLogin() == $row->rapporteur || (isSecretaire() && $row->rapporteur != ""))
