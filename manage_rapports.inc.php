@@ -204,7 +204,7 @@ function filtersCriteriaToSQL($filters, $filter_values, $rapporteur_or = true)
 
 		}
 	}
-	echo $sql;
+	//echo $sql;
 	return $sql;
 }
 
@@ -449,19 +449,14 @@ function createReportFromRequest($id_origine, $request)
 function normalizeReport($report)
 {
 	global $report_prototypes;
-	global $empty_report;
 
 	$report = (object) $report;
 
-	if(!isset($report->id_session) || ($report->id_session == $empty_report['id_session']))
+	if(!isset($report->id_session))
 		$report->id_session = current_session_id();
 
-	if(!isset($report->auteur) || ($report->auteur == $empty_report['auteur']))
+	if(!isset($report->auteur))
 		$report->auteur = getLogin();
-
-	foreach($empty_report as $field => $value)
-		if(!key_exists($field, $report))
-		$report->$field = $value;
 
 	if($report->statut == "vierge")
 	{

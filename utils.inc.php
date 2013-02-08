@@ -350,7 +350,7 @@ function displayConcoursReport($row)
 	global $fieldsCandidatAll;
 
 	global $topics;
-	
+
 	global $fieldsCandidatAvantAudition;
 	global $avis_candidature_necessitant_pas_rapport_sousjury;
 
@@ -584,7 +584,7 @@ function displayImport()
 				?>
 		</select> <?php }?>
 		</li>
-		
+
 		<li><input type="submit" value="Importer" /></li>
 	</ul>
 </form>
@@ -689,29 +689,30 @@ function displaySousJuryMenu($fieldID,$row)
 {
 	global $tous_sous_jury;
 	?>
-	<form method="post" action="index.php">
-		<table>
-			<tr>
-				<td><input type="hidden" name="action"
-					value="set<?php echo $fieldID;?>" /> <input type="hidden"
-					name="id_toupdate" value="<?php echo $row->id;?>" /> <select
-					name="new<?php echo $fieldID;?>">
-						<?php
-						foreach($tous_sous_jury as $avis => $pretty)
-						{
-							$sel = (($row->$fieldID) == ($avis)) ? "selected=\"selected\"" : "";
-							echo  "\t\t\t\t\t<option value=\"".($avis)."\" ".$sel.">".$pretty."&nbsp;</option>\n";
-						}
-						?>
-				</select>
-				</td>
-				<td><input type="submit" value="OK"></input>
-				</td>
-			</tr>
-		</table>
-	</form>
-	<!-- <a href="javascript:getScrollXY();">OK</a>  -->
-	<?php 
+<form method="post" action="index.php">
+	<table>
+		<tr>
+			<td><input type="hidden" name="action"
+				value="set<?php echo $fieldID;?>" /> <input type="hidden"
+				name="id_toupdate" value="<?php echo $row->id;?>" /> <select
+				name="new<?php echo $fieldID;?>">
+					<?php
+						echo  "\t\t\t\t\t<option value=\"\"></option>\n";
+					foreach($tous_sous_jury as $avis => $pretty)
+					{
+						$sel = (($row->$fieldID) == ($avis)) ? "selected=\"selected\"" : "";
+						echo  "\t\t\t\t\t<option value=\"".($avis)."\" ".$sel.">".$pretty."&nbsp;</option>\n";
+					}
+					?>
+			</select>
+			</td>
+			<td><input type="submit" value="OK"></input>
+			</td>
+		</tr>
+	</table>
+</form>
+<!-- <a href="javascript:getScrollXY();">OK</a>  -->
+<?php 
 }
 
 function displayAvisMenu($fieldId,$row)
@@ -961,6 +962,10 @@ function displayRows($rows, $fields, $filters, $filter_values, $sort_fields, $so
 			{
 				displayAvisMenu($fieldID,$row);
 			}
+			else if($fieldID=="sousjury")
+			{
+				displaySousJuryMenu($fieldID,$row);
+			}
 			else if($data != "")
 			{
 				if($fieldID=="nom")
@@ -968,10 +973,6 @@ function displayRows($rows, $fields, $filters, $filter_values, $sort_fields, $so
 					echo "<a href=\"?action=details&amp;id=".($row->id)."\">";
 					echo '<span class="valeur">'.$data.'</span>';
 					echo '</a>';
-				}
-				else if($fieldID=="sousjury")
-				{
-					displaySousJuryMenu($fieldID,$row);
 				}
 				else
 				{
@@ -1203,8 +1204,9 @@ function displaySessionField($row)
 	if(session_to_choose($row))
 	{
 		?>
-<input type="hidden"
-	name="fieldid_session" value="<?php echo $row->id_session;?>" />
+<input
+	type="hidden" name="fieldid_session"
+	value="<?php echo $row->id_session;?>" />
 <?php 
 	}
 }
@@ -1325,7 +1327,7 @@ function display_unit($row, $fieldID)
 function display_topic($row, $fieldID)
 {
 	global $topics;
-	
+
 	?>
 <td style="width: 30em;"><select name="field<?php echo $fieldID;?>"
 	style="width: 100%;">
@@ -1825,7 +1827,7 @@ function displayEditableReport($row, $canedit)
 					<script type="text/javascript">');
 	echo('
 					document.getElementById("debut").scrollIntoView();');
-		
+
 	/*
 	 echo('
 	 		var elt = document.getElementById( '$id' );

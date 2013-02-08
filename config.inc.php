@@ -14,9 +14,9 @@ ini_set('xdebug.show_local_vars', 'on');
 	require_once("config/configDB.inc.php");
 
 	
-	define("config_file",$rootdir."config/config.xml");
-	define("signature_file",$rootdir."img/signature.jpg");
-	define("config_file_save",$rootdir."config/config.sauv.xml");
+	define("config_file","config/config.xml");
+	define("signature_file","img/signature.jpg");
+	define("config_file_save","config/config.sauv.xml");
 	
 	require_once("config.php");
 	
