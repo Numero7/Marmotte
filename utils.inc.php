@@ -1366,7 +1366,7 @@ function displayEditableCandidate($candidate,$report = NULL)
 	}
 	
 	
-	echo '<h1>Candidat: '.$candidate->nom." ".$candidate->prenom." ".'</h1>';
+	echo '<h1>Candidat(e) : '.$candidate->nom." ".$candidate->prenom." ".'</h1>';
 
 
 
