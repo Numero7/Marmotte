@@ -12,10 +12,8 @@ if(isSecretaire())
 <h1>Interface d'administration</h1>
 <hr />
 <h2>Config</h2>
-<p>
-Le fichier de config permet de configurer le numéro de la section, les thèmes de la section,
-le nom du président, etc..
-</p>
+<p>Le fichier de config permet de configurer le numéro de la section,
+	les thèmes de la section, le nom du président, etc..</p>
 <p>
 	Télécharger et éditer <a href="<?php echo config_file;?>">le fichier de
 		configuration</a> en faisant (click droit + enregistrer la cible du
@@ -32,11 +30,11 @@ le nom du président, etc..
 		value="Uploader config" />
 </form>
 
-	Le formulaire ci-dessous permet d'uploader la signature du président sous forme d'un fichier image
-	au format jpeg.
+Le formulaire ci-dessous permet d'uploader la signature du président
+sous forme d'un fichier image au format jpeg.
 <form enctype="multipart/form-data" action="index.php" method="post">
-	<input type="hidden" name="type" value="signature" /> <input type="hidden"
-		name="action" value="upload" /> <input type="hidden"
+	<input type="hidden" name="type" value="signature" /> <input
+		type="hidden" name="action" value="upload" /> <input type="hidden"
 		name="MAX_FILE_SIZE" value="100000" /> Fichier de config: <input
 		name="uploadedfile" type="file" /> <br /> <input type="submit"
 		value="Uploader signature" />
@@ -55,7 +53,7 @@ try
 	$rows = array();
 	while ($row = mysql_fetch_object($result))
 		$rows[] = $row;
-	
+
 	$csv_reports = compileReportsAsCSV($rows);
 	$filename = "csv/exemple.csv";
 	if($handle = fopen($filename, 'w'))
@@ -74,17 +72,19 @@ catch(Exception $e)
 }
 
 ?>
-<p>Le formulaire ci-dessous permet d'injecter des rapports dans la base de donnée en les envoyant sous forme de fichier csv.<br/>
-Vous pouvez partir de <a href="csv/exemple.csv">ce fichier exemple</a>.<br/>
-Vous pouvez supprimer les colonnes inutiles
-mais il est indispensable de laisser les intitulés des colonnes restantes tels quels.<br/>
-Les différentes entrées sont encadrées par des guillemets par conséquent les champs ne doivent pas contenir
-des guillements non échappés: il faut au préalabale de l'envoi remplacer chaque " par \".<br/>
-<!--  Enfin utiliser de préférence l'encodage utf-8 pour les caractères accentués.<br/> -->
-<?php 
-displayImport();
-?>
-
+<p>
+	Le formulaire ci-dessous permet d'injecter des rapports dans la base de
+	donnée en les envoyant sous forme de fichier csv.<br /> Vous pouvez
+	partir de <a href="csv/exemple.csv">ce fichier exemple</a>.<br /> Vous
+	pouvez supprimer les colonnes inutiles mais il est indispensable de
+	laisser les intitulés des colonnes restantes tels quels.<br /> Les
+	différentes entrées sont encadrées par des guillemets par conséquent
+	les champs ne doivent pas contenir des guillements non échappés: il
+	faut au préalabale de l'envoi remplacer chaque " par \".<br />
+	<!--  Enfin utiliser de préférence l'encodage utf-8 pour les caractères accentués.<br/> -->
+	<?php 
+	displayImport();
+	?>
 <hr />
 
 
@@ -155,9 +155,9 @@ displayImport();
 		</td>
 
 		</td>
-		</tr>
-		</table>
-		<?php 
+	</tr>
+</table>
+<?php 
 try
 {
 	$sql = "SELECT * FROM ".units_db." LIMIT 0,5";
@@ -166,7 +166,7 @@ try
 	$rows = array();
 	while ($row = mysql_fetch_object($result))
 		$rows[] = $row;
-	
+
 	$csv_reports = compileUnitsAsCSV($rows);
 	$filename = "csv/exemple_unites.csv";
 	if($handle = fopen($filename, 'w'))
@@ -185,29 +185,31 @@ catch(Exception $e)
 }
 
 ?>
-		
-			<h2>Ajout de plusieurs unités</h2>
-			<p>
-			<p>Le formulaire ci-dessous permet d'injecter des unités dans la base de donnée.<br/>
-Les rapports sont envoyés sous forme de fichier csv.<br/>
-Vous pouvez partir de <a href="csv/exemple_unites.csv">ce fichier exemple</a>.<br/>
-Vous pouvez supprimer les colonnes inutiles
-mais il est indispensable de laisser les intitulés des colonnes restantes tels quels.<br/>
-Les différentes entrées sont encadrées par des guillemets par conséquent les champs ne doivent pas contenir
-des guillements non échappés: il faut au préalabale de l'envoi remplacer chaque " par \".<br/>
-<!--  Enfin utiliser de préférence l'encodage utf-8 pour les caractères accentués.<br/> -->
-Les données d'un labo avec le même code seront remplacées.
-			</p>
-			<form enctype="multipart/form-data" action="index.php" method="post"
-				onsubmit="return confirm('Etes vous sur de vouloir uploader ce fichier labos?');">
-				<p>
-					<input type="hidden" name="type" value="unites" /> <input
-						type="hidden" name="action" value="upload" /> <input type="hidden"
-						name="MAX_FILE_SIZE" value="100000" /> Fichier csv: <input
-						name="uploadedfile" type="file" /> <br /> <input type="submit"
-						value="Ajouter unités" />
-				</p>
-			</form>
+
+<h2>Ajout de plusieurs unités</h2>
+<p>
+<p>
+	Le formulaire ci-dessous permet d'injecter des unités dans la base de
+	donnée.<br /> Les rapports sont envoyés sous forme de fichier csv.<br />
+	Vous pouvez partir de <a href="csv/exemple_unites.csv">ce fichier
+		exemple</a>.<br /> Vous pouvez supprimer les colonnes inutiles mais il
+	est indispensable de laisser les intitulés des colonnes restantes tels
+	quels.<br /> Les différentes entrées sont encadrées par des guillemets
+	par conséquent les champs ne doivent pas contenir des guillements non
+	échappés: il faut au préalabale de l'envoi remplacer chaque " par \".<br />
+	<!--  Enfin utiliser de préférence l'encodage utf-8 pour les caractères accentués.<br/> -->
+	Les données d'un labo avec le même code seront remplacées.
+</p>
+<form enctype="multipart/form-data" action="index.php" method="post"
+	onsubmit="return confirm('Etes vous sur de vouloir uploader ce fichier labos?');">
+	<p>
+		<input type="hidden" name="type" value="unites" /> <input
+			type="hidden" name="action" value="upload" /> <input type="hidden"
+			name="MAX_FILE_SIZE" value="100000" /> Fichier csv: <input
+			name="uploadedfile" type="file" /> <br /> <input type="submit"
+			value="Ajouter unités" />
+	</p>
+</form>
 
 <?php 
 }
@@ -216,8 +218,8 @@ if(isSecretaire())
 {
 	?>
 <hr />
-<table>
-	<h2>Création nouveau rapporteur</h2>
+<table >
+	<h2 id="adminnewaccount">Création nouveau rapporteur</h2>
 	<tr>
 		<td>
 			<form method="post" action="index.php">
@@ -270,7 +272,7 @@ if(isSecretaire())
 
 		</td>
 		<td>
-			<h2>Suppression d'un rapporteur</h2>
+			<h2 id="admindeleteaccount">Suppression d'un rapporteur</h2>
 			<form method="post" action="index.php"
 				onsubmit="return confirm('Etes vous sur de vouloir supprimer cet utilisateur ?');">
 				<table class="inputreport">
@@ -296,7 +298,7 @@ if(isSecretaire())
 			</form>
 		</td>
 		<td>
-			<h2>Modifier un mot de passe</h2>
+			<h2 id="adminnewpwd">Modifier un mot de passe</h2>
 			<form method="post" action="index.php">
 				<table class="inputreport">
 					<tr>
@@ -314,87 +316,110 @@ if(isSecretaire())
 					</tr>
 					<tr>
 						<td>Nouveau mot de passe</td>
-						<td><input name="newpwd1" value="<?php if(isset($password)) echo $password; ?>"/>
+						<td><input name="newpwd1"
+							value="<?php if(isset($password)) echo $password; ?>" />
 						</td>
 					</tr>
 					<tr>
 						<td>Confirmer nouveau mot de passe</td>
-						<td><input name="newpwd2" value="<?php if(isset($password)) echo $password; ?>"/>
+						<td><input name="newpwd2"
+							value="<?php if(isset($password)) echo $password; ?>" />
 						</td>
 					</tr>
 					<tr>
-						<td><input type="hidden" name="oldpwd" value="" />
-						 <input
+						<td><input type="hidden" name="oldpwd" value="" /> <input
 							type="hidden" name="action" value="adminnewpwd" />
 						</td>
 						<td><input type="submit" value="Valider modification" />
 						</td>
-						<td>
-							<input type="checkbox" name="envoiparemail" checked='checked'
-									style="width: 10px;" /> Prévenir par email
-						</td>
-						</tr>
+						<td><input type="checkbox" name="envoiparemail" checked='checked'
+							style="width: 10px;" /> Prévenir par email</td>
+					</tr>
 				</table>
 			</form>
 		</td>
 		<td>
-					<h2>Vérifier un mot de passe</h2>
+			<h2>Vérifier un mot de passe</h2>
 			<form method="post" action="index.php">
 				<table class="inputreport">
 					<tr>
 						<td>Mot de passe</td>
 						<td><input name="password" />
 						</td>
-						</tr>
-						<tr>
-						<td>
-												 <input
-							type="hidden" name="action" value="checkpwd" />
+					</tr>
+					<tr>
+						<td><input type="hidden" name="action" value="checkpwd" />
+						
 						<td><input type="submit" value="Vérifier" />
 						</td>
-						</tr>
-						</table>
-						</form>
-						</td>
-						
+					</tr>
+				</table>
+			</form>
+		</td>
+
 	</tr>
 </table>
 
 <hr />
 
-<h2>Modifier les droits</h2>
+<h2 id="infosrapporteur">Modifier les infos</h2>
 <form method="get" action="index.php">
-	<table class="inputreport">
+	<table >
 		<?php 
+		global $sous_jurys;
+		global $concours_ouverts;
+
 		$users = listUsers();
 		foreach($users as $user => $data)
 		{
 			if ($data->permissions <= getUserPermissionLevel())
 			{
-				echo "<tr><td style=\"width:20em;\">".ucfirst($data->description)."</td>";
-				echo "<td><form><select name=\"permissions\">";
+				echo "<tr><td >".ucfirst($data->description)."</td>\n";
+				echo "<td><form>\n";
+				echo "<select name=\"permissions\">\n";
 				foreach($permission_levels as $val => $level)
 				{
 					if ($val<=getUserPermissionLevel())
 					{
 						$sel = "";
 						if ($val==$data->permissions)
-						{
 							$sel = " selected=\"selected\"";
-						}
-						echo "<option value=\"$val\"$sel>".ucfirst($level)."</option>";
+						echo "<option value=\"$val\"$sel>".ucfirst($level)."</option>\n";
 					}
 				}
-				echo "</select>";
-				echo "<input type=\"hidden\" name=\"login\" value=\"$user\"/>";
-				echo "<input type=\"hidden\" name=\"action\" value=\"adminnewpermissions\"/>";
-				echo " <input type=\"submit\" value=\"Valider\"/>";
-				echo "</form></td></tr>";
+				echo "</select>\n";
+				foreach($concours_ouverts as $concours => $nom)
+				{
+					echo "<select name=\"sousjury".$concours."\">\n";
+					echo "<option value=\"\"$sel></option>\n";
+						
+					foreach($sous_jurys[$concours] as $val => $nom)
+					{
+						//echo $data->sousjury."\n".$val."\n";
+						$sel = "";
+						if (($val != "") && ($data->sousjury != ""))
+						{
+							$test = strpos($data->sousjury,$val);
+							if($test === 0 || $test != false)
+								$sel = " selected=\"selected\"";
+						}
+						echo "<option value=\"".$val."\"$sel>".$concours." ".$nom."</option>\n";
+					}
+					
+					echo "</select>\n";
+				}
+
+				echo "<input type=\"hidden\" name=\"login\" value=\"$user\"/>\n";
+				echo "<input type=\"hidden\" name=\"action\" value=\"infosrapporteur\"/>\n";
+				echo " <input type=\"submit\" value=\"Valider\"/>\n";
+				echo "</form></td></tr>\n";
 			}
 		}
 		?>
 	</table>
 </form>
+
+
 <?php 
 }
 if(isSecretaire())
@@ -450,6 +475,7 @@ if(isSecretaire())
 								{
 									$id = $session["id"];
 									$nom = $session["nom"];
+									date_default_timezone_set("Europe/Paris");
 									$date = strtotime($session["date"]);
 									echo "<option value=\"$id\">".ucfirst($nom)." ".date("Y",$date)."</option>";
 								}
@@ -479,10 +505,8 @@ if(isSecretaire())
 {
 	?>
 <h2>Stats rapporteurs</h2>
-<p>
-Envoi d'emails de rappel aux rapporteurs ayant encore des rapports attribués
-et à faire.
-</p>
+<p>Envoi d'emails de rappel aux rapporteurs ayant encore des rapports
+	attribués et à faire.</p>
 <form enctype="multipart/form-data" action="index.php" method="post">
 	<p>
 		<input type="hidden" name="action" value="mailing" /> <input
@@ -493,26 +517,26 @@ et à faire.
 
 
 <h2>Candidats</h2>
-<p>
-Extrait tous les candidats des rapports de candidature et d'équivalence et
-de les injecter dans la base des candidats.
-</p>
+<p>Extrait tous les candidats des rapports de candidature et
+	d'équivalence et de les injecter dans la base des candidats.</p>
 <form action="index.php" method="post">
 	<input type="hidden" name="action" value="creercandidats" /> <input
 		type="submit" value="Créer tous les candidats" />
 </form>
-
-<p/>
-<p>
-Cherche les fichiers associés aux candidats.
-</p>
 <form action="index.php" method="post">
-	<input type="hidden" name="action" value="trouverfichierscandidats" /> <input
-		type="submit" value="Trouver les fichiers des candidats" />
+	<input type="hidden" name="action" value="injectercandidats" /> <input
+		type="submit" value="Injecter données candidats" />
 </form>
 
-<p/>
-<hr/>
+<p />
+<p>Cherche les fichiers associés aux candidats.</p>
+<form action="index.php" method="post">
+	<input type="hidden" name="action" value="trouverfichierscandidats" />
+	<input type="submit" value="Trouver les fichiers des candidats" />
+</form>
+
+<p />
+<hr />
 
 <h2>Requete sql générique</h2>
 <form enctype="multipart/form-data" action="index.php" method="post">
@@ -527,11 +551,10 @@ Cherche les fichiers associés aux candidats.
 		type="submit" value="Executer la requete" />
 </form>
 <p>
-
-	<form method="post" action="index.php">
-		<input type="hidden" name="action" value="createhtpasswd" /> <input
-			type="submit" value="Créer htpasswd" />
-	</form>
+<form method="post" action="index.php">
+	<input type="hidden" name="action" value="createhtpasswd" /> <input
+		type="submit" value="Créer htpasswd" />
+</form>
 </p>
 <?php 
 }

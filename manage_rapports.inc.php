@@ -11,7 +11,9 @@ function getIDOrigine($id_rapport)
 	$result=sql_request($sql);
 	$report = mysql_fetch_object($result);
 	if($report == false)
+	{
 		throw new Exception("No report with id ".$id_rapport);
+	}
 	else
 		return $report->id_origine;
 }
@@ -133,21 +135,21 @@ function filtersCriteriaToSQL($filters, $filter_values, $rapporteur_or = true)
 	{
 		if(isset($filter_values[$filter]) && (!isset($data['default_value']) || $filter_values[$filter] != $data['default_value']))
 		{
-			if($filter == "login_rapp" && $rapporteur_or)
+			if($filter == "rapporteur" && $rapporteur_or)
 			{
 				//dirty hack to have an OR clause on rapporteurs...
 				$val = $filter_values[$filter];
 				$sql .= " AND (rapporteur=\"".$val."\" OR rapporteur2=\"".$val."\") ";
 			}
-			else if($rapporteur_or && $filter =="login_rapp2")
+			else if($rapporteur_or && $filter =="rapporteur2")
 			{
 				continue;
 			}
 			else if($filter == "avancement")
 			{
 				$login = "";
-				if(isset($filter_values["login_rapp"]))
-					$login = $filter_values["login_rapp"];
+				if(isset($filter_values["rapporteur"]))
+					$login = $filter_values["rapporteur"];
 
 				//dirty hack tfor "Mes rapport sà faire/ faits"
 				$val = $filter_values[$filter];
@@ -172,7 +174,7 @@ function filtersCriteriaToSQL($filters, $filter_values, $rapporteur_or = true)
 					$listeconcours = array();
 					foreach($concours_ouverts as $code => $intitule)
 						if($val == $code ||  strncmp($intitule, $val, strlen($val)) == 0)
-						$listeconcours[] = $code;
+							$listeconcours[] = $code;
 					if(count($listeconcours) == 0)
 						continue;
 					$first = true;
@@ -186,9 +188,14 @@ function filtersCriteriaToSQL($filters, $filter_values, $rapporteur_or = true)
 					$sql .= " ) ";
 				}
 			}
-			else if(isset($fieldsTypes[$filter]) && $fieldsTypes[$filter] == "avis" && $filter_values[$filter] == "classe")
+			else if(isset($fieldsTypes[$filter]) && $fieldsTypes[$filter] == "avis")
 			{
-				$sql .= " AND $filter REGEXP \"^[0-9]\" ";
+				if($filter_values[$filter] == "classe")
+					$sql .= " AND $filter REGEXP \"^[0-9]\" ";
+				else if($filter_values[$filter] == "oral")
+					$sql .= " AND ($filter=\"oral\" OR $filter REGEXP \"^[0-9]\" )";
+				else
+					$sql .= " AND $filter=\"$filter_values[$filter]\" ";
 			}
 			else
 			{
@@ -197,6 +204,7 @@ function filtersCriteriaToSQL($filters, $filter_values, $rapporteur_or = true)
 
 		}
 	}
+	echo $sql;
 	return $sql;
 }
 
@@ -236,7 +244,7 @@ function checkReportIsEditable($rapport)
 {
 	$login = getLogin();
 
-	if (isSecretaire())
+	if (isBureauUser())
 	{
 		return true;
 	}
@@ -367,7 +375,14 @@ function addReportFromRequest($id_origine, $request)
 
 	if($id_origine != 0)
 	{
-		$report = getReport($id_origine);
+		try
+		{
+			$report = getReport($id_origine);
+		}
+		catch (Exception $e)
+		{
+			$id_origine = 0;
+		}
 		if(!checkReportIsEditable($report))
 			throw new Exception("Le compte ".$login." n'a pas la permission de mettre à jour le rapport, veuillez contacter le bureau");
 	}
@@ -380,7 +395,7 @@ function addReportFromRequest($id_origine, $request)
 
 	$id_nouveau = addReportToDatabase($report,false);
 
-	if(in_array($report->type, $typesRapportsConcours))
+	if(isset($report->type) && in_array($report->type, $typesRapportsConcours))
 		$candidate = updateCandidateFromRequest($request);
 
 	return getReport($id_nouveau);
@@ -661,6 +676,8 @@ function change_report_property($id_origine, $property_name, $newvalue)
 
 	//echo "Changing property " .$property_name." of ". $id_origine." for new value ".$newvalue."<br/>";
 	change_report_properties($id_origine, $data);
+	
+	return getIDOrigine($id_origine);
 }
 
 function change_report_properties($id_origine, $data)
@@ -671,13 +688,30 @@ function change_report_properties($id_origine, $data)
 
 	$request = array();
 
-	$report = getReport($id_origine);
+	try
+	{
+		$report = getReport($id_origine);
+	}
+	catch (Exception $e)
+	{
+		$id_origine = 0;	
+	}
 
+	if($id_origine != 0)
+	{
 	foreach($report as $key => $value)
 	{
 		if(isset($data[$key]))
 			$request["field".$key] = $data[$key];
 	}
+	}
+	else
+	{
+		foreach($data as $key => $value)
+		{
+				$request["field".$key] = $data[$key];
+		}
+			}
 
 
 	return addReportFromRequest($id_origine,$request);
@@ -687,16 +721,10 @@ function change_report_properties($id_origine, $data)
 
 function getVirginReports($rapporteur)
 {
-	global $empty_filter;
-
-	$filter_values = $empty_filter;
-	$filter_values['login_rapp'] = $rapporteur->login;
-	$filter_values['statut'] = 'vierge';
+	$filter_values = array('rapporteur' => $rapporteur->login, 'statut' => 'vierge');
 	$liste1 =  filterSortReports(getCurrentFiltersList(), $filter_values,getSortingValues());
 
-	$filter_values = $empty_filter;
-	$filter_values['login_rapp2'] = $rapporteur->login;
-	$filter_values['statut'] = 'vierge';
+	$filter_values = array('rapporteur2' => $rapporteur->login, 'statut' => 'vierge');
 	$liste12 =  filterSortReports(getCurrentFiltersList(), $filter_values,getSortingValues());
 
 	return array_merge($liste1,$liste2);
@@ -704,12 +732,12 @@ function getVirginReports($rapporteur)
 
 function getRapporteurReports($login)
 {
-	return filterSortReports(getCurrentFiltersList(), array("login_rapp" => $login, "id_session=" => current_session_id()) ,getSortingValues() );
+	return filterSortReports(getCurrentFiltersList(), array("rapporteur" => $login, "id_session=" => current_session_id()) ,getSortingValues() );
 }
 
 function getTodoReports($login)
 {
-	return filterSortReports(getCurrentFiltersList(), array("avancement" => "todo", login_rapp => $login, "id_session=" => current_session_id()) ,getSortingValues() );
+	return filterSortReports(getCurrentFiltersList(), array("avancement" => "todo", rapporteur => $login, "id_session=" => current_session_id()) ,getSortingValues() );
 }
 
 

@@ -93,7 +93,7 @@ global $typesRapportsIndividuels;
 
 					<table>
 						<tr>
-							<td valign=top>Rappports
+							<td valign=top>Dossiers
 								<ul>
 
 									<li><a href="?action=view&amp;reset_filter=">Tous</a></li>
@@ -112,6 +112,7 @@ global $typesRapportsIndividuels;
 												echo " <a href=\"?action=new&amp;type=".$typeEval."\">+</a>";
 											echo "</li>";
 										}
+										
 									}
 									else
 									{
@@ -127,9 +128,34 @@ global $typesRapportsIndividuels;
 									</li>
 									<?php
 										}
+									}
 										?>
 							
 							</td>
+							<?php 
+									if(is_current_session_concours())
+									{
+									?> 
+							<td valign=top>Auditions
+							<ul>
+									<?php
+										echo "<li><a href=\"?action=view&amp;reset_filter=&amp;filter_id_session=".current_session_id()."&amp;filter_type=Candidature &amp;filter_avis=oral\">Auditions</a>";
+
+										global $concours_ouverts;
+										foreach($concours_ouverts as $code => $intitule)
+										{
+											echo "<li><a href=\"?action=view&amp;reset_filter=&amp;filter_id_session=".current_session_id()."&amp;filter_type=Candidature&amp;filter_concours=$code&amp;filter_avis=oral\">Auditions $intitule</a>";
+										}
+										
+									?>
+							
+							</ul>
+							</td>
+							<?php 				
+														}
+														else
+														{
+							?>
 							<td valign=top>
 								<ul>
 									<?php
@@ -145,7 +171,6 @@ global $typesRapportsIndividuels;
 									</li>
 									<?php
 									}
-									
 								 } ?>
 								</ul>
 							</td>
@@ -164,7 +189,7 @@ global $typesRapportsIndividuels;
 											echo "<li><a href=\"?action=view&amp;reset_filter=&amp;filter_login_rapp=".getLogin()."&amp;filter_id_session=".current_session_id()."&amp;filter_type=".urlencode($value)."\">Mes ".$value."s</a>";
 											echo "</li>";
 										}
-											
+										echo "<li><a href=\"?action=view&amp;reset_filter=&amp;filter_login_rapp=".getLogin()."&amp;filter_id_session=".current_session_id()."&amp;filter_type=Candidature; filter_avis=oral\">Mes Auditions</a>";
 									}
 									?>
 
@@ -198,6 +223,7 @@ global $typesRapportsIndividuels;
 							</td>
 
 							<td valign=top>Import <?php displayImport();?>
+							</td>
 							<?php 
 							if (getUserPermissionLevel()>= NIVEAU_PERMISSION_PRESIDENT_SECRETAIRE)
 							{
@@ -219,7 +245,8 @@ global $typesRapportsIndividuels;
 									<tr><td>
 									<input type="hidden" name="action" value="change_statut"/>
 									<input type="submit" value="Changer statut"/>
-									</form></td></tr></table>';
+									</td></tr></table>
+									</form>';
 							}
 							?>
 							</td>

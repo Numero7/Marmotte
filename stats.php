@@ -2,16 +2,18 @@
 require_once('manage_sessions.inc.php');
 require_once('manage_rapports.inc.php');
 require_once('utils.inc.php');
+require_once('config.php');
 
-function countReports($filters)
+function countReports($filters, $or = true)
 {
 
+	$filters["id_session"] = current_session_id();
 	$sql = "SELECT COUNT(*) AS \"total\" FROM ".evaluations_db." WHERE id = id_origine AND statut!=\"supprime\"";
 
-	$sql .= filtersCriteriaToSQL(getCurrentFiltersList(),$filters);
+	$sql .= filtersCriteriaToSQL(getCurrentFiltersList(),$filters,$or);
 	$sql .= ";";
 
-	//echo $sql."</br>\n";
+	//echo $sql."<br/>\n";
 
 	$result = sql_request($sql);
 
@@ -49,77 +51,229 @@ function statBaseAvancement($filters)
 
 if(is_current_session_concours())
 {
-	?>
-<div id="horizontalContainer" style="float: none">
-	<?php 
 	$with_topics = false;
 	foreach($concours_ouverts as $code => $concours)
 	{
 		?>
-	<div style="float: top">
-		<h2>
-			<?php  echo $concours; ?>
-		</h2>
-		<table>
-			<tr>
-				<?php 
+<div style="float: top">
+	<h2>
+		<?php  echo $concours; ?>
+	</h2>
+	<table>
+		<tr>
+			<?php 
 
-				foreach(array("avis" => "Avis section","avis1" => "Avis rapp1","avis2" => "Avis rapp2") as $typeavis => $nomavis)
-				{
-					?>
-				<td>
-					<table class="stats">
-						<tr>
-							<th><?php  echo $nomavis;?></th>
-							<th>Total</th>
-							<?php 
+			foreach(array("avis" => "Avis section","avis1" => "Avis rapp1","avis2" => "Avis rapp2") as $typeavis => $nomavis)
+			{
+				?>
+			<td>
+				<table class="stats">
+					<tr>
+						<th><?php  echo $nomavis;?></th>
+						<th>Total</th>
+						<th>%</th>
+						<?php 
+
+						/*
+						 $topics = get_config("topics");
+						foreach($topics as $id => $topic)
+							echo "<th>$id</th>";
+						*/
+						?>
+					</tr>
+					<?php
+					$filters = array("concours" => $code, "type" => "Candidature");
+					$total = countReports($filters);
+					foreach($avis_candidature_short as $avis => $nom)
+					{
+						if($avis != "tous")
+						{
+							echo "<tr>";
+							$filters = array("concours" => $code,  "type" => "Candidature");
+							$filters[$typeavis] = $avis;
+							$count = countReports($filters);
+							echo "<td>$nom</td><td> ".$count." </td>";
+							if($total > 0 && $count > 0)
+								echo "<td> ".(int) (100.0 * $count / $total)."% </td>";
+							else
+								echo "<td></td>";
 
 							/*
-							 $topics = get_config("topics");
-							foreach($topics as $id => $topic)
-								echo "<th>$id</th>";
-							*/
-							?>
-						</tr>
-						<?php 
-						$total = 0;
-						foreach($avis_candidature_short as $avis => $nom)
-						{
-							if($avis != "tous")
-							{
-								echo "<tr>";
-								$filters = array("concours" => $code, "id_session=" => current_session_id());
-								$filters[$typeavis] = $avis;
-								$count = countReports($filters);
-								$total += $count;
-								echo "<td>$nom</td><td>".$count."</td>";
-								/*
-								 foreach($topics as $id => $topic)
-								 {
-								$filters["theme1"] = $id;
-								echo "<td>".countReports($filters)."</td>";
-								}
-								*/
-								echo "</tr>";
+							 foreach($topics as $id => $topic)
+							 {
+							$filters["theme1"] = $id;
+							echo "<td>".countReports($filters)."</td>";
 							}
+							*/
+							echo "</tr>";
 						}
-						echo "<tr><td></td><td>".$total ."</td></tr>";
-						
-						?>
+					}
+					echo "<tr><td></td><td>".$total ."</td></tr>";
 
-					</table>
-				</td>
-				<?php 
-				}
-				?>
-			</tr>
-		</table>
-	</div>
-	<?php 
-	}
-	?>
+					?>
+
+				</table>
+			</td>
+			<?php 
+			}
+			?>
+		</tr>
+	</table>
 </div>
 <?php 
+	}
+}
+?>
+
+<h1>Stats rapporteurs</h1>
+
+<?php 
+
+if(is_current_session_concours())
+{
+	$users = listUsers();
+	global $topics;
+	global $sous_jurys;
+	global $concours_ouverts;
+
+	foreach($concours_ouverts as $code => $concours)
+	{
+
+
+		echo "<h2>Concours $concours</h2>";
+
+		echo '<table class="stats">';
+
+		$topics[""] = "horssection";
+
+		$used_topics = array();
+
+
+		echo "<tr><td></td><td></td>";
+
+		foreach($topics as $topic =>$prettytopic )
+		{
+			$filters = array();
+			$filters['type'] = "Candidature";
+			$filters['concours'] = $code;
+			$filters['theme1'] = $topic;
+			if(strpos($concours,"DR") === 0 || strpos($concours,"DR") != false)
+				$filters['avis'] = "tous";
+			else
+				$filters['avis'] = "oral";
+
+			$total = countReports($filters);
+
+			if($total > 0)
+				$used_topics[$topic] = $total;
+		}
+		
+		$jurys = array();
+		foreach($sous_jurys[$code] as $val => $nom)
+		{
+			$filters = array();
+			$filters['type'] = "Candidature";
+			$filters['concours'] = $code;
+			$filters['sousjury'] = $val;
+			if(strpos($concours,"DR") === 0 || strpos($concours,"DR") != false)
+				$filters['avis'] = "tous";
+			else
+				$filters['avis'] = "oral";
+				
+			$total = countReports($filters);
+			$jurys[$val] = $total;
+		}
+			
+
+		echo '</tr><tr>';
+		echo '<td></td><td>Total</td>';
+		foreach($used_topics as $topic => $total)
+			echo '<th>'.($topic == "" ? "hs" : $topic).'</th>';
+		foreach($jurys as $jury => $total)
+			echo '<th>'.($jury == "" ? "aucun" : $jury).'</th>';
+		echo "</tr>\n";
+
+		echo '<tr><td></td><td></td>';
+		foreach($used_topics as $topic => $total)
+			echo "<td>$total</td>";
+		foreach($jurys as $jury => $total)
+			echo '<th>'.$total.'</th>';
+		echo "</tr>\n";
+		
+
+		foreach($users as $login => $data)
+		{
+			/*
+			$used = false;
+			foreach($sous_jurys[$code] as $val => $nom)
+				if(isSousJury($val,$login))
+					$used = true;
+			if(!$used)
+				continue;
+				*/
+			$filters = array();
+			$filters['type'] = "Candidature";
+			$filters['concours'] = $code;
+
+			if(strpos($concours,"DR") === 0  || strpos($concours,"DR") != false)
+				$filters['avis'] = "tous";
+			else
+				$filters['avis'] = "oral";
+
+			$filters['rapporteur'] = $login;
+			$filters['rapporteur2'] = "tous";
+			$total1 = countReports($filters,false);
+
+			$filters['rapporteur2'] = $login;
+			$filters['rapporteur'] = "tous";
+			$total2 = countReports($filters,false);
+
+			echo '<tr><td>'.$data->description.'</td>';
+			echo "<td>$total1 ($total2)</td>";
+
+				foreach($used_topics as $topic => $total	)
+				{
+					$filters['theme1'] = $topic;
+					$filters['rapporteur'] = $login;
+					$filters['rapporteur2'] = "tous";
+					$total1 = countReports($filters, false);
+					$filters['rapporteur2'] = $login;
+					$filters['rapporteur'] = "tous";
+					$total2 = countReports($filters, false);
+
+					if($total1 > 0 || $total2 > 0)
+						echo "<td>$total1 ($total2)</td>";
+					else
+						echo "<td></td>";
+				}
+
+			foreach($jurys as $jury => $total)
+				echo (isSousJury($jury,$login)? "<td>X</td>\n" : "<td></td>\n");
+			
+			echo '</tr>';
+
+		}
+		echo "</table>";
+
+		echo "<p>";
+
+		foreach($sous_jurys[$code] as $val => $nom)
+		{
+			$total = 0;
+			foreach($users as $login => $data)
+				if(isSousJury($val,$login))
+						$total += 1;
+
+			$filters = array();
+			$filters['type'] = "Candidature";
+			$filters['concours'] = $code;
+			$filters['sousjury'] = $val;
+
+			echo "Sous-jury ". $nom . " membres ".$total." auditions ".countReports($filters)."<br/>";
+		}
+		echo "</p>";
+
+	}
 }
 ?>
 
@@ -131,9 +285,9 @@ if(is_current_session_concours())
 		<?php 
 		if(is_current_session_concours())
 		{
-			echo '<th>Equivalence</th>';
+			echo "<th>Equivalence</th>\n";
 			foreach($concours_ouverts as $code => $nom)
-				echo '<th>'.$nom.'</th>';
+				echo '<th>'.$nom."</th>\n";
 		}
 		?>
 	</tr>
@@ -141,44 +295,44 @@ if(is_current_session_concours())
 
 	$users = listUsers();
 
-	$filters = array("id_session=" => current_session_id());
+	$filters = array();
 	if(countReports($filters) > 0)
 	{
-		echo '<tr><td></td><td>'.statBaseAvancement($filters).'</td>';
+		echo "<tr>\n<td></td><td></td><td>".statBaseAvancement($filters)."</td>\n";
 
 		if(is_current_session_concours())
 		{
 			$filters['type'] = "Equivalence";
-			echo '<td>'.statBaseAvancement($filters).'</td>';
+			echo '<td>'.statBaseAvancement($filters)."</td>\n";
 			$filters['type'] = "Candidature";
 			foreach($concours_ouverts as $code => $nom)
 			{
 				$filters['concours'] = $code;
-				echo '<td>'.statBaseAvancement($filters).'</td>';
+				echo '<td>'.statBaseAvancement($filters)."</td>\n";
 			}
 		}
-		echo '</tr>';
+		echo "</tr>\n";
 	}
 
 	foreach($users as $login => $data)
 	{
-		$filters = array("login_rapp" => $login, "id_session=" => current_session_id());
+		$filters = array("rapporteur" => $login);
 		if(countReports($filters) > 0)
 		{
-			echo '<tr><td>'.$data->description.'</td><td>'.statBaseAvancement($filters).'</td>';
+			echo '<tr><td>'.$data->description.'</td><td>'.$data->sousjury.'</td><td>'.statBaseAvancement($filters)."</td>\n";
 
 			if(is_current_session_concours())
 			{
 				$filters['type'] = "Equivalence";
-				echo '<td>'.statBaseAvancement($filters).'</td>';
+				echo '<td>'.statBaseAvancement($filters)."</td>\n";
 				$filters['type'] = "Candidature";
 				foreach($concours_ouverts as $code => $nom)
 				{
 					$filters['concours'] = $code;
-					echo '<td>'.statBaseAvancement($filters).'</td>';
+					echo '<td>'.statBaseAvancement($filters)."</td>\n";
 				}
 			}
-			echo '</tr>';
+			echo "</tr>\n";
 		}
 			
 	}
@@ -195,17 +349,18 @@ if(is_current_session_concours())
 	foreach($concours_ouverts as $code => $nom)
 	{
 		echo '<div style="float: left">';
-		echo '<table class="stats"><tr><td>';
+		echo '<table class="stats">';
+
 		$filters = array("concours" => $code, "avis1" => "", "type"=>"Candidature");
 		$missing1 = filterSortReports(getCurrentFiltersList(),$filters);
 		$filters = array("concours" => $code, "avis2" => "", "type"=>"Candidature");
 		$missing2 = filterSortReports(getCurrentFiltersList(),$filters);
 
 		foreach($missing1 as $report)
-			echo "<tr><td>".$report->concours . " ". $report->nom . " " . $report->prenom."</td><td>(rapp1 ". $report->rapporteur. ")</tr>";
+			echo "<tr><td>".$report->concours . " ". $report->nom . " " . $report->prenom."</td><td>(rapp1 ". $report->rapporteur. ")</td></tr>\n";
 		foreach($missing2 as $report)
-			echo "<tr><td>".$report->concours . " ". $report->nom . " " . $report->prenom."</td><td>(rapp2 ". $report->rapporteur2. ")</tr>";
-			echo '</td></tr></table></div>';
-		}
-?>
+			echo "<tr><td>".$report->concours . " ". $report->nom . " " . $report->prenom."</td><td>(rapp2 ". $report->rapporteur2. ")</td></tr>\n";
+		echo '</table></div>';
+	}
+	?>
 </div>

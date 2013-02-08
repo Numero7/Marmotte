@@ -9,6 +9,7 @@ function sessionArrays()
 		$sessions = array();
 		$sql = "SELECT * FROM ".sessions_db." ORDER BY date DESC;";
 		$result = sql_request($sql);
+		date_default_timezone_set("Europe/Paris");
 		while ($row = mysql_fetch_object($result))
 			$sessions[$row->id] = $row->nom." ".date("Y", strtotime($row->date));
 		$sessions[-1] = "Toutes les sessions";
@@ -22,6 +23,7 @@ function session_year($id_session)
 {
 	$sessions = sessionArrays();
 	$nom_session = $sessions[$id_session];
+	date_default_timezone_set('Europe/Paris');
 	$result = date("Y", strtotime(substr($nom_session,strlen($nom_session) -4,4) ) );	
 	return $result;
 }

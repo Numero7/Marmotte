@@ -23,6 +23,7 @@ function getScrollXY() {
 	window.alert( 'Horizontal scrolling = ' + scrOfX + '\nVertical scrolling = ' + scrOfY );
 }
 
+
 </script>
 
 <div class="large">
@@ -35,7 +36,7 @@ function getScrollXY() {
  -->
 	<div class="content">
 
-	
+
 		<?php 
 		require_once('manage_sessions.inc.php');
 		require_once('manage_unites.inc.php');
@@ -43,7 +44,7 @@ function getScrollXY() {
 		require_once('manage_candidates.inc.php');
 		require_once('db.inc.php');
 
-				
+
 		$id_rapport = isset($_REQUEST["id"]) ? $_REQUEST["id"] : -1;
 		$id_origine = isset($_REQUEST["id_origine"]) ? $_REQUEST["id_origine"] : 0;
 		$id_toupdate = isset($_REQUEST["id_toupdate"]) ? $_REQUEST["id_toupdate"] : 0;
@@ -56,14 +57,35 @@ function getScrollXY() {
 		if(isset($_REQUEST["reset_tri"]))
 			resetOrder();
 
+		function scrollToId($id)
+		{
+
+
+			echo('
+						<script type="text/javascript">');
+			
+			echo('
+						document.getElementById("'.$id.'").scrollIntoView();');
+			/*
+			 echo('
+			 		var elt = document.getElementById( '.$id.' );
+			 		var top = (	return elt.offsetTop + ( elt.offsetParent ? elt.offsetParent.documentOffsetTop() : 0 )) - ( window.innerHeight / 2 );
+			 		window.scrollTo( 0, top );
+			 		');
+			*/
+			echo('		</script>');
+				
+		}
 		function displayReports($centralid = 0)
 		{
-			
+
 			displaySummary(getCurrentFiltersList(), getFilterValues(), getSortingValues());
-			echo('
-					<script type="text/javascript">
-					document.getElementById("t'.$centralid.'").scrollIntoView();
-					</script>');
+
+			if($centralid != 0)
+			{
+				$id  = getIDOrigine($centralid);
+				scrollToId('t'.$id);
+			}
 
 		};
 
@@ -104,7 +126,7 @@ function getScrollXY() {
 					}
 					else if(isset($_REQUEST["retourliste"]))
 					{
-						displayReports();
+						displayReports($id_rapport);
 					}
 					else
 					{
@@ -166,7 +188,7 @@ function getScrollXY() {
 					else
 					{
 						$done = false;
-						
+
 						foreach($concours_ouverts as $concours => $nom)
 						{
 							if(isset($_REQUEST['importconcours'.$concours]))
@@ -255,20 +277,26 @@ function getScrollXY() {
 					}
 					else
 						throw new Exception("<p>Vous n'avez pas les droits nécessaires pour effectuer cette action, veuillez nous contacter (Yann ou Hugo) en cas de difficultés.</p>");
-				case 'adminnewpermissions':
-					if (isSecretaire())
+				case 'infosrapporteur':
+					if (isBureauUser())
 					{
 						if (isset($_REQUEST["login"]) and isset($_REQUEST["permissions"]))
 						{
+							global  $concours_ouverts;
 							$login = $_REQUEST["login"];
 							$permissions = $_REQUEST["permissions"];
-							changeUserPermissions($login,$permissions);
+							$sousjury = "";
+							foreach($concours_ouverts as $concours => $nom)
+								$sousjury .= $_REQUEST["sousjury".$concours];
+									
+							changeUserInfos($login,$permissions,$sousjury);
 						}
 						else
 						{
 							echo "<p><strong>Erreur :</strong> Vous n'avez fourni toutes les informations nécessaires pour modifier les droits de cet utilisateur, veuillez nous contacter (Yann ou Hugo) en cas de difficultés.</p>";
 						}
 						include "admin.inc.php";
+						scrollToId('infosrapporteur');
 					}
 					else
 					{
@@ -386,13 +414,17 @@ function getScrollXY() {
 					creercandidats();
 					include "admin.inc.php";
 					break;
+				case 'injectercandidats':
+					injectercandidats();
+					include "admin.inc.php";
+					break;
 				case "displayunits":
 					include "unites.php";
 					break;
 				case "displaystats":
 					include "stats.php";
 					break;
-					case "";
+				case "";
 				default:
 					if(substr($action,0,3)=="set")
 					{
