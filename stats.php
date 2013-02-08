@@ -3,6 +3,78 @@ require_once('manage_sessions.inc.php');
 require_once('manage_rapports.inc.php');
 require_once('utils.inc.php');
 
+function fieldsToSQL($columnFilters, $rowFilter)
+{
+	$result = $rowFilter;
+	foreach($columnFilters as $title => $fieldname)
+	{
+		$result .= ", "; 
+		$result .= $fieldname;
+	}
+	return $result;
+}
+
+function computeArrays($filters, $columnFilters, $rowFilter)
+{
+	$fieldsSQL = fieldsToSQL($columnFilters, $rowFilter);
+
+  	$sql = "SELECT $fieldsSQL,COUNT(*) AS \"total\" FROM ".evaluations_db." WHERE id = id_origine AND statut!=\"supprime\"";
+	$sql .= filtersCriteriaToSQL(getCurrentFiltersList(),$filters);
+	$sql .= "GROUP BY ".$fieldsSQL;
+	$sql .= ";";
+
+	$result = sql_request($sql);
+
+	if($result == false)
+		throw new Exception("Echec de l'execution de la requete <br/>".$sql."<br/>");
+
+	$result = array();
+	while($truc = mysql_fetch_object($result))
+	{
+		$current = $result;
+		foreach($columnFilters as $title => $fieldname)
+		{
+			if (!isset($current[$truc->$fieldname]))
+			{
+				$current[$truc->$fieldname] = array();
+			}
+			$current = $current[$truc->$fieldname];
+		}
+		if (!isset($current[$truc->$rowFilter]))
+		{
+			$current[$truc->$rowFilter] = $truc->total;
+		}
+	}
+	return $result;
+}
+
+function displayArrays($filters, $columnFilters, $rowFilters)
+{
+	$tabs = array();
+	foreach($rowFilters as $rowFilter){
+		$tab = computeArrays($filters, $columnFilters, $rowFilter);
+		$tabs[$rowFilter] = $tab;
+	}
+	//displayArraysAux($tabs,$currLevel,$limitLevel);
+}
+
+function displayArraysAux($tabs,$currLevel,$limitLevel)
+{
+	if ($currLevel == $limitLevel){
+		foreach($tabs as $key )
+		{
+		}
+	}
+	else
+	{
+		foreach($tabs as $key => $tab)
+		{
+			echo $key."<br>";
+			displayArraysAux($tab,$currLevel+1,$limitLevel);
+		}		
+	}
+}
+
 function countReports($filters)
 {
 
@@ -45,7 +117,6 @@ function statBaseAvancement($filters)
 <h1>Avis Candidatures</h1>
 
 <?php 
-
 
 if(is_current_session_concours())
 {
