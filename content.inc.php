@@ -35,6 +35,7 @@ function getScrollXY() {
  -->
 	<div class="content">
 
+	
 		<?php 
 		require_once('manage_sessions.inc.php');
 		require_once('manage_unites.inc.php');
@@ -42,10 +43,11 @@ function getScrollXY() {
 		require_once('manage_candidates.inc.php');
 		require_once('db.inc.php');
 
+				
 		$id_rapport = isset($_REQUEST["id"]) ? $_REQUEST["id"] : -1;
 		$id_origine = isset($_REQUEST["id_origine"]) ? $_REQUEST["id_origine"] : 0;
 		$id_toupdate = isset($_REQUEST["id_toupdate"]) ? $_REQUEST["id_toupdate"] : 0;
-		
+
 		$action = isset($_REQUEST["action"]) ? $_REQUEST["action"] : "";
 
 		if(isset($_REQUEST["reset_filter"]))
@@ -53,9 +55,10 @@ function getScrollXY() {
 
 		if(isset($_REQUEST["reset_tri"]))
 			resetOrder();
-		
+
 		function displayReports($centralid = 0)
 		{
+			
 			displaySummary(getCurrentFiltersList(), getFilterValues(), getSortingValues());
 			echo('
 					<script type="text/javascript">
@@ -99,6 +102,10 @@ function getScrollXY() {
 					{
 						displayReport(previouss($id_rapport));
 					}
+					else if(isset($_REQUEST["retourliste"]))
+					{
+						displayReports();
+					}
 					else
 					{
 						displayReport($id_rapport);
@@ -112,14 +119,28 @@ function getScrollXY() {
 					break;
 				case 'update':
 
+					$next = nextt($id_origine);
+					$previous = previouss($id_origine);
+
 
 					if(isset($_REQUEST["editnext"]))
 					{
-						editReport(nextt($id_origine));
+						//Hugo: tant qu'on est en dev je préfère laisser les exceptions remonter jusqu'à
+						//l'utilisateur/testeur
+						//mais je vosis l'idée j'ai modifié editReport en conséquence
+						//try{editReport(nextt($id_origine));}
+						//catch(Exception $e)
+						//{displayReport(nextt($id_origine));}
+						editReport($next);
 					}
 					else if(isset($_REQUEST["editprevious"]))
 					{
-						editReport(previouss($id_origine));
+						//Hugo: tant qu'on est en dev je préfère laisser les exceptions remonter jusqu'à
+						//l'utilisateur/testeur
+						//try{editReport(previouss($id_origine));}
+						//catch(Exception $e)
+						//{displayReport(previouss($id_origine));}
+						editReport($previous);
 					}
 					else if(isset($_REQUEST["retourliste"]))
 					{
@@ -127,29 +148,55 @@ function getScrollXY() {
 						unset($_REQUEST["id"]);
 						displayReports($id_origine);
 					}
-						
-					$id_nouveau = addReportFromRequest($id_origine,$_REQUEST);
-					$candidate = updateCandidateFromRequest($_REQUEST);
-						
-					if(isset($_REQUEST["deleteandeditnext"]))
+					else if(isset($_REQUEST["deleteandeditnext"]))
 					{
 						$before = deleteReport($id_origine);
 						if($before != -1)
 							editReport($before);
-						else
+						else if($next != -1)
 							editReport($next);
+						else
+							displayReports();
 					}
-					else if(isset($_REQUEST["submitandeditnext"]))
+					else if(isset($_REQUEST['ajoutfichier']))
 					{
-						editReport($next);
+						include("upload.inc.php");
+						editReport($id_origine);
 					}
-					else if(isset($_REQUEST["submitandview"]))
+					else
 					{
-						displayReport($id_nouveau);
-					}
-					else if(isset($_REQUEST["submitandkeepediting"]))
-					{
-						editReport($id_nouveau);
+						$done = false;
+						
+						foreach($concours_ouverts as $concours => $nom)
+						{
+							if(isset($_REQUEST['importconcours'.$concours]))
+							{
+								$done = true;
+								$newreport = update_report_from_concours($id_origine,$concours, getLogin());
+								editReport($newreport->id);
+								break;
+									
+							}
+						}
+
+
+						if(!$done)
+						{
+							$report = addReportFromRequest($id_origine,$_REQUEST);
+
+							if(isset($_REQUEST["submitandeditnext"]))
+							{
+								editReport($next);
+							}
+							else if(isset($_REQUEST["submitandview"]))
+							{
+								displayReport($report->id);
+							}
+							else if(isset($_REQUEST["submitandkeepediting"]))
+							{
+								editReport($report->id);
+							}
+						}
 					}
 
 					break;
@@ -158,7 +205,7 @@ function getScrollXY() {
 					{
 						$type = $_REQUEST["type"];
 						$report = newReport($type);
-						displayEditableReport($report);
+						displayEditableReport($report,isReportEditable($report));
 					}
 					else
 					{
@@ -173,65 +220,43 @@ function getScrollXY() {
 						$pwd1 = $_REQUEST["newpwd1"];
 						$pwd2 = $_REQUEST["newpwd2"];
 						$login = $_REQUEST["login"];
+						$envoiparemail = isset($_REQUEST["envoiparemail"])  ? $_REQUEST["envoiparemail"] : false;
+
 						if (($pwd1==$pwd2))
 						{
-							if (changePwd($login,$old,$pwd1,$pwd2))
-							{
+							if (changePwd($login,$old,$pwd1,$pwd2,$envoiparemail))
 								echo "<p><strong>Mot de passe modifié avec succès.</strong></p>";
-								addCredentials($_SESSION["login"],$pwd1);
-							}
 						}
 						else
-						{
-							echo "<p><strong>Erreur :</strong> Les deux saisies du nouveau mot de passe  diffèrent, veuillez réessayer.</p>";
-						}
+							throw new Exception("Erreur :</strong> Les deux saisies du nouveau mot de passe  diffèrent, veuillez réessayer.</p>");
 					}
 					else
-					{
-						echo "<p><strong>Erreur :</strong> Vous n'avez fourni les informations nécessaires pour modifier votre mot de passe, veuillez nous contacter (Yann ou Hugo) en cas de difficultés.</p>";
-					}
-					break;
-				case "newpwd":
-					include "changePwd.inc.php";
-					break;
-				case "adminnewpwd":
-					if(isSuperUser())
-						include 'admin.inc.php';
-					break;
-				case 'exportdb':
-					$dbname = isset($_REQUEST['dbname']) ? $_REQUEST['dbname'] : "";
-					echo export_db($dbname) . "<br/>";
-					break;
-				case 'importdb':
-					$dbname = isset($_REQUEST['dbname']) ? $_REQUEST['dbname'] : "";
-					echo import_db($dbname) . "<br/>";
+						throw new Exception("Erreur :</strong> Vous n'avez fourni les informations nécessaires pour modifier votre mot de passe, veuillez nous contacter (Yann ou Hugo) en cas de difficultés.</p>");
+					include 'admin.inc.php';
+
 					break;
 				case 'admin':
 					if (isSecretaire())
 						include "admin.inc.php";
 					else
-						echo "<p>Vous n'avez pas les droits nécessaires pour effectuer cette action, veuillez nous contacter (Yann ou Hugo) en cas de difficultés.</p>";
+						throw new Exception("<p>Vous n'avez pas les droits nécessaires pour effectuer cette action, veuillez nous contacter (Yann ou Hugo) en cas de difficultés.</p>");
 					break;
 				case 'admindeleteaccount':
-					if (isSuperUser())
+					if (isSecretaire())
 					{
 						if (isset($_REQUEST["login"]))
 						{
 							$login = $_REQUEST["login"];
 							deleteUser($login);
+							include "admin.inc.php";
 						}
 						else
-						{
-							echo "<p><strong>Erreur :</strong> Vous n'avez fourni toutes les informations nécessaires pour créer un utilisateur, veuillez nous contacter (Yann ou Hugo) en cas de difficultés.</p>";
-						}
-						include "admin.inc.php";
+							throw new Exception("<p><strong>Erreur :</strong> Vous n'avez fourni toutes les informations nécessaires pour créer un utilisateur, veuillez nous contacter (Yann ou Hugo) en cas de difficultés.</p>");
 					}
 					else
-					{
-						echo "<p>Vous n'avez pas les droits nécessaires pour effectuer cette action, veuillez nous contacter (Yann ou Hugo) en cas de difficultés.</p>";
-					}
+						throw new Exception("<p>Vous n'avez pas les droits nécessaires pour effectuer cette action, veuillez nous contacter (Yann ou Hugo) en cas de difficultés.</p>");
 				case 'adminnewpermissions':
-					if (isSuperUser())
+					if (isSecretaire())
 					{
 						if (isset($_REQUEST["login"]) and isset($_REQUEST["permissions"]))
 						{
@@ -250,8 +275,15 @@ function getScrollXY() {
 						echo "<p>Vous n'avez pas les droits nécessaires pour effectuer cette action, veuillez nous contacter (Yann ou Hugo) en cas de difficultés.</p>";
 					}
 					break;
+				case 'checkpwd':
+					if(isset($_REQUEST["password"]))
+					{
+						$password = $_REQUEST["password"];
+						checkPasswords($password);
+					}
+					break;
 				case 'adminnewaccount':
-					if (isSuperUser())
+					if (isSecretaire())
 					{
 						if (isset($_REQUEST["email"]) and isset($_REQUEST["description"]) and isset($_REQUEST["newpwd1"]) and isset($_REQUEST["newpwd2"]) and isset($_REQUEST["login"]))
 						{
@@ -311,9 +343,19 @@ function getScrollXY() {
 					{
 						echo "Cannot process action ajoutlabo: missing data<br/>";
 					}
+					include "admin.inc.php";
 					break;
-				case 'extrairecandidats':
-					echo extraction_candidats();
+				case 'deletelabo':
+					if(isset($_REQUEST["unite"]))
+					{
+						deleteUnit($_REQUEST["unite"]);
+						echo "Deleted unit \"".$_REQUEST["unite"]."\"<br/>";
+					}
+					else
+					{
+						echo "Cannot process action ajoutlabo: missing data<br/>";
+					}
+					include "admin.inc.php";
 					break;
 				case 'sqlrequest':
 					if(isset($_REQUEST['formula']))
@@ -325,13 +367,32 @@ function getScrollXY() {
 					{
 						echo "Empty formula";
 					}
+					include "admin.inc.php";
 					break;
 				case 'mailing':
 				case 'email_rapporteurs':
 					include 'mailing.inc.php';
 					break;
-
-				case "";
+				case 'createhtpasswd':
+					createhtpasswd();
+					displayReports();
+					include "admin.inc.php";
+					break;
+				case 'trouverfichierscandidats':
+					link_files_to_candidates("dossiers/Dossiers/");
+					include "admin.inc.php";
+					break;
+				case 'creercandidats':
+					creercandidats();
+					include "admin.inc.php";
+					break;
+				case "displayunits":
+					include "unites.php";
+					break;
+				case "displaystats":
+					include "stats.php";
+					break;
+					case "";
 				default:
 					if(substr($action,0,3)=="set")
 					{
@@ -342,7 +403,7 @@ function getScrollXY() {
 					}
 					else
 					{
-						echo welcome_message;
+						echo get_config("welcome_message");
 						displayReports();
 					}
 					break;

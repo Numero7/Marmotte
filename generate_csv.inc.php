@@ -1,41 +1,59 @@
 <?php
 
-function getReportsAsCSV($filter_values, $sort_criteria = "", $sep ="," , $del="\n")
+
+function compileObjectAsCSV($fields, $rows,$sep =";" , $enc='"', $del="\n")
 {
-	global $fieldsAll;
-
-	$specialfields = array("id");
-
 	$result = "";
 
 	$first = true;
-	foreach($fieldsAll as $field => $value)
+	foreach($fields as $field)
 	{
-		if(!in_array($field,$specialfields))
-		{
-			$result.= ($first ? "" : $sep) .'"'.$field.'"';
+			$result.= ($first ? "" : $sep) .$enc.$field.$enc;
 			$first = false;
-		}
 	}
+	
 	$result.=$del;
-
-	$rows = filterSortReports(getCurrentFiltersList(), $filter_values, $sort_criteria);
 
 	foreach($rows as $row)
 	{
-	$first = true;
-		foreach($fieldsAll as $field => $value)
+		$first = true;
+		foreach($fields as $field)
 		{
-			if(!in_array($field,$specialfields))
-			{
-				$result.= ($first ? "" : $sep).'"' .addslashes($row->$field).'"';
+				$result.= ($first ? "" : $sep).$enc.(isset($row->$field) ? str_replace('"', '#', $row->$field) :"").$enc;
 				$first = false;
-			}
 		}
 		$result.=$del;
 	}
-
 	return $result;
 }
+
+function compileReportsAsCSV($rows)
+{
+	global $empty_report;
+	global $mandatory_export_fields;
+	
+	if(count($rows) < 1)
+		throw new Exception("Nothing to export");
+	
+	$type = $rows[0]->type;
+	foreach($rows as $report)
+		if($report->type != $type && !isSecretaire())
+			throw new Exception("Cannot export different type of reports as csv, please filter one report type exclusively");
+	
+	$activefields = array_unique(array_merge($mandatory_export_fields, get_editable_fields($rows[0])));
+	
+	return compileObjectAsCSV($activefields, $rows);
+}
+
+function compileUnitsAsCSV($rows)
+{
+	global $fieldsUnitsDB;
+	$fields = array();
+	foreach($fieldsUnitsDB as $field => $value)
+		$fields[] = $field;
+	
+	return compileObjectAsCSV($fields, $rows);
+}
+
 
 ?>

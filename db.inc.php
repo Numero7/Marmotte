@@ -1,15 +1,22 @@
 <?php
-require_once('configDB.inc.php');
+require_once('config/configDB.inc.php');
 
 function db_connect($serverName,$dbname,$login,$password)
 {
 	$dbh = @mysql_connect($serverName, $login, $password);
 	if ($dbh)
 	{
-		@mysql_select_db($dbname, $dbh) or die ("<strong>Error: Could not access the required table!</strong>");
-		mysql_query("SET NAMES utf8;");
+		if(@mysql_select_db($dbname, $dbh))
+		{
+			mysql_query("SET NAMES utf8;");
+			return $dbh;
+		}
 	}
-	return $dbh;
+
+	$msg  = "Could not connect to the database '".$dbname."' on the server '".$serverName."'<br/><br/><br/>";
+	$msg .= "Please properly configure the databse access in the file config/configDB.inc.php<br/>";
+	$msg .= "and/or initialize the database with <h1><a href=\"marmotte.sql\">this SQL script</a></h1></br></br></br>.";
+	throw new Exception($msg);
 } ;
 
 function db_disconnect(&$dbh)

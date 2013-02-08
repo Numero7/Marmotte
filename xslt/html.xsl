@@ -36,14 +36,10 @@
 	</tr>
 	<tr>
 		<td  width="250">
-			<B>Objet de l'évaluation:</B><br/> <xsl:value-of select="prettytype"/>
+			<xsl:value-of disable-output-escaping="yes" select="entetegauche"/>
 		</td>
 		<td  width="350">
-			<B>Nom, prénom et affectation du chercheur:</B><br/>
-			<xsl:value-of select="nom"/><xsl:text> </xsl:text>
-			<xsl:value-of select="prenom"/><br/>
-			<xsl:value-of select="unite"/>
-			
+			<xsl:value-of disable-output-escaping="yes" select="entetedroit"/>
 		</td>
 	</tr>
 </table>
@@ -52,7 +48,7 @@
 <tr>
 <xsl:text> </xsl:text>
 <br/>
-<td   height="400">
+<td  height="400">
 <p><B>Appréciations générales et recommandations de la section :</B><br/>
 <small>
 <i> Ce rapport a été établi après délibérations de la section, sous la responsabilité de son président, à partir des appréciations du rapporteur, des observations et recommandations de la section.<br/>
@@ -64,14 +60,15 @@ Les avis émis par les sections ne préjugent pas de la décision qui sera prise
 
 
 <p>
-<xsl:value-of select="rapport"/>
+<xsl:value-of disable-output-escaping="yes" select="rapport"/>
 </p>
 
 </td>
 </tr>
-
 <tr>
 <td>
+<br/>
+<br/>
 <table>
 <tr>
 	<td><xsl:text> </xsl:text></td>
@@ -79,7 +76,7 @@ Les avis émis par les sections ne préjugent pas de la décision qui sera prise
 		Le <xsl:value-of select="date"/>,
 	</td>
 	<td rowspan="3">
-		<img height="150" width="150" src="img/signature.jpg"></img>
+		<img height="150" width="150" src="img/signatureX.jpg"></img>
 	</td>
 	
 </tr>
@@ -97,51 +94,29 @@ Les avis émis par les sections ne préjugent pas de la décision qui sera prise
 </tr>
 </table>
 
-<table cellpadding="2" cellspacing="1" border="1" style="text-align:left;">
-<tr>
-<td colspan="2" width="660">
-<B>
-<xsl:value-of select="uppercasetype"/><br/>
-Avis de la section sur l’activité du chercheur
-</B>
-</td>
-</tr>
-<tr>
-<td width="30">
-<B><xsl:text> </xsl:text><xsl:if test="avis= 'favorable' "><xsl:text>X</xsl:text></xsl:if></B>
-</td>
-<td width="630">
-	<B>Avis favorable</B>	
-	<small> (l’activité du chercheur est conforme à ses obligations statutaires)
-	</small>
-	</td></tr>
-<tr><td>
-<B><xsl:text> </xsl:text><xsl:if test="avis= 'differe' "><xsl:text>X</xsl:text></xsl:if></B>
-</td><td><B>Avis différé</B>
-<small> (l’évaluation est renvoyée à la session suivante en raison de l’insuffisance ou de l'absence d'éléments du dossier)
-	</small>
-</td></tr>
-<tr><td>
-<B><xsl:text> </xsl:text><xsl:if test="avis= 'reserve' "><xsl:text>X</xsl:text></xsl:if></B>
-</td><td><B>Avis réservé</B>
-<small> (la section a identifié dans l’activité du chercheur un ou plusieurs éléments qui nécessitent un suivi spécifique)
-	</small>
-
-</td></tr>
-<tr>
-<td>
-
-<B><xsl:text> </xsl:text><xsl:if test="avis= 'alerte' "><xsl:text>X</xsl:text></xsl:if></B>
-
-</td><td><B>Avis d'alerte</B>
-<small> (la section exprime des inquiétudes sur l’évolution de l’activité du chercheur))
-	</small>
+<xsl:if test="checkboxes">
+	<table cellpadding="2" cellspacing="1" border="1" style="text-align:left;">
+		<tr>
+			<td colspan="2" width="665">
+				<xsl:value-of  disable-output-escaping="yes" select="checkboxes/@titre"/>
+			</td>
+		</tr>
+		<xsl:for-each select="checkboxes/checkbox">
+			<tr>
+				<td width="25">
+					<xsl:if test="./@mark = 'checked'"><B>X</B></xsl:if>
+					<xsl:if test="./@mark != 'checked'"><xsl:text> </xsl:text></xsl:if>
+				</td>
+				<td width="640">
+				<xsl:text> </xsl:text>
+					<xsl:value-of disable-output-escaping="yes" select="."/>
+				</td>
+			</tr>
+		</xsl:for-each>
+	</table>
+</xsl:if>
 </td></tr>
 </table>
-
-</td>
-</tr>
-</table>
-
+<xsl:if test="position()!=last()"><hr/></xsl:if>
 </xsl:template>
 </xsl:stylesheet>

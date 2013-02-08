@@ -2,10 +2,33 @@
 
 require_once('config.inc.php');
 require_once('manage_sessions.inc.php');
+require_once('generate_xml.inc.php');
 
 function init_session()
 {
-	set_current_session_id(current_session);
+	global $current_session;
+	set_current_session_id(get_config("current_session"));
+	
+	ini_set("session.gc_maxlifetime", 3600);
+	//echo "Timeout: ". (ini_get("session.gc_maxlifetime")/60)." minutes<br/>";
+	
+}
+
+function createhtpasswd()
+{
+	$list = listUsers(true);
+	if($handle=fopen(".htpasswd","w"))
+	{
+		foreach($list as $user => $data)
+			fwrite($handle,$user.":".$data->passHash."\n");
+		fclose($handle);
+		echo "Generated htpasswd.<br/>";
+	}
+	else
+	{
+		throw new Exception("Failed to open htpasswd file for writing");
+	}
+	
 }
 
 function getDescription($login)
@@ -25,19 +48,22 @@ function getDescription($login)
 function listRapporteurs()
 {
 	global $users_not_rapporteur;
-	
+
 	$empty[''] = (object) array();
 	$empty['']->description = "";
 	$result = array_merge($empty,listUsers());
-	
+
 	foreach($users_not_rapporteur as $user)
 		unset($result[$user]);
 
 	return $result;
 }
 
-function listUsers()
+function listUsers($forcenew = false)
 {
+	if($forcenew)
+		unset($_SESSION['all_users']);
+		
 	if(!isset($_SESSION['all_users']))
 	{
 		$listusers = array();
@@ -68,7 +94,7 @@ function getUserPermissionLevel($login = "")
 		$login = $_SESSION["login"];
 
 	$login = strtolower($login);
-	
+
 	if ($login == "admin")
 		return NIVEAU_PERMISSION_SUPER_UTILISATEUR;
 	$users = listUsers();
@@ -153,6 +179,18 @@ function authenticateBase($login,$pwd)
 	return false;
 }
 
+function checkPasswords($password)
+{
+	$users = listUsers();
+	foreach($users as $login => $data)
+	{
+		if(authenticateBase($login, $password))
+			echo $login." a le mot de passe '". $password."'<br/>";
+		else
+			echo "Checked ".$login."<br/>";
+	}
+}
+
 function authenticate()
 {
 	if (isset($_SESSION['login']) and isset($_SESSION['pass']))
@@ -170,44 +208,51 @@ function getPassHash($login)
 	$result=mysql_query($sql);
 	if ($row = mysql_fetch_object($result))
 	{
-		return $row->passHash;
+		//There is no upper/lower case filter in sql requests
+		if($row->login == $login)
+			return $row->passHash;
 	}
 	return NULL;
 } ;
 
-function changePwd($login,$old,$new1,$new2)
+function changePwd($login,$old,$new1,$new2, $envoiparemail)
 {
 	$currLogin = getLogin();
-	if ($currLogin==$login or isSuperUser())
-	{
-		if (authenticateBase($login,$old) or isSuperUser())
+	$users = listUsers();
+		if (authenticateBase($login,$old) or isSecretaire())
 		{
 			$oldPassHash = getPassHash($login);
 			if ($oldPassHash != NULL)
 			{
 				$newPassHash = crypt($new1, $oldPassHash);
 				$sql = "UPDATE ".users_db." SET passHash='$newPassHash' WHERE login='$login';";
-				mysql_query($sql);
+				sql_request($sql);
+				
+				createhtpasswd();
+				
+				if(getLogin() == $login)
+					addCredentials($login,$new1);
+					
+				if($envoiparemail)
+				{
+					$body = "Votre mot de passe pour le site \r\n".curPageURL()."\r\n a été mis à jour:\r\n";
+					$body .= "\t\t\t login: '".$login."'\r\n";
+					$body .= "\t\t\t motdepasse: '".$new1."'\r\n";
+					$body .= "\r\n\r\n\t Amicalement, ".get_config("secretaire").".";
+					email_handler($users[$login]->email,"Votre compte Marmotte",$body);
+				}
+				
 				return true;
 			}
 		}
 		else
-		{
-			echo "<p><strong>Erreur :</strong> La saisie du mot de passe courant est incorrecte, veuillez réessayer.</p>";
-			return false;
-		};
-	}
-	else
-	{
-		echo "<p><strong>Erreur :</strong> Seuls les administrateurs du site peuvent modifier les mots de passes d'autres utilisateurs, veuillez nous contacter (Yann ou Hugo) en cas de difficultés.</p>";
-		return false;
-	}
+			throw new Exception("La saisie du mot de passe courant est incorrecte, veuillez réessayer.");
 }
 
 
 function changeUserPermissions($login,$permissions)
 {
-	if (isSuperUser())
+	if (isSecretaire())
 	{
 		if ($permissions<=getUserPermissionLevel())
 		{
@@ -230,7 +275,7 @@ function existsUser($login)
 
 function createUser($login,$pwd,$desc,$email, $envoiparemail)
 {
-	if (isSuperUser())
+	if (isSecretaire())
 	{
 		if(existsUser($login))
 			throw new Exception("Failed to create user: le login '".$login."' est déja utilisé.");
@@ -238,22 +283,25 @@ function createUser($login,$pwd,$desc,$email, $envoiparemail)
 			throw new Exception("Failed to create user: empty description.");
 
 		unset($_SESSION['all_users']);
-		
+
 		$passHash = crypt($pwd);
 		$sql = "INSERT INTO ".users_db." (login,passHash,description,email) VALUES ('".mysql_real_escape_string($login)."','".mysql_real_escape_string($passHash)."','".mysql_real_escape_string($desc)."','".mysql_real_escape_string($email)."');";
 		mysql_query($sql);
+		
+		createhtpasswd();
+		
 		if($envoiparemail)
 		{
 			$body = "Marmotte est un site web destiné à faciliter la répartition, le dépôt, l'édition et la production\r\n";
 			$body .= "des rapports par les sections du comité national.\r\n";
-			$body .= "\r\nLe site est accessible à l'adresse \r\n\t\t\t".addresse_du_site."\r\n";
+			$body .= "\r\nLe site est accessible à l'adresse \r\n\t\t\t".curPageURL()."\r\n";
 			$body .= "\r\nCe site a été développé par Hugo Gimbert et Yann Ponty.\r\n";
-			$body .= "\r\nL'accès au site est restreint aux membres de la section ".section_nb." qui doivent s'authentifier pour y accéder et déposer, éditer ou consulter des rapports.\r\n";
+			$body .= "\r\nL'accès au site est restreint aux membres de la section ".get_config("section_nb")." qui doivent s'authentifier pour y accéder et déposer, éditer ou consulter des rapports.\r\n";
 			$body .= "\r\nUn compte Marmotte vient d'être créé pour vous:\r\n\r\n";
 			$body .= "\t\t\t login: '".$login."'\r\n";
 			$body .= "\t\t\t motdepasse: '".$pwd."'\r\n";
 			$body .= "\r\nLors de votre première connexion vous pourrez changer votre mot de passe.\r\n";
-			$body .= "\r\n\r\n\t Amicalement, ".secretaire.".";
+			$body .= "\r\n\r\n\t Amicalement, ".get_config("secretaire").".";
 			email_handler($email,"Votre compte Marmotte",$body);
 		}
 		return "Utilisateur ".$login." créé avec succès.";
@@ -262,11 +310,12 @@ function createUser($login,$pwd,$desc,$email, $envoiparemail)
 
 function deleteUser($login)
 {
-	if (isSuperUser())
+	if (isSecretaire())
 	{
 		unset($_SESSION['all_users']);
 		$sql = "DELETE FROM ".users_db." WHERE login='".mysql_real_escape_string($login)."';";
 		mysql_query($sql);
+		createhtpasswd();
 	}
 }
 

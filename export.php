@@ -41,7 +41,11 @@ if($dbh!=0)
 								echo "<p><B>Echec de la mise a jour du rapport: ".$exc->getMessage()."<br/></B></p>";
 							}
 					}
-					$type = isset($_REQUEST["type"]) ? $_REQUEST["type"] :  "xml";
+
+					if(!isset($_REQUEST["type"]))
+						throw new Exception("No type specified for exportation");
+					$type = $_REQUEST["type"];
+
 
 					if ( array_key_exists($type, $typeExports))
 					{
@@ -51,71 +55,122 @@ if($dbh!=0)
 						$mime = $conf["mime"];
 						$xslpath = $conf["xsl"];
 
-						if($type=="latex" || $type=="pdf" || $type=="zip")
+						switch($type)
 						{
-							$xml_reports = getReportsAsXML(getFilterValues(), getSortingValues());
-							$filename = "";
+							case "pdf":
+							case "zip":
 
-							if($type =="pdf")
-							{
-								$xml_reports->save('reports/reports.xml');
-								echo "<script>window.location = 'create_reports.php'</script>";
-							}
+								if(!isSecretaire())
+									throw new Exception("Zip and pdf exports are only for secretaray and president");
 
-							if($type=="zip")
-							{
-								$xml_reports->save('reports/reports.xml');
-								echo "<script>window.location = 'create_reports.php?zip_files='</script>";
-
-							}
-						}
-						else if($type =="csv")
-						{
-							$csv_reports = getReportsAsCSV(getFilterValues(), getSortingValues());
-								
-							$filename = "zips/reports.csv";
-								
-							if($handle = fopen($filename, 'w'))
-							{
-								fwrite ($handle, $csv_reports);
-								fclose($handle);
+								$xml_reports = getReportsAsXML(getFilterValues(), getSortingValues());
+								$filename = "";
 									
+								$xml_reports->formatOutput = true;
+								$xml_reports->save('reports/reports.xml');
+
+								if($type =="pdf")
+									echo "<script>window.location = 'create_reports.php'</script>";
+
+								if($type=="zip")
+									echo "<script>window.location = 'create_reports.php?zip_files='</script>";
+								break;
+
+							case "csv":
+							case "xml":
+									
+								$size = 0;
+
+
+								$filtervalues = getFilterValues();
+								$filtervalues1 = $filtervalues;
+								$filtervalues2 = $filtervalues;
+								$filtervalues1['login_rapp'] = getLogin();
+								$filtervalues1['login_rapp2'] = 'tous';
+								$filtervalues2['login_rapp2'] = getLogin();
+								$filtervalues2['login_rapp'] = 'tous';
+								$filename = "csv/reports.".$type;
+								$filename1 = "csv/reports_rapporteur1.".$type;
+								$filename2 = "csv/reports_rapporteur2.".$type;
+
+								
+								$filenames = array();
+								if(isSecretaire())
+								{
+									$items[$filename] = $filtervalues;
+								}
+								else
+								{
+									$items[$filename1] = $filtervalues1;
+									$items[$filename2] = $filtervalues2;
+								}
+									
+								$filenames = array();
+								
+								
+								foreach($items as $file => $filter)
+								{
+									$reports = filterSortReports(getCurrentFiltersList(),  $filter, getSortingValues(),false);
+									$filenames[$file] = substr($file,4);
+									if($type == "csv")
+									{
+										$data = compileReportsAsCSV($reports);
+										if($handle = fopen($file, 'w'))
+										{
+											fwrite ($handle, $data);
+											fclose($handle);
+										}
+										else
+										{
+											throw new Exception("Cant create csv file ".$file);
+										}
+										$size = strlen($data);
+									}
+									if($type == "xml")
+									{
+										$size = exportReportsAsXML($reports,$file);
+									}
+								}
+
+								
+								$filename = zip_files($filenames,'zips/reports.zip');
+
+
+								if($filename == false)
+									throw new Exception("Failed to zip files");
+								
 								header("Pragma: public");
 								header("Expires: 0");
 								header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
 								header("Cache-Control: public");
 								header("Content-Description: File Transfer");
 								header("Content-type: application/octet-stream");
-								header("Content-Disposition: attachment; filename=\"reports.csv\"");
+								header("Content-Disposition: attachment; filename=\"reports.zip\"");
 								header("Content-Transfer-Encoding: binary");
-								header("Content-Length: ".strlen($csv_reports));
+								header("Content-Length: ".$size);
 
 								ob_clean();
 								flush();
 
-									
+
 								readfile($filename);
-							}
-							else
-							{
-								throw new Exception("Cant create file ".$filename);
-							}
-						}
-						else
-						{
-							$filter_values = getFilterValues();
-							$filter_values['id_edit'] = $id_edit;
-							$xml = getReportsAsXML($filter_values, getSortingValues(), false);
-							header("Content-type: $mime; charset=utf-8");
-							$xsl = new DOMDocument();
-							$xsl->load($xslpath);
-							$proc = new XSLTProcessor();
-							$proc->importStyleSheet($xsl);
-							foreach ($typesRapportToAvis as $key => $val)
-							{
-								$proc->setParameter('', $key, implode_with_keys($val));
-							}
-							echo $proc->transformToXML($xml);
+								break;
+							default:
+								{
+									$filter_values = getFilterValues();
+									$filter_values['id_edit'] = $id_edit;
+									$xml = getReportsAsXML($filter_values, getSortingValues(), false);
+									header("Content-type: $mime; charset=utf-8");
+									$xsl = new DOMDocument("1.0","utf-8");
+									$xsl->load($xslpath);
+									$proc = new XSLTProcessor();
+									$proc->importStyleSheet($xsl);
+									foreach ($typesRapportToAvis as $key => $val)
+									{
+										$proc->setParameter('', $key, implode_with_keys($val));
+									}
+									echo $proc->transformToXML($xml);
+								}
 						}
 					}
 				}
