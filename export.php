@@ -119,19 +119,25 @@ if($dbh!=0)
 
 								foreach($filters as $filter)
 								{
+									global $mandatory_export_fields;
+									
 									$reports = filterSortReports(getCurrentFiltersList(),  $filter, getSortingValues(),false);
 									$dir = "csv/".$login;
-									if(!mkdir($dir))
+									if(!is_dir($dir) && !mkdir($dir))
 										throw new Exception("Failed to create directory ".$dir);
 									
 									foreach($reports as $report)
 									{
 										$file = filename_from_doc($report);
+										$activefields =
+										 array_unique(
+												array_merge($mandatory_export_fields, get_editable_fields($report))
+												);
+										
 										if($type == "csv")
 										{
 											$file = $dir."/".$file.".csv";
-										echo $file."<br/>";
-											$data = compileReportAsCSV($report);
+											$data = compileObjectsAsCSV($activefields, array($report));
 											if($handle = fopen($file, 'w'))
 											{
 												fwrite ($handle, $data);
@@ -143,13 +149,13 @@ if($dbh!=0)
 										if($type == "xml")
 										{
 											$file = $dir."/".$file.".xml";
-											exportReportAsXML($report,$file);
+											exportReportAsXML($report,$activefields, $file);
 										}
-										$filenames[$file] = substr($file,strlen($dir));
+										$filenames[$file] = substr($file,strlen($dir."/"));
 									}
 								}
 
-								$filename = zip_files($filenames,$dir.'/reports.zip');
+								$filename = zip_files($filenames,$dir.'/marmotte_reports_'.$login.'.zip');
 
 										
 								if($filename == false)
@@ -169,7 +175,12 @@ if($dbh!=0)
 								flush();
 
 
-								readfile($filename);
+								if(!is_file($filename))
+									throw new Exception("Cannot find zipfile .$filename");
+								
+								if(readfile($filename) === false)
+									throw new Exception("Failed to read zipfile .$filename");
+										
 								break;
 							default:
 								{

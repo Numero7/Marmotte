@@ -216,7 +216,6 @@ ini_set('xdebug.show_local_vars', 'on');
 	
 	$fieldsRapportsCandidat = array_merge($fieldsRapportsCandidat0, $fieldsRapportsCandidat1, $fieldsRapportsCandidat2);
 	
-	$mandatory_export_fields= array('id','nom','prenom','type','concours');
 	
 	$fieldsCandidatAll = array(
 			"anneecandidature" => "Année de candidature",
@@ -243,7 +242,28 @@ ini_set('xdebug.show_local_vars', 'on');
 			"fichiers" => "Fichiers associés",
 			"cle" => "cle",
 	);
-
+	
+	$mandatory_export_fields= 
+	array('id','nom','prenom','genre','type','concours',
+			"grade",
+			"date_recrutement",
+			"labo1",
+			"labo2",
+			"labo3",
+			"theme1",
+			"theme2",
+			"theme3",
+			"theseAnnee",
+			"theseLieu",
+			"theseloc",
+			"HDRAnnee",
+			"HDRLieu",
+			"productionResume",
+			"projetrecherche",
+			"parcours",
+			"concourspresentes"
+	);
+	
 	$fieldsAll = array_merge($fieldsRapportAll, $fieldsCandidatAll);
 	
 	$fieldsCandidatAvantAudition = array(

@@ -68,12 +68,12 @@ function exportReportsAsXML($reports,$filename)
 		return $ret;
 }
 
-function exportReportAsXML($report,$filename)
+function exportReportAsXML($report,$activefields,$filename)
 {
 	global $typesRapportToAvis;
 	global $fieldsTypes;
-	global $mandatory_export_fields;
 
+	
 	$result = "";
 
 	$doc = new DOMDocument("1.0","UTF-8");
@@ -81,7 +81,6 @@ function exportReportAsXML($report,$filename)
 
 	$node = $doc->createElement("evaluation");
 
-			$activefields = array_unique(array_merge($mandatory_export_fields, get_editable_fields($report)));
 
 			$type = $report->type;
 		$avis = $typesRapportToAvis[$type];
