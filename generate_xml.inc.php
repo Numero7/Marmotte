@@ -3,6 +3,7 @@
 require_once('manage_sessions.inc.php');
 require_once('manage_unites.inc.php');
 require_once('manage_users.inc.php');
+require_once('utils.inc.php');
 require_once('xml_tools.inc.php');
 
 function implode_with_keys($assoc,$inglue=':',$outglue=','){
@@ -58,6 +59,45 @@ function exportReportsAsXML($reports,$filename)
 	}
 
 	$doc->appendChild($root);
+
+	$doc->formatOutput = true;
+	$ret = $doc->save($filename);
+	if($ret == false)
+		throw string("Failed to save reports as xml");
+	else
+		return $ret;
+}
+
+function exportReportAsXML($report,$filename)
+{
+	global $typesRapportToAvis;
+	global $fieldsTypes;
+	global $mandatory_export_fields;
+
+	$result = "";
+
+	$doc = new DOMDocument("1.0","UTF-8");
+
+
+	$node = $doc->createElement("evaluation");
+
+			$activefields = array_unique(array_merge($mandatory_export_fields, get_editable_fields($report)));
+
+			$type = $report->type;
+		$avis = $typesRapportToAvis[$type];
+		foreach($activefields as $field)
+		{
+			if(!isSecretaire() && $fieldsTypes[$field] == "avis" && $report->$field =="")
+			{
+				$report->$field = "Avis possibles (supprimer avis inutiles)\n";
+				foreach($avis as $key => $value)
+					$report->$field .= $key."\n";
+			}
+		}
+
+		thing_to_xml_node($report,$node, $doc, "", $activefields);
+
+	$doc->appendChild($node);
 
 	$doc->formatOutput = true;
 	$ret = $doc->save($filename);
@@ -367,46 +407,6 @@ function filename_from_node(DOMNode $node)
 	return filename_from_params($nom, $prenom, $grade, $unite, $type, $session, $avis);
 }
 
-//Returns the name of the file
-function filename_from_doc($doc)
-{
-	$nom = mb_convert_case(replace_accents($doc->nom), MB_CASE_TITLE);
-	$prenom = mb_convert_case(replace_accents($doc->prenom), MB_CASE_TITLE);
-	$grade = $doc->grade;
-	$unite = $doc->unite;
-	$type = $doc->type;
-	$session = $doc->session;
-	$avis = $doc->avis;
-	return filename_from_params($nom, $prenom, $grade, $unite, $type, $session, $avis);
-}
 
-function filename_from_params($nom, $prenom, $grade, $unite, $type, $session, $avis)
-{
-	global $typesRapportsUnites;
 
-	if($type == "Promotion")
-	{
-		switch($grade)
-		{
-			case "CR2": $grade = "CR1"; break;
-			case "DR2": $grade = "DR1"; break;
-			case "DR1": $grade = "DRCE1"; break;
-			case "DRCE1": $grade = "DRCE2"; break;
-		}
-		$grade .= " - ".$avis;
-	}
-
-	if($type == "Evaluation-Vague" || $type == "Evaluation-MiVague")
-		$type .=  " - ".mb_convert_case($avis,MB_CASE_TITLE);
-
-	if(array_key_exists($type,$typesRapportsUnites))
-	{
-		if($type == 'Generique')
-			return $session." - ".$nom." ".$prenom." - ".$unite;
-		else
-			return $session." - ".$type." - ".$unite;
-	}
-	else
-		return $session." - ".$type." - ".$grade." - ".$nom."_".$prenom;
-}
 ?>

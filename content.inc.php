@@ -26,6 +26,17 @@ function getScrollXY() {
 
 </script>
 
+<?php 
+function alertText($text)
+{
+	echo $text."\n";
+	echo 
+	"<script>
+		alert(\"".str_replace(array("\"","<br/>","<p>","</p>"),array("'","\\n","\\n","\\n"), $text)."\")
+	</script>";
+}
+?>
+
 <div class="large">
 
 	<!-- 
@@ -43,6 +54,8 @@ function getScrollXY() {
 		require_once('manage_rapports.inc.php');
 		require_once('manage_candidates.inc.php');
 		require_once('db.inc.php');
+		require_once("upload.inc.php");
+		
 
 
 		$id_rapport = isset($_REQUEST["id"]) ? $_REQUEST["id"] : -1;
@@ -139,6 +152,11 @@ function getScrollXY() {
 				case 'history':
 					historyReport($id_origine);
 					break;
+				case 'upload':
+					alertText(process_upload());
+					displayReports();
+					break;
+					
 				case 'update':
 
 					$next = nextt($id_origine);
@@ -182,7 +200,7 @@ function getScrollXY() {
 					}
 					else if(isset($_REQUEST['ajoutfichier']))
 					{
-						include("upload.inc.php");
+						alertText(process_upload());
 						editReport($id_origine);
 					}
 					else
@@ -444,8 +462,7 @@ function getScrollXY() {
 		catch(Exception $exc)
 		{
 			$text = 'Impossible d\'exécuter l\'action "'.$action.'"<br/>Exception: '.$exc->getMessage();
-			echo '<p><b>'.$text.'<br/></b></p>';
-			echo '<script type="text/javascript">window.alert('.$text.');</script>';
+			alertText($text);
 		}
 		?>
 	</div>

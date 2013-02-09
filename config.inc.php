@@ -127,19 +127,22 @@ ini_set('xdebug.show_local_vars', 'on');
 		"id" => "Id",
 			"id_session" => "Id session",
 			"id_origine" => "Id origine",
-			"cleindividu" => "cleindividu"
+			"cleindividu" => "cleindividu",
+			"genre" => "Genre",
+			"theseloc" => "These Loc"
 	);
 	
 
-	$specialtr_fields = array("parcours","concourspresentes", "nom", "date_recrutement", "prenom", "grade", "projetrecherche", "labo1","labo2","labo3","theme1","theme2","theme3", "theseLieu", "HDRAnnee", "theseAnnee","HDRLieu");
+	$specialtr_fields = array("parcours","concourspresentes", "nom", "date_recrutement", "prenom", "genre", "grade", "projetrecherche", "labo1","labo2","labo3","theme1","theme2","theme3", "theseLieu", "HDRAnnee", "theseAnnee","theseloc", "HDRLieu");
 	$start_tr_fields = array("projetrecherche", "grade", "nom", "labo1","theme1", "theseAnnee", "productionResume");
-	$end_tr_fields = array("concourspresentes", "date_recrutement", "labo3","theme3", "prenom", "HDRLieu");
+	$end_tr_fields = array("concourspresentes", "date_recrutement", "labo3","theme3", "genre", "HDRLieu");
 	
 	$fieldsIndividual0 = array(
 			"rapporteur",
 			"rapporteur2",
 			"nom",
 			"prenom",
+			"genre",
 			"unite",
 			"grade",
 			"anciennete_grade",
@@ -219,6 +222,7 @@ ini_set('xdebug.show_local_vars', 'on');
 			"anneecandidature" => "Année de candidature",
 			"nom" => "Nom",
 			"prenom" => "Prénom",
+			"genre" => "Genre",
 			"grade" => "Grade",
 			"date_recrutement" => "Date de recrutement",
 			"labo1" => "Labo 1",
@@ -229,6 +233,7 @@ ini_set('xdebug.show_local_vars', 'on');
 			"theme3" => "Theme 3",
 			"theseAnnee" => "Année+mois thèse",
 			"theseLieu" => "Lieu thèse",
+			"theseloc" => "",
 			"HDRAnnee" => "Annee HDR",
 			"HDRLieu" => "Lieu HDR",
 			"productionResume" => "Production scientifique (pour rapport concours)",
@@ -244,6 +249,7 @@ ini_set('xdebug.show_local_vars', 'on');
 	$fieldsCandidatAvantAudition = array(
 			"nom",
 			"prenom",
+			"genre",
 			"grade",
 			"date_recrutement",
 			"fichiers",
@@ -255,6 +261,7 @@ ini_set('xdebug.show_local_vars', 'on');
 			"theme3",
 			"theseAnnee",
 			"theseLieu",
+			"theseloc",
 			"HDRAnnee",
 			"HDRLieu",
 			"projetrecherche",
@@ -268,6 +275,7 @@ ini_set('xdebug.show_local_vars', 'on');
 			"rapporteur",
 			"nom",
 			"prenom",
+			"genre",
 			"grade",
 			"avis",
 			"labo1",
@@ -278,6 +286,7 @@ ini_set('xdebug.show_local_vars', 'on');
 			"theme3",
 			"theseAnnee",
 			"theseLieu",
+			"theseloc",
 			"HDRAnnee",
 			"HDRLieu",
 			"rapport",
@@ -400,6 +409,20 @@ ini_set('xdebug.show_local_vars', 'on');
 	$mergeableTypes = array("short","treslong","long","short");
 	$crashableTypes = array("auteur");
 	
+	$enumFields = array(
+			"genre" => array("homme" => "Homme","femme" => "Femme"),
+			 "theseloc" => array(
+			 		"fr" => "France",
+			 		"africa" => "Afrique",
+			 		"southamerica" => "Amérique du Sud",
+			 		"au" => "Australie",
+			 		"other" => "Autres",
+			 		"eu" => "Europe",
+			 		"ru" => "Russie",
+			 		"us" => "USA",
+			 				 )
+			);
+	
 	$fieldsTypes = array(
 		"ecole" => "ecole",
 		"concours" => "long",
@@ -407,8 +430,10 @@ ini_set('xdebug.show_local_vars', 'on');
 		"concourspresentes" => "long",
 		"nom" => "short",
 		"prenom" => "short",
+		"genre" => "enum",
 		"grade" => "grade",
-		"unite" => "unit",
+		"theseloc" => "enum",
+			"unite" => "unit",
 		"type" => "short",
 		"rapporteur" => "rapporteur",
 		"rapporteur2" => "rapporteur",

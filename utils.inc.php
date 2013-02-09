@@ -406,7 +406,7 @@ function displayConcoursReport($row)
 
 		<?php 		
 		}
-		$fields = get_editable_fields($row);
+		$fields = get_readable_fields($row);
 
 		foreach($fields as  $fieldID)
 		{
@@ -571,11 +571,10 @@ function displayImport()
 	<input type="hidden" name="type" value="evaluations"></input> <input
 		type="hidden" name="action" value="upload" /> <input type="hidden"
 		name="MAX_FILE_SIZE" value="10000000" />
-	<ul>
-		<li><input name="uploadedfile" type="file" size="5" /> <br />
-		</li>
-		<?php if(isSecretaire()){?>
-		<li><a href="">Type</a> <select name="subtype">
+<input name="uploadedfile" type="file" size="5" /> <br />
+		<input type="submit" value="Importer" />
+<?php if(isSecretaire()){?>
+		<a href="">Type</a> <select name="subtype">
 				<?php
 				global $typesRapports;
 				echo "<option value=\"\">Spécifié dans le doc</option>\n";
@@ -583,10 +582,6 @@ function displayImport()
 					echo "<option value=\"$ty\">".$value."</option>\n";
 				?>
 		</select> <?php }?>
-		</li>
-
-		<li><input type="submit" value="Importer" /></li>
-	</ul>
 </form>
 
 <?php 
@@ -1102,8 +1097,64 @@ function remove_br($str)
 	return str_replace("<br />","",$str);
 }
 
+function get_readable_fields($row)
+{
+	global $fieldsIndividual;
+	global $fieldsUnites;
+	global $fieldsEcoles;
+	global $fieldsRapportsCandidat;
+	global $fieldsGeneric;
+	global $fieldsEquivalence;
+	
+	global $typesRapportsUnites;
+	global $typesRapportsIndividuels;
+	
+	global $fieldsRapportsCandidat0;
+	global $fieldsRapportsCandidat1;
+	global $fieldsRapportsCandidat2;
+	
+	global $fieldsCandidat;
+	
+	$eval_type = $row->type;
+	
+	if($eval_type == 'Ecole')
+		return $fieldsEcoles;
+	else if(array_key_exists($eval_type,$typesRapportsUnites))
+		return $fieldsUnites;
+	else if(array_key_exists($eval_type,$typesRapportsIndividuels))
+		return $fieldsIndividual;
+	else if($eval_type == 'Candidature')
+	{
+		$f0 = $fieldsRapportsCandidat0;
+		$f1 = $fieldsRapportsCandidat1;
+		$f2 = $fieldsRapportsCandidat2;
+	
+		if(isSecretaire() || $row->statut == "rapport" || $row->statut == "publie")
+		{
+			return array_unique(array_merge($fieldsCandidat, $f0, $f1, $f2));
+		}
+		else if(getLogin() == $row->rapporteur)
+		{
+			return array_unique(array_merge($fieldsCandidat, $f1));
+		}
+		else if(getLogin() == $row->rapporteur2)
+		{
+			return array_unique(array_merge($fieldsCandidat, $f2));
+		}
+		else
+		{
+			return array_unique(array_merge($fieldsCandidat, $f0, $f1, $f2));
+		}
+	}
+	else if($eval_type == 'Equivalence')
+		return $fieldsEquivalence;
+	else
+		return $fieldsGeneric;
+	}
+
 function get_editable_fields($row)
 {
+	
 	global $fieldsIndividual;
 	global $fieldsUnites;
 	global $fieldsEcoles;
@@ -1134,9 +1185,13 @@ function get_editable_fields($row)
 		$f1 = $fieldsRapportsCandidat1;
 		$f2 = $fieldsRapportsCandidat2;
 
-		if(isSecretaire() || $row->statut == "rapport" || $row->statut == "publie")
+		if(isSecretaire())
 		{
 			return array_unique(array_merge($fieldsCandidat, $f0, $f1, $f2));
+		}
+		else if($row->statut == "rapport" || $row->statut == "publie")
+		{
+			return array_unique(array_merge($fieldsCandidat, $f0));
 		}
 		else if(getLogin() == $row->rapporteur)
 		{
@@ -1324,6 +1379,28 @@ function display_unit($row, $fieldID)
 <?php
 }
 
+function display_enum($row, $fieldID)
+{
+	global $enumFields;
+
+	if(!isset($enumFields[$fieldID]))
+		throw new Exception("Enum field ".$fieldId." should be indexed in list enumFields");
+
+	?>
+<td>
+<select name="field<?php echo $fieldID;?>"	style="width: 100%;">
+		<?php
+		foreach($enumFields[$fieldID] as $prop =>$text)
+		{
+			$sel = (isset($row->$fieldID) ? ($prop == $row->$fieldID) : false) ? "selected=\"selected\"" : "";
+			echo  "\t\t\t\t\t<option value=\"".($prop)."\"".$sel.">".$text."</option>\n";
+		}
+		?>
+</select>
+</td>
+<?php
+}
+
 function display_topic($row, $fieldID)
 {
 	global $topics;
@@ -1408,7 +1485,7 @@ function display_fichiers($row, $fieldID)
 <td><input type="hidden" name="candidatekey"
 	value="<?php echo $row->cle;?>" /> <input type="hidden" name="type"
 	value="candidatefile" /> <input type="hidden" name="MAX_FILE_SIZE"
-	value="100000" /> <input name="uploadedfile" type="file" /> <input
+	value="10000000" /> <input name="uploadedfile" type="file" /> <input
 	type="submit" name="ajoutfichier" value="Ajouter fichier" />
 </td>
 </tr>
@@ -1558,6 +1635,9 @@ if($use_special_tr && in_array($fieldID, $start_tr_fields))
 
 switch($type)
 {
+	case "enum":
+		display_enum($row, $fieldID);
+		break;
 	case "topic":
 		display_topic($row, $fieldID);
 		break;
@@ -1596,7 +1676,7 @@ switch($type)
 	case "":
 		break;
 	default:
-		throw new Exception("Unnown data ttype ".$type);
+		throw new Exception("Unnown data type ".$type);
 }
 if(!$use_special_tr || !in_array($fieldID, $specialtr_fields))
 	echo '</tr>';
@@ -1922,4 +2002,53 @@ if (isset($_SERVER["SERVER_PORT"]) && $_SERVER["SERVER_PORT"] != "80") {
 	return $pageURL;
 }
 
+
+//Returns the name of the file
+function filename_from_doc($doc)
+{
+	$nom = mb_convert_case(replace_accents($doc->nom), MB_CASE_TITLE);
+	$prenom = mb_convert_case(replace_accents($doc->prenom), MB_CASE_TITLE);
+	$grade = $doc->grade;
+	$unite = $doc->unite;
+	$type = $doc->type;
+	
+	$sessions = sessionArrays();
+	$session = $sessions[$doc->id_session];
+	$avis = $doc->avis;
+	$concours = $doc->concours;
+	return filename_from_params($nom, $prenom, $grade, $unite, $type, $session, $avis, $concours);
+}
+
+function filename_from_params($nom, $prenom, $grade, $unite, $type, $session, $avis, $concours = "")
+{
+	global $typesRapportsUnites;
+	global $typesRapportsConcours;
+
+	if($type == "Promotion")
+	{
+		switch($grade)
+		{
+			case "CR2": $grade = "CR1"; break;
+			case "DR2": $grade = "DR1"; break;
+			case "DR1": $grade = "DRCE1"; break;
+			case "DRCE1": $grade = "DRCE2"; break;
+		}
+		$grade .= " - ".$avis;
+	}
+
+	if($type == "Evaluation-Vague" || $type == "Evaluation-MiVague")
+		$type .=  " - ".mb_convert_case($avis,MB_CASE_TITLE);
+
+	if(array_key_exists($type,$typesRapportsUnites))
+	{
+		if($type == 'Generique')
+			return $session." - ".$nom." ".$prenom." - ".$unite;
+		else
+			return $session." - ".$type." - ".$unite;
+	}
+	else if(array_key_exists($type,$typesRapportsConcours))
+		return $session." - ".$type." - ".$concours." - ".$nom."_".$prenom;
+	else
+		return $session." - ".$type." - ".$grade." - ".$nom."_".$prenom;
+}
 ?>

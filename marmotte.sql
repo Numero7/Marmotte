@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Feb 08, 2013 at 05:22 PM
+-- Generation Time: Feb 09, 2013 at 11:45 AM
 -- Server version: 5.1.63-0+squeeze1
 -- PHP Version: 5.3.3-7+squeeze14
 
@@ -18,8 +18,6 @@ SET time_zone = "+00:00";
 
 --
 -- Table structure for table `candidats`
---
--- Creation: Feb 08, 2013 at 02:05 PM
 --
 
 DROP TABLE IF EXISTS `candidats`;
@@ -45,15 +43,16 @@ CREATE TABLE IF NOT EXISTS `candidats` (
   `projetrecherche` text CHARACTER SET utf8 NOT NULL,
   `concourspresentes` text CHARACTER SET utf8 NOT NULL,
   `fichiers` text CHARACTER SET utf8 NOT NULL,
-  `date_recrutement` text CHARACTER SET utf8 NOT NULL
+  `date_recrutement` text CHARACTER SET utf8 NOT NULL,
+  `proprietes` text CHARACTER SET utf8 NOT NULL,
+  `genre` enum('femme','homme','','') CHARACTER SET utf8 NOT NULL DEFAULT 'homme',
+  `theseloc` enum('fr','eu','ru','us','asia','africa','other','southamerica') CHARACTER SET utf8 DEFAULT 'fr'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `chercheurs`
---
--- Creation: Feb 08, 2013 at 02:05 PM
 --
 
 DROP TABLE IF EXISTS `chercheurs`;
@@ -71,8 +70,6 @@ CREATE TABLE IF NOT EXISTS `chercheurs` (
 
 --
 -- Table structure for table `evaluations`
---
--- Creation: Feb 08, 2013 at 02:05 PM
 --
 
 DROP TABLE IF EXISTS `evaluations`;
@@ -125,14 +122,12 @@ CREATE TABLE IF NOT EXISTS `evaluations` (
   `cleindividu` text CHARACTER SET utf8 NOT NULL,
   `sousjury` text CHARACTER SET utf8 NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=14230 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=14234 ;
 
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `sessions`
---
--- Creation: Feb 08, 2013 at 02:06 PM
 --
 
 DROP TABLE IF EXISTS `sessions`;
@@ -148,8 +143,6 @@ CREATE TABLE IF NOT EXISTS `sessions` (
 --
 -- Table structure for table `units`
 --
--- Creation: Feb 08, 2013 at 02:06 PM
---
 
 DROP TABLE IF EXISTS `units`;
 CREATE TABLE IF NOT EXISTS `units` (
@@ -163,8 +156,6 @@ CREATE TABLE IF NOT EXISTS `units` (
 
 --
 -- Table structure for table `users`
---
--- Creation: Feb 08, 2013 at 02:06 PM
 --
 
 DROP TABLE IF EXISTS `users`;

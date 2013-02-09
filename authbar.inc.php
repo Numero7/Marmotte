@@ -17,36 +17,21 @@ global $typesRapportsIndividuels;
 				<td>
 					<table>
 						<tr>
-							<td>Utilisateur : <span class='login'><?php echo getLogin();?> </span>
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<p></p>
-							</td>
-						</tr>
-						<tr>
-							<td>Session : <span class='login'><?php echo current_session();?>
+							<td><span class='login'><?php echo getLogin();?> </span>
+							<span class='login'><?php echo current_session();?>
 							</span>
 							</td>
 						</tr>
-					</table>
-				</td>
-				<td>
-					<table>
 						<tr>
-							<td valign=top>
+							<td valign=top style="padding-top: 20px">
 								<form method="get"
-									style="display: inline;; margin-left: 5px; border-left: 2px solid #FFF; padding: 8px;"
+									style="display: inline;"
 									action="index.php">
 									<input type="hidden" name="action" value="logout" /> <input
-										type="submit" name="logout" value="Se Déconnecter" />
+										type="submit" name="logout" value="Logout" />
 								</form>
-							</td>
-						</tr>
-						<tr>
-							<td><form method="get"
-									style="display: inline;; margin-left: 5px; border-left: 2px solid #FFF; padding: 8px;"
+							<form method="get"
+									style="display: inline;"
 									action="index.php">
 									<input type="hidden" name="action" value="changepwd" /> <input
 										type="submit" value="Mot de Passe" />
@@ -59,27 +44,23 @@ global $typesRapportsIndividuels;
 						<tr>
 							<td>
 								<form method="get"
-									style="display: inline; margin-left: 5px; border-left: 2px solid #FFF; padding: 8px;"
+									style="display: inline;"
 									action="index.php">
 									<input type="hidden" name="action" value="admin" /> <input
-										type="submit" value="Administration" />
+										type="submit" value="Admin" />
 								</form> <?php
 								}
 
 								?>
-							</td>
-						</tr>
-						<tr>
-							<td>
 								<form method="get"
-									style="display: inline; margin-left: 5px; border-left: 2px solid #FFF; padding: 8px;"
+									style="display: inline;"
 									action="index.php">
 									<input type="hidden" name="action" value="displayunits" /> <input
 										type="submit" value="Unités" />
 								</form>
 
-								<form method="get"
-									style="display: inline; margin-left: 5px; border-left: 2px solid #FFF; padding: 8px;"
+								<form method="post"
+									style="display: inline;"
 									action="index.php">
 									<input type="hidden" name="action" value="displaystats" /> <input
 										type="submit" value="Stats" />
@@ -130,7 +111,8 @@ global $typesRapportsIndividuels;
 										}
 									}
 										?>
-							
+									</ul>
+										
 							</td>
 							<?php 
 									if(is_current_session_concours())
@@ -139,16 +121,14 @@ global $typesRapportsIndividuels;
 							<td valign=top>Auditions
 							<ul>
 									<?php
-										echo "<li><a href=\"?action=view&amp;reset_filter=&amp;filter_id_session=".current_session_id()."&amp;filter_type=Candidature &amp;filter_avis=oral\">Auditions</a>";
+										echo "<li><a href=\"?action=view&amp;reset_filter=&amp;filter_id_session=".current_session_id()."&amp;filter_type=Candidature &amp;filter_avis=oral\">Auditions</a></li>";
 
 										global $concours_ouverts;
 										foreach($concours_ouverts as $code => $intitule)
 										{
-											echo "<li><a href=\"?action=view&amp;reset_filter=&amp;filter_id_session=".current_session_id()."&amp;filter_type=Candidature&amp;filter_concours=$code&amp;filter_avis=oral\">Auditions $intitule</a>";
+											echo "<li><a href=\"?action=view&amp;reset_filter=&amp;filter_id_session=".current_session_id()."&amp;filter_type=Candidature&amp;filter_concours=$code&amp;filter_avis=oral\">$intitule</a></li>";
 										}
-										
 									?>
-							
 							</ul>
 							</td>
 							<?php 				
@@ -169,11 +149,14 @@ global $typesRapportsIndividuels;
 										echo " <a href=\"?action=new&amp;type=".$typeEval."\">+</a>";
 									?>
 									</li>
+									
 									<?php
 									}
-								 } ?>
-								</ul>
+									?>
+									</ul>
 							</td>
+									<?php 
+								 } ?>
 							<td valign=top>
 								<ul>
 
@@ -186,10 +169,9 @@ global $typesRapportsIndividuels;
 									{
 										foreach($typesRapportsConcours as $typeEval => $value)
 										{
-											echo "<li><a href=\"?action=view&amp;reset_filter=&amp;filter_login_rapp=".getLogin()."&amp;filter_id_session=".current_session_id()."&amp;filter_type=".urlencode($value)."\">Mes ".$value."s</a>";
-											echo "</li>";
+											echo "<li><a href=\"?action=view&amp;reset_filter=&amp;filter_login_rapp=".getLogin()."&amp;filter_id_session=".current_session_id()."&amp;filter_type=".urlencode($value)."\">Mes ".$value."s</a></li>";
 										}
-										echo "<li><a href=\"?action=view&amp;reset_filter=&amp;filter_login_rapp=".getLogin()."&amp;filter_id_session=".current_session_id()."&amp;filter_type=Candidature; filter_avis=oral\">Mes Auditions</a>";
+										echo "<li><a href=\"?action=view&amp;reset_filter=&amp;filter_login_rapp=".getLogin()."&amp;filter_id_session=".current_session_id()."&amp;filter_type=Candidature; filter_avis=oral\">Mes Auditions</a></li>";
 									}
 									?>
 
@@ -223,16 +205,14 @@ global $typesRapportsIndividuels;
 							</td>
 
 							<td valign=top>Import <?php displayImport();?>
-							</td>
 							<?php 
-							if (getUserPermissionLevel()>= NIVEAU_PERMISSION_PRESIDENT_SECRETAIRE)
+							if ( isSecretaire())
 							{
 								global $statutsRapports;
 
-								echo '<td valign=top>Statut
-
+								echo '
+		Statut
 		<form method="post"  action="index.php">
-		<table><tr><td>
 		<select name="new_statut">';
 								foreach ($statutsRapports as $val => $nom)
 								{
@@ -241,16 +221,13 @@ global $typesRapportsIndividuels;
 								}
 								echo '
 									</select>
-									</td></tr>
-									<tr><td>
 									<input type="hidden" name="action" value="change_statut"/>
 									<input type="submit" value="Changer statut"/>
-									</td></tr></table>
 									</form>';
 							}
 							?>
 							</td>
-
+							
 						</tr>
 					</table>
 				</td>

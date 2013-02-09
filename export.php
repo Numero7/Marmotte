@@ -8,6 +8,14 @@ require_once('generate_csv.inc.php');
 require_once('generate_pdf.inc.php');
 require_once('generate_zip.inc.php');
 
+error_reporting(E_ALL);
+ini_set('display_errors', TRUE);
+ini_set('display_startup_errors', TRUE);
+ini_set('xdebug.collect_vars', 'on');
+ini_set('xdebug.collect_params', '4');
+ini_set('xdebug.dump_globals', 'on');
+ini_set('xdebug.dump.SERVER', 'REQUEST_URI');
+ini_set('xdebug.show_local_vars', 'on');
 
 $dbh = db_connect($servername,$dbname,$serverlogin,$serverpassword);
 if($dbh!=0)
@@ -30,7 +38,6 @@ if($dbh!=0)
 						$idtosave = intval($_REQUEST["save"]);
 						$avis = $_REQUEST["avis"];
 						$rapport = $_REQUEST["rapport"];
-						//rrr();
 						if (!isset($_REQUEST["cancel"]))
 							try
 							{
@@ -55,6 +62,8 @@ if($dbh!=0)
 						$mime = $conf["mime"];
 						$xslpath = $conf["xsl"];
 
+						$login = getLogin();
+						
 						switch($type)
 						{
 							case "pdf":
@@ -89,65 +98,72 @@ if($dbh!=0)
 								$filtervalues1['rapporteur2'] = 'tous';
 								$filtervalues2['rapporteur2'] = getLogin();
 								$filtervalues2['rapporteur'] = 'tous';
-								$filename = "csv/reports.".$type;
-								$filename1 = "csv/reports_rapporteur1.".$type;
-								$filename2 = "csv/reports_rapporteur2.".$type;
 
-								
 								$filenames = array();
+								$items = array();
+
+								$filters = array();
+
 								if(isSecretaire())
 								{
-									$items[$filename] = $filtervalues;
+									$filters[] = $filtervalues;
 								}
 								else
 								{
-									$items[$filename1] = $filtervalues1;
-									$items[$filename2] = $filtervalues2;
+									$filters[] = $filtervalues1;
+									$filters[] = $filtervalues2;
 								}
 									
 								$filenames = array();
 								
-								
-								foreach($items as $file => $filter)
+
+								foreach($filters as $filter)
 								{
 									$reports = filterSortReports(getCurrentFiltersList(),  $filter, getSortingValues(),false);
-									$filenames[$file] = substr($file,4);
-									if($type == "csv")
+									$dir = "csv/".$login;
+									if(!mkdir($dir))
+										throw new Exception("Failed to create directory ".$dir);
+									
+									foreach($reports as $report)
 									{
-										$data = compileReportsAsCSV($reports);
-										if($handle = fopen($file, 'w'))
+										$file = filename_from_doc($report);
+										if($type == "csv")
 										{
-											fwrite ($handle, $data);
-											fclose($handle);
+											$file = $dir."/".$file.".csv";
+										echo $file."<br/>";
+											$data = compileReportAsCSV($report);
+											if($handle = fopen($file, 'w'))
+											{
+												fwrite ($handle, $data);
+												fclose($handle);
+											}
+											else
+												throw new Exception("Cant create csv file ".$file);
 										}
-										else
+										if($type == "xml")
 										{
-											throw new Exception("Cant create csv file ".$file);
+											$file = $dir."/".$file.".xml";
+											exportReportAsXML($report,$file);
 										}
-										$size = strlen($data);
-									}
-									if($type == "xml")
-									{
-										$size = exportReportsAsXML($reports,$file);
+										$filenames[$file] = substr($file,strlen($dir));
 									}
 								}
 
-								
-								$filename = zip_files($filenames,'zips/reports.zip');
+								$filename = zip_files($filenames,$dir.'/reports.zip');
 
-
+										
 								if($filename == false)
 									throw new Exception("Failed to zip files");
-								
+
 								header("Pragma: public");
 								header("Expires: 0");
 								header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
 								header("Cache-Control: public");
 								header("Content-Description: File Transfer");
 								header("Content-type: application/octet-stream");
-								header("Content-Disposition: attachment; filename=\"reports.zip\"");
+								header("Content-Disposition: attachment; filename=\"marmotte_reports_".$login.".zip\"");
 								header("Content-Transfer-Encoding: binary");
-								header("Content-Length: ".$size);
+								header("Content-Length: ".filesize($filename));
 
 								ob_clean();
 								flush();
@@ -173,9 +189,10 @@ if($dbh!=0)
 								}
 						}
 					}
+
 				}
-				break;
 		}
 	}
+	break;
 }
 ?>

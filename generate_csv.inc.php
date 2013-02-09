@@ -1,7 +1,7 @@
 <?php
 
 
-function compileObjectAsCSV($fields, $rows,$sep =";" , $enc='"', $del="\n")
+function compileObjectsAsCSV($fields, $rows,$sep =";" , $enc='"', $del="\n")
 {
 	$result = "";
 
@@ -42,7 +42,17 @@ function compileReportsAsCSV($rows)
 	
 	$activefields = array_unique(array_merge($mandatory_export_fields, get_editable_fields($rows[0])));
 	
-	return compileObjectAsCSV($activefields, $rows);
+	return compileObjectsAsCSV($activefields, $rows);
+}
+
+function compileReportAsCSV($row)
+{
+	global $empty_report;
+	global $mandatory_export_fields;
+	
+	$activefields = array_unique(array_merge($mandatory_export_fields, get_editable_fields($row)));
+	
+	return compileObjectsAsCSV($activefields, array($rows));
 }
 
 function compileUnitsAsCSV($rows)
@@ -52,7 +62,7 @@ function compileUnitsAsCSV($rows)
 	foreach($fieldsUnitsDB as $field => $value)
 		$fields[] = $field;
 	
-	return compileObjectAsCSV($fields, $rows);
+	return compileObjectsAsCSV($fields, $rows);
 }
 
 

@@ -2,6 +2,10 @@
 require_once 'import_csv.inc.php';
 require_once 'import_xml.inc.php';
 
+
+
+
+
 function process_import($type,$suffix, $filename, $subtype)
 {
 	$suffix = substr( $filename , strlen($filename)-3 , 3 );
@@ -14,7 +18,7 @@ function process_import($type,$suffix, $filename, $subtype)
 			return import_csv($type, $filename, $subtype);
 			break;
 		default:
-			throw string("Cannot import file ".$filename." only xml and csv acccpted for now");
+			throw string("Cannot import file ".$filename." only xml and csv file types accepted.");
 	}
 	
 }
