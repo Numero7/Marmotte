@@ -244,7 +244,7 @@ function checkReportIsEditable($rapport)
 {
 	$login = getLogin();
 
-	if (isBureauUser())
+	if (isSecretaire())
 	{
 		return true;
 	}

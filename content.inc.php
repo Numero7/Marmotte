@@ -1,4 +1,11 @@
 
+<?php 
+
+include("header.inc.php");
+include("authbar.inc.php");
+
+?>
+
 <script type="text/javascript">
 function alertSize() {
 	var myWidth = 0, myHeight = 0;
@@ -30,10 +37,10 @@ function getScrollXY() {
 function alertText($text)
 {
 	echo $text."\n";
-	echo 
+	echo
 	"<script>
 		alert(\"".str_replace(array("\"","<br/>","<p>","</p>"),array("'","\\n","\\n","\\n"), $text)."\")
-	</script>";
+			</script>";
 }
 ?>
 
@@ -55,7 +62,7 @@ function alertText($text)
 		require_once('manage_candidates.inc.php');
 		require_once('db.inc.php');
 		require_once("upload.inc.php");
-		
+
 
 
 		$id_rapport = isset($_REQUEST["id"]) ? $_REQUEST["id"] : -1;
@@ -75,10 +82,10 @@ function alertText($text)
 
 
 			echo('
-						<script type="text/javascript">');
-			
+					<script type="text/javascript">');
+
 			echo('
-						document.getElementById("'.$id.'").scrollIntoView();');
+					document.getElementById("'.$id.'").scrollIntoView();');
 			/*
 			 echo('
 			 		var elt = document.getElementById( '.$id.' );
@@ -87,14 +94,14 @@ function alertText($text)
 			 		');
 			*/
 			echo('		</script>');
-				
+
 		}
 		function displayReports($centralid = 0)
 		{
 
 			displaySummary(getCurrentFiltersList(), getFilterValues(), getSortingValues());
 
-			if($centralid != 0)
+			if($centralid != 0 && $centralid != -1)
 			{
 				$id  = getIDOrigine($centralid);
 				scrollToId('t'.$id);
@@ -102,6 +109,33 @@ function alertText($text)
 
 		};
 
+		function editWithRedirect($id)
+		{
+			?>
+			<script type="text/javascript">
+			window.location = "index.php?action=edit&id=<?php echo $id;?>"
+			</script>
+			<?php 
+		}
+
+		function displayWithRedirect($id)
+		{
+			?>
+					<script type="text/javascript">
+					window.location = "index.php?action=details&id=<?php echo $id;?>"
+					</script>
+					<?php 
+		}
+
+		function displayWithRedirects($id)
+		{
+			?>
+							<script type="text/javascript">
+							window.location = "index.php?action=view&id=<?php echo $id;?>"
+							</script>
+							<?php 
+				}
+				
 		try
 		{
 			switch($action)
@@ -112,7 +146,7 @@ function alertText($text)
 					echo "<p>Deleted report ".$id_rapport."</p>\n";
 					unset($_REQUEST['id']);
 					unset($_REQUEST['id_origine']);
-					displayReports( ($before != -1) ? $before : $next);
+					displayWithRedirects( ($before != -1) ? $before : $next);
 					break;
 
 				case 'change_statut':
@@ -126,7 +160,7 @@ function alertText($text)
 					}
 					break;
 				case 'view':
-					displayReports();
+					displayReports($id);
 					break;
 				case 'details':
 					if(isset($_REQUEST["detailsnext"]))
@@ -154,9 +188,9 @@ function alertText($text)
 					break;
 				case 'upload':
 					alertText(process_upload());
-					displayReports();
+					displayWithRedirects();
 					break;
-					
+
 				case 'update':
 
 					$next = nextt($id_origine);
@@ -165,28 +199,17 @@ function alertText($text)
 
 					if(isset($_REQUEST["editnext"]))
 					{
-						//Hugo: tant qu'on est en dev je préfère laisser les exceptions remonter jusqu'à
-						//l'utilisateur/testeur
-						//mais je vosis l'idée j'ai modifié editReport en conséquence
-						//try{editReport(nextt($id_origine));}
-						//catch(Exception $e)
-						//{displayReport(nextt($id_origine));}
-						editReport($next);
+						editWithRedirect($next);
 					}
 					else if(isset($_REQUEST["editprevious"]))
 					{
-						//Hugo: tant qu'on est en dev je préfère laisser les exceptions remonter jusqu'à
-						//l'utilisateur/testeur
-						//try{editReport(previouss($id_origine));}
-						//catch(Exception $e)
-						//{displayReport(previouss($id_origine));}
 						editReport($previous);
 					}
 					else if(isset($_REQUEST["retourliste"]))
 					{
 						unset($_REQUEST["id_origine"]);
 						unset($_REQUEST["id"]);
-						displayReports($id_origine);
+						displayWithRedirects($id_origine);
 					}
 					else if(isset($_REQUEST["deleteandeditnext"]))
 					{
@@ -196,7 +219,7 @@ function alertText($text)
 						else if($next != -1)
 							editReport($next);
 						else
-							displayReports();
+							displayWithRedirects();
 					}
 					else if(isset($_REQUEST['ajoutfichier']))
 					{
@@ -230,15 +253,20 @@ function alertText($text)
 							}
 							else if(isset($_REQUEST["submitandview"]))
 							{
-								displayReport($report->id);
+								displayWithRedirect($report->id);
 							}
 							else if(isset($_REQUEST["submitandkeepediting"]))
 							{
-								editReport($report->id);
+								editWithRedirect($report->id);
 							}
 						}
 					}
 
+					break;
+				case 'change_current_session':
+					if(isset($_REQUEST["current_session"]))
+						$_SESSION['current_session'] = $_REQUEST["current_session"];
+					displayWithRedirects();
 					break;
 				case 'new':
 					if (isset($_REQUEST["type"]))
@@ -306,7 +334,7 @@ function alertText($text)
 							$sousjury = "";
 							foreach($concours_ouverts as $concours => $nom)
 								$sousjury .= $_REQUEST["sousjury".$concours];
-									
+
 							changeUserInfos($login,$permissions,$sousjury);
 						}
 						else
@@ -421,7 +449,7 @@ function alertText($text)
 					break;
 				case 'createhtpasswd':
 					createhtpasswd();
-					displayReports();
+					displayWithRedirects();
 					include "admin.inc.php";
 					break;
 				case 'trouverfichierscandidats':
@@ -449,12 +477,12 @@ function alertText($text)
 						$fieldId = substr($action,3);
 						$newvalue = isset($_REQUEST['new'.$fieldId]) ? $_REQUEST['new'.$fieldId] : "";
 						$newid = change_report_property($id_toupdate, $fieldId, $newvalue);
-						displayReports($newid);
+						displayWithRedirects($newid);
 					}
 					else
 					{
 						echo get_config("welcome_message");
-						displayReports();
+						displayWithRedirects();
 					}
 					break;
 			}

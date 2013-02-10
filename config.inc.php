@@ -232,7 +232,7 @@ ini_set('xdebug.show_local_vars', 'on');
 			"theme3" => "Theme 3",
 			"theseAnnee" => "Année+mois thèse",
 			"theseLieu" => "Lieu thèse",
-			"theseloc" => "",
+			"theseloc" => "Loc thèse",
 			"HDRAnnee" => "Annee HDR",
 			"HDRLieu" => "Lieu HDR",
 			"productionResume" => "Production scientifique (pour rapport concours)",
@@ -883,6 +883,7 @@ ini_set('xdebug.show_local_vars', 'on');
 	);
 
 	$topics = get_config("topics");
+	$topics[""] = "Aucun";
 	
 	$filtersConcours = array(
 			'avis' => array('name'=>"Avis" , 'liste' => $avis_candidature_short, 'default_value' => "tous", 'default_name' => ""),
