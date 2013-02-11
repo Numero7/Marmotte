@@ -161,17 +161,17 @@ global $typesRapportsIndividuels;
 								<ul>
 
 									<?php
-									echo "<li><a href=\"?action=view&amp;reset_filter=&amp;filter_login_rapp=".getLogin()."&amp;filter_id_session=".current_session_id()."\">Mes rapports</a></li>";
-									echo "<li><a href=\"?action=view&amp;reset_filter=&amp;filter_avancement=todo&amp;filter_login_rapp=".getLogin()."&amp;filter_id_session=".current_session_id()."\">Mes rapports à faire</a></li>";
-									echo "<li><a href=\"?action=view&amp;reset_filter=&amp;filter_avancement=done&amp;filter_login_rapp=".getLogin()."&amp;filter_id_session=".current_session_id()."\">Mes rapports faits</a></li>";
+									echo "<li><a href=\"?action=view&amp;reset_filter=&amp;filter_rapporteur=".getLogin()."&amp;filter_id_session=".current_session_id()."\">Mes rapports</a></li>";
+									echo "<li><a href=\"?action=view&amp;reset_filter=&amp;filter_avancement=todo&amp;filter_rapporteur=".getLogin()."&amp;filter_id_session=".current_session_id()."\">Mes rapports à faire</a></li>";
+									echo "<li><a href=\"?action=view&amp;reset_filter=&amp;filter_avancement=done&amp;filter_rapporteur=".getLogin()."&amp;filter_id_session=".current_session_id()."\">Mes rapports faits</a></li>";
 
 									if(is_current_session_concours())
 									{
 										foreach($typesRapportsConcours as $typeEval => $value)
 										{
-											echo "<li><a href=\"?action=view&amp;reset_filter=&amp;filter_login_rapp=".getLogin()."&amp;filter_id_session=".current_session_id()."&amp;filter_type=".urlencode($value)."\">Mes ".$value."s</a></li>";
+											echo "<li><a href=\"?action=view&amp;reset_filter=&amp;filter_rapporteur=".getLogin()."&amp;filter_id_session=".current_session_id()."&amp;filter_type=".urlencode($value)."\">Mes ".$value."s</a></li>";
 										}
-										echo "<li><a href=\"?action=view&amp;reset_filter=&amp;filter_login_rapp=".getLogin()."&amp;filter_id_session=".current_session_id()."&amp;filter_type=Candidature; filter_avis=oral\">Mes Auditions</a></li>";
+										echo "<li><a href=\"?action=view&amp;reset_filter=&amp;filter_rapporteur=".getLogin()."&amp;filter_id_session=".current_session_id()."&amp;filter_type=Candidature; filter_avis=oral\">Mes Auditions</a></li>";
 									}
 									?>
 

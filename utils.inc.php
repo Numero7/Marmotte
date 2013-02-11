@@ -443,7 +443,7 @@ function displayReport($id_rapport, $displaymenu = true)
 	global $typesRapportsConcours;
 
 	?>
-<form method="get" action="index.php">
+<form method="post" action="index.php">
 	<?php 
 	if($displaymenu)
 	{
@@ -472,7 +472,7 @@ function displayActionsMenu($row, $excludedaction = "", $actions)
 {
 	$id = $row->id;
 	$id_origine = $row->id_origine;
-echo "<table><tr>";
+	echo "<table><tr>";
 	foreach($actions as $action => $actiondata)
 		if ($action!=$excludedaction)
 		{
@@ -575,7 +575,7 @@ function displayImport()
 	global $typeImports;
 
 	?>
-<form enctype="multipart/form-data" action="index.php" method="get">
+<form enctype="multipart/form-data" action="index.php" method="post">
 	<input type="hidden" name="type" value="evaluations"></input> <input
 		type="hidden" name="action" value="upload" /> <input type="hidden"
 		name="MAX_FILE_SIZE" value="10000000" /> <input name="uploadedfile"
@@ -659,7 +659,7 @@ function displayRapporteurMenu($fieldID,$row,$users)
 	if(isSecretaire())
 	{
 		?>
-<form method="get" action="index.php">
+<form method="post" action="index.php">
 	<table width="10">
 		<tr>
 			<td><input type="hidden" name="action"
@@ -692,7 +692,7 @@ function displaySousJuryMenu($fieldID,$row)
 {
 	global $tous_sous_jury;
 	?>
-<form method="get" action="index.php">
+<form method="post" action="index.php">
 	<table>
 		<tr>
 			<td><input type="hidden" name="action"
@@ -725,7 +725,7 @@ function displayAvisMenu($fieldId,$row)
 	{
 		$aviss = $typesRapportToAvis[$row->type];
 		?>
-<form method="get" action="index.php">
+<form method="post" action="index.php">
 	<table>
 		<tr>
 			<td><input type="hidden" name="action"
@@ -884,13 +884,13 @@ function displayRows($rows, $fields, $filters, $filter_values, $sort_fields, $so
 	global $end_tr_fields;
 
 	?>
-<form method="get" action="index.php">
+<form method="post" action="index.php">
 	<table>
 		<tr>
 			<td>
 				<table>
 					<tr>
-						<td><hr /> <?php 
+						<td><?php 
 						displayTri($rows, $sort_fields, $sorting_values);
 						?>
 						</td>
@@ -960,43 +960,43 @@ function displayRows($rows, $fields, $filters, $filter_values, $sort_fields, $so
 			if($type=="rapporteur")
 			{
 				?>
-										<!-- Displaying rapporteur menu -->
-										<?php 
-				displayRapporteurMenu($fieldID,$row,$users);
+		<!-- Displaying rapporteur menu -->
+		<?php 
+		displayRapporteurMenu($fieldID,$row,$users);
 			}
 			else if(isSecretaire() &&  $type=="avis")
 			{
 				?>
-						<!-- Displaying avis menu -->
-						<?php 
-								
-				displayAvisMenu($fieldID,$row);
+		<!-- Displaying avis menu -->
+		<?php 
+
+		displayAvisMenu($fieldID,$row);
 			}
 			else if($fieldID=="sousjury")
 			{
-		?>
+				?>
 		<!-- Displaying sous jury menu -->
 		<?php 
-				displaySousJuryMenu($fieldID,$row);
+		displaySousJuryMenu($fieldID,$row);
 			}
 			else if($data != "")
 			{
 				?>
-						<!-- Displaying field <?php echo $fieldID; ?>menu -->
-						<?php 
-								
-				if($fieldID=="nom")
-				{
-					echo "<a href=\"?action=details&amp;id=".($row->id)."\">";
-					echo '<span class="valeur">'.$data.'</span>';
-					echo '</a>';
-				}
-				else
-				{
-					if( ($type == "unit") && isset($prettyunits[$row->$fieldID]))
-						$data = $prettyunits[$row->$fieldID]->nickname;
-					echo '<span class="valeur">'.$data.'</span>';
-				}
+		<!-- Displaying field <?php echo $fieldID; ?>menu -->
+		<?php 
+
+		if($fieldID=="nom")
+		{
+			echo "<a href=\"?action=details&amp;id=".($row->id)."\">";
+			echo '<span class="valeur">'.$data.'</span>';
+			echo '</a>';
+		}
+		else
+		{
+			if( ($type == "unit") && isset($prettyunits[$row->$fieldID]))
+				$data = $prettyunits[$row->$fieldID]->nickname;
+			echo '<span class="valeur">'.$data.'</span>';
+		}
 			}
 			echo '</td>';
 		}
@@ -1375,8 +1375,9 @@ function displaySessionField($row)
 	if(session_to_choose($row))
 	{
 		?>
-<input type="hidden"
-	name="fieldid_session" value="<?php echo $row->id_session;?>" />
+<input
+	type="hidden" name="fieldid_session"
+	value="<?php echo $row->id_session;?>" />
 <?php 
 	}
 }
@@ -1605,22 +1606,27 @@ function display_fichiers($row, $fieldID)
 			else if($file != "." && $file != "..")
 				$filenames[] = $file;
 		}
-		
+
 		$i = 0;
 		echo "<table>\n";
-				foreach($filenames as $file)
+		foreach($filenames as $file)
 		{
 			if($i % 4	 ==0)
 				echo '<tr>';
-			$arr = array(strtolower($row->nom), strtolower($row->prenom),"_");
-			$arr2 = array("",""," ");
-			echo '<td style="padding-right: 10px"><a href="'.$row->$fieldID."/".$file.'">'.str_replace($arr,$arr2,strtolower($file))."</a></td>\n";
+			$prettyfile = str_replace("_", " ", $file);
+			if(strlen($file) > 20)
+			{
+				$arr = array(strtolower($row->nom), strtolower($row->prenom));
+				$arr2 = array("","");
+				$prettyfile = str_replace($arr, $arr2, $prettyfile);
+			}
+			echo '<td style="padding-right: 10px"><a href="'.$row->$fieldID."/".$file.'">'.$prettyfile."</a></td>\n";
 			if($i % 4 ==3)
 				echo '</tr>';
 			$i++;
 		}
 		echo "</table>\n";
-		
+
 		closedir($handle);
 	}
 
@@ -1629,11 +1635,16 @@ function display_fichiers($row, $fieldID)
 	{
 		?>
 
-<input type="hidden" name="candidatekey" value="<?php echo $row->cle;?>" />
-<input type="hidden" name="type" value="candidatefile" />
-<input type="hidden" name="MAX_FILE_SIZE" value="10000000" />
- <input name="uploadedfile" type="file" />
- <input	type="submit" name="ajoutfichier" value="Ajouter fichier" />
+<input
+	type="hidden" name="candidatekey" value="<?php echo $row->cle;?>" />
+<input
+	type="hidden" name="type" value="candidatefile" />
+<input
+	type="hidden" name="MAX_FILE_SIZE" value="10000000" />
+<input name="uploadedfile"
+	type="file" />
+<input
+	type="submit" name="ajoutfichier" value="Ajouter fichier" />
 <?php 
 	}
 	echo "</td></tr>";

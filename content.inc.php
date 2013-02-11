@@ -80,7 +80,6 @@ function alertText($text)
 		function scrollToId($id)
 		{
 
-
 			echo('
 					<script type="text/javascript">');
 
@@ -88,7 +87,7 @@ function alertText($text)
 					document.getElementById("'.$id.'").scrollIntoView();');
 			/*
 			 echo('
-			 		var elt = document.getElementById( '.$id.' );
+			 		var elt = document.getEleme	ntById( '.$id.' );
 			 		var top = (	return elt.offsetTop + ( elt.offsetParent ? elt.offsetParent.documentOffsetTop() : 0 )) - ( window.innerHeight / 2 );
 			 		window.scrollTo( 0, top );
 			 		');
@@ -118,7 +117,7 @@ function alertText($text)
 			<?php 
 		}
 
-		function displayWithRedirect($id)
+		function displayWithRedirect($id = 0)
 		{
 			?>
 					<script type="text/javascript">
@@ -127,7 +126,7 @@ function alertText($text)
 					<?php 
 		}
 
-		function displayWithRedirects($id)
+		function displayWithRedirects($id = 0)
 		{
 			?>
 							<script type="text/javascript">
@@ -160,7 +159,7 @@ function alertText($text)
 					}
 					break;
 				case 'view':
-					displayReports($id);
+					displayReports($id_rapport);
 					break;
 				case 'details':
 					if(isset($_REQUEST["detailsnext"]))
