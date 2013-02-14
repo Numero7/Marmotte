@@ -6,6 +6,15 @@ require_once('manage_users.inc.php');
 require_once('utils.inc.php');
 require_once('xml_tools.inc.php');
 
+error_reporting(E_ALL);
+ini_set('display_errors', TRUE);
+ini_set('display_startup_errors', TRUE);
+ini_set('xdebug.collect_vars', 'on');
+ini_set('xdebug.collect_params', '4');
+ini_set('xdebug.dump_globals', 'on');
+ini_set('xdebug.dump.SERVER', 'REQUEST_URI');
+ini_set('xdebug.show_local_vars', 'on');
+
 function implode_with_keys($assoc,$inglue=':',$outglue=','){
 	$res=array();
 	foreach($assoc as $tk=>$tv){
@@ -140,7 +149,7 @@ function appendLeaf($fieldname, $fieldvalue, DOMDocument $doc, DOMElement $node)
 {
 	$leaf = $doc->createElement($fieldname);
 	//$leaf->appendChild($doc->createCDATASection ( stripInvalidXml($fieldvalue)));
-	$leaf->appendChild($doc->createCDATASection (normalizeField($fieldvalue)));
+	$leaf->appendChild($doc->createCDATASection (normalizeFieldCDATA($fieldvalue)));
 	$node->appendChild($leaf);
 }
 
@@ -244,7 +253,6 @@ function EnteteGauche($row)
 
 function createXMLReportElem($row, $sessions, $units, DOMDocument $doc, $keep_br = true)
 {
-	global $empty_report;
 	global $typesRapports;
 	global $typesRapportsToEnteteGauche;
 	global $enTetesDroit;
@@ -281,10 +289,10 @@ function createXMLReportElem($row, $sessions, $units, DOMDocument $doc, $keep_br
 		}
 	}
 
-
+global $fieldsRapportAll;
 	//On ajoute tous les fields pas spéciaux
-	foreach ($empty_report as $fieldID => $title)
-		if(!in_array($fieldID,$fieldsspecial))
+	foreach ($fieldsRapportAll as $fieldID => $title)
+		if(isset($row->$fieldID) && !in_array($fieldID,$fieldsspecial))
 		appendLeaf($fieldID,   $keep_br ? $row->$fieldID : remove_br($row->$fieldID) , $doc, $rapportElem);
 
 
@@ -305,8 +313,16 @@ function createXMLReportElem($row, $sessions, $units, DOMDocument $doc, $keep_br
 	appendLeaf("unite", $value, $doc, $rapportElem);
 
 	//On ajoute la date du jour
+		date_default_timezone_set('Europe/Paris');
+	setlocale (LC_TIME, 'fr_FR.utf8','fra');
+	//date("j/F/Y")
+	appendLeaf("date", utf8_encode(strftime("%#d %B %Y", strtotime($row->date))), $doc, $rapportElem);
+	
+	/*
+	date_default_timezone_set('Europe/Paris');
+	
 	appendLeaf("date", date("j/n/Y",strtotime($row->date)), $doc, $rapportElem);
-
+*/
 
 	//On ajoute les cases à choix multiple, si nécessaires
 	if(array_key_exists($row->type,$typesRapportsToCheckboxes))
@@ -362,13 +378,14 @@ function rowToXMLDoc($row, $sessions = null, $units = null)
 	$doc = new DOMDocument("1.0","UTF-8");
 	$elem = createXMLReportElem($row, $sessions, $units, $doc);
 	$doc->appendChild($elem);
+	$doc->formatOutput = TRUE;
 	return $doc;
 }
 
-function XMLToHTML(DOMDocument $doc)
+function XMLToHTML(DOMDocument $doc,$xsl_file)
 {
 	$xsl = new DOMDocument("1.0","UTF-8");
-	$xsl->load('xslt/html2.xsl');
+	$xsl->load($xsl_file);
 
 	$proc = new XSLTProcessor();
 	$proc->importStyleSheet($xsl);

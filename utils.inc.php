@@ -1040,6 +1040,9 @@ function historyReport($id_origine)
 	$result=mysql_query($sql);
 	$prevVals = array();
 	$first = true;
+	
+	date_default_timezone_set('Europe/Paris');
+	
 	while ($row = mysql_fetch_object($result))
 	{
 		if ($first)

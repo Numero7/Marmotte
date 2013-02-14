@@ -10,6 +10,7 @@ ini_set('xdebug.dump_globals', 'on');
 ini_set('xdebug.dump.SERVER', 'REQUEST_URI');
 ini_set('xdebug.show_local_vars', 'on');
 
+	date_default_timezone_set('Europe/Paris');
 
 	require_once("config/configDB.inc.php");
 
@@ -831,7 +832,20 @@ ini_set('xdebug.show_local_vars', 'on');
 					"xsl" => "",
 					"name" => "CSV",
 					"permissionlevel" => NIVEAU_PERMISSION_BASE
-			));
+			),
+			"singlecsv" => 	array(
+					"mime" => "application/x-text",
+					"xsl" => "",
+					"name" => "SingleCSV",
+					"permissionlevel" => NIVEAU_PERMISSION_PRESIDENT_SECRETAIRE
+			),
+			"jad" => 	array(
+					"mime" => "application/x-text",
+					"xsl" => "",
+					"name" => "JAD",
+					"permissionlevel" => NIVEAU_PERMISSION_PRESIDENT_SECRETAIRE
+			)
+			);
 
 			$typeImports = array(
 					"xml" => 	array(
@@ -850,7 +864,8 @@ ini_set('xdebug.show_local_vars', 'on');
 	
 	
 			$concours_ouverts = get_config("concours");
-
+			$postes_ouverts = get_config("postes_ouverts");
+				
 	$sous_jurys = get_config("sousjurys");
 	
 	$sous_jurys[""] = array();

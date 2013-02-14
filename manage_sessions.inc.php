@@ -58,6 +58,8 @@ function is_current_session_concours()
 function showSessions()
 {
 	$finalResult = array();
+	date_default_timezone_set('Europe/Paris');
+	
 	$sql = "SELECT * FROM ".sessions_db." ORDER BY date DESC;";
 	if($result=mysql_query($sql))
 	{
@@ -75,6 +77,8 @@ function createSession($name,$date)
 {
 	if (isSecretaire())
 	{
+		date_default_timezone_set('Europe/Paris');
+		
 		echo $date."<br>";
 		echo strtotime($date)."<br>";
 		echo date("Y-m-d h:m:s",strtotime($date));

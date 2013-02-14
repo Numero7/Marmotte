@@ -48,12 +48,17 @@ function thing_to_xml_node($thing,$node, $doc, $protect = "", $fields = NULL)
 
 function filt($val)
 {
-	return str_replace(array('&','"',"'","&#13;","\r"),array('','','','',''),stripInvalidXml(remove_br($val)));
+	return str_replace(array('&','"',"&#13;","\r"),array('','','',''),stripInvalidXml(remove_br($val)));
 }
 
 function normalizeField($data)
 {
 	return htmlspecialchars_decode(htmlentities(stripInvalidXml($data)), ENT_NOQUOTES);
+}
+
+function normalizeFieldCDATA($data)
+{
+	return stripInvalidXml($data);
 }
 
 /**
