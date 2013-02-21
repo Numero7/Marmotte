@@ -13,10 +13,10 @@
 <title>MARMOTTE : Gestion des rapports de section du coCNRS</title>
 </head>
 <body>
+
 	<?php
 
 	require_once("utils.inc.php");
-
 	require_once("db.inc.php");
 	require_once("manage_users.inc.php");
 

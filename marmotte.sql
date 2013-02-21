@@ -1,36 +1,34 @@
 -- phpMyAdmin SQL Dump
--- version 3.3.7deb7
+-- version 3.5.6
 -- http://www.phpmyadmin.net
 --
--- Serveur: localhost
--- Généré le : Mar 29 Janvier 2013 à 12:10
--- Version du serveur: 5.1.63
--- Version de PHP: 5.3.3-7+squeeze14
+-- Host: localhost
+-- Generation Time: Feb 08, 2013 at 05:22 PM
+-- Server version: 5.1.63-0+squeeze1
+-- PHP Version: 5.3.3-7+squeeze14
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
-
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
+SET time_zone = "+00:00";
 
 --
--- Base de données: `cn6`
+-- Database: `cn6`
 --
 
 -- --------------------------------------------------------
 
 --
--- Structure de la table `candidats`
+-- Table structure for table `candidats`
+--
+-- Creation: Feb 08, 2013 at 02:05 PM
 --
 
+DROP TABLE IF EXISTS `candidats`;
 CREATE TABLE IF NOT EXISTS `candidats` (
   `cle` text CHARACTER SET utf8 NOT NULL,
   `anneecandidature` int(11) NOT NULL,
   `nom` text CHARACTER SET utf8 NOT NULL,
   `prenom` text CHARACTER SET utf8 NOT NULL,
-  `grade` enum('CR2','CR1','DR2','DR1','DRCE1','DRCE2','ChaireMC','ChairePR','Emerite','MC','PR','PhD','HDR','None') CHARACTER SET utf8 NOT NULL,
+  `grade` enum('CR2','CR1','DR2','DR1','DRCE1','DRCE2','ChaireMC','ChairePR','Emerite','MC','PR','PhD','HDR','None','chercheur','postdoc','CR1_INRIA') CHARACTER SET utf8 NOT NULL,
   `theseAnnee` text CHARACTER SET utf8 NOT NULL,
   `theseLieu` text CHARACTER SET utf8 NOT NULL,
   `HDRAnnee` text CHARACTER SET utf8 NOT NULL,
@@ -47,16 +45,18 @@ CREATE TABLE IF NOT EXISTS `candidats` (
   `projetrecherche` text CHARACTER SET utf8 NOT NULL,
   `concourspresentes` text CHARACTER SET utf8 NOT NULL,
   `fichiers` text CHARACTER SET utf8 NOT NULL,
-  `date_recrutement` text CHARACTER SET utf8 NOT NULL,
-  `avissousjury` text CHARACTER SET utf8 NOT NULL
+  `date_recrutement` text CHARACTER SET utf8 NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
 --
--- Structure de la table `chercheurs`
+-- Table structure for table `chercheurs`
+--
+-- Creation: Feb 08, 2013 at 02:05 PM
 --
 
+DROP TABLE IF EXISTS `chercheurs`;
 CREATE TABLE IF NOT EXISTS `chercheurs` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `nom` varchar(40) CHARACTER SET utf8 NOT NULL,
@@ -65,14 +65,17 @@ CREATE TABLE IF NOT EXISTS `chercheurs` (
   `grade` enum('CR2','CR1','DR2','DR1','DRCE1','DRCE2','ChaireMC','ChairePR','Emerite','MC','PR','PhD','HDR','None') CHARACTER SET utf8 NOT NULL,
   `date_recrutement` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=61 ;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
 --
--- Structure de la table `evaluations`
+-- Table structure for table `evaluations`
+--
+-- Creation: Feb 08, 2013 at 02:05 PM
 --
 
+DROP TABLE IF EXISTS `evaluations`;
 CREATE TABLE IF NOT EXISTS `evaluations` (
   `statut` enum('vierge','prerapport','rapport','publie','supprime') CHARACTER SET utf8 NOT NULL,
   `id_session` int(11) NOT NULL,
@@ -82,16 +85,12 @@ CREATE TABLE IF NOT EXISTS `evaluations` (
   `prenom` varchar(40) CHARACTER SET utf8 NOT NULL,
   `unite` varchar(50) CHARACTER SET utf8 NOT NULL,
   `ecole` text CHARACTER SET utf8 NOT NULL,
-  `grade` enum('CR2','CR1','DR2','DR1','DRCE1','DRCE2','ChaireMC','ChairePR','Emerite','MC','PR','PhD','HDR','None') CHARACTER SET utf8 NOT NULL,
+  `grade` enum('CR2','CR1','DR2','DR1','DRCE1','DRCE2','ChaireMC','ChairePR','Emerite','MC','PR','PhD','HDR','None','chercheur','postdoc','CR1_INRIA') CHARACTER SET utf8 NOT NULL,
   `type` enum('Evaluation-Vague','Evaluation-MiVague','Promotion','Equivalence','Candidature','Suivi-PostEvaluation','Titularisation','Affectation','Reconstitution','Changement-Directeur','Changement-Directeur-Adjoint','Renouvellement','Association','Ecole','Comite-Evaluation','Generique') CHARACTER SET utf8 NOT NULL,
   `concours` text CHARACTER SET utf8 NOT NULL,
   `rapporteur` text CHARACTER SET utf8 NOT NULL,
   `rapporteur2` text CHARACTER SET utf8 NOT NULL,
   `prerapport` text CHARACTER SET utf8 NOT NULL,
-  `theseAnnee` text CHARACTER SET utf8 NOT NULL,
-  `theseLieu` text CHARACTER SET utf8 NOT NULL,
-  `HDRAnnee` text CHARACTER SET utf8 NOT NULL,
-  `HDRLieu` text CHARACTER SET utf8 NOT NULL,
   `anneesequivalence` int(11) NOT NULL,
   `labo1` text CHARACTER SET utf8 NOT NULL,
   `labo2` text CHARACTER SET utf8 NOT NULL,
@@ -122,29 +121,37 @@ CREATE TABLE IF NOT EXISTS `evaluations` (
   `rayonnement2` text CHARACTER SET utf8 NOT NULL,
   `avis1` text CHARACTER SET utf8 NOT NULL,
   `avis2` text CHARACTER SET utf8 NOT NULL,
+  `avissousjury` text CHARACTER SET utf8 NOT NULL,
   `cleindividu` text CHARACTER SET utf8 NOT NULL,
+  `sousjury` text CHARACTER SET utf8 NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=11250 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=14230 ;
 
 -- --------------------------------------------------------
 
 --
--- Structure de la table `sessions`
+-- Table structure for table `sessions`
+--
+-- Creation: Feb 08, 2013 at 02:06 PM
 --
 
+DROP TABLE IF EXISTS `sessions`;
 CREATE TABLE IF NOT EXISTS `sessions` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `nom` varchar(60) CHARACTER SET utf8 NOT NULL,
   `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=6 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
 
 -- --------------------------------------------------------
 
 --
--- Structure de la table `units`
+-- Table structure for table `units`
+--
+-- Creation: Feb 08, 2013 at 02:06 PM
 --
 
+DROP TABLE IF EXISTS `units`;
 CREATE TABLE IF NOT EXISTS `units` (
   `nickname` text CHARACTER SET utf8 NOT NULL,
   `code` text CHARACTER SET utf8 NOT NULL,
@@ -155,13 +162,18 @@ CREATE TABLE IF NOT EXISTS `units` (
 -- --------------------------------------------------------
 
 --
--- Structure de la table `users`
+-- Table structure for table `users`
+--
+-- Creation: Feb 08, 2013 at 02:06 PM
 --
 
+DROP TABLE IF EXISTS `users`;
 CREATE TABLE IF NOT EXISTS `users` (
   `login` varchar(40) CHARACTER SET utf8 NOT NULL,
   `passHash` varchar(40) CHARACTER SET utf8 NOT NULL,
   `description` text CHARACTER SET utf8 NOT NULL,
   `permissions` int(11) NOT NULL DEFAULT '0',
-  `email` text CHARACTER SET utf8 NOT NULL
+  `email` text CHARACTER SET utf8 NOT NULL,
+  `tel` text CHARACTER SET utf8 NOT NULL,
+  `sousjury` text CHARACTER SET utf8 NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;

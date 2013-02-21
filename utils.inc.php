@@ -6,8 +6,8 @@ require_once('manage_users.inc.php');
 require_once('manage_unites.inc.php');
 require_once('manage_rapports.inc.php');
 
-//set_exception_handler('exception_handler');
-//set_error_handler('error_handler');
+set_exception_handler('exception_handler');
+set_error_handler('error_handler');
 
 
 function getFilterValue($filter_name)
@@ -100,7 +100,7 @@ function getCurrentFiltersList()
 	if(is_current_session_concours())
 	{
 		$filters = $filtersConcours;
-		$filters['login_rapp']['liste'] = simpleListUsers();
+		$filters['rapporteur']['liste'] = simpleListUsers();
 
 		$units = simpleUnitsList();
 		foreach($fieldsTypes as $field => $type)
@@ -315,8 +315,9 @@ function displayIndividualReport($row)
 } ;
 
 
-function valueFromField($field,$value,$units,$users,$themes)
+function valueFromField($field,$value,$units,$users)
 {
+	global $topics;
 	global $fieldsTypes;
 	if(isset($fieldsTypes[$field]))
 	{
@@ -329,7 +330,7 @@ function valueFromField($field,$value,$units,$users,$themes)
 				return isset($users[$value]->description) ? $users[$value]->description : "";
 				break;
 			case 'topic':
-				return isset($themes[$value]) ? $themes[$value] : "";
+				return isset($topics[$value]) ? $topics[$value] : "";
 			case 'files':
 				return '<a href="'.$value.'">'.$value.'</a>';
 				break;
@@ -348,7 +349,7 @@ function displayConcoursReport($row)
 	global $fieldsCandidat;
 	global $fieldsCandidatAll;
 
-	$topics = get_config("topics");
+	global $topics;
 
 	global $fieldsCandidatAvantAudition;
 	global $avis_candidature_necessitant_pas_rapport_sousjury;
@@ -359,7 +360,6 @@ function displayConcoursReport($row)
 
 	$units = unitsList();
 	$users = listRapporteurs();
-	$themes = $topics;
 
 	$specialRule = array(
 			"nom"=>0,
@@ -399,7 +399,7 @@ function displayConcoursReport($row)
 		<tr>
 			<th style="text-align: LEFT"><?php echo $fieldsCandidatAll[$fieldID];?>
 			</th>
-			<td><?php echo valueFromField($fieldID, $candidat->$fieldID, $units,$users,$themes);?>
+			<td><?php echo valueFromField($fieldID, $candidat->$fieldID, $units,$users);?>
 			</td>
 		</tr>
 
@@ -416,7 +416,7 @@ function displayConcoursReport($row)
 		<tr>
 			<th style="text-align: LEFT"><?php echo $fieldsAll[$fieldID];?>
 			</th>
-			<td><?php echo valueFromField($fieldID, $row->$fieldID, $units,$users,$themes);?>
+			<td><?php echo valueFromField($fieldID, $row->$fieldID, $units,$users,$topics);?>
 			</td>
 		</tr>
 		<?php
@@ -584,7 +584,7 @@ function displayImport()
 				?>
 		</select> <?php }?>
 		</li>
-		
+
 		<li><input type="submit" value="Importer" /></li>
 	</ul>
 </form>
@@ -683,6 +683,36 @@ function displayRapporteurMenu($fieldID,$row,$users)
 	{
 		echo $users[$row->$fieldID]->description;
 	}
+}
+
+function displaySousJuryMenu($fieldID,$row)
+{
+	global $tous_sous_jury;
+	?>
+<form method="post" action="index.php">
+	<table>
+		<tr>
+			<td><input type="hidden" name="action"
+				value="set<?php echo $fieldID;?>" /> <input type="hidden"
+				name="id_toupdate" value="<?php echo $row->id;?>" /> <select
+				name="new<?php echo $fieldID;?>">
+					<?php
+						echo  "\t\t\t\t\t<option value=\"\"></option>\n";
+					foreach($tous_sous_jury as $avis => $pretty)
+					{
+						$sel = (($row->$fieldID) == ($avis)) ? "selected=\"selected\"" : "";
+						echo  "\t\t\t\t\t<option value=\"".($avis)."\" ".$sel.">".$pretty."&nbsp;</option>\n";
+					}
+					?>
+			</select>
+			</td>
+			<td><input type="submit" value="OK"></input>
+			</td>
+		</tr>
+	</table>
+</form>
+<!-- <a href="javascript:getScrollXY();">OK</a>  -->
+<?php 
 }
 
 function displayAvisMenu($fieldId,$row)
@@ -932,6 +962,10 @@ function displayRows($rows, $fields, $filters, $filter_values, $sort_fields, $so
 			{
 				displayAvisMenu($fieldID,$row);
 			}
+			else if($fieldID=="sousjury")
+			{
+				displaySousJuryMenu($fieldID,$row);
+			}
 			else if($data != "")
 			{
 				if($fieldID=="nom")
@@ -1170,8 +1204,9 @@ function displaySessionField($row)
 	if(session_to_choose($row))
 	{
 		?>
-<input type="hidden"
-	name="fieldid_session" value="<?php echo $row->id_session;?>" />
+<input
+	type="hidden" name="fieldid_session"
+	value="<?php echo $row->id_session;?>" />
 <?php 
 	}
 }
@@ -1201,7 +1236,7 @@ function display_treslong($row, $fieldID)
 function display_short($row, $fieldID)
 {
 	?>
-<td style="width: 30em;"><input name="field<?php echo $fieldID;?>"
+<td><input name="field<?php echo $fieldID;?>"
 	value="<?php echo $row->$fieldID;?>" style="width: 100%;" />
 </td>
 <?php
@@ -1291,7 +1326,7 @@ function display_unit($row, $fieldID)
 
 function display_topic($row, $fieldID)
 {
-	$topics = get_config("topics");
+	global $topics;
 
 	?>
 <td style="width: 30em;"><select name="field<?php echo $fieldID;?>"
@@ -1591,6 +1626,8 @@ function displayEditableReport($row, $canedit)
 
 	global $fieldsUnites;
 
+	//phpinfo();
+	echo '<div id="debut"></div>';
 	echo '<form enctype="multipart/form-data" method="post" action="index.php" style="width: 100%">'."\n";
 
 	$next = nextt($row->id_origine);
@@ -1786,6 +1823,19 @@ function displayEditableReport($row, $canedit)
 
 		echo "</form>\n";
 	}
+	echo('
+					<script type="text/javascript">');
+	echo('
+					document.getElementById("debut").scrollIntoView();');
+
+	/*
+	 echo('
+	 		var elt = document.getElementById( '$id' );
+	 		var top = (	return elt.offsetTop + ( elt.offsetParent ? elt.offsetParent.documentOffsetTop() : 0 )) - ( window.innerHeight / 2 );
+	 		window.scrollTo( 0, top );
+	 		');
+	*/
+	echo('		</script>');
 
 }
 

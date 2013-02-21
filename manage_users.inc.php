@@ -8,10 +8,10 @@ function init_session()
 {
 	global $current_session;
 	set_current_session_id(get_config("current_session"));
-	
+
 	ini_set("session.gc_maxlifetime", 3600);
 	//echo "Timeout: ". (ini_get("session.gc_maxlifetime")/60)." minutes<br/>";
-	
+
 }
 
 function createhtpasswd()
@@ -28,7 +28,7 @@ function createhtpasswd()
 	{
 		throw new Exception("Failed to open htpasswd file for writing");
 	}
-	
+
 }
 
 function getDescription($login)
@@ -63,7 +63,7 @@ function listUsers($forcenew = false)
 {
 	if($forcenew)
 		unset($_SESSION['all_users']);
-		
+
 	if(!isset($_SESSION['all_users']))
 	{
 		$listusers = array();
@@ -113,6 +113,7 @@ function getUserPermissionLevel($login = "")
 function genere_motdepasse($len=10)
 {
 	/*return openssl_random_pseudo_bytes($len);*/
+	date_default_timezone_set("Europe/Paris");
 	return substr(crypt(date("%l %u")),3,13);
 }
 
@@ -153,6 +154,21 @@ function isRapporteurUser($login = "")
 	return getUserPermissionLevel($login) >= NIVEAU_PERMISSION_BASE;
 };
 
+function isSousJury($sousjury, $login = "")
+{
+	if($login == "" )
+		$login = getLogin();
+	$users = listUsers();
+	if($sousjury != "" && $users[$login]->sousjury != "")
+	{
+		$test = strpos($users[$login]->sousjury, $sousjury);
+		return ($test === 0 || $test != false);
+	}
+	else if($sousjury == "" && $users[$login]->sousjury == "")
+		return true;
+	else
+		return false;
+}
 
 function addCredentials($login,$pwd)
 {
@@ -219,53 +235,53 @@ function changePwd($login,$old,$new1,$new2, $envoiparemail)
 {
 	$currLogin = getLogin();
 	$users = listUsers();
-		if (authenticateBase($login,$old) or isSecretaire())
-		{
-			$oldPassHash = getPassHash($login);
-			if ($oldPassHash != NULL)
-			{
-				$newPassHash = crypt($new1, $oldPassHash);
-				$sql = "UPDATE ".users_db." SET passHash='$newPassHash' WHERE login='$login';";
-				sql_request($sql);
-				
-				createhtpasswd();
-				
-				if(getLogin() == $login)
-					addCredentials($login,$new1);
-					
-				if($envoiparemail)
-				{
-					$body = "Votre mot de passe pour le site \r\n".curPageURL()."\r\n a été mis à jour:\r\n";
-					$body .= "\t\t\t login: '".$login."'\r\n";
-					$body .= "\t\t\t motdepasse: '".$new1."'\r\n";
-					$body .= "\r\n\r\n\t Amicalement, ".get_config("secretaire").".";
-					email_handler($users[$login]->email,"Votre compte Marmotte",$body);
-				}
-				
-				return true;
-			}
-		}
-		else
-			throw new Exception("La saisie du mot de passe courant est incorrecte, veuillez réessayer.");
-}
-
-
-function changeUserPermissions($login,$permissions)
-{
-	if (isSecretaire())
+	if (authenticateBase($login,$old) or isSecretaire())
 	{
-		if ($permissions<=getUserPermissionLevel())
+		$oldPassHash = getPassHash($login);
+		if ($oldPassHash != NULL)
 		{
-			$sql = "UPDATE ".users_db." SET permissions=$permissions WHERE login='$login';";
+			$newPassHash = crypt($new1, $oldPassHash);
+			$sql = "UPDATE ".users_db." SET passHash='$newPassHash' WHERE login='$login';";
 			sql_request($sql);
-			unset($_SESSION['all_users']);
+
+			createhtpasswd();
+
+			if(getLogin() == $login)
+				addCredentials($login,$new1);
+
+			if($envoiparemail)
+			{
+				$body = "Votre mot de passe pour le site \r\n".curPageURL()."\r\n a été mis à jour:\r\n";
+				$body .= "\t\t\t login: '".$login."'\r\n";
+				$body .= "\t\t\t motdepasse: '".$new1."'\r\n";
+				$body .= "\r\n\r\n\t Amicalement, ".get_config("secretaire").".";
+				email_handler($users[$login]->email,"Votre compte Marmotte",$body);
+			}
+
+			return true;
 		}
 	}
 	else
-	{
-		echo "<p><strong>Erreur :</strong> Seuls les administrateurs du site peuvent modifier les mots de passes d'autres utilisateurs, veuillez nous contacter (Yann ou Hugo) en cas de difficultés.</p>";
-	}
+		throw new Exception("La saisie du mot de passe courant est incorrecte, veuillez réessayer.");
 }
+
+
+
+function changeUserInfos($login,$permissions, $sousjury)
+{
+	if (isSecretaire())
+	{
+		$sql = "UPDATE ".users_db." SET permissions=$permissions, sousjury=\"$sousjury\" WHERE login='$login';";
+	}
+	else
+	{
+		$sql = "UPDATE ".users_db." SET sousjury=\"$soujury\" WHERE login='$login';";
+	}
+	sql_request($sql);
+	unset($_SESSION['all_users']);
+
+}
+
 
 function existsUser($login)
 {
@@ -287,9 +303,9 @@ function createUser($login,$pwd,$desc,$email, $envoiparemail)
 		$passHash = crypt($pwd);
 		$sql = "INSERT INTO ".users_db." (login,passHash,description,email) VALUES ('".mysql_real_escape_string($login)."','".mysql_real_escape_string($passHash)."','".mysql_real_escape_string($desc)."','".mysql_real_escape_string($email)."');";
 		mysql_query($sql);
-		
+
 		createhtpasswd();
-		
+
 		if($envoiparemail)
 		{
 			$body = "Marmotte est un site web destiné à faciliter la répartition, le dépôt, l'édition et la production\r\n";
