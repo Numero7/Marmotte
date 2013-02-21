@@ -222,27 +222,30 @@ function sous_jury_row($used_topics, $jurys, $code, $login, $data)
 	$filters['rapporteur'] = "tous";
 	$total2 = countReports($filters,false);
 
-	echo '<tr><td>'.$data->description.'</td>';
-	echo "<td>$total1 ($total2)</td>";
-
-	foreach($jurys as $jury => $total)
-		echo (isSousJury($jury,$login)? "<td>X</td>\n" : "<td></td>\n");
-	
-	foreach($used_topics as $topic => $total	)
+	if($total1 >0 || $total2 > 0)
 	{
-		$filters['theme1'] = $topic;
-		$filters['rapporteur'] = $login;
-		$filters['rapporteur2'] = "tous";
-		$total1 = countReports($filters, false);
-		$filters['rapporteur2'] = $login;
-		$filters['rapporteur'] = "tous";
-		$total2 = countReports($filters, false);
-		$filters['avis'] = "oral";
+		echo '<tr><td>'.$data->description.'</td>';
+		echo "<td>$total1 ($total2)</td>";
 
-		if($total1 > 0 || $total2 > 0)
-			echo "<td>$total1 ($total2)</td>";
-		else
-			echo "<td></td>";
+		foreach($jurys as $jury => $total)
+			echo (isSousJury($jury,$login)? "<td>X</td>\n" : "<td></td>\n");
+
+		foreach($used_topics as $topic => $total	)
+		{
+			$filters['theme1'] = $topic;
+			$filters['rapporteur'] = $login;
+			$filters['rapporteur2'] = "tous";
+			$total1 = countReports($filters, false);
+			$filters['rapporteur2'] = $login;
+			$filters['rapporteur'] = "tous";
+			$total2 = countReports($filters, false);
+			$filters['avis'] = "oral";
+
+			if($total1 > 0 || $total2 > 0)
+				echo "<td>$total1 ($total2)</td>";
+			else
+				echo "<td></td>";
+		}
 	}
 
 
@@ -493,7 +496,7 @@ if(is_current_session_concours())
 		$filters = array("rapporteur" => $login);
 		if(countReports($filters) > 0)
 		{
-			echo '<tr><td>'.$data->description.'</td><td>'.$data->sousjury.'</td><td>'.statBaseAvancement($filters)."</td>\n";
+			echo '<tr><td>'.$data->description.'</td><td>'.statBaseAvancement($filters)."</td>\n";
 
 			if(is_current_session_concours())
 			{

@@ -315,7 +315,7 @@ function displayIndividualReport($row)
 } ;
 
 
-function valueFromField($field,$value,$units,$users)
+function valueFromField($row, $field,$value,$units,$users)
 {
 	global $topics;
 	global $fieldsTypes;
@@ -324,19 +324,26 @@ function valueFromField($field,$value,$units,$users)
 		switch($fieldsTypes[$field])
 		{
 			case 'unit':
-				return isset($units[$value]) ? $units[$value]->prettyname : "";
+				echo isset($units[$value]) ? $units[$value]->prettyname : "";
+				return;
 				break;
 			case 'rapporteur':
-				return isset($users[$value]->description) ? $users[$value]->description : "";
+				echo isset($users[$value]->description) ? $users[$value]->description : "";
+				return;
 				break;
 			case 'topic':
-				return isset($topics[$value]) ? $topics[$value] : "";
+				echo isset($topics[$value]) ? $topics[$value] : "";
+				return;
+				break;
 			case 'files':
-				return '<a href="'.$value.'">'.$value.'</a>';
+				display_fichiers($row, $field);
+				return;
+				break;
+			default:
+				echo $value;
 				break;
 		}
 	}
-	return $value;
 }
 
 function displayConcoursReport($row)
@@ -399,14 +406,14 @@ function displayConcoursReport($row)
 		<tr>
 			<th style="text-align: LEFT"><?php echo $fieldsCandidatAll[$fieldID];?>
 			</th>
-			<td><?php echo valueFromField($fieldID, $candidat->$fieldID, $units,$users);?>
+			<td><?php valueFromField($candidat, $fieldID, $candidat->$fieldID, $units,$users);?>
 			</td>
 		</tr>
 
 
 		<?php 		
 		}
-		$fields = get_editable_fields($row);
+		$fields = get_readable_fields($row);
 
 		foreach($fields as  $fieldID)
 		{
@@ -416,7 +423,7 @@ function displayConcoursReport($row)
 		<tr>
 			<th style="text-align: LEFT"><?php echo $fieldsAll[$fieldID];?>
 			</th>
-			<td><?php echo valueFromField($fieldID, $row->$fieldID, $units,$users,$topics);?>
+			<td><?php echo valueFromField($row, $fieldID, $row->$fieldID, $units,$users,$topics);?>
 			</td>
 		</tr>
 		<?php
@@ -465,7 +472,7 @@ function displayActionsMenu($row, $excludedaction = "", $actions)
 {
 	$id = $row->id;
 	$id_origine = $row->id_origine;
-
+	echo "<table><tr>";
 	foreach($actions as $action => $actiondata)
 		if ($action!=$excludedaction)
 		{
@@ -480,6 +487,7 @@ function displayActionsMenu($row, $excludedaction = "", $actions)
 				echo "<img class=\"icon\" width=\"24\" height=\"24\" src=\"$icon\" alt=\"$title\"/>\n</a>\n</td>\n";
 			}
 		}
+		echo "</tr></table>";
 }
 
 function displayUnitReport($row)
@@ -570,23 +578,18 @@ function displayImport()
 <form enctype="multipart/form-data" action="index.php" method="post">
 	<input type="hidden" name="type" value="evaluations"></input> <input
 		type="hidden" name="action" value="upload" /> <input type="hidden"
-		name="MAX_FILE_SIZE" value="10000000" />
-	<ul>
-		<li><input name="uploadedfile" type="file" size="5" /> <br />
-		</li>
-		<?php if(isSecretaire()){?>
-		<li><a href="">Type</a> <select name="subtype">
-				<?php
-				global $typesRapports;
-				echo "<option value=\"\">Spécifié dans le doc</option>\n";
-				foreach ($typesRapports as $ty => $value)
-					echo "<option value=\"$ty\">".$value."</option>\n";
-				?>
-		</select> <?php }?>
-		</li>
-
-		<li><input type="submit" value="Importer" /></li>
-	</ul>
+		name="MAX_FILE_SIZE" value="10000000" /> <input name="uploadedfile"
+		type="file" size="5" /> <br /> <input type="submit" value="Importer" />
+	<?php if(isSecretaire()){?>
+	<a href="">Type</a> <select name="subtype">
+		<?php
+		global $typesRapports;
+		echo "<option value=\"\">Spécifié dans le doc</option>\n";
+		foreach ($typesRapports as $ty => $value)
+			echo "<option value=\"$ty\">".$value."</option>\n";
+		?>
+	</select>
+	<?php }?>
 </form>
 
 <?php 
@@ -697,7 +700,7 @@ function displaySousJuryMenu($fieldID,$row)
 				name="id_toupdate" value="<?php echo $row->id;?>" /> <select
 				name="new<?php echo $fieldID;?>">
 					<?php
-						echo  "\t\t\t\t\t<option value=\"\"></option>\n";
+					echo  "\t\t\t\t\t<option value=\"\"></option>\n";
 					foreach($tous_sous_jury as $avis => $pretty)
 					{
 						$sel = (($row->$fieldID) == ($avis)) ? "selected=\"selected\"" : "";
@@ -887,7 +890,7 @@ function displayRows($rows, $fields, $filters, $filter_values, $sort_fields, $so
 			<td>
 				<table>
 					<tr>
-						<td><hr /> <?php 
+						<td><?php 
 						displayTri($rows, $sort_fields, $sorting_values);
 						?>
 						</td>
@@ -943,9 +946,9 @@ function displayRows($rows, $fields, $filters, $filter_values, $sort_fields, $so
 	<tr id="t<?php echo $row->id;?>">
 		<?php
 			
-		echo '<td><table><tr>';
+		echo '<td>';
 		displayActionsMenu($row,"", $actions1,$row->rapporteur, $row->rapporteur);
-		echo '</tr></table></td>';
+		echo '</td>';
 
 		foreach($fields as $fieldID)
 		{
@@ -956,34 +959,53 @@ function displayRows($rows, $fields, $filters, $filter_values, $sort_fields, $so
 
 			if($type=="rapporteur")
 			{
-				displayRapporteurMenu($fieldID,$row,$users);
+				?>
+		<!-- Displaying rapporteur menu -->
+		<?php 
+		displayRapporteurMenu($fieldID,$row,$users);
 			}
 			else if(isSecretaire() &&  $type=="avis")
 			{
-				displayAvisMenu($fieldID,$row);
+				?>
+		<!-- Displaying avis menu -->
+		<?php 
+
+		displayAvisMenu($fieldID,$row);
 			}
 			else if($fieldID=="sousjury")
 			{
-				displaySousJuryMenu($fieldID,$row);
+				?>
+		<!-- Displaying sous jury menu -->
+		<?php 
+		displaySousJuryMenu($fieldID,$row);
 			}
 			else if($data != "")
 			{
-				if($fieldID=="nom")
-				{
-					echo "<a href=\"?action=details&amp;id=".($row->id)."\">";
-					echo '<span class="valeur">'.$data.'</span>';
-					echo '</a>';
-				}
-				else
-				{
-					if( ($type == "unit") && isset($prettyunits[$row->$fieldID]))
-						$data = $prettyunits[$row->$fieldID]->nickname;
-					echo '<span class="valeur">'.$data.'</span>';
-				}
+				?>
+		<!-- Displaying field <?php echo $fieldID; ?>menu -->
+		<?php 
+
+		if($fieldID=="nom")
+		{
+			echo "<a href=\"?action=details&amp;id=".($row->id)."\">";
+			echo '<span class="valeur">'.$data.'</span>';
+			echo '</a>';
+		}
+		else
+		{
+			if( ($type == "unit") && isset($prettyunits[$row->$fieldID]))
+				$data = $prettyunits[$row->$fieldID]->nickname;
+			echo '<span class="valeur">'.$data.'</span>';
+		}
 			}
 			echo '</td>';
 		}
+		?>
+		<!-- Displaying action menu -->
+		<?php 
+		echo '<td>';
 		displayActionsMenu($row,"", $actions2);
+		echo '</td>';
 		?>
 	</tr>
 	<?php
@@ -1018,6 +1040,9 @@ function historyReport($id_origine)
 	$result=mysql_query($sql);
 	$prevVals = array();
 	$first = true;
+	
+	date_default_timezone_set('Europe/Paris');
+	
 	while ($row = mysql_fetch_object($result))
 	{
 		if ($first)
@@ -1102,7 +1127,7 @@ function remove_br($str)
 	return str_replace("<br />","",$str);
 }
 
-function get_editable_fields($row)
+function get_readable_fields($row)
 {
 	global $fieldsIndividual;
 	global $fieldsUnites;
@@ -1148,6 +1173,66 @@ function get_editable_fields($row)
 		}
 		else
 		{
+			return array_unique(array_merge($fieldsCandidat, $f0, $f1, $f2));
+		}
+	}
+	else if($eval_type == 'Equivalence')
+		return $fieldsEquivalence;
+	else
+		return $fieldsGeneric;
+}
+
+function get_editable_fields($row)
+{
+
+	global $fieldsIndividual;
+	global $fieldsUnites;
+	global $fieldsEcoles;
+	global $fieldsRapportsCandidat;
+	global $fieldsGeneric;
+	global $fieldsEquivalence;
+
+	global $typesRapportsUnites;
+	global $typesRapportsIndividuels;
+
+	global $fieldsRapportsCandidat0;
+	global $fieldsRapportsCandidat1;
+	global $fieldsRapportsCandidat2;
+
+	global $fieldsCandidat;
+
+	$eval_type = $row->type;
+
+	if($eval_type == 'Ecole')
+		return $fieldsEcoles;
+	else if(array_key_exists($eval_type,$typesRapportsUnites))
+		return $fieldsUnites;
+	else if(array_key_exists($eval_type,$typesRapportsIndividuels))
+		return $fieldsIndividual;
+	else if($eval_type == 'Candidature')
+	{
+		$f0 = $fieldsRapportsCandidat0;
+		$f1 = $fieldsRapportsCandidat1;
+		$f2 = $fieldsRapportsCandidat2;
+
+		if(isSecretaire())
+		{
+			return array_unique(array_merge($fieldsCandidat, $f0, $f1, $f2));
+		}
+		else if($row->statut == "rapport" || $row->statut == "publie")
+		{
+			return array_unique(array_merge($fieldsCandidat, $f0));
+		}
+		else if(getLogin() == $row->rapporteur)
+		{
+			return array_unique(array_merge($fieldsCandidat, $f1));
+		}
+		else if(getLogin() == $row->rapporteur2)
+		{
+			return array_unique(array_merge($fieldsCandidat, $f2));
+		}
+		else
+		{
 			return array_unique(array_merge($fieldsCandidat, $f0));
 		}
 	}
@@ -1157,6 +1242,95 @@ function get_editable_fields($row)
 		return $fieldsGeneric;
 }
 
+/*
+ * Returns 0 if fiels has to be hidden,
+* 1 if it can be seen but not edited,
+* 2 if it can be edited
+*/
+/*
+ function get_authorization_level($rapport,$field)
+ {
+
+if(isSecretaire())
+	return 2;
+else if($row->statut == "rapport" || $row->statut == "publie")
+	return 1;
+else
+{
+$login = getLogin();
+if($rapport->rapporteur != $login && $rapport->rapporteur2 != $login)
+	return 1
+else if ($rapport->rapporteur == $login)
+{
+global $fieldsIndividual1;
+if(in_array($field, $fieldsIndividual1) || in_array())
+{
+return 2
+}
+else if(in_array($field, $fieldsIndividual1))
+{
+
+}
+}
+}
+global $fieldsIndividual;
+global $fieldsUnites;
+global $fieldsEcoles;
+global $fieldsRapportsCandidat;
+global $fieldsGeneric;
+global $fieldsEquivalence;
+
+global $typesRapportsUnites;
+global $typesRapportsIndividuels;
+
+global $fieldsRapportsCandidat0;
+global $fieldsRapportsCandidat1;
+global $fieldsRapportsCandidat2;
+
+global $fieldsCandidat;
+
+$eval_type = $row->type;
+
+if($eval_type == 'Ecole')
+	return in_array($fieldsEcoles, $field);
+else if(array_key_exists($eval_type,$typesRapportsUnites))
+	return $fieldsUnites;
+else if(array_key_exists($eval_type,$typesRapportsIndividuels))
+	return $fieldsIndividual;
+else if($eval_type == 'Candidature')
+{
+$f0 = $fieldsRapportsCandidat0;
+$f1 = $fieldsRapportsCandidat1;
+$f2 = $fieldsRapportsCandidat2;
+
+if(isSecretaire())
+{
+return array_unique(array_merge($fieldsCandidat, $f0, $f1, $f2));
+}
+else if($row->statut == "rapport" || $row->statut == "publie")
+{
+return array_unique(array_merge($fieldsCandidat, $f0));
+}
+else if(getLogin() == $row->rapporteur)
+{
+return array_unique(array_merge($fieldsCandidat, $f1));
+}
+else if(getLogin() == $row->rapporteur2)
+{
+return array_unique(array_merge($fieldsCandidat, $f2));
+}
+else
+{
+return array_unique(array_merge($fieldsCandidat, $f0));
+}
+}
+else if($eval_type == 'Equivalence')
+	return $fieldsEquivalence;
+else
+	return $fieldsGeneric;
+
+}
+*/
 
 function statut_to_choose($row)
 {
@@ -1324,6 +1498,27 @@ function display_unit($row, $fieldID)
 <?php
 }
 
+function display_enum($row, $fieldID)
+{
+	global $enumFields;
+
+	if(!isset($enumFields[$fieldID]))
+		throw new Exception("Enum field ".$fieldId." should be indexed in list enumFields");
+
+	?>
+<td><select name="field<?php echo $fieldID;?>" style="width: 100%;">
+		<?php
+		foreach($enumFields[$fieldID] as $prop =>$text)
+		{
+			$sel = (isset($row->$fieldID) ? ($prop == $row->$fieldID) : false) ? "selected=\"selected\"" : "";
+			echo  "\t\t\t\t\t<option value=\"".($prop)."\"".$sel.">".$text."</option>\n";
+		}
+		?>
+</select>
+</td>
+<?php
+}
+
 function display_topic($row, $fieldID)
 {
 	global $topics;
@@ -1396,26 +1591,66 @@ function display_fichiers($row, $fieldID)
 	if($row->$fieldID == "")
 		return;
 
-	if(isSecretaire())
-		echo '<td colspan="3"><table><tr><td>';
+	echo "<tr><td colspan=\"2\">";
 
-	echo '<td colspan="3"><a href="'.$row->$fieldID.'">Dossier candidat</a></td>';
+	$handle = opendir($row->$fieldID);
+	if($handle === false)
+	{
+		echo '<a href="'.$row->$fieldID."\">Fichiers candidats</a>\n";
+	}
+	else
+	{
+		$filenames = array();
+		while(1)
+		{
+			$file = readdir($handle);
+			if($file === false)
+				break;
+			else if($file != "." && $file != "..")
+				$filenames[] = $file;
+		}
+
+		$i = 0;
+		echo "<table>\n";
+		foreach($filenames as $file)
+		{
+			if($i % 4	 ==0)
+				echo '<tr>';
+			$prettyfile = str_replace("_", " ", $file);
+			if(strlen($file) > 20)
+			{
+				$arr = array(strtolower($row->nom), strtolower($row->prenom));
+				$arr2 = array("","");
+				$prettyfile = str_replace($arr, $arr2, $prettyfile);
+			}
+			echo '<td style="padding-right: 10px"><a href="'.$row->$fieldID."/".$file.'">'.$prettyfile."</a></td>\n";
+			if($i % 4 ==3)
+				echo '</tr>';
+			$i++;
+		}
+		echo "</table>\n";
+
+		closedir($handle);
+	}
 
 
 	if(isSecretaire())
 	{
 		?>
-<td><input type="hidden" name="candidatekey"
-	value="<?php echo $row->cle;?>" /> <input type="hidden" name="type"
-	value="candidatefile" /> <input type="hidden" name="MAX_FILE_SIZE"
-	value="100000" /> <input name="uploadedfile" type="file" /> <input
+
+<input
+	type="hidden" name="candidatekey" value="<?php echo $row->cle;?>" />
+<input
+	type="hidden" name="type" value="candidatefile" />
+<input
+	type="hidden" name="MAX_FILE_SIZE" value="10000000" />
+<input name="uploadedfile"
+	type="file" />
+<input
 	type="submit" name="ajoutfichier" value="Ajouter fichier" />
-</td>
-</tr>
-</table>
-</td>
 <?php 
 	}
+	echo "</td></tr>";
 
 }
 
@@ -1558,6 +1793,9 @@ if($use_special_tr && in_array($fieldID, $start_tr_fields))
 
 switch($type)
 {
+	case "enum":
+		display_enum($row, $fieldID);
+		break;
 	case "topic":
 		display_topic($row, $fieldID);
 		break;
@@ -1596,7 +1834,7 @@ switch($type)
 	case "":
 		break;
 	default:
-		throw new Exception("Unnown data ttype ".$type);
+		throw new Exception("Unnown data type ".$type);
 }
 if(!$use_special_tr || !in_array($fieldID, $specialtr_fields))
 	echo '</tr>';
@@ -1922,4 +2160,53 @@ if (isset($_SERVER["SERVER_PORT"]) && $_SERVER["SERVER_PORT"] != "80") {
 	return $pageURL;
 }
 
+
+//Returns the name of the file
+function filename_from_doc($doc)
+{
+	$nom = mb_convert_case(replace_accents($doc->nom), MB_CASE_TITLE);
+	$prenom = mb_convert_case(replace_accents($doc->prenom), MB_CASE_TITLE);
+	$grade = $doc->grade;
+	$unite = $doc->unite;
+	$type = $doc->type;
+
+	$sessions = sessionArrays();
+	$session = $sessions[$doc->id_session];
+	$avis = $doc->avis;
+	$concours = $doc->concours;
+	return filename_from_params($nom, $prenom, $grade, $unite, $type, $session, $avis, $concours);
+}
+
+function filename_from_params($nom, $prenom, $grade, $unite, $type, $session, $avis, $concours = "")
+{
+	global $typesRapportsUnites;
+	global $typesRapportsConcours;
+
+	if($type == "Promotion")
+	{
+		switch($grade)
+		{
+			case "CR2": $grade = "CR1"; break;
+			case "DR2": $grade = "DR1"; break;
+			case "DR1": $grade = "DRCE1"; break;
+			case "DRCE1": $grade = "DRCE2"; break;
+		}
+		$grade .= " - ".$avis;
+	}
+
+	if($type == "Evaluation-Vague" || $type == "Evaluation-MiVague")
+		$type .=  " - ".mb_convert_case($avis,MB_CASE_TITLE);
+
+	if(array_key_exists($type,$typesRapportsUnites))
+	{
+		if($type == 'Generique')
+			return $session." - ".$nom." ".$prenom." - ".$unite;
+		else
+			return $session." - ".$type." - ".$unite;
+	}
+	else if(array_key_exists($type,$typesRapportsConcours))
+		return $session." - ".$type." - ".$concours." - ".$nom."_".$prenom;
+	else
+		return $session." - ".$type." - ".$grade." - ".$nom."_".$prenom;
+}
 ?>

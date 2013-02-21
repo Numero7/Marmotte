@@ -1,4 +1,11 @@
 
+<?php 
+
+include("header.inc.php");
+include("authbar.inc.php");
+
+?>
+
 <script type="text/javascript">
 function alertSize() {
 	var myWidth = 0, myHeight = 0;
@@ -26,6 +33,17 @@ function getScrollXY() {
 
 </script>
 
+<?php 
+function alertText($text)
+{
+	echo $text."\n";
+	echo
+	"<script>
+		alert(\"".str_replace(array("\"","<br/>","<p>","</p>"),array("'","\\n","\\n","\\n"), $text)."\")
+			</script>";
+}
+?>
+
 <div class="large">
 
 	<!-- 
@@ -43,6 +61,8 @@ function getScrollXY() {
 		require_once('manage_rapports.inc.php');
 		require_once('manage_candidates.inc.php');
 		require_once('db.inc.php');
+		require_once("upload.inc.php");
+
 
 
 		$id_rapport = isset($_REQUEST["id"]) ? $_REQUEST["id"] : -1;
@@ -60,28 +80,27 @@ function getScrollXY() {
 		function scrollToId($id)
 		{
 
+			echo('
+					<script type="text/javascript">');
 
 			echo('
-						<script type="text/javascript">');
-			
-			echo('
-						document.getElementById("'.$id.'").scrollIntoView();');
+					document.getElementById("'.$id.'").scrollIntoView();');
 			/*
 			 echo('
-			 		var elt = document.getElementById( '.$id.' );
+			 		var elt = document.getEleme	ntById( '.$id.' );
 			 		var top = (	return elt.offsetTop + ( elt.offsetParent ? elt.offsetParent.documentOffsetTop() : 0 )) - ( window.innerHeight / 2 );
 			 		window.scrollTo( 0, top );
 			 		');
 			*/
 			echo('		</script>');
-				
+
 		}
 		function displayReports($centralid = 0)
 		{
 
 			displaySummary(getCurrentFiltersList(), getFilterValues(), getSortingValues());
 
-			if($centralid != 0)
+			if($centralid != 0 && $centralid != -1)
 			{
 				$id  = getIDOrigine($centralid);
 				scrollToId('t'.$id);
@@ -89,6 +108,33 @@ function getScrollXY() {
 
 		};
 
+		function editWithRedirect($id)
+		{
+			?>
+			<script type="text/javascript">
+			window.location = "index.php?action=edit&id=<?php echo $id;?>"
+			</script>
+			<?php 
+		}
+
+		function displayWithRedirect($id = 0)
+		{
+			?>
+					<script type="text/javascript">
+					window.location = "index.php?action=details&id=<?php echo $id;?>"
+					</script>
+					<?php 
+		}
+
+		function displayWithRedirects($id = 0)
+		{
+			?>
+							<script type="text/javascript">
+							window.location = "index.php?action=view&id=<?php echo $id;?>"
+							</script>
+							<?php 
+				}
+				
 		try
 		{
 			switch($action)
@@ -99,7 +145,7 @@ function getScrollXY() {
 					echo "<p>Deleted report ".$id_rapport."</p>\n";
 					unset($_REQUEST['id']);
 					unset($_REQUEST['id_origine']);
-					displayReports( ($before != -1) ? $before : $next);
+					displayWithRedirects( ($before != -1) ? $before : $next);
 					break;
 
 				case 'change_statut':
@@ -113,7 +159,7 @@ function getScrollXY() {
 					}
 					break;
 				case 'view':
-					displayReports();
+					displayReports($id_rapport);
 					break;
 				case 'details':
 					if(isset($_REQUEST["detailsnext"]))
@@ -139,6 +185,11 @@ function getScrollXY() {
 				case 'history':
 					historyReport($id_origine);
 					break;
+				case 'upload':
+					alertText(process_upload());
+					displayWithRedirects();
+					break;
+
 				case 'update':
 
 					$next = nextt($id_origine);
@@ -147,28 +198,17 @@ function getScrollXY() {
 
 					if(isset($_REQUEST["editnext"]))
 					{
-						//Hugo: tant qu'on est en dev je préfère laisser les exceptions remonter jusqu'à
-						//l'utilisateur/testeur
-						//mais je vosis l'idée j'ai modifié editReport en conséquence
-						//try{editReport(nextt($id_origine));}
-						//catch(Exception $e)
-						//{displayReport(nextt($id_origine));}
-						editReport($next);
+						editWithRedirect($next);
 					}
 					else if(isset($_REQUEST["editprevious"]))
 					{
-						//Hugo: tant qu'on est en dev je préfère laisser les exceptions remonter jusqu'à
-						//l'utilisateur/testeur
-						//try{editReport(previouss($id_origine));}
-						//catch(Exception $e)
-						//{displayReport(previouss($id_origine));}
 						editReport($previous);
 					}
 					else if(isset($_REQUEST["retourliste"]))
 					{
 						unset($_REQUEST["id_origine"]);
 						unset($_REQUEST["id"]);
-						displayReports($id_origine);
+						displayWithRedirects($id_origine);
 					}
 					else if(isset($_REQUEST["deleteandeditnext"]))
 					{
@@ -178,11 +218,11 @@ function getScrollXY() {
 						else if($next != -1)
 							editReport($next);
 						else
-							displayReports();
+							displayWithRedirects();
 					}
 					else if(isset($_REQUEST['ajoutfichier']))
 					{
-						include("upload.inc.php");
+						alertText(process_upload());
 						editReport($id_origine);
 					}
 					else
@@ -212,15 +252,20 @@ function getScrollXY() {
 							}
 							else if(isset($_REQUEST["submitandview"]))
 							{
-								displayReport($report->id);
+								displayWithRedirect($report->id);
 							}
 							else if(isset($_REQUEST["submitandkeepediting"]))
 							{
-								editReport($report->id);
+								editWithRedirect($report->id);
 							}
 						}
 					}
 
+					break;
+				case 'change_current_session':
+					if(isset($_REQUEST["current_session"]))
+						$_SESSION['current_session'] = $_REQUEST["current_session"];
+					displayWithRedirects();
 					break;
 				case 'new':
 					if (isset($_REQUEST["type"]))
@@ -288,7 +333,7 @@ function getScrollXY() {
 							$sousjury = "";
 							foreach($concours_ouverts as $concours => $nom)
 								$sousjury .= $_REQUEST["sousjury".$concours];
-									
+
 							changeUserInfos($login,$permissions,$sousjury);
 						}
 						else
@@ -403,7 +448,7 @@ function getScrollXY() {
 					break;
 				case 'createhtpasswd':
 					createhtpasswd();
-					displayReports();
+					displayWithRedirects();
 					include "admin.inc.php";
 					break;
 				case 'trouverfichierscandidats':
@@ -431,12 +476,12 @@ function getScrollXY() {
 						$fieldId = substr($action,3);
 						$newvalue = isset($_REQUEST['new'.$fieldId]) ? $_REQUEST['new'.$fieldId] : "";
 						$newid = change_report_property($id_toupdate, $fieldId, $newvalue);
-						displayReports($newid);
+						displayWithRedirects($newid);
 					}
 					else
 					{
 						echo get_config("welcome_message");
-						displayReports();
+						displayWithRedirects();
 					}
 					break;
 			}
@@ -444,8 +489,7 @@ function getScrollXY() {
 		catch(Exception $exc)
 		{
 			$text = 'Impossible d\'exécuter l\'action "'.$action.'"<br/>Exception: '.$exc->getMessage();
-			echo '<p><b>'.$text.'<br/></b></p>';
-			echo '<script type="text/javascript">window.alert('.$text.');</script>';
+			alertText($text);
 		}
 		?>
 	</div>

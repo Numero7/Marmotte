@@ -244,7 +244,7 @@ function checkReportIsEditable($rapport)
 {
 	$login = getLogin();
 
-	if (isBureauUser())
+	if (isSecretaire())
 	{
 		return true;
 	}
@@ -404,6 +404,7 @@ function addReportFromRequest($id_origine, $request)
 function createReportFromRequest($id_origine, $request)
 {
 	global $fieldsRapportAll;
+	global $fieldsTypes;
 
 	/* Hugo : I changed for the system we discussed
 	 *
@@ -425,7 +426,7 @@ function createReportFromRequest($id_origine, $request)
 
 	foreach($fieldsRapportAll as  $field => $comment)
 		if (isset($request["field".$field]))
-		$row->$field = nl2br(trim($request["field".$field]),true);
+				$row->$field = nl2br(trim($request["field".$field]),true);
 
 	$row->id_origine = $id_origine;
 	$row->auteur = getLogin();

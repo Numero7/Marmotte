@@ -10,6 +10,7 @@ ini_set('xdebug.dump_globals', 'on');
 ini_set('xdebug.dump.SERVER', 'REQUEST_URI');
 ini_set('xdebug.show_local_vars', 'on');
 
+	date_default_timezone_set('Europe/Paris');
 
 	require_once("config/configDB.inc.php");
 
@@ -127,19 +128,22 @@ ini_set('xdebug.show_local_vars', 'on');
 		"id" => "Id",
 			"id_session" => "Id session",
 			"id_origine" => "Id origine",
-			"cleindividu" => "cleindividu"
+			"cleindividu" => "cleindividu",
+			"genre" => "Genre",
+			"theseloc" => "These Loc"
 	);
 	
 
-	$specialtr_fields = array("parcours","concourspresentes", "nom", "date_recrutement", "prenom", "grade", "projetrecherche", "labo1","labo2","labo3","theme1","theme2","theme3", "theseLieu", "HDRAnnee", "theseAnnee","HDRLieu");
+	$specialtr_fields = array("parcours","concourspresentes", "nom", "date_recrutement", "prenom", "genre", "grade", "projetrecherche", "labo1","labo2","labo3","theme1","theme2","theme3", "theseLieu", "HDRAnnee", "theseAnnee","theseloc", "HDRLieu");
 	$start_tr_fields = array("projetrecherche", "grade", "nom", "labo1","theme1", "theseAnnee", "productionResume");
-	$end_tr_fields = array("concourspresentes", "date_recrutement", "labo3","theme3", "prenom", "HDRLieu");
+	$end_tr_fields = array("concourspresentes", "date_recrutement", "labo3","theme3", "genre", "HDRLieu");
 	
 	$fieldsIndividual0 = array(
 			"rapporteur",
 			"rapporteur2",
 			"nom",
 			"prenom",
+			"genre",
 			"unite",
 			"grade",
 			"anciennete_grade",
@@ -213,12 +217,12 @@ ini_set('xdebug.show_local_vars', 'on');
 	
 	$fieldsRapportsCandidat = array_merge($fieldsRapportsCandidat0, $fieldsRapportsCandidat1, $fieldsRapportsCandidat2);
 	
-	$mandatory_export_fields= array('id','nom','prenom','type','concours');
 	
 	$fieldsCandidatAll = array(
 			"anneecandidature" => "Année de candidature",
 			"nom" => "Nom",
 			"prenom" => "Prénom",
+			"genre" => "Genre",
 			"grade" => "Grade",
 			"date_recrutement" => "Date de recrutement",
 			"labo1" => "Labo 1",
@@ -229,6 +233,7 @@ ini_set('xdebug.show_local_vars', 'on');
 			"theme3" => "Theme 3",
 			"theseAnnee" => "Année+mois thèse",
 			"theseLieu" => "Lieu thèse",
+			"theseloc" => "Loc thèse",
 			"HDRAnnee" => "Annee HDR",
 			"HDRLieu" => "Lieu HDR",
 			"productionResume" => "Production scientifique (pour rapport concours)",
@@ -238,12 +243,34 @@ ini_set('xdebug.show_local_vars', 'on');
 			"fichiers" => "Fichiers associés",
 			"cle" => "cle",
 	);
-
+	
+	$mandatory_export_fields= 
+	array('id','nom','prenom','genre','type','concours',
+			"grade",
+			"date_recrutement",
+			"labo1",
+			"labo2",
+			"labo3",
+			"theme1",
+			"theme2",
+			"theme3",
+			"theseAnnee",
+			"theseLieu",
+			"theseloc",
+			"HDRAnnee",
+			"HDRLieu",
+			"productionResume",
+			"projetrecherche",
+			"parcours",
+			"concourspresentes"
+	);
+	
 	$fieldsAll = array_merge($fieldsRapportAll, $fieldsCandidatAll);
 	
 	$fieldsCandidatAvantAudition = array(
 			"nom",
 			"prenom",
+			"genre",
 			"grade",
 			"date_recrutement",
 			"fichiers",
@@ -255,6 +282,7 @@ ini_set('xdebug.show_local_vars', 'on');
 			"theme3",
 			"theseAnnee",
 			"theseLieu",
+			"theseloc",
 			"HDRAnnee",
 			"HDRLieu",
 			"projetrecherche",
@@ -268,6 +296,7 @@ ini_set('xdebug.show_local_vars', 'on');
 			"rapporteur",
 			"nom",
 			"prenom",
+			"genre",
 			"grade",
 			"avis",
 			"labo1",
@@ -278,6 +307,7 @@ ini_set('xdebug.show_local_vars', 'on');
 			"theme3",
 			"theseAnnee",
 			"theseLieu",
+			"theseloc",
 			"HDRAnnee",
 			"HDRLieu",
 			"rapport",
@@ -400,6 +430,20 @@ ini_set('xdebug.show_local_vars', 'on');
 	$mergeableTypes = array("short","treslong","long","short");
 	$crashableTypes = array("auteur");
 	
+	$enumFields = array(
+			"genre" => array("homme" => "Homme","femme" => "Femme"),
+			 "theseloc" => array(
+			 		"fr" => "France",
+			 		"africa" => "Afrique",
+			 		"southamerica" => "Amérique du Sud",
+			 		"au" => "Australie",
+			 		"other" => "Autres",
+			 		"eu" => "Europe",
+			 		"ru" => "Russie",
+			 		"us" => "USA",
+			 				 )
+			);
+	
 	$fieldsTypes = array(
 		"ecole" => "ecole",
 		"concours" => "long",
@@ -407,8 +451,10 @@ ini_set('xdebug.show_local_vars', 'on');
 		"concourspresentes" => "long",
 		"nom" => "short",
 		"prenom" => "short",
+		"genre" => "enum",
 		"grade" => "grade",
-		"unite" => "unit",
+		"theseloc" => "enum",
+			"unite" => "unit",
 		"type" => "short",
 		"rapporteur" => "rapporteur",
 		"rapporteur2" => "rapporteur",
@@ -786,7 +832,20 @@ ini_set('xdebug.show_local_vars', 'on');
 					"xsl" => "",
 					"name" => "CSV",
 					"permissionlevel" => NIVEAU_PERMISSION_BASE
-			));
+			),
+			"singlecsv" => 	array(
+					"mime" => "application/x-text",
+					"xsl" => "",
+					"name" => "SingleCSV",
+					"permissionlevel" => NIVEAU_PERMISSION_PRESIDENT_SECRETAIRE
+			),
+			"jad" => 	array(
+					"mime" => "application/x-text",
+					"xsl" => "",
+					"name" => "JAD",
+					"permissionlevel" => NIVEAU_PERMISSION_PRESIDENT_SECRETAIRE
+			)
+			);
 
 			$typeImports = array(
 					"xml" => 	array(
@@ -805,7 +864,8 @@ ini_set('xdebug.show_local_vars', 'on');
 	
 	
 			$concours_ouverts = get_config("concours");
-
+			$postes_ouverts = get_config("postes_ouverts");
+				
 	$sous_jurys = get_config("sousjurys");
 	
 	$sous_jurys[""] = array();
@@ -838,6 +898,7 @@ ini_set('xdebug.show_local_vars', 'on');
 	);
 
 	$topics = get_config("topics");
+	$topics[""] = "Aucun";
 	
 	$filtersConcours = array(
 			'avis' => array('name'=>"Avis" , 'liste' => $avis_candidature_short, 'default_value' => "tous", 'default_name' => ""),

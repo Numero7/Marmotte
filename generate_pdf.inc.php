@@ -23,7 +23,10 @@ function getReportAsDOMDoc($id_rapport)
 function getReportAsHtml($id_rapport)
 {
 	$doc = getReportAsDOMDoc($id_rapport);
-	$html = XMLToHTML($doc);
+	
+	$doc->save("csv/truc.xml");
+	
+	$html = XMLToHTML($doc,'xslt/html2.xsl');
 	
 	return $html;
 }
@@ -32,9 +35,8 @@ function viewReportAsHtml($id_rapport)
 {
 	$html = getReportAsHtml($id_rapport);
 	
-	echo '<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr"><head><meta http-equiv="content-type" content="text/html; charset=UTF-8"/></head><body>';
+	echo '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">'."\n";
 	echo $html;
-	echo '</body></html>';
 }
 
 function viewReportAsPdf($id_rapport)
@@ -42,8 +44,9 @@ function viewReportAsPdf($id_rapport)
 	
 	$doc = getReportAsDOMDoc($id_rapport);
 	
-	$html = XMLToHTML($doc);
+	$html = XMLToHTML($doc,'xslt/html2.xsl');
 	
+
 	$pdf = HTMLToPDF($html);
 
 	$nodes =$doc->getElementsByTagName("rapport");

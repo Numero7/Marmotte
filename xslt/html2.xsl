@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
 <xsl:stylesheet version="1.0" 
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
@@ -12,6 +14,7 @@
 <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
 </head>
 
+<body>
 <table cellpadding="5" cellspacing="1" border="1" style="text-align:center;">
 	<tr>
 		<td  width="250">
@@ -127,6 +130,7 @@ Les avis émis par les sections ne préjugent pas de la décision qui sera prise
 </table>
 <xsl:if test="position()!=last()"><hr/></xsl:if>
 
+</body>
 </html>
 
 </xsl:template>
