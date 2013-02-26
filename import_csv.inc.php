@@ -56,13 +56,17 @@ function import_csv($type,$filename, $subtype, $sep=";", $del="\n",$enc='"', $es
 							$id_origine = $data[$id_rank];
 							$properties = array();
 							for($i = 0; $i < $nbfields; $i++)
-								$properties[$fields[$i]] = $data[$i];
+							{
+								$properties[$fields[$i]] =  $data[$i];
+							}
 							$report = change_report_properties($id_origine, $properties);
 							$output .= "Line ".$nb." : updated data of report ".$id_origine . " (new report has id ".$report->id.")<br/>";
 						}
 					}
 					else
+					{
 						addCsvReport($subtype, $data, $fields);
+					}
 
 				}
 				else if ($type == 'unite')
@@ -74,7 +78,7 @@ function import_csv($type,$filename, $subtype, $sep=";", $del="\n",$enc='"', $es
 			}
 			catch(Exception $exc)
 			{
-				$error .= "Line ".$nb." : failed to process : ". $exc->getMessage()."<br/>";
+				$errors .= "Line ".$nb." : failed to process : ". $exc->getMessage()."<br/>";
 			}
 		}
 		if($errors != "")
@@ -145,7 +149,7 @@ function getDocFromCsv($data, $fields)
 
 	$m = min(count($data), count($fields));
 	for($i = 0; $i < $m; $i++)
-		addToReport($report,$fields[$i], $data[$i]);
+		addToReport($report,$fields[$i], replace_accents($data[$i]));
 
 	return $report;
 
@@ -159,6 +163,7 @@ function addCsvReport($type, $data, $fields)
 	$report->statut = 'vierge';
 	if($type != "")
 		$report->type = $type;
+	$report->id_session = current_session_id();
 	addReport($report,false);
 }
 

@@ -124,9 +124,9 @@ extension-element-prefixes="dyn">
 			<xsl:value-of select="unite"/>
 			<div class="subidentite">
 		<xsl:if test="(anciennete_grade!='')">Ancienneté grade : <xsl:value-of select="anciennete_grade"/></xsl:if>
-		<xsl:if test="(anciennete_grade!='') or (date_recrutement!='')"> - </xsl:if>
-		<xsl:if test="(date_recrutement!='')">		
-		Recrutement CNRS en <xsl:value-of select="date_recrutement"/>
+		<xsl:if test="(anciennete_grade!='') or (annee_recrutement!='')"> - </xsl:if>
+		<xsl:if test="(annee_recrutement!='')">		
+		Recrutement CNRS en <xsl:value-of select="annee_recrutement"/>
 		</xsl:if></div>
 		</div>
 		<div class="prerapport">

@@ -20,6 +20,24 @@ function load_config($force = false)
 	return $config;
 }
 
+function get_raw_config()
+{
+	$result = file_get_contents(config_file);
+	if($result === false)
+		throw new Exception("Failed to read config file");
+	return str_replace(array(">","</"),array(">\n","\n</"),$result);
+//return $result;
+}
+
+function put_raw_config($data)
+{
+	$result = file_put_contents(config_file,$data);
+	if($result === false)
+		throw new Exception("Failed to write config file");
+	load_config(true);
+	save_config();
+}
+
 function save_config()
 {
 	
@@ -57,15 +75,9 @@ function get_config($name)
 
 function set_config($name,$value)
 {
-	if(isset($_SESSION['config']) && isset($_SESSION['config']['name']))
-	{
-		$_SESSION['config']['name'] = $value;
+	load_config();
+		$_SESSION['config'][$name] = $value;
 		save_config();
-	}
-	else
-	{
-		throw new Exception("No config item with name '".$name."'");
-	}
 }
 
 ?>

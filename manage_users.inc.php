@@ -6,7 +6,6 @@ require_once('generate_xml.inc.php');
 
 function init_session()
 {
-	global $current_session;
 	set_current_session_id(get_config("current_session"));
 
 	ini_set("session.gc_maxlifetime", 3600);
@@ -59,6 +58,21 @@ function listRapporteurs()
 	return $result;
 }
 
+function listNomRapporteurs()
+{
+	global $users_not_rapporteur;
+
+	$result = array();
+	$result[''] = "";
+	$users = listUsers();
+	
+	foreach($users as $login => $data)
+		if(!in_array($login, $users_not_rapporteur))
+			$result[$login] = $data->description;
+
+	return $result;
+}
+
 function listUsers($forcenew = false)
 {
 	if($forcenew)
@@ -74,9 +88,23 @@ function listUsers($forcenew = false)
 
 		while ($row = mysql_fetch_object($result))
 			$listusers[$row->login] = $row;
+
+			
 		$_SESSION['all_users'] = $listusers;
 	}
 	return $_SESSION['all_users'];
+}
+
+function createAdminPasswordIfNeeded()
+{
+
+	$users = listUsers(true);
+	if(!isset($users['admin']))
+		createUser('admin','password','admin','admin@admin.org',false,false);
+
+	if(authenticateBase('admin','password'))
+		echo "The 'admin' password is 'password', please change it right after login.";
+
 }
 
 function simpleListUsers()
@@ -215,6 +243,7 @@ function authenticate()
 		$pwd = $_SESSION['pass'];
 		return authenticateBase($login,$pwd);
 	}
+	echo "No session";
 	return false;
 } ;
 
@@ -244,7 +273,14 @@ function changePwd($login,$old,$new1,$new2, $envoiparemail)
 			$sql = "UPDATE ".users_db." SET passHash='$newPassHash' WHERE login='$login';";
 			sql_request($sql);
 
-			createhtpasswd();
+			try
+			{
+				createhtpasswd();
+			}
+			catch(Exception $e)
+			{
+				echo $e->getMessage();
+			}
 
 			if(getLogin() == $login)
 				addCredentials($login,$new1);
@@ -289,9 +325,9 @@ function existsUser($login)
 	return array_key_exists($login, $users);
 }
 
-function createUser($login,$pwd,$desc,$email, $envoiparemail)
+function createUser($login,$pwd,$desc,$email, $envoiparemail = false, $check_secretary = true)
 {
-	if (isSecretaire())
+	if (!$check_secretary || isSecretaire())
 	{
 		if(existsUser($login))
 			throw new Exception("Failed to create user: le login '".$login."' est déja utilisé.");
@@ -301,9 +337,15 @@ function createUser($login,$pwd,$desc,$email, $envoiparemail)
 		unset($_SESSION['all_users']);
 
 		$passHash = crypt($pwd);
-		$sql = "INSERT INTO ".users_db." (login,passHash,description,email) VALUES ('".mysql_real_escape_string($login)."','".mysql_real_escape_string($passHash)."','".mysql_real_escape_string($desc)."','".mysql_real_escape_string($email)."');";
-		mysql_query($sql);
+		$sql = "INSERT INTO ".users_db." (login,passHash,description,email,tel,sousjury) VALUES ('".mysql_real_escape_string($login)."','".mysql_real_escape_string($passHash)."','".mysql_real_escape_string($desc)."','".mysql_real_escape_string($email)."','','');";
 
+		$result = mysql_query($sql);
+
+		if($result == false)
+			throw new Exception("Failed to process sql query: <br/>\t".mysql_error()."<br/>".$sql);
+		else
+			return $result;
+		
 		createhtpasswd();
 
 		if($envoiparemail)

@@ -1,12 +1,4 @@
 <?php
-require_once("utils.inc.php");
-require_once('tcpdf/config/lang/eng.php');
-require_once('tcpdf/tcpdf.php');
-require_once('manage_users.inc.php');
-require_once('generate_xml.inc.php');
-require_once('generate_csv.inc.php');
-require_once('generate_pdf.inc.php');
-require_once('generate_zip.inc.php');
 
 error_reporting(E_ALL);
 ini_set('display_errors', TRUE);
@@ -16,6 +8,16 @@ ini_set('xdebug.collect_params', '4');
 ini_set('xdebug.dump_globals', 'on');
 ini_set('xdebug.dump.SERVER', 'REQUEST_URI');
 ini_set('xdebug.show_local_vars', 'on');
+
+require_once("utils.inc.php");
+require_once('tcpdf/config/lang/eng.php');
+require_once('tcpdf/tcpdf.php');
+require_once('manage_users.inc.php');
+require_once('generate_xml.inc.php');
+require_once('generate_csv.inc.php');
+require_once('generate_pdf.inc.php');
+require_once('generate_zip.inc.php');
+require_once("db.inc.php");
 
 
 function send_file($local_filename, $remote_filename)
@@ -228,33 +230,33 @@ function generate_jad_reports()
 	$docs = array();
 	foreach($concours_ouverts as $concours => $code)
 		$docs[$code] = generate_jad_report($concours);
-	
+
 	$login = getLogin();
-	
+
 	$dir = "csv/".$login;
 	if(!is_dir($dir) && !mkdir($dir))
 		throw new Exception("Failed to create directory ".$dir);
-	
+
 	$filenames = array();
 	foreach($docs as $code => $doc)
 	{
 		$doc->formatOutput = true;
-		
+
 		$html = XMLToHTML($doc,'xslt/jad.xsl');
 		$pdf = HTMLToPDF($html);
 		$filename = "rapport_jad_$code.pdf";
 		$pdf->Output($dir."/".$filename,'F');
 		$filenames[$dir."/".$filename] = $filename;
 	}
-	
+
 	$remote_filename = 'jad_reports.zip';
 	$filename = zip_files($filenames,$dir."/".$remote_filename);
-	
+
 	if($filename == false)
 		throw new Exception("Failed to zip files");
-	
+
 	send_file($filename, $remote_filename);
-	
+
 }
 
 function generate_jad_report($code)
@@ -262,7 +264,7 @@ function generate_jad_report($code)
 	$doc = new DOMDocument("1.0","UTF-8");
 	$root = $doc->createElement("jad");
 	$doc->appendChild($root);
-	
+
 
 	$filters = array();
 
@@ -298,7 +300,7 @@ function generate_jad_report($code)
 		appendLeaf("prenom", $candidat->prenom, $doc, $subleaf);
 		$leaf->appendChild($subleaf);
 	}
-	
+
 	appendLeaf("auditionnes", strval(count($admissibles)), $doc, $root);
 	$leaf = $doc->createElement("admissibles");
 	$root->appendChild($leaf);
@@ -309,68 +311,107 @@ function generate_jad_report($code)
 		appendLeaf("prenom", $candidat->prenom, $doc, $subleaf);
 		$leaf->appendChild($subleaf);
 	}
-	
+
 	date_default_timezone_set('Europe/Paris');
 	setlocale (LC_TIME, 'fr_FR.utf8','fra');
 	//date("j/F/Y")
 	appendLeaf("date", utf8_encode(strftime("%#d %B %Y")), $doc, $root);
-	
+
 	appendLeaf("signataire", get_config("president"), $doc, $root);
 	appendLeaf("signataire_titre", get_config("president_titre"), $doc, $root);
-	
+
 	if(isSecretaire())
 		appendLeaf("signature_source", "img/signature.jpg", $doc, $root);
 	else
 		appendLeaf("signature_source", "img/signatureX.jpg", $doc, $root);
-	
+
 	return $doc;
 }
 
+function generate_exemple_csv($fields)
+{
+	try
+	{
+		if( !in_array('nomprenom', $fields) && ( !in_array('nom', $fields) || !in_array('prenom', $fields) ))
+			throw new Exception("Check either the 'nomprenom' checkbox or both the 'nom' and the 'prenom' checkbox");
+
+		$sql = "SELECT * FROM ".reports_db." LIMIT 0,5";
+		$result = sql_request($sql);
+
+		$rows = array();
+		while ($row = mysql_fetch_object($result))
+			$rows[] = $row;
+
+		$csv_reports = compileReportsAsCSV($rows,$fields);
+		$filename = "csv/exemple.csv";
+		if($handle = fopen($filename, 'w'))
+		{
+			fwrite ($handle, $csv_reports);
+			fclose($handle);
+			send_file($filename, "exemple.csv");
+		}
+		else
+			throw new Exception("Cannot generate file ".$filename);
+	}
+	catch(Exception $e)
+	{
+		include("header.inc.php");
+		echo $e->getMessage();
+	}
+}
+
+session_start();
+
 $dbh = db_connect($servername,$dbname,$serverlogin,$serverpassword);
+
+
 if($dbh!=0)
 {
 	if (authenticate())
 	{
-		$action = isset($_REQUEST["action"]) ? $_REQUEST["action"] : "single";
-		$id= isset($_REQUEST["id"]) ? $_REQUEST["id"] : "-1";
+		try {
+				
+			$action = isset($_REQUEST["action"]) ? $_REQUEST["action"] : "single";
+			$id= isset($_REQUEST["id"]) ? $_REQUEST["id"] : "-1";
 
-		switch($action)
-		{//Processing
-			case 'viewpdf':
-				viewReportAsPdf($id); break;
-			case 'viewhtml':
-				viewReportAsHtml($id);	break;
-			case 'export':
-				{
-					if (isset($_REQUEST["save"]) and isset($_REQUEST["avis"]) and isset($_REQUEST["rapport"]))
+			echo $action;
+				
+			switch($action)
+			{//Processing
+				case 'viewpdf':
+					viewReportAsPdf($id); break;
+				case 'viewhtml':
+					viewReportAsHtml($id);	break;
+				case 'export':
 					{
-						$idtosave = intval($_REQUEST["save"]);
-						$avis = $_REQUEST["avis"];
-						$rapport = $_REQUEST["rapport"];
-						if (!isset($_REQUEST["cancel"]))
-							try
-							{
-								updateRapportAvis($idtosave,$avis,$rapport);
-							}
-							catch(Exception $exc)
-							{
-								echo "<p><B>Echec de la mise a jour du rapport: ".$exc->getMessage()."<br/></B></p>";
-							}
-					}
+						if (isset($_REQUEST["save"]) and isset($_REQUEST["avis"]) and isset($_REQUEST["rapport"]))
+						{
+							$idtosave = intval($_REQUEST["save"]);
+							$avis = $_REQUEST["avis"];
+							$rapport = $_REQUEST["rapport"];
+							if (!isset($_REQUEST["cancel"]))
+								try
+								{
+									updateRapportAvis($idtosave,$avis,$rapport);
+								}
+								catch(Exception $exc)
+								{
+									echo "<p><B>Echec de la mise a jour du rapport: ".$exc->getMessage()."<br/></B></p>";
+								}
+						}
 
-					if(!isset($_REQUEST["type"]))
-						throw new Exception("No type specified for exportation");
-					$type = $_REQUEST["type"];
+						if(!isset($_REQUEST["type"]))
+							throw new Exception("No type specified for exportation");
+						$type = $_REQUEST["type"];
 
 
-					if ( array_key_exists($type, $typeExports))
-					{
 						$id_edit = isset($_REQUEST["id_edit"]) ? $_REQUEST["id_edit"] : -1;
 
+						/*
 						$conf = $typeExports[$type];
 						$mime = $conf["mime"];
 						$xslpath = $conf["xsl"];
-
+*/
 						$login = getLogin();
 
 						switch($type)
@@ -401,8 +442,16 @@ if($dbh!=0)
 							case "jad":
 								generate_jad_reports();
 								break;
+							case "exempleimportcsv":
+								$fields = array();
+								if(isset($_POST['fields']))
+									generate_exemple_csv($_POST['fields']);
+								else
+									throw new Exception("No fields provided,, cannot genrate exemple csv");
+									break;
 							default:
 								{
+									throw new Exception("Unknown type");
 									$filter_values = getFilterValues();
 									$filter_values['id_edit'] = $id_edit;
 									$xml = getReportsAsXML($filter_values, getSortingValues(), false);
@@ -418,9 +467,16 @@ if($dbh!=0)
 									echo $proc->transformToXML($xml);
 								}
 						}
-					}
 
-				}
+					}
+				default:
+					throw new Exception("Unknown action");
+			}
+		}
+		catch(Exception $e)
+		{
+			include("index.php");
+			echo $e->getMessage();
 		}
 	}
 }

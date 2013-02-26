@@ -1,82 +1,67 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config>
-  <_president>Frédérique Bassino</_president>
-  <_president_titre>Présidente de la Section 6</_president_titre>
-  <_secretaire>Hugo Gimbert</_secretaire>
-  <_section_nb>6</_section_nb>
-  <_section_shortname>Section 6</_section_shortname>
-  <_section_fullname>Section 6</_section_fullname>
-  <_section_intitule>Sciences de l'information : fondements de
-		l'informatique, calculs, algorithmes, représentations, exploitations
-	</_section_intitule>
-  <_webmaster>hugo.gimbert@labri.fr</_webmaster>
-  <_addresse_du_site>http://cn6.labri.fr/Marmotte</_addresse_du_site>
-  <_current_session>2</_current_session>
-  <_welcome_message>Bienvenue sur le site de gestion des rapports de la
-		section 6.
-		Nhésitez pas à nous contacter (Yann ou Hugo) en cas de difficultés.
-	</_welcome_message>
-  <_topics>
+  <president>Frédérique Bassino</president>
+  <president_titre>Présidente de lkka Section 6</president_titre>
+  <secretaire>Hugo Gimbert</secretaire>
+  <section_nb>6</section_nb>
+  <section_shortname>Section 6</section_shortname>
+  <section_fullname>Section 6</section_fullname>
+  <section_intitule>Sciences de l'information : fondements de l'informatique, calculs, algorithmes, représentations, exploitations</section_intitule>
+  <webmaster>hugo.gimbert@labri.fr</webmaster>
+  <addresse_du_site>http://cn6.labri.fr/Marmotte</addresse_du_site>
+  <current_session>Automne2012</current_session>
+  <welcome_message>Bienvenue sur le site de gestion des rapports de la section 6. N'hésitez pas à nous contacter (Yann ou Hugo) en cas de difficultés.	</welcome_message>
+  <topics>
     <_1a>1a Algorithmique, combinatoire, graphes</_1a>
     <_1aa>1aa Algorithmique</_1aa>
     <_1ab>1ab Combinatoire</_1ab>
     <_1ac>1ac Graphes</_1ac>
     <_1b>1b Automates, systèmes dynamiques discrets</_1b>
-    <_2a>2a Calcul formel et calcul certifié, arithmétique des ordinateurs
-		</_2a>
+    <_2a>2a Calcul formel et calcul certifié, arithmétique des ordinateurs		</_2a>
     <_2b>2b Codage et cryptographie</_2b>
     <_3a>3a Logique, complexité algorithmique et structurelle</_3a>
     <_3b>3b Sémantique, modèles de calcul</_3b>
     <_4a>4a Programmation, génie logiciel</_4a>
     <_4b>4b Vérification et preuves</_4b>
-    <_5>5 Recherche opérationnelle, aide à la décision, optimisation
-			discrète et continue, satisfaction de contraintes, SAT</_5>
+    <_5>5 Recherche opérationnelle, aide à la décision, optimisation discrète et continue, satisfaction de contraintes, SAT</_5>
     <_6>6 Systèmes de production, logistique, ordonnancement</_6>
-    <_7>7 I.A., système multi-agent, ingénierie / rep. et trait. des
-			connaissances, de lincertitude, form. des raisonnements, fusion
-			information</_7>
+    <_7>7 I.A., système multi-agent, ingénierie / rep. et trait. des connaissances, de l'incertitude, form. des raisonnements, fusion			information</_7>
     <_8>8 Environnements informatiques pour lapprentissage humain</_8>
-    <_9a>9a Sûreté de fonctionnement, sécurité informatique, protection de
-			la vie privée</_9a>
+    <_9a>9a Sûreté de fonctionnement, sécurité informatique, protection de la vie privée</_9a>
     <_9b>9b Réseaux sociaux</_9b>
     <_10a>10a Réseaux, télécommunications, réseaux de capteurs</_10a>
     <_10b>10b Systèmes distribués</_10b>
     <_11>11 Internet du futur, intelligence ambiante</_11>
-    <_12a>12a Calcul distribué, grilles, cloud, calcul à haute
-			performance, parallélisme, infrastructures à grande échelle</_12a>
+    <_12a>12a Calcul distribué, grilles, cloud, calcul à haute performance, parallélisme, infrastructures à grande échelle</_12a>
     <_12b>12b Architecture et compilation</_12b>
-    <_13>13 Cognition, modélisation pour la médecine, neurosciences
-			computationnelles</_13>
-    <_14>14 Systèmes dinformations, web sémantique, masses de données,
-			fouille de données, base de données, gestion de données, recherche
-			dinformations, apprentissage</_14>
+    <_13>13 Cognition, modélisation pour la médecine, neurosciences computationnelles</_13>
+    <_14>14 Systèmes d'informations, web sémantique, masses de données, fouille de données, base de données, gestion de données, recherche d'informations, apprentissage</_14>
     <_15>15 Bioinformatique</_15>
-  </_topics>
-  <_concours>
+  </topics>
+  <concours>
     <_0601>DR2 0601</_0601>
     <_0602>CR1 0602</_0602>
     <_0603>CR2 0603</_0603>
-  </_concours>
-  <_sousjurys>
+  </concours>
+  <sousjurys>
     <_0601>
-      <_DRA>DRA</_DRA>
-      <_DRB>DRB</_DRB>
+      <DRA>DRA</DRA>
+      <DRB>DRB</DRB>
     </_0601>
     <_0602>
-      <_CR1A>CR1A</_CR1A>
-      <_CR1B>CR1B</_CR1B>
+      <CR1A>CR1A</CR1A>
+      <CR1B>CR1B</CR1B>
     </_0602>
     <_0603>
-      <_CR2A>CR2A</_CR2A>
-      <_CR2B>CR2B</_CR2B>
+      <CR2A>CR2A</CR2A>
+      <CR2B>CR2B</CR2B>
     </_0603>
-  </_sousjurys>
-  <_postes_ouverts>
+  </sousjurys>
+  <postes_ouverts>
     <_0601>2</_0601>
     <_0602>2</_0602>
     <_0603>2</_0603>
-  </_postes_ouverts>
-  <_avis_jad>
-  Après examen de l'ensemble des dossiers des candidats admis à concourir, le jury a décidé d’auditionner les candidats listés ci-dessous du fait de la qualité et l'originalité de leur production scientifique, de la pertinence et l’intérêt de leur projet scientifique et de l’adéquation du projet avec les thématiques de la section.
-  </_avis_jad>
+  </postes_ouverts>
+  <avis_jad>  Après examen de l'ensemble des dossiers des candidats admis à concourir, le jury a décidé d’auditionner les candidats listés ci-dessous du fait de la qualité et l'originalité de leur production scientifique, de la pertinence et l’intérêt de leur projet scientifique et de l’adéquation du projet avec les thématiques de la section.  </avis_jad>
+  <name>Automne2012</name>
 </config>

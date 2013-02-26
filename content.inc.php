@@ -1,8 +1,11 @@
 
 <?php 
 
-include("header.inc.php");
-include("authbar.inc.php");
+require_once("header.inc.php");
+require_once("authbar.inc.php");
+require_once('display_report.inc.php');
+require_once('display_reports.inc.php');
+require_once('manage_filters_and_sort.inc.php');
 
 ?>
 
@@ -135,12 +138,18 @@ function alertText($text)
 							<?php 
 				}
 				
+				
 		try
 		{
 			switch($action)
 			{
+				case 'updateconfig':
+					put_raw_config($_REQUEST['fieldconfig']);
+					include 'admin.inc.php';
+					break;
+					
 				case 'delete':
-					$next = nextt($id_rapport);
+					$next = next_report($id_rapport);
 					$before = deleteReport($id_rapport);
 					echo "<p>Deleted report ".$id_rapport."</p>\n";
 					unset($_REQUEST['id']);
@@ -164,11 +173,11 @@ function alertText($text)
 				case 'details':
 					if(isset($_REQUEST["detailsnext"]))
 					{
-						displayReport(nextt($id_rapport));
+						displayReport(next_report($id_rapport));
 					}
 					else if(isset($_REQUEST["detailsprevious"]))
 					{
-						displayReport(previouss($id_rapport));
+						displayReport(previous_report($id_rapport));
 					}
 					else if(isset($_REQUEST["retourliste"]))
 					{
@@ -186,14 +195,15 @@ function alertText($text)
 					historyReport($id_origine);
 					break;
 				case 'upload':
-					alertText(process_upload());
-					displayWithRedirects();
+					$result= process_upload();
+					alertText($result);
+					displayReports();
 					break;
 
 				case 'update':
 
-					$next = nextt($id_origine);
-					$previous = previouss($id_origine);
+					$next = next_report($id_origine);
+					$previous = previous_report($id_origine);
 
 
 					if(isset($_REQUEST["editnext"]))
@@ -202,7 +212,7 @@ function alertText($text)
 					}
 					else if(isset($_REQUEST["editprevious"]))
 					{
-						editReport($previous);
+						editWithRedirect($previous);
 					}
 					else if(isset($_REQUEST["retourliste"]))
 					{
@@ -214,16 +224,16 @@ function alertText($text)
 					{
 						$before = deleteReport($id_origine);
 						if($before != -1)
-							editReport($before);
+							editWithRedirect($before);
 						else if($next != -1)
-							editReport($next);
+							editWithRedirect($next);
 						else
 							displayWithRedirects();
 					}
 					else if(isset($_REQUEST['ajoutfichier']))
 					{
 						alertText(process_upload());
-						editReport($id_origine);
+						editWithRedirect($id_origine);
 					}
 					else
 					{
@@ -235,7 +245,7 @@ function alertText($text)
 							{
 								$done = true;
 								$newreport = update_report_from_concours($id_origine,$concours, getLogin());
-								editReport($newreport->id);
+								editWithRedirect($newreport->id);
 								break;
 									
 							}
@@ -248,7 +258,7 @@ function alertText($text)
 
 							if(isset($_REQUEST["submitandeditnext"]))
 							{
-								editReport($next);
+								editWithRedirectReport($next);
 							}
 							else if(isset($_REQUEST["submitandview"]))
 							{
@@ -272,7 +282,7 @@ function alertText($text)
 					{
 						$type = $_REQUEST["type"];
 						$report = newReport($type);
-						displayEditableReport($report,isReportEditable($report));
+						displayEditableReport($report);
 					}
 					else
 					{
@@ -383,19 +393,6 @@ function alertText($text)
 						echo "<p>Vous n'avez pas les droits nécessaires pour effectuer cette action, veuillez nous contacter (Yann ou Hugo) en cas de difficultés.</p>";
 					}
 					break;
-				case 'adminnewsession':
-					if (isset($_REQUEST["sessionname"]) and isset($_REQUEST["sessiondate"]))
-					{
-						$name = $_REQUEST["sessionname"];
-						$date = $_REQUEST["sessiondate"];
-						createSession($name,$date);
-					}
-					else
-					{
-						echo "<p><strong>Erreur :</strong> Vous n'avez fourni toutes les informations nécessaires pour créer une session, veuillez nous contacter (Yann ou Hugo) en cas de difficultés.</p>";
-					}
-					include "admin.inc.php";
-					break;
 				case 'admindeletesession':
 					if (isset($_REQUEST["sessionid"]))
 						deleteSession($_REQUEST["sessionid"]);
@@ -468,6 +465,9 @@ function alertText($text)
 					break;
 				case "displaystats":
 					include "stats.php";
+					break;
+				case "displayimportexport":
+					include "import_export.php";
 					break;
 				case "";
 				default:

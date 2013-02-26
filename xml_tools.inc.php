@@ -16,7 +16,8 @@ function xml_node_to_array($node, $protect ="")
 			return $result;
 	}
 	//echo($node->nodeValue."<br/>");
-	return trim($node->nodeValue,$protect);
+	$result =  str_replace(array("\n"), array(""), trim($node->nodeValue,$protect));
+	return $result;
 }
 
 function thing_to_xml_node($thing,$node, $doc, $protect = "", $fields = NULL)
@@ -29,7 +30,9 @@ function thing_to_xml_node($thing,$node, $doc, $protect = "", $fields = NULL)
 			{
 				if($field != "")
 				{
-					$subnode = $doc->createElement($protect.$field);
+					if(is_numeric(substr($field, 0, 1)))
+							$field = $protect.$field;
+					$subnode = $doc->createElement($field);
 					thing_to_xml_node($value,$subnode,$doc, $protect, $fields);
 					$node->appendChild($subnode);
 				}

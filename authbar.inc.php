@@ -5,7 +5,9 @@ require_once("manage_users.inc.php");
 require_once("manage_sessions.inc.php");
 
 global $typesRapportsConcours;
-global $typesRapportsIndividuels;
+global $typesRapportsChercheurs;
+
+
 
 ?>
 
@@ -17,8 +19,8 @@ global $typesRapportsIndividuels;
 				<td>
 					<table>
 						<tr>
-							<td><span class='login'><?php echo getLogin();?> </span>
-							<span class='login'><?php echo current_session();?>
+							<td>
+							<span class='login'><?php echo getLogin(). " - ".current_session();?>
 							</span>
 							</td>
 						</tr>
@@ -65,9 +67,19 @@ global $typesRapportsIndividuels;
 									<input type="hidden" name="action" value="displaystats" /> <input
 										type="submit" value="Stats" />
 								</form>
-
+								</td></tr>
+								<tr><td>
+								<form method="post"
+									style="display: inline;"
+									action="index.php">
+									<input type="hidden" name="action" value="displayimportexport" /> <input
+										type="submit" value="Import/Export" />
+								</form>
+								
+								
 							</td>
 							</tr>
+							
 					</table>
 				</td>
 				<td valign=top>
@@ -97,21 +109,27 @@ global $typesRapportsIndividuels;
 									}
 									else
 									{
-										foreach($typesRapportsIndividuels as $typeEval => $value)
-										{
-											?>
-									<li><a
-										href="?action=view&amp;filter_type=<?php echo $typeEval ?>"><?php echo $value?>
-									</a> <?php 
-									if(isSecretaire())
-										echo " <a href=\"?action=new&amp;type=".$typeEval."\">+</a>";
-									?>
-									</li>
-									<?php
-										}
-									}
 										?>
-									</ul>
+																					</ul>
+																	Mes rapports
+								<ul>
+
+									<?php
+									echo "<li><a href=\"?action=view&amp;reset_filter=&amp;filter_rapporteur=".getLogin()."&amp;filter_id_session=".current_session_id()."\">Mes rapports</a></li>";
+									echo "<li><a href=\"?action=view&amp;reset_filter=&amp;filter_avancement=todo&amp;filter_rapporteur=".getLogin()."&amp;filter_id_session=".current_session_id()."\">Mes rapports à faire</a></li>";
+									echo "<li><a href=\"?action=view&amp;reset_filter=&amp;filter_avancement=done&amp;filter_rapporteur=".getLogin()."&amp;filter_id_session=".current_session_id()."\">Mes rapports faits</a></li>";
+
+									if(is_current_session_concours())
+									{
+										foreach($typesRapportsConcours as $typeEval => $value)
+										{
+											echo "<li><a href=\"?action=view&amp;reset_filter=&amp;filter_rapporteur=".getLogin()."&amp;filter_id_session=".current_session_id()."&amp;filter_type=".urlencode($value)."\">Mes ".$value."s</a></li>";
+										}
+										echo "<li><a href=\"?action=view&amp;reset_filter=&amp;filter_rapporteur=".getLogin()."&amp;filter_id_session=".current_session_id()."&amp;filter_type=Candidature; filter_avis=oral\">Mes Auditions</a></li>";
+									}
+									?>
+
+								</ul>
 										
 							</td>
 							<?php 
@@ -136,7 +154,29 @@ global $typesRapportsIndividuels;
 														else
 														{
 							?>
+														<td valign=top>
+							
+																		Chercheurs
+											<ul>
+										<?php 
+										foreach($typesRapportsChercheurs as $typeEval => $value)
+										{
+											?>
+									<li><a
+										href="?action=view&amp;filter_type=<?php echo $typeEval ?>"><?php echo $value?>
+									</a> <?php 
+									if(isSecretaire())
+										echo " <a href=\"?action=new&amp;type=".$typeEval."\">+</a>";
+									?>
+									</li>
+									<?php
+										}
+									}
+										?>
+									</ul>
+							</td>
 							<td valign=top>
+							Unités
 								<ul>
 									<?php
 									foreach($typesRapportsUnites as $typeEval => $value)
@@ -157,26 +197,6 @@ global $typesRapportsIndividuels;
 							</td>
 									<?php 
 								 } ?>
-							<td valign=top>
-								<ul>
-
-									<?php
-									echo "<li><a href=\"?action=view&amp;reset_filter=&amp;filter_rapporteur=".getLogin()."&amp;filter_id_session=".current_session_id()."\">Mes rapports</a></li>";
-									echo "<li><a href=\"?action=view&amp;reset_filter=&amp;filter_avancement=todo&amp;filter_rapporteur=".getLogin()."&amp;filter_id_session=".current_session_id()."\">Mes rapports à faire</a></li>";
-									echo "<li><a href=\"?action=view&amp;reset_filter=&amp;filter_avancement=done&amp;filter_rapporteur=".getLogin()."&amp;filter_id_session=".current_session_id()."\">Mes rapports faits</a></li>";
-
-									if(is_current_session_concours())
-									{
-										foreach($typesRapportsConcours as $typeEval => $value)
-										{
-											echo "<li><a href=\"?action=view&amp;reset_filter=&amp;filter_rapporteur=".getLogin()."&amp;filter_id_session=".current_session_id()."&amp;filter_type=".urlencode($value)."\">Mes ".$value."s</a></li>";
-										}
-										echo "<li><a href=\"?action=view&amp;reset_filter=&amp;filter_rapporteur=".getLogin()."&amp;filter_id_session=".current_session_id()."&amp;filter_type=Candidature; filter_avis=oral\">Mes Auditions</a></li>";
-									}
-									?>
-
-								</ul>
-							</td>
 							<td valign=top>Sessions
 								<ul>
 									<?php
@@ -200,13 +220,8 @@ global $typesRapportsIndividuels;
 									}
 									?>
 								</ul>
-							</td>
-							<td valign=top>Export <?php displayExport();?>
-							</td>
-
-							<td valign=top>Import <?php displayImport();?>
-							<?php 
-							if ( isSecretaire())
+																							<?php 
+														if ( isSecretaire())
 							{
 								global $statutsRapports;
 
@@ -225,8 +240,10 @@ global $typesRapportsIndividuels;
 									<input type="submit" value="Changer statut"/>
 									</form>';
 							}
+							
 							?>
-							</td>
+								
+														</td>
 							
 						</tr>
 					</table>

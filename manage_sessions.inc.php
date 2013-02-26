@@ -1,10 +1,11 @@
 <?php
 
 require_once('config.inc.php');
+require_once('manage_filters_and_sort.inc.php');
 
-function sessionArrays()
+function sessionArrays($force = false)
 {
-	if(!isset($_SESSION['all_sessions']))
+	if($force || !isset($_SESSION['all_sessions']))
 	{
 		$sessions = array();
 		$sql = "SELECT * FROM ".sessions_db." ORDER BY date DESC;";
@@ -17,6 +18,19 @@ function sessionArrays()
 	}
 
 	return $_SESSION['all_sessions'];
+}
+
+function sessionShortArray()
+{
+		$sessions = array();
+		$sql = "SELECT * FROM ".sessions_db." ORDER BY date DESC;";
+		$result = sql_request($sql);
+		date_default_timezone_set("Europe/Paris");
+		while ($row = mysql_fetch_object($result))
+			$sessions[$row->id] = $row->nom." ".date("Y", strtotime($row->date));
+		$_SESSION['all_sessions'] = $sessions;
+		
+		return $sessions;
 }
 
 function session_year($id_session)
@@ -38,11 +52,28 @@ function set_current_session_id($id)
 	$_SESSION['filter_id_session'] = $id;
 }
 
+function check_current_session_exists()
+{
+	try
+	{
+	$sessions = sessionArrays(true);
+	current_session();
+	return true;
+	}catch(Exception $e)
+	{
+		return false;
+	}
+	
+}
+
 function current_session()
 {
 	$sessions = sessionArrays();
 	$id = current_session_id();
-	return $sessions[$id];
+	if(isset($sessions[$id]))
+		return $sessions[$id];
+	else
+		throw new Exception("Pas de session avec l'id " . $id."\nVeuillez éditer le fichier de config ou ajouter une session avec l'id 2.");
 }
 
 function is_current_session_concours()
@@ -73,18 +104,29 @@ function showSessions()
 
 
 
-function createSession($name,$date)
+function createSession($name,$annee)
 {
 	if (isSecretaire())
 	{
 		date_default_timezone_set('Europe/Paris');
 		
+		switch($name)
+		{
+			case "Concours":
+				$date = "01/01/".$annee; break;
+			case "Printemps":
+				$date = "01/03/".$annee; break;
+			case "Automne":
+				$date = "01/10/".$annee; break;
+			default:
+				throw new Exception("Unknown session name: $name");
+		}
 		echo $date."<br>";
 		echo strtotime($date)."<br>";
 		echo date("Y-m-d h:m:s",strtotime($date));
-		$sql = "INSERT INTO ".sessions_db."(nom,date) VALUES ('".mysql_real_escape_string($name)."','".date("Y-m-d h:m:s",strtotime($date))."');";
-		mysql_query($sql);
-		unset($_SESSION['all_sessions']);
+		$sql = "INSERT INTO ".sessions_db."(id,nom,date) VALUES ('".mysql_real_escape_string($name).mysql_real_escape_string($annee)."','".mysql_real_escape_string($name)."','".date("Y-m-d h:m:s",strtotime($date))."');";
+		sql_request($sql);
+		sessionArrays(true);
 		return true;
 	}
 	else

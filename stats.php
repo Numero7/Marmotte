@@ -8,7 +8,7 @@ function countReports($filters, $or = true)
 {
 
 	$filters["id_session"] = current_session_id();
-	$sql = "SELECT COUNT(*) AS \"total\" FROM ".evaluations_db." WHERE id = id_origine AND statut!=\"supprime\"";
+	$sql = "SELECT COUNT(*) AS \"total\" FROM ".reports_db." WHERE id = id_origine AND statut!=\"supprime\"";
 
 	$sql .= filtersCriteriaToSQL(getCurrentFiltersList(),$filters,$or);
 	$sql .= ";";

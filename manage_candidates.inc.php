@@ -3,15 +3,16 @@
 require_once('config.inc.php');
 require_once('manage_sessions.inc.php');
 
+/*
 function generateKey($annee, $nom,$prenom)
 {
 	return mb_strtolower(replace_accents(trim($annee.$nom.$prenom," '-")));
 }
-
-function candidateExists($annee,$nom,$prenom)
+*/
+function candidateExists($nom,$prenom)
 {
-	$key = generateKey($annee, $nom, $prenom);
-	$sql = "SELECT * FROM ".candidates_db.' WHERE cle="'.$key.'";';
+
+	$sql = "SELECT * FROM ".people_db.' WHERE nom="'.$nom.'" AND prenom="'.$prenom.'";';
 
 	$result = sql_request($sql);
 	return	(mysql_num_rows($result) > 0);
@@ -33,21 +34,15 @@ function normalizeCandidat($data)
 
 function updateCandidateFromRequest($request, $oldannee="")
 {
-	global $fieldsCandidatAll;
+	//rrr();
+	global $fieldsIndividualAll;
 
 	$data = (object) array();
 
 
-	foreach($fieldsCandidatAll as  $field => $value)
+	foreach($fieldsIndividualAll as  $field => $value)
 		if (isset($request["field".$field]))
 		$data->$field = nl2br(trim($request["field".$field]),true);
-
-	$annee = annee_from_data($data);
-	$nom = $data->nom;
-	$prenom = $data->prenom;
-
-	$cle = generateKey($annee,$nom ,$prenom );
-
 
 	$candidate = get_or_create_candidate($data );
 
@@ -60,28 +55,32 @@ function updateCandidateFromRequest($request, $oldannee="")
 		$sqlcore.=$field.'="'.mysql_real_escape_string($value).'" ';
 		$first = false;
 	}
-	$sql = "UPDATE ".candidates_db." SET ".$sqlcore." WHERE cle=\"".$cle."\";";
+	$sql = "UPDATE ".people_db." SET ".$sqlcore." WHERE nom=\"".$data->nom."\" AND prenom=\"".$data->prenom."\";";
 
 	sql_request($sql);
 
 	$candidate = get_or_create_candidate($data );
 
-	$previouskey = isset($request['previouscandidatekey']) ? $request['previouscandidatekey'] : $cle;
-	if($previouskey != $candidate->cle)
-		deleteCandidate($previouskey);
+
+	if(isset($request['previousnom']) && isset($request['previousprenom']))
+	{
+		if($request['previousnom'] != $candidate->nom || $request['previousprenom'] != $candidate->prenom)
+		{
+			$sql = "UPDATE ".reports_db." SET nom=\"".$candidate->nom."\", prenom=\"".$candidate->prenom."\" WHERE nom =\"".$request['previousnom']."\" AND prenom=\"".$request['previousprenom']."\"";
+			sql_request($sql);
+			$sql = "DELETE FROM ".people_db." WHERE nom =\"".$request['previousnom']."\" AND prenom=\"".$request['previousprenom']."\"";
+			sql_request($sql);
+		}
+	}
+
 
 	return $candidate;
 
 }
 
-function deleteCandidate($key)
-{
-	sql_request("DELETE FROM ".candidates_db." WHERE cle=\"".$key."\";");
-}
-
 function getAllCandidates()
 {
-	$sql = "SELECT * FROM ".candidates_db.";";
+	$sql = "SELECT * FROM ".people_db.";";
 	$result=mysql_query($sql);
 	if($result == false)
 		throw new Exception("Failed to process sql query ".$sql);
@@ -97,45 +96,44 @@ function annee_from_data($data, $pref = "")
 {
 	$annee = session_year(current_session_id());
 
-	$champ = $pref."anneecandidature";
-	if(isset($data->$champ))
-		$annee = $data->$champ;
-	else
-		$data->$champ = $annee;
+	$champ1 = $pref."anneecandidature";
+	$champ2 = $pref."annee_recrutement";
+	if(isset($data->$champ1))
+		$annee = $data->$champ1;
+	else if(isset($data->$champ2))
+		$annee = $data->$champ2;
 
 	return $annee;
 }
 
 function add_candidate_to_database($data)
 {
-	global $fieldsCandidatAll;
-		
-	$annee = annee_from_data($data);
-	$key = generateKey($annee, $data->nom, $data->prenom);
-	$data->cle = $key;
+	global $fieldsIndividualAll;
 
 	$sqlvalues = "";
 	$sqlfields = "";
 	$first = true;
 
-	foreach($fieldsCandidatAll as $field => $desc)
+	global $empty_individual;
+
+	foreach($fieldsIndividualAll as $field => $desc)
 	{
-		if(isset($data->$field))
-		{
-			$sqlfields .= ($first ? "" : ",") .$field;
-			$sqlvalues .= ($first ? "" : ",") .'"'.$data->$field.'"';
-			$first = false;
-		}
+		$sqlfields .= ($first ? "" : ",") .$field;
+		$sqlvalues .= ($first ? "" : ",") .'"'.(isset($data->$field) ? $data->$field : $empty_individual[$field]).'"';
+		$first = false;
 	}
 
-	$sql = "INSERT INTO ".candidates_db." ($sqlfields) VALUES ($sqlvalues);";
+
+	$sql = "INSERT INTO ".people_db." ($sqlfields) VALUES ($sqlvalues);";
 	sql_request($sql);
 
-	$sql2 = 'SELECT * FROM candidats WHERE cle="'.$key.'";';
+	$sql2 = 'SELECT * FROM '.people_db.' WHERE nom="'.$data->nom.'" AND prenom="'.$data->prenom.'";';
 	$result = sql_request($sql2);
 	$candidate = mysql_fetch_object($result);
 	if($candidate == false)
+	{
 		throw new Exception("Failed to add candidate with request <br/>".$sql2);
+	}
 
 	return $candidate;
 
@@ -150,18 +148,11 @@ function get_or_create_candidate($data)
 {
 	$data = normalizeCandidat($data);
 
-	$annee = "0";
-	if(isset($data->id_session))
-		$annee = session_year($data->id_session);
-	if(isset($data->anneecandidature))
-		$annee = $data->anneecandidature;
-
-	$key = generateKey($annee, $data->nom, $data->prenom);
-
 	try
 	{
-		mysql_query("LOCK TABLES candidates WRITE;");
-		$sql = "SELECT * FROM ".candidates_db.' WHERE cle="'.$key.'";';
+		mysql_query("LOCK TABLES ".people_db." WRITE;");
+
+		$sql = "SELECT * FROM ".people_db.' WHERE nom="'.$data->nom.'" AND prenom="'.$data->prenom.'" ;';
 
 		$result = sql_request($sql);
 
@@ -172,7 +163,7 @@ function get_or_create_candidate($data)
 			$result = sql_request($sql);
 			$cdata = mysql_fetch_object($result);
 			if($cdata == false)
-				throw new Exception("Failed to fetch object from request<br/>".$sql);
+				throw new Exception("Failed to find candidate previously added<br/>".$sql);
 		}
 
 		mysql_query("UNLOCK TABLES");
@@ -185,61 +176,7 @@ function get_or_create_candidate($data)
 	}
 }
 
-function get_candidate_from_key($key)
-{
 
-	try
-	{
-		mysql_query("LOCK TABLES candidates WRITE;");
-		$sql = "SELECT * FROM ".candidates_db.' WHERE cle="'.$key.'";';
-
-		$result = sql_request($sql);
-
-		$cdata = mysql_fetch_object($result);
-		if($cdata == false)
-			throw new Exception("No candidate from key ".$key);
-
-		mysql_query("UNLOCK TABLES");
-		return normalizeCandidat($cdata);
-	}
-	catch(Exception $exc)
-	{
-		mysql_query("UNLOCK TABLES;");
-		throw new Exception("Failed to add candidate from report:<br/>".$exc->getMessage());
-	}
-}
-
-/*
- function extraction_candidats()
- {
-
-$nb = 0;
-try
-{
-$reports = getAllReportsOfType("Equivalence", current_session_id() );
-$reports = array_merge($reports, getAllReportsOfType("Candidature", current_session_id() ));
-
-foreach($reports as $report)
-{
-if(!candidateExists(session_year($report->id_session), $report->nom, $report->prenom))
-	$nb++;
-$candidat = get_or_create_candidate($report);
-	
-change_report_property($report->id, "clecandidat", $candidat->cle);
-	
-rrr();
-}
-
-
-}
-catch(Exception $exc)
-{
-throw new Exception("Failed to extract candidates from equivalence reports" . $exc->getMessage());
-}
-
-return "Added ".$nb." new candidates";
-}
-*/
 
 function change_candidate_property($annee,$nom,$prenom, $property_name, $newvalue)
 {
@@ -252,9 +189,7 @@ function change_candidate_property($annee,$nom,$prenom, $property_name, $newvalu
 function change_candidate_properties($annee,$nom,$prenom, $data)
 {
 	$data = (object) $data;
-	$key = generateKey($annee, $nom, $prenom);
-
-	$sql = "SELECT * FROM ".candidates_db.' WHERE cle="'.$key.'";';
+	$sql = "SELECT * FROM ".people_db.' WHERE nom="'.$nom.'" AND prenom="'.$prenom.'";';
 	$result = sql_request($sql);
 
 	$candidate = mysql_fetch_object($result);
@@ -274,7 +209,7 @@ function change_candidate_properties($annee,$nom,$prenom, $data)
 	$sqlcore = "";
 	$first = true;
 
-	$sql = "UPDATE ".candidates_db." SET ";
+	$sql = "UPDATE ".people_db." SET ";
 	foreach($candidate as  $field => $value)
 	{
 		if (isset($candidate->$field) && isset($data->$field))
@@ -285,7 +220,8 @@ function change_candidate_properties($annee,$nom,$prenom, $data)
 		}
 	}
 
-	$sql .= ' WHERE cle="'.$key.'"';
+	$sql .= ' WHERE nom="'.$candidate->nom.'" AND prenom="'.$candidate->prenom.'";';
+	
 	sql_request($sql);
 
 }
@@ -344,74 +280,5 @@ function find_files($candidate , $directories)
 	return false;
 }
 
-function injectercandidats()
-{
-	if(isSecretaire())
-	{
-		global $fieldsRapportsCandidat;
-		global $fieldsCandidatAll;
-
-		/*
-		$fieldsToImport = array();
-
-		foreach( $fieldsCandidatAll as $field => $desc)
-			if( in_array($field, $fieldsRapportsCandidat))
-		{
-			echo 'Join '.$field.'<br/>';
-				$fieldsToImport[] = $field;
-		}
-*/
-			$reports = getAllReportsOfType("Candidature");
-			foreach($reports as $report)
-			{
-				$values = array();
-				$candidate = get_or_create_candidate($report);
-				$values["cleindividu"] = $candidate->cle;
-				$values['grade'] = $candidate->grade;
-				
-/*				
-				foreach($fieldsToImport as $field)
-	*/
-
-				change_report_properties($report->id, $values);
-			}
-
-	}
-}
-
-function creercandidats()
-{
-	if(isSecretaire())
-	{
-		$reports = getAllReportsOfType("Candidature");
-		foreach($reports as $report)
-		{
-			$candidate = get_or_create_candidate($report);
-			if($report->cleindividu != $candidate->cle)
-				change_report_property($report->id, "cleindividu", $candidate->cle);
-
-			$concours = $candidate->concourspresentes;
-			if($concours =="" || $report->concours=="")
-				continue;
-			$ok = strpos($concours, $report->concours);
-			if($ok === false)
-			{
-				echo 'Adding concours "'.$report->concours.'" to candidate '.$candidate->cle.' with concours = "'.$concours.'"<br/>';
-				$annee = $annee = session_year($report->id_session);
-				$nom = $candidate->nom;
-				$prenom = $candidate->prenom;
-				$concours .= " ".$report->concours;
-				change_candidate_property($annee, $nom,$prenom,"concourspresentes",$concours);
-			}
-		}
-		$reports = getAllReportsOfType("Equivalence");
-		foreach($reports as $report)
-		{
-			$candidate = get_or_create_candidate($report);
-			if($report->cleindividu != $candidate->cle)
-				change_report_property($report->id, "cleindividu", $candidate->cle);
-		}
-	}
-}
 
 ?>

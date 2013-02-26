@@ -10,215 +10,17 @@ if(isSecretaire())
 {
 	?>
 <h1>Interface d'administration</h1>
-<hr />
-<h2>Config</h2>
-<p>Le fichier de config permet de configurer le numéro de la section,
-	les thèmes de la section, le nom du président, etc..</p>
-<p>
-	Télécharger et éditer <a href="<?php echo config_file;?>">le fichier de
-		configuration</a> en faisant (click droit + enregistrer la cible du
-	lien sous...).<br /> En cas de souci télécharger <a
-		href="<?php echo config_file_save;?>">la config de secours</a>.<br />
-	Après édition, le formulaire ci-dessous permet d'uploader la nouvelle
-	configuration.
-<form enctype="multipart/form-data" action="index.php" method="post"
-	onsubmit="return confirm('Etes vous sur d'écraser la config existante?');">
-	<input type="hidden" name="type" value="config" /> <input type="hidden"
-		name="action" value="upload" /> <input type="hidden"
-		name="MAX_FILE_SIZE" value="100000" /> Fichier de config: <input
-		name="uploadedfile" type="file" /> <br /> <input type="submit"
-		value="Uploader config" />
-</form>
 
-Le formulaire ci-dessous permet d'uploader la signature du président
-sous forme d'un fichier image au format jpeg.
-<form enctype="multipart/form-data" action="index.php" method="post">
-	<input type="hidden" name="type" value="signature" /> <input
-		type="hidden" name="action" value="upload" /> <input type="hidden"
-		name="MAX_FILE_SIZE" value="100000" /> Fichier de config: <input
-		name="uploadedfile" type="file" /> <br /> <input type="submit"
-		value="Uploader signature" />
-</form>
-<p />
 
 <hr />
-
-<h2>Import de rapports</h2>
-<?php 
-try
-{
-	$sql = "SELECT * FROM ".evaluations_db." LIMIT 0,5";
-	$result = sql_request($sql);
-
-	$rows = array();
-	while ($row = mysql_fetch_object($result))
-		$rows[] = $row;
-
-	$csv_reports = compileReportsAsCSV($rows);
-	$filename = "csv/exemple.csv";
-	if($handle = fopen($filename, 'w'))
-	{
-		fwrite ($handle, $csv_reports);
-		fclose($handle);
-	}
-	else
-	{
-		echo("Watchout: couldn't create exemple csv file ".$filename);
-	}
-}
-catch(Exception $e)
-{
-	echo("Watchout: couldn't create exemple csv file ".$e->getMessage());
-}
-
+<?php
+include("config_manager.php");
 ?>
-<p>
-	Le formulaire ci-dessous permet d'injecter des rapports dans la base de
-	donnée en les envoyant sous forme de fichier csv.<br /> Vous pouvez
-	partir de <a href="csv/exemple.csv">ce fichier exemple</a>.<br /> Vous
-	pouvez supprimer les colonnes inutiles mais il est indispensable de
-	laisser les intitulés des colonnes restantes tels quels.<br /> Les
-	différentes entrées sont encadrées par des guillemets par conséquent
-	les champs ne doivent pas contenir des guillements non échappés: il
-	faut au préalabale de l'envoi remplacer chaque " par \".<br />
-	<!--  Enfin utiliser de préférence l'encodage utf-8 pour les caractères accentués.<br/> -->
-	<?php 
-	displayImport();
-	?>
-<hr />
 
+<hr/>
+	
 
 <table>
-	<tr>
-		<td>
-
-			<h2>Ajout d'une unité</h2>
-			<form enctype="multipart/form-data" action="index.php" method="post">
-				<table class="inputreport">
-					<tr>
-						<td style="width: 20em;">Acronyme</td>
-						<td style="width: 20em;"><input name="nickname" />
-						</td>
-						<td><span class="examplevaleur">Exemple : LaBRI</span>
-						</td>
-					</tr>
-					<tr>
-						<td style="width: 20em;">Code</td>
-						<td style="width: 20em;"><input name="code" />
-						</td>
-						<td><span class="examplevaleur">Exemple : UMR5800</span>
-						</td>
-					</tr>
-					<tr>
-						<td style="width: 20em;">Nom Complet</td>
-						<td style="width: 20em;"><input name="fullname" />
-						</td>
-						<td><span class="examplevaleur">Exemple : Labratoire Bordelais de
-								Recherche en Informatique</span>
-						</td>
-					</tr>
-					<tr>
-						<td style="width: 20em;">Directeur</td>
-						<td style="width: 20em;"><input name="directeur" />
-						</td>
-						<td><span class="examplevaleur">Exemple : Pascal Weil</span>
-						</td>
-					</tr>
-				</table>
-				<input type="hidden" name="type" value="labo" /> <input
-					type="hidden" name="action" value="ajoutlabo" /> <input
-					type="submit" value="Ajouter unité" />
-			</form>
-
-		</td>
-		<td>
-			<h2>Suppression d'une unité</h2>
-			<form method="post" action="index.php">
-				<table class="inputreport">
-					<tr>
-						<td><select name="unite">
-								<?php 
-								$units = unitsList();
-								foreach($units as $unit => $data)
-									echo "<option value=\"$unit\">".$data->prettyname."</option>";
-								?>
-						</select>
-						</td>
-					</tr>
-					<tr>
-						<td><input type="hidden" name="action" value="deletelabo" /> <input
-							type="submit" value="Supprimer unité" />
-						</td>
-					</tr>
-				</table>
-			</form>
-		</td>
-
-		</td>
-	</tr>
-</table>
-<?php 
-try
-{
-	$sql = "SELECT * FROM ".units_db." LIMIT 0,5";
-	$result = sql_request($sql);
-
-	$rows = array();
-	while ($row = mysql_fetch_object($result))
-		$rows[] = $row;
-
-	$csv_reports = compileUnitsAsCSV($rows);
-	$filename = "csv/exemple_unites.csv";
-	if($handle = fopen($filename, 'w'))
-	{
-		fwrite ($handle, $csv_reports);
-		fclose($handle);
-	}
-	else
-	{
-		echo("Watchout: couldn't create exemple csv file ".$filename);
-	}
-}
-catch(Exception $e)
-{
-	echo("Watchout: couldn't create exemple csv file ".$e->getMessage());
-}
-
-?>
-
-<h2>Ajout de plusieurs unités</h2>
-<p>
-<p>
-	Le formulaire ci-dessous permet d'injecter des unités dans la base de
-	donnée.<br /> Les rapports sont envoyés sous forme de fichier csv.<br />
-	Vous pouvez partir de <a href="csv/exemple_unites.csv">ce fichier
-		exemple</a>.<br /> Vous pouvez supprimer les colonnes inutiles mais il
-	est indispensable de laisser les intitulés des colonnes restantes tels
-	quels.<br /> Les différentes entrées sont encadrées par des guillemets
-	par conséquent les champs ne doivent pas contenir des guillements non
-	échappés: il faut au préalabale de l'envoi remplacer chaque " par \".<br />
-	<!--  Enfin utiliser de préférence l'encodage utf-8 pour les caractères accentués.<br/> -->
-	Les données d'un labo avec le même code seront remplacées.
-</p>
-<form enctype="multipart/form-data" action="index.php" method="post"
-	onsubmit="return confirm('Etes vous sur de vouloir uploader ce fichier labos?');">
-	<p>
-		<input type="hidden" name="type" value="unites" /> <input
-			type="hidden" name="action" value="upload" /> <input type="hidden"
-			name="MAX_FILE_SIZE" value="100000" /> Fichier csv: <input
-			name="uploadedfile" type="file" /> <br /> <input type="submit"
-			value="Ajouter unités" />
-	</p>
-</form>
-
-<?php 
-}
-
-if(isSecretaire())
-{
-	?>
-<hr />
-<table >
 	<h2 id="adminnewaccount">Création nouveau rapporteur</h2>
 	<tr>
 		<td>
@@ -364,7 +166,7 @@ if(isSecretaire())
 
 <h2 id="infosrapporteur">Modifier les infos</h2>
 <form method="get" action="index.php">
-	<table >
+	<table>
 		<?php 
 		global $sous_jurys;
 		global $concours_ouverts;
@@ -388,24 +190,31 @@ if(isSecretaire())
 					}
 				}
 				echo "</select>\n";
-				foreach($concours_ouverts as $concours => $nom)
+				if(is_current_session_concours())
 				{
-					echo "<select name=\"sousjury".$concours."\">\n";
-					echo "<option value=\"\"$sel></option>\n";
-						
-					foreach($sous_jurys[$concours] as $val => $nom)
+					foreach($concours_ouverts as $concours => $nom)
 					{
-						//echo $data->sousjury."\n".$val."\n";
-						$sel = "";
-						if (($val != "") && ($data->sousjury != ""))
+						echo "Concours ".$concours/" sous-jury ";
+						echo "<select name=\"sousjury".$concours."\">\n";
+						echo "<option value=\"\"$sel></option>\n";
+
+						if(isset($sous_jurys[$concours]))
 						{
-							$test = strpos($data->sousjury,$val);
-							if($test === 0 || $test != false)
-								$sel = " selected=\"selected\"";
+							foreach($sous_jurys[$concours] as $val => $nom)
+							{
+								//echo $data->sousjury."\n".$val."\n";
+								$sel = "";
+								if (($val != "") && ($data->sousjury != ""))
+								{
+									$test = strpos($data->sousjury,$val);
+									if($test === 0 || $test != false)
+										$sel = " selected=\"selected\"";
+								}
+								echo "<option value=\"".$val."\"$sel>".$concours." ".$nom."</option>\n";
+							}
 						}
-						echo "<option value=\"".$val."\"$sel>".$concours." ".$nom."</option>\n";
 					}
-					
+
 					echo "</select>\n";
 				}
 
@@ -427,73 +236,9 @@ if(isSecretaire())
 	?>
 <br>
 <hr />
-<table>
-	<tr>
-		<td>
-
-			<h2>Ajout d'une session</h2>
-			<form method="post" action="index.php"
-				onsubmit="return confirm('Etes vous sur de vouloir ajouter cette session ?');">
-				<table class="inputreport">
-					<tr>
-						<td style="width: 20em;">Nom de session</td>
-						<td><input name="sessionname" />
-						</td>
-						<td><span class="examplevaleur">Exemple : Automne</span>
-						</td>
-					</tr>
-					<tr>
-						<td style="width: 20em;">Date <strong>Complète</strong> (Important
-							!)
-						</td>
-						<td style="width: 20em;"><input name="sessiondate" />
-						</td>
-						<td><span class="examplevaleur">Exemple : 01/03/2014</span>
-						</td>
-					</tr>
-					<tr>
-						<td><input type="hidden" name="action" value="adminnewsession" />
-						</td>
-						<td><input type="submit" value="Ajouter session" />
-						</td>
-					</tr>
-				</table>
-			</form>
-
-		</td>
-		<td>
-			<h2>Suppression d'une session</h2>
-			<form method="get" action="index.php"
-				onsubmit="return confirm('Etes vous sur de vouloir supprimer cette session ?');">
-				<table class="inputreport">
-					<tr>
-						<td style="width: 20em;">Nom de session</td>
-						<td><select name="sessionid">
-								<?php 
-								$sessions =  showSessions();
-								foreach($sessions as $session)
-								{
-									$id = $session["id"];
-									$nom = $session["nom"];
-									date_default_timezone_set("Europe/Paris");
-									$date = strtotime($session["date"]);
-									echo "<option value=\"$id\">".ucfirst($nom)." ".date("Y",$date)."</option>";
-								}
-								?>
-						</select>
-						</td>
-					</tr>
-					<tr>
-						<td><input type="hidden" name="action" value="admindeletesession" />
-						</td>
-						<td><input type="submit" value="Supprimer session" />
-						</td>
-					</tr>
-				</table>
-			</form>
-		</td>
-	</tr>
-</table>
+<?php 
+include 'sessions_manager.php';
+?>
 
 <hr />
 <?php 

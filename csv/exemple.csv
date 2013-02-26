@@ -1,15 +1,6 @@
-"id";"nom";"prenom";"genre";"type";"concours";"grade";"date_recrutement";"labo1";"labo2";"labo3";"theme1";"theme2";"theme3";"theseAnnee";"theseLieu";"theseloc";"HDRAnnee";"HDRLieu";"productionResume";"projetrecherche";"parcours";"concourspresentes";"rapporteur";"avis";"rapport";"prerapport"
-"6705";"Addis";"Bernardetta";"";"Equivalence";"0602";"CR1";"";"ERL6305";"UMR8623";"UMR7243";"5";"";"";"";"";"";"";"";"";"";"";"";"yann";"favorable";"";"Diplôme étranger<br />
- (27/04/2005)"
-"6707";"Arrighi";"Pablo";"";"Equivalence";"0602";"CR1";"";"UMR7161";"UMR5141";"UMR5668";"1b";"3a";"10a";"";"";"";"";"";"";"";"";"";"yann";"favorable";"";"Diplôme étranger<br />
- (21/02/2004)<br />
-2005- Maître de Conférences – Université de Grenoble<br />
-2009-2011 Délégation CNRS & ENS-Lyon for two years: Research in the LIP laboratory<br />
-(ens-lyon.fr/LIP/);"
-"6708";"Azad";"Amar Prakash";"";"Equivalence";"0602";"CR1";"";"UMR8623";"";"";"";"";"";"";"";"";"";"";"";"";"";"";"yann";"favorable";"";"Doctorat<br />
- (26/11/2010)"
-"6709";"Bencomo";"Nelly";"";"Equivalence";"0602";"CR1";"";"UMR8022";"";"";"4a";"7";"";"";"";"";"";"";"";"";"";"";"yann";"favorable";"";"Diplôme étranger<br />
- (30/03/2008) <br />
-Souhait d'affectation à projet INRIA ADAM"
-"6712";"Caporuscio";"Mauro";"";"Equivalence";"0602";"CR1";"";"UMR8022";"";"";"4a";"11";"";"";"";"";"";"";"";"";"";"";"yann";"favorable";"";"Diplôme étranger<br />
- (17/01/2006)"
+"nomprenom";"unite";"rapporteur";"rapporteur2"
+"Guenoche Alain ";"FRE3529";"";""
+"Da Silva Ferreira Afonso ";"SNC9146";"";""
+"Havet Frederic ";"UMI3069";"";""
+"Dang Thi Xuan Thao ";"UMR5104";"";""
+"Graf Susanne ";"UMR5104";"";""
