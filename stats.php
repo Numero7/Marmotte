@@ -4,6 +4,177 @@ require_once('manage_rapports.inc.php');
 require_once('utils.inc.php');
 require_once('config.php');
 
+
+function fieldsToSQL($columnFilters, $rowFilter)
+{
+	$result = $rowFilter;
+	foreach($columnFilters as $fieldname => $title)
+	{
+		$result .= ", "; 
+		$result .= $fieldname;
+	}
+	return $result;
+}
+
+function computeArrays($filters, $columnFilters, $rowFilter)
+{
+	$fieldsSQL = fieldsToSQL($columnFilters, $rowFilter);
+
+  	$sql = "SELECT $fieldsSQL,COUNT(*) AS \"total\" FROM ".evaluations_db." WHERE id = id_origine AND statut!=\"supprime\"";
+	$sql .= filtersCriteriaToSQL(getCurrentFiltersList(),$filters);
+	$sql .= "GROUP BY ".$fieldsSQL;
+	$sql .= ";";
+	
+	$result = sql_request($sql);
+
+	if($result == false)
+		throw new Exception("Echec de l'execution de la requete <br/>".$sql."<br/>");
+
+	$finresult = array();
+	while($truc = mysql_fetch_object($result))
+	{
+		$finresult[] = $truc;
+	}
+	return $finresult;
+}
+
+function displayArrays($filters, $columnFilters, $rowFilters,$format = "")
+{
+	$tabs = array();
+	$processedTab = array();
+	foreach($rowFilters as $rowFilter => $titleRow){
+		$tabs[$rowFilter] = computeArrays($filters, $columnFilters, $rowFilter);
+	}
+	foreach($tabs as $fieldcatname => $elem)
+	{
+		foreach($elem as $i => $truc)
+		{
+			$current =& $processedTab;
+			foreach($columnFilters as $fieldname => $title)
+			{
+				$val = $truc->$fieldname;
+				if (!isset($current[$val]))
+				{
+					$current[$val] = array();
+				}
+				$current =& $current[$val];
+			}
+			if (!isset($current[$truc->$fieldcatname]))
+			{
+				$current[$truc->$fieldcatname] = array();				
+			}
+			$current[$truc->$fieldcatname][$fieldcatname] = $truc->total;
+		}
+	}	
+	displayArraysAux($processedTab,0,$columnFilters,$rowFilters);	
+}
+
+function displayCounts($vals,$rowFilters)
+{
+	$first = 1;
+	foreach($rowFilters as $st => $title)
+	{
+		if (isset($vals[$st]))
+		{
+			$val = $vals[$st];
+			//echo "[".$st."]";
+			if ($first)
+			{echo $val;}
+			else
+			{echo " (".$val.")";}
+		}
+		$first = 0;
+	}
+}
+function displayArraysAux($tab,$currLevel, $columnFilters,$rowFilters)
+{
+	if ($currLevel >= count($columnFilters)-1){
+		echo '<table class="stats">';
+		$colcounts = array();
+		$rowscounts = array();
+		$rows = array();
+		foreach($tab as $keyrow => $tabrow )
+		{
+			$rows[] = $keyrow;
+			if  (!isset($rowcounts[$keyrow]))
+			{ $rowcounts[$keyrow] = array(); }
+
+			foreach($tabrow as $keycol => $vals )
+			{
+				if  (!isset($colcounts[$keycol]))
+				{ $colcounts[$keycol] = array(); }
+				foreach($vals as $st => $val)
+				{
+					if (!isset($colcounts[$keycol][$st]))
+					{ $colcounts[$keycol][$st] = 0; }
+					if (!isset($rowcounts[$keyrow][$st]))
+					{ $rowcounts[$keyrow][$st] = 0; }
+					$colcounts[$keycol][$st] += $val;
+					$rowcounts[$keyrow][$st] += $val;
+				}
+			}
+		}
+		$cols = array_keys($colcounts);
+		sort($rows);
+		sort($cols);
+		$titles = array_values($columnFilters);
+		$rowtitle = $titles[$currLevel-1];
+
+		echo "<tr><td></td><td></td>";
+		foreach($cols as $col)
+		{
+			if ($col=="")
+			{ $col = "Aucun(e)"; }
+			echo "<th>".$col."</th>";			
+		}
+		echo "</tr>";
+
+		echo "<tr><th>".$rowtitle."</th><th>Total</th>";
+		foreach($cols as $col)
+		{
+			echo "<th>";
+			$vals = $colcounts[$col];
+			displayCounts($vals,$rowFilters);
+			echo "</th>";
+		}
+		echo "</tr>";
+
+		foreach($rows as $keyrow)
+		{
+			$tabrow = $tab[$keyrow];
+			echo "<tr><td>".$keyrow."</td>";
+			echo "<th>";
+			$vals = $rowcounts[$keyrow];
+			displayCounts($vals,$rowFilters);
+			echo "</th>";
+			foreach($cols as $col)
+			{
+				$vals  = array();
+				if (isset($tabrow[$col]))
+				{ $vals = $tabrow[$col]; }
+				echo "<td>";
+				displayCounts($vals,$rowFilters);
+				echo "</td>";
+			}
+			echo "</tr>";
+		}
+		echo "</table>";
+	}
+	else
+	{
+		foreach($tab as $key => $val)
+		{
+			$tag = "h".($currLevel+2)."";
+			$titles = array_values($columnFilters);
+			$title = $titles[$currLevel];
+			echo "<$tag>".$title." ".$key."</$tag>";
+			displayArraysAux($val,$currLevel+2, $columnFilters,$rowFilters);
+		}
+	}
+}
+
+
+
 function countReports($filters, $or = true)
 {
 
@@ -171,6 +342,22 @@ if(is_current_session_concours())
 
 if(is_current_session_concours())
 {
+	$filters = array(
+		'type' => "Candidature",
+		'avis' => "oral",
+	);
+
+	$columnFilters = array(
+		"concours" => "Concours",	
+		'rapporteur' => 'Rapporteur',
+	);
+	$rowFilters = array(
+		'theme1' => 'Theme principal',
+		'theme2' => 'Theme secondaire',
+	);
+	displayArrays($filters, $columnFilters, $rowFilters);
+	
+	/*
 	$users = listUsers();
 	global $topics;
 	global $sous_jurys;
@@ -178,8 +365,6 @@ if(is_current_session_concours())
 
 	foreach($concours_ouverts as $code => $concours)
 	{
-
-
 		echo "<h2>Concours $concours</h2>";
 
 		echo '<table class="stats">';
@@ -265,6 +450,7 @@ if(is_current_session_concours())
 		echo "</p>";
 
 	}
+	*/
 }
 ?>
 
