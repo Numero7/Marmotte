@@ -289,16 +289,27 @@ font-weight:bold;
 	background: #d8e2ea;
 }
 
-.oddrow2{
-	background: #f5e7e7;
+.oddrowBis{
+	background: #f2f6f2;
 }
 
-.evenrow2{
-	background: #f5d1d1;
+.evenrowBis{
+	background: #c6e6c6;
 }
+
+.oddrowIndividual{
+	background: #f9f0f0;
+}
+
+.evenrowIndividual{
+	background: #f7d7d9;
+}
+
 dt{
   margin-left:0;
+  font-weight: bold;
 }
 dd{
-  margin-left:15px;
+  padding-left:15px;
+  font-weight: normal;
 }

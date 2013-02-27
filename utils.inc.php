@@ -425,7 +425,11 @@ function filename_from_params($nom, $prenom, $grade, $unite, $type, $session, $a
 
 function getStyle($fieldId,$odd)
 {
-	$rapp2 = ((substr($fieldId, -1)==="2")and !(substr($fieldId, -3)==="me2" or substr($fieldId, -5)==="labo2"));
+	global $fieldsIndividualAll;
+	global $fieldsCandidat;
+	$individual = isset($fieldsIndividualAll[$fieldId]) or isset($fieldsCandidat[$fieldId]);
+	
+	$rapp2 = ((substr($fieldId, -1)==="2")and !($individual));
 	if ($odd)
 	{
 		$style =  "oddrow";
@@ -436,7 +440,9 @@ function getStyle($fieldId,$odd)
 	}
 	
 	if ($rapp2)
-	{  $style .= "2"; }
+	{  $style .= "Bis"; }
+	else if ($individual)
+	{  $style .= "Individual"; }
 	
 	return $style;
 }

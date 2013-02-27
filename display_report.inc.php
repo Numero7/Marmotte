@@ -671,14 +671,7 @@ function displayIndividualReport($row)
 	{
 		if (!isset($specialRule[$fieldId]))
 		{
-			if ($odd)
-			{
-				$style = "oddrow";
-			}			
-			else
-			{
-				$style= "evenrow";
-			}
+			$style = getStyle($fieldId,$odd);
 			$odd = !$odd;
 			?>
 	<dt class="<?php echo $style;?>">
