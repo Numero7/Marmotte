@@ -243,7 +243,6 @@ function authenticate()
 		$pwd = $_SESSION['pass'];
 		return authenticateBase($login,$pwd);
 	}
-	echo "No session";
 	return false;
 } ;
 

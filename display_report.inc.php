@@ -242,7 +242,6 @@ function displayEditableReport($row, $canedit = true)
 	$submits["submitandkeepediting"] = "Enregistrer";
 	if(isSecretaire())
 		$submits["deleteandeditnext"] = "Supprimer";
-	$submits["submitandview"] = "Enregistrer et voir";
 	$submits["retourliste"] = "Retour à la liste";
 	$submits["editnext"] = ">>";
 
@@ -417,6 +416,7 @@ function editReport($id_rapport)
 		$report = getReport($id_rapport);
 		$canedit = isReportEditable($report);
 		$row = normalizeReport($report);
+		$candidat = get_or_create_candidate($row);
 		displayEditableReport($row, $canedit);
 	}
 	catch(Exception $exc)

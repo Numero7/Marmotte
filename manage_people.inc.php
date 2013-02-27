@@ -24,6 +24,11 @@ function normalizeCandidat($data)
 
 	$data2 = $data;
 
+	if(!isset($data->nom))
+		$data->nom = "";
+	if(!isset($data->prenom))
+		$data->prenom = "";
+	
 	foreach($candidat_prototypes as $field => $value)
 		if(isset($data->$field))
 		if($data->$field=="")
@@ -152,6 +157,7 @@ function get_or_create_candidate($data)
 	{
 		mysql_query("LOCK TABLES ".people_db." WRITE;");
 
+		
 		$sql = "SELECT * FROM ".people_db.' WHERE nom="'.$data->nom.'" AND prenom="'.$data->prenom.'" ;';
 
 		$result = sql_request($sql);

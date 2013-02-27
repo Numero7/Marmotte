@@ -18,9 +18,23 @@ function fieldsToSQL($columnFilters, $rowFilter)
 
 function computeArrays($filters, $columnFilters, $rowFilter)
 {
+	global $fieldsRapportAll;
+	global $fieldsIndividualAll;
+	
 	$fieldsSQL = fieldsToSQL($columnFilters, $rowFilter);
-
-  	$sql = "SELECT $fieldsSQL,COUNT(*) AS \"total\" FROM ".evaluations_db." WHERE id = id_origine AND statut!=\"supprime\"";
+	/*
+	if(isset($fieldsRapportAll[$filter]))
+		$pref = reports_db.".";
+	else if(isset($fieldsIndividualAll[$filter]))
+		$pref = people_db.".";
+	else
+		throw new Exception("Filter criterion ".$filter." is neither in the list of rapport fields nor in the list of individual fields");
+	*/
+	
+//	$sql = "SELECT *, ".people_db.".nom AS people_nom, ".people_db.".prenom AS people_prenom, ".reports_db.".nom AS nom, ".reports_db.".prenom AS prenom FROM ".reports_db." left join ".people_db." on ".reports_db.".nom=".people_db.".nom AND ".reports_db.".prenom=".people_db.".prenom WHERE ".reports_db.".id=".reports_db.".id_origine AND ".reports_db.".statut!=\"supprime\"";
+//	$sql .= " AND ". (isset($data['sql_col']) ?  $data['sql_col'] : ($pref.$filter))."=\"$filter_values[$filter]\" ";
+	
+  	$sql = "SELECT $fieldsSQL,COUNT(*) AS \"total\" FROM ".reports_db." left join ".people_db." on ".reports_db.".nom=".people_db.".nom AND ".reports_db.".prenom=".people_db.".prenom WHERE id = id_origine AND statut!=\"supprime\"";
 	$sql .= filtersCriteriaToSQL(getCurrentFiltersList(),$filters);
 	$sql .= "GROUP BY ".$fieldsSQL;
 	$sql .= ";";
@@ -38,7 +52,7 @@ function computeArrays($filters, $columnFilters, $rowFilter)
 	return $finresult;
 }
 
-function displayArrays($filters, $columnFilters, $rowFilters,$format = "")
+function displayArrays($filters, $columnFilters, $rowFilters,$format = "",$rowtitles = array())
 {
 	$tabs = array();
 	$processedTab = array();
@@ -66,7 +80,7 @@ function displayArrays($filters, $columnFilters, $rowFilters,$format = "")
 			$current[$truc->$fieldcatname][$fieldcatname] = $truc->total;
 		}
 	}	
-	displayArraysAux($processedTab,0,$columnFilters,$rowFilters);	
+	displayArraysAux($processedTab,0,$columnFilters,$rowFilters,$rowtitles);	
 }
 
 function displayCounts($vals,$rowFilters)
@@ -86,7 +100,7 @@ function displayCounts($vals,$rowFilters)
 		$first = 0;
 	}
 }
-function displayArraysAux($tab,$currLevel, $columnFilters,$rowFilters)
+function displayArraysAux($tab,$currLevel, $columnFilters,$rowFilters,$rowtitles = array())
 {
 	if ($currLevel >= count($columnFilters)-1){
 		echo '<table class="stats">';
@@ -124,7 +138,7 @@ function displayArraysAux($tab,$currLevel, $columnFilters,$rowFilters)
 		foreach($cols as $col)
 		{
 			if ($col=="")
-			{ $col = "Aucun(e)"; }
+			{ $col = "Aucun"; }
 			echo "<th>".$col."</th>";			
 		}
 		echo "</tr>";
@@ -142,8 +156,13 @@ function displayArraysAux($tab,$currLevel, $columnFilters,$rowFilters)
 		foreach($rows as $keyrow)
 		{
 			$tabrow = $tab[$keyrow];
-			echo "<tr><td>".$keyrow."</td>";
-			echo "<th>";
+			echo "<tr><td>";
+			if(isset($rowtitles[$keyrow]))
+				echo $rowtitles[$keyrow];
+			else
+					echo $keyrow;
+				
+			echo "</td><th>";
 			$vals = $rowcounts[$keyrow];
 			displayCounts($vals,$rowFilters);
 			echo "</th>";
@@ -168,7 +187,7 @@ function displayArraysAux($tab,$currLevel, $columnFilters,$rowFilters)
 			$titles = array_values($columnFilters);
 			$title = $titles[$currLevel];
 			echo "<$tag>".$title." ".$key."</$tag>";
-			displayArraysAux($val,$currLevel+2, $columnFilters,$rowFilters);
+			displayArraysAux($val,$currLevel+2, $columnFilters,$rowFilters,$rowtitles);
 		}
 	}
 }
@@ -337,7 +356,10 @@ if(is_current_session_concours())
 ?>
 
 <h1>Stats rapporteurs</h1>
-
+<p>
+Statistiques sur le nombre de rapports de candidats auditionnés par rapporteur et par thème,
+en premier rapporteur et entre parenthèses en second rapporteur.
+</p>
 <?php 
 
 if(is_current_session_concours())
@@ -357,100 +379,56 @@ if(is_current_session_concours())
 	);
 	displayArrays($filters, $columnFilters, $rowFilters);
 	
-	/*
-	$users = listUsers();
-	global $topics;
-	global $sous_jurys;
-	global $concours_ouverts;
+}
 
-	foreach($concours_ouverts as $code => $concours)
-	{
-		echo "<h2>Concours $concours</h2>";
+if(is_current_session_concours())
+{
+?>
 
-		echo '<table class="stats">';
+<h1>Stats candidats</h1>
+<p>
+Statistiques sur la répartition thématique par candidats.
+</p>
+<?php 
 
-		$topics[""] = "horssection";
+	$filters = array(
+		'type' => "Candidature",
+	);
 
-		$used_topics = array();
+	$columnFilters = array(
+		"concours" => "Concours",	
+		'theme1' => 'Theme principal',
+	);
+	$rowFilters = array(
+		'avis' => 'Avis section'
+	);
+global $topics;
+	displayArrays($filters, $columnFilters, $rowFilters,"",$topics);
 
+	
 
-		echo "<tr><td></td><td></td>";
+?>
 
-		foreach($topics as $topic =>$prettytopic )
-		{
-			$filters = array();
-			$filters['type'] = "Candidature";
-			$filters['concours'] = $code;
-			$filters['theme1'] = $topic;
-			$filters['avis'] = "oral";
+<p>
+Statistiques sur la répartition de genre des candidats.
+</p>
+<?php 
 
-			$total = countReports($filters);
+	$filters = array(
+		'type' => "Candidature",
+	);
 
-			if($total > 0)
-				$used_topics[$topic] = $total;
-		}
+	$columnFilters = array(
+		"concours" => "Concours",	
+		'genre' => 'Genre',
+	);
+	$rowFilters = array(
+		'avis' => 'Avis section'
+	);
+global $topics;
+	displayArrays($filters, $columnFilters, $rowFilters,"",$topics);
 
-		$jurys = array();
-		foreach($sous_jurys[$code] as $val => $nom)
-		{
-			$filters = array();
-			$filters['type'] = "Candidature";
-			$filters['concours'] = $code;
-			$filters['sousjury'] = $val;
-			$filters['avis'] = "oral";
-
-			$total = countReports($filters);
-			$jurys[$val] = $total;
-		}
-			
-
-		echo '</tr><tr>';
-		echo '<td></td><td>Total</td>';
-		foreach($jurys as $jury => $total)
-			echo '<th>'.($jury == "" ? "aucun" : $jury).'</th>';
-		foreach($used_topics as $topic => $total)
-			echo '<th>'.($topic == "" ? "hs" : $topic).'</th>';
-		echo "</tr>\n";
-
-		echo '<tr><td></td><td></td>';
-		foreach($jurys as $jury => $total)
-			echo '<th>'.$total.'</th>';
-		foreach($used_topics as $topic => $total)
-			echo "<td>$total</td>";
-		echo "</tr>\n";
-
-		foreach($sous_jurys[$code] as $val => $nom)
-			foreach($users as $login => $data)
-			if(isSousJury($val,$login))
-			sous_jury_row($used_topics, $jurys, $code, $login, $data);
-
-
-		echo "</table>";
-
-		echo "<p>";
-
-		foreach($sous_jurys[$code] as $val => $nom)
-		{
-			if($nom != "")
-			{
-				$total = 0;
-				foreach($users as $login => $data)
-					if(isSousJury($val,$login))
-					$total += 1;
-
-				$filters = array();
-				$filters['type'] = "Candidature";
-				$filters['concours'] = $code;
-				$filters['sousjury'] = $val;
-				$filters['avis'] = "oral";
-
-				echo "Sous-jury ". $nom . " membres ".$total." auditions ".countReports($filters)."<br/>";
-			}
-		}
-		echo "</p>";
-
-	}
-	*/
+	
 }
 ?>
 

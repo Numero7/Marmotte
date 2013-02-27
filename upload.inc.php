@@ -2,7 +2,7 @@
 
 require_once 'config.inc.php';
 require_once 'import.inc.php';
-require_once 'manage_candidates.inc.php';
+require_once 'manage_people.inc.php';
 
 
 function process_upload()

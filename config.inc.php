@@ -646,6 +646,16 @@ ini_set('xdebug.show_local_vars', 'on');
 		'Reconstitution' => 'Reconstitution de Carrière'
 	);
 
+	$typesRapportsChercheursShort = array(
+			'Evaluation-Vague' => 'Eval à Vague',
+			'Evaluation-MiVague' => 'Eval à Mi-Vague',
+			'Promotion' => 'Promotion',
+			'Suivi-PostEvaluation' => 'Suivi Post-Evaluation',
+			'Titularisation' => 'Titularisation',
+			'Affectation' => 'Confirm. d\'Affectation',
+			'Reconstitution' => 'Reconst. de Carrière'
+	);
+	
 	$typesRapportsUnites = array(
 			'Changement-Directeur' => 'Changement de Directeur',
 			'Changement-Directeur-Adjoint' => 'Changement de Directeur Adjoint',
@@ -656,6 +666,16 @@ ini_set('xdebug.show_local_vars', 'on');
 			'Generique' => 'Générique'
 	);
 
+	$typesRapportsUnitesShort = array(
+			'Changement-Directeur' => 'Changt de Directeur',
+			'Changement-Directeur-Adjoint' => 'Changt de Dir. Adjoint',
+			'Renouvellement' => 'Renouvellement',
+			'Association' => 'Association',
+			'Ecole' => 'Ecole Thematique',
+			'Comite-Evaluation' => 'Comité d\'Evaluation',
+			'Generique' => 'Générique'
+	);
+	
 	$typesRapportsConcours = array(
 		'Candidature' => 'Candidature',
 		'Equivalence' => 'Equivalence',
@@ -962,14 +982,14 @@ ini_set('xdebug.show_local_vars', 'on');
 			"csv" => 	array(
 					"mime" => "application/x-text",
 					"xsl" => "",
-					"name" => "CSV",
+					"name" => "CSV (fichiers multiples)",
 					"permissionlevel" => NIVEAU_PERMISSION_BASE
 			),
-			"singlecsv" => 	array(
+			"csvsingle" => 	array(
 					"mime" => "application/x-text",
 					"xsl" => "",
-					"name" => "SingleCSV",
-					"permissionlevel" => NIVEAU_PERMISSION_PRESIDENT_SECRETAIRE
+					"name" => "CSV (un fichier)",
+					"permissionlevel" => NIVEAU_PERMISSION_BASE
 			),
 			"jad" => 	array(
 					"mime" => "application/x-text",

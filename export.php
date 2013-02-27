@@ -13,6 +13,7 @@ require_once("utils.inc.php");
 require_once('tcpdf/config/lang/eng.php');
 require_once('tcpdf/tcpdf.php');
 require_once('manage_users.inc.php');
+require_once('manage_rapports.inc.php');
 require_once('generate_xml.inc.php');
 require_once('generate_csv.inc.php');
 require_once('generate_pdf.inc.php');
@@ -58,7 +59,7 @@ function export_reports_as_csv($reports, $dir)
 
 	$activefields =
 	array_unique(
-			array_merge($mandatory_export_fields, get_editable_fields($report))
+			array_merge($mandatory_export_fields, get_editable_fields($reports[0]))
 	);
 
 	$file = $dir."/".$file.".csv";
@@ -109,7 +110,8 @@ function export_report($report, $export_format, $dir)
 
 function export_current_selection_as_single_csv()
 {
-
+	
+	
 	$size = 0;
 
 	$login = getLogin();
@@ -364,17 +366,13 @@ session_start();
 
 $dbh = db_connect($servername,$dbname,$serverlogin,$serverpassword);
 
-
 if($dbh!=0)
 {
 	if (authenticate())
 	{
 		try {
-				
 			$action = isset($_REQUEST["action"]) ? $_REQUEST["action"] : "single";
 			$id= isset($_REQUEST["id"]) ? $_REQUEST["id"] : "-1";
-
-			echo $action;
 				
 			switch($action)
 			{//Processing
@@ -407,13 +405,9 @@ if($dbh!=0)
 
 						$id_edit = isset($_REQUEST["id_edit"]) ? $_REQUEST["id_edit"] : -1;
 
-						/*
-						$conf = $typeExports[$type];
-						$mime = $conf["mime"];
-						$xslpath = $conf["xsl"];
-*/
 						$login = getLogin();
 
+						
 						switch($type)
 						{
 							case "pdf":
@@ -433,8 +427,9 @@ if($dbh!=0)
 									echo "<script>window.location = 'create_reports.php?zip_files='</script>";
 								break;
 
-							case "singlecsv":
+							case "csvsingle":
 								export_current_selection_as_single_csv();
+								break;
 							case "csv":
 							case "xml":
 								export_current_selection($type);
@@ -451,7 +446,13 @@ if($dbh!=0)
 									break;
 							default:
 								{
-									throw new Exception("Unknown type");
+									if(!isset($typeExports[$type]))
+										throw new Exception("Unknown type ".$type);
+
+									$conf = $typeExports[$type];
+									$mime = $conf["mime"];
+									$xslpath = $conf["xsl"];
+														
 									$filter_values = getFilterValues();
 									$filter_values['id_edit'] = $id_edit;
 									$xml = getReportsAsXML($filter_values, getSortingValues(), false);
@@ -470,12 +471,12 @@ if($dbh!=0)
 
 					}
 				default:
-					throw new Exception("Unknown action");
+					throw new Exception("Unknown action ".$action);
 			}
 		}
 		catch(Exception $e)
 		{
-			include("index.php");
+			include("header.inc.php");
 			echo $e->getMessage();
 		}
 	}

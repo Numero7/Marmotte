@@ -81,9 +81,7 @@ function is_current_session_concours()
 	if(current_session() == "")
 		return false;
 	$pref = substr(current_session(),0,4);
-	$result =  ($pref == "Conc") || ($pref == "conc");
-	return $result;
-
+	return  ($pref == "Conc") || ($pref == "conc");
 }
 
 function showSessions()

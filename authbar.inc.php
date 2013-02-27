@@ -19,22 +19,17 @@ global $typesRapportsChercheurs;
 				<td>
 					<table>
 						<tr>
-							<td>
-							<span class='login'><?php echo getLogin(). " - ".current_session();?>
+							<td><span class='login'><?php echo getLogin(). " - ".current_session();?>
 							</span>
 							</td>
 						</tr>
 						<tr>
 							<td valign=top style="padding-top: 20px">
-								<form method="get"
-									style="display: inline;"
-									action="index.php">
+								<form method="get" style="display: inline;" action="index.php">
 									<input type="hidden" name="action" value="logout" /> <input
 										type="submit" name="logout" value="Logout" />
 								</form>
-							<form method="get"
-									style="display: inline;"
-									action="index.php">
+								<form method="get" style="display: inline;" action="index.php">
 									<input type="hidden" name="action" value="changepwd" /> <input
 										type="submit" value="Mot de Passe" />
 								</form> <?php 
@@ -45,41 +40,35 @@ global $typesRapportsChercheurs;
 						</tr>
 						<tr>
 							<td>
-								<form method="get"
-									style="display: inline;"
-									action="index.php">
+								<form method="get" style="display: inline;" action="index.php">
 									<input type="hidden" name="action" value="admin" /> <input
 										type="submit" value="Admin" />
 								</form> <?php
 								}
 
 								?>
-								<form method="get"
-									style="display: inline;"
-									action="index.php">
+								<form method="get" style="display: inline;" action="index.php">
 									<input type="hidden" name="action" value="displayunits" /> <input
 										type="submit" value="Unités" />
 								</form>
 
-								<form method="post"
-									style="display: inline;"
-									action="index.php">
+								<form method="post" style="display: inline;" action="index.php">
 									<input type="hidden" name="action" value="displaystats" /> <input
 										type="submit" value="Stats" />
 								</form>
-								</td></tr>
-								<tr><td>
-								<form method="post"
-									style="display: inline;"
-									action="index.php">
-									<input type="hidden" name="action" value="displayimportexport" /> <input
-										type="submit" value="Import/Export" />
-								</form>
-								
-								
 							</td>
-							</tr>
-							
+						</tr>
+						<tr>
+							<td>
+								<form method="post" style="display: inline;" action="index.php">
+									<input type="hidden" name="action" value="displayimportexport" />
+									<input type="submit" value="Import/Export" />
+								</form>
+
+
+							</td>
+						</tr>
+
 					</table>
 				</td>
 				<td valign=top>
@@ -96,7 +85,6 @@ global $typesRapportsChercheurs;
 									<?php
 									if(is_current_session_concours())
 									{
-
 										foreach($typesRapportsConcours as $typeEval => $value)
 										{
 
@@ -105,13 +93,12 @@ global $typesRapportsChercheurs;
 												echo " <a href=\"?action=new&amp;type=".$typeEval."\">+</a>";
 											echo "</li>";
 										}
-										
+
 									}
-									else
-									{
-										?>
-																					</ul>
-																	Mes rapports
+									?>
+									</td>
+									<td valign=top>
+								</ul> Mes rapports
 								<ul>
 
 									<?php
@@ -130,56 +117,34 @@ global $typesRapportsChercheurs;
 									?>
 
 								</ul>
-										
+
 							</td>
 							<?php 
-									if(is_current_session_concours())
-									{
-									?> 
+							if(is_current_session_concours())
+							{
+								?>
 							<td valign=top>Auditions
-							<ul>
-									<?php
-										echo "<li><a href=\"?action=view&amp;reset_filter=&amp;filter_id_session=".current_session_id()."&amp;filter_type=Candidature &amp;filter_avis=oral\">Auditions</a></li>";
-
-										global $concours_ouverts;
-										foreach($concours_ouverts as $code => $intitule)
-										{
-											echo "<li><a href=\"?action=view&amp;reset_filter=&amp;filter_id_session=".current_session_id()."&amp;filter_type=Candidature&amp;filter_concours=$code&amp;filter_avis=oral\">$intitule</a></li>";
-										}
-									?>
-							</ul>
-							</td>
-							<?php 				
-														}
-														else
-														{
-							?>
-														<td valign=top>
-							
-																		Chercheurs
-											<ul>
-										<?php 
-										foreach($typesRapportsChercheurs as $typeEval => $value)
-										{
-											?>
-									<li><a
-										href="?action=view&amp;filter_type=<?php echo $typeEval ?>"><?php echo $value?>
-									</a> <?php 
-									if(isSecretaire())
-										echo " <a href=\"?action=new&amp;type=".$typeEval."\">+</a>";
-									?>
-									</li>
-									<?php
-										}
-									}
-										?>
-									</ul>
-							</td>
-							<td valign=top>
-							Unités
 								<ul>
 									<?php
-									foreach($typesRapportsUnites as $typeEval => $value)
+									echo "<li><a href=\"?action=view&amp;reset_filter=&amp;filter_id_session=".current_session_id()."&amp;filter_type=Candidature &amp;filter_avis=oral\">Auditions</a></li>";
+
+									global $concours_ouverts;
+									foreach($concours_ouverts as $code => $intitule)
+									{
+										echo "<li><a href=\"?action=view&amp;reset_filter=&amp;filter_id_session=".current_session_id()."&amp;filter_type=Candidature&amp;filter_concours=$code&amp;filter_avis=oral\">$intitule</a></li>";
+									}
+									?>
+								</ul>
+							</td>
+							<?php 				
+							}
+							else
+							{
+								?>
+							<td valign=top>Chercheurs
+								<ul>
+									<?php 
+									foreach($typesRapportsChercheursShort as $typeEval => $value)
 									{
 										?>
 									<li><a
@@ -189,14 +154,32 @@ global $typesRapportsChercheurs;
 										echo " <a href=\"?action=new&amp;type=".$typeEval."\">+</a>";
 									?>
 									</li>
-									
 									<?php
 									}
-									?>
-									</ul>
+							?>
+								</ul>
 							</td>
-									<?php 
-								 } ?>
+							<td valign=top>Unités
+								<ul>
+									<?php
+									foreach($typesRapportsUnitesShort as $typeEval => $value)
+									{
+										?>
+									<li><a
+										href="?action=view&amp;filter_type=<?php echo $typeEval ?>"><?php echo $value?>
+									</a> <?php 
+									if(isSecretaire())
+										echo " <a href=\"?action=new&amp;type=".$typeEval."\">+</a>";
+									?>
+									</li>
+
+									<?php
+									}
+														}
+									
+									?>
+								</ul>
+							</td>
 							<td valign=top>Sessions
 								<ul>
 									<?php
@@ -219,32 +202,31 @@ global $typesRapportsChercheurs;
 										*/
 									}
 									?>
-								</ul>
-																							<?php 
-														if ( isSecretaire())
-							{
-								global $statutsRapports;
+								</ul> <?php 
+								if ( isSecretaire())
+								{
+									global $statutsRapports;
 
-								echo '
+									echo '
 		Statut
 		<form method="post"  action="index.php">
 		<select name="new_statut">';
-								foreach ($statutsRapports as $val => $nom)
-								{
-									$sel = "";
-									echo "<option value=\"".$val."\" $sel>".$nom."</option>\n";
-								}
-								echo '
+									foreach ($statutsRapports as $val => $nom)
+									{
+										$sel = "";
+										echo "<option value=\"".$val."\" $sel>".$nom."</option>\n";
+									}
+									echo '
 									</select>
 									<input type="hidden" name="action" value="change_statut"/>
 									<input type="submit" value="Changer statut"/>
 									</form>';
-							}
-							
-							?>
-								
-														</td>
-							
+								}
+									
+								?>
+
+							</td>
+
 						</tr>
 					</table>
 				</td>

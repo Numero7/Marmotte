@@ -2,6 +2,7 @@
 
 require_once('manage_sessions.inc.php');
 require_once('manage_unites.inc.php');
+require_once('manage_people.inc.php');
 require_once("config.inc.php");
 
 
@@ -107,14 +108,14 @@ function filterSortReports($filters, $filter_values = array(), $sorting_values =
 	/*
 	 * TODO: merge avc candidats
 	*/
-	
+	/*
 	foreach($rows as $row)
 	{
 		$candidat = get_or_create_candidate($row);
 		foreach($candidat as $key => $value)
 			$row->$key = $value;
 		
-	}
+	}*/
 
 	return $rows;
 }
@@ -338,7 +339,7 @@ function deleteReport($id_rapport)
 	$report = getReport($id_rapport);
 
 	//Finding newest report before this one, if exists, and making it the newest
-	$sql = "SELECT * FROM ".reports_db." WHERE date = (SELECT MAX(date) FROM evaluations AS mostrecent WHERE mostrecent.id_origine=$id_rapport AND mostrecent.id != $id_rapport AND mostrecent.statut!=\"supprime\")";
+	$sql = "SELECT * FROM ".reports_db." WHERE date = (SELECT MAX(date) FROM ".reports_db." AS mostrecent WHERE mostrecent.id_origine=$id_rapport AND mostrecent.id != $id_rapport AND mostrecent.statut!=\"supprime\")";
 	$result= sql_request($sql);
 
 	$before = mysql_fetch_object($result);
@@ -942,6 +943,7 @@ function is_field_editable($row, $fieldId)
 		global $fieldsRapportsCandidat2;
 		global $fieldsCandidat;
 
+		$f = in_array($fieldId,$fieldsCandidat);
 		$f0 = in_array($fieldId,$fieldsRapportsCandidat0);
 		$f1 = in_array($fieldId,$fieldsRapportsCandidat1);
 		$f2 = in_array($fieldId,$fieldsRapportsCandidat2);
@@ -1021,7 +1023,7 @@ function get_editable_fields($row)
 		if(is_field_editable($row,$field))
 		$result[] = $field;
 
-	return result;
+	return $result;
 }
 
 function get_readable_fields($row)

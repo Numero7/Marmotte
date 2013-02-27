@@ -62,7 +62,7 @@ function alertText($text)
 		require_once('manage_sessions.inc.php');
 		require_once('manage_unites.inc.php');
 		require_once('manage_rapports.inc.php');
-		require_once('manage_candidates.inc.php');
+		require_once('manage_people.inc.php');
 		require_once('db.inc.php');
 		require_once("upload.inc.php");
 
@@ -259,10 +259,6 @@ function alertText($text)
 							if(isset($_REQUEST["submitandeditnext"]))
 							{
 								editWithRedirectReport($next);
-							}
-							else if(isset($_REQUEST["submitandview"]))
-							{
-								displayWithRedirect($report->id);
 							}
 							else if(isset($_REQUEST["submitandkeepediting"]))
 							{
