@@ -280,3 +280,19 @@ font-weight:bold;
 .rapportshort .id{
   font-size:50%;
 }
+
+.oddrow{
+	background: #f3f6f8;
+}
+
+.evenrow{
+	background: #d8e2ea;
+}
+
+.oddrow2{
+	background: #f5e7e7;
+}
+
+.evenrow2{
+	background: #f5d1d1;
+}

@@ -9,7 +9,7 @@
   <section_intitule>Sciences de l'information : fondements de l'informatique, calculs, algorithmes, représentations, exploitations</section_intitule>
   <webmaster>hugo.gimbert@labri.fr</webmaster>
   <addresse_du_site>http://cn6.labri.fr/Marmotte</addresse_du_site>
-  <current_session>Automne2012</current_session>
+  <current_session>Concours2013</current_session>
   <welcome_message>Bienvenue sur le site de gestion des rapports de la section 6. N'hésitez pas à nous contacter (Yann ou Hugo) en cas de difficultés.	</welcome_message>
   <topics>
     <_1a>1a Algorithmique, combinatoire, graphes</_1a>
@@ -63,5 +63,5 @@
     <_0603>2</_0603>
   </postes_ouverts>
   <avis_jad>  Après examen de l'ensemble des dossiers des candidats admis à concourir, le jury a décidé d’auditionner les candidats listés ci-dessous du fait de la qualité et l'originalité de leur production scientifique, de la pertinence et l’intérêt de leur projet scientifique et de l’adéquation du projet avec les thématiques de la section.  </avis_jad>
-  <name>Automne2012</name>
+  <name>Concours2013</name>
 </config>

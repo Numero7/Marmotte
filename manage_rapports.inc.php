@@ -1036,7 +1036,7 @@ function get_readable_fields($row)
 		if(is_field_visible($row,$field))
 		$result[] = $field;
 
-	return result;
+	return $result;
 }
 
 

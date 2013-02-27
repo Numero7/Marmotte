@@ -42,7 +42,7 @@ function valueFromField($row, $field,$value,$units,$users)
 				return;
 				break;
 			case 'files':
-				display_fichiers($row, $field);
+				display_fichiers($row, $field, true);
 				return;
 				break;
 			default:
@@ -421,5 +421,23 @@ function filename_from_params($nom, $prenom, $grade, $unite, $type, $session, $a
 		return $session." - ".$type." - ".$concours." - ".$nom."_".$prenom;
 	else
 		return $session." - ".$type." - ".$grade." - ".$nom."_".$prenom;
+}
+
+function getStyle($fieldId,$odd)
+{
+	$rapp2 = ((substr($fieldId, -1)==="2")and !(substr($fieldId, -3)==="me2" or substr($fieldId, -5)==="labo2"));
+	if ($odd)
+	{
+		$style =  "oddrow";
+	}			
+	else
+	{
+		$style =  "evenrow";
+	}
+	
+	if ($rapp2)
+	{  $style .= "2"; }
+	
+	return $style;
 }
 ?>

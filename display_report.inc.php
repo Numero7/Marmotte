@@ -108,11 +108,13 @@ function displayEditableObject($titlle, $row, $fields, $use_special_tr = true)
 
 	$inline = false;
 
+	$odd = true;
 	foreach($fields as  $fieldId)
 	{
 		if(isset($fieldsAll[$fieldId]) && is_field_visible($row, $fieldId))
 		{
-			
+			$style = getStyle($fieldId,$odd);
+			$odd = !$odd;
 			$title = $fieldsAll[$fieldId];
 			if(isset($fieldsTypes[$fieldId]))
 			{
@@ -123,8 +125,8 @@ function displayEditableObject($titlle, $row, $fields, $use_special_tr = true)
 				if(!$use_special_tr || !in_array($fieldId, $specialtr_fields) || in_array($fieldId, $start_tr_fields))
 					echo '<tr>';
 					*/
-					echo '<tr>';
-				echo '<td style="width: 10em;"><span>'.$title.'</span>';
+					echo '<tr class="'.$style.'">';
+				echo '<td style="width: 10em;" ><span>'.$title.'</span>';
 				echo '</td>';
 
 /*
@@ -553,13 +555,17 @@ function displayConcoursReport($row)
 <dl>
 	<table>
 		<?php
+		$odd = false;
 		foreach($fieldsc as  $fieldId)
 		{
+			$style = getStyle($fieldId,$odd);
+			$odd = !$odd;
+
 			?>
 		<tr>
-			<th style="text-align: LEFT"><?php echo $fieldsIndividualAll[$fieldId];?>
+			<th style="text-align: LEFT" class="<?php echo $style;?>"><?php echo $fieldsIndividualAll[$fieldId];?>
 			</th>
-			<td><?php valueFromField($candidat, $fieldId, $candidat->$fieldId, $units,$users);?>
+			<td class="<?php echo $style;?>"><?php valueFromField($candidat, $fieldId, $candidat->$fieldId, $units,$users);?>
 			</td>
 		</tr>
 
@@ -572,11 +578,13 @@ function displayConcoursReport($row)
 		{
 			if (!isset($specialRule[$fieldId]) && !in_array($fieldId,$fieldsc))
 			{
+				$style = getStyle($fieldId,$odd);
+				$odd = !$odd;
 				?>
 		<tr>
-			<th style="text-align: LEFT"><?php echo $fieldsAll[$fieldId];?>
+			<th style="text-align: LEFT" class="<?php echo $style;?>"><?php echo $fieldsAll[$fieldId];?>
 			</th>
-			<td><?php echo valueFromField($row, $fieldId, $row->$fieldId, $units,$users,$topics);?>
+			<td class="<?php echo $style;?>"><?php echo valueFromField($row, $fieldId, $row->$fieldId, $units,$users,$topics);?>
 			</td>
 		</tr>
 		<?php
@@ -658,15 +666,25 @@ function displayIndividualReport($row)
 </h2>
 <dl>
 	<?php
+	$odd = true;
 	foreach($fieldsIndividual as  $fieldId)
 	{
 		if (!isset($specialRule[$fieldId]))
 		{
+			if ($odd)
+			{
+				$style = "oddrow";
+			}			
+			else
+			{
+				$style= "evenrow";
+			}
+			$odd = !$odd;
 			?>
-	<dt>
+	<dt class="<?php echo $style;?>">
 		<?php echo $fieldsAll[$fieldId];?>
 	</dt>
-	<dd>
+	<dd class="<?php echo $style;?>">
 		<?php echo $row->$fieldId;?>
 	</dd>
 	<?php

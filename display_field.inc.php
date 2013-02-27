@@ -169,11 +169,13 @@ function display_ecole($row, $fieldID, $readonly)
 function display_fichiers($row, $fieldID, $readonly)
 {
 
-	echo "<td colspan=\"3\">";
+	//echo "<td colspan=\"3\">";
 
 	if($row->$fieldID != "")
 	{
-		$handle = opendir($row->$fieldID);
+		$handle = false;
+		if (is_dir($row->$fieldID))
+		{ $handle = opendir($row->$fieldID); } 
 		if($handle === false)
 		{
 			echo '<a href="'.$row->$fieldID."\">Fichiers candidats</a>\n";
@@ -228,7 +230,7 @@ function display_fichiers($row, $fieldID, $readonly)
 	type="submit" name="ajoutfichier" value="Ajouter fichier" />
 <?php 
 	}
-	echo "</td>";
+	//echo "</td>";
 
 }
 ?>
