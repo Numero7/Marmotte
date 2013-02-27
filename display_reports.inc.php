@@ -172,8 +172,9 @@ function displayRows($rows, $fields, $filters, $filter_values, $sort_fields, $so
 		foreach($fields as $fieldID)
 		{
 			$title = $fieldsAll[$fieldID];
+			$style = getStyle("",true);
 			?>
-		<th><span class="nomColonne"> <?php 
+		<th class="<?php echo $style;?>"><span class="nomColonne"> <?php 
 		echo '<a href="?action=view&amp;reset_tri=&amp;tri_'.$fieldID."=1\">".$title.'</a>';
 		?>
 		</span>
@@ -186,13 +187,15 @@ function displayRows($rows, $fields, $filters, $filter_values, $sort_fields, $so
 		global $actions1;
 		global $actions2;
 
+		$odd = false;
 		foreach($rows as $row)
 		{
-
+			$style = getStyle("",$odd);
+			$odd = !$odd;
 			?>
 	
 	
-	<tr id="t<?php echo $row->id;?>">
+	<tr id="t<?php echo $row->id;?>" class="<?php echo $style;?>">
 		<?php
 			
 		echo '<td>';

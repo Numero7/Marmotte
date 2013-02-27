@@ -296,3 +296,9 @@ font-weight:bold;
 .evenrow2{
 	background: #f5d1d1;
 }
+dt{
+  margin-left:0;
+}
+dd{
+  margin-left:15px;
+}
