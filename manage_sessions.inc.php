@@ -8,11 +8,11 @@ function sessionArrays($force = false)
 	if($force || !isset($_SESSION['all_sessions']))
 	{
 		$sessions = array();
-		$sql = "SELECT * FROM ".sessions_db." ORDER BY date DESC;";
+		$sql = "SELECT * FROM ".sessions_db.";";
 		$result = sql_request($sql);
 		date_default_timezone_set("Europe/Paris");
 		while ($row = mysql_fetch_object($result))
-			$sessions[$row->id] = $row->nom." ".date("Y", strtotime($row->date));
+			$sessions[$row->id] = $row->id;
 		$sessions[-1] = "Toutes les sessions";
 		$_SESSION['all_sessions'] = $sessions;
 	}
