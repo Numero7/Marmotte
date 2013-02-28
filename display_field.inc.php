@@ -43,10 +43,11 @@ function displaySessionField($row, $fieldID, $readonly)
 <?php 
 }
 
+
 function display_long($row, $fieldID, $readonly)
 {
 	if($readonly)
-		echo '<td colspan="3">'.remove_br($row->$fieldID).'</td>';
+		echo '<td colspan="3">'.$row->$fieldID.'</td>';
 	else
 	echo '
 			<td colspan="3">
@@ -58,7 +59,7 @@ function display_long($row, $fieldID, $readonly)
 function display_treslong($row, $fieldID, $readonly)
 {
 	if($readonly)
-		echo '<td colspan="3">'.remove_br($row->$fieldID).'</td>';
+		echo '<td colspan="3">'.$row->$fieldID.'</td>';
 	else
 	echo '
 			<td colspan="3">
@@ -174,11 +175,11 @@ function display_fichiers($row, $fieldID, $readonly)
 	if($row->$fieldID != "")
 	{
 		$handle = false;
-		if (is_dir($row->$fieldID))
-		{ $handle = opendir($row->$fieldID); } 
+		if (is_dir(get_config("people_files_root").$row->$fieldID))
+		{ $handle = opendir(get_config("people_files_root").$row->$fieldID); } 
 		if($handle === false)
 		{
-			echo '<a href="'.$row->$fieldID."\">Fichiers candidats</a>\n";
+			echo '<td><a href="'.get_config("people_files_root").$row->$fieldID."\">Fichiers candidats</a></td>\n";
 		}
 		else
 		{
@@ -193,10 +194,10 @@ function display_fichiers($row, $fieldID, $readonly)
 			}
 
 			$i = 0;
-			echo "<table>\n";
+			echo "<td><table>\n";
 			foreach($filenames as $file)
 			{
-				if($i % 4	 ==0)
+				if($i % 3	 ==0)
 					echo '<tr>';
 				$prettyfile = str_replace("_", " ", $file);
 				if(strlen($file) > 20)
@@ -205,12 +206,12 @@ function display_fichiers($row, $fieldID, $readonly)
 					$arr2 = array("","");
 					$prettyfile = str_replace($arr, $arr2, $prettyfile);
 				}
-				echo '<td style="padding-right: 10px"><a href="'.$row->$fieldID."/".$file.'">'.$prettyfile."</a></td>\n";
-				if($i % 4 ==3)
+				echo '<td style="padding-right: 10px"><a href="'.get_config("people_files_root").$row->$fieldID."/".$file.'">'.$prettyfile."</a></td>\n";
+				if($i % 3 ==3)
 					echo '</tr>';
 				$i++;
 			}
-			echo "</table>\n";
+			echo "</table></td>\n";
 
 			closedir($handle);
 		}

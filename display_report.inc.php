@@ -105,6 +105,7 @@ function displayEditableObject($titlle, $row, $fields, $use_special_tr = true)
 	global $end_tr_fields;
 	global $fieldsAll;
 	global $fieldsTypes;
+	global $mandatory_edit_fields;
 
 	$inline = false;
 
@@ -137,7 +138,7 @@ function displayEditableObject($titlle, $row, $fields, $use_special_tr = true)
 					$row->$fieldId = '';
 
 
-				if(!$editable)
+				if(!$editable && in_array($fieldId, $mandatory_edit_fields))
 					echo '<input type="hidden" name="field'.$fieldId.'" value="'.$row->$fieldId.'"/>';
 
 				switch($fieldsTypes[$fieldId])
@@ -241,7 +242,10 @@ function displayEditableReport($row, $canedit = true)
 
 	$submits = array();
 	$submits["editprevious"] = "<<";
-	$submits["submitandkeepediting"] = "Enregistrer";
+	
+	if(isReportEditable($row))
+		$submits["submitandkeepediting"] = "Enregistrer";
+	
 	if(isSecretaire())
 		$submits["deleteandeditnext"] = "Supprimer";
 	$submits["retourliste"] = "Retour à la liste";
@@ -249,12 +253,6 @@ function displayEditableReport($row, $canedit = true)
 
 	displayEditionFrameStart("",$hidden,$submits);
 
-	if(!$canedit)
-	{
-		displayReport($row->id, false);
-	}
-	else
-	{
 		$eval_type = $row->type;
 		$is_unite = array_key_exists($eval_type,$typesRapportsUnites);
 		$statut = $row->statut;
@@ -297,30 +295,26 @@ function displayEditableReport($row, $canedit = true)
 
 				displayEditionFrameStart("",$hidden,$submits);
 
-				echo'<table><tr><td VALIGN="top">';
-					
-				if(isSecretaire() || $row->statut == "rapport" || $row->statut == "publie")
+				echo'<table><tr>';
+				
+				if(isset($row->rapporteur) && $row->rapporteur != "")
 				{
-					displayEditableObject("Rapport section", $row, array_merge(array("statut"),$fieldsRapportsCandidat0));
-				}
-
-
-				if(getLogin() == $row->rapporteur || (isSecretaire() && $row->rapporteur != ""))
-				{
-					echo'</td><td VALIGN="top">';
-
+					echo '<td VALIGN="top">';
 					displayEditableObject("Prérapport 1",$row,$fieldsRapportsCandidat1);
+					echo'</td>';
 				}
-				if(getLogin() == $row->rapporteur2 || (isSecretaire() && $row->rapporteur2 != ""))
+				
+				if(isset($row->rapporteur2) && $row->rapporteur2 != "")
 				{
-					echo'</td><td VALIGN="top">';
-
-
+					echo '<td VALIGN="top">';
 					displayEditableObject("Prérapport 2", $row,$fieldsRapportsCandidat2);
+										echo'</td>';
 				}
-				echo'</td></tr></table>';
+				
+				
+				echo'</tr></table>';
 
-
+				displayEditableObject("Rapport section", $row, array_merge(array("statut"),$fieldsRapportsCandidat0));
 		}
 		else if(array_key_exists($eval_type, $typesRapportsChercheurs))
 		{
@@ -341,21 +335,26 @@ function displayEditableReport($row, $canedit = true)
 
 			displayEditionFrameStart("",$hidden,array());
 
-			echo'<table><tr><td VALIGN="top">';
+			echo'<table><tr>';
+
+			if(isset($row->rapporteur) && $row->rapporteur != "")
+			{
+				echo '<td VALIGN="top">';
+				displayEditableObject("Prérapport 1", $row,$fieldsIndividual1, false);
+					echo'</td>';
+			}
+
+			if(isset($row->rapporteur2) && $row->rapporteur2 != "")
+			{
+				echo '<td VALIGN="top">';
+				displayEditableObject("Prérapport 2",$row,$fieldsIndividual2, false);
+				echo'</td>';
+			}
+			
+			echo '</tr></table>';
 			displayEditableObject("Rapport section", $row,$fieldsIndividual0, false);
-
-				if(isset($row->rapporteur) && $row->rapporteur != "")
-				{
-					echo'</td><td VALIGN="top">';
-					displayEditableObject("Prérapport 1", $row,$fieldsIndividual1, false);
-				}
-				if(isset($row->rapporteur2) && $row->rapporteur2 != "")
-				{
-					echo'</td><td VALIGN="top">';
-					displayEditableObject("Prérapport 2",$row,$fieldsIndividual2, false);
-				}
-			echo'</td></tr></table>';
-
+				
+			
 
 		}
 		else if(array_key_exists($eval_type, $typesRapportsUnites))
@@ -387,8 +386,6 @@ function displayEditableReport($row, $canedit = true)
 				
 			echo'</td></tr></table>';
 
-
-		}
 
 		displayEditionFrameEnd("Données rapport");
 
@@ -441,7 +438,7 @@ function displayActionsMenu($row, $excludedaction = "", $actions)
 			$icon = $actiondata['icon'];
 			$page = $actiondata['page'];
 			$level = $actiondata['level'];
-			if(getUserPermissionLevel() >= $level || ($action == 'edit' && isReportEditable($row)) )
+			if(getUserPermissionLevel() >= $level )
 			{
 
 				echo "<td>\n<a href=\"$page?action=$action&amp;id=$id&amp;id_origine=$id_origine\">\n";
@@ -451,250 +448,6 @@ function displayActionsMenu($row, $excludedaction = "", $actions)
 		echo "</tr></table>";
 }
 
-function displayUnitReport($row)
-{
-	global $fieldsAll;
-	global $fieldsUnites;
-	global $actions;
-	global $typesRapportsUnites;
-	$specialRule = array(
-			"nom"=>0,
-			"prenom"=>0,
-			"grade"=>0,
-			"unite"=>0,
-			"type"=>0,
-			"id_session"=>0,
-			"date_session"=>0,
-	);
-	$sessions = sessionArrays();
-	?>
-<div class="tools">
-	<?php
-	displayActionsMenu($row, "details", $actions);
-	?>
-</div>
-<h1>
-	<?php echo $row->unite;?>
-</h1>
-<h2>
-	<?php echo $typesRapportsUnites[$row->type];?>
-	<?php echo $sessions[$row->id_session];?>
-</h2>
-<dl>
-	<?php
-	foreach($fieldsAll as  $fieldId => $title)
-		if (!isset($specialRule[$fieldId]) && in_array($fieldId,$fieldsUnites))
-		{
-			?>
-	<dt>
-		<?php echo $title;?>
-	</dt>
-	<dd>
-		<?php echo remove_br($row->$fieldId);?>
-	</dd>
-	<?php
-		}
-		?>
-</dl>
-<div></div>
-<?php
-
-} ;
-
-function displayConcoursReport($row)
-{
-	global $fieldsRapportsCandidat;
-	global $fieldsAll;
-	global $actions;
-	global $typesRapportsConcours;
-
-	global $fieldsCandidat;
-	global $fieldsIndividualAll;
-
-	global $topics;
-
-	global $fieldsCandidatAvantAudition;
-	global $avis_candidature_necessitant_pas_rapport_sousjury;
-
-	$fieldsc = $fieldsCandidat;
-	if(in_array($row->avis, $avis_candidature_necessitant_pas_rapport_sousjury))
-		$fieldsc = $fieldsCandidatAvantAudition;
-
-	$units = unitsList();
-	$users = listRapporteurs();
-
-	$specialRule = array(
-			"nom"=>0,
-			"prenom"=>0,
-			"grade"=>0,
-			"unite"=>0,
-			"type"=>0,
-			"nom_session"=>0,
-			"date_session"=>0,
-	);
-	$sessions = sessionArrays();
-	$candidat = get_or_create_candidate($row);
-
-	?>
-<div class="tools">
-	<?php
-	displayActionsMenu($row, "details", $actions);
-	?>
-</div>
-<h1>
-	<?php echo $row->prenom;?>
-	<?php echo strtoupper($row->nom);?>
-	(
-	<?php echo $row->grade;?>
-	) -
-	<?php echo $row->concours;?>
-</h1>
-<h2>
-	<?php echo $typesRapportsConcours[$row->type];?>
-</h2>
-<dl>
-	<table>
-		<?php
-		$odd = false;
-		foreach($fieldsc as  $fieldId)
-		{
-			$style = getStyle($fieldId,$odd);
-			$odd = !$odd;
-
-			?>
-		<tr>
-			<th style="text-align: LEFT" class="<?php echo $style;?>"><?php echo $fieldsIndividualAll[$fieldId];?>
-			</th>
-			<td class="<?php echo $style;?>"><?php valueFromField($candidat, $fieldId, $candidat->$fieldId, $units,$users);?>
-			</td>
-		</tr>
-
-
-		<?php 		
-		}
-		$fields = get_readable_fields($row);
-
-		foreach($fields as  $fieldId)
-		{
-			if (!isset($specialRule[$fieldId]) && !in_array($fieldId,$fieldsc))
-			{
-				$style = getStyle($fieldId,$odd);
-				$odd = !$odd;
-				?>
-		<tr>
-			<th style="text-align: LEFT" class="<?php echo $style;?>"><?php echo $fieldsAll[$fieldId];?>
-			</th>
-			<td class="<?php echo $style;?>"><?php echo valueFromField($row, $fieldId, $row->$fieldId, $units,$users,$topics);?>
-			</td>
-		</tr>
-		<?php
-			}
-		}
-		?>
-	</table>
-</dl>
-<div></div>
-<?php
-} ;
-
-function displayReport($id_rapport, $displaymenu = true)
-{
-	global $typesRapportsUnites;
-	global $typesRapportsChercheurs;
-	global $typesRapportsConcours;
-
-	?>
-<form method="post" action="index.php">
-	<?php 
-	if($displaymenu)
-	{
-		?>
-	<input type="hidden" name="action" value="details"></input> <input
-		type="hidden" name="id" value="<?php echo$id_rapport;?>"></input> <input
-		type="submit" name="detailsprevious" value="<<" ></input><input
-		type="submit" name="retourliste" value="Retour à la liste"></input> <input
-		type="submit" name="detailsnext" value=">>"></input>
-</form>
-<?php 
-	}
-
-	$row = getReport($id_rapport);
-	if(array_key_exists($row->type,$typesRapportsUnites))
-		displayUnitReport($row);
-	else if(array_key_exists($row->type,$typesRapportsChercheurs))
-		displayIndividualReport($row);
-	else if(array_key_exists($row->type,$typesRapportsConcours))
-		displayConcoursReport($row);
-	else
-		throw new Exception("Cannot display report with id".$id_rapport.": unknown report type : '".$row->type."'<br/>");
-}
-
-function displayIndividualReport($row)
-{
-	global $fieldsIndividual;
-	global $fieldsAll;
-
-	global $actions;
-	global $typesRapportsChercheurs;
-	$specialRule = array(
-			"nom"=>0,
-			"prenom"=>0,
-			"grade"=>0,
-			"unite"=>0,
-			"type"=>0,
-			"nom_session"=>0,
-			"date_session"=>0,
-	);
-	$sessions = sessionArrays();
-	?>
-<div class="tools">
-	<?php
-	displayActionsMenu($row, "details", $actions);
-	?>
-</div>
-<h1>
-	<?php echo $row->prenom;?>
-	<?php echo strtoupper($row->nom);?>
-	(
-	<?php echo $row->grade;?>
-	) -
-	<?php echo $row->unite;?>
-</h1>
-<h2>
-	<?php echo $typesRapportsChercheurs[$row->type];?>
-	<?php echo $sessions[$row->id_session];?>
-</h2>
-<dl>
-	<?php
-	$odd = true;
-	foreach($fieldsIndividual as  $fieldId)
-	{
-		if (!isset($specialRule[$fieldId]))
-		{
-			if ($odd)
-			{
-				$style = "oddrow";
-			}			
-			else
-			{
-				$style= "evenrow";
-			}
-			$odd = !$odd;
-			?>
-	<dt class="<?php echo $style;?>">
-		<?php echo $fieldsAll[$fieldId];?>
-	</dt>
-	<dd class="<?php echo $style;?>">
-		<?php echo $row->$fieldId;?>
-	</dd>
-	<?php
-		}
-	}
-	?>
-</dl>
-<div></div>
-<?php
-} ;
 
 
 

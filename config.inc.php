@@ -271,6 +271,10 @@ ini_set('xdebug.show_local_vars', 'on');
 			"HDRLieu",
 			"fichiers",
 	);
+
+	$mandatory_edit_fields=
+	array('id','nom','prenom'
+	);
 	
 	$mandatory_export_fields= 
 	array('id','nom','prenom','genre','type','concours',
@@ -919,7 +923,7 @@ ini_set('xdebug.show_local_vars', 'on');
 	
 	$actions1 = array(
 /*		'details' => array('left' => true, 'title' => "Détails", 'level' => NIVEAU_PERMISSION_BASE, 'page' =>'', 'icon' => 'img/details-icon-24px.png'),*/
-		'edit' => array('left' => true, 'title' => "Modifier", 'level' => NIVEAU_PERMISSION_PRESIDENT_SECRETAIRE, 'page' =>'', 'icon' => 'img/edit-icon-24px.png'),
+		'edit' => array('left' => true, 'title' => "Modifier", 'level' => NIVEAU_PERMISSION_BASE, 'page' =>'', 'icon' => 'img/edit-icon-24px.png'),
 	);
 	$actions2 = array(
 			'history' => array('title' => "Historique", 'level' => NIVEAU_PERMISSION_PRESIDENT_SECRETAIRE, 'page' =>'', 'icon' => 'img/history-icon-24px.png'),

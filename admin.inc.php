@@ -194,7 +194,6 @@ include("config_manager.php");
 				{
 					foreach($concours_ouverts as $concours => $nom)
 					{
-						echo "Concours ".$concours/" sous-jury ";
 						echo "<select name=\"sousjury".$concours."\">\n";
 						echo "<option value=\"\"$sel></option>\n";
 
