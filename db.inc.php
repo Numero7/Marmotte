@@ -1,22 +1,35 @@
 <?php
 require_once('config/configDB.inc.php');
 
+function db_from_scratch()
+{
+	$msg = "Please properly configure the databse access in the file config/configDB.inc.php<br/>";
+	$msg .= "and/or initialize the database with <h1><a href=\"marmotte.sql\">this SQL script</a></h1></br></br></br>.";
+}
+
 function db_connect($serverName,$dbname,$login,$password)
 {
 	$dbh = @mysql_connect($serverName, $login, $password);
-	if ($dbh)
-	{
-		if(@mysql_select_db($dbname, $dbh))
-		{
-			mysql_query("SET NAMES utf8;");
-			return $dbh;
-		}
-	}
+	
+	if(!$dbh)
+		throw new Exception("Could not connect to the server '".$serverName."<br/>".mysql_error());
 
-	$msg  = "Could not connect to the database '".$dbname."' on the server '".$serverName."'<br/><br/><br/>";
-	$msg .= "Please properly configure the databse access in the file config/configDB.inc.php<br/>";
-	$msg .= "and/or initialize the database with <h1><a href=\"marmotte.sql\">this SQL script</a></h1></br></br></br>.";
-	throw new Exception($msg);
+	if(!@mysql_select_db($dbname, $dbh))
+		throw new Exception("Could not connect to the database '".$dbname."<br/>".mysql_error());
+		
+	mysql_query("SET NAMES utf8;");
+	
+	$databases = array(reports_db, users_db, sessions_db, units_db, people_db);
+	foreach($databases as $database)	
+	{
+		$result = mysql_query("SHOW TABLES LIKE '$database'");
+		if($result == false)
+			throw new Exception("Cannot count the number of databases with name ".$database."<br/>".mysql_error());
+		if(mysql_fetch_array($result) === false)
+			throw new Exception("No database with name ".$database);
+	}
+		
+	return $dbh;
 } ;
 
 function db_disconnect(&$dbh)

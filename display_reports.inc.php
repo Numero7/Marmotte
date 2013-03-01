@@ -244,7 +244,7 @@ function displayRows($rows, $fields, $filters, $filter_values, $sort_fields, $so
 
 		if($fieldID=="nom")
 		{
-			echo "<a href=\"?action=details&amp;id=".($row->id)."\">";
+			echo "<a href=\"?action=edit&amp;id=".($row->id)."\">";
 			echo '<span class="valeur">'.$data.'</span>';
 			echo '</a>';
 		}

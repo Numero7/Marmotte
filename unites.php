@@ -6,6 +6,8 @@ global $fieldsUnitsDB;
 
 	?>
 	<table>
+	<tr><td>
+	<table>
 	<tr>
 	<td>
 	
@@ -81,10 +83,12 @@ global $fieldsUnitsDB;
 	<?php 
 }?>
 	<hr />
+	</td>
+	</tr>
+	<tr><td><table>
 		<?php 
 
 
-echo '<table>';
 
 foreach($fieldsUnitsDB as $field => $intitule)
 	echo "<th>".$intitule."</th>";
@@ -100,4 +104,7 @@ foreach($units as $unit => $data)
 	echo "</tr>";
 }
 ?>
+</table>
+</td>
+</tr>
 </table>

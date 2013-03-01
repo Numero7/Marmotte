@@ -124,7 +124,7 @@ function alertText($text)
 		{
 			?>
 					<script type="text/javascript">
-					window.location = "index.php?action=details&id=<?php echo $id;?>"
+					window.location = "index.php?action=edit&id=<?php echo $id;?>"
 					</script>
 					<?php 
 		}
@@ -169,24 +169,6 @@ function alertText($text)
 					break;
 				case 'view':
 					displayReports($id_rapport);
-					break;
-				case 'details':
-					if(isset($_REQUEST["detailsnext"]))
-					{
-						displayReport(next_report($id_rapport));
-					}
-					else if(isset($_REQUEST["detailsprevious"]))
-					{
-						displayReport(previous_report($id_rapport));
-					}
-					else if(isset($_REQUEST["retourliste"]))
-					{
-						displayReports($id_rapport);
-					}
-					else
-					{
-						displayReport($id_rapport);
-					}
 					break;
 				case 'edit':
 					editReport($id_rapport);

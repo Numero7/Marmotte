@@ -102,6 +102,7 @@ function fieldDiffers($prevVals,$key,$val)
 function historyReport($id_origine)
 {
 	global $fieldsAll;
+	global $fieldsRapportAll;
 	global $actions;
 	$specialRule = array( "nom"=>0, "prenom"=>0, "grade"=>0, "unite"=>0, "type"=>0, "nom_session"=>0, "date_session"=>0, "date"=>0, "auteur"=>0);
 	$sql = "SELECT tt.*, ss.nom AS nom_session, ss.date AS date_session FROM ".reports_db." tt, ".sessions_db." ss WHERE tt.id_session=ss.id AND tt.id_origine=$id_origine ORDER BY date DESC;";
@@ -169,7 +170,7 @@ $first = false;
 			?>
 	<dl>
 		<?php
-		foreach($fieldsAll as  $fieldID => $title)
+		foreach($fieldsRapportAll as  $fieldID => $title)
 		{
 			if (!isset($specialRule[$fieldID]) 	and !(isset($prevVals[$fieldID])and ($prevVals[$fieldID]==$row->$fieldID)))
 			{

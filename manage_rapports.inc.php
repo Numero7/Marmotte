@@ -989,7 +989,7 @@ function is_field_visible($row, $fieldId)
 
 
 	if(isset($row->statut) && ($row->statut == "rapport" || $row->statut == "publie"))
-		return ($row->$fieldId != '' || is_field_editable($row, $fieldId));
+		return $row->$fieldId != '';
 
 	global $fieldsIndividualAll;
 	if(in_array($fieldId,$fieldsIndividualAll))

@@ -49,9 +49,9 @@ function display_long($row, $fieldID, $readonly)
 	if($readonly)
 		echo '<td colspan="3">'.$row->$fieldID.'</td>';
 	else
-	echo '
-			<td colspan="3">
-			<textarea  rows="5" cols="60" name="field'.$fieldID.'" >'.remove_br($row->$fieldID).'</textarea>
+		echo '
+		<td colspan="3">
+		<textarea  rows="5" cols="60" name="field'.$fieldID.'" >'.remove_br($row->$fieldID).'</textarea>
 		</td>
 		';
 }
@@ -61,11 +61,11 @@ function display_treslong($row, $fieldID, $readonly)
 	if($readonly)
 		echo '<td colspan="3">'.$row->$fieldID.'</td>';
 	else
-	echo '
+		echo '
 			<td colspan="3">
 			<textarea  rows="25" cols="60" name="field'.$fieldID.'" >'.remove_br($row->$fieldID).'</textarea>
-		</td>
-		';
+			</td>
+			';
 }
 
 function display_short($row, $fieldID, $readonly)
@@ -74,8 +74,9 @@ function display_short($row, $fieldID, $readonly)
 	if(!$readonly)
 	{
 		?>
-<input name="field<?php echo $fieldID;?>"
-	value="<?php echo $row->$fieldID;?>" style="width: 100%;" />
+<input
+	name="field<?php echo $fieldID;?>" value="<?php echo $row->$fieldID;?>"
+	style="width: 100%;" />
 <?php
 	}
 	else
@@ -176,7 +177,9 @@ function display_fichiers($row, $fieldID, $readonly)
 	{
 		$handle = false;
 		if (is_dir(get_config("people_files_root").$row->$fieldID))
-		{ $handle = opendir(get_config("people_files_root").$row->$fieldID); } 
+		{
+			$handle = opendir(get_config("people_files_root").$row->$fieldID);
+		}
 		if($handle === false)
 		{
 			echo '<td><a href="'.get_config("people_files_root").$row->$fieldID."\">Fichiers candidats</a></td>\n";
@@ -193,12 +196,23 @@ function display_fichiers($row, $fieldID, $readonly)
 					$filenames[] = $file;
 			}
 
-			$i = 0;
-			echo "<td><table>\n";
 			foreach($filenames as $file)
+				$sorted_files[date("d/m/Y - h:i:s",filemtime(get_config("people_files_root").$row->$fieldID.$file)).$file]=$file;
+
+			ksort($sorted_files);
+			
+				
+			$i = -1;
+			echo "<td><table>\n";
+			echo '<tr><td style="padding-right: 10px">';
+
+			$nb = intval((count($sorted_files) + 2)/ 3);
+			
+			foreach($sorted_files as $date => $file)
 			{
-				if($i % 3	 ==0)
-					echo '<tr>';
+				if($i % $nb	 == $nb - 1 )
+					echo '</td><td style="padding-right: 10px">';
+				
 				$prettyfile = str_replace("_", " ", $file);
 				if(strlen($file) > 20)
 				{
@@ -206,11 +220,10 @@ function display_fichiers($row, $fieldID, $readonly)
 					$arr2 = array("","");
 					$prettyfile = str_replace($arr, $arr2, $prettyfile);
 				}
-				echo '<td style="padding-right: 10px"><a href="'.get_config("people_files_root").$row->$fieldID."/".$file.'">'.$prettyfile."</a></td>\n";
-				if($i % 3 ==3)
-					echo '</tr>';
+				echo '<a href="'.get_config("people_files_root").$row->$fieldID."/".$file.'">'.$prettyfile."</a><br/>\n";
 				$i++;
 			}
+			echo '</td></tr>';
 			echo "</table></td>\n";
 
 			closedir($handle);
@@ -225,13 +238,12 @@ function display_fichiers($row, $fieldID, $readonly)
 	value="candidatefile" />
 <input
 	type="hidden" name="MAX_FILE_SIZE" value="10000000" />
-<input name="uploadedfile"
-	type="file" />
+<input name="uploadedfile" type="file" />
 <input
 	type="submit" name="ajoutfichier" value="Ajouter fichier" />
 <?php 
 	}
-	//echo "</td>";
+	echo "</td>";
 
 }
 ?>

@@ -29,6 +29,10 @@ function displayEditableCandidate($candidate,$report = NULL)
 		if(isset($report->avis) && in_array($report->avis, $avis_candidature_necessitant_pas_rapport_sousjury))
 			$fields = $fieldsCandidatAvantAudition;
 
+		$candidate->rapporteur = $report->rapporteur;
+		$candidate->rapporteur2 = $report->rapporteur2;
+		
+
 	}
 
 
