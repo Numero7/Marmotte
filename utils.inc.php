@@ -202,7 +202,13 @@ function array_remove_by_value($array, $value)
 	return array_values(array_diff($array, array($value)));
 }
 
-
+function is_picture($file)
+{
+	if(strlen($file) < 4) return false;
+	$suffix = substr($file,-3,3);
+	return $suffix == "png" || $suffix == "jpg" || $suffix == "bmp";
+}
+	
 /*
  * Returns 0 if fiels has to be hidden,
 * 1 if it can be seen but not edited,
@@ -378,7 +384,7 @@ if (isset($_SERVER["SERVER_PORT"]) && $_SERVER["SERVER_PORT"] != "80") {
 //Returns the name of the file
 function filename_from_doc($doc)
 {
-	$nom = mb_convert_case(replace_accents($doc->nom), MB_CASE_TITLE);
+	$nom = str_replace( array("'"," "), array("","_") , mb_convert_case(replace_accents($doc->nom), MB_CASE_TITLE));
 	$prenom = mb_convert_case(replace_accents($doc->prenom), MB_CASE_TITLE);
 	$grade = $doc->grade;
 	$unite = $doc->unite;
@@ -405,23 +411,23 @@ function filename_from_params($nom, $prenom, $grade, $unite, $type, $session, $a
 			case "DR1": $grade = "DRCE1"; break;
 			case "DRCE1": $grade = "DRCE2"; break;
 		}
-		$grade .= " - ".$avis;
+		$grade .= "-".$avis;
 	}
 
 	if($type == "Evaluation-Vague" || $type == "Evaluation-MiVague")
-		$type .=  " - ".mb_convert_case($avis,MB_CASE_TITLE);
+		$type .=  "-".mb_convert_case($avis,MB_CASE_TITLE);
 
 	if(array_key_exists($type,$typesRapportsUnites))
 	{
 		if($type == 'Generique')
-			return $session." - ".$nom." ".$prenom." - ".$unite;
+			return $session."-".$nom."_".$prenom."-".$unite;
 		else
-			return $session." - ".$type." - ".$unite;
+			return $session."-".$type."-".$unite;
 	}
 	else if(array_key_exists($type,$typesRapportsConcours))
-		return $session." - ".$type." - ".$concours." - ".$nom."_".$prenom;
+		return $session."-".$type."-".$concours."-".$nom."_".$prenom;
 	else
-		return $session." - ".$type." - ".$grade." - ".$nom."_".$prenom;
+		return $session."-".$type."-".$grade."-".$nom."_".$prenom;
 }
 
 function getStyle($fieldId,$odd)

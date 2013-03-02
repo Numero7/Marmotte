@@ -5,9 +5,6 @@ require_once('manage_sessions.inc.php');
 
 
 <h2>Session courante</h2>
-<?php 
- $sessions = sessionShortArray();
-?>
 
 <table>
 			<form method="post" action="index.php"
@@ -19,8 +16,19 @@ require_once('manage_sessions.inc.php');
 										 <select
 				name="sessionname">
 					<?php
-					foreach($sessions as $id => $nom)
-						echo '<option value="'.$id.'">'.$id.'</option>';
+					$curid = current_session_id();
+					
+					$sessions =  showSessions();						
+						
+					foreach($sessions as $session)
+					{
+						$id = $session["id"];
+						$sel = "";
+						if ($curid == $id)
+							$sel = " selected=\"selected\"";
+						echo '<option value="'.$id." ".$sel.">".$id.'</option>';
+					}
+					
 						?>
 			</select>
 			</td></tr>
@@ -86,10 +94,7 @@ require_once('manage_sessions.inc.php');
 								foreach($sessions as $session)
 								{
 									$id = $session["id"];
-									$nom = $session["nom"];
-									date_default_timezone_set("Europe/Paris");
-									$date = strtotime($session["date"]);
-									echo "<option value=\"$id\">".ucfirst($nom)." ".date("Y",$date)."</option>";
+									echo "<option value=\"$id\">".$id."</option>";
 								}
 								?>
 						</select>

@@ -65,7 +65,8 @@ function get_config($name)
 		if(isset($config[trim($name,"_")]))
 			return $config[trim($name,"_")];
 		else
-			throw new Exception("No config item with name '".$name."'");
+			return "";
+			//throw new Exception("No config item with name '".$name."'");
 	}
 	else
 	{

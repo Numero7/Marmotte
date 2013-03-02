@@ -2,20 +2,16 @@
 <p>Le fichier de config permet de configurer le numéro de la section,
 	les thèmes de la section, le nom du président, etc..</p>
 <p>
-	Télécharger et éditer <a href="<?php echo config_file;?>">le fichier de
-		configuration</a>.<br/>
+Pour cela éditer les infos ci-dessous puis cliquez sur "Mettre à jour config".
+Vous pouvez également télécharger et éditer <a href="<?php echo config_file;?>">le fichier de
+		configuration</a> <br/>
 		Pour cela faire (click droit + enregistrer la cible du
-	lien sous...) puis éditer le fichier téléchargé avec un éditeur de texte.<br />
-	En cas de souci télécharger <a
-		href="<?php echo config_file_save;?>">la config de secours</a>.</p>
-		<p>
-	Après édition, le formulaire ci-dessous permet d'uploader la nouvelle
-	configuration.</p>
+	lien sous...) puis éditer le fichier téléchargé avec un éditeur de texte, puis le copier-coller dans le formulaire.<br />
 	<p>
 <form enctype="multipart/form-data" action="index.php" method="post">
 	<input type="hidden" name="action" value="updateconfig" />
 <textarea rows="20" cols="130" name="fieldconfig" ><?php echo get_raw_config(); ?></textarea>
-		 <input type="submit" value="Uploader config" />
+		 <input type="submit" value="Mettre à jour config" />
 </form>
 </p>
 <p>

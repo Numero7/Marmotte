@@ -168,7 +168,7 @@ catch(Exception $e)
 
 ?>
 
-<h2>Ajout de plusieurs unités</h2>
+<h2>Import d'unités</h2>
 <p>
 <p>
 	Le formulaire ci-dessous permet d'injecter des unités dans la base de

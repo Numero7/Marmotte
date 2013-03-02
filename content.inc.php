@@ -214,8 +214,25 @@ function alertText($text)
 					}
 					else if(isset($_REQUEST['ajoutfichier']))
 					{
-						alertText(process_upload());
-						editWithRedirect($id_origine);
+						echo 
+							process_upload(
+						 		get_or_create_candidate(
+						 			getReport($id_origine)
+						 		)
+						  	)
+						;
+						editReport($id_origine);
+					}
+					else if(isset($_REQUEST['suppressionfichier']))
+					{
+						if(isset($_REQUEST['deletedfile']))
+						{
+							$file = $_REQUEST['deletedfile'];
+							if(!isSecretaire() && !is_picture($file))
+								throw new Exception("You are allowed to delete images only, not documents of type '".$suffix."'");
+							unlink($file);
+						}
+						editReport($id_origine);
 					}
 					else
 					{
@@ -391,7 +408,7 @@ function alertText($text)
 					{
 						echo "Cannot process action ajoutlabo: missing data<br/>";
 					}
-					include "admin.inc.php";
+					include "unites.php";
 					break;
 				case 'deletelabo':
 					if(isset($_REQUEST["unite"]))

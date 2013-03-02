@@ -27,7 +27,7 @@ function sessionShortArray()
 		$result = sql_request($sql);
 		date_default_timezone_set("Europe/Paris");
 		while ($row = mysql_fetch_object($result))
-			$sessions[$row->id] = $row->nom." ".date("Y", strtotime($row->date));
+			$sessions[$row->id] = $id;
 		$_SESSION['all_sessions'] = $sessions;
 		
 		return $sessions;

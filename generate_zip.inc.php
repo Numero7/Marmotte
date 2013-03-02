@@ -104,10 +104,6 @@ function zip_files($filenames,$zipname = "reports.zip")
  */
 function xmls_to_pdfs2($docs)
 {
-	$xsl = new DOMDocument("1.0","utf-8");
-	$xsl->load("xslt/html2.xsl");
-	$proc = new XSLTProcessor();
-	$proc->importStyleSheet($xsl);
 
 	$filenames = array();
 	$script = "";
@@ -124,7 +120,13 @@ function xmls_to_pdfs2($docs)
 			$filename = replace_accents(filename_from_node($node)).".pdf";
 			$local_filename = replace_accents("reports/".$filename);
 			$type = type_from_node($node);
+
+			$xsl = new DOMDocument("1.0","utf-8");
+			$xsl->load(type_to_xsl($doc->type));
+			$proc = new XSLTProcessor();
+			$proc->importStyleSheet($xsl);
 			$html = $proc->transformToXML($node);
+
 			$pdf = HTMLToPDF($html);
 			$pdf->Output($local_filename,"F");
 			$filenames[$local_filename] = $filename;
@@ -136,11 +138,7 @@ function xmls_to_pdfs2($docs)
 
 function xml_to_pdfs($xml_reports)
 {
-	$xsl = new DOMDocument("1.0","utf-8");
-	$xsl->load("xslt/html2.xsl");
-	$proc = new XSLTProcessor();
-	$proc->importStyleSheet($xsl);
-
+	
 	$filenames = array();
 
 	$rapports = $xml_reports->firstChild->getElementsByTagName("rapport");
@@ -152,7 +150,13 @@ function xml_to_pdfs($xml_reports)
 		set_time_limit(0);
 		$filename = $node->getAttribute('filename').".pdf";
 		$local_filename = replace_accents("reports/".$filename);
+		
+		$xsl = new DOMDocument("1.0","utf-8");
+		$xsl->load(type_to_xsl($node->getAttribute('type')));
+		$proc = new XSLTProcessor();
+		$proc->importStyleSheet($xsl);
 		$html = $proc->transformToXML($node);
+
 		$pdf = HTMLToPDF($html);
 		$pdf->Output($local_filename,"F");
 		$filenames[$local_filename] = $filename;

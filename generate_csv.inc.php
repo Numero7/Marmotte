@@ -47,9 +47,10 @@ function compileReportsAsCSV($rows, $fields = null)
 	global $mandatory_export_fields;
 	
 	if(count($rows) < 1)
-		throw new Exception("Nothing to export");
+		$type = "Evaluation-Vague";
+	else
+		$type = $rows[0]->type;
 	
-	$type = $rows[0]->type;
 	foreach($rows as $report)
 		if($report->type != $type && !isSecretaire())
 			throw new Exception("Cannot export different type of reports as csv, please filter one report type exclusively");
@@ -58,6 +59,15 @@ function compileReportsAsCSV($rows, $fields = null)
 	if($activefields == null)
 		$activefields = array_unique(array_merge($mandatory_export_fields, get_editable_fields($rows[0])));
 		
+	if(count($rows) < 1)
+	{
+		$fakerow = (object) array();
+		foreach($fields as $field)
+			$fakerow->$field = "à remplacer par ".$field;
+		$fakerow->type = "Evaluation-Vague";
+		$rows[] = $fakerow;
+	}
+	
 	
 	return compileObjectsAsCSV($activefields, $rows);
 }

@@ -1,129 +1,160 @@
-<?php header('Content-type: text/html; charset=utf-8');?>
 <?php
-require_once 'utils.inc.php';
+
+session_start();
+
+require_once("utils.inc.php");
+
+require_once("db.inc.php");
+require_once("manage_users.inc.php");
+
+
 require_once 'generate_pdf.inc.php';
 require_once 'generate_zip.inc.php';
 
-//load xml file
-$doc = new DOMDocument("1.0","utf-8");
-$doc->load('reports/reports.xml');
-
-$root = $doc->getElementsByTagName("rapports")->item(0);
-$reports = $root->childNodes;
-
-$zip = isset($_REQUEST['zip_files']);
+require_once 'header.inc.php';
+require_once("authbar.inc.php");
 
 
-$next_report = NULL;
-$filenames = array();
-
-$html  = "<p><table><tr>";
-
-foreach($reports as $report)
+?>
+	<div class="large">
+<div class="content">
+<?php 
+try
 {
-	if(!isset($report->hasAttribute))
-	{
-		continue;
-	}
-	
-	$is_done = $report->hasAttribute('done');
+	//load xml file
+	$doc = new DOMDocument("1.0","utf-8");
+	$result = $doc->load('reports/reports.xml');
 
-	$filename = $report->getAttribute('filename').".pdf";
-	$filenames['reports/'.$filename] = $filename;
-		
-	if(!$is_done)
-	{
-		$html .= '<tr><td>'.$filename.'</td>';
-		if($next_report == NULL)
-		{
-			$next_report = $report;
-			$html .= '<td><font color="red">Processing...</font></td></tr>';
-		}
-		else
-		{
-			$html .= '<td>Todo</td></tr>';
-		}
+	if($result === false)
+		throw new Exception("Failed to load reports/reports.xml");
 
-	}
-	//echo if($report->attributes->getNamedItem('status') == '')
-}
-
-$html .="</tr></table></p>";
-$html .="<a href=\"index.php?action=view\">Retour au site</a>";
+	$reports = $doc->getElementsByTagName("rapport");
 
 
-
-if($next_report != NULL)
-{
-	echo $html;
-
-	$xsl = new DOMDocument("1.0","UTF-8");
-	$xsl->load("xslt/html2.xsl");
-	$proc = new XSLTProcessor();
-	$proc->importStyleSheet($xsl);
-
-	$filename = 'reports/'.$next_report->getAttribute('filename').".pdf";
-
-	$subreport = new DOMDocument("1.0","UTF-8");
-	$node = $subreport->importNode($next_report,true);
-	$subreport->appendChild($node);
-	$html = $proc->transformToXML($subreport);
-
-	
-	$pdf = HTMLToPDF($html);
-	$pdf->Output($filename,"F");
-
-	$next_report->setAttribute('done','');
-
-	$doc->save('reports/reports.xml');
-	
-	?>
-<script>window.location = 'create_reports.php<?php if($zip) echo "?zip_files=";?>'</script>
-<?php
-}
-else if($zip)
-{
+	$next_report = NULL;
 	$filenames = array();
+
+
+	
+	if(isset($_REQUEST['zip_file']))
+	{
+		$filename = $_REQUEST['zip_file'];
+		echo '<p>Le fichier zip contenant tous les pdf:<br/> <a href="'.$filename.'">'.$filename.'</a>.</p>'."\n";
+	}
+	
+	echo "<table>";
 
 	foreach($reports as $report)
 	{
+		if(!$report->hasAttributes())
+		{
+			continue;
+		}
+
+		$is_done = $report->hasAttribute('done');
+
+		$filename = $report->getAttribute('filename').".pdf";
+		$filenames['reports/'.$filename] = $filename;
+
+		if(!$is_done)
+		{
+			echo '<tr><td>'.$filename.'</td>';
+			if($next_report == NULL)
+			{
+				$next_report = $report;
+				echo '<td><font color="red">Processing...</font></td></tr>'."\n";
+			}
+			else
+			{
+				echo '<td>Todo</td></tr>'."\n";
+			}
+
+		}
+		//echo if($report->attributes->getNamedItem('status') == '')
+	}
+	foreach($reports as $report)
+	{
+		if(!$report->hasAttributes())
+		{
+			continue;
+		}
+		
 		if($report->hasAttribute('done'))
 		{
 			$filename = $report->getAttribute('filename').".pdf";
-			$filenames['reports/'.$filename] = $filename;
+			echo '<tr><td><a href="reports/'.$filename.'">'.$filename.'</a></td>'."\n";
+			echo '<td><font>Done</font></td></tr>'."\n";
 		}
+		//echo if($report->attributes->getNamedItem('status') == '')
 	}
 
 
-	try
+	 echo "</table>\n";
+
+	if($next_report != NULL)
 	{
-		$filename= zip_files($filenames,'zips/reports.zip');
 
-		header("Pragma: public");
-		header("Expires: 0");
-		header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
-		header("Cache-Control: public");
-		header("Content-Description: File Transfer");
-		header("Content-type: application/octet-stream");
-		header("Content-Disposition: attachment; filename=\"reports.zip\"");
-		header("Content-Transfer-Encoding: binary");
-		header("Content-Length: ".filesize("zips/reports.zip"));
+		$xsl = new DOMDocument("1.0","UTF-8");
+		$xsl->load(type_to_xsl($next_report->type));
+		$proc = new XSLTProcessor();
+		$proc->importStyleSheet($xsl);
 
-		ob_clean();
-		flush();
+		$filename = 'reports/'.$next_report->getAttribute('filename').".pdf";
 
-		readfile('zips/reports.zip');
+		$subreport = new DOMDocument("1.0","UTF-8");
+		$node = $subreport->importNode($next_report,true);
+		$subreport->appendChild($node);
+		$html = $proc->transformToXML($subreport);
 
-	}
-	catch(Exception $exc)
-	{
-		echo "Failed to generate zip file: ".$exc->getMessage();
-	}
-}
-else
-{
-	?>
-<script>window.location = 'reports/'</script>
+
+		$pdf = HTMLToPDF($html);
+		$pdf->Output($filename,"F");
+
+		$next_report->setAttribute('done','');
+
+		$doc->save('reports/reports.xml');
+
+		?>
+<script>window.location = 'create_reports.php'</script>
 <?php
+	}
+	else
+	{
+
+
+
+		if(!isset($_REQUEST['zip_file']))
+			try
+			{
+				$filenames = array();
+
+				foreach($reports as $report)
+				{
+					if($report->hasAttribute('done'))
+					{
+						$filename = $report->getAttribute('filename').".pdf";
+						$filenames['reports/'.$filename] = $filename;
+					}
+				}
+					
+				$filename = zip_files($filenames,'reports/reports.zip');
+				?>
+<script>window.location = 'create_reports.php<?php echo "?zip_file=".$filename;?>'</script>
+<?php
+			}
+			catch(Exception $exc)
+			{
+				echo "Failed to generate zip file: ".$exc->getMessage();
+			}
+	}
+
+}
+catch(Exception $e)
+{
+	echo "Failed to generate pdfs:  <br/>\n".$e;
 }
 ?>
+</div>
+</div>
+</body>
+</html>

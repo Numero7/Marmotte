@@ -23,10 +23,8 @@ function getReportAsDOMDoc($id_rapport)
 function getReportAsHtml($id_rapport)
 {
 	$doc = getReportAsDOMDoc($id_rapport);
-	
-	$doc->save("csv/truc.xml");
-	
-	$html = XMLToHTML($doc,'xslt/html2.xsl');
+		
+	$html = XMLToHTML($doc,type_to_xsl(getReport($id_rapport)->type));
 	
 	return $html;
 }
@@ -44,7 +42,7 @@ function viewReportAsPdf($id_rapport)
 	
 	$doc = getReportAsDOMDoc($id_rapport);
 	
-	$html = XMLToHTML($doc,'xslt/html2.xsl');
+	$html = XMLToHTML($doc,type_to_xsl(getReport($id_rapport)->type));
 	
 
 	$pdf = HTMLToPDF($html);

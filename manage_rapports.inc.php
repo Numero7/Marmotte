@@ -288,6 +288,13 @@ function checkReportIsEditable($rapport)
 	{
 		throw new Exception("Ce rapport n'a plus le statut de prerapport et n'est donc plus éditable par ses rapporteurs. Si nécessaire veuillez demander un changement de statut au secrétaire.");
 	}
+	else if($rapport->type == "Candidature")
+	{
+		$sousjury = $rapport->sousjury;
+		global $presidents_sousjurys;
+		if(isset($presidents_sousjurys[$sousjury]['login']) && $login == $presidents_sousjurys[$sousjury]['login'])
+			return true;
+	}
 	else if( ($rapport->rapporteur != "") && ($rapport->rapporteur != $login) && ($rapport->rapporteur2 != $login))
 	{
 		if($rapport->rapporteur2 != "")
@@ -896,35 +903,37 @@ function is_field_editable($row, $fieldId)
 	global $nonEditableFieldsTypes;
 	if(in_array($fieldId, $nonEditableFieldsTypes))
 		return false;
-
+	
 	if(isBureauUser() && ($fieldId == 'rapporteur' || $fieldId == 'rapporteur2'))
-	{
 		return true;
-	}
 
 	if(isSecretaire() && ($fieldId == 'statut'))
-	{
 		return true;
-	}
-
-
-
-	if(isset($row->statut) && ($row->statut == "rapport" || $row->statut == "publie"))
-		return false;
-
-
-
+	
+	
 	$login = getLogin();
 
 	$eval_type = isset($row->type) ? $row->type : "";
 
-
 	$is_rapp1 = isset($row->rapporteur) && $login == $row->rapporteur;
 	$is_rapp2 = isset($row->rapporteur2) && $login == $row->rapporteur2;
 
+	//echo $fieldId." ".$login." ".$row->rapporteur." ".$row->rapporteur2;
+	if($eval_type == "Candidature")
+	{
+		$sousjury = $row->sousjury;
+		global $presidents_sousjurys;
+		if(isset($presidents_sousjurys[$sousjury]['login']) && $login == $presidents_sousjurys[$sousjury]['login'])
+			return true;
+	}
+	
+	if(isset($row->statut) && ($row->statut == "rapport" || $row->statut == "publie"))
+		return false;
+	
 	if(!$is_rapp1 && !$is_rapp2 && !isSecretaire())
 		return false;
 
+	
 	global $fieldsIndividual;
 	global $fieldsIndividualAll;
 
@@ -936,7 +945,7 @@ function is_field_editable($row, $fieldId)
 	global $typesRapportsChercheurs;
 	global $typesRapportsUnites;
 
-	if(in_array($eval_type, $typesRapportsConcours))
+	if(isset($typesRapportsConcours[$eval_type]))
 	{
 		global $fieldsRapportsCandidat0;
 		global $fieldsRapportsCandidat1;
@@ -950,13 +959,13 @@ function is_field_editable($row, $fieldId)
 		return (isSecretaire() && ($f || $f0 || $f1 || $f2)) || ( $is_rapp1 && ($f1 || $f) )  || ($is_rapp2 && ($f2 || $f));
 	}
 
-	if(in_array($eval_type, $typesRapportsUnites))
+	if(isset($typesRapportsUnites[$eval_type]))
 	{
 		global $fieldsUnites;
 		return in_array($fieldId,$fieldsUnites) && (isSecretaire() || $is_rapp1);
 	}
 
-	if(in_array($eval_type, $typesRapportsChercheurs))
+	if(isset($typesRapportsChercheurs[$eval_type]))
 	{
 		global $fieldsIndividual0;
 		global $fieldsIndividual1;
@@ -967,6 +976,7 @@ function is_field_editable($row, $fieldId)
 		$f0 = in_array($fieldId,$fieldsIndividual0);
 		$f1 = in_array($fieldId,$fieldsIndividual1);
 		$f2 = in_array($fieldId,$fieldsIndividual2);
+		//echo  $fieldId.", debug: ".$f." ".$f0." ".$f1." ".$f2." ";
 		return (isSecretaire() && ($f || $f0 || $f1 || $f2)) || ( $is_rapp1 && ($f1 || $f) )  || ($is_rapp2 && ($f2 || $f));
 	}
 

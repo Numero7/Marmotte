@@ -11,4 +11,28 @@ par le secrétaire
 2. Préparation par le secrétaire de section
 	* se connecter au site et cliquer sur admin
 	* utiliser le menu "Création nouveau rapporteur" pour ajouter à la base les rapporteurs de la section
+	* donner au secrétaire les privilèges de secrétaire
+	* configurer les infos de la section
+	
+	
+Todo:
+ 
+
+ancienneté dans le grade
+configurer nom des rubriques
+
+problème d'accent dans les phrases types
+configurer les phrases type
+
+option insertion nom directeur de labo
+
+fonction de sauvegarde de la base
+
+bouton pour supprimer
+
+ajouter import des dossiers chercheurs
+
+fichiers rentrés par les rapporteurs
+
+
 	

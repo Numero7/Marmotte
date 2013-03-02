@@ -326,6 +326,8 @@ function existsUser($login)
 
 function createUser($login,$pwd,$desc,$email, $envoiparemail = false, $check_secretary = true)
 {
+	$login = strtolower($login);
+	
 	if (!$check_secretary || isSecretaire())
 	{
 		if(existsUser($login))

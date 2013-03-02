@@ -8,9 +8,22 @@
   <section_fullname>Section 6</section_fullname>
   <section_intitule>Sciences de l'information : fondements de l'informatique, calculs, algorithmes, représentations, exploitations</section_intitule>
   <webmaster>hugo.gimbert@labri.fr</webmaster>
-  <addresse_du_site>http://cn6.labri.fr/Marmotte</addresse_du_site>
+  <addresse_du_site>http://marmotte.cn6.fr</addresse_du_site>
   <current_session>Concours2013</current_session>
   <welcome_message>Bienvenue sur le site de gestion des rapports de la section 6. N'hésitez pas à nous contacter (Yann ou Hugo) en cas de difficultés.	</welcome_message>
+  <formules_standards>
+    <Promotion>
+      <oui>  La section donne un avis favorable à la demande de promotion.  </oui>
+      <non>  Le faible nombre de possibilités de promotions ne permet malheureusement pas à la Section 6 du Comité National de proposer ce chercheur à la Direction Générale du CNRS pour une promotion cette année.  </non>
+    </Promotion>
+    <Equivalence>
+      <favorable>La section donne un avis favorable à la demande d'équivalence.</favorable>
+      <defavorable>La section donne un avis défavorable à la demande d'équivalence.</defavorable>
+    </Equivalence>
+    <Titularisation>
+      <favorable>La section donne un avis favorable à la titularisation.</favorable>
+    </Titularisation>
+  </formules_standards>
   <topics>
     <_1a>1a Algorithmique, combinatoire, graphes</_1a>
     <_1aa>1aa Algorithmique</_1aa>
@@ -57,6 +70,38 @@
       <CR2B>CR2B</CR2B>
     </_0603>
   </sousjurys>
+  <presidents_sousjurys>
+    <DRA>
+      <nom>Frédéric Magniez</nom>
+      <login>frederic.magniez</login>
+      <signature>img/signatureFrederic.jpg</signature>
+    </DRA>
+    <CR1A>
+      <nom>Frédéric Magniez</nom>
+      <login>frederic.magniez</login>
+      <signature>img/signatureFrederic.jpg</signature>
+    </CR1A>
+    <CR2A>
+      <nom>Frédéric Magniez</nom>
+      <login>hugobasic</login>
+      <signature>img/signatureFrederic.jpg</signature>
+    </CR2A>
+    <DRB>
+      <nom>Isabelle Guérin-Lassous</nom>
+      <login>isabelle</login>
+      <signature>img/signatureIsabelle.jpg</signature>
+    </DRB>
+    <CR1B>
+      <nom>Isabelle Guérin-Lassous</nom>
+      <login>isabelle</login>
+      <signature>img/signatureIsabelle.jpg</signature>
+    </CR1B>
+    <CR2B>
+      <nom>Isabelle Guérin-Lassous</nom>
+      <login>isabelle</login>
+      <signature>img/signatureIsabelle.jpg</signature>
+    </CR2B>
+  </presidents_sousjurys>
   <postes_ouverts>
     <_0601>2</_0601>
     <_0602>2</_0602>

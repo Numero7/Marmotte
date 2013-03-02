@@ -149,19 +149,18 @@ function add_candidate_to_database($data)
 * created if needed,
 * or throw an exception
 */
-function get_or_create_candidate($data)
+function get_or_create_candidate_from_nom($nom, $prenom)
 {
-	$data = normalizeCandidat($data);
-
 	try
 	{
+	
 		mysql_query("LOCK TABLES ".people_db." WRITE;");
-
-		
-		$sql = "SELECT * FROM ".people_db.' WHERE nom="'.$data->nom.'" AND prenom="'.$data->prenom.'" ;';
-
+	
+	
+		$sql = "SELECT * FROM ".people_db.' WHERE nom="'.$nom.'" AND prenom="'.$prenom.'" ;';
+	
 		$result = sql_request($sql);
-
+	
 		$cdata = mysql_fetch_object($result);
 		if($cdata == false)
 		{
@@ -171,7 +170,7 @@ function get_or_create_candidate($data)
 			if($cdata == false)
 				throw new Exception("Failed to find candidate previously added<br/>".$sql);
 		}
-
+	
 		mysql_query("UNLOCK TABLES");
 		return normalizeCandidat($cdata);
 	}
@@ -180,6 +179,13 @@ function get_or_create_candidate($data)
 		mysql_query("UNLOCK TABLES;");
 		throw new Exception("Failed to add candidate from report:<br/>".$exc->getMessage());
 	}
+}
+
+function get_or_create_candidate($data)
+{
+	$data = normalizeCandidat($data);
+
+	return get_or_create_candidate_from_nom($data->nom,$data->prenom);
 }
 
 

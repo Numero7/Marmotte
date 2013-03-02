@@ -88,28 +88,29 @@ function getCurrentFiltersList()
 	global $filtersConcours;
 	global $filtersReports;
 	global $fieldsTypes;
+	
 	if(is_current_session_concours())
-	{
 		$filters = $filtersConcours;
+	else
+		$filters = $filtersReports;
+	
+	if(isset($filters['rapporteur']))
 		$filters['rapporteur']['liste'] = simpleListUsers();
 
-		$units = simpleUnitsList();
-		foreach($fieldsTypes as $field => $type)
-			if($type=='unit' and array_key_exists($field, $filters))
-			$filters[$field]['liste'] = $units;
-
-		if(isSecretaire())
-		{
-			global $statutsRapports;
-			$filters['statut'] =  array('name'=>"Statut" , 'liste' => $statutsRapports, 'default_value' => "tous", 'default_name' => "");
-		}
-		return $filters;
-
-	}
-	else
+	
+	$units = simpleUnitsList();
+	foreach($fieldsTypes as $field => $type)
+		if($type=='unit' && isset($filters[$field]))
+		$filters[$field]['liste'] = $units;
+	
+	if(isSecretaire())
 	{
-		return $filtersReports;
+		global $statutsRapports;
+		$filters['statut'] =  array('name'=>"Statut" , 'liste' => $statutsRapports, 'default_value' => "tous", 'default_name' => "");
 	}
+	
+	return $filters;
+	
 }
 
 function getCurrentSortingList()

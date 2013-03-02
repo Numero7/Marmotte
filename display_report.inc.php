@@ -14,6 +14,7 @@ function displayEditableCandidate($candidate,$report = NULL)
 	global $fieldsCandidat;
 	global $avis_candidature_necessitant_pas_rapport_sousjury;
 	global $fieldsCandidatAvantAudition;
+	global $fieldsCandidatAuditionne;
 
 	$hidden = array("action" => "update");
 
@@ -25,14 +26,17 @@ function displayEditableCandidate($candidate,$report = NULL)
 		$hidden["id_origine"] = $report->id_origine;
 		$hidden["fieldanneecandidature"] = session_year($report->id_session);
 		$hidden["type"] = $report->type;
-		$hidden["id_session"] = $report->id_session;
 		if(isset($report->avis) && in_array($report->avis, $avis_candidature_necessitant_pas_rapport_sousjury))
 			$fields = $fieldsCandidatAvantAudition;
+		else
+			$fields = $fieldsCandidatAuditionne;
+				
 
 		$candidate->rapporteur = $report->rapporteur;
 		$candidate->rapporteur2 = $report->rapporteur2;
+		$candidate->sousjury = $report->sousjury;
+		$candidate->type = $report->type;
 		
-
 	}
 
 
@@ -61,7 +65,10 @@ function displayEditableChercheur($chercheur,$report = NULL)
 	{
 		$hidden["id_origine"] = $report->id_origine;
 		$hidden["type"] = $report->type;
-		$hidden["id_session"] = "all";
+		
+		$chercheur->rapporteur = $report->rapporteur;
+		$chercheur->rapporteur2 = $report->rapporteur2;
+		
 	}
 
 	echo '<h1>Chercheur(se) : '.$chercheur->nom." ".$chercheur->prenom." ".'</h1>';
@@ -70,7 +77,7 @@ function displayEditableChercheur($chercheur,$report = NULL)
 
 	displayEditableObject("", $chercheur, $fieldsChercheursAll);
 
-	displayEditionFrameEnd("Données");
+	displayEditionFrameEnd("Données chercheur");
 
 }
 
@@ -117,7 +124,7 @@ function displayEditableObject($titlle, $row, $fields, $use_special_tr = true)
 	foreach($fields as  $fieldId)
 	{
 		if(isset($fieldsAll[$fieldId]) && is_field_visible($row, $fieldId))
-		{
+		{				
 			$style = getStyle($fieldId,$odd);
 			$odd = !$odd;
 			$title = $fieldsAll[$fieldId];
@@ -125,7 +132,7 @@ function displayEditableObject($titlle, $row, $fields, $use_special_tr = true)
 			{
 				
 				$editable = is_field_editable($row, $fieldId);
-
+				
 				/*
 				if(!$use_special_tr || !in_array($fieldId, $specialtr_fields) || in_array($fieldId, $start_tr_fields))
 					echo '<tr>';
@@ -226,12 +233,13 @@ function displayEditableReport($row, $canedit = true)
 
 
 	//phpinfo();
+	if(!isset($row->id_origine))
+		$row->id_origine = 0;
+	
 	echo '<div id="debut"></div>';
 	echo '<form enctype="multipart/form-data" method="post" action="index.php" style="width: 100%">'."\n";
 
 
-	if(!isset($row->id_origine))
-		$row->id_origine = 0;
 
 	$next = next_report($row->id_origine);
 	$previous = previous_report($row->id_origine);
@@ -256,6 +264,10 @@ function displayEditableReport($row, $canedit = true)
 	$submits["editnext"] = ">>";
 
 	displayEditionFrameStart("",$hidden,$submits);
+	echo "<a href=\"export.php?action=viewpdf&amp;id=".$row->id_origine."&amp;id_origine=".$row->id_origine."\">\n";
+	echo "<img class=\"icon\" width=\"24\" height=\"24\" src=\"img/pdf-icon-50px.png\" alt=\"viewpdf\"/>\n";
+	echo "</a>\n";
+	
 
 		$eval_type = $row->type;
 		$is_unite = array_key_exists($eval_type,$typesRapportsUnites);
@@ -282,7 +294,7 @@ function displayEditableReport($row, $canedit = true)
 			global $fieldsRapportsCandidat2;
 
 
-			echo "<h1>".$eval_name. ": ". $row->nom." ".$row->prenom.(isset($row->concours) ? (" / concours ".$row->concours) : ""). " (rapport #".(isset($row->id) ? $row->id : " New").")</h1>";
+			echo "<h1>".$eval_name. ": ". $row->nom." ".$row->prenom.(isset($row->concours) ? (" / concours ".$row->concours) : ""). (isset($row->sousjury) ? (" sousjury ".$row->sousjury) : ""). "/ (rapport #".(isset($row->id) ? $row->id : " New").")</h1>";
 
 
 

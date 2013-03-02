@@ -1,14 +1,13 @@
 -- phpMyAdmin SQL Dump
--- version 3.5.6
+-- version 3.3.7deb7
 -- http://www.phpmyadmin.net
 --
--- Host: localhost
--- Generation Time: Feb 20, 2013 at 07:48 PM
--- Server version: 5.1.63-0+squeeze1
--- PHP Version: 5.3.3-7+squeeze14
+-- Serveur: localhost
+-- Généré le : Ven 01 Mars 2013 à 13:24
+-- Version du serveur: 5.1.63
+-- Version de PHP: 5.3.3-7+squeeze14
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
-SET time_zone = "+00:00";
 
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
@@ -17,22 +16,21 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8 */;
 
 --
--- Database: `cn6`
+-- Base de données: `cn62`
 --
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `candidats`
+-- Structure de la table `people`
 --
 
-DROP TABLE IF EXISTS `candidats`;
-CREATE TABLE IF NOT EXISTS `candidats` (
-  `cle` text CHARACTER SET utf8 NOT NULL,
-  `anneecandidature` int(11) NOT NULL,
+DROP TABLE IF EXISTS `people`;
+CREATE TABLE IF NOT EXISTS `people` (
+  `anneecandidature` text CHARACTER SET utf8 NOT NULL,
   `nom` text CHARACTER SET utf8 NOT NULL,
   `prenom` text CHARACTER SET utf8 NOT NULL,
-  `grade` enum('CR2','CR1','DR2','DR1','DRCE1','DRCE2','ChaireMC','ChairePR','Emerite','MC','PR','PhD','HDR','None','chercheur','postdoc','CR1_INRIA') CHARACTER SET utf8 NOT NULL,
+  `grade` varchar(32) CHARACTER SET utf8 NOT NULL DEFAULT '',
   `theseAnnee` text CHARACTER SET utf8 NOT NULL,
   `theseLieu` text CHARACTER SET utf8 NOT NULL,
   `HDRAnnee` text CHARACTER SET utf8 NOT NULL,
@@ -49,105 +47,80 @@ CREATE TABLE IF NOT EXISTS `candidats` (
   `projetrecherche` text CHARACTER SET utf8 NOT NULL,
   `concourspresentes` text CHARACTER SET utf8 NOT NULL,
   `fichiers` text CHARACTER SET utf8 NOT NULL,
-  `date_recrutement` text CHARACTER SET utf8 NOT NULL,
+  `annee_recrutement` text CHARACTER SET utf8 NOT NULL,
   `proprietes` text CHARACTER SET utf8 NOT NULL,
-  `genre` enum('femme','homme','','') CHARACTER SET utf8 NOT NULL DEFAULT 'homme',
-  `theseloc` enum('fr','eu','ru','us','asia','africa','other','southamerica') CHARACTER SET utf8 DEFAULT 'fr'
+  `genre` enum('femme','homme','') CHARACTER SET utf8 NOT NULL DEFAULT 'homme',
+  `theseloc` varchar(8) CHARACTER SET utf8 DEFAULT 'fr',
+  `statut_individu` varchar(64) CHARACTER SET utf8 NOT NULL DEFAULT ''
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `chercheurs`
+-- Structure de la table `reports`
 --
 
-DROP TABLE IF EXISTS `chercheurs`;
-CREATE TABLE IF NOT EXISTS `chercheurs` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `nom` varchar(40) CHARACTER SET utf8 NOT NULL,
-  `prenom` varchar(40) CHARACTER SET utf8 NOT NULL,
-  `unite` varchar(50) CHARACTER SET utf8 NOT NULL,
-  `grade` enum('CR2','CR1','DR2','DR1','DRCE1','DRCE2','ChaireMC','ChairePR','Emerite','MC','PR','PhD','HDR','None') CHARACTER SET utf8 NOT NULL,
-  `date_recrutement` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `evaluations`
---
-
-DROP TABLE IF EXISTS `evaluations`;
-CREATE TABLE IF NOT EXISTS `evaluations` (
-  `statut` enum('vierge','prerapport','rapport','publie','supprime') CHARACTER SET utf8 NOT NULL,
-  `id_session` int(11) NOT NULL,
+DROP TABLE IF EXISTS `reports`;
+CREATE TABLE IF NOT EXISTS `reports` (
+  `statut` enum('vierge','prerapport','rapport','publie','supprime') NOT NULL,
+  `id_session` varchar(64) NOT NULL,
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `id_origine` int(11) NOT NULL,
-  `nom` varchar(40) CHARACTER SET utf8 NOT NULL,
-  `prenom` varchar(40) CHARACTER SET utf8 NOT NULL,
-  `unite` varchar(50) CHARACTER SET utf8 NOT NULL,
-  `ecole` text CHARACTER SET utf8 NOT NULL,
-  `grade` enum('CR2','CR1','DR2','DR1','DRCE1','DRCE2','ChaireMC','ChairePR','Emerite','MC','PR','PhD','HDR','None','chercheur','postdoc','CR1_INRIA') CHARACTER SET utf8 NOT NULL,
-  `type` enum('Evaluation-Vague','Evaluation-MiVague','Promotion','Equivalence','Candidature','Suivi-PostEvaluation','Titularisation','Affectation','Reconstitution','Changement-Directeur','Changement-Directeur-Adjoint','Renouvellement','Association','Ecole','Comite-Evaluation','Generique') CHARACTER SET utf8 NOT NULL,
-  `concours` text CHARACTER SET utf8 NOT NULL,
-  `rapporteur` text CHARACTER SET utf8 NOT NULL,
-  `rapporteur2` text CHARACTER SET utf8 NOT NULL,
-  `prerapport` text CHARACTER SET utf8 NOT NULL,
-  `anneesequivalence` int(11) NOT NULL,
-  `labo1` text CHARACTER SET utf8 NOT NULL,
-  `labo2` text CHARACTER SET utf8 NOT NULL,
-  `labo3` text CHARACTER SET utf8 NOT NULL,
-  `theme1` text CHARACTER SET utf8 NOT NULL,
-  `theme2` text CHARACTER SET utf8 NOT NULL,
-  `theme3` text CHARACTER SET utf8 NOT NULL,
-  `anciennete_grade` text CHARACTER SET utf8 NOT NULL,
-  `date_recrutement` text CHARACTER SET utf8 NOT NULL,
-  `production` text CHARACTER SET utf8 NOT NULL,
-  `transfert` text CHARACTER SET utf8 NOT NULL,
-  `encadrement` text CHARACTER SET utf8 NOT NULL,
-  `responsabilites` text CHARACTER SET utf8 NOT NULL,
-  `mobilite` text CHARACTER SET utf8 NOT NULL,
-  `animation` text CHARACTER SET utf8 NOT NULL,
-  `rayonnement` text CHARACTER SET utf8 NOT NULL,
-  `rapport` text CHARACTER SET utf8 NOT NULL,
-  `avis` text CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL,
-  `auteur` varchar(40) CHARACTER SET utf8 NOT NULL,
+  `nom` varchar(64) NOT NULL,
+  `prenom` varchar(64) NOT NULL,
+  `unite` varchar(50) NOT NULL,
+  `ecole` text NOT NULL,
+  `grade` varchar(32) NOT NULL,
+  `type` enum('Evaluation-Vague','Evaluation-MiVague','Promotion','Equivalence','Candidature','Suivi-PostEvaluation','Titularisation','Affectation','Reconstitution','Changement-Directeur','Changement-Directeur-Adjoint','Renouvellement','Association','Ecole','Comite-Evaluation','Generique') NOT NULL,
+  `concours` text NOT NULL,
+  `rapporteur` varchar(32) NOT NULL,
+  `rapporteur2` varchar(32) NOT NULL,
+  `prerapport` text NOT NULL,
+  `anneesequivalence` varchar(32) NOT NULL,
+  `production` text NOT NULL,
+  `transfert` text NOT NULL,
+  `encadrement` text NOT NULL,
+  `responsabilites` text NOT NULL,
+  `mobilite` text NOT NULL,
+  `animation` text NOT NULL,
+  `rayonnement` text NOT NULL,
+  `rapport` text NOT NULL,
+  `avis` varchar(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL,
+  `auteur` varchar(40) NOT NULL,
   `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `prerapport2` text CHARACTER SET utf8 NOT NULL,
-  `production2` text CHARACTER SET utf8 NOT NULL,
-  `transfert2` text CHARACTER SET utf8 NOT NULL,
-  `encadrement2` text CHARACTER SET utf8 NOT NULL,
-  `responsabilites2` text CHARACTER SET utf8 NOT NULL,
-  `mobilite2` text CHARACTER SET utf8 NOT NULL,
-  `animation2` text CHARACTER SET utf8 NOT NULL,
-  `rayonnement2` text CHARACTER SET utf8 NOT NULL,
-  `avis1` text CHARACTER SET utf8 NOT NULL,
-  `avis2` text CHARACTER SET utf8 NOT NULL,
-  `avissousjury` text CHARACTER SET utf8 NOT NULL,
-  `cleindividu` text CHARACTER SET utf8 NOT NULL,
-  `sousjury` text CHARACTER SET utf8 NOT NULL,
+  `prerapport2` text NOT NULL,
+  `production2` text NOT NULL,
+  `transfert2` text NOT NULL,
+  `encadrement2` text NOT NULL,
+  `responsabilites2` text NOT NULL,
+  `mobilite2` text NOT NULL,
+  `animation2` text NOT NULL,
+  `rayonnement2` text NOT NULL,
+  `avis1` varchar(32) NOT NULL,
+  `avis2` varchar(32) NOT NULL,
+  `avissousjury` text NOT NULL,
+  `sousjury` text NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=14554 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=51943 ;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `sessions`
+-- Structure de la table `sessions`
 --
 
 DROP TABLE IF EXISTS `sessions`;
 CREATE TABLE IF NOT EXISTS `sessions` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` varchar(64) CHARACTER SET utf8 NOT NULL,
   `nom` varchar(60) CHARACTER SET utf8 NOT NULL,
   `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `units`
+-- Structure de la table `units`
 --
 
 DROP TABLE IF EXISTS `units`;
@@ -161,7 +134,7 @@ CREATE TABLE IF NOT EXISTS `units` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `users`
+-- Structure de la table `users`
 --
 
 DROP TABLE IF EXISTS `users`;
@@ -174,7 +147,3 @@ CREATE TABLE IF NOT EXISTS `users` (
   `tel` text CHARACTER SET utf8 NOT NULL,
   `sousjury` text CHARACTER SET utf8 NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

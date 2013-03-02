@@ -69,6 +69,7 @@ try
 						$annee = $_REQUEST["sessionannee"];
 						require_once('manage_sessions.inc.php');
 						createSession($name,$annee);
+						include 'admin.inc.php';
 					}
 					else
 					{
@@ -83,6 +84,7 @@ try
 						$id = $_REQUEST["sessionname"];
 						set_config('current_session',$id);
 						set_current_session_id($id);
+						include 'admin.inc.php';
 					}
 					break;
 

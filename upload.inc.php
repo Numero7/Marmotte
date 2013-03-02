@@ -5,7 +5,7 @@ require_once 'import.inc.php';
 require_once 'manage_people.inc.php';
 
 
-function process_upload()
+function process_upload($extradata = null)
 {
 	global $typeImports;
 
@@ -81,16 +81,10 @@ function process_upload()
 						break;
 					case "candidatefile":
 						{
-							if(isset($_REQUEST["candidatekey"]))
-							{
-								$key = $_REQUEST["candidatekey"];
-								$candidate = get_candidate_from_key($key);
+								$candidate = $extradata;
 								if(!move_uploaded_file($tmpname, $candidate->fichiers."/".$files['name'] ))
-									throw new Exception("Failed to add file to candidate ".$key);
-								return ("Fichier ".$files['name']." ajouté au candidat ".$key);
-							}
-							else
-								throw new Exception("Cannot add file: no candidate provided");
+									throw new Exception("Failed to add file to candidate ");
+								return ("Fichier ".$files['name']." ajouté au candidat ");
 						}
 						break;
 					default:

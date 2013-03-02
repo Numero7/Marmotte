@@ -411,7 +411,6 @@ if($dbh!=0)
 						switch($type)
 						{
 							case "pdf":
-							case "zip":
 
 								if(!isSecretaire())
 									throw new Exception("Zip and pdf exports are only for secretaray and president");
@@ -419,12 +418,23 @@ if($dbh!=0)
 								$xml_reports = getReportsAsXML(getFilterValues(), getSortingValues());
 								$filename = "";
 								$xml_reports->formatOutput = true;
-								$xml_reports->save('reports/reports.xml');
+								
+								$files = glob('reports/*'); // get all file names
+								foreach($files as $file){ // iterate files
+									if(is_file($file))
+										unlink($file); // delete file
+								}
+								
+								$result = $xml_reports->save('reports/reports.xml');
+								
+								if($result === false)
+									throw new Exception("Failed to save file reports/reports.xml");
+								
 								if($type =="pdf")
 									echo "<script>window.location = 'create_reports.php'</script>";
 
 								if($type=="zip")
-									echo "<script>window.location = 'create_reports.php?zip_files='</script>";
+									echo "<script>window.location = 'create_reports.php?zip_files=oui'</script>";
 								break;
 
 							case "csvsingle":
@@ -481,4 +491,5 @@ if($dbh!=0)
 		}
 	}
 }
+/* activit */
 ?>

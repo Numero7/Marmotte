@@ -176,7 +176,7 @@ include("config_manager.php");
 		{
 			if ($data->permissions <= getUserPermissionLevel())
 			{
-				echo "<tr><td >".ucfirst($data->description)."</td>\n";
+				echo "<tr><td >".ucfirst($data->description)."</td><td> [".$user."]</td>\n";
 				echo "<td><form>\n";
 				echo "<select name=\"permissions\">\n";
 				foreach($permission_levels as $val => $level)
@@ -259,8 +259,8 @@ if(isSecretaire())
 </form>
 <hr />
 
-
 <h2>Candidats</h2>
+<!-- 
 <p>Extrait tous les candidats des rapports de candidature et
 	d'équivalence et de les injecter dans la base des candidats.</p>
 <form action="index.php" method="post">
@@ -271,8 +271,8 @@ if(isSecretaire())
 	<input type="hidden" name="action" value="injectercandidats" /> <input
 		type="submit" value="Injecter données candidats" />
 </form>
-
 <p />
+ -->
 <p>Cherche les fichiers associés aux candidats.</p>
 <form action="index.php" method="post">
 	<input type="hidden" name="action" value="trouverfichierscandidats" />
@@ -282,6 +282,7 @@ if(isSecretaire())
 <p />
 <hr />
 
+<!-- 
 <h2>Requete sql générique</h2>
 <form enctype="multipart/form-data" action="index.php" method="post">
 	<table class="inputreport">
@@ -295,6 +296,7 @@ if(isSecretaire())
 		type="submit" value="Executer la requete" />
 </form>
 <p>
+ -->
 <form method="post" action="index.php">
 	<input type="hidden" name="action" value="createhtpasswd" /> <input
 		type="submit" value="Créer htpasswd" />

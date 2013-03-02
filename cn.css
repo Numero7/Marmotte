@@ -10,6 +10,11 @@ table.toptable
 	
 }
 
+.photoid {
+margin: 5px 5px 5px 5px;
+width: 80px;
+}
+
 table.toptable td
 {
     padding-left: 10px;	

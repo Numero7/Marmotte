@@ -251,6 +251,18 @@ function EnteteGauche($row)
 	return $result;
 }
 
+function type_to_xsl($type)
+{
+	global $typesRapportsToXSL;
+	if(isset($typesRapportsToXSL[$type]))
+	{
+		return $typesRapportsToXSL[$type];
+	}
+	else  {
+		return $typesRapportsToXSL[''];
+	}
+}
+
 function createXMLReportElem($row, $sessions, $units, DOMDocument $doc, $keep_br = true)
 {
 	global $typesRapports;
@@ -299,6 +311,20 @@ global $fieldsRapportAll;
 	//On ajoute le type du rapport et le pretty print
 	appendLeaf("type", $row->type, $doc, $rapportElem);
 
+	if($row->type == "Candidature")
+	{
+		global $presidents_sousjurys;
+		global $concours_ouverts;
+		appendLeaf("signataire",$presidents_sousjurys[$row->sousjury]["nom"], $doc, $rapportElem);
+		appendLeaf("signature", $presidents_sousjurys[$row->sousjury]["signature"], $doc, $rapportElem);
+		
+		$candidat = get_or_create_candidate($row);
+		appendLeaf("parcours", $candidat->parcours, $doc, $rapportElem);
+		appendLeaf("projet", $candidat->projetrecherche, $doc, $rapportElem);
+		appendLeaf("grade_concours", substr($concours_ouverts[$row->concours],0,2), $doc, $rapportElem);
+		
+	}
+	
 	//On ajoute les entete gauche et droit
 	appendLeaf("entetegauche", EnteteGauche($row), $doc, $rapportElem);
 	appendLeaf("entetedroit", EnteteDroit($row,$units), $doc, $rapportElem);
@@ -316,7 +342,11 @@ global $fieldsRapportAll;
 		date_default_timezone_set('Europe/Paris');
 	setlocale (LC_TIME, 'fr_FR.utf8','fra');
 	//date("j/F/Y")
-	appendLeaf("date", utf8_encode(strftime("%#d %B %Y", strtotime($row->date))), $doc, $rapportElem);
+	if(strpos($_SERVER['SERVER_SOFTWARE'],"IIS") === false)
+		appendLeaf("date", strftime("%#d %B %Y", strtotime($row->date)), $doc, $rapportElem);
+	else
+		appendLeaf("date",  utf8_encode(strftime("%#d %B %Y", strtotime($row->date))), $doc, $rapportElem);
+		
 	
 	/*
 	date_default_timezone_set('Europe/Paris');
@@ -331,12 +361,12 @@ global $fieldsRapportAll;
 		$checkBoxesTitle = $typesRapportsToCheckboxesTitles[$row->type];
 
 		$leaf = $doc->createElement("checkboxes");
-		$leaf->setAttribute("titre", normalizeField($checkBoxesTitle));
-
+		$leaf->setAttribute("titre", $checkBoxesTitle);
+			
 		foreach($checkBoxes as $avis => $intitule)
 		{
 			$subleaf = $doc->createElement("checkbox");
-			$subleaf->appendChild($doc->createCDATASection (normalizeField($intitule)));
+			$subleaf->appendChild($doc->createCDATASection ($intitule));
 			$subleaf->setAttribute("mark", ($avis == $row->avis) ? "checked" : "unchecked");
 			$leaf->appendChild($subleaf);
 		}
@@ -405,6 +435,7 @@ function filename_from_node(DOMNode $node)
 	$type = "";
 	$session = "Session";
 	$avis = "";
+	$concours = "";
 
 	foreach($node->childNodes as $child)
 	{
@@ -417,10 +448,11 @@ function filename_from_node(DOMNode $node)
 			case "type": $type = $child->nodeValue; break;
 			case "session": $session = $child->nodeValue; break;
 			case "avis": $avis = $child->nodeValue; break;
+			case "concours": $concours = $child->nodeValue; break;
 		}
 	}
 
-	return filename_from_params($nom, $prenom, $grade, $unite, $type, $session, $avis);
+	return filename_from_params($nom, $prenom, $grade, $unite, $type, $session, $avis, $concours);
 }
 
 

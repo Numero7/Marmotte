@@ -138,7 +138,7 @@ function displayRows($rows, $fields, $filters, $filter_values, $sort_fields, $so
 				<table>
 					<tr>
 						<td><?php 
-						displayTri($rows, $sort_fields, $sorting_values);
+						//displayTri($rows, $sort_fields, $sorting_values);
 						?>
 						</td>
 					</tr>
