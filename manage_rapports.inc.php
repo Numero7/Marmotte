@@ -897,7 +897,7 @@ function is_field_editable($row, $fieldId)
 	if(isBureauUser() && ($fieldId == 'rapporteur' || $fieldId == 'rapporteur2'))
 		return true;
 
-	if(isSecretaire() && ($fieldId == 'statut'))
+	if(isSecretaire())
 		return true;
 	
 	
@@ -910,20 +910,24 @@ function is_field_editable($row, $fieldId)
 
 	//echo $fieldId." ".$login." ".$row->rapporteur." ".$row->rapporteur2;
 	
+	if(isset($row->statut) && ($row->statut == "audition"))
+	{
+		if(isset($row->sousjury) && isPresidentSousJury($row->sousjury))
+			return true;
+		
+		if( $is_rapp1  && ($fieldId == "prerapport" || $fieldId == "avissousjury"))
+				return true;
+		
+		if( $is_rapp2  && ($fieldId == "prerapport2" || $fieldId == "avissousjury"))
+				return true;
+		
+		return false;
+				
+	}
+	
 	if(isset($row->statut) && ($row->statut == "rapport" || $row->statut == "publie"))
 	{
-		if($row->statut == "rapport" && $eval_type == "Candidature")
-		{
-			$sousjury = $row->sousjury;
-			global $presidents_sousjurys;
-			if(isset($presidents_sousjurys[$sousjury]['login']) && $login == $presidents_sousjurys[$sousjury]['login'])
-				return true;
-				
-			if($fieldId == "avissousjury" && ($is_rapp1 || $is_rapp2))
-				return true;
-							
-		}
-			return false;
+		return isSecretaire();
 	}
 	
 	if(!$is_rapp1 && !$is_rapp2 && !isSecretaire())
@@ -990,33 +994,28 @@ function is_field_visible($row, $fieldId)
 	if(in_array($fieldId, $nonVisibleFieldsTypes))
 		return false;
 
-	if(!isset($row->$fieldId))
-		return is_field_editable($row, $fieldId);
-
-
-	if(isset($row->statut) && ($row->statut == "rapport" || $row->statut == "publie"))
-		return $row->$fieldId != '';
-
-	global $fieldsIndividualAll;
-	if(in_array($fieldId,$fieldsIndividualAll))
-	{
+	//editable info is always visible
+	if(is_field_editable($row, $fieldId))
 		return true;
-	}
+	
+	//when non editable non existing fields are not visible
+	if(!isset($row->$fieldId))
+		return false;
 
+	//nothing to display -> nothing displayed
+	if($row->$fieldId == '')
+		return false;
+
+
+	//during prerapport edition we do not want rapporteurs to see each other reports
+	//only editable info is visible
 	$login = getLogin();
-
 	$is_rapp1 = isset($row->rapporteur) && $login == $row->rapporteur;
 	$is_rapp2 = isset($row->rapporteur2) && $login == $row->rapporteur2;
-
-	if($is_rapp1 || $is_rapp2)
-	{
-		return is_field_editable($row, $fieldId);
-	}
-	else
-	{
-		$result = (isset($row->$fieldId) && $row->$fieldId != '') || (is_field_editable($row, $fieldId));
-		return $result;
-	}
+	if(isset($row->statut) && $row->statut == "prerapport" && ($is_rapp1 || $is_rapp2))
+		return false;
+	
+	return true;
 }
 
 function get_editable_fields($row)

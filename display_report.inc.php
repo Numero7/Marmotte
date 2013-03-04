@@ -108,9 +108,13 @@ function displayEditableObject($titlle, $row, $fields, $use_special_tr = true)
 	global $fieldsAll;
 
 	if($titlle != "")
-		echo '<table><tr><td><span  style="font-weight:bold;" >'.$titlle.'</span></td></tr>';
+	{
+		echo '<table><tr><td></td><td><h2><span  style="font-weight:bold;" >'.$titlle.'</span></h2></td></tr>';
+	}
 	else
+	{
 		echo '<table>';
+	}
 
 
 	global $specialtr_fields;
@@ -281,6 +285,8 @@ function displayEditableReport($row, $canedit = true)
 
 
 		$hidden = array("fieldtype" => $eval_type);
+		
+		$rapporteurs  = listNomRapporteurs();
 
 		if(array_key_exists($eval_type, $typesRapportsConcours))
 		{
@@ -318,14 +324,14 @@ function displayEditableReport($row, $canedit = true)
 				if(isset($row->rapporteur) && $row->rapporteur != "")
 				{
 					echo '<td VALIGN="top">';
-					displayEditableObject("Prérapport 1",$row,$fieldsRapportsCandidat1);
+					displayEditableObject("Prérapport 1".(isset($rapporteurs[$row->rapporteur]) ? (" - ".$rapporteurs[$row->rapporteur]) : "" ),$row,$fieldsRapportsCandidat1);
 					echo'</td>';
 				}
 				
 				if(isset($row->rapporteur2) && $row->rapporteur2 != "")
 				{
 					echo '<td VALIGN="top">';
-					displayEditableObject("Prérapport 2", $row,$fieldsRapportsCandidat2);
+					displayEditableObject("Prérapport 2".(isset($rapporteurs[$row->rapporteur2]) ? (" - ".$rapporteurs[$row->rapporteur2]) : "" ), $row,$fieldsRapportsCandidat2);
 										echo'</td>';
 				}
 				
@@ -358,14 +364,14 @@ function displayEditableReport($row, $canedit = true)
 			if(isset($row->rapporteur) && $row->rapporteur != "")
 			{
 				echo '<td VALIGN="top">';
-				displayEditableObject("Prérapport 1", $row,$fieldsIndividual1, false);
+				displayEditableObject("Prérapport 1".(isset($rapporteurs[$row->rapporteur]) ? (" - ".$rapporteurs[$row->rapporteur]) : "" ), $row,$fieldsIndividual1, false);
 					echo'</td>';
 			}
 
 			if(isset($row->rapporteur2) && $row->rapporteur2 != "")
 			{
 				echo '<td VALIGN="top">';
-				displayEditableObject("Prérapport 2",$row,$fieldsIndividual2, false);
+				displayEditableObject("Prérapport 2".(isset($rapporteurs[$row->rapporteur2]) ? (" - ".$rapporteurs[$row->rapporteur2]) : "" ),$row,$fieldsIndividual2, false);
 				echo'</td>';
 			}
 			

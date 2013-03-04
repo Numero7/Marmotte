@@ -76,8 +76,7 @@ ini_set('xdebug.show_local_vars', 'on');
 			"date"
 	);
 	
-	$statutsRapports = array( 'vierge' => "Rapport vierge", 'prerapport'=>'Prérapport', 'rapport'=>"Rapport", 'publie'=>"Rapport publié");
-	$statutsRapportsPluriel = array( 'vierge' => "rapports vierges", 'prerapport'=>'prérapports', 'rapport'=>"rapports", 'publie'=>"rapport publiés");
+	$statutsRapports = array( 'vierge' => "Rapport vierge", 'prerapport'=>'Prérapport', 'rapport'=>"Rapport", 'audition'=>"Audition", 'publie'=>"Rapport publié");
 	
 	
 	$fieldsRapportAll = array(
@@ -195,7 +194,6 @@ ini_set('xdebug.show_local_vars', 'on');
 	* pour un rapport candidat
 	*/
 	$fieldsRapportsCandidat1 = array(
-			"rapporteur",
 			"avis1",
 			"prerapport",
 			"production",
@@ -212,7 +210,6 @@ ini_set('xdebug.show_local_vars', 'on');
 	* pour un rapport candidat
 	*/
 	$fieldsRapportsCandidat2 = array(
-			"rapporteur2",
 			"avis2",
 			"prerapport2",
 			"production2",

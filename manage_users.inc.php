@@ -198,6 +198,13 @@ function isSousJury($sousjury, $login = "")
 		return false;
 }
 
+function isPresidentSousJury($sousjury)
+{
+	global $presidents_sousjurys;
+	return (isset($presidents_sousjurys[$sousjury]['login']) && getLogin() == $presidents_sousjurys[$sousjury]['login']);
+}
+
+
 function addCredentials($login,$pwd)
 {
 	$_SESSION = array();

@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Serveur: localhost
--- Généré le : Ven 01 Mars 2013 à 13:24
+-- Généré le : Lun 04 Mars 2013 à 14:59
 -- Version du serveur: 5.1.63
 -- Version de PHP: 5.3.3-7+squeeze14
 
@@ -62,7 +62,7 @@ CREATE TABLE IF NOT EXISTS `people` (
 
 DROP TABLE IF EXISTS `reports`;
 CREATE TABLE IF NOT EXISTS `reports` (
-  `statut` enum('vierge','prerapport','rapport','publie','supprime') NOT NULL,
+  `statut` enum('vierge','prerapport','rapport','publie','supprime','audition') NOT NULL,
   `id_session` varchar(64) NOT NULL,
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `id_origine` int(11) NOT NULL,
@@ -101,7 +101,7 @@ CREATE TABLE IF NOT EXISTS `reports` (
   `avissousjury` text NOT NULL,
   `sousjury` text NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=51943 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=52137 ;
 
 -- --------------------------------------------------------
 
