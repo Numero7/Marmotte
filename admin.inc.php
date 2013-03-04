@@ -165,7 +165,6 @@ include("config_manager.php");
 <hr />
 
 <h2 id="infosrapporteur">Modifier les infos</h2>
-<form method="get" action="index.php">
 	<table>
 		<?php 
 		global $sous_jurys;
@@ -174,10 +173,11 @@ include("config_manager.php");
 		$users = listUsers();
 		foreach($users as $user => $data)
 		{
+			echo '<form method="post" action="index.php">';
 			if ($data->permissions <= getUserPermissionLevel())
 			{
 				echo "<tr><td >".ucfirst($data->description)."</td><td> [".$user."]</td>\n";
-				echo "<td><form>\n";
+				echo "<td>\n";
 				echo "<select name=\"permissions\">\n";
 				foreach($permission_levels as $val => $level)
 				{
@@ -212,9 +212,13 @@ include("config_manager.php");
 								echo "<option value=\"".$val."\"$sel>".$concours." ".$nom."</option>\n";
 							}
 						}
+						else
+						{
+						}
+						echo "</select>\n";
+						
 					}
 
-					echo "</select>\n";
 				}
 
 				echo "<input type=\"hidden\" name=\"login\" value=\"$user\"/>\n";
@@ -225,7 +229,6 @@ include("config_manager.php");
 		}
 		?>
 	</table>
-</form>
 
 
 <?php 

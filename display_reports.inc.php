@@ -52,6 +52,32 @@ function displayTri($rows, $sortFields, $sorting_values)
 
 }
 
+function displayExportGeneral()
+{
+	global $typeExports;
+
+	
+	?>
+	<table align="left" ">
+	<tr>
+	<td><h2>Export</h2></td>
+	<?php 
+	foreach($typeExports as $idexp => $exp)
+	{
+		$expname= $exp["name"];
+		$level = $exp["permissionlevel"];
+		if (getUserPermissionLevel()>=$level)
+		{
+			echo '<td style="padding-left: 20px"><a href="export.php?action=export&amp;type='.$idexp.'">';
+			//echo "<img class=\"icon\" width=\"40\" height=\"40\" src=\"img/$idexp-icon-50px.png\" alt=\"$expname\"/></a>";
+			echo "$expname</a></td>";
+		}
+	}
+	?>
+	</tr></table>
+	<?php 
+}
+
 
 function displayFiltrage($rows, $fields, $filters, $filter_values)
 {
@@ -133,6 +159,13 @@ function displayRows($rows, $fields, $filters, $filter_values, $sort_fields, $so
 	?>
 <form method="post" action="index.php">
 	<table>
+	<tr>
+	<td>
+	<?php 
+	displayExportGeneral();
+	?>
+	<td>
+	</tr>
 		<tr>
 			<td>
 				<table>

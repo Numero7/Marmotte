@@ -36,6 +36,8 @@ function displayEditableCandidate($candidate,$report = NULL)
 		$candidate->rapporteur2 = $report->rapporteur2;
 		$candidate->sousjury = $report->sousjury;
 		$candidate->type = $report->type;
+		$candidate->statut = $report->statut;
+		
 		
 	}
 

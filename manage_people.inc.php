@@ -164,6 +164,9 @@ function get_or_create_candidate_from_nom($nom, $prenom)
 		$cdata = mysql_fetch_object($result);
 		if($cdata == false)
 		{
+			$data = (object) array();
+			$data->nom = $nom;
+			$data->prenom = $prenom;
 			add_candidate_to_database($data);
 			$result = sql_request($sql);
 			$cdata = mysql_fetch_object($result);

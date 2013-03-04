@@ -51,12 +51,38 @@ function send_file($local_filename, $remote_filename)
 
 }
 
+function export_reports_as_txt($reports, $dir)
+{
+	if(count($reports) == 0)
+	{
+		throw new Exception("No reports to export");
+	}
+
+	global $mandatory_export_fields;
+	$file = "reports";
+	$file = $dir."/".$file.".txt";
+	$data = compileObjectsAsTXT($reports);
+	if($handle = fopen($file, 'w'))
+	{
+		fwrite ($handle, $data);
+		fclose($handle);
+	}
+	else
+		throw new Exception("Cant create txt file ".$file);
+	return $file;
+}
+
 function export_reports_as_csv($reports, $dir)
 {
-	global $mandatory_export_fields;
+	if(count($reports) == 0)
+	{
+		throw new Exception("No reports to export");
+	}
+
 
 	$file = "reports.csv";
 
+	global $mandatory_export_fields;
 	$activefields =
 	array_unique(
 			array_merge($mandatory_export_fields, get_editable_fields($reports[0]))
@@ -110,59 +136,73 @@ function export_report($report, $export_format, $dir)
 
 function export_current_selection_as_single_csv()
 {
-	
-	
+
+
 	$size = 0;
 
 	$login = getLogin();
 
-	$filtervalues = getFilterValues();
+	$filter = getFilterValues();
 
 	$filenames = array();
 	$items = array();
 
-	$filters = array();
-
-	if(isSecretaire())
-	{
-		$filters[] = $filtervalues;
-	}
-	else
-	{
-		$filtervalues1 = $filtervalues;
-		$filtervalues2 = $filtervalues;
-		$filtervalues1['rapporteur'] = getLogin();
-		$filtervalues1['rapporteur2'] = 'tous';
-		$filtervalues2['rapporteur2'] = getLogin();
-		$filtervalues2['rapporteur'] = 'tous';
-
-		$filters[] = $filtervalues1;
-		$filters[] = $filtervalues2;
-	}
-
 	$filenames = array();
 
+	$reports = filterSortReports(getCurrentFiltersList(),  $filter, getSortingValues(),false);
 
-	foreach($filters as $filter)
+	if(count($reports) > 0)
 	{
-			
-		$reports = filterSortReports(getCurrentFiltersList(),  $filter, getSortingValues(),false);
 		$dir = "csv/".$login;
 		if(!is_dir($dir) && !mkdir($dir))
 			throw new Exception("Failed to create directory ".$dir);
 
 		$file = export_reports_as_csv($reports, $dir);
 		$filenames[$file] = substr($file,strlen($dir."/"));
+
+		$remote_filename = 'marmotte_reports_'.$login.'.zip';
+		$filename = zip_files($filenames,$dir.'/'.$remote_filename);
+
+
+		if($filename == false)
+			throw new Exception("Failed to zip files");
+
+		send_file($filename, $remote_filename);
+
 	}
 
-	$remote_filename = 'marmotte_reports_'.$login.'.zip';
-	$filename = zip_files($filenames,$dir.'/'.$remote_filename);
+
+}
+
+function export_current_selection_as_single_txt()
+{
 
 
-	if($filename == false)
-		throw new Exception("Failed to zip files");
+	$size = 0;
 
-	send_file($filename, $remote_filename);
+	$login = getLogin();
+
+	$filter = getFilterValues();
+
+	$filenames = array();
+	$items = array();
+
+	$filenames = array();
+
+	$reports = filterSortReports(getCurrentFiltersList(),  $filter, getSortingValues(),false);
+
+	if(count($reports) > 0)
+	{
+		$dir = "csv/".$login;
+		if(!is_dir($dir) && !mkdir($dir))
+			throw new Exception("Failed to create directory ".$dir);
+
+		$file = export_reports_as_txt($reports, $dir);
+
+		send_file($file, "rapports_marmotte.txt");
+
+	}
+
 
 }
 
@@ -173,37 +213,18 @@ function export_current_selection($export_format)
 
 	$login = getLogin();
 
-	$filtervalues = getFilterValues();
+	$filter = getFilterValues();
 
 	$filenames = array();
 	$items = array();
 
-	$filters = array();
-
-	if(isSecretaire())
-	{
-		$filters[] = $filtervalues;
-	}
-	else
-	{
-		$filtervalues1 = $filtervalues;
-		$filtervalues2 = $filtervalues;
-		$filtervalues1['rapporteur'] = getLogin();
-		$filtervalues1['rapporteur2'] = 'tous';
-		$filtervalues2['rapporteur2'] = getLogin();
-		$filtervalues2['rapporteur'] = 'tous';
-
-		$filters[] = $filtervalues1;
-		$filters[] = $filtervalues2;
-	}
 
 	$filenames = array();
 
+	$reports = filterSortReports(getCurrentFiltersList(),  $filter, getSortingValues(),false);
 
-	foreach($filters as $filter)
+	if(count($reports) > 0)
 	{
-			
-		$reports = filterSortReports(getCurrentFiltersList(),  $filter, getSortingValues(),false);
 		$dir = "csv/".$login;
 		if(!is_dir($dir) && !mkdir($dir))
 			throw new Exception("Failed to create directory ".$dir);
@@ -213,16 +234,16 @@ function export_current_selection($export_format)
 			$file = export_report($report, $export_format, $dir);
 			$filenames[$file] = substr($file,strlen($dir."/"));
 		}
+
+		$remote_filename = 'marmotte_reports_'.$login.'.zip';
+		$filename = zip_files($filenames,$dir.'/'.$remote_filename);
+
+
+		if($filename == false)
+			throw new Exception("Failed to zip files");
+
+		send_file($filename, $remote_filename);
 	}
-
-	$remote_filename = 'marmotte_reports_'.$login.'.zip';
-	$filename = zip_files($filenames,$dir.'/'.$remote_filename);
-
-
-	if($filename == false)
-		throw new Exception("Failed to zip files");
-
-	send_file($filename, $remote_filename);
 
 }
 
@@ -373,7 +394,7 @@ if($dbh!=0)
 		try {
 			$action = isset($_REQUEST["action"]) ? $_REQUEST["action"] : "single";
 			$id= isset($_REQUEST["id"]) ? $_REQUEST["id"] : "-1";
-				
+
 			switch($action)
 			{//Processing
 				case 'viewpdf':
@@ -407,7 +428,7 @@ if($dbh!=0)
 
 						$login = getLogin();
 
-						
+
 						switch($type)
 						{
 							case "pdf":
@@ -418,18 +439,18 @@ if($dbh!=0)
 								$xml_reports = getReportsAsXML(getFilterValues(), getSortingValues());
 								$filename = "";
 								$xml_reports->formatOutput = true;
-								
+
 								$files = glob('reports/*'); // get all file names
 								foreach($files as $file){ // iterate files
 									if(is_file($file))
 										unlink($file); // delete file
 								}
-								
+
 								$result = $xml_reports->save('reports/reports.xml');
-								
+
 								if($result === false)
 									throw new Exception("Failed to save file reports/reports.xml");
-								
+
 								if($type =="pdf")
 									echo "<script>window.location = 'create_reports.php'</script>";
 
@@ -439,6 +460,9 @@ if($dbh!=0)
 
 							case "csvsingle":
 								export_current_selection_as_single_csv();
+								break;
+							case "text":
+								export_current_selection_as_single_txt();
 								break;
 							case "csv":
 							case "xml":
@@ -453,7 +477,7 @@ if($dbh!=0)
 									generate_exemple_csv($_POST['fields']);
 								else
 									throw new Exception("No fields provided,, cannot genrate exemple csv");
-									break;
+								break;
 							default:
 								{
 									if(!isset($typeExports[$type]))
@@ -461,12 +485,12 @@ if($dbh!=0)
 
 									$conf = $typeExports[$type];
 									$mime = $conf["mime"];
-									$xslpath = $conf["xsl"];
-														
+
 									$filter_values = getFilterValues();
 									$filter_values['id_edit'] = $id_edit;
 									$xml = getReportsAsXML($filter_values, getSortingValues(), false);
 									header("Content-type: $mime; charset=utf-8");
+									$xslpath = $conf["xsl"];
 									$xsl = new DOMDocument("1.0","utf-8");
 									$xsl->load($xslpath);
 									$proc = new XSLTProcessor();
@@ -476,10 +500,12 @@ if($dbh!=0)
 										$proc->setParameter('', $key, implode_with_keys($val));
 									}
 									echo $proc->transformToXML($xml);
+									break;
 								}
 						}
 
 					}
+					break;
 				default:
 					throw new Exception("Unknown action ".$action);
 			}

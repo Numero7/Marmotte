@@ -82,28 +82,23 @@ function exportReportAsXML($report,$activefields,$filename)
 	global $typesRapportToAvis;
 	global $fieldsTypes;
 
-	
 	$result = "";
-
 	$doc = new DOMDocument("1.0","UTF-8");
-
-
 	$node = $doc->createElement("evaluation");
 
-
-			$type = $report->type;
-		$avis = $typesRapportToAvis[$type];
-		foreach($activefields as $field)
+	$type = $report->type;
+	$avis = $typesRapportToAvis[$type];
+	foreach($activefields as $field)
+	{
+		if(!isSecretaire() && $fieldsTypes[$field] == "avis" && $report->$field =="")
 		{
-			if(!isSecretaire() && $fieldsTypes[$field] == "avis" && $report->$field =="")
-			{
-				$report->$field = "Avis possibles (supprimer avis inutiles)\n";
-				foreach($avis as $key => $value)
-					$report->$field .= $key."\n";
-			}
+			$report->$field = "Avis possibles (supprimer avis inutiles)\n";
+			foreach($avis as $key => $value)
+				$report->$field .= $key."\n";
 		}
+	}
 
-		thing_to_xml_node($report,$node, $doc, "", $activefields);
+	thing_to_xml_node($report,$node, $doc, "", $activefields);
 
 	$doc->appendChild($node);
 
@@ -301,7 +296,7 @@ function createXMLReportElem($row, $sessions, $units, DOMDocument $doc, $keep_br
 		}
 	}
 
-global $fieldsRapportAll;
+	global $fieldsRapportAll;
 	//On ajoute tous les fields pas spéciaux
 	foreach ($fieldsRapportAll as $fieldID => $title)
 		if(isset($row->$fieldID) && !in_array($fieldID,$fieldsspecial))
@@ -311,20 +306,27 @@ global $fieldsRapportAll;
 	//On ajoute le type du rapport et le pretty print
 	appendLeaf("type", $row->type, $doc, $rapportElem);
 
+	global $presidents_sousjurys;
+	
 	if($row->type == "Candidature")
 	{
-		global $presidents_sousjurys;
-		global $concours_ouverts;
-		appendLeaf("signataire",$presidents_sousjurys[$row->sousjury]["nom"], $doc, $rapportElem);
-		appendLeaf("signature", $presidents_sousjurys[$row->sousjury]["signature"], $doc, $rapportElem);
-		
-		$candidat = get_or_create_candidate($row);
-		appendLeaf("parcours", $candidat->parcours, $doc, $rapportElem);
-		appendLeaf("projet", $candidat->projetrecherche, $doc, $rapportElem);
-		appendLeaf("grade_concours", substr($concours_ouverts[$row->concours],0,2), $doc, $rapportElem);
-		
+		if(isset($presidents_sousjurys[$row->sousjury]))
+		{
+			if(isset($presidents_sousjurys[$row->sousjury]["nom"]) && isset($presidents_sousjurys[$row->sousjury]["signature"]))
+			{
+				global $presidents_sousjurys;
+				global $concours_ouverts;
+				appendLeaf("signataire",$presidents_sousjurys[$row->sousjury]["nom"], $doc, $rapportElem);
+				appendLeaf("signature", $presidents_sousjurys[$row->sousjury]["signature"], $doc, $rapportElem);
+
+				$candidat = get_or_create_candidate($row);
+				appendLeaf("parcours", $candidat->parcours, $doc, $rapportElem);
+				appendLeaf("projet", $candidat->projetrecherche, $doc, $rapportElem);
+				appendLeaf("grade_concours", substr($concours_ouverts[$row->concours],0,2), $doc, $rapportElem);
+			}
+		}
 	}
-	
+
 	//On ajoute les entete gauche et droit
 	appendLeaf("entetegauche", EnteteGauche($row), $doc, $rapportElem);
 	appendLeaf("entetedroit", EnteteDroit($row,$units), $doc, $rapportElem);
@@ -339,20 +341,20 @@ global $fieldsRapportAll;
 	appendLeaf("unite", $value, $doc, $rapportElem);
 
 	//On ajoute la date du jour
-		date_default_timezone_set('Europe/Paris');
+	date_default_timezone_set('Europe/Paris');
 	setlocale (LC_TIME, 'fr_FR.utf8','fra');
 	//date("j/F/Y")
 	if(strpos($_SERVER['SERVER_SOFTWARE'],"IIS") === false)
 		appendLeaf("date", strftime("%#d %B %Y", strtotime($row->date)), $doc, $rapportElem);
 	else
 		appendLeaf("date",  utf8_encode(strftime("%#d %B %Y", strtotime($row->date))), $doc, $rapportElem);
-		
-	
+
+
 	/*
-	date_default_timezone_set('Europe/Paris');
-	
+	 date_default_timezone_set('Europe/Paris');
+
 	appendLeaf("date", date("j/n/Y",strtotime($row->date)), $doc, $rapportElem);
-*/
+	*/
 
 	//On ajoute les cases à choix multiple, si nécessaires
 	if(array_key_exists($row->type,$typesRapportsToCheckboxes))

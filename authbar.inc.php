@@ -96,9 +96,10 @@ global $typesRapportsChercheurs;
 
 									}
 									?>
+									</ul>
 									</td>
 									<td valign=top>
-								</ul> Mes rapports
+								Mes rapports
 								<ul>
 
 									<?php
@@ -175,11 +176,14 @@ global $typesRapportsChercheurs;
 
 									<?php
 									}
+									?>
+																	</ul>
+							</td>
+																	<?php 
+								
 														}
 									
 									?>
-								</ul>
-							</td>
 							<td valign=top>Sessions
 								<ul>
 									<?php

@@ -280,7 +280,7 @@ function checkReportIsEditable($rapport)
 {
 	$login = getLogin();
 
-	if (isSecretaire())
+	if (isBureauUser())
 	{
 		return true;
 	}
@@ -435,11 +435,11 @@ function addReportFromRequest($id_origine, $request)
 			$id_origine = 0;
 				
 		}
-		if(!checkReportIsEditable($report))
-			throw new Exception("Le compte ".$login." n'a pas la permission de mettre à jour le rapport, veuillez contacter le bureau");
+/*		if(!checkReportIsEditable($report))
+			throw new Exception("Le compte ".getLogin()." n'a pas la permission de mettre à jour le rapport, veuillez contacter le bureau");*/
 	}
 	else if(!isReportCreatable())
-		throw new Exception("Le compte ".$login." n'a pas la permission de créer un rapport, veuillez contacter le bureau");
+		throw new Exception("Le compte ".getLogin()." n'a pas la permission de créer un rapport, veuillez contacter le bureau");
 
 
 
@@ -458,20 +458,7 @@ function createReportFromRequest($id_origine, $request)
 	global $fieldsRapportAll;
 	global $fieldsTypes;
 
-	/* Hugo : I changed for the system we discussed
-	 *
-	* also we may have problems whn creating report
-	*
-	// Origin ID might have changed while report was being edited
-	$id_origine = getIDOrigine($id_origine);
-	$row = get_object_vars(getReport($id_origine));
-
-
-	$type = "";
-	if(isset($request["type"]))
-		$type = $request["type"];
-
-	*/
+	
 	$row = (object) array();
 
 	$row->id_session = current_session_id();
@@ -584,6 +571,9 @@ function addReportToDatabase($report,$normalize = true)
 					*/
 					if( isset($report->$field) && isset($previous_report->$field) && $previous_report->$field != $report->$field)
 					{
+						if(! is_field_editable($previous_report, $field))
+							throw new Exception("Le compte ".getLogin()." n'a pas la permission de mettre à jour le champ ".$field." du rapport ".$id_origine.". Si nécessaire, veuillez contacter le bureau pour demander un changement de rapporteur.");
+						
 						if( isset($current_report->$field) && ($previous_report->$field != $current_report->$field)  && ($current_report->$field != $report->$field))
 						{
 							global $mergeableTypes;
@@ -919,16 +909,22 @@ function is_field_editable($row, $fieldId)
 	$is_rapp2 = isset($row->rapporteur2) && $login == $row->rapporteur2;
 
 	//echo $fieldId." ".$login." ".$row->rapporteur." ".$row->rapporteur2;
-	if($eval_type == "Candidature")
-	{
-		$sousjury = $row->sousjury;
-		global $presidents_sousjurys;
-		if(isset($presidents_sousjurys[$sousjury]['login']) && $login == $presidents_sousjurys[$sousjury]['login'])
-			return true;
-	}
 	
 	if(isset($row->statut) && ($row->statut == "rapport" || $row->statut == "publie"))
-		return false;
+	{
+		if($row->statut == "rapport" && $eval_type == "Candidature")
+		{
+			$sousjury = $row->sousjury;
+			global $presidents_sousjurys;
+			if(isset($presidents_sousjurys[$sousjury]['login']) && $login == $presidents_sousjurys[$sousjury]['login'])
+				return true;
+				
+			if($fieldId == "avissousjury" && ($is_rapp1 || $is_rapp2))
+				return true;
+							
+		}
+			return false;
+	}
 	
 	if(!$is_rapp1 && !$is_rapp2 && !isSecretaire())
 		return false;

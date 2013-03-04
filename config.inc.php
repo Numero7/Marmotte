@@ -621,7 +621,7 @@ ini_set('xdebug.show_local_vars', 'on');
 			"anneesequivalence" =>"short",
 			"id" =>"short",
 			"anneecandidature" => "short",
-			"production" => "long",
+			"productionResume" => "long",
 			"projetrecherche" => "long",
 			"parcours" => "long",
 			"fichiers" => "files",
@@ -680,7 +680,7 @@ ini_set('xdebug.show_local_vars', 'on');
 	$typesRapports = array_merge($typesRapportsChercheurs, $typesRapportsUnites, $typesRapportsConcours);
 
 	$typesRapportsToXSL = array(
-			'Candidature' => 'xslt/audition.xsl',
+			'Candidature' => 'xslt/html2.xsl',
 			'' => 'xslt/html2.xsl'
 	);
 	
@@ -958,10 +958,17 @@ ini_set('xdebug.show_local_vars', 'on');
 					"permissionlevel" => NIVEAU_PERMISSION_BUREAU,
 			),
 			*/
+			"text" => 	array(
+					"mime" => "text/html",
+					"xsl" => "xslt/html2.xsl",
+					"name" => "Texte",
+					"permissionlevel" => NIVEAU_PERMISSION_BASE,
+			),
+				
 			"html" => 	array(
 					"mime" => "text/html",
 					"xsl" => "xslt/html2.xsl",
-					"name" => "Html",
+					"name" => "Html (rapports)",
 					"permissionlevel" => NIVEAU_PERMISSION_BASE,
 			),
 			"xml" => 	array(
@@ -1017,7 +1024,7 @@ ini_set('xdebug.show_local_vars', 'on');
 			$presidents_sousjurys = get_config("presidents_sousjurys");
 				
 	
-	$sous_jurys[""] = array();
+	$sous_jurys = get_config("sousjurys");
 	$tous_sous_jury = array();
 	foreach($sous_jurys as $code => $liste)
 	{
