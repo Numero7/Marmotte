@@ -73,9 +73,8 @@ function display_short($row, $fieldID, $readonly)
 	if(!$readonly)
 	{
 		?>
-<input
-	name="field<?php echo $fieldID;?>" value="<?php echo $row->$fieldID;?>"
-	style="width: 100%;" />
+<input name="field<?php echo $fieldID;?>"
+	value="<?php echo $row->$fieldID;?>" style="width: 100%;" />
 <?php
 	}
 	else
@@ -169,44 +168,24 @@ function display_ecole($row, $fieldID, $readonly)
 
 function display_fichiers($row, $fieldID, $readonly)
 {
-
-	//echo "<td colspan=\"3\">";
-
+	global $dossiers_candidats;
+	
 	echo "<td>";
-
 	if($row->$fieldID != "")
 	{
-		$handle = false;
-		$basedir = get_config("people_files_root").$row->$fieldID."/";
-		if ( is_dir($basedir) )
+		$dir = $dossiers_candidats.$row->$fieldID."/";
+		$files = find_candidate_files($row,$fieldID);
+		if(count($files) > 0)
 		{
-			$handle = opendir($basedir);
-		}
-		if($handle != false)
-		{
-			$filenames = array();
-			while(1)
-			{
-				$file = readdir($handle);
-				if($file === false)
-					break;
-				else if($file != "." && $file != "..")
-					$filenames[] = $file;
-			}
-
-			foreach($filenames as $file)
-				$sorted_files[date("d/m/Y - h:i:s",filemtime($basedir.$file)).$file]=$file;
-
-			ksort($sorted_files);
-
-
+			ksort($files);
+				
 			$i = -1;
 			echo "<table><tr><td><table>\n";
 			echo '<tr><td style="padding-right: 10px">';
 
-			$nb = intval((count($sorted_files) + 2)/ 3);
+			$nb = intval((count($files) + 2)/ 3);
 
-			foreach($sorted_files as $date => $file)
+			foreach($files as $date => $file)
 			{
 				if($i % $nb	 == $nb - 1 )
 					echo '</td><td style="padding-right: 10px">';
@@ -218,54 +197,42 @@ function display_fichiers($row, $fieldID, $readonly)
 					$arr2 = array("","");
 					$prettyfile = str_replace($arr, $arr2, $prettyfile);
 				}
-				echo '<a href="'.$basedir."/".$file.'">'.$prettyfile."</a><br/>\n";
+				echo '<a href="'.$dir."/".$file.'">'.$prettyfile."</a><br/>\n";
 				$i++;
 			}
 			echo '</td></tr>';
 			echo "</table>\n";
 			echo "</td><td>";
 
-			foreach($filenames as $file)
-			{
-				if(strlen($file) > 3)
-				{
-					$suffix = substr($file,-3,3);
-					if($suffix == "jpg" || $suffix == "bmp" || $suffix == "png")
-					{
-						echo '<img class="photoid" src="'.$basedir.$file.'" alt="'.$file.'" />';
-					}
-				}
-			}
-
+			foreach($files as $date => $file)
+				if(is_picture($file))
+						echo '<img class="photoid" src="'.$dir."/".$file.'" alt="'.$file.'" />';
 
 			echo "</td></tr></table>";
-
-			closedir($handle);
-
-			//			if(!$readonly)
 			{
 				?>
 <input type="hidden" name="type"
 	value="candidatefile" />
 <input
 	type="hidden" name="MAX_FILE_SIZE" value="10000000" />
-<input name="uploadedfile" type="file" />
+<input name="uploadedfile"
+	type="file" />
 <input
 	type="submit" name="ajoutfichier" value="Ajouter fichier" />
 <?php 
 			}
 		}
 
-		if(isSecretaire())
+		if(isSecretaire() && (count($files) > 0))
 		{
 			?>
 <input type="hidden" name="type"
 	value="candidatefile" />
 <select name="deletedfile">
 	<?php
-	foreach($filenames as $file)
+	foreach($files as $date => $file)
 	{
-		echo  "<option value=\"".$basedir.$file."\" >".$file."</option>\n";
+		echo  "<option value=\"".$dir."/".$file."\" >".$file."</option>\n";
 	}
 	?>
 </select>
@@ -276,11 +243,11 @@ function display_fichiers($row, $fieldID, $readonly)
 		else
 		{
 			$pictures = array();
-			foreach($filenames as $file)
+			foreach($files as $date => $file)
 				if(is_picture($file))
 				$pictures[] = $file;
-				
-			if(count($pictures)  > 0)
+
+			if(count($pictures)  > 0  )
 			{
 				?>
 <input type="hidden" name="type"
@@ -289,7 +256,7 @@ function display_fichiers($row, $fieldID, $readonly)
 	<?php
 	foreach($pictures as $file)
 	{
-		echo  "<option value=\"".$basedir.$file."\" >".$file."</option>\n";
+		echo  "<option value=\"".$dir."\" >".$file."</option>\n";
 	}
 	?>
 </select>

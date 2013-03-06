@@ -8,7 +8,7 @@ require_once('manage_rapports.inc.php');
 require_once('display_field.inc.php');
 require_once('utils.inc.php');
 
-function displayEditableCandidate($candidate,$report = NULL)
+function displayEditableCandidate($candidate,$report = NULL,$canedit = true)
 {
 
 	global $fieldsCandidat;
@@ -46,7 +46,7 @@ function displayEditableCandidate($candidate,$report = NULL)
 
 	displayEditionFrameStart("",$hidden,array());
 
-	displayEditableObject("", $candidate, $fieldsCandidat);
+	displayEditableObject("", $candidate, $fieldsCandidat,$canedit);
 
 	displayEditionFrameEnd("Données candidat");
 
@@ -103,7 +103,7 @@ function displayEditionFrameEnd($titlle)
 	echo "<!-- Fin de displayEditableObject ".$titlle." -->\n";
 }
 
-function displayEditableObject($titlle, $row, $fields, $use_special_tr = true)
+function displayEditableObject($titlle, $row, $fields, $canedit = true, $use_special_tr = true)
 {
 	global $fieldsAll;
 
@@ -137,7 +137,7 @@ function displayEditableObject($titlle, $row, $fields, $use_special_tr = true)
 			if(isset($fieldsTypes[$fieldId]))
 			{
 				
-				$editable = is_field_editable($row, $fieldId);
+				$editable = $canedit && is_field_editable($row, $fieldId);
 				
 				/*
 				if(!$use_special_tr || !in_array($fieldId, $specialtr_fields) || in_array($fieldId, $start_tr_fields))
@@ -261,8 +261,15 @@ function displayEditableReport($row, $canedit = true)
 	$submits = array();
 	$submits["editprevious"] = "<<";
 	
-	if(isReportEditable($row))
+	if($canedit)
+	{
 		$submits["submitandkeepediting"] = "Enregistrer";
+		$submits["read"] = "Voir";
+	}
+	else 
+	{
+		$submits["edit"] = "Edit";
+	}
 	
 	if(isSecretaire())
 		$submits["deleteandeditnext"] = "Supprimer";
@@ -291,7 +298,7 @@ function displayEditableReport($row, $canedit = true)
 		if(array_key_exists($eval_type, $typesRapportsConcours))
 		{
 			$candidate = get_or_create_candidate($row);
-			displayEditableCandidate($candidate,$row);
+			displayEditableCandidate($candidate,$row,$canedit);
 			
 			$other_reports = find_somebody_reports($candidate,$eval_type);
 			//rrr();
@@ -324,27 +331,27 @@ function displayEditableReport($row, $canedit = true)
 				if(isset($row->rapporteur) && $row->rapporteur != "")
 				{
 					echo '<td VALIGN="top">';
-					displayEditableObject("Prérapport 1".(isset($rapporteurs[$row->rapporteur]) ? (" - ".$rapporteurs[$row->rapporteur]) : "" ),$row,$fieldsRapportsCandidat1);
+					displayEditableObject("Prérapport 1".(isset($rapporteurs[$row->rapporteur]) ? (" - ".$rapporteurs[$row->rapporteur]) : "" ),$row,$fieldsRapportsCandidat1,$canedit);
 					echo'</td>';
 				}
 				
 				if(isset($row->rapporteur2) && $row->rapporteur2 != "")
 				{
 					echo '<td VALIGN="top">';
-					displayEditableObject("Prérapport 2".(isset($rapporteurs[$row->rapporteur2]) ? (" - ".$rapporteurs[$row->rapporteur2]) : "" ), $row,$fieldsRapportsCandidat2);
+					displayEditableObject("Prérapport 2".(isset($rapporteurs[$row->rapporteur2]) ? (" - ".$rapporteurs[$row->rapporteur2]) : "" ), $row,$fieldsRapportsCandidat2,$canedit);
 										echo'</td>';
 				}
 				
 				
 				echo'</tr></table>';
 
-				displayEditableObject("Rapport section", $row, array_merge(array("statut"),$fieldsRapportsCandidat0));
+				displayEditableObject("Rapport section", $row, array_merge(array("statut"),$fieldsRapportsCandidat0),$canedit);
 		}
 		else if(array_key_exists($eval_type, $typesRapportsChercheurs))
 		{
 			//todo $chercheur = chercheur_of_report($row);
 			$chercheur = get_or_create_candidate($row);
-			displayEditableChercheur($chercheur,$row);
+			displayEditableChercheur($chercheur,$row,$canedit);
 				
 			$other_reports = find_somebody_reports($chercheur,$eval_type);
 			echo "<br/><hr/><br/>";
@@ -364,19 +371,19 @@ function displayEditableReport($row, $canedit = true)
 			if(isset($row->rapporteur) && $row->rapporteur != "")
 			{
 				echo '<td VALIGN="top">';
-				displayEditableObject("Prérapport 1".(isset($rapporteurs[$row->rapporteur]) ? (" - ".$rapporteurs[$row->rapporteur]) : "" ), $row,$fieldsIndividual1, false);
+				displayEditableObject("Prérapport 1".(isset($rapporteurs[$row->rapporteur]) ? (" - ".$rapporteurs[$row->rapporteur]) : "" ), $row,$fieldsIndividual1, $canedit, false);
 					echo'</td>';
 			}
 
 			if(isset($row->rapporteur2) && $row->rapporteur2 != "")
 			{
 				echo '<td VALIGN="top">';
-				displayEditableObject("Prérapport 2".(isset($rapporteurs[$row->rapporteur2]) ? (" - ".$rapporteurs[$row->rapporteur2]) : "" ),$row,$fieldsIndividual2, false);
+				displayEditableObject("Prérapport 2".(isset($rapporteurs[$row->rapporteur2]) ? (" - ".$rapporteurs[$row->rapporteur2]) : "" ),$row,$fieldsIndividual2, $canedit, false);
 				echo'</td>';
 			}
 			
 			echo '</tr></table>';
-			displayEditableObject("Rapport section", $row,$fieldsIndividual0, false);
+			displayEditableObject("Rapport section", $row,$fieldsIndividual0, $canedit, false);
 				
 			
 
@@ -395,17 +402,17 @@ function displayEditableReport($row, $canedit = true)
 			displayEditionFrameStart("",$hidden,array());
 
 			echo'<table><tr><td VALIGN="top">';
-			displayEditableObject("Rapport section", $row,$fieldsUnites0, false);
+			displayEditableObject("Rapport section", $row,$fieldsUnites0, $canedit, false);
 
 			if(isset($row->rapporteur) && $row->rapporteur != "")
 			{
 				echo'</td><td VALIGN="top">';
-				displayEditableObject("Prérapport 1", $row,$fieldsUnites1, false);
+				displayEditableObject("Prérapport 1", $row,$fieldsUnites1, $canedit, false);
 			}
 			if(isset($row->rapporteur2) && $row->rapporteur2 != "")
 			{
 				echo'</td><td VALIGN="top">';
-				displayEditableObject("Prérapport 2",$row,$fieldsUnites2, false);
+				displayEditableObject("Prérapport 2",$row,$fieldsUnites2, $canedit, false);
 			}
 				
 			echo'</td></tr></table>';
@@ -437,10 +444,25 @@ function editReport($id_rapport)
 	try
 	{
 		$report = getReport($id_rapport);
-		$canedit = isReportEditable($report);
 		$row = normalizeReport($report);
 		$candidat = get_or_create_candidate($row);
-		displayEditableReport($row, $canedit);
+		displayEditableReport($row, true);
+	}
+	catch(Exception $exc)
+	{
+		throw new Exception("Echec de l'édition du rapport:\n ".$exc->getMessage());
+	}
+
+};
+
+function viewReport($id_rapport)
+{
+	try
+	{
+		$report = getReport($id_rapport);
+		$row = normalizeReport($report);
+		$candidat = get_or_create_candidate($row);
+		displayEditableReport($row, false);
 	}
 	catch(Exception $exc)
 	{

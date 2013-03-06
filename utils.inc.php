@@ -205,7 +205,7 @@ function array_remove_by_value($array, $value)
 function is_picture($file)
 {
 	if(strlen($file) < 4) return false;
-	$suffix = substr($file,-3,3);
+	$suffix = strtolower(substr($file,-3,3));
 	return $suffix == "png" || $suffix == "jpg" || $suffix == "bmp";
 }
 	

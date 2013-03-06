@@ -7,7 +7,8 @@ function getFilterValue($filter_name)
 	$filters = $filtersAll;
 	$answer = $filters[$filter_name]['default_value'];
 	if(isset($_REQUEST["filter_".$filter_name]))
-		$answer = $_REQUEST["filter_".$filter_name] != "" ? $_REQUEST["filter_".$filter_name] : $filters[$filter_name]['default_value'];
+		$answer = $_REQUEST["filter_".$filter_name];
+		//$answer = $_REQUEST["filter_".$filter_name] != "" ? $_REQUEST["filter_".$filter_name] : $filters[$filter_name]['default_value'];
 	else if(isset($_SESSION["filter_".$filter_name]))
 		$answer =   $_SESSION["filter_".$filter_name];
 	$_SESSION["filter_".$filter_name] = $answer;

@@ -4,9 +4,9 @@ require_once('config.inc.php');
 require_once('manage_sessions.inc.php');
 
 /*
-function generateKey($annee, $nom,$prenom)
-{
-	return mb_strtolower(replace_accents(trim($annee.$nom.$prenom," '-")));
+ function generateKey($annee, $nom,$prenom)
+ {
+return mb_strtolower(replace_accents(trim($annee.$nom.$prenom," '-")));
 }
 */
 function candidateExists($nom,$prenom)
@@ -28,7 +28,7 @@ function normalizeCandidat($data)
 		$data->nom = "";
 	if(!isset($data->prenom))
 		$data->prenom = "";
-	
+
 	foreach($candidat_prototypes as $field => $value)
 		if(isset($data->$field))
 		if($data->$field=="")
@@ -153,14 +153,14 @@ function get_or_create_candidate_from_nom($nom, $prenom)
 {
 	try
 	{
-	
+
 		mysql_query("LOCK TABLES ".people_db." WRITE;");
-	
-	
+
+
 		$sql = "SELECT * FROM ".people_db.' WHERE nom="'.$nom.'" AND prenom="'.$prenom.'" ;';
-	
+
 		$result = sql_request($sql);
-	
+
 		$cdata = mysql_fetch_object($result);
 		if($cdata == false)
 		{
@@ -173,7 +173,7 @@ function get_or_create_candidate_from_nom($nom, $prenom)
 			if($cdata == false)
 				throw new Exception("Failed to find candidate previously added<br/>".$sql);
 		}
-	
+
 		mysql_query("UNLOCK TABLES");
 		return normalizeCandidat($cdata);
 	}
@@ -190,8 +190,6 @@ function get_or_create_candidate($data)
 
 	return get_or_create_candidate_from_nom($data->nom,$data->prenom);
 }
-
-
 
 function change_candidate_property($annee,$nom,$prenom, $property_name, $newvalue)
 {
@@ -236,38 +234,116 @@ function change_candidate_properties($annee,$nom,$prenom, $data)
 	}
 
 	$sql .= ' WHERE nom="'.$candidate->nom.'" AND prenom="'.$candidate->prenom.'";';
-	
+
 	sql_request($sql);
 
 }
 
-function link_files_to_candidates($directory)
+function is_associated_directory($candidate, $directory)
 {
+	return ($candidate->nom == "" || strpos(norm_name($directory), norm_name($candidate->nom) ) != false ) && ( $candidate->prenom || strpos(norm_name($directory), norm_name($candidate->prenom) )  != false );
+}
+
+function find_candidate_files($candidate, $fieldID, $force = false, $directories = NULL)
+{
+	global $dossiers_candidats;
+	if($candidate->nom == "" && $candidate->prenom == "")
+		return array();
+
+	$basedir = $dossiers_candidats.$candidate->$fieldID."/";
+
+	if($force || !is_dir($basedir) || !is_associated_directory($candidate, $basedir))
+	{
+		if($directories == NULL)
+			$directories = get_directories_list();
+		foreach($directories as $directory)
+		{
+			if( is_associated_directory($candidate, $directory) )
+			{
+			$dir = str_replace($dossiers_candidats,"",$directory);
+			echo "Changing cndidate dir for ".$directory." <br/>";
+				change_candidate_property($candidate->anneecandidature, $candidate->nom, $candidate->prenom, $fieldID, $dir);
+				break;
+			}
+		}
+		//echo "No directory found for ".$candidate->nom." ".$candidate->nom." <br/>";
+		//change_candidate_property($candidate->anneecandidature, $candidate->nom, $candidate->prenom, $fieldID, "");
+	}
+
+	if ( is_dir($basedir) )
+	{
+		$handle = opendir($basedir);
+		if($handle != false)
+		{
+			$files = array();
+			while(1)
+			{
+				$file = readdir($handle);
+				if($file === false)
+					break;
+				if($file != "." && $file != "..")
+				{
+					$filenames[] = $file;
+					foreach($filenames as $file)
+						$files[date("d/m/Y - h:i:s",filemtime($basedir.$file)).$file]=$file;
+				}
+			}
+			closedir($handle);
+
+			return $files;
+		}
+	}
+	else
+		echo "No file in directory ".$basedir." </br>";
+
+
+	return array();
+}
+
+function get_directories_list()
+{
+	global $dossiers_candidats;
+
+	$directories = array();
+	$files = glob($dossiers_candidats . "*" );
+
+	foreach($files as $file)
+	{
+			echo "Checking file '".$file."' <br/>";
+		if(is_dir($file))
+		{
+			echo "Adding dir ".$file." <br/>";
+		$directories[]= $file;
+		}
+	}
+
+	return $directories;
+}
+
+function link_files_to_candidates()
+{
+	global $dossiers_candidats;
+
 	echo "Linking files to candidates<br/>";
 
 	$candidates = getAllCandidates();
 
-	$directories=array();
-	$files = glob($directory . "*" );
-	echo "Looking for directories in '".$directory."'<br/>";
-
-	foreach($files as $file)
-	{
-		if(is_dir($file))
-		{
-			// "Found directory '".$file."'<br/>";
-			$directories[]= $file;
-		}
-		else
-		{
-			//echo "Found file '".$file."'<br/>";
-		}
-	}
+	$directories = get_directories_list();
 
 	$nb = 0;
 	foreach($candidates as $candidate)
-		if(find_files($candidate, $directories)) $nb++;
-
+	{
+		echo "Linking files to candidate ".$candidate->nom." <br/>";
+		try
+		{
+			find_candidate_files($candidate, "fichiers", true, $directories);
+			$nb++;
+		}
+		catch(Exception $e)
+		{
+			echo $e."<br/>";
+		}
+	}
 	echo "Found files for ".$nb. "/".count($candidates)."  candidates<br/>";
 }
 
@@ -277,23 +353,6 @@ function norm_name($nom)
 	return strtoupper(str_replace(array(" ","'","-"), array("_","_","_"),$nom));
 }
 
-function find_files($candidate , $directories)
-{
-	if($candidate->nom == "" || $candidate->prenom == "")
-		return;
-
-	foreach($directories as $directory)
-	{
-		if( strpos(norm_name($directory), norm_name($candidate->nom) ) != false && strpos(norm_name($directory), norm_name($candidate->prenom) ) != false)
-		{
-			echo "Adding directory ".$directory ." to candidate ". $candidate->nom . " " . $candidate->prenom."<br/>";
-			change_candidate_property($candidate->anneecandidature, $candidate->nom, $candidate->prenom, "fichiers",$directory);
-			return true;
-		}
-	}
-	echo "NO DIRECTORY FOR CANDIDATE ". $candidate->nom . " " . $candidate->prenom."<br/>";
-	return false;
-}
 
 
 ?>

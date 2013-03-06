@@ -120,14 +120,15 @@ function alertText($text)
 			<?php 
 		}
 
-		function displayWithRedirect($id = 0)
+		function viewWithRedirect($id)
 		{
 			?>
 					<script type="text/javascript">
-					window.location = "index.php?action=edit&id=<?php echo $id;?>"
+					window.location = "index.php?action=read&id=<?php echo $id;?>"
 					</script>
 					<?php 
 		}
+				
 
 		function displayWithRedirects($id = 0)
 		{
@@ -173,6 +174,9 @@ function alertText($text)
 				case 'edit':
 					editReport($id_rapport);
 					break;
+				case 'read':
+					viewReport($id_rapport);
+					break;
 				case 'history':
 					historyReport($id_origine);
 					break;
@@ -182,13 +186,26 @@ function alertText($text)
 					displayReports();
 					break;
 
+				case 'view':
+					displayWithRedirects($next);
+					//viewWithRedirect($next);
+					break;
+						
 				case 'update':
 
 					$next = next_report($id_origine);
 					$previous = previous_report($id_origine);
 
 
-					if(isset($_REQUEST["editnext"]))
+					if(isset($_REQUEST["read"]))
+					{
+						viewWithRedirect($id_origine);
+					}
+					else if(isset($_REQUEST["edit"]))
+					{
+						editWithRedirect($id_origine);
+					}
+					else if(isset($_REQUEST["editnext"]))
 					{
 						editWithRedirect($next);
 					}
@@ -444,7 +461,7 @@ function alertText($text)
 					include "admin.inc.php";
 					break;
 				case 'trouverfichierscandidats':
-					link_files_to_candidates("dossiers/Dossiers/");
+					link_files_to_candidates();
 					include "admin.inc.php";
 					break;
 				case 'creercandidats':

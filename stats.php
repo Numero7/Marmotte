@@ -132,7 +132,7 @@ function displayArraysAux($tab,$currLevel, $columnFilters,$rowFilters,$rowtitles
 		sort($rows);
 		sort($cols);
 		$titles = array_values($columnFilters);
-		$rowtitle = $titles[$currLevel-1];
+		$rowtitle = isset($titles[$currLevel-1]) ? $titles[$currLevel-1] : "";
 
 		echo "<tr><td></td><td></td>";
 		foreach($cols as $col)
@@ -380,6 +380,55 @@ if(is_current_session_concours())
 	displayArrays($filters, $columnFilters, $rowFilters);
 	
 }
+
+?>
+
+<h1>Stats theses</h1>
+<p>
+Statistiques sur le nombre de rapports de candidats par localisation de these
+</p>
+
+<p>Candidats</p>
+	
+	<?php 
+	global $theseslocs;
+	$filters = array(
+			'type' => "Candidature",
+	);
+	
+	$columnFilters = array(
+			"concours" => "Concours",
+	);
+	$rowFilters = array(
+			'theseloc' => 'Localisation de la thèse'
+	);
+	
+	displayArrays($filters, $columnFilters, $rowFilters,$theseslocs);
+?>
+
+<p>Candidats auditionnés</p>
+<?php
+
+if(is_current_session_concours())
+{
+	global $theseslocs;
+	$filters = array(
+			'type' => "Candidature",
+			'avis' => "oral",
+	);
+
+	$columnFilters = array(
+			"concours" => "Concours",
+	);
+	$rowFilters = array(
+			'theseloc' => 'Localisation de la thèse'
+	);
+
+	displayArrays($filters, $columnFilters, $rowFilters,$theseslocs);
+
+	
+}
+
 
 if(is_current_session_concours())
 {

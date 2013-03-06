@@ -22,8 +22,9 @@ ini_set('xdebug.show_local_vars', 'on');
 	require_once("config.php");
 	
 	load_config(true);
-	save_config();
+	//save_config();
 	
+	$dossiers_candidats = get_config("people_files_root");
 
 	//include_once(section_config_file);
 	
@@ -539,10 +540,8 @@ ini_set('xdebug.show_local_vars', 'on');
 	$mergeableTypes = array("short","treslong","long","short");
 	$crashableTypes = array("auteur");
 	
-	$enumFields = array(
-			"genre" => array(""=>"None", "homme" => "Homme","femme" => "Femme"),
-			 "theseloc" => array(
-			 		"" => "",
+	$theseslocs = 			 array(
+			 		"" => "Pas de these",
 			 		"fr" => "France",
 			 		"africa" => "Afrique",
 			 		"southamerica" => "Amérique du Sud",
@@ -551,7 +550,12 @@ ini_set('xdebug.show_local_vars', 'on');
 			 		"eu" => "Europe",
 			 		"ru" => "Russie",
 			 		"us" => "USA",
-			 				 ),
+			 		"as" => "Asie"
+			 				 );
+	
+	$enumFields = array(
+			"genre" => array(""=>"None", "homme" => "Homme","femme" => "Femme"),
+			"theseloc" => $theseslocs,
 			"statut_individu" => array(
 					''=>'',
 					'candidat' => 'Candidat',
@@ -697,9 +701,9 @@ ini_set('xdebug.show_local_vars', 'on');
 	
 
 	/* Pour les concours*/
-	$avis_candidature = array(""=>"", "adiscuter"=>"à discuter", "nonauditionne"=>"Non Auditionné", "oral"=>"Auditionné", "nonclasse"=>"Non Classé", "nonconcur"=>"Non Admis à Concourir");
-	$avis_candidature_short = array("tous" => "", "" =>"sans avis", "adiscuter"=>"à discuter", "nonauditionne"=>"Non Auditionné", "oral"=>"Auditionné", "nonclasse"=>"Non Classé", "classe"=>"Classé", "nonconcur"=>"Non Admis à Concourir");
-	$avis_candidature_necessitant_pas_rapport_sousjury = array("", "adiscuter", "nonauditionne");
+	$avis_candidature = array(""=>"", "adiscuter"=>"à discuter", 	'desistement' => 'Desistement', "nonauditionne"=>"Non Auditionné", "oral"=>"Auditionné", "nonclasse"=>"Non Classé", "nonconcur"=>"Non Admis à Concourir");
+	$avis_candidature_short = array("tous" => "", "" =>"sans avis", 'desistement' => 'Desistement', "adiscuter"=>"à discuter", "nonauditionne"=>"Non Auditionné", "oral"=>"Auditionné", "nonclasse"=>"Non Classé", "classe"=>"Classé", "nonconcur"=>"Non Admis à Concourir");
+	$avis_candidature_necessitant_pas_rapport_sousjury = array("", "adiscuter", "nonauditionne", "desistement");
 	
 	$max_classement = 30;
 	for($i = 1; $i <= $max_classement; $i++)
@@ -1079,6 +1083,7 @@ ini_set('xdebug.show_local_vars', 'on');
 			'id_session' => array('name'=>"Session", 'default_value' =>-1, 'default_name' => "Toutes les sessions"),
 			'type' => array('name'=>"Type d'évaluation" , 'liste' => $typesRapportsConcours,'default_value' => "tous", 'default_name' => ""),
 			'avancement' => array('name'=>"Avancement" , 'default_value' => "", 'default_name' => ""),
+			'theseloc' => array('name'=>"TheseLoc" , 'liste' => $theseslocs, 'default_value' => "tous", 'default_name' => "Toutes les locs"),
 			'id_origine' => array('default_value' =>-1),
 			'id' => array('default_value' =>-1),
 	);
