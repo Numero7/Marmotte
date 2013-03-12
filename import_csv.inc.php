@@ -20,10 +20,11 @@ function import_csv($type,$filename, $subtype, $sep=";", $del="\n",$enc='"', $es
 	if($file = fopen ( $filename , 'r') )
 	{
 		$fields = fgetcsv ( $file, 0, $sep , $enc, $esc );
+		/*
 		foreach($fields as $field)
 			if($field != "" && !key_exists($field, $fieldsAll) && !key_exists($field, $csv_composite_fields))
 			throw new Exception("No field with name ". $field." in evaluations or in composite fields list");
-
+*/
 		$with_id = in_array("id",$fields);
 		$id_rank = array_search("id",$fields);
 		if(!isSecretaire())
@@ -82,10 +83,12 @@ function import_csv($type,$filename, $subtype, $sep=";", $del="\n",$enc='"', $es
 			}
 		}
 		if($errors != "")
-			return "Uploaded ".$nb." reports of type ".$type."/".$subtype." to database with errors:\n\t".$errors."<br/> and output <br/>".$output;
+			return $nb." rapports de type ".$type."/".$subtype." ont été ajoutés. Erreurs:\n\t".$errors."<br/> and output <br/>".$output;
+		else if($output != "")
+			return $nb." rapports de type ".$type."/".$subtype." ont été ajoutés <br/>".$output;
 		else
-			return "Uploaded ".$nb." reports of type ".$type."/".$subtype." to database with output <br/>".$output;
-	}
+			return $nb." rapports de type ".$type."/".$subtype." ont été ajoutés.";
+		}
 	else
 	{
 		throw new Exception("Failed to open file ".$filename." for reading");
@@ -159,18 +162,27 @@ function addCsvReport($type, $data, $fields)
 {
 	global $report_prototypes;
 
+	if(isset($data->code))
+		$data->unite = $data->code;
+	if(isset($data->unite))
+		$data->code = $data->unite;
+	
+	
 	$report = getDocFromCsv($data,$fields);
 	$report->statut = 'vierge';
 	if($type != "")
 		$report->type = $type;
 	$report->id_session = current_session_id();
 	addReport($report,false);
+
+	if(isset($data->unite))
+		updateUnitData($data->unite, $data);
 }
 
 function addCsvUnite($type, $data, $fields)
 {
 	$unite = getDocFromCsv($data,$fields);
-	insertUniteInDatabase($report);
+	insertUniteInDatabase($unite);
 }
 
 

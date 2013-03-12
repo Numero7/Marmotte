@@ -48,7 +48,6 @@ function process_upload($extradata = null)
 								$target_path = "uploads/".$type.".".$suffix;
 								if(move_uploaded_file($tmpname,$target_path))
 								{
-									echo "File uploaded and stored as ".$target_path."</br>";
 									return process_import($type,$suffix,$target_path,$subtype)."<br/>";
 								}
 								else
@@ -81,8 +80,9 @@ function process_upload($extradata = null)
 						break;
 					case "candidatefile":
 						{
+							global $dossiers_candidats;
 								$candidate = $extradata;
-								if(!move_uploaded_file($tmpname, $candidate->fichiers."/".$files['name'] ))
+								if(!move_uploaded_file($tmpname, $dossiers_candidats.$candidate->fichiers."/".$files['name'] ))
 									throw new Exception("Failed to add file to candidate ");
 								return ("Fichier ".$files['name']." ajouté au candidat ");
 						}

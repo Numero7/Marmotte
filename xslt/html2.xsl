@@ -80,6 +80,11 @@
 				</p>
 
 				<p>
+					<xsl:value-of disable-output-escaping="yes" select="productionResume" />
+				</p>
+
+
+				<p>
 					<xsl:value-of disable-output-escaping="yes" select="projet" />
 				</p>
 

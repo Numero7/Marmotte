@@ -209,9 +209,17 @@ function alertText($text)
 					{
 						editWithRedirect($next);
 					}
+					else if(isset($_REQUEST["viewnext"]))
+					{
+						viewWithRedirect($next);
+					}
 					else if(isset($_REQUEST["editprevious"]))
 					{
 						editWithRedirect($previous);
+					}
+					else if(isset($_REQUEST["viewprevious"]))
+					{
+						viewWithRedirect($previous);
 					}
 					else if(isset($_REQUEST["retourliste"]))
 					{
@@ -276,9 +284,17 @@ function alertText($text)
 							{
 								editWithRedirectReport($next);
 							}
+							else if(isset($_REQUEST["submitandviewnext"]))
+							{
+								viewWithRedirect($next);
+							}
 							else if(isset($_REQUEST["submitandkeepediting"]))
 							{
 								editWithRedirect($report->id);
+							}
+							else if(isset($_REQUEST["submitandkeepviewing"]))
+							{
+								viewWithRedirect($report->id);
 							}
 						}
 					}

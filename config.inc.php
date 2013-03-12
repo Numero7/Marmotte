@@ -39,8 +39,7 @@ ini_set('xdebug.show_local_vars', 'on');
 			"theme1",
 			"theme2",
 			"theme3",
-			"unite",
-			"id"
+			"unite"
 	);
 	
 	$fieldsSummaryConcours = array(
@@ -49,6 +48,8 @@ ini_set('xdebug.show_local_vars', 'on');
 			"prenom",
 			"concours",
 			"sousjury",
+			"avis",
+			"theseAnnee",
 			"grade",
 			"rapporteur",
 			"rapporteur2",
@@ -56,7 +57,6 @@ ini_set('xdebug.show_local_vars', 'on');
 			"theme2",
 			"labo1",
 			"labo2",
-			"avis",
 	);
 	
 	$fieldsTriConcours = array(
@@ -74,6 +74,7 @@ ini_set('xdebug.show_local_vars', 'on');
 			"labo2",
 			"labo3",
 			"avis",
+			"theseAnnee",
 			"date"
 	);
 	
@@ -97,8 +98,8 @@ ini_set('xdebug.show_local_vars', 'on');
 			"avis2" => "Avis rapp. 2",
 			"avissousjury" => "Avis sur l'audition",
 			"rapport" => "Rapport Section",
-		"prerapport" => "Prérapport/remarques<br/>rapp 1.",
-		"prerapport2" => "Prérapport/remarques<br/>rapp 2.",
+		"prerapport" => "Prérapport 1",
+		"prerapport2" => "Prérapport 2",
 			"anneesequivalence" => "Années d'équivalence",
 		"production" => "Production<br/>scientifique",
 		"avissousjury" => "Avis sur l'audition",
@@ -319,7 +320,7 @@ ini_set('xdebug.show_local_vars', 'on');
 			"concourspresentes"
 	);
 
-	$fieldsCandidatAuditionne = array_merge($fieldsCandidatAvantAudition, array("projetrecherche","parcours"));
+	$fieldsCandidatAuditionne = array_merge($fieldsCandidatAvantAudition, array("parcours","productionResume", "projetrecherche"));
 	
 	$fieldsCandidat = $fieldsCandidatAuditionne;
 	
@@ -365,8 +366,8 @@ ini_set('xdebug.show_local_vars', 'on');
 	
 	$fieldsUnitsDB = array(
 			"code" => "Code",
-			"nickname" => "Nom",
-			"fullname" => "Nom complet",
+			"nickname" => "Acronyme",
+			"fullname" => "Nom",
 			"directeur" => "Direction"
 			);
 	
@@ -534,7 +535,7 @@ ini_set('xdebug.show_local_vars', 'on');
 	);
 
 	$candidat_prototypes = array(
-			'avissousjury' => "Une phrase sur le candidat incluant un commentaire sur l'audition (à préparer par le rapporteur après l'audition, et qui sera validé en jury d’admissibilité)."
+			'avissousjury' => "Un commentaire sur l'audition du candidat, à renseigner par le premier rapporteur après l'audition."
 	);
 	
 	$mergeableTypes = array("short","treslong","long","short");
@@ -640,7 +641,9 @@ ini_set('xdebug.show_local_vars', 'on');
 		'Suivi-PostEvaluation' => 'Suivi Post-Evaluation',
 		'Titularisation' => 'Titularisation',
 		'Affectation' => 'Confirmation d\'Affectation',
-		'Reconstitution' => 'Reconstitution de Carrière'
+		'Reconstitution' => 'Reconstitution de Carrière',
+		'Emeritat' => 'Eméritat (1ere demande)',
+		'Emeritat-renouvellement' => 'Eméritat (renouvellement)'
 	);
 
 	$typesRapportsChercheursShort = array(
@@ -650,8 +653,10 @@ ini_set('xdebug.show_local_vars', 'on');
 			'Suivi-PostEvaluation' => 'Suivi Post-Evaluation',
 			'Titularisation' => 'Titularisation',
 			'Affectation' => 'Confirm. d\'Affectation',
-			'Reconstitution' => 'Reconst. de Carrière'
-	);
+			'Reconstitution' => 'Reconst. de Carrière',
+			'Emeritat' => 'Eméritat',
+			'Emeritat-renouvellement' => 'Eméritat Renouv.'
+		);
 	
 	$typesRapportsUnites = array(
 			'Changement-Directeur' => 'Changement de Directeur',
@@ -756,6 +761,8 @@ ini_set('xdebug.show_local_vars', 'on');
 	$typesRapportToAvis = array(
 		'Evaluation-Vague' => $avis_eval,
 		'Evaluation-MiVague' => $avis_eval,
+		'Emeritat' => $avis_binaire,
+		'Emeritat-renouvellement' => $avis_binaire,
 		'Promotion' => $avis_classement,
 		'Candidature' => $avis_candidature,
 		'Equivalence' => $avis_ie,
@@ -774,6 +781,9 @@ ini_set('xdebug.show_local_vars', 'on');
 	
 	$tous_avis = array_merge($avis_eval,$avis_classement,$avis_candidature,$avis_ie,$avis_pertinence,$avis_ecoles,$avis_binaire);
 
+	for($i = 1; $i <= $max_classement; $i++)
+		$tous_avis[$i] = strval($i);
+	
 /* Definition des checkboxes à la fin de certains rapports*/
 	
 	/*Pour les evals à vague et mi vague*/
@@ -837,7 +847,8 @@ ini_set('xdebug.show_local_vars', 'on');
 			'Comite-Evaluation' => '<span  style=\"font-weight:bold;\" >Objet de l’examen :</span> Comité d\'évaluation',
 			'Generique' => '&nbsp;',
 			'Equivalence' => '<span  style=\"font-weight:bold;\" >Objet de l’évaluation :</span><br/><EM>Equivalence titres et travaux</EM>',
-						
+			'Emeritat' => '<span  style=\"font-weight:bold;\" >Objet de l’évaluation :</span><br/><EM>Eméritat (1ere demande)</EM>',
+			'Emeritat-renouvellement' => '<span  style=\"font-weight:bold;\" >Objet de l’évaluation :</span><br/><EM>Eméritat (renouvellement)</EM>',
 			'' => ''
 	);
 
@@ -854,6 +865,8 @@ ini_set('xdebug.show_local_vars', 'on');
 	$typesRapportsToEnteteDroit = array(
 			'Evaluation-Vague' => 'Individu',
 			'Evaluation-MiVague' => 'Individu',
+			'Emeritat' => 'Individu',
+			'Emeritat-renouvellement' => 'Individu',
 			'Promotion' => 'Individu',
 			'Candidature' => 'Concours',
 			'Equivalence' => 'Equivalence',
@@ -904,7 +917,7 @@ ini_set('xdebug.show_local_vars', 'on');
 		'DRCE2'  => 'Dir. de Recherche Classe Except. 2ème échelon (DRCE2)',
 		'ChaireMC' => 'Chaire MdC',
 		'ChairePR' => 'Chaire PR',
-		'Emerite' => 'Emerite',
+		'Emerite' => 'Emérite',
 		'MC' => 'MdC',
 		'PR' => 'Prof',
 		'PhD' => 'PhD',

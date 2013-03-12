@@ -915,10 +915,10 @@ function is_field_editable($row, $fieldId)
 		if(isset($row->sousjury) && isPresidentSousJury($row->sousjury))
 			return true;
 		
-		if( $is_rapp1  && ($fieldId == "prerapport" || $fieldId == "avissousjury"))
+		if( $is_rapp1  && ($fieldId == "prerapport" || $fieldId == "avissousjury" || $fieldId=="productionResume" || $fieldId == "parcours" || $fieldId=="projetrecherche"))
 				return true;
 		
-		if( $is_rapp2  && ($fieldId == "prerapport2" || $fieldId == "avissousjury"))
+		if( $is_rapp2  && ($fieldId == "prerapport2"))
 				return true;
 		
 		return false;

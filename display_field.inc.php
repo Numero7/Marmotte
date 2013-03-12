@@ -73,8 +73,9 @@ function display_short($row, $fieldID, $readonly)
 	if(!$readonly)
 	{
 		?>
-<input name="field<?php echo $fieldID;?>"
-	value="<?php echo $row->$fieldID;?>" style="width: 100%;" />
+<input
+	name="field<?php echo $fieldID;?>" value="<?php echo $row->$fieldID;?>"
+	style="width: 100%;" />
 <?php
 	}
 	else
@@ -86,7 +87,7 @@ function display_avis($row, $fieldID, $readonly)
 {
 	global $typesRapportToAvis;
 	if(isset($row->type) && array_key_exists($row->type, $typesRapportToAvis))
-		display_select($row, $fieldID, $typesRapportToAvis[$row->type],$readonly);
+		display_select($row, $fieldID, $typesRapportToAvis[$row->type], !isSecretaire() && $readonly);
 	else
 		echo '<td></td>';
 }
@@ -169,58 +170,54 @@ function display_ecole($row, $fieldID, $readonly)
 function display_fichiers($row, $fieldID, $readonly)
 {
 	global $dossiers_candidats;
-	
+
 	echo "<td>";
-	if($row->$fieldID != "")
+	$dir = $dossiers_candidats.$row->$fieldID."/";
+	$files = find_candidate_files($row,$fieldID);
+	if(count($files) > 0)
 	{
-		$dir = $dossiers_candidats.$row->$fieldID."/";
-		$files = find_candidate_files($row,$fieldID);
-		if(count($files) > 0)
+		ksort($files);
+
+		$i = -1;
+		echo "<table><tr><td><table>\n";
+		echo '<tr><td style="padding-right: 10px">';
+
+		$nb = intval((count($files) + 2)/ 3);
+
+		foreach($files as $date => $file)
 		{
-			ksort($files);
-				
-			$i = -1;
-			echo "<table><tr><td><table>\n";
-			echo '<tr><td style="padding-right: 10px">';
+			if($i % $nb	 == $nb - 1 )
+				echo '</td><td style="padding-right: 10px">';
 
-			$nb = intval((count($files) + 2)/ 3);
-
-			foreach($files as $date => $file)
+			$prettyfile = str_replace("_", " ", $file);
+			if(strlen($file) > 20)
 			{
-				if($i % $nb	 == $nb - 1 )
-					echo '</td><td style="padding-right: 10px">';
-
-				$prettyfile = str_replace("_", " ", $file);
-				if(strlen($file) > 20)
-				{
-					$arr = array(strtolower($row->nom), strtolower($row->prenom));
-					$arr2 = array("","");
-					$prettyfile = str_replace($arr, $arr2, $prettyfile);
-				}
-				echo '<a href="'.$dir."/".$file.'">'.$prettyfile."</a><br/>\n";
-				$i++;
+				$arr = array(strtolower($row->nom), strtolower($row->prenom));
+				$arr2 = array("","");
+				$prettyfile = str_replace($arr, $arr2, $prettyfile);
 			}
-			echo '</td></tr>';
-			echo "</table>\n";
-			echo "</td><td>";
+			echo '<a href="'.$dir."/".$file.'">'.$prettyfile."</a><br/>\n";
+			$i++;
+		}
+		echo '</td></tr>';
+		echo "</table>\n";
+		echo "</td><td>";
 
-			foreach($files as $date => $file)
-				if(is_picture($file))
-						echo '<img class="photoid" src="'.$dir."/".$file.'" alt="'.$file.'" />';
+		foreach($files as $date => $file)
+			if(is_picture($file))
+			echo '<img class="photoid" src="'.$dir."/".$file.'" alt="'.$file.'" />';
 
-			echo "</td></tr></table>";
-			{
-				?>
+		echo "</td></tr></table>";
+		{
+			?>
 <input type="hidden" name="type"
 	value="candidatefile" />
 <input
 	type="hidden" name="MAX_FILE_SIZE" value="10000000" />
-<input name="uploadedfile"
-	type="file" />
+<input name="uploadedfile" type="file" />
 <input
 	type="submit" name="ajoutfichier" value="Ajouter fichier" />
 <?php 
-			}
 		}
 
 		if(isSecretaire() && (count($files) > 0))

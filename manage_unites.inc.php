@@ -36,6 +36,36 @@ function createUnitIfNeeded($code)
 		addUnit($code,$code,$code,"");
 }
 
+function updateUnitData($unite, $data)
+{
+	global $fieldsUnitsDB;
+	if(unitExists($unite))
+	{
+		$sql = "";
+		foreach($data as $field => $value)
+			if(isset($fieldsUnitsDB[$field]) && $value != "")
+			$sql .= " $field='$value' ";
+		if($sql != "")
+		{
+				
+			$sql = "UPDATE FROM ".units_db." SET ".$sql;
+			$sql .=  " WHERE code='$unite';";
+			mysql_query($sql);
+		}
+	}
+	else
+	{
+		$sql = "INSERT INTO ".reports_db." ($sqlfields) VALUES ($sqlvalues);";
+
+	}
+}
+
+function updateUnitDirecteur($unite, $directeur)
+{
+	$sql = "UPDATE FROM ".units_db." SET directeur='$directeur' WHERE code='$unite';";
+	mysql_query($sql);
+}
+
 function simpleUnitsList($short = false)
 {
 	$units = unitsList();
@@ -50,7 +80,7 @@ function addUnit($nickname, $code, $fullname, $directeur)
 	unset($_SESSION['all_units']);
 	$sql = "DELETE FROM ".units_db." WHERE code = \"".$code."\";";
 	sql_request($sql);
-	
+
 	$values = "\"".mysql_real_escape_string($nickname)."\",";
 	$values .= "\"".mysql_real_escape_string($code)."\",";
 	$values .= "\"".mysql_real_escape_string($fullname)."\",";

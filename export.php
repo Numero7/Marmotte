@@ -358,6 +358,7 @@ function generate_exemple_csv($fields)
 		if( !in_array('nomprenom', $fields) && ( !in_array('nom', $fields) || !in_array('prenom', $fields) ))
 			throw new Exception("Check either the 'nomprenom' checkbox or both the 'nom' and the 'prenom' checkbox");
 
+		/*
 		$sql = "SELECT * FROM ".reports_db." LIMIT 0,5";
 		$result = sql_request($sql);
 
@@ -365,6 +366,16 @@ function generate_exemple_csv($fields)
 		while ($row = mysql_fetch_object($result))
 			$rows[] = $row;
 
+*/
+
+		$rows = array();
+
+		$row = (object) array();
+		foreach($fields as $field)
+			$row->$field = "";
+		$row->type = "Evaluation-Vague";
+		$rows[] = $row;
+		
 		$csv_reports = compileReportsAsCSV($rows,$fields);
 		$filename = "csv/exemple.csv";
 		if($handle = fopen($filename, 'w'))

@@ -241,7 +241,7 @@ function change_candidate_properties($annee,$nom,$prenom, $data)
 
 function is_associated_directory($candidate, $directory)
 {
-	return ($candidate->nom == "" || strpos(norm_name($directory), norm_name($candidate->nom) ) != false ) && ( $candidate->prenom || strpos(norm_name($directory), norm_name($candidate->prenom) )  != false );
+	return ($candidate->nom == "" || strpos(norm_name($directory), norm_name($candidate->nom) ) != false ) && ( $candidate->prenom == "" || strpos(norm_name($directory), norm_name($candidate->prenom) )  != false );
 }
 
 function find_candidate_files($candidate, $fieldID, $force = false, $directories = NULL)
@@ -252,8 +252,10 @@ function find_candidate_files($candidate, $fieldID, $force = false, $directories
 
 	$basedir = $dossiers_candidats.$candidate->$fieldID."/";
 
-	if($force || !is_dir($basedir) || !is_associated_directory($candidate, $basedir))
+	if($force || $candidate->$fieldID == "" || !is_dir($basedir) || !is_associated_directory($candidate, $basedir))
 	{
+		echo "Looking for directory</br>";
+		
 		if($directories == NULL)
 			$directories = get_directories_list();
 		foreach($directories as $directory)
@@ -263,6 +265,7 @@ function find_candidate_files($candidate, $fieldID, $force = false, $directories
 			$dir = str_replace($dossiers_candidats,"",$directory);
 			echo "Changing cndidate dir for ".$directory." <br/>";
 				change_candidate_property($candidate->anneecandidature, $candidate->nom, $candidate->prenom, $fieldID, $dir);
+				$basedir = $directory;
 				break;
 			}
 		}
@@ -285,7 +288,11 @@ function find_candidate_files($candidate, $fieldID, $force = false, $directories
 				{
 					$filenames[] = $file;
 					foreach($filenames as $file)
-						$files[date("d/m/Y - h:i:s",filemtime($basedir.$file)).$file]=$file;
+					{
+						$timestamp = filemtime($basedir."/".$file);
+						if($timestamp != false)
+							$files[date("d/m/Y - h:i:s",$timestamp).$file]=$file;
+					}
 				}
 			}
 			closedir($handle);
@@ -309,10 +316,8 @@ function get_directories_list()
 
 	foreach($files as $file)
 	{
-			echo "Checking file '".$file."' <br/>";
 		if(is_dir($file))
 		{
-			echo "Adding dir ".$file." <br/>";
 		$directories[]= $file;
 		}
 	}

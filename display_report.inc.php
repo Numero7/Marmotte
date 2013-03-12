@@ -259,8 +259,12 @@ function displayEditableReport($row, $canedit = true)
 	);
 
 	$submits = array();
-	$submits["editprevious"] = "<<";
-	
+
+		if($canedit)
+		$submits["editprevious"] = "<<";
+	else
+		$submits["viewprevious"] = "<<";
+		
 	if($canedit)
 	{
 		$submits["submitandkeepediting"] = "Enregistrer";
@@ -268,14 +272,20 @@ function displayEditableReport($row, $canedit = true)
 	}
 	else 
 	{
-		$submits["edit"] = "Edit";
+		if(isSecretaire())
+			$submits["submitandkeepviewing"] = "Enregistrer";
+		$submits["edit"] = "Edition";
 	}
 	
 	if(isSecretaire())
 		$submits["deleteandeditnext"] = "Supprimer";
 	$submits["retourliste"] = "Retour à la liste";
-	$submits["editnext"] = ">>";
 
+	if($canedit)
+		$submits["editnext"] = ">>";
+	else
+		$submits["viewnext"] = ">>";
+	
 	displayEditionFrameStart("",$hidden,$submits);
 	echo "<a href=\"export.php?action=viewpdf&amp;id=".$row->id_origine."&amp;id_origine=".$row->id_origine."\">\n";
 	echo "<img class=\"icon\" width=\"24\" height=\"24\" src=\"img/pdf-icon-50px.png\" alt=\"viewpdf\"/>\n";
@@ -517,7 +527,7 @@ function displaySummary($filters, $filter_values, $sorting_values)
 	$fields = is_current_session_concours() ? $fieldsSummaryConcours : $fieldsSummary;
 
 	if(isSecretaire())
-		$fields = array_unique(array_merge($fields,array("date","auteur","id","statut")));
+		$fields = array_unique(array_merge($fields,array(/*"date","auteur","id",*/"statut")));
 
 
 	//Remove the type filter if useless

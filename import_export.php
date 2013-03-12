@@ -113,13 +113,14 @@ if(isSecretaire())
 	<ul>
 	<li>Choisissez les champs à importer puis cliquer sur
 	<form enctype="multipart/form-data" action="export.php" method="post">
-	<input type="checkbox" name="fields[]" value="nomprenom">Nom et prénom (dans le même champ)</input><br/>
+	<input type="checkbox" name="fields[]" value="nomprenom" checked>Nom et prénom (dans le même champ)</input><br/>
 	<input type="checkbox" name="fields[]" value="nom">Nom</input><br/>
 	<input type="checkbox" name="fields[]" value="prenom">Prénom</input><br/>
-	<input type="checkbox" name="fields[]" value="unite">Code unité</input><br/>
-	<input type="checkbox" name="fields[]" value="grade">Grade</input><br/>
-	<input type="checkbox" name="fields[]" value="rapporteur">Rapporteur1</input><br/>
-	<input type="checkbox" name="fields[]" value="rapporteur2">Rapporteur2</input><br/>
+	<input type="checkbox" name="fields[]" value="unite" checked>Code unité</input><br/>
+	<input type="checkbox" name="fields[]" value="directeur" checked>DU</input><br/>
+	<input type="checkbox" name="fields[]" value="grade" checked>Grade</input><br/>
+	<input type="checkbox" name="fields[]" value="rapporteur" checked>Rapporteur1</input><br/>
+	<input type="checkbox" name="fields[]" value="rapporteur2" checked>Rapporteur2</input><br/>
 	<input type="submit" name="bouton" value="Télécharger exemple" />
 	<input type="hidden" name="type" value="exempleimportcsv"/> 
 	<input type="hidden" name="action" value="export"/> 
