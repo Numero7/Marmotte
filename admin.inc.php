@@ -10,18 +10,18 @@ if(isSecretaire())
 {
 	?>
 <h1>Interface d'administration</h1>
+<ul>
+<li><a href="#membres">Membres</a></li>
+<li><a href="#sessions">Sessions</a></li>
+<li><a href="#config">Configuration</a></li>
+</ul>
 
-
-<hr />
-<?php
-include("config_manager.php");
-?>
 
 <hr/>
-	
+	<h2 id="membres">Membres de la section</h2>
 
 <table>
-	<h2 id="adminnewaccount">Création nouveau rapporteur</h2>
+	<h3 id="adminnewaccount">Création nouveau rapporteur</h2>
 	<tr>
 		<td>
 			<form method="post" action="index.php">
@@ -56,25 +56,26 @@ include("config_manager.php");
 							value="<?php if(isset($password)) echo $password; ?>" />
 						</td>
 					</tr>
+						<tr>
+						<td></td>
+						<td>
+								<input type="checkbox" name="envoiparemail" checked='checked'
+									style="width: 10px;" /> Prévenir par email
+						</td>
+						</tr>
 					<tr>
 						<td><input type="hidden" name="oldpwd" value="" /> <input
 							type="hidden" name="action" value="adminnewaccount" />
 						</td>
 						<td><input type="submit" value="Ajouter rapporteur" />
 						</td>
-						<td>
-							<p>
-								<input type="checkbox" name="envoiparemail" checked='checked'
-									style="width: 10px;" /> Prévenir par email
-							</p>
-						</td>
 					</tr>
 				</table>
 			</form>
 
 		</td>
-		<td>
-			<h2 id="admindeleteaccount">Suppression d'un rapporteur</h2>
+		<td valign="top">
+			<h3 id="admindeleteaccount">Suppression d'un rapporteur</h2>
 			<form method="post" action="index.php"
 				onsubmit="return confirm('Etes vous sur de vouloir supprimer cet utilisateur ?');">
 				<table class="inputreport">
@@ -99,8 +100,10 @@ include("config_manager.php");
 				</table>
 			</form>
 		</td>
+		</tr>
+		<tr>
 		<td>
-			<h2 id="adminnewpwd">Modifier un mot de passe</h2>
+			<h3 id="adminnewpwd">Modifier un mot de passe</h2>
 			<form method="post" action="index.php">
 				<table class="inputreport">
 					<tr>
@@ -129,19 +132,22 @@ include("config_manager.php");
 						</td>
 					</tr>
 					<tr>
+					<td></td>						<td><input type="checkbox" name="envoiparemail" checked='checked'
+							style="width: 10px;" /> Prévenir par email</td>
+					
+					</tr>
+					<tr>
 						<td><input type="hidden" name="oldpwd" value="" /> <input
 							type="hidden" name="action" value="adminnewpwd" />
 						</td>
 						<td><input type="submit" value="Valider modification" />
 						</td>
-						<td><input type="checkbox" name="envoiparemail" checked='checked'
-							style="width: 10px;" /> Prévenir par email</td>
 					</tr>
 				</table>
 			</form>
 		</td>
 		<td>
-			<h2>Vérifier un mot de passe</h2>
+			<h3>Vérifier un mot de passe</h2>
 			<form method="post" action="index.php">
 				<table class="inputreport">
 					<tr>
@@ -162,9 +168,8 @@ include("config_manager.php");
 	</tr>
 </table>
 
-<hr />
 
-<h2 id="infosrapporteur">Modifier les infos</h2>
+<h3 id="infosrapporteur">Statut des membres</h2>
 	<table>
 		<?php 
 		global $sous_jurys;
@@ -230,27 +235,41 @@ include("config_manager.php");
 		?>
 	</table>
 
-
-<?php 
-}
-if(isSecretaire())
+<?php 	
+	if(isSecretaire())
 {
 	?>
 <br>
 <hr />
+
+<h2 id="sessions">Sessions</h2>
+
 <?php 
 include 'sessions_manager.php';
 ?>
 
 <hr />
 <?php 
-}?>
+}	
+?>
+
+<hr />
+<h2 id="config">Configuration</h2>
+<?php
+include("config_manager.php");
+?>
+
+	
+
 
 
 <?php 
+}
+
 if(isSecretaire())
 {
 	?>
+	<!-- 
 <h2>Stats rapporteurs</h2>
 <p>Envoi d'emails de rappel aux rapporteurs ayant encore des rapports
 	attribués et à faire.</p>
@@ -260,10 +279,11 @@ if(isSecretaire())
 			type="submit" value="Mailing rapporteurs" />
 	</p>
 </form>
-<hr />
+ -->
+<!-- 
+	<hr />
 
 <h2>Candidats</h2>
-<!-- 
 <p>Extrait tous les candidats des rapports de candidature et
 	d'équivalence et de les injecter dans la base des candidats.</p>
 <form action="index.php" method="post">
@@ -275,7 +295,6 @@ if(isSecretaire())
 		type="submit" value="Injecter données candidats" />
 </form>
 <p />
- -->
 <p>Cherche les fichiers associés aux candidats.</p>
 <form action="index.php" method="post">
 	<input type="hidden" name="action" value="trouverfichierscandidats" />
@@ -284,6 +303,7 @@ if(isSecretaire())
 
 <p />
 <hr />
+ -->
 
 <!-- 
 <h2>Requete sql générique</h2>
@@ -300,11 +320,13 @@ if(isSecretaire())
 </form>
 <p>
  -->
+ <!--
 <form method="post" action="index.php">
 	<input type="hidden" name="action" value="createhtpasswd" /> <input
 		type="submit" value="Créer htpasswd" />
 </form>
 </p>
+-->
 <?php 
 }
 

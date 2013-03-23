@@ -1,4 +1,4 @@
-1. Déploiement technique
+1. Déploiement
 	* dézipper l'archive
 	* donner les droits d'écriture au serveur web dans les dossiers csv, config, uploads
 	* créer un fichier vierge nommé .htpassw à la racine du site avec droits d'écriture pou rleservice web
@@ -8,9 +8,9 @@
 	* créer un compte avec les privilèges de secrétaire (menu admin/utilisateurs) et le mot de passe choisi
 par le secrétaire
 
-2. Préparation par le secrétaire de section
-	* se connecter au site et cliquer sur admin
-	* utiliser le menu "Création nouveau rapporteur" pour ajouter à la base les rapporteurs de la section
+2. Configuration initiale
+	* se connecter au site et cliquer sur Admin
+	* utiliser le menu "Création nouveau rapporteur" pour ajouter à la base les membress de la section
 	* donner au secrétaire les privilèges de secrétaire
 	* configurer les infos de la section
 	
@@ -20,19 +20,9 @@ Todo:
 
 ancienneté dans le grade
 configurer nom des rubriques
-
-problème d'accent dans les phrases types
-configurer les phrases type
-
-option insertion nom directeur de labo
-
 fonction de sauvegarde de la base
+import des dossiers chercheurs en bloc
 
-bouton pour supprimer
-
-ajouter import des dossiers chercheurs
-
-fichiers rentrés par les rapporteurs
 
 
 	

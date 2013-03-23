@@ -25,7 +25,9 @@ function get_raw_config()
 	$result = file_get_contents(config_file);
 	if($result === false)
 		throw new Exception("Failed to read config file");
-	return str_replace(array(">","</"),array(">\n","\n</"),$result);
+	$result = str_replace(array(">\n"),array("magictempkey"),$result);
+	$result = str_replace(array(">","</","magictempkey"),array(">\n","\n  </",">\n"),$result);
+	return $result;
 //return $result;
 }
 

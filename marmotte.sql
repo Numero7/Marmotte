@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Serveur: localhost
--- Généré le : Lun 04 Mars 2013 à 14:59
+-- Généré le : Sam 23 Mars 2013 à 10:26
 -- Version du serveur: 5.1.63
 -- Version de PHP: 5.3.3-7+squeeze14
 
@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS `people` (
   `nom` text CHARACTER SET utf8 NOT NULL,
   `prenom` text CHARACTER SET utf8 NOT NULL,
   `grade` varchar(32) CHARACTER SET utf8 NOT NULL DEFAULT '',
-  `theseAnnee` text CHARACTER SET utf8 NOT NULL,
+  `theseAnnee` varchar(64) CHARACTER SET utf8 NOT NULL,
   `theseLieu` text CHARACTER SET utf8 NOT NULL,
   `HDRAnnee` text CHARACTER SET utf8 NOT NULL,
   `HDRLieu` text CHARACTER SET utf8 NOT NULL,
@@ -50,7 +50,7 @@ CREATE TABLE IF NOT EXISTS `people` (
   `annee_recrutement` text CHARACTER SET utf8 NOT NULL,
   `proprietes` text CHARACTER SET utf8 NOT NULL,
   `genre` enum('femme','homme','') CHARACTER SET utf8 NOT NULL DEFAULT 'homme',
-  `theseloc` varchar(8) CHARACTER SET utf8 DEFAULT 'fr',
+  `theseloc` varchar(16) CHARACTER SET utf8 DEFAULT 'fr',
   `statut_individu` varchar(64) CHARACTER SET utf8 NOT NULL DEFAULT ''
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -71,7 +71,7 @@ CREATE TABLE IF NOT EXISTS `reports` (
   `unite` varchar(50) NOT NULL,
   `ecole` text NOT NULL,
   `grade` varchar(32) NOT NULL,
-  `type` enum('Evaluation-Vague','Evaluation-MiVague','Promotion','Equivalence','Candidature','Suivi-PostEvaluation','Titularisation','Affectation','Reconstitution','Changement-Directeur','Changement-Directeur-Adjoint','Renouvellement','Association','Ecole','Comite-Evaluation','Generique') NOT NULL,
+  `type` varchar(32) NOT NULL,
   `concours` text NOT NULL,
   `rapporteur` varchar(32) NOT NULL,
   `rapporteur2` varchar(32) NOT NULL,
@@ -100,8 +100,12 @@ CREATE TABLE IF NOT EXISTS `reports` (
   `avis2` varchar(32) NOT NULL,
   `avissousjury` text NOT NULL,
   `sousjury` text NOT NULL,
+  `DU` varchar(16) NOT NULL DEFAULT '',
+  `international` varchar(16) NOT NULL DEFAULT '',
+  `finalisationHDR` varchar(16) NOT NULL DEFAULT '',
+  `national` varchar(16) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=52137 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=54714 ;
 
 -- --------------------------------------------------------
 

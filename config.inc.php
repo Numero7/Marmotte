@@ -776,14 +776,14 @@ ini_set('xdebug.show_local_vars', 'on');
 			'Evaluation-Vague' => 'Eval à Vague',
 			'Evaluation-MiVague' => 'Eval à Mi-Vague',
 			'Promotion' => 'Promotion',
-			'Suivi-PostEvaluation' => 'Suivi Post-Evaluation',
 			'Titularisation' => 'Titularisation',
 			'Delegation' => 'Délégation',
-			'Affectation' => 'Confirm. d\'Affectation',
-			'Reconstitution' => 'Reconst. de Carrière',
+			'Affectation' => 'Affectation',
+			'Reconstitution' => 'Reconstitution',
 			'Emeritat' => 'Eméritat',
-			'Emeritat-renouvellement' => 'Eméritat Renouv.'
-		);
+			'Emeritat-renouvellement' => 'Eméritat Renouv.',
+			'Suivi-PostEvaluation' => 'Suivi PE',
+	);
 	
 	$typesRapportsUnites = array(
 			'Changement-Directeur' => 'Changement de Directeur',
@@ -796,8 +796,8 @@ ini_set('xdebug.show_local_vars', 'on');
 	);
 
 	$typesRapportsUnitesShort = array(
-			'Changement-Directeur' => 'Changt de Directeur',
-			'Changement-Directeur-Adjoint' => 'Changt de Dir. Adjoint',
+			'Changement-Directeur' => 'Changt Directeur',
+			'Changement-Directeur-Adjoint' => 'Changt Dir. Adj.',
 			'Renouvellement' => 'Renouvellement',
 			'Association' => 'Association',
 			'Ecole' => 'Ecole Thematique',

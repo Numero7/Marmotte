@@ -4,7 +4,7 @@ require_once('manage_sessions.inc.php');
 ?>
 
 
-<h2>Session courante</h2>
+<h3>Session courante</h3>
 
 <table>
 			<form method="post" action="index.php"
@@ -26,7 +26,7 @@ require_once('manage_sessions.inc.php');
 						$sel = "";
 						if ($curid == $id)
 							$sel = " selected=\"selected\"";
-						echo '<option value="'.$id." ".$sel.">".$id.'</option>';
+						echo '<option value="'.$id."\" ".$sel.">".$id.'</option>';
 					}
 					
 						?>
@@ -42,10 +42,7 @@ require_once('manage_sessions.inc.php');
 
 </table>
 </form>
-<table>
-	<tr>
-		<td>
-			<h2>Ajout d'une session</h2>
+			<h3>Ajout d'une session</h3>
 			<form method="post" action="index.php"
 				onsubmit="return confirm('Etes vous sur de vouloir ajouter cette session ?');">
 				<table class="inputreport">
@@ -80,9 +77,8 @@ require_once('manage_sessions.inc.php');
 				</table>
 			</form>
 
-		</td>
-		<td>
-			<h2>Suppression d'une session</h2>
+
+			<h3>Suppression d'une session</h3>
 			<form method="get" action="index.php"
 				onsubmit="return confirm('Etes vous sur de vouloir supprimer cette session ?');">
 				<table class="inputreport">
@@ -108,6 +104,3 @@ require_once('manage_sessions.inc.php');
 					</tr>
 				</table>
 			</form>
-		</td>
-	</tr>
-</table>
