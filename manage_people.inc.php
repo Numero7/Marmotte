@@ -266,6 +266,7 @@ function find_candidate_files($candidate, $fieldID, $force = false, $directories
 			echo "Changing cndidate dir for ".$directory." <br/>";
 				change_candidate_property($candidate->anneecandidature, $candidate->nom, $candidate->prenom, $fieldID, $dir);
 				$basedir = $directory;
+				$candidate->$fieldID = $directory;
 				break;
 			}
 		}
@@ -273,7 +274,7 @@ function find_candidate_files($candidate, $fieldID, $force = false, $directories
 		//change_candidate_property($candidate->anneecandidature, $candidate->nom, $candidate->prenom, $fieldID, "");
 	}
 
-	if ( is_dir($basedir) )
+	if ( $candidate->$fieldID != "" && is_dir($basedir) )
 	{
 		$handle = opendir($basedir);
 		if($handle != false)
@@ -301,7 +302,7 @@ function find_candidate_files($candidate, $fieldID, $force = false, $directories
 		}
 	}
 	else
-		echo "No file in directory ".$basedir." </br>";
+		echo "No directory found</br>";
 
 
 	return array();

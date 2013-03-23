@@ -126,7 +126,7 @@ function export_report($report, $export_format, $dir)
 	}
 	if($export_format == "xml")
 	{
-		$file = $dir."/".$file.".xml";
+		$file = $dir."/".$file.".txt";
 		exportReportAsXML($report,$activefields, $file);
 	}
 

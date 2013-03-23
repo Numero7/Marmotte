@@ -115,7 +115,7 @@ function display_select($row, $fieldID, $liste,$readonly)
 	{
 
 		?>
-<select name="field<?php echo $fieldID;?>" style="width: 100%;">
+<select name="field<?php echo $fieldID;?>">
 	<?php
 	foreach($liste as $value => $text)
 	{
@@ -181,7 +181,7 @@ function display_fichiers($row, $fieldID, $readonly)
 		$i = -1;
 		echo "<table><tr><td><table>\n";
 		echo '<tr><td style="padding-right: 10px">';
-
+		
 		$nb = intval((count($files) + 2)/ 3);
 
 		foreach($files as $date => $file)

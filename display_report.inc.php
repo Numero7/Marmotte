@@ -1,3 +1,4 @@
+
 <?php
 
 require_once('config.inc.php');
@@ -20,7 +21,7 @@ function displayEditableCandidate($candidate,$report = NULL,$canedit = true)
 
 	$hidden["previousnom"] = $candidate->nom;
 	$hidden["previousprenom"] = $candidate->prenom;
-	
+
 	if($report != NULL)
 	{
 		$hidden["id_origine"] = $report->id_origine;
@@ -30,19 +31,23 @@ function displayEditableCandidate($candidate,$report = NULL,$canedit = true)
 			$fields = $fieldsCandidatAvantAudition;
 		else
 			$fields = $fieldsCandidatAuditionne;
-				
+
 
 		$candidate->rapporteur = $report->rapporteur;
 		$candidate->rapporteur2 = $report->rapporteur2;
 		$candidate->sousjury = $report->sousjury;
 		$candidate->type = $report->type;
 		$candidate->statut = $report->statut;
-		
-		
+
+
 	}
 
 
-	echo '<h1>Candidat(e) : '.$candidate->nom." ".$candidate->prenom." ".'</h1>';
+	if(isset($candidate->genre) && $candidate->genre == "femme")
+		echo '<h1>Candidate : '.$candidate->nom." ".$candidate->prenom." ".'</h1>';
+	else
+		echo '<h1>Candidat : '.$candidate->nom." ".$candidate->prenom." ".'</h1>';
+			
 
 	displayEditionFrameStart("",$hidden,array());
 
@@ -55,26 +60,46 @@ function displayEditableCandidate($candidate,$report = NULL,$canedit = true)
 function displayEditableChercheur($chercheur,$report = NULL)
 {
 	global $fieldsChercheursAll;
-	
+
 
 	$hidden = array("action" => "update");
 
 
 	$hidden["previousnom"] = $chercheur->nom;
 	$hidden["previousprenom"] = $chercheur->prenom;
-	
+
 	if($report != NULL)
 	{
 		$hidden["id_origine"] = $report->id_origine;
 		$hidden["type"] = $report->type;
-		
-		$chercheur->rapporteur = $report->rapporteur;
-		$chercheur->rapporteur2 = $report->rapporteur2;
-		
+
+		if(isset($report->rapporteur))
+			$chercheur->rapporteur = $report->rapporteur;
+		else
+			$chercheur->rapporteur = "";
+			
+		if(isset($report->rapporteur2))
+			$chercheur->rapporteur2 = $report->rapporteur2;
+		else
+			$chercheur->rapporteur2 = "";
+
+		if(isset($report->type))
+			$chercheur->type = $report->type;
+		else
+			$chercheur->type = "";
+
+		if(isset($report->statut))
+			$chercheur->statut = $report->statut;
+		else
+			$chercheur->statut = "";
+
 	}
 
-	echo '<h1>Chercheur(se) : '.$chercheur->nom." ".$chercheur->prenom." ".'</h1>';
-
+	if(isset($chercheur->genre) && $chercheur->genre == "femme")
+		echo '<h1>Chercheuse : '.$chercheur->nom." ".$chercheur->prenom." ".'</h1>';
+	else
+		echo '<h1>Chercheur : '.$chercheur->nom." ".$chercheur->prenom." ".'</h1>';
+	
 	displayEditionFrameStart("",$hidden,array());
 
 	displayEditableObject("", $chercheur, $fieldsChercheursAll);
@@ -127,30 +152,32 @@ function displayEditableObject($titlle, $row, $fields, $canedit = true, $use_spe
 	$inline = false;
 
 	$odd = true;
+
 	foreach($fields as  $fieldId)
 	{
+		//echo $fieldId."<br/>";
 		if(isset($fieldsAll[$fieldId]) && is_field_visible($row, $fieldId))
-		{				
+		{
 			$style = getStyle($fieldId,$odd);
 			$odd = !$odd;
 			$title = $fieldsAll[$fieldId];
 			if(isset($fieldsTypes[$fieldId]))
 			{
-				
+
 				$editable = $canedit && is_field_editable($row, $fieldId);
-				
+
 				/*
-				if(!$use_special_tr || !in_array($fieldId, $specialtr_fields) || in_array($fieldId, $start_tr_fields))
+				 if(!$use_special_tr || !in_array($fieldId, $specialtr_fields) || in_array($fieldId, $start_tr_fields))
 					echo '<tr>';
-					*/
-					echo '<tr class="'.$style.'">';
-				echo '<td style="width: 10em;" ><span>'.$title.'</span>';
+				*/
+				echo '<tr class="'.$style.'">';
+				echo '<td><span>'.$title.'</span>';
 				echo '</td>';
 
-/*
-				if($use_special_tr && in_array($fieldId, $start_tr_fields))
+				/*
+				 if($use_special_tr && in_array($fieldId, $start_tr_fields))
 					echo '<td><table><tr>';
-*/
+				*/
 				if(!isset($row->$fieldId))
 					$row->$fieldId = '';
 
@@ -204,16 +231,16 @@ function displayEditableObject($titlle, $row, $fields, $canedit = true, $use_spe
 						display_sousjury($row, $fieldId, !$editable); break;
 				}
 				/*
-				if(!$use_special_tr || !in_array($fieldId, $specialtr_fields))
-				*/
-					echo '</tr>';
-				
-					/*
-				if($use_special_tr && in_array($fieldId, $end_tr_fields))
-					echo '</tr></table></td></tr>';
+				 if(!$use_special_tr || !in_array($fieldId, $specialtr_fields))
 					*/
+				echo '</tr>';
+
+				/*
+				 if($use_special_tr && in_array($fieldId, $end_tr_fields))
+					echo '</tr></table></td></tr>';
+				*/
 			}
-				
+
 		}
 
 	}
@@ -241,11 +268,9 @@ function displayEditableReport($row, $canedit = true)
 	//phpinfo();
 	if(!isset($row->id_origine))
 		$row->id_origine = 0;
-	
+
 	echo '<div id="debut"></div>';
 	echo '<form enctype="multipart/form-data" method="post" action="index.php" style="width: 100%">'."\n";
-
-
 
 	$next = next_report($row->id_origine);
 	$previous = previous_report($row->id_origine);
@@ -260,23 +285,23 @@ function displayEditableReport($row, $canedit = true)
 
 	$submits = array();
 
-		if($canedit)
+	if($canedit)
 		$submits["editprevious"] = "<<";
 	else
 		$submits["viewprevious"] = "<<";
-		
+
 	if($canedit)
 	{
 		$submits["submitandkeepediting"] = "Enregistrer";
 		$submits["read"] = "Voir";
 	}
-	else 
+	else
 	{
 		if(isSecretaire())
 			$submits["submitandkeepviewing"] = "Enregistrer";
 		$submits["edit"] = "Edition";
 	}
-	
+
 	if(isSecretaire())
 		$submits["deleteandeditnext"] = "Supprimer";
 	$submits["retourliste"] = "Retour à la liste";
@@ -285,147 +310,165 @@ function displayEditableReport($row, $canedit = true)
 		$submits["editnext"] = ">>";
 	else
 		$submits["viewnext"] = ">>";
-	
+
+
+
+	$eval_type = $row->type;
+
 	displayEditionFrameStart("",$hidden,$submits);
-	echo "<a href=\"export.php?action=viewpdf&amp;id=".$row->id_origine."&amp;id_origine=".$row->id_origine."\">\n";
-	echo "<img class=\"icon\" width=\"24\" height=\"24\" src=\"img/pdf-icon-50px.png\" alt=\"viewpdf\"/>\n";
-	echo "</a>\n";
-	
 
-		$eval_type = $row->type;
-		$is_unite = array_key_exists($eval_type,$typesRapportsUnites);
-		$statut = $row->statut;
-
-		$eval_name = $eval_type;
-		if(array_key_exists($eval_type, $typesRapports))
-			$eval_name = $typesRapports[$eval_type];
-
-
-		$hidden = array("fieldtype" => $eval_type);
-		
-		$rapporteurs  = listNomRapporteurs();
-
-		if(array_key_exists($eval_type, $typesRapportsConcours))
+	if($eval_type  == "Candidature")
+	{
+		echo "<a href=\"export.php?action=viewpdf&amp;id=".$row->id_origine."&amp;id_origine=".$row->id_origine."\">\n";
+		echo "Rapport d'audition<img class=\"icon\" width=\"24\" height=\"24\" src=\"img/pdf-icon-50px.png\" alt=\"viewpdf\"/>\n";
+		echo "</a>\n";
+		/*
+		if(isset($row->avis) && is_numeric($row->avis))
 		{
-			$candidate = get_or_create_candidate($row);
-			displayEditableCandidate($candidate,$row,$canedit);
-			
-			$other_reports = find_somebody_reports($candidate,$eval_type);
-			//rrr();
-			echo "<br/><hr/><br/>";
-				
-			global $fieldsRapportsCandidat0;
-			global $fieldsRapportsCandidat1;
-			global $fieldsRapportsCandidat2;
-
-
-			echo "<h1>".$eval_name. ": ". $row->nom." ".$row->prenom.(isset($row->concours) ? (" / concours ".$row->concours) : ""). (isset($row->sousjury) ? (" sousjury ".$row->sousjury) : ""). "/ (rapport #".(isset($row->id) ? $row->id : " New").")</h1>";
-
-
-
-			$submits = array();
-
-
-			foreach($other_reports as $report)
-				if($report->concours != $row->concours)
-				{
-					$submits["importconcours".$report->concours] = "Importer données concours ".$report->concours;
-				}
-
-				$hidden['fieldconcours'] = $row->concours;
-
-				displayEditionFrameStart("",$hidden,$submits);
-
-				echo'<table><tr>';
-				
-				if(isset($row->rapporteur) && $row->rapporteur != "")
-				{
-					echo '<td VALIGN="top">';
-					displayEditableObject("Prérapport 1".(isset($rapporteurs[$row->rapporteur]) ? (" - ".$rapporteurs[$row->rapporteur]) : "" ),$row,$fieldsRapportsCandidat1,$canedit);
-					echo'</td>';
-				}
-				
-				if(isset($row->rapporteur2) && $row->rapporteur2 != "")
-				{
-					echo '<td VALIGN="top">';
-					displayEditableObject("Prérapport 2".(isset($rapporteurs[$row->rapporteur2]) ? (" - ".$rapporteurs[$row->rapporteur2]) : "" ), $row,$fieldsRapportsCandidat2,$canedit);
-										echo'</td>';
-				}
-				
-				
-				echo'</tr></table>';
-
-				displayEditableObject("Rapport section", $row, array_merge(array("statut"),$fieldsRapportsCandidat0),$canedit);
+			echo "<a href=\"export.php?action=viewpdf&amp;id=".$row->id_origine."&amp;id_origine=".$row->id_origine."\">\n";
+			echo "Rapport sur le candidat classé<img class=\"icon\" width=\"24\" height=\"24\" src=\"img/pdf-icon-50px.png\" alt=\"viewpdf\"/>\n";
+			echo "</a>\n";
 		}
-		else if(array_key_exists($eval_type, $typesRapportsChercheurs))
-		{
-			//todo $chercheur = chercheur_of_report($row);
-			$chercheur = get_or_create_candidate($row);
-			displayEditableChercheur($chercheur,$row,$canedit);
-				
-			$other_reports = find_somebody_reports($chercheur,$eval_type);
-			echo "<br/><hr/><br/>";
-				
-			global $fieldsIndividual0;
-			global $fieldsIndividual1;
-			global $fieldsIndividual2;
+		*/
+	}
+	else
+	{
+		echo "<a href=\"export.php?action=viewpdf&amp;id=".$row->id_origine."&amp;id_origine=".$row->id_origine."\">\n";
+		echo "<img class=\"icon\" width=\"24\" height=\"24\" src=\"img/pdf-icon-50px.png\" alt=\"viewpdf\"/>\n";
+		echo "</a>\n";
+	}
 
-			echo "<h1>".$eval_name. ": ". (isset($row->nom) ? $row->nom : "")." ".(isset($row->prenom) ? $row->prenom : "");
-			echo " (".(isset($row->id) && $row->id != 0 ? "#".$row->id : "New").")</h1>";
+	$is_unite = array_key_exists($eval_type,$typesRapportsUnites);
+	$statut = $row->statut;
 
+	$eval_name = $eval_type;
+	if(array_key_exists($eval_type, $typesRapports))
+		$eval_name = $typesRapports[$eval_type];
 
-			displayEditionFrameStart("",$hidden,array());
+	$hidden = array("fieldtype" => $eval_type);
+
+	$rapporteurs  = listNomRapporteurs();
+
+	global $typesRapportToFields;
+
+	if(array_key_exists($eval_type, $typesRapportsConcours))
+	{
+		$candidate = get_or_create_candidate($row);
+		displayEditableCandidate($candidate,$row,$canedit);
+
+		$other_reports = find_somebody_reports($candidate,$eval_type);
+		//rrr();
+		echo "<br/><hr/><br/>";
+
+		$fieldsRapportsCandidat0 = $typesRapportToFields[$eval_type][1];
+		$fieldsRapportsCandidat1 = $typesRapportToFields[$eval_type][2];
+		$fieldsRapportsCandidat2 = $typesRapportToFields[$eval_type][3];
+
+		echo "<h1>".$eval_name. ": ". $row->nom." ".$row->prenom.(isset($row->concours) ? (" / concours ".$row->concours) : ""). (isset($row->sousjury) ? (" sousjury ".$row->sousjury) : ""). "/ (rapport #".(isset($row->id) ? $row->id : " New").")</h1>";
+
+		$submits = array();
+
+		foreach($other_reports as $report)
+			if($report->concours != $row->concours)
+			{
+				$submits["importconcours".$report->concours] = "Importer données concours ".$report->concours;
+			}
+
+			$hidden['fieldconcours'] = $row->concours;
+
+			displayEditionFrameStart("",$hidden,$submits);
 
 			echo'<table><tr>';
 
 			if(isset($row->rapporteur) && $row->rapporteur != "")
 			{
-				echo '<td VALIGN="top">';
-				displayEditableObject("Prérapport 1".(isset($rapporteurs[$row->rapporteur]) ? (" - ".$rapporteurs[$row->rapporteur]) : "" ), $row,$fieldsIndividual1, $canedit, false);
-					echo'</td>';
-			}
+				if(isset($row->rapporteur2) && $row->rapporteur2 != "")
+					echo '<td VALIGN="top" style="width: 50%">';
+				else
+					echo '<td VALIGN="top" style="width: 100%">';
 
-			if(isset($row->rapporteur2) && $row->rapporteur2 != "")
-			{
-				echo '<td VALIGN="top">';
-				displayEditableObject("Prérapport 2".(isset($rapporteurs[$row->rapporteur2]) ? (" - ".$rapporteurs[$row->rapporteur2]) : "" ),$row,$fieldsIndividual2, $canedit, false);
+				displayEditableObject("Prérapport 1".(isset($rapporteurs[$row->rapporteur]) ? (" - ".$rapporteurs[$row->rapporteur]) : "" ),$row,$fieldsRapportsCandidat1,$canedit);
 				echo'</td>';
 			}
-			
-			echo '</tr></table>';
-			displayEditableObject("Rapport section", $row,$fieldsIndividual0, $canedit, false);
-				
-			
 
-		}
-		else if(array_key_exists($eval_type, $typesRapportsUnites))
-		{
-			$units = unitsList();
-
-
-			global $fieldsUnites0;
-			global $fieldsUnites1;
-			global $fieldsUnites2;
-				
-			echo "<h1>".$eval_name. ": ". (isset($row->unite) ? $row->unite : "")." (#".(isset($row->id) && $row->id != 0 ? $row->id : "New").")</h1>";
-
-			displayEditionFrameStart("",$hidden,array());
-
-			echo'<table><tr><td VALIGN="top">';
-			displayEditableObject("Rapport section", $row,$fieldsUnites0, $canedit, false);
-
-			if(isset($row->rapporteur) && $row->rapporteur != "")
-			{
-				echo'</td><td VALIGN="top">';
-				displayEditableObject("Prérapport 1", $row,$fieldsUnites1, $canedit, false);
-			}
 			if(isset($row->rapporteur2) && $row->rapporteur2 != "")
 			{
-				echo'</td><td VALIGN="top">';
-				displayEditableObject("Prérapport 2",$row,$fieldsUnites2, $canedit, false);
+				echo '<td VALIGN="top" style="width: 50%">';
+				displayEditableObject("Prérapport 2".(isset($rapporteurs[$row->rapporteur2]) ? (" - ".$rapporteurs[$row->rapporteur2]) : "" ), $row,$fieldsRapportsCandidat2,$canedit);
+				echo'</td>';
 			}
-				
-			echo'</td></tr></table>';
+
+
+			echo'</tr></table>';
+
+			displayEditableObject("Rapport section", $row, array_merge(array("statut"),$fieldsRapportsCandidat0),$canedit);
+	}
+	else if(array_key_exists($eval_type, $typesRapportsChercheurs))
+	{
+		//todo $chercheur = chercheur_of_report($row);
+		$chercheur = get_or_create_candidate($row);
+		displayEditableChercheur($chercheur,$row,$canedit);
+
+		$other_reports = find_somebody_reports($chercheur,$eval_type);
+		echo "<br/><hr/><br/>";
+
+		$fieldsIndividual0 = $typesRapportToFields[$eval_type][1];
+		$fieldsIndividual1 = $typesRapportToFields[$eval_type][2];
+		$fieldsIndividual2 = $typesRapportToFields[$eval_type][3];
+
+			
+		echo "<h1>".$eval_name. ": ". (isset($row->nom) ? $row->nom : "")." ".(isset($row->prenom) ? $row->prenom : "");
+		echo " (".(isset($row->id) && $row->id != 0 ? "#".$row->id : "New").")</h1>";
+
+
+		displayEditionFrameStart("",$hidden,array());
+
+		echo'<table><tr>';
+
+		if(isset($row->rapporteur) && $row->rapporteur != "")
+		{
+			echo '<td VALIGN="top">';
+			displayEditableObject("Prérapport 1".(isset($rapporteurs[$row->rapporteur]) ? (" - ".$rapporteurs[$row->rapporteur]) : "" ), $row,$fieldsIndividual1, $canedit, false);
+			echo'</td>';
+		}
+
+		if(isset($row->rapporteur2) && $row->rapporteur2 != "")
+		{
+			echo '<td VALIGN="top">';
+			displayEditableObject("Prérapport 2".(isset($rapporteurs[$row->rapporteur2]) ? (" - ".$rapporteurs[$row->rapporteur2]) : "" ),$row,$fieldsIndividual2, $canedit, false);
+			echo'</td>';
+		}
+
+		echo '</tr></table>';
+		displayEditableObject("Rapport section", $row,$fieldsIndividual0, $canedit, false);
+	}
+	else if(array_key_exists($eval_type, $typesRapportsUnites))
+	{
+		$units = unitsList();
+
+		$fieldsUnites0 = $typesRapportToFields[$eval_type][1];
+		$fieldsUnites1 = $typesRapportToFields[$eval_type][2];
+		$fieldsUnites2 = $typesRapportToFields[$eval_type][3];
+
+		echo "<h1>".$eval_name. ": ". (isset($row->unite) ? $row->unite : "")." (#".(isset($row->id) && $row->id != 0 ? $row->id : "New").")</h1>";
+
+		displayEditionFrameStart("",$hidden,array());
+
+		echo'<table><tr><td VALIGN="top">';
+		displayEditableObject("Rapport section", $row,$fieldsUnites0, $canedit, false);
+
+		if(isset($row->rapporteur) && $row->rapporteur != "")
+		{
+			echo'</td><td VALIGN="top">';
+			displayEditableObject("Prérapport 1", $row,$fieldsUnites1, $canedit, false);
+		}
+		if(isset($row->rapporteur2) && $row->rapporteur2 != "")
+		{
+			echo'</td><td VALIGN="top">';
+			displayEditableObject("Prérapport 2",$row,$fieldsUnites2, $canedit, false);
+		}
+
+		echo'</td></tr></table>';
 
 
 		displayEditionFrameEnd("Données rapport");
@@ -433,18 +476,18 @@ function displayEditableReport($row, $canedit = true)
 		echo "</form>\n";
 	}
 	echo('
-					<script type="text/javascript">');
-	echo('
-					document.getElementById("debut").scrollIntoView();');
+						<script type="text/javascript">');
+		echo('
+						document.getElementById("debut").scrollIntoView();');
 
-	/*
-	 echo('
-	 		var elt = document.getElementById( '$id' );
-	 		var top = (	return elt.offsetTop + ( elt.offsetParent ? elt.offsetParent.documentOffsetTop() : 0 )) - ( window.innerHeight / 2 );
-	 		window.scrollTo( 0, top );
-	 		');
-	*/
-	echo('		</script>');
+		/*
+		 echo('
+		 		var elt = document.getElementById( '$id' );
+		 		var top = (	return elt.offsetTop + ( elt.offsetParent ? elt.offsetParent.documentOffsetTop() : 0 )) - ( window.innerHeight / 2 );
+		 		window.scrollTo( 0, top );
+		 		');
+		*/
+		echo('		</script>');
 
 }
 

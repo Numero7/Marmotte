@@ -20,11 +20,9 @@ function import_csv($type,$filename, $subtype, $sep=";", $del="\n",$enc='"', $es
 	if($file = fopen ( $filename , 'r') )
 	{
 		$fields = fgetcsv ( $file, 0, $sep , $enc, $esc );
-		/*
 		foreach($fields as $field)
 			if($field != "" && !key_exists($field, $fieldsAll) && !key_exists($field, $csv_composite_fields))
 			throw new Exception("No field with name ". $field." in evaluations or in composite fields list");
-*/
 		$with_id = in_array("id",$fields);
 		$id_rank = array_search("id",$fields);
 		if(!isSecretaire())

@@ -97,6 +97,10 @@ ini_set('xdebug.show_local_vars', 'on');
 			"avis1" => "Avis rapp. 1",
 			"avis2" => "Avis rapp. 2",
 			"avissousjury" => "Avis sur l'audition",
+			"DU" => "Au titre de DU",
+			"international" => "Au titre Mobilité internationale",
+			"finalisationHDR" => "Au titre  finalisation HDR",
+			"national" => "Au titre d'une mobilité nationale",
 			"rapport" => "Rapport Section",
 		"prerapport" => "Prérapport 1",
 		"prerapport2" => "Prérapport 2",
@@ -178,6 +182,69 @@ ini_set('xdebug.show_local_vars', 'on');
 	 */
 	$fieldsIndividual = array_merge($fieldsIndividual0, $fieldsIndividual1, $fieldsIndividual2);
 	
+	$fieldsChercheursAll = array(
+			"nom",
+			"prenom",
+			"genre",
+			"statut_individu",
+			"grade",
+			"annee_recrutement",
+			"labo1",
+			"theme1",
+			"theme2",
+			"theme3",
+			"theseAnnee",
+			"theseLieu",
+			"theseloc",
+			"HDRAnnee",
+			"HDRLieu",
+			"fichiers",
+	);
+	
+	$fieldsRapportsIndividual = array(
+			"nom",
+			"prenom",
+			"genre",
+			"statut_individu",
+			"grade",
+			"annee_recrutement",
+			"labo1",
+			"theme1",
+			"theme2",
+			"theme3",
+			"theseAnnee",
+			"theseLieu",
+			"theseloc",
+			"HDRAnnee",
+			"HDRLieu",
+			"fichiers",
+			"rapporteur",
+			"rapporteur2",
+			"statut",
+			"unite",
+			"grade",
+			"avis",
+			"rapport",
+			"avis1",
+			"prerapport",
+			"production",
+			"transfert",
+			"encadrement",
+			"responsabilites",
+			"mobilite",
+			"animation",
+			"rayonnement",
+			"avis2",
+			"prerapport2",
+			"production2",
+			"transfert2",
+			"encadrement2",
+			"responsabilites2",
+			"mobilite2",
+			"animation2",
+			"rayonnement2",
+	);
+	
 	/*
 	* Les champs disponibles aux deux rapporteurs
 	* pour un rapport candidat
@@ -253,24 +320,6 @@ ini_set('xdebug.show_local_vars', 'on');
 			"fichiers" => "Fichiers associés",
 	);
 
-	$fieldsChercheursAll = array(
-			"nom",
-			"prenom",
-			"genre",
-			"statut_individu",
-			"grade",
-			"annee_recrutement",
-			"labo1",
-			"theme1",
-			"theme2",
-			"theme3",
-			"theseAnnee",
-			"theseLieu",
-			"theseloc",
-			"HDRAnnee",
-			"HDRLieu",
-			"fichiers",
-	);
 
 	$mandatory_edit_fields=
 	array('id','nom','prenom'
@@ -343,8 +392,76 @@ ini_set('xdebug.show_local_vars', 'on');
 			"HDRAnnee",
 			"HDRLieu",
 			"rapport",
+			"avis1",
 			"prerapport",
 	);
+	
+
+	$fieldsDelegation = array(
+			"rapporteur",
+			"nom",
+			"prenom",
+			"DU",
+			"international",
+			"finalisationHDR",
+			"national",
+			"unite",
+			"avis1",
+			"prerapport",
+			"labo1",
+			"labo2",
+			"labo3",
+			"theme1",
+			"theme2",
+			"theme3",
+			"theseAnnee",
+			"theseLieu",
+			"theseloc",
+			"HDRAnnee",
+			"HDRLieu",
+			"avis",
+			"rapport",
+	);
+
+	$fieldsIndividualDefault = array(
+			"rapporteur",
+			"nom",
+			"prenom",
+			"unite",
+			"avis1",
+			"prerapport",
+			"production",
+			"transfert",
+			"encadrement",
+			"responsabilites",
+			"mobilite",
+			"animation",
+			"rayonnement",
+			"avis2",
+			"prerapport2",
+			"production2",
+			"transfert2",
+			"encadrement2",
+			"responsabilites2",
+			"mobilite2",
+			"animation2",
+			"rayonnement2",
+			"labo1",
+			"labo2",
+			"labo3",
+			"theme1",
+			"theme2",
+			"theme3",
+			"theseAnnee",
+			"theseLieu",
+			"theseloc",
+			"HDRAnnee",
+			"HDRLieu",
+			"avis",
+			"rapport",
+	);
+	
+	
 	
 	$fieldsUnites0 = array(
 			"rapporteur",
@@ -567,7 +684,11 @@ ini_set('xdebug.show_local_vars', 'on');
 					'admis' => 'Admis',
 					'non-admis'=> 'Non-admis',
 					'stagiaire' => 'Stagiaire',
-					'titulaire' => 'Titulaire')
+					'titulaire' => 'Titulaire'),
+			"DU" => array(""=>"","oui" => "Oui","non"=>"Non"),
+			"international" => array(""=>"","oui" => "Oui","non"=>"Non"),
+			"finalisationHDR" => array(""=>"","oui" => "Oui","non"=>"Non"),
+			"national" => array(""=>"","oui" => "Oui","non"=>"Non")
 			);
 	
 	$fieldsTypes = array(
@@ -578,6 +699,10 @@ ini_set('xdebug.show_local_vars', 'on');
 		"nom" => "short",
 		"prenom" => "short",
 		"genre" => "enum",
+			"DU" => "enum",
+			"international" => "enum",
+			"finalisationHDR" => "enum",
+			"national" => "enum",
 			"statut_individu"=> "enum",
 		"grade" => "grade",
 		"theseloc" => "enum",
@@ -642,6 +767,7 @@ ini_set('xdebug.show_local_vars', 'on');
 		'Titularisation' => 'Titularisation',
 		'Affectation' => 'Confirmation d\'Affectation',
 		'Reconstitution' => 'Reconstitution de Carrière',
+		'Delegation' => 'Demande de Délégation',
 		'Emeritat' => 'Eméritat (1ere demande)',
 		'Emeritat-renouvellement' => 'Eméritat (renouvellement)'
 	);
@@ -652,6 +778,7 @@ ini_set('xdebug.show_local_vars', 'on');
 			'Promotion' => 'Promotion',
 			'Suivi-PostEvaluation' => 'Suivi Post-Evaluation',
 			'Titularisation' => 'Titularisation',
+			'Delegation' => 'Délégation',
 			'Affectation' => 'Confirm. d\'Affectation',
 			'Reconstitution' => 'Reconst. de Carrière',
 			'Emeritat' => 'Eméritat',
@@ -683,8 +810,96 @@ ini_set('xdebug.show_local_vars', 'on');
 		'Equivalence' => 'Equivalence',
 	);
 	
+	$types_with_multiple_exports = array(
+		'Candidature' => array('Candidature', 'Candidature')
+	);
+	
 	$typesRapports = array_merge($typesRapportsChercheurs, $typesRapportsUnites, $typesRapportsConcours);
 
+	$fieldsArrayCandidat = array($fieldsCandidat, $fieldsRapportsCandidat0, $fieldsRapportsCandidat1, $fieldsRapportsCandidat2);
+	$fieldsArrayChercheur = array($fieldsChercheursAll, $fieldsIndividual0,$fieldsIndividual1,$fieldsIndividual2);
+	$fieldsArrayUnite = array(array(), $fieldsUnites0, $fieldsUnites1, $fieldsUnites2);
+	$fieldsArrayEquivalence =
+	 array(
+	 		array(
+	"nom",
+	"prenom",
+	"genre",
+	"grade",
+	"labo1",
+	"labo2",
+	"labo3",
+	"theme1",
+	"theme2",
+	"theme3",
+	"theseAnnee",
+	"theseLieu",
+	"theseloc",
+	"HDRAnnee",
+	"HDRLieu",
+	),
+	 		array("rapporteur",	"rapport", 	"avis"),
+	 		array("avis1", "prerapport"),
+	 		array()
+	 		);
+	
+	$fieldsArrayDelegation =
+	array(
+			array(
+					"nom",
+					"prenom",
+					"genre",
+					"grade",
+					"labo1",
+					"labo2",
+					"labo3",
+					"theme1",
+					"theme2",
+					"theme3",
+					"theseAnnee",
+					"theseLieu",
+					"theseloc",
+					"HDRAnnee",
+					"HDRLieu"
+			),
+	array("rapporteur",	"avis",	"rapport"),
+			array(
+	"DU",
+	"international",
+	"finalisationHDR",
+	"national",
+	"unite",
+	"avis1",
+	"prerapport"
+					),
+			array()
+);
+	
+	
+	
+	$typesRapportToFields =
+	array(
+			'Equivalence' => $fieldsArrayEquivalence,
+			'Delegation' => $fieldsArrayDelegation,
+		'Candidature' => 	$fieldsArrayCandidat,
+			'Evaluation-Vague' => $fieldsArrayChercheur,
+			'Evaluation-MiVague' => $fieldsArrayChercheur,
+			'Promotion' => $fieldsArrayChercheur,
+			'Suivi-PostEvaluation' => $fieldsArrayChercheur,
+			'Titularisation' => $fieldsArrayChercheur,
+			'Affectation' => $fieldsArrayChercheur,
+			'Reconstitution' => $fieldsArrayChercheur,
+			'Emeritat' => $fieldsArrayChercheur,
+			'Emeritat-renouvellement' => $fieldsArrayChercheur,
+			'Changement-Directeur' => $fieldsArrayUnite,
+			'Changement-Directeur-Adjoint' => $fieldsArrayUnite,
+			'Renouvellement' => $fieldsArrayUnite,
+			'Association' => $fieldsArrayUnite,
+			'Ecole' => $fieldsArrayUnite,
+			'Comite-Evaluation' => $fieldsArrayUnite,
+			'Generique' => $fieldsArrayUnite,
+	);
+	
 	$typesRapportsToXSL = array(
 			'Candidature' => 'xslt/html2.xsl',
 			'' => 'xslt/html2.xsl'
@@ -731,6 +946,17 @@ ini_set('xdebug.show_local_vars', 'on');
 			"sansavis" => "Pas d'avis"
 	);
 
+	$avis_lettre = array(
+			""=>"",
+			"A+"=>"A+",
+			"A"=>"A",
+			"A-"=>"A-",
+			"B+"=>"B+",
+			"B"=>"B",
+			"B-"=>"B-",
+			"C"=>"C"
+	);
+	
 	$avis_ternaire = array(
 			""=>"", 
 			"tresfavorable" => "Très Favorable",
@@ -770,6 +996,7 @@ ini_set('xdebug.show_local_vars', 'on');
 		'Affectation' => $avis_binaire,
 		'Reconstitution' => $avis_vide,
 		'Titularisation' => $avis_binaire,
+		'Delegation' => $avis_lettre,
 		'Changement-Directeur' => $avis_pertinence,
 		'Changement-Directeur-Adjoint' => $avis_pertinence,
 		'Renouvellement' => $avis_pertinence,
@@ -953,7 +1180,6 @@ ini_set('xdebug.show_local_vars', 'on');
 			"rapporteur" => NIVEAU_PERMISSION_BUREAU,
 			"rapporteur2" => NIVEAU_PERMISSION_BUREAU,
 			"avis" => NIVEAU_PERMISSION_PRESIDENT_SECRETAIRE,
-			"rapport" => NIVEAU_PERMISSION_PRESIDENT_SECRETAIRE,
 			"auteur" => NIVEAU_PERMISSION_INFINI,
 			"date" => NIVEAU_PERMISSION_INFINI,
 			"id" => NIVEAU_PERMISSION_INFINI,
@@ -1019,6 +1245,12 @@ ini_set('xdebug.show_local_vars', 'on');
 
 			$typeImports = array(
 					"xml" => 	array(
+							"mime" => "text/xml",
+							"xsl" => "xslt/xmlidentity.xsl",
+							"name" => "XML",
+							"permissionlevel" => NIVEAU_PERMISSION_BASE,
+					),
+					"txt" => 	array(
 							"mime" => "text/xml",
 							"xsl" => "xslt/xmlidentity.xsl",
 							"name" => "XML",

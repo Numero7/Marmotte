@@ -12,6 +12,7 @@ function process_import($type,$suffix, $filename, $subtype)
 	switch($suffix)
 	{
 		case "xml": 
+		case "txt":
 			return import_xml($type, $filename, $subtype);
 			break;
 		case "csv": 

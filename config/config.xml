@@ -73,34 +73,34 @@
   <presidents_sousjurys>
     <DRA>
       <nom>Frédéric Magniez</nom>
-      <login>hugobasic</login>
+      <login>frederic.magiez</login>
       <signature>img/signatureFrederic.jpg</signature>
     </DRA>
-    <CR1A>
+    <CR1B>
       <nom>Frédéric Magniez</nom>
-      <login>hugobasic</login>
+      <login>frederic.magiez</login>
       <signature>img/signatureFrederic.jpg</signature>
-    </CR1A>
-    <CR2A>
+    </CR1B>
+    <CR2B>
       <nom>Frédéric Magniez</nom>
-      <login>hugobasic</login>
+      <login>frederic.magiez</login>
       <signature>img/signatureFrederic.jpg</signature>
-    </CR2A>
+    </CR2B>
     <DRB>
       <nom>Isabelle Guérin-Lassous</nom>
       <login>isabelle</login>
       <signature>img/signatureIsabelle.jpg</signature>
     </DRB>
-    <CR1B>
+    <CR1A>
       <nom>Isabelle Guérin-Lassous</nom>
       <login>isabelle</login>
       <signature>img/signatureIsabelle.jpg</signature>
-    </CR1B>
-    <CR2B>
+    </CR1A>
+    <CR2A>
       <nom>Isabelle Guérin-Lassous</nom>
       <login>isabelle</login>
       <signature>img/signatureIsabelle.jpg</signature>
-    </CR2B>
+    </CR2A>
   </presidents_sousjurys>
   <postes_ouverts>
     <_0601>2</_0601>
