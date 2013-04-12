@@ -454,25 +454,22 @@ function displayEditableReport($row, $canedit = true)
 
 		displayEditionFrameStart("",$hidden,array());
 
-		echo'<table><tr><td VALIGN="top">';
-		displayEditableObject("Rapport section", $row,$fieldsUnites0, $canedit, false);
+		echo'<table><tr>';
 
 		if(isset($row->rapporteur) && $row->rapporteur != "")
 		{
-			echo'</td><td VALIGN="top">';
+			echo'<td>';
 			displayEditableObject("Prérapport 1", $row,$fieldsUnites1, $canedit, false);
 		}
 		if(isset($row->rapporteur2) && $row->rapporteur2 != "")
 		{
-			echo'</td><td VALIGN="top">';
+			echo'</td><td>';
 			displayEditableObject("Prérapport 2",$row,$fieldsUnites2, $canedit, false);
 		}
 
-		echo'</td></tr></table>';
-
-
-		displayEditionFrameEnd("Données rapport");
-
+		echo'</tr></table>';
+		displayEditableObject("Rapport section", $row,$fieldsUnites0, $canedit, false);
+		
 		echo "</form>\n";
 	}
 	echo('

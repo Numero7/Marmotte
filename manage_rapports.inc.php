@@ -222,7 +222,7 @@ function filtersCriteriaToSQL($filters, $filter_values, $rapporteur_or = true)
 				if($filter_values[$filter] == "classe")
 					$sql .= " AND ".reports_db.".$filter REGEXP \"^[0-9]\" ";
 				else if($filter_values[$filter] == "oral")
-					$sql .= " AND (".reports_db.".$filter=\"oral\" OR ".reports_db.".$filter REGEXP \"^[0-9]\" )";
+					$sql .= " AND (".reports_db.".$filter=\"oral\" OR ".reports_db.".$filter=\"nonclasse\" OR ".reports_db.".$filter REGEXP \"^[0-9]\" )";
 				else
 					$sql .= " AND ".reports_db.".$filter=\"$filter_values[$filter]\" ";
 			}
@@ -922,7 +922,9 @@ function is_field_editable($row, $fieldId)
 	if(isset($row->statut) && ($row->statut == "audition"))
 	{
 		if(isset($row->sousjury) && isPresidentSousJury($row->sousjury))
+		{
 			return $extra;
+		}
 
 		
 		if( $is_rapp1  && ($fieldId == "prerapport" || $fieldId == "avissousjury" || $fieldId=="productionResume" || $fieldId == "parcours" || $fieldId=="projetrecherche"))

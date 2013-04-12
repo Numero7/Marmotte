@@ -17,23 +17,26 @@
 </head>
 
 <body>
-<table cellpadding="5" cellspacing="1" border="1" style="text-align:center;" border-collapse="collapse">
-	<tr>
-		<td  width="250">
+<table border="1" cellpadding="10" cellspacing="0" style="text-align:center;">
+	<tr >
+		<td  width="250" >
 			<img height="80" width="80" src="img/CNRSlogo.png"></img>
 		</td>
-		<td  width="350">
+		<td  width="380" valign="center">
 		<B>Année 2013</B><br/>
 		<B>Concours <xsl:value-of select="grade_concours"/></B>
 		</td>
 	</tr>
 	<tr>
 	<td colspan="2">
-	Concours n° <xsl:value-of select="code_concours"/><br/>
+	<br/>
+	<B>Concours n° <xsl:value-of select="code_concours"/></B><br/>
+	<br/>
 		<B>
 		RAPPORT DU JURY D’ADMISSIBILITÉ SUR L'ENSEMBLE DES CANDIDATURES<br/>
 (à l'issue de la phase d'étude des dossiers)
 		</B>
+		<br/>
 		</td>
 	</tr>
 	<tr>
@@ -45,17 +48,25 @@
 		Nombre de candidatures examinées:
 					<xsl:value-of disable-output-escaping="yes" select="examines"/>
 		<br/>
+		<br/>
 		Nombre de candidats qui seront auditionnés: 
 					<xsl:value-of disable-output-escaping="yes" select="auditionnes"/>
 		</td>
 	</tr>
-</table>
-
+	
+		<tr>
+	<td colspan="2" style="text-align:left;">
+	
 <p>
+<br/>
+Le jury a examiné les dossiers des <xsl:value-of disable-output-escaping="yes" select="examines"/> candidats admis à concourir.
 <br/>
 <br/>
 <xsl:value-of disable-output-escaping="yes" select="avis_jad"/>
 <br/>
+<br/>
+A l'issue de l'examen de l'ensemble des dossiers des candidats admis à concourir,
+le jury a décidé d'auditionner les <xsl:value-of disable-output-escaping="yes" select="auditionnes"/> candidats listés ci-dessous. 
 <br/>
 </p>
 <p>
@@ -77,14 +88,11 @@ Le jury a examiné les candidatures de :
 	<xsl:value-of disable-output-escaping="yes" select="./prenom"/>
 </td></tr>
 </xsl:for-each>
-</table>
-
-<p>
-<B>Le jury décide d’auditionner : 
+<tr >
+<td ><br/><B><br/>Le jury décide d’auditionner :<br/> 
 </B>
-</p>
-
-<table>
+</td>
+</tr>
 <xsl:for-each select="admissibles/candidat">
 <tr><td>
 <B>
@@ -117,22 +125,39 @@ Le jury a examiné les candidatures de :
 
 </table>
  -->
- <p>
-<table>
-<tr>
-	<td>
-		Le <xsl:value-of disable-output-escaping="yes" select="date"/>,<br/>
-		<xsl:value-of disable-output-escaping="yes" select="signataire"/>,<br/>
-		<xsl:value-of disable-output-escaping="yes" select="signataire_titre"/>.<br/>
+ </td>
+ </tr>
+ <tr style="text-align:left;">
+ <td>
+ <B>Date:</B>
+ <br/>
+ <!-- 
+		Le <xsl:value-of disable-output-escaping="yes" select="date_jad"/>
+		 -->
+		<br/>
+		<br/>
+		<br/>
+		<br/>		<br/>
+		
 	</td>
 	<td>
+	<B>Nom et signature du président du jury d'admissibilité:</B>
+		<br/>
+		<br/>
+		<br/>
+				<br/>
+		<br/>
+		<br/>
+		<!--
+		<xsl:value-of disable-output-escaping="yes" select="signataire"/>,<br/>
 		<img height="125" width="125">
 		<xsl:attribute name="src"><xsl:value-of select="signature_source"/></xsl:attribute>
 		</img>
+				-->
+		
 	</td>
 </tr>
 </table>
-</p>
 
 </body>
 </html>

@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Serveur: localhost
--- Généré le : Sam 23 Mars 2013 à 10:26
+-- Généré le : Mer 27 Mars 2013 à 10:42
 -- Version du serveur: 5.1.63
 -- Version de PHP: 5.3.3-7+squeeze14
 
@@ -48,8 +48,7 @@ CREATE TABLE IF NOT EXISTS `people` (
   `concourspresentes` text CHARACTER SET utf8 NOT NULL,
   `fichiers` text CHARACTER SET utf8 NOT NULL,
   `annee_recrutement` text CHARACTER SET utf8 NOT NULL,
-  `proprietes` text CHARACTER SET utf8 NOT NULL,
-  `genre` enum('femme','homme','') CHARACTER SET utf8 NOT NULL DEFAULT 'homme',
+  `genre` varchar(32) CHARACTER SET utf8 NOT NULL DEFAULT 'aucun',
   `theseloc` varchar(16) CHARACTER SET utf8 DEFAULT 'fr',
   `statut_individu` varchar(64) CHARACTER SET utf8 NOT NULL DEFAULT ''
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -105,7 +104,7 @@ CREATE TABLE IF NOT EXISTS `reports` (
   `finalisationHDR` varchar(16) NOT NULL DEFAULT '',
   `national` varchar(16) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=54714 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=54953 ;
 
 -- --------------------------------------------------------
 

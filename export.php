@@ -252,7 +252,9 @@ function generate_jad_reports()
 	global $concours_ouverts;
 	$docs = array();
 	foreach($concours_ouverts as $concours => $code)
-		$docs[$code] = generate_jad_report($concours);
+	{
+			$docs[$code] = generate_jad_report($concours);
+	}
 
 	$login = getLogin();
 
@@ -280,6 +282,28 @@ function generate_jad_reports()
 
 	send_file($filename, $remote_filename);
 
+}
+
+function display_jad_reports()
+{
+	global $concours_ouverts;
+	$docs = array();
+	foreach($concours_ouverts as $concours => $code)
+		$docs[$code] = generate_jad_report($concours);
+
+	$login = getLogin();
+
+	$dir = "csv/".$login;
+	if(!is_dir($dir) && !mkdir($dir))
+		throw new Exception("Failed to create directory ".$dir);
+
+	$filenames = array();
+	foreach($docs as $code => $doc)
+	{
+		$doc->formatOutput = true;
+
+		echo XMLToHTML($doc,'xslt/jad.xsl');
+	}
 }
 
 function generate_jad_report($code)
@@ -311,8 +335,13 @@ function generate_jad_report($code)
 	global $postes_ouverts;
 	appendLeaf("postes_ouverts", $postes_ouverts[$code], $doc, $root);
 
-	appendLeaf("avis_jad", get_config("avis_jad"), $doc, $root);
-
+	$avis = get_config("avis_jad");
+	if(isset($avis[$code]))
+		appendLeaf("avis_jad", $avis[$code], $doc, $root);
+	else
+		appendLeaf("avis_jad", "", $doc, $root);
+	appendLeaf("date_jad", get_config("date_jad"), $doc, $root);
+	
 	appendLeaf("examines", strval(count($candidats)), $doc, $root);
 	$leaf = $doc->createElement("candidats");
 	$root->appendChild($leaf);
@@ -481,6 +510,9 @@ if($dbh!=0)
 								break;
 							case "jad":
 								generate_jad_reports();
+								break;
+							case "jadhtml":
+								display_jad_reports();
 								break;
 							case "exempleimportcsv":
 								$fields = array();

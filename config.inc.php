@@ -142,7 +142,6 @@ ini_set('xdebug.show_local_vars', 'on');
 //			"prenom",
 			"statut",
 			"unite",
-			"grade",
 			"avis",
 			"rapport",
 	);
@@ -206,7 +205,6 @@ ini_set('xdebug.show_local_vars', 'on');
 			"prenom",
 			"genre",
 			"statut_individu",
-			"grade",
 			"annee_recrutement",
 			"labo1",
 			"theme1",
@@ -472,7 +470,7 @@ ini_set('xdebug.show_local_vars', 'on');
 	);
 
 	$fieldsUnites1 = array(
-			"prerapport1"
+			"prerapport"
 	);
 
 	$fieldsUnites2 = array(
@@ -1240,7 +1238,14 @@ ini_set('xdebug.show_local_vars', 'on');
 					"xsl" => "",
 					"name" => "JAD",
 					"permissionlevel" => NIVEAU_PERMISSION_PRESIDENT_SECRETAIRE
+			),
+			"jadhtml" => 	array(
+					"mime" => "application/x-text",
+					"xsl" => "",
+					"name" => "JAD - html",
+					"permissionlevel" => NIVEAU_PERMISSION_PRESIDENT_SECRETAIRE
 			)
+				
 			);
 
 			$typeImports = array(

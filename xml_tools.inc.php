@@ -16,7 +16,7 @@ function xml_node_to_array($node, $protect ="")
 			return $result;
 	}
 	//echo($node->nodeValue."<br/>");
-	$result =  str_replace(array("\n"), array(""), trim($node->nodeValue,$protect));
+	$result =  str_replace(array("\n"), array(""), trim($node->nodeValue,$protect." "));
 	return $result;
 }
 
