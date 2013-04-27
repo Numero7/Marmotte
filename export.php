@@ -409,7 +409,8 @@ if($dbh!=0)
 			switch($action)
 			{//Processing
 				case 'viewpdf':
-					viewReportAsPdf($id); break;
+					$option = isset($_REQUEST["option"]) ? $_REQUEST["option"] : "";
+					viewReportAsPdf($id,$option); break;
 				case 'viewhtml':
 					viewReportAsHtml($id);	break;
 				case 'export':

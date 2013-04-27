@@ -424,8 +424,13 @@ function filename_from_params($nom, $prenom, $grade, $unite, $type, $session, $a
 		else
 			return $session."-".$type."-".$unite;
 	}
-	else if(array_key_exists($type,$typesRapportsConcours))
-		return $session."-".$type."-".$concours."-".$nom."_".$prenom;
+	else if( array_key_exists($type,$typesRapportsConcours) || $type=="Audition" || $type =="Classement" )
+	{
+		if($type == "Classement")
+			$type .=  "-".mb_convert_case($avis,MB_CASE_TITLE);
+		
+		return $session."-".$concours."-".$type."-".$nom."_".$prenom;
+	}
 	else
 		return $session."-".$type."-".$grade."-".$nom."_".$prenom;
 }

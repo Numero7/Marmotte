@@ -317,27 +317,28 @@ function displayEditableReport($row, $canedit = true)
 
 	displayEditionFrameStart("",$hidden,$submits);
 
-	if($eval_type  == "Candidature")
+	if($eval_type  == "Candidature" && is_auditionne($row))
 	{
-		echo "<a href=\"export.php?action=viewpdf&amp;id=".$row->id_origine."&amp;id_origine=".$row->id_origine."\">\n";
-		echo "Rapport d'audition<img class=\"icon\" width=\"24\" height=\"24\" src=\"img/pdf-icon-50px.png\" alt=\"viewpdf\"/>\n";
-		echo "</a>\n";
-		/*
-		if(isset($row->avis) && is_numeric($row->avis))
+		echo "<B>Rapports:</B>";
+		if(is_auditionne($row))
 		{
-			echo "<a href=\"export.php?action=viewpdf&amp;id=".$row->id_origine."&amp;id_origine=".$row->id_origine."\">\n";
-			echo "Rapport sur le candidat classé<img class=\"icon\" width=\"24\" height=\"24\" src=\"img/pdf-icon-50px.png\" alt=\"viewpdf\"/>\n";
+			echo "<a href=\"export.php?action=viewpdf&amp;option=Audition&amp;id=".$row->id_origine."&amp;id_origine=".$row->id_origine."\">\n";
+			echo "d'audition\n";
 			echo "</a>\n";
 		}
-		*/
+		if(is_classe($row))
+		{
+			echo "et <a href=\"export.php?action=viewpdf&amp;option=Classement=yes&amp;id=".$row->id_origine."&amp;id_origine=".$row->id_origine."\">\n";
+			echo "sur le candidat classé\n";
+			echo "</a>\n";
+		}
 	}
 	else
 	{
 		echo "<a href=\"export.php?action=viewpdf&amp;id=".$row->id_origine."&amp;id_origine=".$row->id_origine."\">\n";
-		echo "<img class=\"icon\" width=\"24\" height=\"24\" src=\"img/pdf-icon-50px.png\" alt=\"viewpdf\"/>\n";
+		echo "Rapport\n";
 		echo "</a>\n";
 	}
-
 	$is_unite = array_key_exists($eval_type,$typesRapportsUnites);
 	$statut = $row->statut;
 

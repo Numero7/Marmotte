@@ -3,9 +3,10 @@ require_once('tcpdf/config/lang/eng.php');
 require_once('tcpdf/tcpdf.php');
 require_once('generate_xml.inc.php');
 
-function getReportAsDOMDoc($id_rapport)
+function getReportAsDOMDoc($id_rapport, $option="")
 {
 	$row = getReport($id_rapport);
+	
 	
 	if(!$row)
 	{
@@ -13,6 +14,9 @@ function getReportAsDOMDoc($id_rapport)
 		return;
 	}
 	
+	if($option!="")
+		$row->type = $option;
+
 	$doc = rowToXMLDoc($row);
 	if(!$doc)
 		echo 'Impossible de convertir la requete en xml';
@@ -37,12 +41,19 @@ function viewReportAsHtml($id_rapport)
 	echo $html;
 }
 
-function viewReportAsPdf($id_rapport)
+function viewReportAsPdf($id_rapport,$option = "")
 {
 	
-	$doc = getReportAsDOMDoc($id_rapport);
+	$doc = getReportAsDOMDoc($id_rapport, $option);
+
+	if("option" != "")
+		$type = $option;
+	else
+		$type = getReport($id_rapport)->type;
+
+	$xsl = type_to_xsl( $type);
 	
-	$html = XMLToHTML($doc,type_to_xsl(getReport($id_rapport)->type));
+	$html = XMLToHTML( $doc , $xsl );
 	
 
 	$pdf = HTMLToPDF($html);

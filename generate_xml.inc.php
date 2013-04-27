@@ -121,18 +121,35 @@ function getReportsAsXML($filter_values, $sort_criteria = array(), $keep_br = tr
 
 	$doc = new DOMDocument("1.0","UTF-8");
 	$root = $doc->createElement("rapports");
-	$rows = filterSortReports(getCurrentFiltersList(), $filter_values, $sort_criteria);
-
+	$rows = filterSortReports(getCurrentFiltersList(), $filter_values, $sort_criteria);;
+	
 	if(isset($filter_values['id_edit']))
 		$root->setAttribute('id_edit',$filter_values['id_edit']);
 
 	$sessions = sessionArrays();
 	$units = unitsList();
 
+	global $report_types_with_multiple_exports;
 	foreach($rows as $row)
 	{
-		$elem = createXMLReportElem($row, $sessions,$units,$doc,$keep_br);
-		$root->appendChild($elem);
+		$types = array($row->type);
+		if(isset($report_types_with_multiple_exports[$row->type]))
+		{
+			$types = array();
+			if($row->type == "Candidature")
+			{
+				if(is_auditionne($row))
+					$types[] = "Audition";
+				if(is_classe($row))
+					$types[] = "Classement";
+			}
+		}
+		foreach($types as $type)
+		{
+			$row->type = $type;
+			$elem = createXMLReportElem($row, $sessions,$units,$doc,$keep_br);
+			$root->appendChild($elem);
+		}
 	}
 
 	$doc->appendChild($root);
@@ -221,7 +238,7 @@ function EnteteDroit($row, $units)
 function EnteteGauche($row)
 {
 	global $typesRapportsToEnteteGauche;
-	$result = $typesRapportsToEnteteGauche[$row->type];
+	$result = isset($typesRapportsToEnteteGauche[$row->type]) ? $typesRapportsToEnteteGauche[$row->type] : "";
 	if($row->type == "Promotion")
 	{
 		$oldgrade = $row->grade;
@@ -303,12 +320,10 @@ function createXMLReportElem($row, $sessions, $units, DOMDocument $doc, $keep_br
 		appendLeaf($fieldID,   $keep_br ? $row->$fieldID : remove_br($row->$fieldID) , $doc, $rapportElem);
 
 
-	//On ajoute le type du rapport et le pretty print
-	appendLeaf("type", $row->type, $doc, $rapportElem);
 
 	global $presidents_sousjurys;
 	
-	if($row->type == "Candidature")
+	if($row->type == "Audition")
 	{
 		if(isset($presidents_sousjurys[$row->sousjury]))
 		{
@@ -400,8 +415,11 @@ function createXMLReportElem($row, $sessions, $units, DOMDocument $doc, $keep_br
 
 	$row->session = $sessions[$row->id_session];
 
+	//On ajoute le type du rapport et le nom de fichier
+	appendLeaf("type", $row->type, $doc, $rapportElem);
 	$rapportElem->setAttribute('filename', filename_from_doc($row));
-
+	$rapportElem->setAttribute('type', $row->type);
+	
 	return $rapportElem;
 
 }
