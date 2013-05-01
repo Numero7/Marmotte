@@ -320,7 +320,7 @@ function displayEditableReport($row, $canedit = true)
 	if($eval_type  == "Candidature" && is_auditionne($row))
 	{
 		echo "<B>Rapports:</B>";
-		if(is_auditionne($row))
+		if(is_auditionneCR($row))
 		{
 			echo "<a href=\"export.php?action=viewpdf&amp;option=Audition&amp;id=".$row->id_origine."&amp;id_origine=".$row->id_origine."\">\n";
 			echo "d'audition\n";
@@ -328,7 +328,7 @@ function displayEditableReport($row, $canedit = true)
 		}
 		if(is_classe($row))
 		{
-			echo "et <a href=\"export.php?action=viewpdf&amp;option=Classement=yes&amp;id=".$row->id_origine."&amp;id_origine=".$row->id_origine."\">\n";
+			echo "et <a href=\"export.php?action=viewpdf&amp;option=Classement&amp;id=".$row->id_origine."&amp;id_origine=".$row->id_origine."\">\n";
 			echo "sur le candidat classé\n";
 			echo "</a>\n";
 		}

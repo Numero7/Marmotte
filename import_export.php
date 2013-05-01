@@ -86,7 +86,7 @@ function displayExport()
 
 <?php displayExport();?>
 	<hr/>
-<h2>Import</h2>
+<h2>Import d'un unique rapport</h2>
 <p>
 Le formulaire suivant vous permet d'importer un rapport édité offline.
 </p>
@@ -101,10 +101,10 @@ if(isSecretaire())
 	?>
 	<hr/>
 	
-	<h2>Import de rapports vierges</h2>
+	<h2>Import d'une liste de rapports vierges</h2>
 	
 <p>
-	Le formulaire ci-dessous permet d'injecter plusieurs rapports dans Marmotte, en partant d'un fichier
+	Le formulaire ci-dessous permet d'importer plusieurs rapports vierges dans Marmotte, en partant d'un fichier
 	excel fourni par le SGCN.<br /> Ces rapports pourront ensuite être édités en ligne par les rapporteurs.<br /><br />
 	
 	La procédure est la suivante.

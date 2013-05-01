@@ -98,10 +98,16 @@ require_once("authbar.inc.php");
 					$type = $next_report->getAttribute('type');
 					$xsl_path = type_to_xsl($type);
 					$xsl->load($xsl_path);
-					
+
 					$proc = new XSLTProcessor();
 					$proc->importStyleSheet($xsl);
 
+					if($type=="Classement")
+					{
+						echo $xsl_path;
+						//return;
+					}
+					
 					$filename = 'reports/'.$next_report->getAttribute('filename').".pdf";
 
 					$subreport = new DOMDocument("1.0","UTF-8");
