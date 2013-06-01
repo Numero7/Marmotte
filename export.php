@@ -384,9 +384,10 @@ function generate_exemple_csv($fields)
 {
 	try
 	{
+		/*
 		if( !in_array('nomprenom', $fields) && ( !in_array('nom', $fields) || !in_array('prenom', $fields) ))
 			throw new Exception("Check either the 'nomprenom' checkbox or both the 'nom' and the 'prenom' checkbox");
-
+*/
 		/*
 		$sql = "SELECT * FROM ".reports_db." LIMIT 0,5";
 		$result = sql_request($sql);
@@ -438,7 +439,8 @@ if($dbh!=0)
 			switch($action)
 			{//Processing
 				case 'viewpdf':
-					viewReportAsPdf($id); break;
+					$option = isset($_REQUEST["option"]) ? $_REQUEST["option"] : "";
+					viewReportAsPdf($id,$option); break;
 				case 'viewhtml':
 					viewReportAsHtml($id);	break;
 				case 'export':

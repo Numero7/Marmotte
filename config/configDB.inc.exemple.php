@@ -10,10 +10,10 @@
 	
 	$rootdir = "";
 	
-	define("evaluations_db","evaluations");
+	define("reports_db","reports");
 	define("users_db","users");
 	define("sessions_db","sessions");
 	define("units_db","units");
-	define("candidates_db","candidats");
+	define("people_db","people");
 	
 ?>

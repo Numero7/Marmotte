@@ -37,6 +37,24 @@ function normalizeCandidat($data)
 	return $data2;
 }
 
+function is_classe($report)
+{
+	return is_numeric($report->avis);
+}
+
+function is_auditionne($report)
+{
+	return is_classe($report) || $report->avis=="oral" || $report->avis="nonclasse";
+}
+
+function is_auditionneCR($report)
+{
+	global $concours_ouverts;
+	return (substr($concours_ouverts[$report->concours],0,2)=="CR") 
+	&&(is_classe($report) || $report->avis=="oral" || $report->avis="nonclasse");
+}
+
+
 function updateCandidateFromRequest($request, $oldannee="")
 {
 	//rrr();

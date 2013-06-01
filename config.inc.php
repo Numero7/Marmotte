@@ -808,10 +808,6 @@ ini_set('xdebug.show_local_vars', 'on');
 		'Equivalence' => 'Equivalence',
 	);
 	
-	$types_with_multiple_exports = array(
-		'Candidature' => array('Candidature', 'Candidature')
-	);
-	
 	$typesRapports = array_merge($typesRapportsChercheurs, $typesRapportsUnites, $typesRapportsConcours);
 
 	$fieldsArrayCandidat = array($fieldsCandidat, $fieldsRapportsCandidat0, $fieldsRapportsCandidat1, $fieldsRapportsCandidat2);
@@ -900,6 +896,8 @@ ini_set('xdebug.show_local_vars', 'on');
 	
 	$typesRapportsToXSL = array(
 			'Candidature' => 'xslt/html2.xsl',
+			'Audition' => 'xslt/audition.xsl',
+			'Classement' => 'xslt/classement.xsl',
 			'' => 'xslt/html2.xsl'
 	);
 	
@@ -1248,6 +1246,10 @@ ini_set('xdebug.show_local_vars', 'on');
 				
 			);
 
+	$report_types_with_multiple_exports = array(
+			'Candidature' => array('Audition', 'Classement')
+			);
+	
 			$typeImports = array(
 					"xml" => 	array(
 							"mime" => "text/xml",

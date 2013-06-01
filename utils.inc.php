@@ -386,18 +386,13 @@ function filename_from_doc($doc)
 {
 	$nom = str_replace( array("'"," "), array("","_") , mb_convert_case(replace_accents($doc->nom), MB_CASE_TITLE));
 	$prenom = mb_convert_case(replace_accents($doc->prenom), MB_CASE_TITLE);
-	$grade = $doc->grade;
-	$unite = $doc->unite;
-	$type = $doc->type;
 
 	$sessions = sessionArrays();
 	$session = $sessions[$doc->id_session];
-	$avis = $doc->avis;
-	$concours = $doc->concours;
-	return filename_from_params($nom, $prenom, $grade, $unite, $type, $session, $avis, $concours);
+	return filename_from_params($nom, $prenom, $doc->grade, $doc->unite, $doc->type, $session, $doc->avis, $doc->concours, $doc->sousjury);
 }
 
-function filename_from_params($nom, $prenom, $grade, $unite, $type, $session, $avis, $concours = "")
+function filename_from_params($nom, $prenom, $grade, $unite, $type, $session, $avis, $concours = "", $sousjury="")
 {
 	global $typesRapportsUnites;
 	global $typesRapportsConcours;
@@ -411,23 +406,33 @@ function filename_from_params($nom, $prenom, $grade, $unite, $type, $session, $a
 			case "DR1": $grade = "DRCE1"; break;
 			case "DRCE1": $grade = "DRCE2"; break;
 		}
-		$grade .= "-".$avis;
+		$grade .= " - ".$avis;
 	}
 
 	if($type == "Evaluation-Vague" || $type == "Evaluation-MiVague")
-		$type .=  "-".mb_convert_case($avis,MB_CASE_TITLE);
+		$type .=  " - ".mb_convert_case($avis,MB_CASE_TITLE);
 
 	if(array_key_exists($type,$typesRapportsUnites))
 	{
 		if($type == 'Generique')
-			return $session."-".$nom."_".$prenom."-".$unite;
+			return $session." - ".$nom." ".$prenom." - ".$unite;
 		else
-			return $session."-".$type."-".$unite;
+			return $session." - ".$type." - ".$unite;
 	}
-	else if(array_key_exists($type,$typesRapportsConcours))
-		return $session."-".$type."-".$concours."-".$nom."_".$prenom;
+	else if( array_key_exists($type,$typesRapportsConcours) || $type=="Audition" || $type =="Classement" )
+	{
+		if($type == "Classement")
+		{
+			$type .=  " - ".mb_convert_case($avis,MB_CASE_TITLE);
+			return $session." - ".$concours." - ".$type." - ".$nom." ".$prenom;
+		}
+		if($type == "Audition")
+		{
+			return $session." - ".$concours." - ".$type." - sousjury ".$sousjury." - ".$nom." ".$prenom;
+		}
+	}
 	else
-		return $session."-".$type."-".$grade."-".$nom."_".$prenom;
+		return $session." - ".$type." - ".$grade." - ".$nom." ".$prenom;
 }
 
 function getStyle($fieldId,$odd)

@@ -370,7 +370,8 @@ function alertText($text)
 							$permissions = $_REQUEST["permissions"];
 							$sousjury = "";
 							foreach($concours_ouverts as $concours => $nom)
-								$sousjury .= $_REQUEST["sousjury".$concours];
+								if(isset($_REQUEST["sousjury".$concours]))
+									$sousjury .= $_REQUEST["sousjury".$concours];
 
 							changeUserInfos($login,$permissions,$sousjury);
 						}

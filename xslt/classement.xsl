@@ -33,7 +33,10 @@
 							</td></tr></table>
 						</td>
 					</tr>
-					<tr>
+					<tr style="border-bottom: none;">
+						<td colspan="2">
+						<table>
+					<tr style="text-align:center;">
 						<td colspan="2">
 							<br />
 							<B>
@@ -43,55 +46,42 @@
 							<br />
 							<br />
 							<B>
-								RAPPORT DE LA SECTION DE JURY D’ADMISSIBILITÉ SUR LA CANDIDATURE
+							RAPPORT DU JURY D’ADMISSIBILITÉ SUR LA CANDIDATURE DE
 								</B>
-								<br/><B>
-								(à l'issue de la phase d’audition)
-							</B>
-							<br />
-							<br />
-							<B>
-								Section de jury d’admissibilité :
-								<xsl:value-of select="sousjury" />
-							</B>
 							<br />
 						</td>
 					</tr>
-					<tr style="text-align:left;">
-						<td style="border-right: none;">
-							<br />
+					<tr style="text-align:left;" >
+						<td width="50%">
 							<B>NOM : </B>
 							<xsl:value-of disable-output-escaping="yes" select="nom" />
 						</td>
-						<td style="border-left: none;">
-							<B>Prénom : </B>
+						<td width="50%">
+							<B>PRENOM : </B>
 							<xsl:value-of disable-output-escaping="yes" select="prenom" />
 						</td>
 					</tr>
+					</table>
+					</td>
+					</tr>
+					<tr style="text-align:center;">
+						<td colspan="2">
+							<B>Candidat classé n° <xsl:value-of disable-output-escaping="yes" select="avis" />
+							 </B>
+						</td>
+					</tr>
+					
 					<tr style="text-align:left;padding-top:10px;">
 					<td colspan = "2" height="520" >
 
 				<p>
-					<xsl:value-of disable-output-escaping="yes" select="parcours" />
-				</p>
-
-				<p>
-					<xsl:value-of disable-output-escaping="yes" select="productionResume" />
-				</p>
-
-
-				<p>
-					<xsl:value-of disable-output-escaping="yes" select="projet" />
-				</p>
-
-				<p>
-					<xsl:value-of disable-output-escaping="yes" select="avissousjury" />
+					<xsl:value-of disable-output-escaping="yes" select="rapport" />
 				</p>
 
 </td></tr>
 <tr style="text-align:left;"><td height="120">
 										<B><FONT SIZE="-1">
-											Nom et signature du président de la section de jury :
+											Nom et signature du président du jury d'admissibilité :
 										<xsl:value-of disable-output-escaping="yes"
 											select="signataire" />
 										</FONT>
