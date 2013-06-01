@@ -460,11 +460,13 @@ function displayEditableReport($row, $canedit = true)
 		{
 			echo'<td>';
 			displayEditableObject("Prérapport 1", $row,$fieldsUnites1, $canedit, false);
+			echo'</td>';
 		}
 		if(isset($row->rapporteur2) && $row->rapporteur2 != "")
 		{
-			echo'</td><td>';
+			echo'<td>';
 			displayEditableObject("Prérapport 2",$row,$fieldsUnites2, $canedit, false);
+			echo'</td>';
 		}
 
 		echo'</tr></table>';
