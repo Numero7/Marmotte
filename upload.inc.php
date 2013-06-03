@@ -42,6 +42,7 @@ function process_upload($extradata = null)
 				switch($type)
 				{
 					case "evaluations":
+					case "unites":
 						{
 							if(array_key_exists($suffix,$typeImports))
 							{

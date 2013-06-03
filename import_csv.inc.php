@@ -69,7 +69,7 @@ function import_csv($type,$filename, $subtype, $sep=";", $del="\n",$enc='"', $es
 					}
 
 				}
-				else if ($type == 'unite')
+				else if ($type == 'unites')
 				{
 					addCsvUnite($data, $fields);
 				}
@@ -178,10 +178,9 @@ function addCsvReport($type, $data, $fields)
 		updateUnitData($data->unite, $data);
 }
 
-function addCsvUnite($type, $data, $fields)
+function addCsvUnite($data, $fields)
 {
-	$unite = getDocFromCsv($data,$fields);
-	insertUniteInDatabase($unite);
+	addUnit($data[1], $data[0], $data[2], $data[3]);
 }
 
 
