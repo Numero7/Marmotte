@@ -981,7 +981,7 @@ function is_field_editable($row, $fieldId)
 	if(isset($typesRapportsUnites[$eval_type]))
 	{
 		global $fieldsUnites;
-		return $extra && in_array($fieldId,$fieldsUnites) && (isSecretaire() || $is_rapp1);
+		return $extra && in_array($fieldId,$fieldsUnites) && (isSecretaire() || ($fieldId == "prerapport" && $is_rapp1) || ($fieldId == "prerapport2" && $is_rapp2));
 	}
 
 	if(isset($typesRapportsChercheurs[$eval_type]))
