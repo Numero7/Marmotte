@@ -61,7 +61,7 @@ CREATE TABLE IF NOT EXISTS `people` (
 
 DROP TABLE IF EXISTS `reports`;
 CREATE TABLE IF NOT EXISTS `reports` (
-  `statut` enum('vierge','prerapport','rapport','publie','supprime','audition') NOT NULL,
+  `statut` enum('vierge','prerapport','rapport','publie','supprime','editable','audition') NOT NULL,
   `id_session` varchar(64) NOT NULL,
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `id_origine` int(11) NOT NULL,

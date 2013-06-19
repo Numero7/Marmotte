@@ -78,7 +78,7 @@ ini_set('xdebug.show_local_vars', 'on');
 			"date"
 	);
 	
-	$statutsRapports = array( 'vierge' => "Rapport vierge", 'prerapport'=>'Prérapport', 'rapport'=>"Rapport", 'audition'=>"Audition", 'publie'=>"Rapport publié");
+	$statutsRapports = array( 'vierge' => "Rapport vierge", 'prerapport'=>'Prérapport', 'editable' => "Editable", 'rapport'=>"Rapport", 'audition'=>"Audition", 'publie'=>"Rapport publié");
 	
 	
 	$fieldsRapportAll = array(
@@ -1312,6 +1312,7 @@ ini_set('xdebug.show_local_vars', 'on');
 			'labo1' => array('name'=>"Labo1" , 'default_value' => "tous", 'default_name' => ""),
 			'statut' => array('name'=>"Statut" , 'liste' => $statutsRapports, 'default_value' => "tous", 'default_name' => "Tous les statuts"),
 			'id_session' => array('name'=>"Session", 'default_value' =>-1, 'default_name' => "Toutes les sessions"),
+			'avancement' => array('name'=>"Avancement" , 'default_value' => "", 'default_name' => ""),
 			'id_origine' => array('default_value' =>-1),
 			'id' => array('default_value' =>-1),
 	);

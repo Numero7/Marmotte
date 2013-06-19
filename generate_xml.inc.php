@@ -376,14 +376,13 @@ function createXMLReportElem($row, $sessions, $units, DOMDocument $doc, $keep_br
 
 	//On ajoute la date du jour
 	date_default_timezone_set('Europe/Paris');
-	setlocale (LC_TIME, 'fr_FR.utf8','fra');
+	setlocale (LC_TIME, 'fr_FR.utf8','fra', 'fra_fra');
 	//date("j/F/Y")
 	if(strpos($_SERVER['SERVER_SOFTWARE'],"IIS") === false)
 		appendLeaf("date", strftime("%#d %B %Y",  time()), $doc, $rapportElem);
 	else
 		appendLeaf("date",  utf8_encode(strftime("%#d %B %Y", time())), $doc, $rapportElem);
-
-
+	
 	/*
 	 date_default_timezone_set('Europe/Paris');
 

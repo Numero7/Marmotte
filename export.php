@@ -88,7 +88,7 @@ function export_reports_as_csv($reports, $dir)
 			array_merge($mandatory_export_fields, get_editable_fields($reports[0]))
 	);
 
-	$file = $dir."/".$file.".csv";
+	$file = $dir."/".$file;
 	$data = compileObjectsAsCSV($activefields, $reports);
 	if($handle = fopen($file, 'w'))
 	{
@@ -402,7 +402,7 @@ function generate_exemple_csv($fields)
 
 		$row = (object) array();
 		foreach($fields as $field)
-			$row->$field = "";
+			$row->$field = "copiez/collez vos données";
 		$row->type = "Evaluation-Vague";
 		$rows[] = $row;
 		

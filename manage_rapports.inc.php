@@ -160,6 +160,7 @@ function filtersCriteriaToSQL($filters, $filter_values, $rapporteur_or = true)
 	$sql = "";
 	foreach($filters as $filter => $data)
 	{
+		
 		if(isset($filter_values[$filter]) && (!isset($data['default_value']) || $filter_values[$filter] != $data['default_value']))
 		{
 				
@@ -186,7 +187,6 @@ function filtersCriteriaToSQL($filters, $filter_values, $rapporteur_or = true)
 					$basesql = "( (".reports_db.".rapporteur=\"$login\" AND ".reports_db.".avis1 != \"\") OR (".reports_db.".rapporteur2=\"$login\" AND ".reports_db.".avis2 != \"\") OR  (".reports_db.".rapporteur!=\"$login\" AND ".reports_db.".rapporteur2!=\"$login\")) ";
 				else
 					$basesql = "( (".reports_db.".rapporteur=\"\" OR ".reports_db.".avis1 != \"\") AND (".reports_db.".rapporteur2=\"\" OR ".reports_db.".avis2 != \"\")) ";
-
 
 				if($val == "todo")
 					$sql .= " AND NOT ".$basesql;
@@ -284,7 +284,7 @@ function checkReportIsEditable($rapport)
 	{
 		return true;
 	}
-	else if($rapport->statut != "prerapport")
+	else if($rapport->statut != "prerapport" && $rapport->statut != "editable")
 	{
 		throw new Exception("Ce rapport n'a plus le statut de prerapport et n'est donc plus éditable par ses rapporteurs. Si nécessaire veuillez demander un changement de statut au secrétaire.");
 	}
@@ -1027,11 +1027,16 @@ function is_field_visible($row, $fieldId)
 		return false;
 
 
+	if(isset($row->statut) && $row->statut == "editable")
+		return true;
+	
 	//during prerapport edition we do not want rapporteurs to see each other reports
 	//only editable info is visible
 	$login = getLogin();
 	$is_rapp1 = isset($row->rapporteur) && $login == $row->rapporteur;
 	$is_rapp2 = isset($row->rapporteur2) && $login == $row->rapporteur2;
+	
+	
 	if(isset($row->statut) && $row->statut == "prerapport" && ($is_rapp1 || $is_rapp2))
 		return false;
 	

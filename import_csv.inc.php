@@ -9,6 +9,16 @@ require_once('manage_rapports.inc.php');
  * Upload de fichier csv avec séparateur ; entrées encadrées par des "", encodé en utf-8
 Les données d'un labo avec le même code seront remplacées.
 */
+
+function fixEncoding($in_str)
+{
+	$cur_encoding = mb_detect_encoding($in_str) ;
+	if($cur_encoding == "UTF-8" && mb_check_encoding($in_str,"UTF-8"))
+		return $in_str;
+	else
+		return utf8_encode($in_str);
+}
+
 function import_csv($type,$filename, $subtype, $sep=";", $del="\n",$enc='"', $esc='\\')
 {
 	global $fieldsAll;
@@ -18,6 +28,8 @@ function import_csv($type,$filename, $subtype, $sep=";", $del="\n",$enc='"', $es
 	$output = "";
 
 
+	
+	
 	if($file = fopen ( $filename , 'r') )
 	{
 		$fields = fgetcsv ( $file, 0, $sep , $enc, $esc );
@@ -39,9 +51,21 @@ function import_csv($type,$filename, $subtype, $sep=";", $del="\n",$enc='"', $es
 
 		$nb = 0;
 		$errors = "";
+		
+		$is_utf8 = true;
+		
 		while(($data = fgetcsv ( $file, 0, $sep , $enc ,$esc)) != false)
 		{
 			$nb++;
+			
+			if($is_utf8)
+				for($i = 0 ; $i < count($data); $i++)
+					$is_utf8 = $is_utf8 && mb_check_encoding($data[$i],"UTF-8");
+			
+			if(!$is_utf8)
+				for($i = 0 ; $i < count($data); $i++)
+					$data[$i] = utf8_encode($data);
+			
 			try
 			{
 				set_time_limit(0);
