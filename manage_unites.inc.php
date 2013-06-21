@@ -82,7 +82,7 @@ function addUnit($nickname, $code, $fullname, $directeur)
 	sql_request($sql);
 
 	$values = "\"".mysql_real_escape_string($nickname)."\",";
-	$values .= "\"".mysql_real_escape_string($code)."\",";
+	$values .= "\"".str_replace(' ','',mysql_real_escape_string($code))."\",";
 	$values .= "\"".mysql_real_escape_string($fullname)."\",";
 	$values .= "\"".mysql_real_escape_string($directeur)."\"";
 

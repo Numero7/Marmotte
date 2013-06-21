@@ -128,9 +128,6 @@ function getReportsAsXML($filter_values, $sort_criteria = array(), $keep_br = tr
 	if(isset($filter_values['id_edit']))
 		$root->setAttribute('id_edit',$filter_values['id_edit']);
 
-	$sessions = sessionArrays();
-	$units = unitsList();
-
 	foreach($rows as $row)
 	{
 		$types = array($row->type);
@@ -149,7 +146,7 @@ function getReportsAsXML($filter_values, $sort_criteria = array(), $keep_br = tr
 		foreach($types as $type)
 		{
 			$row->type = $type;
-			$elem = createXMLReportElem($row, $sessions,$units,$doc,$keep_br);
+			$elem = createXMLReportElem($row,$doc,$keep_br);
 			$root->appendChild($elem);
 		}
 	}
@@ -277,7 +274,7 @@ function type_to_xsl($type)
 	}
 }
 
-function createXMLReportElem($row, $sessions, $units, DOMDocument $doc, $keep_br = true)
+function createXMLReportElem($row, DOMDocument $doc, $keep_br = true)
 {
 	global $typesRapports;
 	global $typesRapportsToEnteteGauche;
@@ -287,18 +284,12 @@ function createXMLReportElem($row, $sessions, $units, DOMDocument $doc, $keep_br
 	global $typesRapportsToCheckboxesTitles;
 	global $typesRapportsToFormula;
 
-	if(!$sessions)
-		$sessions = sessionArrays();
-
-	if(!$units)
-		$units = unitsList();
-
+	$sessions = sessionArrays();
+	$units = unitsList();
 
 	$rapportElem = $doc->createElement("rapport");
-
 	$rapportElem->setAttribute("id",$row->id);
 	$rapportElem->setAttribute("id_origine",$row->id_origine);
-
 
 	$fieldsspecial = array('unite','date','type');
 
@@ -306,12 +297,10 @@ function createXMLReportElem($row, $sessions, $units, DOMDocument $doc, $keep_br
 	if(array_key_exists($row->type,$typesRapportsToFormula))
 	{
 		$formulas = $typesRapportsToFormula[$row->type];
-
 		if(array_key_exists($row->avis,$formulas))
 		{
 			$formula = $formulas[$row->avis];
 			$row->rapport .= "<br/><br/>".normalizeField($formula);
-
 		}
 	}
 
@@ -320,8 +309,6 @@ function createXMLReportElem($row, $sessions, $units, DOMDocument $doc, $keep_br
 	foreach ($fieldsRapportAll as $fieldID => $title)
 		if(isset($row->$fieldID) && !in_array($fieldID,$fieldsspecial))
 		appendLeaf($fieldID,   $keep_br ? $row->$fieldID : remove_br($row->$fieldID) , $doc, $rapportElem);
-
-
 
 	global $presidents_sousjurys;
 	
@@ -368,8 +355,9 @@ function createXMLReportElem($row, $sessions, $units, DOMDocument $doc, $keep_br
 
 	//On ajoute le nickname du labo
 	$value = "";
+	
 	if(array_key_exists($row->unite,$units))
-		$value = $row->unite." (".$units[$row->unite]->nickname.")";
+		$value = $units[$row->unite]->nickname." (".$row->unite.")";
 	else
 		$value = $row->unite;
 	appendLeaf("unite", $value, $doc, $rapportElem);
@@ -433,6 +421,8 @@ function createXMLReportElem($row, $sessions, $units, DOMDocument $doc, $keep_br
 
 	//On ajoute le type du rapport et le nom de fichier
 	appendLeaf("type", $row->type, $doc, $rapportElem);
+	/*$filename = filename_from_node($nodes->item(0)).".pdf";*/
+	
 	$rapportElem->setAttribute('filename', filename_from_doc($row));
 	$rapportElem->setAttribute('type', $row->type);
 	
@@ -440,10 +430,10 @@ function createXMLReportElem($row, $sessions, $units, DOMDocument $doc, $keep_br
 
 }
 
-function rowToXMLDoc($row, $sessions = null, $units = null)
+function rowToXMLDoc($row)
 {
 	$doc = new DOMDocument("1.0","UTF-8");
-	$elem = createXMLReportElem($row, $sessions, $units, $doc);
+	$elem = createXMLReportElem($row, $doc);
 	$doc->appendChild($elem);
 	$doc->formatOutput = TRUE;
 	return $doc;

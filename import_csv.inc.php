@@ -183,7 +183,6 @@ function getDocFromCsv($data, $fields)
 
 function addCsvReport($type, $data, $fields)
 {
-	global $report_prototypes;
 
 	if(isset($data->code))
 		$data->unite = $data->code;
@@ -196,6 +195,13 @@ function addCsvReport($type, $data, $fields)
 	if($type != "")
 		$report->type = $type;
 	$report->id_session = current_session_id();
+	
+	global $typesRapportsChercheurs;
+	global $typesRapportsConcours;
+	
+	if( in_array($report->type, $typesRapportsChercheurs) || in_array($report->type, $typesRapportsConcours) )
+		updateCandidateFromData($data);
+
 	addReport($report,false);
 
 	if(isset($data->unite))

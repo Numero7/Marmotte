@@ -104,12 +104,6 @@ function displayFiltrage($rows, $fields, $filters, $filter_values)
 						if(isset($data['liste']))
 						{
 							$count++;
-							/*
-							 if(in_array($filter, $start_tr_fields))
-								echo '<tr><td></td><td><table><tr>';
-							if(!in_array($filter, $specialtr_fields))
-								echo '<tr>';
-							*/
 							?>
 					<td><?php echo $data['name'];?></td>
 					<td><select name="filter_<?php echo $filter?>">
@@ -129,12 +123,6 @@ function displayFiltrage($rows, $fields, $filters, $filter_values)
 					<?php 
 					if($count %3 == 0)
 						echo '</tr><tr>';
-					/*
-					 if(!in_array($filter, $specialtr_fields))
-						echo '</tr>';
-					if(in_array($filter, $end_tr_fields))
-						echo '</tr></table></td></tr>';
-					*/
 						}
 						?>
 				</tr>

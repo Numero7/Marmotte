@@ -112,6 +112,8 @@ function createSession($name,$annee)
 		{
 			case "Concours":
 				$date = "01/01/".$annee; break;
+			case "Delegations":
+				$date = "01/04/".$annee; break;
 			case "Printemps":
 				$date = "01/03/".$annee; break;
 			case "Automne":

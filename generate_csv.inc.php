@@ -85,7 +85,6 @@ function compileObjectsAsCSV($fields, $rows,$sep =";" , $enc='"', $del="\n")
 
 function compileReportsAsCSV($rows, $fields = null)
 {
-	global $empty_report;
 	global $mandatory_export_fields;
 
 	if(count($rows) < 1)

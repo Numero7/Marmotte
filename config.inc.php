@@ -89,7 +89,7 @@ ini_set('xdebug.show_local_vars', 'on');
 		"nom" => "Nom",
 		"prenom" => "Prénom",
 		"unite" => "Unité",
-		"grade" => "Grade",
+		"grade_rapport" => "Grade",
 		"type" => "Type",
 		"rapporteur" => "Rapporteur 1",
 		"rapporteur2" => "Rapporteur 2",
@@ -126,11 +126,11 @@ ini_set('xdebug.show_local_vars', 'on');
 			"id_session" => "Id session",
 			"id_origine" => "Id origine",
 	);
-	
+	/*
 	$specialtr_fields = array("parcours","concourspresentes", "nom", "annee_recrutement", "prenom", "genre", "grade", "projetrecherche", "labo1","labo2","labo3","theme1","theme2","theme3", "theseLieu", "HDRAnnee", "theseAnnee","theseloc", "HDRLieu");
 	$start_tr_fields = array("projetrecherche", "grade", "nom", "labo1","theme1", "theseAnnee", "productionResume");
 	$end_tr_fields = array("concourspresentes", "annee_recrutement", "labo3","theme3", "genre", "HDRLieu");
-	
+	*/
 	/*
 	 * Les champs disponibles aux deux rapporteurs
 	 * pour un rapport individuel
@@ -248,6 +248,7 @@ ini_set('xdebug.show_local_vars', 'on');
 	* pour un rapport candidat
 	*/
 	$fieldsRapportsCandidat0 = array(
+			"statut",
 			"sousjury",
 			"rapporteur",
 			"rapporteur2",
@@ -372,6 +373,7 @@ ini_set('xdebug.show_local_vars', 'on');
 	$fieldsCandidat = $fieldsCandidatAuditionne;
 	
 	$fieldsEquivalence = array(
+			"statut",
 			"rapporteur",
 			"nom",
 			"prenom",
@@ -396,6 +398,7 @@ ini_set('xdebug.show_local_vars', 'on');
 	
 
 	$fieldsDelegation = array(
+			"statut",
 			"rapporteur",
 			"nom",
 			"prenom",
@@ -422,6 +425,7 @@ ini_set('xdebug.show_local_vars', 'on');
 	);
 
 	$fieldsIndividualDefault = array(
+			"statut",
 			"rapporteur",
 			"nom",
 			"prenom",
@@ -462,6 +466,7 @@ ini_set('xdebug.show_local_vars', 'on');
 	
 	
 	$fieldsUnites0 = array(
+			"statut",
 			"rapporteur",
 			"rapporteur2",
 			"unite",
@@ -487,6 +492,7 @@ ini_set('xdebug.show_local_vars', 'on');
 			);
 	
 	$fieldsGeneric = array (
+			"statut",
 			"rapporteur",
 			"rapporteur2",
 			"nom",
@@ -498,6 +504,7 @@ ini_set('xdebug.show_local_vars', 'on');
 	);
 	
 	$fieldsEcoles = array(
+			"statut",
 			"rapporteur",
 			"rapporteur2",
 			"ecole",
@@ -686,7 +693,8 @@ ini_set('xdebug.show_local_vars', 'on');
 			"DU" => array(""=>"","oui" => "Oui","non"=>"Non"),
 			"international" => array(""=>"","oui" => "Oui","non"=>"Non"),
 			"finalisationHDR" => array(""=>"","oui" => "Oui","non"=>"Non"),
-			"national" => array(""=>"","oui" => "Oui","non"=>"Non")
+			"national" => array(""=>"","oui" => "Oui","non"=>"Non"),
+			"statut" => array('vierge','editable','prerapport','rapport','publie','supprime','audition')
 			);
 	
 	$fieldsTypes = array(
@@ -983,15 +991,15 @@ ini_set('xdebug.show_local_vars', 'on');
 	$typesRapportToAvis = array(
 		'Evaluation-Vague' => $avis_eval,
 		'Evaluation-MiVague' => $avis_eval,
-		'Emeritat' => $avis_binaire,
-		'Emeritat-renouvellement' => $avis_binaire,
+		'Emeritat' => $avis_ternaire,
+		'Emeritat-renouvellement' => $avis_ternaire,
 		'Promotion' => $avis_classement,
 		'Candidature' => $avis_candidature,
 		'Equivalence' => $avis_ie,
 		'Suivi-PostEvaluation' => $avis_vide,
 		'Affectation' => $avis_binaire,
-		'Reconstitution' => $avis_vide,
-		'Titularisation' => $avis_binaire,
+		'Reconstitution' => $avis_binaire,
+		'Titularisation' => $avis_ternaire,
 		'Delegation' => $avis_lettre,
 		'Changement-Directeur' => $avis_pertinence,
 		'Changement-Directeur-Adjoint' => $avis_pertinence,
@@ -999,7 +1007,7 @@ ini_set('xdebug.show_local_vars', 'on');
 		'Association' => $avis_pertinence,
 		'Ecole' => $avis_ecoles,
 		'Comite-Evaluation' => $avis_binaire,
-		'Generique' => $avis_vide,
+		'Generique' => $avis_ternaire,
 		);
 	
 	$tous_avis = array_merge($avis_eval,$avis_classement,$avis_candidature,$avis_ie,$avis_pertinence,$avis_ecoles,$avis_binaire);
@@ -1303,9 +1311,9 @@ ini_set('xdebug.show_local_vars', 'on');
 			'rapporteur' => array('name'=>"Rapporteur" , 'default_value' =>"tous", 'default_name' => "Tous les rapporteurs"),
 			'rapporteur2' => array('name'=>"Rapporteur2" ,'default_value' =>"tous", 'default_name' => "Tous les rapporteurs"),
 			'grade' => array('name'=>"Grade" , 'liste' => $grades, 'default_value' => "tous", 'default_name' => "Tous les grades"),
-			'avis' => array('name'=>"Avis Section" , 'liste' => $avis_candidature_short, 'default_value' => "tous", 'default_name' => ""),
-			'avis1' => array('name'=>"Avis Rapp 1" , 'liste' => $avis_candidature_short, 'default_value' => "tous", 'default_name' => ""),
-			'avis2' => array('name'=>"Avis Rapp 2" , 'liste' => $avis_candidature_short, 'default_value' => "tous", 'default_name' => ""),
+			'avis' => array('name'=>"Avis Section" , 'liste' => $avis_pertinence, 'default_value' => "tous", 'default_name' => ""),
+			'avis1' => array('name'=>"Avis Rapp 1" , 'liste' => $avis_pertinence, 'default_value' => "tous", 'default_name' => ""),
+			'avis2' => array('name'=>"Avis Rapp 2" , 'liste' => $avis_pertinence, 'default_value' => "tous", 'default_name' => ""),
 			'theme1' => array('name'=>"Theme1" , 'liste' => $topics, 'default_value' => "tous", 'default_name' => ""),
 			'theme2' => array('name'=>"Theme2" , 'liste' => $topics, 'default_value' => "tous", 'default_name' => ""),
 			'theme3' => array('name'=>"Theme3" , 'liste' => $topics, 'default_value' => "tous", 'default_name' => ""),

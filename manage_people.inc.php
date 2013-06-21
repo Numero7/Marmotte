@@ -50,7 +50,7 @@ function is_auditionne($report)
 function is_auditionneCR($report)
 {
 	global $concours_ouverts;
-	return (substr($concours_ouverts[$report->concours],0,2)=="CR") 
+	return (substr($concours_ouverts[$report->concours],0,2)=="CR")
 	&&(is_classe($report) || $report->avis=="oral" || $report->avis="nonclasse");
 }
 
@@ -67,24 +67,8 @@ function updateCandidateFromRequest($request, $oldannee="")
 		if (isset($request["field".$field]))
 		$data->$field = nl2br(trim($request["field".$field]),true);
 
-	$candidate = get_or_create_candidate($data );
-
-	$sqlcore = "";
-
-	$first = true;
-	foreach($data as  $field => $value)
-	{
-		$sqlcore.=$first ? "" : ",";
-		$sqlcore.=$field.'="'.mysql_real_escape_string($value).'" ';
-		$first = false;
-	}
-	$sql = "UPDATE ".people_db." SET ".$sqlcore." WHERE nom=\"".$data->nom."\" AND prenom=\"".$data->prenom."\";";
-
-	sql_request($sql);
-
-	$candidate = get_or_create_candidate($data );
-
-
+	$candidate = updateCandidateFromData($data);
+	
 	if(isset($request['previousnom']) && isset($request['previousprenom']))
 	{
 		if($request['previousnom'] != $candidate->nom || $request['previousprenom'] != $candidate->prenom)
@@ -95,9 +79,35 @@ function updateCandidateFromRequest($request, $oldannee="")
 			sql_request($sql);
 		}
 	}
-
-
+	
 	return $candidate;
+}
+
+function updateCandidateFromData($data)
+{
+	global $fieldsIndividualAll;
+	
+	$candidate = get_or_create_candidate($data );
+
+	$sqlcore = "";
+
+	$first = true;
+	foreach($data as  $field => $value)
+	{
+		if(key_exists($field, $fieldsIndividualAll))
+		{
+			$sqlcore.=$first ? "" : ",";
+			$sqlcore.=$field.'="'.mysql_real_escape_string($value).'" ';
+			$first = false;
+		}
+	}
+	$sql = "UPDATE ".people_db." SET ".$sqlcore." WHERE nom=\"".$data->nom."\" AND prenom=\"".$data->prenom."\";";
+
+	sql_request($sql);
+
+	return get_or_create_candidate($data );
+
+
 
 }
 
@@ -273,15 +283,15 @@ function find_candidate_files($candidate, $fieldID, $force = false, $directories
 	if($force || $candidate->$fieldID == "" || !is_dir($basedir) || !is_associated_directory($candidate, $basedir))
 	{
 		echo "Looking for directory</br>";
-		
+
 		if($directories == NULL)
 			$directories = get_directories_list();
 		foreach($directories as $directory)
 		{
 			if( is_associated_directory($candidate, $directory) )
 			{
-			$dir = str_replace($dossiers_candidats,"",$directory);
-			echo "Changing cndidate dir for ".$directory." <br/>";
+				$dir = str_replace($dossiers_candidats,"",$directory);
+				echo "Changing cndidate dir for ".$directory." <br/>";
 				change_candidate_property($candidate->anneecandidature, $candidate->nom, $candidate->prenom, $fieldID, $dir);
 				$basedir = $directory;
 				$candidate->$fieldID = $directory;
@@ -337,7 +347,7 @@ function get_directories_list()
 	{
 		if(is_dir($file))
 		{
-		$directories[]= $file;
+			$directories[]= $file;
 		}
 	}
 

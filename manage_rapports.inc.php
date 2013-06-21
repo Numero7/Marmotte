@@ -909,6 +909,8 @@ function is_field_editable($row, $fieldId)
 	if(isSecretaire())
 		return $extra;
 	
+	if($fieldId == "statut")
+		return isSecretaire();
 	
 	$login = getLogin();
 

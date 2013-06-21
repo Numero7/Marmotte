@@ -54,6 +54,7 @@ require_once('manage_sessions.inc.php');
 				name="sessionname">
 					<?php
 						echo  '<option value="Concours">Concours</option>';
+						echo  '<option value="Delegations">Delegations</option>';
 						echo  '<option value="Printemps">Printemps</option>';
 						echo  '<option value="Automne">Automne</option>';
 						?>
