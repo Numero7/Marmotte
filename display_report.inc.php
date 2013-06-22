@@ -17,6 +17,7 @@ function displayEditableCandidate($candidate,$report = NULL,$canedit = true)
 	global $fieldsCandidatAvantAudition;
 	global $fieldsCandidatAuditionne;
 
+	
 	$hidden = array("action" => "update");
 
 	$hidden["previousnom"] = $candidate->nom;

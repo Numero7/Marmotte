@@ -50,7 +50,7 @@ function is_auditionne($report)
 function is_auditionneCR($report)
 {
 	global $concours_ouverts;
-	return (substr($concours_ouverts[$report->concours],0,2)=="CR")
+	return (strlen($report->concours)>=1 && substr($concours_ouverts[$report->concours],0,2)=="CR")
 	&&(is_classe($report) || $report->avis=="oral" || $report->avis="nonclasse");
 }
 
