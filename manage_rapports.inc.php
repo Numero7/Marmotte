@@ -492,24 +492,45 @@ function normalizeReport($report)
 	if(!isset($report->id))
 		$report->id = 0;
 
+		
 	if(!isset($report->statut))
 		$report->statut = 'vierge';
 
+		
+	// Could be hacky...
+	if(!isset($report->avis))
+		$report->avis = '';
+	if(!isset($report->rapport))
+		$report->rapport = '';
+	if(!isset($report->prerapport))
+		$report->prerapport = '';
+	if(!isset($report->concours))
+		$report->concours = '';
+	if(!isset($report->rapporteur))
+		$report->rapporteur = '';
+	if(!isset($report->rapporteur2))
+		$report->rapporteur2 = '';
+	if(!isset($report->sousjury))
+		$report->sousjury = '';
+		
 	if(isset($report->statut) && $report->statut == "vierge" && isset($report->type))
 	{
 		if(isset($report_prototypes[$report->type]))
 		{
 			$prototype = $report_prototypes[$report->type];
 			foreach($prototype as $field => $value)
-				if($report->$field=="")
+				if( $report->$field=="")
 				$report->$field = $value;
 		}
-		if($report->type == "Equivalence" && $report->prerapport=="")
+		if($report->type == "Equivalence" && $report->prerapport=="" && isset($report->anneesequivalence))
 		{
 			//$report->prerapport = "Raison de la demande: ". $raison."\n";
 			$report->prerapport .= "Annees d'équivalence annoncées par le candidat: ". $report->anneesequivalence;
 		}
 	}
+
+
+
 	return $report;
 }
 
