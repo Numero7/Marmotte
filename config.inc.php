@@ -987,6 +987,8 @@ ini_set('xdebug.show_local_vars', 'on');
 			"sansavis" => "Pas d'avis"
 	);
 	
+	$avis_sessions = array_merge($avis_eval,$avis_pertinence);
+	
 	/* Types d'avis disponibles dans l'interface pour chaque type de rapport*/
 	$typesRapportToAvis = array(
 		'Evaluation-Vague' => $avis_eval,
@@ -1311,9 +1313,9 @@ ini_set('xdebug.show_local_vars', 'on');
 			'rapporteur' => array('name'=>"Rapporteur" , 'default_value' =>"tous", 'default_name' => "Tous les rapporteurs"),
 			'rapporteur2' => array('name'=>"Rapporteur2" ,'default_value' =>"tous", 'default_name' => "Tous les rapporteurs"),
 			'grade' => array('name'=>"Grade" , 'liste' => $grades, 'default_value' => "tous", 'default_name' => "Tous les grades"),
-			'avis' => array('name'=>"Avis Section" , 'liste' => $avis_pertinence, 'default_value' => "tous", 'default_name' => ""),
-			'avis1' => array('name'=>"Avis Rapp 1" , 'liste' => $avis_pertinence, 'default_value' => "tous", 'default_name' => ""),
-			'avis2' => array('name'=>"Avis Rapp 2" , 'liste' => $avis_pertinence, 'default_value' => "tous", 'default_name' => ""),
+			'avis' => array('name'=>"Avis Section" , 'liste' => $avis_sessions, 'default_value' => "tous", 'default_name' => ""),
+			'avis1' => array('name'=>"Avis Rapp 1" , 'liste' => $avis_sessions, 'default_value' => "tous", 'default_name' => ""),
+			'avis2' => array('name'=>"Avis Rapp 2" , 'liste' => $avis_sessions, 'default_value' => "tous", 'default_name' => ""),
 			'theme1' => array('name'=>"Theme1" , 'liste' => $topics, 'default_value' => "tous", 'default_name' => ""),
 			'theme2' => array('name'=>"Theme2" , 'liste' => $topics, 'default_value' => "tous", 'default_name' => ""),
 			'theme3' => array('name'=>"Theme3" , 'liste' => $topics, 'default_value' => "tous", 'default_name' => ""),

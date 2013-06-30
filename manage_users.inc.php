@@ -255,7 +255,7 @@ function authenticate()
 
 function getPassHash($login)
 {
-	$sql = "SELECT * FROM ".users_db." WHERE login='$login';";
+	$sql = "SELECT * FROM ".users_db." WHERE login='".mysql_real_escape_string($login)."';";
 	$result=mysql_query($sql);
 	if ($row = mysql_fetch_object($result))
 	{
@@ -276,7 +276,7 @@ function changePwd($login,$old,$new1,$new2, $envoiparemail)
 		if ($oldPassHash != NULL)
 		{
 			$newPassHash = crypt($new1, $oldPassHash);
-			$sql = "UPDATE ".users_db." SET passHash='$newPassHash' WHERE login='$login';";
+			$sql = "UPDATE ".users_db." SET passHash='$newPassHash' WHERE login='".mysql_real_escape_string($login)."';";
 			sql_request($sql);
 
 			try
@@ -313,7 +313,7 @@ function changeUserInfos($login,$permissions, $sousjury)
 {
 	if (isSecretaire())
 	{
-		$sql = "UPDATE ".users_db." SET permissions=$permissions, sousjury=\"$sousjury\" WHERE login='$login';";
+		$sql = "UPDATE ".users_db." SET permissions=$permissions, sousjury=\"$sousjury\" WHERE login='".mysql_real_escape_string($login)."';";
 	}
 	else
 	{
