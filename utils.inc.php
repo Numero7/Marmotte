@@ -397,6 +397,8 @@ function filename_from_params($nom, $prenom, $grade, $unite, $type, $session, $a
 	global $typesRapportsUnites;
 	global $typesRapportsConcours;
 
+	$liste_unite = unitsList();
+	
 	if($type == "Promotion")
 	{
 		switch($grade)
@@ -414,6 +416,9 @@ function filename_from_params($nom, $prenom, $grade, $unite, $type, $session, $a
 
 	if(array_key_exists($type,$typesRapportsUnites))
 	{
+		if(isset($liste_unite[$unite]))
+			$unite = $unite . " (" . $liste_unite[$unite]->nickname . ") ";
+
 		if($type == 'Generique')
 			return $session." - ".$nom." ".$prenom." - ".$unite;
 		else

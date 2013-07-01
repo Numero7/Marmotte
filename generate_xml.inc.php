@@ -455,7 +455,6 @@ function filename_from_node(DOMNode $node)
 {
 	global $typesRapportsUnites;
 	
-	$liste_unite = unitsList();
 
 	$nom = "";
 	$prenom = "";
@@ -473,7 +472,7 @@ function filename_from_node(DOMNode $node)
 			case "nom": $nom = mb_convert_case(replace_accents($child->nodeValue), MB_CASE_TITLE); break;
 			case "prenom": $prenom = mb_convert_case(replace_accents($child->nodeValue), MB_CASE_TITLE); break;
 			case "grade": $grade = $child->nodeValue; break;
-			case "unite": $unite = isset($liste_unite[$child->nodeValue]) ? $liste_unite[$child->nodeValue]->prettyname : $child->nodeValue; break;
+			case "unite": $unite = $child->nodeValue; break;
 			case "type": $type = $child->nodeValue; break;
 			case "session": $session = $child->nodeValue; break;
 			case "avis": $avis = $child->nodeValue; break;
