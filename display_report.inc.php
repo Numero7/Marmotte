@@ -442,6 +442,7 @@ function displayEditableReport($row, $canedit = true)
 		}
 
 		echo '</tr></table>';
+		$f = 
 		displayEditableObject("Rapport section", $row,$fieldsIndividual0, $canedit, false);
 	}
 	else if(array_key_exists($eval_type, $typesRapportsUnites))

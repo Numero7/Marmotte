@@ -19,16 +19,21 @@ function display_type($row, $fieldID, $readonly)
 	global $typesRapports;
 	if(isset($row->type))
 	{
-		$eval_type = $row->type;
+		$type = $row->type;
 
 		if( !$readonly )
 		{
-
-			$typesRapportsEvals = array();
-			$typesRapportsEvals["Evaluation-Vague"]  = $typesRapports['Evaluation-Vague'];
-			$typesRapportsEvals["Evaluation-MiVague"] = $typesRapports['Evaluation-MiVague'];
-
-			display_select($row, $fieldID, $typesRapportsEvals,$readonly);
+			global $typesRapportsChercheurs;
+			global $typesRapportsUnites;
+			global $typesRapportsConcours ;
+			
+			if(isset($typesRapportsChercheurs[$type]))
+				display_select($row, $fieldID, $typesRapportsChercheurs,$readonly);
+			else if(isset($typesRapportsUnites[$type]))
+				display_select($row, $fieldID, $typesRapportsUnites,$readonly);
+			else if(isset($typesRapportsConcours[$type]))
+				display_select($row, $fieldID, $typesRapportsConcours,$readonly);
+				
 			echo "</tr>";
 		}
 	}

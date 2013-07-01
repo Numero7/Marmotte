@@ -43,7 +43,7 @@ function reportShortSummary($report)
 
 	$nom = $report->nom;
 	$prenom = $report->prenom;
-	$grade = $report->grade;
+	$grade = $report->grade_rapport;
 	$unite = $report->unite;
 	$type = $report->type;
 	$session = "Session ".$report->id_session;
@@ -930,7 +930,7 @@ function is_field_editable($row, $fieldId)
 	if(isSecretaire())
 		return $extra;
 	
-	if($fieldId == "statut")
+	if($fieldId == "statut" || $fieldId = "type")
 		return isSecretaire();
 	
 	$login = getLogin();
