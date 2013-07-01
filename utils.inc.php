@@ -417,7 +417,7 @@ function filename_from_params($nom, $prenom, $grade, $unite, $type, $session, $a
 	if(array_key_exists($type,$typesRapportsUnites))
 	{
 		if(isset($liste_unite[$unite]))
-			$unite = $unite . " (" . $liste_unite[$unite]->nickname . ") ";
+			$unite = $unite . " - " . $liste_unite[$unite]->nickname;
 
 		if($type == 'Generique')
 			return $session." - ".$nom." ".$prenom." - ".$unite;
