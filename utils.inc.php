@@ -389,7 +389,7 @@ function filename_from_doc($doc)
 
 	$sessions = sessionArrays();
 	$session = $sessions[$doc->id_session];
-	return filename_from_params($nom, $prenom, $doc->grade, $doc->unite, $doc->type, $session, $doc->avis, $doc->concours, $doc->sousjury);
+	return filename_from_params($nom, $prenom, $doc->grade_rapport, $doc->unite, $doc->type, $session, $doc->avis, $doc->concours, $doc->sousjury);
 }
 
 function filename_from_params($nom, $prenom, $grade, $unite, $type, $session, $avis, $concours = "", $sousjury="")

@@ -803,6 +803,7 @@ ini_set('xdebug.show_local_vars', 'on');
 			'Association' => 'Association',
 			'Ecole' => 'Ecole Thematique',
 			'Comite-Evaluation' => 'Comité d\'Evaluation',
+			'Expertise' => 'Expertise',
 			'Generique' => 'Générique'
 	);
 
@@ -813,6 +814,7 @@ ini_set('xdebug.show_local_vars', 'on');
 			'Association' => 'Association',
 			'Ecole' => 'Ecole Thematique',
 			'Comite-Evaluation' => 'Comité d\'Evaluation',
+			'Expertise' => 'Expertise',
 			'Generique' => 'Générique'
 	);
 	
@@ -905,6 +907,7 @@ ini_set('xdebug.show_local_vars', 'on');
 			'Ecole' => $fieldsArrayUnite,
 			'Comite-Evaluation' => $fieldsArrayUnite,
 			'Generique' => $fieldsArrayUnite,
+			'Expertise' => $fieldsArrayUnite,
 	);
 	
 	$typesRapportsToXSL = array(
@@ -1015,7 +1018,8 @@ ini_set('xdebug.show_local_vars', 'on');
 		'Ecole' => $avis_ecoles,
 		'Comite-Evaluation' => $avis_binaire,
 		'Generique' => $avis_ternaire,
-		);
+		'Expertise' => $avis_ternaire,
+	);
 	
 	$tous_avis = array_merge($avis_eval,$avis_classement,$avis_candidature,$avis_ie,$avis_pertinence,$avis_ecoles,$avis_binaire);
 
@@ -1084,6 +1088,7 @@ ini_set('xdebug.show_local_vars', 'on');
 			'Ecole' => '<span  style=\"font-weight:bold;\" >Objet de l’évaluation :</span><br/> Ecole Thématique',
 			'Comite-Evaluation' => '<span  style=\"font-weight:bold;\" >Objet de l’examen :</span> Comité d\'évaluation',
 			'Generique' => '&nbsp;',
+			'Expertise' =>  '<span  style=\"font-weight:bold;\" >Objet de l’examen :</span> Expertise (projet ou suivi ou intégration équipe ou restructuration)',
 			'Equivalence' => '<span  style=\"font-weight:bold;\" >Objet de l’évaluation :</span><br/><EM>Equivalence titres et travaux</EM>',
 			'Emeritat' => '<span  style=\"font-weight:bold;\" >Objet de l’évaluation :</span><br/><EM>Eméritat (1ere demande)</EM>',
 			'Emeritat-renouvellement' => '<span  style=\"font-weight:bold;\" >Objet de l’évaluation :</span><br/><EM>Eméritat (renouvellement)</EM>',
@@ -1119,6 +1124,7 @@ ini_set('xdebug.show_local_vars', 'on');
 			'Ecole' => 'Ecole',
 			'Comite-Evaluation' => 'Unite',
 			'Generique' => '',
+			'Expertise' => 'Unite',
 			'' => ''
 	);
 	
