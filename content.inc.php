@@ -68,11 +68,11 @@ function alertText($text)
 
 
 
-		$id_rapport = isset($_REQUEST["id"]) ? $_REQUEST["id"] : -1;
-		$id_origine = isset($_REQUEST["id_origine"]) ? $_REQUEST["id_origine"] : 0;
-		$id_toupdate = isset($_REQUEST["id_toupdate"]) ? $_REQUEST["id_toupdate"] : 0;
+		$id_rapport = isset($_REQUEST["id"]) ? mysql_real_escape_string($_REQUEST["id"]) : -1;
+		$id_origine = isset($_REQUEST["id_origine"]) ? mysql_real_escape_string($_REQUEST["id_origine"]) : 0;
+		$id_toupdate = isset($_REQUEST["id_toupdate"]) ? mysql_real_escape_string($_REQUEST["id_toupdate"]) : 0;
 
-		$action = isset($_REQUEST["action"]) ? $_REQUEST["action"] : "";
+		$action = isset($_REQUEST["action"]) ? mysql_real_escape_string($_REQUEST["action"]) : "";
 
 		if(isset($_REQUEST["reset_filter"]))
 			resetFilterValuesExceptSession();
@@ -145,7 +145,7 @@ function alertText($text)
 			switch($action)
 			{
 				case 'updateconfig':
-					put_raw_config($_REQUEST['fieldconfig']);
+					put_raw_config(mysql_real_escape_string($_REQUEST['fieldconfig']));
 					include 'admin.inc.php';
 					break;
 					
@@ -162,7 +162,7 @@ function alertText($text)
 					if(isset($_REQUEST["new_statut"]))
 					{
 						$filterValues = getFilterValues();
-						$new_statut =  $_REQUEST["new_statut"];
+						$new_statut =  mysql_real_escape_string($_REQUEST["new_statut"]);
 						change_statuts($new_statut, $filterValues);
 						$filterValues['statut']	 = $new_statut;
 						displaySummary(getCurrentFiltersList(), $filterValues, getSortingValues());
@@ -321,11 +321,11 @@ function alertText($text)
 				case 'adminnewpwd':
 					if (isset($_REQUEST["oldpwd"]) and isset($_REQUEST["newpwd1"]) and isset($_REQUEST["newpwd2"]) and isset($_REQUEST["login"]))
 					{
-						$old = $_REQUEST["oldpwd"];
-						$pwd1 = $_REQUEST["newpwd1"];
-						$pwd2 = $_REQUEST["newpwd2"];
-						$login = $_REQUEST["login"];
-						$envoiparemail = isset($_REQUEST["envoiparemail"])  ? $_REQUEST["envoiparemail"] : false;
+						$old = mysql_real_escape_string($_REQUEST["oldpwd"]);
+						$pwd1 = mysql_real_escape_string($_REQUEST["newpwd1"]);
+						$pwd2 = mysql_real_escape_string($_REQUEST["newpwd2"]);
+						$login = mysql_real_escape_string($_REQUEST["login"]);
+						$envoiparemail = isset($_REQUEST["envoiparemail"])  ? mysql_real_escape_string($_REQUEST["envoiparemail"]) : false;
 
 						if (($pwd1==$pwd2))
 						{
@@ -424,7 +424,7 @@ function alertText($text)
 					break;
 				case 'admindeletesession':
 					if (isset($_REQUEST["sessionid"]))
-						deleteSession($_REQUEST["sessionid"]);
+						deleteSession(mysql_real_escape_string($_REQUEST["sessionid"]));
 					else
 						throw new Exception("Vous n'avez fourni toutes les informations nécessaires pour supprimer une session, veuillez nous contacter (Yann ou Hugo) en cas de difficultés.");
 					include "admin.inc.php";
@@ -435,8 +435,13 @@ function alertText($text)
 				case 'ajoutlabo':
 					if(isset($_REQUEST["nickname"]) and isset($_REQUEST["code"]) and isset($_REQUEST["fullname"]) and isset($_REQUEST["directeur"]))
 					{
-						addUnit($_REQUEST["nickname"], $_REQUEST["code"], $_REQUEST["fullname"], $_REQUEST["directeur"]);
-						echo "Added unit \"".$_REQUEST["nickname"]."\"<br/>";
+						addUnit(
+						mysql_real_escape_string($_REQUEST["nickname"]),
+						 mysql_real_escape_string($_REQUEST["code"]),
+						 mysql_real_escape_string($_REQUEST["fullname"]),
+						 mysql_real_escape_string($_REQUEST["directeur"])
+						 );
+						echo "Added unit \"".mysql_real_escape_string($_REQUEST["nickname"])."\"<br/>";
 					}
 					else
 					{
@@ -447,24 +452,12 @@ function alertText($text)
 				case 'deletelabo':
 					if(isset($_REQUEST["unite"]))
 					{
-						deleteUnit($_REQUEST["unite"]);
-						echo "Deleted unit \"".$_REQUEST["unite"]."\"<br/>";
+						deleteUnit(mysql_real_escape_string($_REQUEST["unite"]));
+						echo "Deleted unit \"".mysql_real_escape_string($_REQUEST["unite"])."\"<br/>";
 					}
 					else
 					{
 						echo "Cannot process action ajoutlabo: missing data<br/>";
-					}
-					include "admin.inc.php";
-					break;
-				case 'sqlrequest':
-					if(isset($_REQUEST['formula']))
-					{
-						sql_request($_REQUEST['formula']);
-						echo "Successfully processed <br/>".$_REQUEST['formula'];
-					}
-					else
-					{
-						echo "Empty formula";
 					}
 					include "admin.inc.php";
 					break;
@@ -503,7 +496,7 @@ function alertText($text)
 					if(substr($action,0,3)=="set")
 					{
 						$fieldId = substr($action,3);
-						$newvalue = isset($_REQUEST['new'.$fieldId]) ? $_REQUEST['new'.$fieldId] : "";
+						$newvalue = isset($_REQUEST['new'.$fieldId]) ? mysql_real_escape_string($_REQUEST['new'.$fieldId]) : "";
 						$newid = change_report_property($id_toupdate, $fieldId, $newvalue);
 						displayWithRedirects($newid);
 					}

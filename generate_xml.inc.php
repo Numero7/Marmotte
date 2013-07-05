@@ -336,6 +336,12 @@ function createXMLReportElem($row, DOMDocument $doc, $keep_br = true)
 	else
 	{
 		appendLeaf("signataire", get_config("president"), $doc, $rapportElem);
+		
+		global $typesRapportsConcours;
+		if(!isset($typesRapportsConcours[$row->type]) && isset($row->statut) && $row->statut=="publie" && file_exists("img/signature.jpg"))
+			appendLeaf("signature", "img/signature.jpg", $doc, $rapportElem);
+		else
+			appendLeaf("signature", "img/signature_blanche.jpg", $doc, $rapportElem);
 	}
 
 	if($row->type == "Classement")

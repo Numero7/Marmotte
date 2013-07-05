@@ -87,8 +87,10 @@ Les avis émis par les sections ne préjugent pas de la décision qui sera prise
 		Le <xsl:value-of disable-output-escaping="yes" select="date"/>,
 	</td>
 	<td rowspan="3">
-		<img height="150" width="150" src="img/signature_blanche.jpg">
-		</img>
+	<img height="150" width="150">
+	<xsl:attribute name="src"> <xsl:value-of disable-output-escaping="yes" select="signature"/>
+	</xsl:attribute>
+	</img>
 	</td>
 	
 </tr>

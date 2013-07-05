@@ -71,11 +71,11 @@ function updateCandidateFromRequest($request, $oldannee="")
 	
 	if(isset($request['previousnom']) && isset($request['previousprenom']))
 	{
-		if($request['previousnom'] != $candidate->nom || $request['previousprenom'] != $candidate->prenom)
+		if(mysql_real_escape_string($request['previousnom']) != $candidate->nom || mysql_real_escape_string($request['previousprenom']) != $candidate->prenom)
 		{
-			$sql = "UPDATE ".reports_db." SET nom=\"".$candidate->nom."\", prenom=\"".$candidate->prenom."\" WHERE nom =\"".$request['previousnom']."\" AND prenom=\"".$request['previousprenom']."\"";
+			$sql = "UPDATE ".reports_db." SET nom=\"".$candidate->nom."\", prenom=\"".$candidate->prenom."\" WHERE nom =\"".mysql_real_escape_string($request['previousnom'])."\" AND prenom=\"".mysql_real_escape_string($request['previousprenom'])."\"";
 			sql_request($sql);
-			$sql = "DELETE FROM ".people_db." WHERE nom =\"".$request['previousnom']."\" AND prenom=\"".$request['previousprenom']."\"";
+			$sql = "DELETE FROM ".people_db." WHERE nom =\"".mysql_real_escape_string($request['previousnom'])."\" AND prenom=\"".mysql_real_escape_string($request['previousprenom'])."\"";
 			sql_request($sql);
 		}
 	}

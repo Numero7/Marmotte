@@ -433,13 +433,13 @@ if($dbh!=0)
 	if (authenticate())
 	{
 		try {
-			$action = isset($_REQUEST["action"]) ? $_REQUEST["action"] : "single";
-			$id= isset($_REQUEST["id"]) ? $_REQUEST["id"] : "-1";
+			$action = isset($_REQUEST["action"]) ? mysql_real_escape_string($_REQUEST["action"]) : "single";
+			$id= isset($_REQUEST["id"]) ? mysql_real_escape_string($_REQUEST["id"]) : "-1";
 
 			switch($action)
 			{//Processing
 				case 'viewpdf':
-					$option = isset($_REQUEST["option"]) ? $_REQUEST["option"] : "";
+					$option = isset($_REQUEST["option"]) ? mysql_real_escape_string($_REQUEST["option"]) : "";
 					viewReportAsPdf($id,$option); break;
 				case 'viewhtml':
 					viewReportAsHtml($id);	break;
@@ -447,9 +447,9 @@ if($dbh!=0)
 					{
 						if (isset($_REQUEST["save"]) and isset($_REQUEST["avis"]) and isset($_REQUEST["rapport"]))
 						{
-							$idtosave = intval($_REQUEST["save"]);
-							$avis = $_REQUEST["avis"];
-							$rapport = $_REQUEST["rapport"];
+							$idtosave = intval(mysql_real_escape_string($_REQUEST["save"]));
+							$avis = mysql_real_escape_string($_REQUEST["avis"]);
+							$rapport = mysql_real_escape_string($_REQUEST["rapport"]);
 							if (!isset($_REQUEST["cancel"]))
 								try
 								{
@@ -463,10 +463,10 @@ if($dbh!=0)
 
 						if(!isset($_REQUEST["type"]))
 							throw new Exception("No type specified for exportation");
-						$type = $_REQUEST["type"];
+						$type = mysql_real_escape_string($_REQUEST["type"]);
 
 
-						$id_edit = isset($_REQUEST["id_edit"]) ? $_REQUEST["id_edit"] : -1;
+						$id_edit = isset($_REQUEST["id_edit"]) ? mysql_real_escape_string($_REQUEST["id_edit"]) : -1;
 
 						$login = getLogin();
 

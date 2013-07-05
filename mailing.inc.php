@@ -55,15 +55,15 @@ $email_fin .= "avant le 01/01/2013. Bon courage!\r\n\r\nAmicalement, le bureau d
 
 $users = simpleListUsers();
 
-$action = isset($_REQUEST["action"]) ? $_REQUEST["action"] : "";
+$action = isset($_REQUEST["action"]) ? mysql_real_escape_string($_REQUEST["action"]) : "";
 
 
 	if($action == 'email_rapporteurs')
 	{
-		$rapporteur = isset($_REQUEST['rapporteur']) ? $_REQUEST['rapporteur'] : "";
-		$email_body = isset($_REQUEST['email_body']) ? $_REQUEST['email_body'] : "";
-		$email_fin = isset($_REQUEST['email_fin']) ? $_REQUEST['email_fin'] : "";
-		$email_titre = isset($_REQUEST['email_titre']) ? $_REQUEST['email_titre'] : "";
+		$rapporteur = isset($_REQUEST['rapporteur']) ? mysql_real_escape_string($_REQUEST['rapporteur']) : "";
+		$email_body = isset($_REQUEST['email_body']) ? mysql_real_escape_string($_REQUEST['email_body']) : "";
+		$email_fin = isset($_REQUEST['email_fin']) ? mysql_real_escape_string($_REQUEST['email_fin']) : "";
+		$email_titre = isset($_REQUEST['email_titre']) ? mysql_real_escape_string($_REQUEST['email_titre']) : "";
 	
 		try
 		{

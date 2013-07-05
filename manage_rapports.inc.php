@@ -465,7 +465,7 @@ function createReportFromRequest($id_origine, $request)
 
 	foreach($fieldsRapportAll as  $field => $comment)
 		if (isset($request["field".$field]))
-		$row->$field = nl2br(trim($request["field".$field]),true);
+		$row->$field = nl2br(trim(mysql_real_escape_string($request["field".$field])),true);
 
 	$row->id_origine = $id_origine;
 	$row->auteur = getLogin();

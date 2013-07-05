@@ -37,7 +37,7 @@ try
 	if($dbh != false)
 	{
 		$errorLogin = 0;
-		$action = isset($_REQUEST["action"]) ? $_REQUEST["action"] : "";
+		$action = isset($_REQUEST["action"]) ? mysql_real_escape_string($_REQUEST["action"]) : "";
 		try
 		{
 			switch($action)
@@ -49,8 +49,8 @@ try
 				case 'auth':
 					if(isset($_REQUEST["login"]) and isset($_REQUEST["password"]))
 					{
-						$login =  $_REQUEST["login"];
-						$pwd =  $_REQUEST["password"];
+						$login =  mysql_real_escape_string($_REQUEST["login"]);
+						$pwd =  mysql_real_escape_string($_REQUEST["password"]);
 						addCredentials($login,$pwd);
 						if (!authenticate())
 						{
@@ -65,8 +65,8 @@ try
 				case 'adminnewsession':
 					if (isset($_REQUEST["sessionname"]) and isset($_REQUEST["sessionannee"]))
 					{
-						$name = $_REQUEST["sessionname"];
-						$annee = $_REQUEST["sessionannee"];
+						$name = mysql_real_escape_string($_REQUEST["sessionname"]);
+						$annee = mysql_real_escape_string($_REQUEST["sessionannee"]);
 						require_once('manage_sessions.inc.php');
 						createSession($name,$annee);
 						include 'admin.inc.php';
@@ -81,7 +81,7 @@ try
 					{
 						require_once("config.php");
 
-						$id = $_REQUEST["sessionname"];
+						$id = mysql_real_escape_string($_REQUEST["sessionname"]);
 						set_config('current_session',$id);
 						set_current_session_id($id);
 						include 'admin.inc.php';
