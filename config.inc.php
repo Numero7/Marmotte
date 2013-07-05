@@ -774,7 +774,6 @@ ini_set('xdebug.show_local_vars', 'on');
 		'Evaluation-Vague' => 'Evaluation à Vague',
 		'Evaluation-MiVague' => 'Evaluation à Mi-Vague',
 		'Promotion' => 'Promotion',
-		'Suivi-PostEvaluation' => 'Suivi Post-Evaluation',
 		'Titularisation' => 'Titularisation',
 		'Affectation' => 'Confirmation d\'Affectation',
 		'Reconstitution' => 'Reconstitution de Carrière',
@@ -793,7 +792,6 @@ ini_set('xdebug.show_local_vars', 'on');
 			'Reconstitution' => 'Reconstitution',
 			'Emeritat' => 'Eméritat',
 			'Emeritat-renouvellement' => 'Eméritat Renouv.',
-			'Suivi-PostEvaluation' => 'Suivi PE',
 	);
 	
 	$typesRapportsUnites = array(
@@ -894,7 +892,6 @@ ini_set('xdebug.show_local_vars', 'on');
 			'Evaluation-Vague' => $fieldsArrayChercheur,
 			'Evaluation-MiVague' => $fieldsArrayChercheur,
 			'Promotion' => $fieldsArrayChercheur,
-			'Suivi-PostEvaluation' => $fieldsArrayChercheur,
 			'Titularisation' => $fieldsArrayChercheur,
 			'Affectation' => $fieldsArrayChercheur,
 			'Reconstitution' => $fieldsArrayChercheur,
@@ -1006,7 +1003,6 @@ ini_set('xdebug.show_local_vars', 'on');
 		'Promotion' => $avis_classement,
 		'Candidature' => $avis_candidature,
 		'Equivalence' => $avis_ie,
-		'Suivi-PostEvaluation' => $avis_vide,
 		'Affectation' => $avis_binaire,
 		'Reconstitution' => $avis_binaire,
 		'Titularisation' => $avis_ternaire,
@@ -1077,7 +1073,6 @@ ini_set('xdebug.show_local_vars', 'on');
 			'Evaluation-MiVague' => '<span  style=\"font-weight:bold;\" >Objet de l’évaluation :</span><br/><EM>évaluation à mi-vague de chercheur</EM>',
 			'Promotion' => '<span  style=\"font-weight:bold;\" >Objet de l’évaluation :</span><br/>Avancement de grade<br/><span  style=\"font-weight:bold;\" >Au grade de :</span>',
 			'Candidature' => '<span  style=\"font-weight:bold;\" >Objet de l’évaluation :</span><br/><EM>Candidature au concours</EM>',
-			'Suivi-PostEvaluation' => '<span  style=\"font-weight:bold;\" >Objet de l’évaluation :</span><br/><EM>Suivi post-évaluation</EM>',
 			'Affectation' => '<span  style=\"font-weight:bold;\" >Objet de l’évaluation :</span><br/>Affectation',
 			'Titularisation' => '<span  style=\"font-weight:bold;\" >Objet de l’évaluation :</span><br/>Titularisation',
 			'Reconstitution' => '<span  style=\"font-weight:bold;\" >Objet :</span><br/>Reconstitution de carrière',
@@ -1113,7 +1108,6 @@ ini_set('xdebug.show_local_vars', 'on');
 			'Promotion' => 'Individu',
 			'Candidature' => 'Concours',
 			'Equivalence' => 'Equivalence',
-			'Suivi-PostEvaluation' => 'Individu',
 			'Affectation' => 'Individu',
 			'Titularisation' => 'Individu',
 			'Reconstitution' => 'Individu',

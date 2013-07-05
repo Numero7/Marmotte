@@ -19,17 +19,17 @@ function fixEncoding($in_str)
 		return utf8_encode($in_str);
 }
 
-function import_csv($type,$filename, $subtype, $sep=";", $del="\n",$enc='"', $esc='\\')
+function import_csv($type,$filename, $subtype = "", $sep=";", $del="\n",$enc='"', $esc='\\')
 {
 	global $fieldsAll;
 	global $csv_composite_fields;
 	global $fieldsUnitsDB;
-	
+
 	$output = "";
 
 
-	
-	
+
+
 	if($file = fopen ( $filename , 'r') )
 	{
 		$fields = fgetcsv ( $file, 0, $sep , $enc, $esc );
@@ -51,21 +51,22 @@ function import_csv($type,$filename, $subtype, $sep=";", $del="\n",$enc='"', $es
 
 		$nb = 0;
 		$errors = "";
-		
+
 		$is_utf8 = true;
-		
+
 		while(($data = fgetcsv ( $file, 0, $sep , $enc ,$esc)) != false)
 		{
 			$nb++;
-			
+
 			if($is_utf8)
 				for($i = 0 ; $i < count($data); $i++)
-					$is_utf8 = $is_utf8 && mb_check_encoding($data[$i],"UTF-8");
-			
+				$is_utf8 = $is_utf8 && mb_check_encoding($data[$i],"UTF-8");
+
 			if(!$is_utf8)
 				for($i = 0 ; $i < count($data); $i++)
-					$data[$i] = utf8_encode($data);
-			
+				$data[$i] = utf8_encode($data);
+
+
 			try
 			{
 				set_time_limit(0);
@@ -89,9 +90,25 @@ function import_csv($type,$filename, $subtype, $sep=";", $del="\n",$enc='"', $es
 					}
 					else
 					{
+						if(in_array("type",$fields))
+						{
+							$i = array_search("type",$fields);
+							if(isset($data[$i]))
+							{
+								$newsubtype = $data[$i];
+								if($newsubtype != "")
+								{
+									echo "Changing subtype to '".$newsubtype."'<br/>";
+									$subtype  = $newsubtype;
+								}
+							}
+						}
+						else
+						{
+							echo "Subtype '".$subtype."'<br/>";
+						}
 						addCsvReport($subtype, $data, $fields);
 					}
-
 				}
 				else if ($type == 'unites')
 				{
@@ -111,7 +128,7 @@ function import_csv($type,$filename, $subtype, $sep=";", $del="\n",$enc='"', $es
 			return $nb." rapports de type ".$type."/".$subtype." ont été ajoutés <br/>".$output;
 		else
 			return $nb." rapports de type ".$type."/".$subtype." ont été ajoutés.";
-		}
+	}
 	else
 	{
 		throw new Exception("Failed to open file ".$filename." for reading");
@@ -184,28 +201,47 @@ function getDocFromCsv($data, $fields)
 function addCsvReport($type, $data, $fields)
 {
 
-	if(isset($data->code))
-		$data->unite = $data->code;
-	if(isset($data->unite))
-		$data->code = $data->unite;
-	
-	
+	if(isset($data["code"]))
+		$data["unite"] = $data["code"];
+	if(isset($data["unite"]))
+		$data["code"] = $data["unite"];
+
+	$non_empty = false;
+	foreach($data as $d)
+		if($d != "")
+		 $non_empty = true;
+	if(!$non_empty)
+		return;
+
 	$report = getDocFromCsv($data,$fields);
 	$report->statut = 'vierge';
-	if($type != "")
+
+	if(isset($report->type) && $report->type != "")
+	{
+		$type = $report->type;
+	}
+	else if($type != "")
+	{
 		$report->type = $type;
+	}
+	else
+	{
+		echo "Skipping report</br>";
+		return;
+	}
+
 	$report->id_session = current_session_id();
-	
+
 	global $typesRapportsChercheurs;
 	global $typesRapportsConcours;
-	
+
 	if( in_array($report->type, $typesRapportsChercheurs) || in_array($report->type, $typesRapportsConcours) )
-		updateCandidateFromData($data);
+		updateCandidateFromData((object) $data);
 
 	addReport($report,false);
 
 	if(isset($data->unite))
-		updateUnitData($data->unite, $data);
+		updateUnitData($data->unite, (object) $data);
 }
 
 function addCsvUnite($data, $fields)

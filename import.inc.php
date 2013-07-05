@@ -6,7 +6,7 @@ require_once 'import_xml.inc.php';
 
 
 
-function process_import($type,$suffix, $filename, $subtype)
+function process_import($type,$suffix, $filename, $subtype = "")
 {
 	$suffix = substr( $filename , strlen($filename)-3 , 3 );
 	switch($suffix)

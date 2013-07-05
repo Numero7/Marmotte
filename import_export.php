@@ -34,21 +34,11 @@ function displaySecretaryImport()
 <form enctype="multipart/form-data" action="index.php" method="post">
 <table>
 <tr><td>
-		Type<select name="subtype">
-			<?php
-			global $typesRapports;
-			foreach ($typesRapports as $ty => $value)
-				echo "<option value=\"$ty\">".$value."</option>\n";
-			?>
-		</select>
-		</td></tr>
-
-<tr><td>
 	<input type="hidden" name="type" value="evaluations"></input>
 	<input	type="hidden" name="action" value="upload" />
 	<input type="hidden" name="MAX_FILE_SIZE" value="10000000" />
 		</td></tr><tr><td> <input name="uploadedfile"
-		type="file" /> <br /> <input type="submit" value="Importer" />
+		type="file" /> <br /> <input type="submit" value="Importer trame remplie" />
 		</td></tr>
 	</table>
 </form>
@@ -105,30 +95,35 @@ if(isSecretaire())
 	
 <p>
 	Le formulaire ci-dessous permet d'importer plusieurs rapports vierges dans Marmotte, en partant d'un fichier
-	excel fourni par le SGCN.<br /> Ces rapports pourront ensuite être édités en ligne par les rapporteurs.<br /><br />
+	excel fourni par le SGCN.<br /> Ces rapports pourront ensuite être édités en ligne par les rapporteurs.<br />
 	
 	La procédure est la suivante.
 		</p>
 	
-	<ul>
-	<li>Choisissez les champs à importer puis cliquer sur
 	<form enctype="multipart/form-data" action="export.php" method="post">
+		<ul>
+	<li>Choisissez les types de rapports vierges à importer dans la base</br>
+	<?php 
+	global $typesRapports;
+	foreach($typesRapports as $type => $name)
+		echo '<input type="checkbox" name="types[]" value="'.$type.'">'.$name.'</input><br/>'
+	?>
+	</li>
+	<li>Choisissez les champs à importer</br>
 	<input type="checkbox" name="fields[]" value="nomprenom" checked>Nom et prénom (dans le même champ)</input><br/>
 	<input type="checkbox" name="fields[]" value="nom">Nom</input><br/>
 	<input type="checkbox" name="fields[]" value="prenom">Prénom</input><br/>
 	<input type="checkbox" name="fields[]" value="unite" checked>Code unité</input><br/>
 	<input type="checkbox" name="fields[]" value="directeur" checked>DU</input><br/>
 	<input type="checkbox" name="fields[]" value="grade" checked>Grade</input><br/>
-	<input type="checkbox" name="fields[]" value="rapporteur" checked>Rapporteur1</input><br/>
-	<input type="checkbox" name="fields[]" value="rapporteur2" checked>Rapporteur2</input><br/>
-	<input type="submit" name="bouton" value="Télécharger exemple" />
+	<input type="submit" name="bouton" value="Télécharger trame" />
 	<input type="hidden" name="type" value="exempleimportcsv"/> 
 	<input type="hidden" name="action" value="export"/> 
-	</form>
 	.</li>
-	<li>Pour chaque type de rapport, copiez les données depuis le fichier du SGCN dans le fichier exemple.</li>
-	<li>Importez le fichier exemple dans Marmotte en utilisant le menu suivant:<br />
+	<li>Pour chaque type de rapport, copiez les données depuis le fichier du SGCN dans la trame téléchargée.</li>
+	<li>Importez la trame asinsi remplie dans Marmotte en utilisant le menu suivant:<br />
 	</ul>
+	</form>
 	<!--  Enfin utiliser de préférence l'encodage utf-8 pour les caractères accentués.<br/> -->
 	<?php 
 	displaySecretaryImport();

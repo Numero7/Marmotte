@@ -380,7 +380,7 @@ function generate_jad_report($code)
 	return $doc;
 }
 
-function generate_exemple_csv($fields)
+function generate_exemple_csv($types,$fields)
 {
 	try
 	{
@@ -400,19 +400,46 @@ function generate_exemple_csv($fields)
 
 		$rows = array();
 
+		foreach($types as $type)
+		{
 		$row = (object) array();
+		$row->type = $type;
 		foreach($fields as $field)
 			$row->$field = "copiez/collez vos données";
-		$row->type = "Evaluation-Vague";
 		$rows[] = $row;
 		
+		$row1 = (object) array();
+		$row1->type = $type;
+		foreach($fields as $field)
+			$row1->$field = "supprimez les lignes inutiles";
+		$rows[] = $row1;
+		
+		$row2 = (object) array();
+		$row2->type = $type;
+		foreach($fields as $field)
+			$row2->$field = "ajoutez des lignes si nécessaire";
+		$rows[] = $row2;
+		
+		$row3 = (object) array();
+		$row3->type = $type;
+		foreach($fields as $field)
+			$row3->$field = "";
+		$rows[] = $row3;
+		$rows[] = $row3;
+
+				$row = (object) array();
+		$rows[] = $row;
+		}
+		
+		$fields =  array_merge(array("type"), $fields);
+		
 		$csv_reports = compileReportsAsCSV($rows,$fields);
-		$filename = "csv/exemple.csv";
+		$filename = "csv/trame_rapport_vierges.csv";
 		if($handle = fopen($filename, 'w'))
 		{
 			fwrite ($handle, $csv_reports);
 			fclose($handle);
-			send_file($filename, "exemple.csv");
+			send_file($filename, "trame_rapport_vierges.csv");
 		}
 		else
 			throw new Exception("Cannot generate file ".$filename);
@@ -519,7 +546,7 @@ if($dbh!=0)
 							case "exempleimportcsv":
 								$fields = array();
 								if(isset($_POST['fields']))
-									generate_exemple_csv($_POST['fields']);
+									generate_exemple_csv($_POST['types'], $_POST['fields']);
 								else
 									throw new Exception("No fields provided,, cannot genrate exemple csv");
 								break;

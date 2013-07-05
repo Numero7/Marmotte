@@ -22,16 +22,16 @@ function normalizeCandidat($data)
 {
 	global $candidat_prototypes;
 
-	$data2 = $data;
+	$data2 = (object) $data;
 
-	if(!isset($data->nom))
-		$data->nom = "";
-	if(!isset($data->prenom))
-		$data->prenom = "";
+	if(!isset($data2->nom))
+		$data2->nom = "";
+	if(!isset($data2->prenom))
+		$data2->prenom = "";
 
 	foreach($candidat_prototypes as $field => $value)
-		if(isset($data->$field))
-		if($data->$field=="")
+		if(isset($data2->$field))
+		if($data2->$field=="")
 		$data2->$field = $value;
 
 	return $data2;

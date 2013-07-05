@@ -87,14 +87,6 @@ function compileReportsAsCSV($rows, $fields = null)
 {
 	global $mandatory_export_fields;
 
-	if(count($rows) < 1)
-		$type = "Evaluation-Vague";
-	else
-		$type = $rows[0]->type;
-
-	foreach($rows as $report)
-		if($report->type != $type && !isSecretaire())
-		throw new Exception("Cannot export different type of reports as csv, please filter one report type exclusively");
 
 	$activefields = $fields;
 	if($activefields == null)
