@@ -38,7 +38,7 @@ require_once("authbar.inc.php");
 
 			if(isset($_REQUEST['zip_file']))
 			{
-				$filename = mysql_real_escape_string($_REQUEST['zip_file']);
+				$filename = $_REQUEST['zip_file'];
 				echo '<p>Le fichier zip contenant tous les pdf:<br/> <a href="'.$filename.'">'.$filename.'</a>.</p>'."\n";
 			}
 
