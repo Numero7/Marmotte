@@ -923,21 +923,24 @@ function is_field_editable($row, $fieldId)
 	global $nonEditableFieldsTypes;
 	if(in_array($fieldId, $nonEditableFieldsTypes))
 		return false;
-	
-	if(isBureauUser() && ($fieldId == 'rapporteur' || $fieldId == 'rapporteur2'))
-		return $extra;
 
 	if(isSecretaire())
-		return $extra;
+		return true;
+
 	
-	if($fieldId == "statut" || $fieldId = "type")
+	if($fieldId == 'rapporteur' || $fieldId == 'rapporteur2')
+		return isBureauUser();
+	
+	
+	if($fieldId == "statut" || $fieldId == "type")
 		return isSecretaire();
+
 	
 	$login = getLogin();
 
 
-	$is_rapp1 = isset($row->rapporteur) && $login == $row->rapporteur;
-	$is_rapp2 = isset($row->rapporteur2) && $login == $row->rapporteur2;
+	$is_rapp1 = isset($row->rapporteur) && ($login == $row->rapporteur);
+	$is_rapp2 = isset($row->rapporteur2) && ($login == $row->rapporteur2);
 
 	//echo $fieldId." ".$login." ".$row->rapporteur." ".$row->rapporteur2;
 
@@ -967,9 +970,7 @@ function is_field_editable($row, $fieldId)
 
 	
 	if(isset($row->statut) && ($row->statut == "rapport" || $row->statut == "publie"))
-	{
-		return $extra && isSecretaire();
-	}
+		return isSecretaire();
 	
 	if(!$is_rapp1 && !$is_rapp2 && !isSecretaire())
 		return false;
