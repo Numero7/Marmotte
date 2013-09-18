@@ -32,7 +32,9 @@ function getReport($id_rapport, $most_recent = true)
 	$report = mysql_fetch_object($result);
 
 	if($report == false)
+	{
 		throw new Exception("No report with id ".$id_rapport);
+	}
 	else
 		return normalizeReport($report);
 }
@@ -675,7 +677,6 @@ function addReportToDatabase($report,$normalize = true)
 			//echo $sql;
 			sql_request($sql);
 		}
-
 	}
 	catch(Exception $e)
 	{

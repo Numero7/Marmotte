@@ -31,8 +31,12 @@ function displaySecretaryImport()
 	if(isSecretaire())
 {
 	?>
-		<h2>Import d'une liste de rapports vierges</h2>
-	
+		<h2>Import d'une liste de rapports du SGCN</h2>
+		<p>Le formulaire ci-dessous permet d'importer la liste des rapports fournis par le SGCN avant un bureau.<br/>
+		Demander à votre ACN une extraction au format csv.<br/>
+		Si votre ACN ne connaît pas la procédure, dites-lui de se rapprocher de Florence Colombo.
+		</p>
+<!-- 	
 	<p>
 	Le formulaire ci-dessous permet d'importer plusieurs rapports vierges dans Marmotte, en partant d'un fichier
 	excel fourni par le SGCN.<br /> Ces rapports pourront ensuite être édités en ligne par les rapporteurs.<br />
@@ -43,11 +47,9 @@ function displaySecretaryImport()
 	<form enctype="multipart/form-data" action="export.php" method="post">
 		<ul>
 	<li>Choisissez les types de rapports vierges à importer dans la base</br>
-	<?php 
 	global $typesRapports;
 	foreach($typesRapports as $type => $name)
 		echo '<input type="checkbox" name="types[]" value="'.$type.'">'.$name.'</input><br/>'."\n";
-	?>
 	</li>
 	<li>Choisissez les champs à importer</br>
 	<input type="checkbox" name="fields[]" value="nomprenom" checked>Nom et prénom (dans le même champ)</input><br/>
@@ -70,8 +72,8 @@ function displaySecretaryImport()
 	Si vous utilisez les champs "rapporteur" ou "rapporteur2", renseignez les avec les logins des rapporteurs.<br/>
 	Importez dans Marmotte la liste de rapports ainsi obtenue en utilisant le menu suivant.
 	</p>
-	<!--  Enfin utiliser de préférence l'encodage utf-8 pour les caractères accentués.<br/> -->
-	
+	Enfin utiliser de préférence l'encodage utf-8 pour les caractères accentués.<br/>
+	 -->
 <form enctype="multipart/form-data" action="index.php" method="post">
 <table>
 <tr><td>
@@ -79,14 +81,16 @@ function displaySecretaryImport()
 	<input	type="hidden" name="action" value="upload" />
 	<input type="hidden" name="MAX_FILE_SIZE" value="10000000" />
 		</td></tr><tr><td> <input name="uploadedfile"
-		type="file" /> <br /> <input type="submit" value="Importer liste des rapports" />
+		type="file" /> <br /> <input type="submit" value="Importer" />
 		</td></tr>
 	</table>
 </form>
+<!--  
 	<p>
 	Vous pouvez supprimer les colonnes inutiles mais il est indispensable de
 	laisser les intitulés des colonnes restantes tels quels.<br />
 	</p>
+	-->
 <hr />
 
 		<?php 

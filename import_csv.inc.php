@@ -32,12 +32,27 @@ function import_csv($type,$filename, $subtype = "", $sep=";", $del="\n",$enc='"'
 
 	if($file = fopen ( $filename , 'r') )
 	{
-		$fields = fgetcsv ( $file, 0, $sep , $enc, $esc );
-		foreach($fields as $field)
-			if($field != "" && !key_exists($field, $fieldsAll) && !key_exists($field, $csv_composite_fields) && !key_exists($field, $fieldsUnitsDB))
-			throw new Exception("No field with name ". $field." in evaluations or in composite fields list");
+		$is_utf8 = true;
+		
+		$rawfields = fgetcsv ( $file, 0, $sep , $enc, $esc );
+		
+		if($is_utf8)
+			foreach($rawfields as $field)
+		 $is_utf8 = $is_utf8 && mb_check_encoding($field,"UTF-8");
+		
+		if(!$is_utf8)
+		{
+			for($i = 0 ; $i < count($rawfields); $i++)
+				$rawfields[$i] = utf8_encode($rawfields[$i]);
+		}
+		
+		$fields = array();
+		foreach($rawfields as $field)
+			$fields[] = mysql_real_escape_string($field);
+
 		$with_id = in_array("id",$fields);
 		$id_rank = array_search("id",$fields);
+
 		if(!isSecretaire())
 		{
 			if(!$with_id)
@@ -52,7 +67,6 @@ function import_csv($type,$filename, $subtype = "", $sep=";", $del="\n",$enc='"'
 		$nb = 0;
 		$errors = "";
 
-		$is_utf8 = true;
 
 		while(($data = fgetcsv ( $file, 0, $sep , $enc ,$esc)) != false)
 		{
@@ -63,8 +77,10 @@ function import_csv($type,$filename, $subtype = "", $sep=";", $del="\n",$enc='"'
 				$is_utf8 = $is_utf8 && mb_check_encoding($data[$i],"UTF-8");
 
 			if(!$is_utf8)
+			{
 				for($i = 0 ; $i < count($data); $i++)
-				$data[$i] = utf8_encode($data);
+				$data[$i] = utf8_encode($data[$i]);
+			}
 
 
 			try
@@ -88,23 +104,22 @@ function import_csv($type,$filename, $subtype = "", $sep=";", $del="\n",$enc='"'
 							$output .= "Line ".$nb." : updated data of report ".$id_origine . " (new report has id ".$report->id.")<br/>";
 						}
 					}
-					else
+					else if(in_array("type",$fields))
 					{
-						if(in_array("type",$fields))
+						$i = array_search("type",$fields);
+						if(isset($data[$i]))
 						{
-							$i = array_search("type",$fields);
-							if(isset($data[$i]))
-							{
-								$newsubtype = $data[$i];
-								if($newsubtype != "")
-									$subtype  = $newsubtype;
-							}
-						}
-						else
-						{
-							echo "Subtype '".$subtype."'<br/>";
+							$newsubtype = $data[$i];
+							if($newsubtype != "")
+								$subtype  = $newsubtype;
 						}
 						addCsvReport($subtype, $data, $fields);
+					}
+					else
+					{
+						for($i = 0; $i < $nbfields; $i++)
+							$properties[$fields[$i]] =  $data[$i];
+						addCsvReportNoType($properties);
 					}
 				}
 				else if ($type == 'unites')
@@ -195,6 +210,114 @@ function getDocFromCsv($data, $fields)
 
 }
 
+function strcontains($haystack, $needle)
+{
+	return (strpos($haystack,$needle) !== false);	
+}
+
+function addCsvReportNoType($properties)
+{
+	//first we try to get the type of the evaluation
+	$grade = "";
+	$grade_rapport = "";
+	
+	if( isset( $properties["Type évaluation"] ) )
+		$properties["type"] = $properties["Type évaluation"];
+	
+	if(!isset($properties["type"]) )
+		throw new Exception("Cannot add csv report, no type available");
+
+	if(strcontains($properties["type"], "promotion"))
+	{
+		if(strcontains($properties["type"],"CR1"))
+			$grade_rapport= "CR1";
+		if(strcontains($properties["type"],"DR1"))
+			$grade_rapport= "DR1";
+		if(strcontains($properties["type"],"DRCE1"))
+			$grade_rapport= "DRCE1";
+		if(strcontains($properties["type"],"DRCE2"))
+			$grade_rapport= "DRCE2";
+		$properties["type"] = "Promotion";
+	}
+	else if( strcontains($properties["type"],"Evaluation"))
+	{
+		if(isset($properties["Phase évaluation"]) && ($properties["Phase évaluation"] =="mi-vague"))
+			$properties["type"] = 'Evaluation-MiVague';
+		else
+			$properties["type"] = 'Evaluation-Vague';
+	}
+	else if( strcontains($properties["type"],"Reconstitution"))
+	{
+		$properties["type"] = 'Reconstitution';
+	}
+	else if( strcontains($properties["type"],"Titularisation"))
+	{
+		$properties["type"] = 'Titularisation';
+	}
+	
+	if(!isset($properties["type"]) || $properties["type"] =="")	
+		throw new Exception("Unimplemented report type:" . $type);
+
+	if(isset($properties["Nom"]))
+		$properties["nom"] = $properties["Nom"];
+	
+	if(isset($properties["Prénom"]))
+		$properties["prenom"] = $properties["Prénom"];
+	
+	if(isset( $properties["Grade"] ))
+		$properties["grade"] = $properties["Grade"];
+	
+	if(isset( $properties["Commentaire ACN"] ))
+		$properties["rapport"] = $properties["Commentaire ACN"]."<br/>";
+	
+	$extra = array("Section d\'évaluation","Section d\'évaluation #2","Section d\'évaluation exceptionnelle");
+	foreach($extra as $field)
+		if(isset($properties[$field]) && $properties[$field] != "")
+		$properties["rapport"] .= $field." : " . $properties[$field]."<br/>";
+	
+	if(isset($properties["Directeur"]))
+		$properties["directeur"] = $properties["Directeur"];
+	
+	if(isset($properties["Affectation #1"]))
+	{
+		$properties["unite"] = $properties["Affectation #1"];
+		$properties["code"] = $properties["unite"];
+	}
+	
+	
+	
+	
+	$non_empty = false;
+	foreach($properties as $key => $value)
+		if($value != "")
+		$non_empty = true;
+	
+	if(!$non_empty)
+		return;
+	
+	$report = (object) array();
+	
+	foreach($properties as $key => $value)
+		addToReport($report,$key, replace_accents($value));
+
+	$report->statut = 'vierge';
+	$report->id_session = current_session_id();
+	
+	global $typesRapportsChercheurs;
+	global $typesRapportsConcours;
+	
+	if( in_array($report->type, $typesRapportsChercheurs) || in_array($report->type, $typesRapportsConcours) )
+		updateCandidateFromData((object) $properties);
+	
+	addReport($report,false);
+	
+	if(isset($data->unite))
+		updateUnitData($data->unite, (object) $data);
+	
+}
+
+
+
 function addCsvReport($type, $data, $fields)
 {
 
@@ -206,7 +329,7 @@ function addCsvReport($type, $data, $fields)
 	$non_empty = false;
 	foreach($data as $d)
 		if($d != "")
-		 $non_empty = true;
+		$non_empty = true;
 
 	if(!$non_empty)
 		return;

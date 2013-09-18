@@ -352,6 +352,11 @@ function sql_request($sql)
 		return $result;
 }
 
+function stripAccents($string){
+	return strtr($string,"'àáâãäçèéêëìíîïñòóôõöùúûüýÿÀÁÂÃÄÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝ",
+			' aaaaaceeeeiiiinooooouuuuyyAAAAACEEEEIIIINOOOOOUUUUY');
+}
+
 function exception_handler($exception)
 {
 	echo "<h1>".$exception->getMessage()."</h1>";
