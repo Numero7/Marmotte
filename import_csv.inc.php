@@ -217,76 +217,7 @@ function strcontains($haystack, $needle)
 
 function addCsvReportNoType($properties)
 {
-	//first we try to get the type of the evaluation
-	$grade = "";
-	$grade_rapport = "";
-	
-	if( isset( $properties["Type évaluation"] ) )
-		$properties["type"] = $properties["Type évaluation"];
-	
-	if(!isset($properties["type"]) )
-		throw new Exception("Cannot add csv report, no type available");
-
-	if(strcontains($properties["type"], "promotion"))
-	{
-		if(strcontains($properties["type"],"CR1"))
-			$grade_rapport= "CR1";
-		if(strcontains($properties["type"],"DR1"))
-			$grade_rapport= "DR1";
-		if(strcontains($properties["type"],"DRCE1"))
-			$grade_rapport= "DRCE1";
-		if(strcontains($properties["type"],"DRCE2"))
-			$grade_rapport= "DRCE2";
-		$properties["type"] = "Promotion";
-	}
-	else if( strcontains($properties["type"],"Evaluation"))
-	{
-		if(isset($properties["Phase évaluation"]) && ($properties["Phase évaluation"] =="mi-vague"))
-			$properties["type"] = 'Evaluation-MiVague';
-		else
-			$properties["type"] = 'Evaluation-Vague';
-	}
-	else if( strcontains($properties["type"],"Reconstitution"))
-	{
-		$properties["type"] = 'Reconstitution';
-	}
-	else if( strcontains($properties["type"],"Titularisation"))
-	{
-		$properties["type"] = 'Titularisation';
-	}
-	
-	if(!isset($properties["type"]) || $properties["type"] =="")	
-		throw new Exception("Unimplemented report type:" . $type);
-
-	if(isset($properties["Nom"]))
-		$properties["nom"] = $properties["Nom"];
-	
-	if(isset($properties["Prénom"]))
-		$properties["prenom"] = $properties["Prénom"];
-	
-	if(isset( $properties["Grade"] ))
-		$properties["grade"] = $properties["Grade"];
-	
-	if(isset( $properties["Commentaire ACN"] ))
-		$properties["rapport"] = $properties["Commentaire ACN"]."<br/>";
-	
-	$extra = array("Section d\'évaluation","Section d\'évaluation #2","Section d\'évaluation exceptionnelle");
-	foreach($extra as $field)
-		if(isset($properties[$field]) && $properties[$field] != "")
-		$properties["rapport"] .= $field." : " . $properties[$field]."<br/>";
-	
-	if(isset($properties["Directeur"]))
-		$properties["directeur"] = $properties["Directeur"];
-	
-	if(isset($properties["Affectation #1"]))
-	{
-		$properties["unite"] = $properties["Affectation #1"];
-		$properties["code"] = $properties["unite"];
-	}
-	
-	
-	
-	
+	//Check emptiness
 	$non_empty = false;
 	foreach($properties as $key => $value)
 		if($value != "")
@@ -294,6 +225,92 @@ function addCsvReportNoType($properties)
 	
 	if(!$non_empty)
 		return;
+	
+	//first we try to get the type of the evaluation
+	$grade = "";
+	$grade_rapport = "";
+	
+	if( isset( $properties["Type évaluation"] ) )
+		$properties["type"] = $properties["Type évaluation"];
+
+	if( isset( $properties["Type d\'évaluation"] ) )
+		$properties["type"] = $properties["Type d\'évaluation"];
+	
+	if(!isset($properties["type"]) )
+		throw new Exception("Cannot add csv report, no type available");
+
+	$types_keys = array(
+			"Evaluation" => 'Evaluation-Vague',
+			'Reconstitution' => 'Reconstitution',
+			'Titularisation' => 'Titularisation',
+			'promotion' => 'Promotion',
+			'Changement de direction' => 'Changement-Directeur',
+			'Changement de section' => 'Changement-section',
+			'Expertise' => 'Expertise',
+			"Renouvellement de GDR" =>  'Renouvellement',
+			"Evaluation" => "",
+			);
+	
+	foreach($types_keys as $key => $value)
+		if(strcontains($properties["type"],$key))
+		{
+			if($key == "promotion")
+			{
+				if(strcontains($properties["type"],"CR1"))
+					$properties["grade_rapport"] = "CR1";
+				if(strcontains($properties["type"],"DR1"))
+					$properties["grade_rapport"] = "DR1";
+				if(strcontains($properties["type"],"DRCE1"))
+					$properties["grade_rapport"] = "DRCE1";
+				if(strcontains($properties["type"],"DRCE2"))
+					$properties["grade_rapport"] = "DRCE2";
+				$properties["type"] = "Promotion";
+				
+			}
+			else if($key == "Evaluation")
+			{
+				if(isset($properties["Phase évaluation"]) && ($properties["Phase évaluation"] =="mi-vague"))
+					$properties["type"] = 'Evaluation-MiVague';
+				else
+					$properties["type"] = 'Evaluation-Vague';
+			}
+			else
+				$properties["type"] = $value;
+		}		
+	
+	if(!isset($properties["type"]) || $properties["type"] =="")	
+		throw new Exception("Unimplemented report type:" . $type);
+
+	$copies = array(
+			"Nom" => "nom",
+			"Prénom" => "prenom",
+			"Grade" => "grade",
+			"Directeur" => "directeur",
+			"Affectation #1" => "unite",
+			"Code Unité" => "unite",
+			"Affectation #1" => "unite"
+	);
+			
+	foreach($copies as $old => $new)
+		if(isset($properties[$old]) )
+	{
+		$properties[$new] = $properties[$old];
+		unset($properties[$old]);
+	}
+
+		
+	
+	if(isset($properties["unite"]))
+		$properties["code"] = $properties["unite"];
+	if(isset($properties["grade"]) && !isset($properties["grade_rapport"]))
+		$properties["grade_rapport"] = $properties["grade"];
+	
+	
+	$properties["rapport"] = "";
+	foreach($properties as $key => $value)
+		if($value != "")
+		$properties["rapport"] .= $key . " : " . $value."\n\n";
+	
 	
 	$report = (object) array();
 	
@@ -311,8 +328,8 @@ function addCsvReportNoType($properties)
 	
 	addReport($report,false);
 	
-	if(isset($data->unite))
-		updateUnitData($data->unite, (object) $data);
+	if(isset($report->unite))
+		updateUnitData($report->unite, (object) $report);
 	
 }
 
