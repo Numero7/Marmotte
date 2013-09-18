@@ -465,7 +465,7 @@ function createReportFromRequest($id_origine, $request)
 
 	foreach($fieldsRapportAll as  $field => $comment)
 		if (isset($request["field".$field]))
-		$row->$field = nl2br(trim(mysql_real_escape_string($request["field".$field])),true);
+		$row->$field = nl2br(trim($request["field".$field]),true);
 
 	$row->id_origine = $id_origine;
 	$row->auteur = getLogin();
@@ -1057,11 +1057,11 @@ function is_field_visible($row, $fieldId)
 	//during prerapport edition we do not want rapporteurs to see each other reports
 	//only editable info is visible
 	$login = getLogin();
-	$is_rapp1 = isset($row->rapporteur) && $login == $row->rapporteur;
-	$is_rapp2 = isset($row->rapporteur2) && $login == $row->rapporteur2;
+	$is_rapp1 = isset($row->rapporteur) && ($login == $row->rapporteur);
+	$is_rapp2 = isset($row->rapporteur2) && ($login == $row->rapporteur2);
 	
 	
-	if(isset($row->statut) && $row->statut == "prerapport" && ($is_rapp1 || $is_rapp2))
+	if(isset($row->statut) && ($row->statut == "prerapport" || $row->statut == "vierge") && ($is_rapp1 || $is_rapp2))
 		return false;
 	
 	

@@ -1,13 +1,14 @@
 -- phpMyAdmin SQL Dump
--- version 3.3.7deb7
+-- version 3.5.6
 -- http://www.phpmyadmin.net
 --
--- Serveur: localhost
--- Généré le : Mer 27 Mars 2013 à 10:42
--- Version du serveur: 5.1.63
--- Version de PHP: 5.3.3-7+squeeze14
+-- Host: localhost
+-- Generation Time: Jul 10, 2013 at 07:51 AM
+-- Server version: 5.1.63-0+squeeze1
+-- PHP Version: 5.3.3-7+squeeze14
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
+SET time_zone = "+00:00";
 
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
@@ -16,13 +17,13 @@ SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 /*!40101 SET NAMES utf8 */;
 
 --
--- Base de données: `cn62`
+-- Database: `cn62`
 --
 
 -- --------------------------------------------------------
 
 --
--- Structure de la table `people`
+-- Table structure for table `people`
 --
 
 DROP TABLE IF EXISTS `people`;
@@ -56,12 +57,12 @@ CREATE TABLE IF NOT EXISTS `people` (
 -- --------------------------------------------------------
 
 --
--- Structure de la table `reports`
+-- Table structure for table `reports`
 --
 
 DROP TABLE IF EXISTS `reports`;
 CREATE TABLE IF NOT EXISTS `reports` (
-  `statut` enum('vierge','prerapport','rapport','publie','supprime','editable','audition') NOT NULL,
+  `statut` enum('vierge','editable','prerapport','rapport','publie','supprime','audition') NOT NULL,
   `id_session` varchar(64) NOT NULL,
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `id_origine` int(11) NOT NULL,
@@ -69,7 +70,7 @@ CREATE TABLE IF NOT EXISTS `reports` (
   `prenom` varchar(64) NOT NULL,
   `unite` varchar(50) NOT NULL,
   `ecole` text NOT NULL,
-  `grade` varchar(32) NOT NULL,
+  `grade_rapport` varchar(32) NOT NULL,
   `type` varchar(32) NOT NULL,
   `concours` text NOT NULL,
   `rapporteur` varchar(32) NOT NULL,
@@ -104,12 +105,12 @@ CREATE TABLE IF NOT EXISTS `reports` (
   `finalisationHDR` varchar(16) NOT NULL DEFAULT '',
   `national` varchar(16) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=54953 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=57972 ;
 
 -- --------------------------------------------------------
 
 --
--- Structure de la table `sessions`
+-- Table structure for table `sessions`
 --
 
 DROP TABLE IF EXISTS `sessions`;
@@ -123,7 +124,7 @@ CREATE TABLE IF NOT EXISTS `sessions` (
 -- --------------------------------------------------------
 
 --
--- Structure de la table `units`
+-- Table structure for table `units`
 --
 
 DROP TABLE IF EXISTS `units`;
@@ -137,7 +138,7 @@ CREATE TABLE IF NOT EXISTS `units` (
 -- --------------------------------------------------------
 
 --
--- Structure de la table `users`
+-- Table structure for table `users`
 --
 
 DROP TABLE IF EXISTS `users`;
@@ -150,3 +151,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `tel` text CHARACTER SET utf8 NOT NULL,
   `sousjury` text CHARACTER SET utf8 NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

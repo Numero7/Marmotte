@@ -97,10 +97,7 @@ function import_csv($type,$filename, $subtype = "", $sep=";", $del="\n",$enc='"'
 							{
 								$newsubtype = $data[$i];
 								if($newsubtype != "")
-								{
-									echo "Changing subtype to '".$newsubtype."'<br/>";
 									$subtype  = $newsubtype;
-								}
 							}
 						}
 						else
@@ -210,6 +207,7 @@ function addCsvReport($type, $data, $fields)
 	foreach($data as $d)
 		if($d != "")
 		 $non_empty = true;
+
 	if(!$non_empty)
 		return;
 

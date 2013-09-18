@@ -546,7 +546,16 @@ if($dbh!=0)
 							case "exempleimportcsv":
 								$fields = array();
 								if(isset($_POST['fields']))
-									generate_exemple_csv($_POST['types'], $_POST['fields']);
+								{
+									if(!isset($_POST['types']))
+									{
+										throw new Exception("Sélectionnez au moins un type de rapport");
+									}
+									else	
+									{
+										generate_exemple_csv($_POST['types'], $_POST['fields']);
+									}
+								}
 								else
 									throw new Exception("No fields provided,, cannot genrate exemple csv");
 								break;
@@ -585,6 +594,7 @@ if($dbh!=0)
 		catch(Exception $e)
 		{
 			include("header.inc.php");
+			
 			echo $e->getMessage();
 		}
 	}

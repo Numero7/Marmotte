@@ -344,7 +344,7 @@ function normalizeName($name)
 
 function sql_request($sql)
 {
-	//echo $sql."<br>";
+	echo $sql."<br>";
 	$result = mysql_query($sql);
 	if($result == false)
 		throw new Exception("Failed to process sql query: <br/>\t".mysql_error()."<br/>".$sql);
