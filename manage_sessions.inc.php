@@ -135,13 +135,19 @@ function createSession($name,$annee)
 	}
 }
 
-function deleteSession($id)
+function deleteSession($id, $supprimerdossiers)
 {
 	if (isSecretaire())
 	{
-		$sql = "DELETE FROM ".sessions_db." WHERE id=$id;";
-		mysql_query($sql);
+		$sql = "DELETE FROM ".sessions_db." WHERE id='$id';";
+		sql_request($sql);
 		unset($_SESSION['all_sessions']);
+		
+		if($supprimerdossiers)
+		{
+			$sql = "DELETE FROM ".reports_db." WHERE id_session='$id';";
+			sql_request($sql);
+		}
 	}
 	else
 	{

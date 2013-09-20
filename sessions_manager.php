@@ -95,6 +95,8 @@ require_once('manage_sessions.inc.php');
 								}
 								?>
 						</select>
+						<input type="checkbox" name="supprimerdossiers" unchecked
+									style="width: 10px;" /> Supprimer définitivement les dossiers
 						</td>
 					</tr>
 					<tr>

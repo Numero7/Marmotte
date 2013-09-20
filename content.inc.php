@@ -171,6 +171,10 @@ function alertText($text)
 				case 'view':
 					displayReports($id_rapport);
 					break;
+				case 'deleteCurrentSelection':
+					deleteCurrentSelection();
+					displayReports();
+					break;
 				case 'edit':
 					editReport($id_rapport);
 					break;
@@ -424,7 +428,7 @@ function alertText($text)
 					break;
 				case 'admindeletesession':
 					if (isset($_REQUEST["sessionid"]))
-						deleteSession(mysql_real_escape_string($_REQUEST["sessionid"]));
+						deleteSession(mysql_real_escape_string($_REQUEST["sessionid"]), isset($_REQUEST["supprimerdossiers"]));
 					else
 						throw new Exception("Vous n'avez fourni toutes les informations nécessaires pour supprimer une session, veuillez nous contacter (Yann ou Hugo) en cas de difficultés.");
 					include "admin.inc.php";
