@@ -28,7 +28,7 @@ function get_raw_config()
 	$result = str_replace(array(">\n"),array("magictempkey"),$result);
 	$result = str_replace(array(">","</","magictempkey"),array(">\n","\n  </",">\n"),$result);
 	return $result;
-//return $result;
+	//return $result;
 }
 
 function put_raw_config($data)
@@ -42,9 +42,9 @@ function put_raw_config($data)
 
 function save_config()
 {
-	
+
 	$doc = new DOMDocument('1.0','UTF-8');
-	
+
 	$root = $doc->createElement("config");
 	$doc->appendChild($root);
 
@@ -54,7 +54,7 @@ function save_config()
 	thing_to_xml_node($_SESSION['config'],$root, $doc,"_");
 
 	$doc->formatOutput = true;
-	
+
 	$doc->save(config_file);
 }
 
@@ -68,7 +68,7 @@ function get_config($name)
 			return $config[trim($name,"_")];
 		else
 			return "";
-			//throw new Exception("No config item with name '".$name."'");
+		//throw new Exception("No config item with name '".$name."'");
 	}
 	else
 	{
@@ -79,8 +79,8 @@ function get_config($name)
 function set_config($name,$value)
 {
 	load_config();
-		$_SESSION['config'][$name] = $value;
-		save_config();
+	$_SESSION['config'][$name] = $value;
+	save_config();
 }
 
 ?>
