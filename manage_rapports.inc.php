@@ -819,9 +819,11 @@ function change_report_properties($id_origine, $data)
 	try
 	{
 		$report = getReport($id_origine);
+//		echo "Found report with id ". $id_origine."<br/>";
 	}
 	catch (Exception $e)
 	{
+		echo "Could not find report with id ". $id_origine.", trying to create new report...<br/>";
 		$id_origine = 0;
 	}
 
@@ -842,8 +844,10 @@ function change_report_properties($id_origine, $data)
 	}
 
 
-	return addReportFromRequest($id_origine,$request);
-
+	$result = addReportFromRequest($id_origine,$request);
+	//echo "report added new id ".$result->id."<br/>";
+	
+	return $result;
 }
 
 

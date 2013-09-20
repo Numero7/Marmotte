@@ -100,7 +100,7 @@ function import_csv($type,$filename, $subtype = "", $sep=";", $del="\n",$enc='"'
 							for($i = 0; $i < $nbfields; $i++)
 								$properties[$fields[$i]] =  $data[$i];
 							$report = change_report_properties($id_origine, $properties);
-							$output .= "Line ".$nb." : updated data of report ".$id_origine . " (new report has id ".$report->id.")<br/>";
+							//$output .= "Line ".$nb." : updated data of report ".$id_origine . " (new report has id ".$report->id.")<br/>";
 						}
 					}
 					else
