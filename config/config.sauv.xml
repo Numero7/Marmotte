@@ -1,39 +1,117 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config>
-<president>Frédérique Bassino</president>
-<president_titre>Présidente de la Section 6</president_titre>
-<secretaire>Hugo Gimbert</secretaire>
-<section_nb>6</section_nb>
-<section_shortname>Section 6</section_shortname>
-<section_fullname>Section 6</section_fullname>
-<section_intitule>Sciences de l'information : fondements de l'informatique, calculs, algorithmes, représentations, exploitations</section_intitule>
-<webmaster>hugo.gimbert@labri.fr</webmaster>
-<addresse_du_site>http://cn6.labri.fr/Marmotte</addresse_du_site>
-<current_session>2</current_session>
-<welcome_message>Bienvenue sur le site de gestion des rapports de la section 6.
-			N'hésitez pas à nous contacter (Yann ou Hugo) en cas de difficultés.</welcome_message>
-<topics>
-<_1a>1a  Algorithmique, combinatoire, graphes</_1a>
-<_1b>1b  Automates, systèmes dynamiques discrets</_1b>
-<_2a>2a  Calcul formel et calcul certifié, arithmétique des ordinateurs"</_2a>
-<_2b>2b  Codage et cryptographie</_2b>
-<_3a>3a  Logique, complexité algorithmique et structurelle</_3a>
-<_3b>3b  Sémantique, modèles de calcul</_3b>
-<_4a>4a  Programmation, génie logiciel</_4a>
-<_4b>4b  Vérification et preuves</_4b>
-<_5>5   Recherche opérationnelle, aide à la décision, optimisation discrète et continue, satisfaction de contraintes, SAT</_5>
-<_6>6   Systèmes de production, logistique, ordonnancement"</_6>
-<_7>7   I.A., système multi-agent, ingénierie / rep. et trait. des connaissances, de l'incertitude, form. des raisonnements, fusion information</_7>
-<_8>8   Environnements informatiques pour l'apprentissage humain</_8>
-<_9a>9a  Sûreté de fonctionnement, sécurité informatique, protection de la vie privée</_9a>
-<_9b>9b  Réseaux sociaux</_9b>
-<_10a>10a Réseaux, télécommunications, réseaux de capteurs</_10a>
-<_10b>10b Systèmes distribués</_10b>
-<_11>11  Internet du futur, intelligence ambiante</_11>
-<_12a>12a Calcul distribué, grilles, cloud, calcul à haute performance, parallélisme, infrastructures à grande échelle</_12a>
-<_12b>12b Architecture et compilation</_12b>
-<_13>13  Cognition, modélisation pour la médecine, neurosciences computationnelles</_13>
-<_14>14  Systèmes d'informations, web sémantique, masses de données, fouille de données, base de données, gestion de données, recherche d'informations, apprentissage</_14>
-<_15a>15  Bioinformatique</_15a>
-</topics>
+  <president>Frédérique Bassino</president>
+  <president_titre>Présidente de la Section 6</president_titre>
+  <secretaire>Hugo Gimbert</secretaire>
+  <section_nb>6</section_nb>
+  <section_shortname>Section 6</section_shortname>
+  <section_fullname>Section 6</section_fullname>
+  <section_intitule>Sciences de l'information : fondements de l'informatique, calculs, algorithmes, représentations, exploitations</section_intitule>
+  <webmaster>hugo.gimbert@labri.fr</webmaster>
+  <addresse_du_site>http://marmotte.cn6.fr</addresse_du_site>
+  <current_session>Automne2013</current_session>
+  <welcome_message>Bienvenue sur le site de gestion des rapports de la section 6. N'hésitez pas à nous contacter (Yann ou Hugo) en cas de difficultés.	</welcome_message>
+  <formules_standards>
+    <Promotion>
+      <oui>La section donne un avis favorable à la demande de promotion.</oui>
+      <non>Le faible nombre de possibilités de promotions ne permet malheureusement pas à la Section 6 du Comité National de proposer ce chercheur à la Direction Générale du CNRS pour une promotion cette année.</non>
+    </Promotion>
+    <Equivalence>
+      <favorable>La section donne un avis favorable à la demande d'équivalence.</favorable>
+      <defavorable>La section donne un avis défavorable à la demande d'équivalence.</defavorable>
+    </Equivalence>
+    <Titularisation>
+      <favorable>La section donne un avis favorable à la titularisation.</favorable>
+    </Titularisation>
+  </formules_standards>
+  <topics>
+    <_1a>1a Algorithmique, combinatoire, graphes</_1a>
+    <_1aa>1aa Algorithmique</_1aa>
+    <_1ab>1ab Combinatoire</_1ab>
+    <_1ac>1ac Graphes</_1ac>
+    <_1b>1b Automates, systèmes dynamiques discrets</_1b>
+    <_2a>2a Calcul formel et calcul certifié, arithmétique des ordinateurs		</_2a>
+    <_2b>2b Codage et cryptographie</_2b>
+    <_3a>3a Logique, complexité algorithmique et structurelle</_3a>
+    <_3b>3b Sémantique, modèles de calcul</_3b>
+    <_4a>4a Programmation, génie logiciel</_4a>
+    <_4b>4b Vérification et preuves</_4b>
+    <_5>5 Recherche opérationnelle, aide à la décision, optimisation discrète et continue, satisfaction de contraintes, SAT</_5>
+    <_6>6 Systèmes de production, logistique, ordonnancement</_6>
+    <_7>7 I.A., système multi-agent, ingénierie / rep. et trait. des connaissances, de l'incertitude, form. des raisonnements, fusion			information</_7>
+    <_8>8 Environnements informatiques pour lapprentissage humain</_8>
+    <_9a>9a Sûreté de fonctionnement, sécurité informatique, protection de la vie privée</_9a>
+    <_9b>9b Réseaux sociaux</_9b>
+    <_10a>10a Réseaux, télécommunications, réseaux de capteurs</_10a>
+    <_10b>10b Systèmes distribués</_10b>
+    <_11>11 Internet du futur, intelligence ambiante</_11>
+    <_12a>12a Calcul distribué, grilles, cloud, calcul à haute performance, parallélisme, infrastructures à grande échelle</_12a>
+    <_12b>12b Architecture et compilation</_12b>
+    <_13>13 Cognition, modélisation pour la médecine, neurosciences computationnelles</_13>
+    <_14>14 Systèmes d'informations, web sémantique, masses de données, fouille de données, base de données, gestion de données, recherche d'informations, apprentissage</_14>
+    <_15>15 Bioinformatique</_15>
+  </topics>
+  <concours>
+    <_0601>DR2 0601</_0601>
+    <_0602>CR1 0602</_0602>
+    <_0603>CR2 0603</_0603>
+  </concours>
+  <sousjurys>
+    <_0601>
+      <DRA>DRA</DRA>
+      <DRB>DRB</DRB>
+    </_0601>
+    <_0602>
+      <CR1A>CR1A</CR1A>
+      <CR1B>CR1B</CR1B>
+    </_0602>
+    <_0603>
+      <CR2A>CR2A</CR2A>
+      <CR2B>CR2B</CR2B>
+    </_0603>
+  </sousjurys>
+  <presidents_sousjurys>
+    <DRA>
+      <nom>Frédéric Magniez</nom>
+      <login>frederic.magniez</login>
+      <signature>img/signatureFrederic.jpg</signature>
+    </DRA>
+    <CR1B>
+      <nom>Frédéric Magniez</nom>
+      <login>frederic.magniez</login>
+      <signature>img/signatureFrederic.jpg</signature>
+    </CR1B>
+    <CR2B>
+      <nom>Frédéric Magniez</nom>
+      <login>frederic.magniez</login>
+      <signature>img/signatureFrederic.jpg</signature>
+    </CR2B>
+    <DRB>
+      <nom>Isabelle Guérin-Lassous</nom>
+      <login>isabelle</login>
+      <signature>img/signatureIsabelle.jpg</signature>
+    </DRB>
+    <CR1A>
+      <nom>Isabelle Guérin-Lassous</nom>
+      <login>isabelle</login>
+      <signature>img/signatureIsabelle.jpg</signature>
+    </CR1A>
+    <CR2A>
+      <nom>Isabelle Guérin-Lassous</nom>
+      <login>isabelle</login>
+      <signature>img/signatureIsabelle.jpg</signature>
+    </CR2A>
+  </presidents_sousjurys>
+  <postes_ouverts>
+    <_0601>2</_0601>
+    <_0602>2</_0602>
+    <_0603>2</_0603>
+  </postes_ouverts>
+  <avis_jad>
+    <_0602>Après examen de l'ensemble de ces dossiers, le jury a décidé d'auditionner les candidats listés ci-dessous du fait (i) de la qualité de leur contribution scientifique (originalité de la production scientifique, qualité des publications dans des revues internationales avec comité de lecture, des communications dans des conférences internationales avec comité des élection, des prototypes logiciels), (ii) de leur mobilité géographique et de leurs collaborations nationales et internationales,  (iii) de l'ambition du projet de recherche proposé (à court et moyen terme) et de son adéquation avec les thématiques de la section et (iv) de leur visibilité internationale. Enfin le candidat doit avoir montré une capacité à animer la recherche (encadrement, formation à la recherche), et à prendre des responsabilités (montage et gestion de projets, participation à des comités scientifiques, organisation de conférences).</_0602>
+    <_0603>lkjlkjklkjlkjkl</_0603>
+  </avis_jad>
+  <date_jad>7 février 2013</date_jad>
+  <name>Concours2013</name>
+  <people_files_root>dossiers/Dossiers/</people_files_root>
 </config>
