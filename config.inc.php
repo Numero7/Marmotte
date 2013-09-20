@@ -1258,7 +1258,7 @@ ini_set('xdebug.show_local_vars', 'on');
 					"mime" => "application/x-text",
 					"xsl" => "",
 					"name" => "CSV (pour attribution rapporteurs)",
-					"permissionlevel" => NIVEAU_PERMISSION_PRESIDENT_SECRETAIRE
+					"permissionlevel" => NIVEAU_PERMISSION_BUREAU
 			),
 			"csvsingle" => 	array(
 					"mime" => "application/x-text",
