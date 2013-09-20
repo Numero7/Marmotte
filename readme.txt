@@ -22,10 +22,11 @@
 Démarrage en trois étapes.
 
 1. Déploiement (par le webmaster)
-	* dézipper l'archive
+	* cloner le dépôt https://github.com/Numero7/Marmotte.git
 	* donner les droits d'écriture au service web dans les sous-dossiers csv, config, uploads, reports
 	* créer un fichier vierge nommé .htpasswd à la racine du site avec droits d'écriture pour le service web
-	* éditer le fichier config/configDB.inc.php et y renseigner les bonnes valeurs permettant de se connecter à la base de données
+	* éditer le fichier "config/configDB.inc.exemple.php", y renseigner les bonnes valeurs permettant de se connecter à la base de données
+		et sauver ce fichier sous le nom "config/configDB.inc.php"	
 	* initialiser la base de données à l'aide du script marmotte.sql
 
 2. Première connexion (par le webmaster)

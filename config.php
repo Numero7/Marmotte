@@ -8,7 +8,7 @@ function load_config($force = false)
 	if(!$force && isset($_SESSION['config']))
 		return;
 	$doc = new DOMDocument('1.0','utf-8');
-	if($doc->load(config_file) === false)
+	if(file_exists(config_file)===false ||  $doc->load(config_file) === false)
 	{
 		$doc->load(config_file_save);
 		$doc->save(config_file);
