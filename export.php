@@ -72,7 +72,7 @@ function export_reports_as_txt($reports, $dir)
 	return $file;
 }
 
-function export_reports_as_csv($reports, $dir)
+function export_reports_as_csv($reports, $dir, $type = "")
 {
 	if(count($reports) == 0)
 	{
@@ -82,11 +82,27 @@ function export_reports_as_csv($reports, $dir)
 
 	$file = "reports.csv";
 
+	$activefields = array();
+	if($type == "attribution_rapporteurs")
+	{
+		$activefields =
+		array('type','nom','prenom','rapporteur','rapporteur2',
+				"grade_rapport",
+				"labo1",
+				"theme1",
+				"theme2",
+				"theme3",
+				'id'
+		);
+	}
+	else
+	{
 	global $mandatory_export_fields;
-	$activefields =
+		$activefields =
 	array_unique(
 			array_merge($mandatory_export_fields, get_editable_fields($reports[0]))
 	);
+	}
 
 	$file = $dir."/".$file;
 	$data = compileObjectsAsCSV($activefields, $reports);
@@ -134,7 +150,7 @@ function export_report($report, $export_format, $dir)
 
 }
 
-function export_current_selection_as_single_csv()
+function export_current_selection_as_single_csv($type = "")
 {
 
 
@@ -157,7 +173,7 @@ function export_current_selection_as_single_csv()
 		if(!is_dir($dir) && !mkdir($dir))
 			throw new Exception("Failed to create directory ".$dir);
 
-		$file = export_reports_as_csv($reports, $dir);
+		$file = export_reports_as_csv($reports, $dir, $type);
 		$filenames[$file] = substr($file,strlen($dir."/"));
 
 		$remote_filename = 'marmotte_reports_'.$login.'.zip';
@@ -526,7 +542,9 @@ if($dbh!=0)
 								if($type=="zip")
 									echo "<script>window.location = 'create_reports.php?zip_files=oui'</script>";
 								break;
-
+							case "csvbureau":
+								export_current_selection_as_single_csv("attribution_rapporteurs");
+								break;
 							case "csvsingle":
 								export_current_selection_as_single_csv();
 								break;
