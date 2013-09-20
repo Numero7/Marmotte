@@ -160,6 +160,7 @@ if(isSecretaire())
 
 
 <?php 
+/*
 try
 {
 	$sql = "SELECT * FROM ".units_db." LIMIT 0,5";
@@ -185,6 +186,7 @@ catch(Exception $e)
 {
 	echo("Watchout: couldn't create exemple csv file ".$e->getMessage());
 }
+*/
 
 ?>
 	
