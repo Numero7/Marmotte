@@ -17,7 +17,7 @@ function displayImport()
 	<input	type="hidden" name="action" value="upload" />
 	<input type="hidden" name="MAX_FILE_SIZE" value="10000000" />
 		</td></tr><tr><td> <input name="uploadedfile"
-		type="file" /> <br /> <input type="submit" value="Importer" />
+		type="file" /> <br /> <input type="submit" value="Mettre à jour le ou les rapports" />
 		</td></tr>
 	</table>
 </form>
@@ -31,9 +31,9 @@ function displaySecretaryImport()
 	if(isSecretaire())
 {
 	?>
-		<h2>Import d'une liste de rapports du SGCN</h2>
+		<h2>Création de rapports (pour Secrétaires)</h2>
 		<p>Le formulaire ci-dessous permet d'importer la liste des rapports fournis par le SGCN avant un bureau.<br/>
-		Demander à votre ACN une extraction au format csv.<br/>
+		Demandez à votre ACN une extraction au format csv.<br/>
 		Si votre ACN ne connaît pas la procédure, dites-lui de se rapprocher de Florence Colombo.
 		</p>
 <!-- 	
@@ -80,10 +80,24 @@ function displaySecretaryImport()
 	<input type="hidden" name="type" value="evaluations"></input>
 	<input	type="hidden" name="action" value="upload" />
 	<input type="hidden" name="MAX_FILE_SIZE" value="10000000" />
-		</td></tr><tr><td> <input name="uploadedfile"
-		type="file" /> <br /> <input type="submit" value="Importer" />
 		</td></tr>
+		<tr><td>Fichier</td><td> <input name="uploadedfile"
+		type="file" />
+		</td></tr>
+		<tr><td>Choix du type de rapport</td><td>
+		<select name="subtype">
+		<option value ="">Types multiples</option>
+<?php   
+global $typesRapports;  
+foreach($typesRapports as $type => $name)  
+echo '<option value='.$type.'>'.$name.'</option><br/>'."\n";  
+?> 
+</select>
+		</td></tr>
+				<tr><td><input type="submit" value="Créer rapports" /></td></tr>
+		
 	</table>
+	
 </form>
 <!--  
 	<p>
@@ -128,14 +142,10 @@ function displayExport()
 <?php displayExport();?>
 	<hr/>
 	
-	
-	<?php 
-	displaySecretaryImport();
-	?>
-
-<h2>Import d'un unique rapport</h2>
+<h2>Mise à jour d'un ou plusieurs rapports</h2>
 <p>
-Le formulaire suivant vous permet d'importer un rapport édité offline.
+Le formulaire suivant vous permet d'importer un ou plusieurs rapports édités offline.<br/>
+Le fichier à importer doit avoir été récupéré au préalable via la fonction Export au format csv.
 </p>
 <?php 
 	displayImport();
@@ -177,20 +187,18 @@ catch(Exception $e)
 }
 
 ?>
+	
+	<?php 
+	displaySecretaryImport();
+	?>
 
-<h2>Import d'unités</h2>
+
+<h2>Ajout et mise à jour des unités  (pour Secrétaires)</h2>
 <p>
 <p>
 	Le formulaire ci-dessous permet d'injecter des unités dans la base de
-	donnée.<br /> Les rapports sont envoyés sous forme de fichier csv.<br />
-	Vous pouvez partir de <a href="csv/exemple_unites.csv">ce fichier
-		exemple</a>.<br /> Vous pouvez supprimer les colonnes inutiles mais il
-	est indispensable de laisser les intitulés des colonnes restantes tels
-	quels.<br /> Les différentes entrées sont encadrées par des guillemets
-	par conséquent les champs ne doivent pas contenir des guillements non
-	échappés: il faut au préalabale de l'envoi remplacer chaque " par \".<br />
-	<!--  Enfin utiliser de préférence l'encodage utf-8 pour les caractères accentués.<br/> -->
-	Les données d'un labo avec le même code seront remplacées.
+	donnée.<br /> Les rapports sont envoyés sous forme de fichier csv fournis par votre ACN.<br />
+	Les données des labos déjà connus seront remplacées.
 </p>
 <form enctype="multipart/form-data" action="index.php" method="post"
 	onsubmit="return confirm('Etes vous sur de vouloir uploader ce fichier labos?');">
@@ -205,13 +213,5 @@ catch(Exception $e)
 
 <?php 
 }
-else
-{
 	?>
-
-<p>Ce menu permet d'importer ou de mettre à jour des rapports.</p>
-
-<?php displayImport();
-}
-?>
 

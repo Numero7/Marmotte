@@ -177,7 +177,7 @@ function displayRows($rows, $fields, $filters, $filter_values, $sort_fields, $so
 			<td><hr /> <input type="hidden" name="action" value="view" /> <input
 				type="submit" value="Rafraîchir" /> <?php 	echo "(".count($rows)." rapports)";?>
 			</td>
-		</tr>
+			</tr>
 
 	</table>
 </form>
@@ -289,7 +289,21 @@ function displayRows($rows, $fields, $filters, $filter_values, $sort_fields, $so
 	<?php
 		}
 		?>
-
+<?php 
+			if(isSecretaire())
+			{
+			?>
+			<tr><td>
+<form onsubmit="return confirm('Etes vous sur de vouloir supprimer ces rapports?');"
+method="post" action="index.php">
+			<input type="hidden" name="action" value="deleteCurrentSelection" /> <input
+				type="submit" value="Supprimer ces rapports" />
+				</form>
+				</td></tr>
+				<?php 
+			}
+			?>
+		
 </table>
 <?php
 } ;

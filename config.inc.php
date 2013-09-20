@@ -1380,4 +1380,7 @@ ini_set('xdebug.show_local_vars', 'on');
 	$csv_preprocessing = array('nom' => 'normalizeName', 'prenom' => 'normalizeName','unit' => 'fromunittocode');
 	
 	$users_not_rapporteur = array('admin','yawn');
+	
+	$possible_type_labels = array("Type évaluation", "Type d\'évaluation", "type");
+	
 ?>

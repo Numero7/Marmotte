@@ -75,7 +75,7 @@ if(isSecretaire())
 
 		</td>
 		<td valign="top">
-			<h3 id="admindeleteaccount">Suppression d'un rapporteur</h2>
+			<h3 id="admindeleteaccount">Suppression d'un rapporteur</h3>
 			<form method="post" action="index.php"
 				onsubmit="return confirm('Etes vous sur de vouloir supprimer cet utilisateur ?');">
 				<table class="inputreport">

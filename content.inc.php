@@ -171,6 +171,10 @@ function alertText($text)
 				case 'view':
 					displayReports($id_rapport);
 					break;
+				case 'deleteCurrentSelection':
+					deleteCurrentSelection();
+					displayReports();
+					break;
 				case 'edit':
 					editReport($id_rapport);
 					break;

@@ -88,6 +88,7 @@ function import_csv($type,$filename, $subtype = "", $sep=";", $del="\n",$enc='"'
 				set_time_limit(0);
 				if($type == 'evaluations')
 				{
+					/* First case we update data about an already existing report */
 					if($with_id)
 					{
 						if(count($data) != $nbfields)
@@ -97,34 +98,30 @@ function import_csv($type,$filename, $subtype = "", $sep=";", $del="\n",$enc='"'
 							$id_origine = $data[$id_rank];
 							$properties = array();
 							for($i = 0; $i < $nbfields; $i++)
-							{
 								$properties[$fields[$i]] =  $data[$i];
-							}
 							$report = change_report_properties($id_origine, $properties);
 							$output .= "Line ".$nb." : updated data of report ".$id_origine . " (new report has id ".$report->id.")<br/>";
 						}
 					}
-					else if(in_array("type",$fields))
-					{
-						$i = array_search("type",$fields);
-						if(isset($data[$i]))
-						{
-							$newsubtype = $data[$i];
-							if($newsubtype != "")
-								$subtype  = $newsubtype;
-						}
-						addCsvReport($subtype, $data, $fields);
-					}
 					else
-					{
+					{			
+					/* Second case we create report */
+						$properties = array();
 						for($i = 0; $i < $nbfields; $i++)
 							$properties[$fields[$i]] =  $data[$i];
-						addCsvReportNoType($properties);
+						if($subtype =="")
+							$subtype = checkTypeIsSpecified($properties);
+						if($subtype == "")
+							throw new Exception("No type specified in the csv, please specify the type of the evaluation to import");
+						addCsvReport($subtype, $properties);
 					}
 				}
 				else if ($type == 'unites')
 				{
-					addCsvUnite($data, $fields);
+					$properties = array();
+					for($i = 0; $i < $nbfields; $i++)
+						$properties[$fields[$i]] =  $data[$i];
+					addCsvUnite($properties);
 				}
 				else
 					throw new Exception("Unknown generic csv report type \'".$type."\'");
@@ -135,7 +132,7 @@ function import_csv($type,$filename, $subtype = "", $sep=";", $del="\n",$enc='"'
 			}
 		}
 		if($errors != "")
-			return $nb." rapports de type ".$type."/".$subtype." ont été ajoutés. Erreurs:\n\t".$errors."<br/> and output <br/>".$output;
+			return $nb." rapports de type ".$type."/".$subtype." ont été ajoutés.<br/> Erreurs:<br/>\n\t".$errors."<br/> and output <br/>".$output;
 		else if($output != "")
 			return $nb." rapports de type ".$type."/".$subtype." ont été ajoutés <br/>".$output;
 		else
@@ -215,7 +212,24 @@ function strcontains($haystack, $needle)
 	return (strpos($haystack,$needle) !== false);	
 }
 
-function addCsvReportNoType($properties)
+/*
+ * Check type is psecified and return this type
+* returns "" is no type
+*/
+
+function checkTypeIsSpecified($properties)
+{
+	global $possible_type_labels;
+
+	foreach($possible_type_labels as $label)
+	if( isset( $properties[$label] ) &&  $properties[$label] != "" )
+		return $properties[$label];
+	
+	return "";
+	
+}
+
+function addCsvReport($subtype, $properties)
 {
 	//Check emptiness
 	$non_empty = false;
@@ -229,15 +243,11 @@ function addCsvReportNoType($properties)
 	//first we try to get the type of the evaluation
 	$grade = "";
 	$grade_rapport = "";
-	
-	if( isset( $properties["Type évaluation"] ) )
-		$properties["type"] = $properties["Type évaluation"];
 
-	if( isset( $properties["Type d\'évaluation"] ) )
-		$properties["type"] = $properties["Type d\'évaluation"];
-	
-	if(!isset($properties["type"]) )
-		throw new Exception("Cannot add csv report, no type available");
+	if($subtype == "")
+		throw new Exception("Cannot add csv report, no type specified");
+	else
+		$properties["type"] = $subtype;
 
 	$types_keys = array(
 			"Evaluation" => 'Evaluation-Vague',
@@ -288,7 +298,10 @@ function addCsvReportNoType($properties)
 			"Directeur" => "directeur",
 			"Affectation #1" => "unite",
 			"Code Unité" => "unite",
-			"Affectation #1" => "unite"
+			"Code unité" => "unite",
+			"Affectation #1" => "unite",
+			"Titre" => "nom",
+			"Responsable principal" => "prenom"
 	);
 			
 	foreach($copies as $old => $new)
@@ -334,7 +347,7 @@ function addCsvReportNoType($properties)
 }
 
 
-
+/*
 function addCsvReport($type, $data, $fields)
 {
 
@@ -381,10 +394,33 @@ function addCsvReport($type, $data, $fields)
 	if(isset($data->unite))
 		updateUnitData($data->unite, (object) $data);
 }
+*/
 
-function addCsvUnite($data, $fields)
+function addCsvUnite($properties)
 {
-	addUnit($data[1], $data[0], $data[2], $data[3]);
+	$code = "";
+	$directeur = "";
+	$fullname = "";
+	$nickname = "";
+	
+	$labels = array("Code unité", "code", "Code Unité");
+	foreach($labels as $label)
+		if(isset($properties[$label]) && $properties[$label] != "")
+		$code = $properties[$label];
+	
+	if($code =="")
+		throw new Exception("Cannot add unit with empty nickname");
+	
+	if(isset($properties["Intitulé unité"]))
+		$fullname = $properties["Intitulé unité"];
+	
+	if(isset($properties["Responsable prénom"]))
+		$directeur .= $properties["Responsable prénom"];
+	
+	if(isset($properties["Responsable nom"]))
+		$directeur.= " " . $properties["Responsable nom"];
+
+	addUnit($nickname, $code, $fullname, $directeur);
 }
 
 
