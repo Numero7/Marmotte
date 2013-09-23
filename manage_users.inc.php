@@ -360,9 +360,7 @@ function createUser($login,$pwd,$desc,$email, $envoiparemail = false, $check_sec
 
 		if($result == false)
 			throw new Exception("Failed to process sql query: <br/>\t".mysql_error()."<br/>".$sql);
-		else
-			return $result;
-
+		
 		createhtpasswd();
 
 		if($envoiparemail)
@@ -379,6 +377,7 @@ function createUser($login,$pwd,$desc,$email, $envoiparemail = false, $check_sec
 			$body .= "\r\n\r\n\t Amicalement, ".get_config("secretaire").".";
 			email_handler($email,"Votre compte Marmotte",$body);
 		}
+		
 		return "Utilisateur ".$login." créé avec succès.";
 	}
 }
