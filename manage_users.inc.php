@@ -375,7 +375,19 @@ function createUser($login,$pwd,$desc,$email, $envoiparemail = false, $check_sec
 			$body .= "\t\t\t motdepasse: '".$pwd."'\r\n";
 			$body .= "\r\nLors de votre première connexion vous pourrez changer votre mot de passe.\r\n";
 			$body .= "\r\n\r\n\t Amicalement, ".get_config("secretaire").".";
-			email_handler($email,"Votre compte Marmotte",$body);
+
+			$cc = "";
+			$currLogin = getLogin();
+			$users = listUsers();
+			foreach($users as $user)
+			{
+				if($user->login == $currLogin && $currLogin != $login)
+				{
+					$cc = $user->email;
+					break;
+				}
+			}
+			email_handler($email,"Votre compte Marmotte",$body,);
 		}
 		
 		return "Utilisateur ".$login." créé avec succès.";
