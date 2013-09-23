@@ -387,7 +387,7 @@ function createUser($login,$pwd,$desc,$email, $envoiparemail = false, $check_sec
 					break;
 				}
 			}
-			email_handler($email,"Votre compte Marmotte",$body,);
+			email_handler($email,"Votre compte Marmotte",$body,$cc);
 		}
 		
 		return "Utilisateur ".$login." créé avec succès.";
