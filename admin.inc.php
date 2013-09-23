@@ -58,11 +58,11 @@ if(isSecretaire())
 					</tr>
 						<tr>
 						<td></td>
-						<td>
+<!-- 						<td>
 								<input type="checkbox" name="envoiparemail" checked='checked'
 									style="width: 10px;" /> Prévenir par email
 						</td>
-						</tr>
+	 -->					</tr>
 					<tr>
 						<td><input type="hidden" name="oldpwd" value="" /> <input
 							type="hidden" name="action" value="adminnewaccount" />

@@ -411,7 +411,7 @@ function alertText($text)
 							$envoiparemail = isset($_REQUEST["envoiparemail"]);
 							
 							if (($pwd1==$pwd2))
-								echo "<p><strong>".createUser($login,$pwd2,$desc, $email, $envoiparemail)."</p></strong>";
+								echo "<p><strong>".createUser($login,$pwd2,$desc, $email, true)."</p></strong>";
 							else
 								echo "<p><strong>Erreur :</strong> Les deux saisies du nouveau mot de passe  diffèrent, veuillez réessayer.</p>";
 						}
