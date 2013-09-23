@@ -408,8 +408,8 @@ function alertText($text)
 							$pwd2 = $_REQUEST["newpwd2"];
 							$login = $_REQUEST["login"];
 							$email = $_REQUEST["email"];
-							$envoiparemail = isset($_REQUEST["envoiparemail"])  ? $_REQUEST["envoiparemail"] : false;
-
+							$envoiparemail = isset($_REQUEST["envoiparemail"]);
+							
 							if (($pwd1==$pwd2))
 								echo "<p><strong>".createUser($login,$pwd2,$desc, $email, $envoiparemail)."</p></strong>";
 							else
