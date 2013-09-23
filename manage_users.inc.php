@@ -65,10 +65,10 @@ function listNomRapporteurs()
 	$result = array();
 	$result[''] = "";
 	$users = listUsers();
-	
+
 	foreach($users as $login => $data)
 		if(!in_array($login, $users_not_rapporteur))
-			$result[$login] = $data->description;
+		$result[$login] = $data->description;
 
 	return $result;
 }
@@ -297,7 +297,16 @@ function changePwd($login,$old,$new1,$new2, $envoiparemail)
 				$body .= "\t\t\t login: '".$login."'\r\n";
 				$body .= "\t\t\t motdepasse: '".$new1."'\r\n";
 				$body .= "\r\n\r\n\t Amicalement, ".get_config("secretaire").".";
-				email_handler($users[$login]->email,"Votre compte Marmotte",$body);
+				$cc = "";
+				foreach($users as $user)
+				{
+					if($user->login == $currLogin && $currLogin != $login)
+					{
+						$cc = $user->email;
+						break;
+					}
+				}
+				email_handler($users[$login]->email,"Votre compte Marmotte",$body,$cc);
 			}
 
 			return true;
@@ -334,7 +343,7 @@ function existsUser($login)
 function createUser($login,$pwd,$desc,$email, $envoiparemail = false, $check_secretary = true)
 {
 	$login = strtolower($login);
-	
+
 	if (!$check_secretary || isSecretaire())
 	{
 		if(existsUser($login))
@@ -353,7 +362,7 @@ function createUser($login,$pwd,$desc,$email, $envoiparemail = false, $check_sec
 			throw new Exception("Failed to process sql query: <br/>\t".mysql_error()."<br/>".$sql);
 		else
 			return $result;
-		
+
 		createhtpasswd();
 
 		if($envoiparemail)

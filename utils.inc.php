@@ -321,11 +321,14 @@ function message_handler($subject,$body)
 	mail(get_config("webmaster"), $subject, "\r\n".$body."\r\n", $headers);
 }
 
-function email_handler($recipient,$subject,$body)
+function email_handler($recipient,$subject,$body, $cc = "")
 {
 	echo "Trying to send email to '".$recipient."' with subject '".$subject."'... ";
 	
-	$headers = 'From: '.get_config("webmaster"). "\r\n" . 'CC: ' .get_config("webmaster"). "\r\n". 'Reply-To: '.get_config("webmaster"). "\r\n".'Content-Type: text/plain; charset="UTF-8"\r\n'.'X-Mailer: PHP/' . phpversion()."\r\n";
+	$headers = 'From: '.get_config("webmaster"). "\r\n";
+	if($cc != "")
+		$headers.= 'CC: ' .get_config("webmaster") . "\r\n";
+	$headers .= 'Reply-To: '.get_config("webmaster"). "\r\n".'Content-Type: text/plain; charset="UTF-8"\r\n'.'X-Mailer: PHP/' . phpversion()."\r\n";
 
 	$result = mail($recipient, $subject, "\r\n".$body."\r\n", $headers);
 
