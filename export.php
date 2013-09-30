@@ -88,7 +88,7 @@ function export_reports_as_csv($reports, $dir, $type = "")
 		$activefields =
 		array('type','nom','prenom','rapporteur','rapporteur2',
 				"grade_rapport",
-				"labo1",
+				"unite",
 				"theme1",
 				"theme2",
 				"theme3",
