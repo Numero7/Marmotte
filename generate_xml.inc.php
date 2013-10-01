@@ -173,7 +173,7 @@ function EnteteDroit($row, $units)
 
 	$result = "";
 
-	if( ($row->type == "Promotion") && ($row->grade != "CR2"))
+	if( ($row->type == "Promotion") && ($row->grade_rapport != "CR1"))
 	{
 		$result = $enTetesDroit['PromotionDR'];
 		$result .= $avis_classement[$row->avis].'<br/>';
