@@ -108,10 +108,14 @@ function import_csv($type,$filename, $subtype = "", $sep=";", $del="\n",$enc='"'
 					/* Second case we create report */
 						$properties = array();
 						for($i = 0; $i < $nbfields; $i++)
+						{
 							$properties[$fields[$i]] =  $data[$i];
-						if($subtype =="")
-							$subtype = checkTypeIsSpecified($properties);
-						if($subtype == "")
+						}
+						$oldsubtype = $subtype;
+						$subtype = checkTypeIsSpecified($properties);
+						if($subtype == "" && $oldsubtype != "")
+							$subtype = $oldsubtype;
+						if($subtype == "" )
 							throw new Exception("No type specified in the csv, please specify the type of the evaluation to import");
 						addCsvReport($subtype, $properties);
 					}
@@ -132,11 +136,11 @@ function import_csv($type,$filename, $subtype = "", $sep=";", $del="\n",$enc='"'
 			}
 		}
 		if($errors != "")
-			return $nb." rapports de type ".$type."/".$subtype." ont été ajoutés.<br/> Erreurs:<br/>\n\t".$errors."<br/> and output <br/>".$output;
+			return $nb." rapports ont été ajoutés dans la base.<br/> Erreurs:<br/>\n\t".$errors."<br/> and output <br/>".$output;
 		else if($output != "")
-			return $nb." rapports de type ".$type."/".$subtype." ont été ajoutés <br/>".$output;
+			return $nb." rapports ont été ajoutés dans la base <br/>".$output;
 		else
-			return $nb." rapports de type ".$type."/".$subtype." ont été ajoutés.";
+			return $nb." rapports ont été ajoutés dans la base.";
 	}
 	else
 	{
@@ -223,7 +227,9 @@ function checkTypeIsSpecified($properties)
 
 	foreach($possible_type_labels as $label)
 	if( isset( $properties[$label] ) &&  $properties[$label] != "" )
+	{
 		return $properties[$label];
+	}
 	
 	return "";
 	
@@ -242,7 +248,6 @@ function addCsvReport($subtype, $properties)
 	
 	//first we try to get the type of the evaluation
 	$grade = "";
-	$grade_rapport = "";
 
 	if($subtype == "")
 		throw new Exception("Cannot add csv report, no type specified");
@@ -275,7 +280,6 @@ function addCsvReport($subtype, $properties)
 				if(strcontains($properties["type"],"DRCE2"))
 					$properties["grade_rapport"] = "DRCE2";
 				$properties["type"] = "Promotion";
-				
 			}
 			else if($key == "Evaluation")
 			{

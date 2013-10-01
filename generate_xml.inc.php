@@ -240,15 +240,7 @@ function EnteteGauche($row)
 	$result = isset($typesRapportsToEnteteGauche[$row->type]) ? $typesRapportsToEnteteGauche[$row->type] : "";
 	if($row->type == "Promotion")
 	{
-		$oldgrade = $row->grade;
-		$newgrade = "CR1";
-		if( $oldgrade == "DR2")
-			$newgrade = "DR1";
-		if( $oldgrade == "DR1")
-			$newgrade = "DRCE1";
-		if( $oldgrade == "DRCE1")
-			$newgrade = "DRCE2";
-		$result .= "<br/>".$newgrade;
+		$result .= "<br/>".$row->grade_rapport;
 	}
 	else if($row->type == "Candidature")
 	{
