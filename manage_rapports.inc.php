@@ -128,6 +128,7 @@ function filterSortReports($filters, $filter_values = array(), $sorting_values =
 	while ($row = mysql_fetch_object($result))
 		$rows[] = $row;
 
+	
 	/*
 	 * TODO: merge avc candidats
 	*/

@@ -69,7 +69,7 @@ function updateCandidateFromRequest($request, $oldannee="")
 
 	$candidate = updateCandidateFromData($data);
 	
-	if(isset($request['previousnom']) && isset($request['previousprenom']))
+	if(isset($request['previousnom']) && isset($request['previousprenom']) && ($request['previousnom']!= "" || $request['previousprenom'] != "") )
 	{
 		if(mysql_real_escape_string($request['previousnom']) != $candidate->nom || mysql_real_escape_string($request['previousprenom']) != $candidate->prenom)
 		{
