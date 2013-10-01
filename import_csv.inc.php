@@ -413,7 +413,7 @@ function addCsvUnite($properties)
 		$code = $properties[$label];
 	
 	if($code =="")
-		throw new Exception("Cannot add unit with empty nickname");
+		throw new Exception("Cannot add unit with empty code");
 	
 	if(isset($properties["Intitulé unité"]))
 		$fullname = $properties["Intitulé unité"];

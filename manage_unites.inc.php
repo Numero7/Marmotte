@@ -47,7 +47,7 @@ function updateUnitData($unite, $data)
 			$sql .= " $field='$value' ";
 		if($sql != "")
 		{
-				
+
 			$sql = "UPDATE FROM ".units_db." SET ".$sql;
 			$sql .=  " WHERE code='$unite';";
 			mysql_query($sql);
@@ -77,6 +77,19 @@ function simpleUnitsList($short = false)
 
 function addUnit($nickname, $code, $fullname, $directeur)
 {
+	$liste = unitsList();
+
+	/* if nickname has been set we dont delete it */
+	if($nickname == "")
+	{
+		if(isset($liste[$code]) && $liste[$code]->nickname !="")
+			$nickname = $liste[$code]->nickname;
+		else if($fullname != "")
+			$nickname = $fullname;
+		else
+			$nickname = $code;
+	}
+
 	unset($_SESSION['all_units']);
 	$sql = "DELETE FROM ".units_db." WHERE code = \"".$code."\";";
 	sql_request($sql);
