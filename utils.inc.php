@@ -432,9 +432,13 @@ function filename_from_params($nom, $prenom, $grade, $unite, $type, $session, $a
 	{
 		if(isset($liste_unite[$unite]))
 			$unite = $unite . " - " . $liste_unite[$unite]->nickname;
+		
+		
 
 		if($type == 'Generique')
 			return $session." - ".$nom." ".$prenom." - ".$unite;
+		else if($type == 'Ecole')
+			return $session." - ".$type." - ".$nom." - ".$unite;
 		else
 			return $session." - ".$type." - ".$unite;
 	}
