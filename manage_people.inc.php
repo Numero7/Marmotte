@@ -299,15 +299,13 @@ function find_people_files($candidate, $force, $session, $create_directory_if_ne
 	
 	if($force && !is_dir($basedir))
 	{
-		echo "Looking for alternates to directory ".$basedir."<br/>";
-
 		if($directories == NULL)
 			$directories = get_directories_list($session);
 		foreach($directories as $directory)
 		{
 			if( is_associated_directory($candidate, $directory) )
 			{
-				echo "Renaming ".$directory . " for ". $basedir."<br/>";
+				echo "Renaming '".$directory . "' to '". $basedir."'<br/>";
 				rename($directory,$basedir);
 				/*
 				$dir = str_replace($dossiers_candidats,"",$directory);
