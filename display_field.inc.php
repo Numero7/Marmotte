@@ -220,7 +220,7 @@ function display_fichiers($row, $fieldID, $session, $readonly)
 	echo "<td>";
 	
 	
-	$files = find_people_files($row,true, $session, isSecretaire());
+	$files = find_people_files($row,true, $session, true);
 
 	$dir = get_people_directory($row, $session, false);
 	
