@@ -280,6 +280,7 @@ function get_people_directory($candidate, $session, $create_directory_if_nexists
 
 	if($create_directory_if_nexists && !is_dir($basedir))
 	{
+		echo "Creating directory ".$basedir."<br/>";
 		$result = mkdir($basedir,0700, true);
 		if(!$result)
 			echo "Failed to create directory ".$basedir."<br/>";
@@ -296,10 +297,9 @@ function find_people_files($candidate, $force, $session, $create_directory_if_ne
 
 	$basedir = get_people_directory($candidate, $session, false);
 	
-		
 	if($force && !is_dir($basedir))
 	{
-		echo "Looking for directory<br/>";
+		echo "Looking for alternates to directory ".$basedir."<br/>";
 
 		if($directories == NULL)
 			$directories = get_directories_list($session);

@@ -218,10 +218,12 @@ function display_fichiers($row, $fieldID, $session, $readonly)
 	global $dossiers_candidats;
 
 	echo "<td>";
-	$dir = get_people_directory($row, $session, isSecretaire());
 	
 	
 	$files = find_people_files($row,true, $session, isSecretaire());
+
+	$dir = get_people_directory($row, $session, false);
+	
 	if(count($files) > 0)
 	{
 		ksort($files);
