@@ -221,7 +221,7 @@ function display_fichiers($row, $fieldID, $session, $readonly)
 	$dir = get_people_directory($row, $session, isSecretaire());
 	
 	
-	$files = find_people_files($row,false, $session, isSecretaire());
+	$files = find_people_files($row,true, $session, isSecretaire());
 	if(count($files) > 0)
 	{
 		ksort($files);

@@ -294,31 +294,37 @@ function find_people_files($candidate, $force, $session, $create_directory_if_ne
 	if($candidate->nom == "" && $candidate->prenom == "")
 		return array();
 
-	$basedir = get_people_directory($candidate, $session, $create_directory_if_nexists);
+	$basedir = get_people_directory($candidate, $session, false);
 	
-		/*
-	if($force || !is_dir($basedir) || !is_associated_directory($candidate, $basedir))
+		
+	if($force && !is_dir($basedir))
 	{
 		echo "Looking for directory<br/>";
 
 		if($directories == NULL)
-			$directories = get_directories_list();
+			$directories = get_directories_list($session);
 		foreach($directories as $directory)
 		{
 			if( is_associated_directory($candidate, $directory) )
 			{
+				echo "Renaming ".$directory . " for ". $basedir."<br/>";
+				rename($directory,$basedir);
+				/*
 				$dir = str_replace($dossiers_candidats,"",$directory);
 				echo "Changing candidate dir for ".$directory." <br/>";
 				change_candidate_property($candidate->anneecandidature, $candidate->nom, $candidate->prenom, $fieldID, $dir);
 				$basedir = $directory;
 				$candidate->$fieldID = $directory;
+				*/
 				break;
 			}
 		}
 		//echo "No directory found for ".$candidate->nom." ".$candidate->nom." <br/>";
 		//change_candidate_property($candidate->anneecandidature, $candidate->nom, $candidate->prenom, $fieldID, "");
-	}*/
+	}
 
+	$basedir = get_people_directory($candidate, $session, $create_directory_if_nexists);
+	
 	if ( is_dir($basedir) )
 	{
 		$handle = opendir($basedir);
@@ -353,12 +359,12 @@ function find_people_files($candidate, $force, $session, $create_directory_if_ne
 	return array();
 }
 
-function get_directories_list()
+function get_directories_list($session)
 {
 	global $dossiers_candidats;
 
 	$directories = array();
-	$files = glob($dossiers_candidats . "*" );
+	$files = glob($dossiers_candidats . "/".$session."/*" );
 
 	foreach($files as $file)
 	{
