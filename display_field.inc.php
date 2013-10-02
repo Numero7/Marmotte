@@ -213,13 +213,15 @@ function display_rapports($row, $fieldId)
 }
 
 
-function display_fichiers($row, $fieldID, $readonly)
+function display_fichiers($row, $fieldID, $session, $readonly)
 {
 	global $dossiers_candidats;
 
 	echo "<td>";
-	$dir = $dossiers_candidats."/".current_session()."/".$row->$fieldID."/";
-	$files = find_candidate_files($row,$fieldID);
+	$dir = get_people_directory($row, $session, isSecretaire());
+	
+	
+	$files = find_people_files($row,false, $session, isSecretaire());
 	if(count($files) > 0)
 	{
 		ksort($files);
@@ -254,19 +256,20 @@ function display_fichiers($row, $fieldID, $readonly)
 			echo '<img class="photoid" src="'.$dir."/".$file.'" alt="'.$file.'" />';
 
 		echo "</td></tr></table>";
-		{
+	}
+	
 			?>
 <input type="hidden" name="type"
 	value="candidatefile" />
 <input
 	type="hidden" name="MAX_FILE_SIZE" value="10000000" />
-<input name="uploadedfile"
+	<input type="hidden" name="uploaddir" value=<?php echo $dir;?>/>
+	<input name="uploadedfile"
 	type="file" />
 <input
 	type="submit" name="ajoutfichier" value="Ajouter fichier" />
 <?php 
-		}
-
+		
 		if(isSecretaire() && (count($files) > 0))
 		{
 			?>
@@ -311,7 +314,7 @@ function display_fichiers($row, $fieldID, $readonly)
 
 		}
 
-	}
+	
 
 	echo "</td>";
 }

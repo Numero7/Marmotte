@@ -241,10 +241,12 @@ function alertText($text)
 						else
 							displayWithRedirects();
 					}
-					else if(isset($_REQUEST['ajoutfichier']))
+					else if(isset($_REQUEST['ajoutfichier']) && isset($_REQUEST['uploaddir']))
 					{
+						$directory = $_REQUEST['uploaddir'];
 						echo 
 							process_upload(
+									$directory,
 						 		get_or_create_candidate(
 						 			getReport($id_origine)
 						 		)

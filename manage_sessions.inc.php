@@ -66,6 +66,16 @@ function check_current_session_exists()
 	
 }
 
+function get_session($id)
+{
+	$sessions = sessionArrays();
+	$id = current_session_id();
+	if(isset($sessions[$id]))
+		return $sessions[$id];
+	else
+		return "Unknown session";
+}
+
 function current_session()
 {
 	$sessions = sessionArrays();

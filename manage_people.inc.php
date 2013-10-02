@@ -272,15 +272,28 @@ function is_associated_directory($candidate, $directory)
 	return ($candidate->nom == "" || strpos(norm_name($directory), norm_name($candidate->nom) ) != false ) && ( $candidate->prenom == "" || strpos(norm_name($directory), norm_name($candidate->prenom) )  != false );
 }
 
-function find_candidate_files($candidate, $fieldID, $force = false, $directories = NULL)
+function get_people_directory($candidate, $session, $create_directory_if_nexists = false)
+{
+	global $dossiers_candidats;
+	$basedir = $dossiers_candidats."/".$session."/".$candidate->nom."_".$candidate->prenom."/";
+
+
+	if($create_directory_if_nexists && !is_dir($basedir))
+		mkdir($basedir,"0777", true);
+	
+	return $basedir;
+}
+
+function find_people_files($candidate, $force, $session, $create_directory_if_nexists = false, $directories = NULL)
 {
 	global $dossiers_candidats;
 	if($candidate->nom == "" && $candidate->prenom == "")
 		return array();
 
-	$basedir = $dossiers_candidats.$candidate->$fieldID."/";
-
-	if($force || $candidate->$fieldID == "" || !is_dir($basedir) || !is_associated_directory($candidate, $basedir))
+	$basedir = get_people_directory($candidate, $session, $create_directory_if_nexists);
+	
+		/*
+	if($force || !is_dir($basedir) || !is_associated_directory($candidate, $basedir))
 	{
 		echo "Looking for directory<br/>";
 
@@ -300,9 +313,9 @@ function find_candidate_files($candidate, $fieldID, $force = false, $directories
 		}
 		//echo "No directory found for ".$candidate->nom." ".$candidate->nom." <br/>";
 		//change_candidate_property($candidate->anneecandidature, $candidate->nom, $candidate->prenom, $fieldID, "");
-	}
+	}*/
 
-	if ( $candidate->$fieldID != "" && is_dir($basedir) )
+	if ( is_dir($basedir) )
 	{
 		$handle = opendir($basedir);
 		if($handle != false)
@@ -356,7 +369,9 @@ function get_directories_list()
 
 function link_files_to_candidates()
 {
-	global $dossiers_candidats;
+	throw string("Not implemented anymore");
+
+	/*global $dossiers_candidats;
 
 	echo "Linking files to candidates<br/>";
 
@@ -370,7 +385,7 @@ function link_files_to_candidates()
 		echo "Linking files to candidate ".$candidate->nom." <br/>";
 		try
 		{
-			find_candidate_files($candidate, "fichiers", true, $directories);
+			find_people_files($candidate, true, current_session(), $false, $directories);
 			$nb++;
 		}
 		catch(Exception $e)
@@ -379,6 +394,7 @@ function link_files_to_candidates()
 		}
 	}
 	echo "Found files for ".$nb. "/".count($candidates)."  candidates<br/>";
+	*/
 }
 
 function norm_name($nom)

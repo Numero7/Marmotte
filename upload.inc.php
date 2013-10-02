@@ -5,7 +5,7 @@ require_once 'import.inc.php';
 require_once 'manage_people.inc.php';
 
 
-function process_upload($extradata = null)
+function process_upload($directory = "", $extradata = null)
 {
 	global $typeImports;
 
@@ -82,7 +82,7 @@ function process_upload($extradata = null)
 						{
 							global $dossiers_candidats;
 								$candidate = $extradata;
-								if(!move_uploaded_file($tmpname, $dossiers_candidats.$candidate->fichiers."/".$files['name'] ))
+								if(!move_uploaded_file($tmpname, $directory."/".$files['name'] ))
 									throw new Exception("Failed to add file to candidate ");
 								return ("Fichier ".$files['name']." ajouté au candidat ");
 						}

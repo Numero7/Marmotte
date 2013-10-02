@@ -23,6 +23,8 @@ function displayEditableCandidate($candidate,$report = NULL,$canedit = true)
 	$hidden["previousnom"] = $candidate->nom;
 	$hidden["previousprenom"] = $candidate->prenom;
 
+	$session = current_session();
+	
 	if($report != NULL)
 	{
 		$hidden["id_origine"] = $report->id_origine;
@@ -40,7 +42,9 @@ function displayEditableCandidate($candidate,$report = NULL,$canedit = true)
 		$candidate->type = $report->type;
 		$candidate->statut = $report->statut;
 
-
+	if(isset($report->id_session))
+		$session = $report->id_session;
+		
 	}
 
 
@@ -52,7 +56,7 @@ function displayEditableCandidate($candidate,$report = NULL,$canedit = true)
 
 	displayEditionFrameStart("",$hidden,array());
 
-	displayEditableObject("", $candidate, $fieldsCandidat,$canedit);
+	displayEditableObject("", $candidate, $fieldsCandidat,$canedit,$session);
 
 	displayEditionFrameEnd("Données candidat");
 
@@ -68,6 +72,8 @@ function displayEditableChercheur($chercheur,$report = NULL)
 
 	$hidden["previousnom"] = $chercheur->nom;
 	$hidden["previousprenom"] = $chercheur->prenom;
+
+	$session = current_session();
 
 	if($report != NULL)
 	{
@@ -93,7 +99,10 @@ function displayEditableChercheur($chercheur,$report = NULL)
 			$chercheur->statut = $report->statut;
 		else
 			$chercheur->statut = "";
-
+		
+	if(isset($report->id_session))
+		$session = $report->id_session;
+		
 	}
 
 	if(isset($chercheur->genre) && $chercheur->genre == "femme")
@@ -103,7 +112,7 @@ function displayEditableChercheur($chercheur,$report = NULL)
 
 	displayEditionFrameStart("",$hidden,array());
 
-	displayEditableObject("", $chercheur, $fieldsChercheursAll);
+	displayEditableObject("", $chercheur, $fieldsChercheursAll, true, $session);
 
 	displayEditionFrameEnd("Données chercheur");
 
@@ -112,7 +121,6 @@ function displayEditableChercheur($chercheur,$report = NULL)
 
 function displayEditionFrameStart($titlle, $hidden, $submit)
 {
-	echo "<!-- displayEditableObject ".$titlle." -->\n";
 
 	if($titlle != "")
 		echo '<span  style="font-weight:bold;" >'.$titlle.'</span>';
@@ -126,10 +134,9 @@ function displayEditionFrameStart($titlle, $hidden, $submit)
 
 function displayEditionFrameEnd($titlle)
 {
-	echo "<!-- Fin de displayEditableObject ".$titlle." -->\n";
 }
 
-function displayEditableField($row, $fieldId, $canedit = true)
+function displayEditableField($row, $fieldId, $canedit, $session)
 {
 	global $fieldsAll;
 	global $fieldsTypes;
@@ -198,7 +205,7 @@ function displayEditableField($row, $fieldId, $canedit = true)
 					display_ecole($row, $fieldId, !$editable);
 					break;
 				case "files":
-					display_fichiers($row, $fieldId, !$editable);
+					display_fichiers($row, $fieldId, $session, !$editable);
 					break;
 				case "rapports":
 					display_rapports($row, $fieldId);
@@ -224,7 +231,7 @@ function displayEditableField($row, $fieldId, $canedit = true)
 
 }
 
-function displayEditableObject($titlle, $row, $fields, $canedit = true)
+function displayEditableObject($titlle, $row, $fields, $canedit, $session)
 {
 	global $fieldsAll;
 
@@ -260,14 +267,14 @@ function displayEditableObject($titlle, $row, $fields, $canedit = true)
 			{
 				echo '<td style="width:'.strval(round(100/(count($fieldId) ))).'%">';
 				echo '<table style="width:100%"><tr class="'.$style.'">'."\n";
-				displayEditableField($row, $singleField);
+				displayEditableField($row, $singleField,true,$session);
 				echo "\n".'</tr></table></td>'."\n";
 			}
 		}
 		else
 		{
 			echo '<td style="100%"><table><tr class="'.$style.'">'."\n";
-			displayEditableField($row, $fieldId);
+			displayEditableField($row, $fieldId,true,$session);
 			echo "\n".'</tr></table></td>'."\n";
 		}
 		echo '</tr></table></td></tr>';
@@ -379,6 +386,11 @@ function displayEditableReport($row, $canedit = true)
 
 	global $typesRapportToFields;
 
+	if(isset($row->id_session))
+		$session = get_session($row->id_session);
+	else
+		$session = current_session();
+		
 	if(array_key_exists($eval_type, $typesRapportsConcours))
 	{
 		$candidate = get_or_create_candidate($row);
@@ -415,21 +427,21 @@ function displayEditableReport($row, $canedit = true)
 				else
 					echo '<td VALIGN="top" style="width: 100%">';
 
-				displayEditableObject("Prérapport 1".(isset($rapporteurs[$row->rapporteur]) ? (" - ".$rapporteurs[$row->rapporteur]) : "" ),$row,$fieldsRapportsCandidat1,$canedit);
+				displayEditableObject("Prérapport 1".(isset($rapporteurs[$row->rapporteur]) ? (" - ".$rapporteurs[$row->rapporteur]) : "" ),$row,$fieldsRapportsCandidat1,$canedit, $session);
 				echo'</td>';
 			}
 
 			if(isset($row->rapporteur2) && $row->rapporteur2 != "")
 			{
 				echo '<td VALIGN="top" style="width: 50%">';
-				displayEditableObject("Prérapport 2".(isset($rapporteurs[$row->rapporteur2]) ? (" - ".$rapporteurs[$row->rapporteur2]) : "" ), $row,$fieldsRapportsCandidat2,$canedit);
+				displayEditableObject("Prérapport 2".(isset($rapporteurs[$row->rapporteur2]) ? (" - ".$rapporteurs[$row->rapporteur2]) : "" ), $row,$fieldsRapportsCandidat2,$canedit, $session);
 				echo'</td>';
 			}
 
 
 			echo'</tr></table>';
 
-			displayEditableObject("Rapport section", $row, array_merge(array("statut"),$fieldsRapportsCandidat0),$canedit);
+			displayEditableObject("Rapport section", $row, array_merge(array("statut"),$fieldsRapportsCandidat0),$canedit, $session);
 	}
 	else if(array_key_exists($eval_type, $typesRapportsChercheurs))
 	{
@@ -456,20 +468,20 @@ function displayEditableReport($row, $canedit = true)
 		if(isset($row->rapporteur) && $row->rapporteur != "")
 		{
 			echo '<td VALIGN="top">';
-			displayEditableObject("Prérapport 1".(isset($rapporteurs[$row->rapporteur]) ? (" - ".$rapporteurs[$row->rapporteur]) : "" ), $row,$fieldsIndividual1, $canedit);
+			displayEditableObject("Prérapport 1".(isset($rapporteurs[$row->rapporteur]) ? (" - ".$rapporteurs[$row->rapporteur]) : "" ), $row,$fieldsIndividual1, $canedit, $session);
 			echo'</td>';
 		}
 
 		if(isset($row->rapporteur2) && $row->rapporteur2 != "")
 		{
 			echo '<td VALIGN="top">';
-			displayEditableObject("Prérapport 2".(isset($rapporteurs[$row->rapporteur2]) ? (" - ".$rapporteurs[$row->rapporteur2]) : "" ),$row,$fieldsIndividual2, $canedit);
+			displayEditableObject("Prérapport 2".(isset($rapporteurs[$row->rapporteur2]) ? (" - ".$rapporteurs[$row->rapporteur2]) : "" ),$row,$fieldsIndividual2, $canedit, $session);
 			echo'</td>';
 		}
 
 		echo '</tr></table>';
 		$f =
-		displayEditableObject("Rapport section", $row,$fieldsIndividual0, $canedit);
+		displayEditableObject("Rapport section", $row,$fieldsIndividual0, $canedit, $session);
 	}
 	else if(array_key_exists($eval_type, $typesRapportsUnites))
 	{
@@ -488,18 +500,18 @@ function displayEditableReport($row, $canedit = true)
 		if(isset($row->rapporteur) && $row->rapporteur != "")
 		{
 			echo'<td>';
-			displayEditableObject("Prérapport 1", $row,$fieldsUnites1, $canedit);
+			displayEditableObject("Prérapport 1", $row,$fieldsUnites1, $canedit, $session);
 			echo'</td>';
 		}
 		if(isset($row->rapporteur2) && $row->rapporteur2 != "")
 		{
 			echo'<td>';
-			displayEditableObject("Prérapport 2",$row,$fieldsUnites2, $canedit);
+			displayEditableObject("Prérapport 2",$row,$fieldsUnites2, $canedit, $session);
 			echo'</td>';
 		}
 
 		echo'</tr></table>';
-		displayEditableObject("Rapport section", $row,$fieldsUnites0, $canedit);
+		displayEditableObject("Rapport section", $row,$fieldsUnites0, $canedit, $session);
 
 	}
 	echo "</form>\n";

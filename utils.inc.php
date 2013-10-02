@@ -21,38 +21,6 @@ function getTypesEval($id_session)
 }
 
 
-function valueFromField($row, $field,$value,$units,$users)
-{
-	global $topics;
-	global $fieldsTypes;
-	if(isset($fieldsTypes[$field]))
-	{
-		switch($fieldsTypes[$field])
-		{
-			case 'unit':
-				echo isset($units[$value]) ? $units[$value]->prettyname : "";
-				return;
-				break;
-			case 'rapporteur':
-				echo isset($users[$value]->description) ? $users[$value]->description : "";
-				return;
-				break;
-			case 'topic':
-				echo isset($topics[$value]) ? $topics[$value] : "";
-				return;
-				break;
-			case 'files':
-				display_fichiers($row, $field, true);
-				return;
-				break;
-			default:
-				echo $value;
-				break;
-		}
-	}
-}
-
-
 function getExample($type)
 {
 	global $examples;
