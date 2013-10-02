@@ -218,7 +218,7 @@ function display_fichiers($row, $fieldID, $readonly)
 	global $dossiers_candidats;
 
 	echo "<td>";
-	$dir = $dossiers_candidats.$row->$fieldID."/";
+	$dir = $dossiers_candidats."/".current_session()."/".$row->$fieldID."/";
 	$files = find_candidate_files($row,$fieldID);
 	if(count($files) > 0)
 	{

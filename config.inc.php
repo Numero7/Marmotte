@@ -328,7 +328,6 @@ ini_set('xdebug.show_local_vars', 'on');
 			"parcours" => "Parcours scientifique  (pour rapport d'audition)",
 			"concourspresentes" => "Concours",
 			"fichiers" => "Fichiers associés",
-			"rapports" => "Autres rapports"
 	);
 
 
@@ -357,7 +356,7 @@ ini_set('xdebug.show_local_vars', 'on');
 			"concourspresentes"
 	);
 	
-	$fieldsAll = array_merge($fieldsRapportAll, $fieldsIndividualAll);
+	$fieldsAll = array_merge($fieldsRapportAll, $fieldsIndividualAll, array("rapports" => "Autres rapports"));
 	
 	$fieldsCandidatAvantAudition = array(
 			"nom",
