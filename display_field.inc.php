@@ -26,15 +26,14 @@ function display_type($row, $fieldID, $readonly)
 			global $typesRapportsChercheurs;
 			global $typesRapportsUnites;
 			global $typesRapportsConcours ;
-			
+
 			if(isset($typesRapportsChercheurs[$type]))
 				display_select($row, $fieldID, $typesRapportsChercheurs,$readonly);
 			else if(isset($typesRapportsUnites[$type]))
 				display_select($row, $fieldID, $typesRapportsUnites,$readonly);
 			else if(isset($typesRapportsConcours[$type]))
 				display_select($row, $fieldID, $typesRapportsConcours,$readonly);
-				
-			echo "</tr>";
+
 		}
 	}
 }
@@ -66,10 +65,10 @@ function display_treslong($row, $fieldID, $readonly)
 		echo '<td colspan="3">'.$row->$fieldID.'</td>';
 	else
 		echo '
-			<td colspan="3">
-			<textarea  rows="25" cols="60" name="field'.$fieldID.'" >'.remove_br($row->$fieldID).'</textarea>
-			</td>
-			';
+		<td colspan="3">
+		<textarea  rows="25" cols="60" name="field'.$fieldID.'" >'.remove_br($row->$fieldID).'</textarea>
+		</td>
+		';
 }
 
 function display_short($row, $fieldID, $readonly)
@@ -78,9 +77,8 @@ function display_short($row, $fieldID, $readonly)
 	if(!$readonly)
 	{
 		?>
-<input
-	name="field<?php echo $fieldID;?>" value="<?php echo $row->$fieldID;?>"
-	style="width: 100%;" />
+<input name="field<?php echo $fieldID;?>"
+	value="<?php echo $row->$fieldID;?>" style="width:90%;" />
 <?php
 	}
 	else
@@ -118,14 +116,13 @@ function display_select($row, $fieldID, $liste,$readonly)
 	}
 	else
 	{
-
 		?>
-<select name="field<?php echo $fieldID;?>">
+<select  name="field<?php echo $fieldID;?>">
 	<?php
 	foreach($liste as $value => $text)
 	{
 		$sel = ($value == $current_value) ? "selected=\"selected\"" : "";
-		echo  "\t\t\t\t\t<option value=\"".($value)."\" ".$sel.">".$text."</option>\n";
+		echo  "\t\t\t\t\t<option value=\"".($value)."\" ".$sel.">".substr($text, 0,50)."</option>\n";
 	}
 	?>
 </select>
@@ -158,6 +155,8 @@ function display_statut2($row, $fieldID, $readonly)
 function display_grade($row, $fieldID, $readonly)
 {
 	global $grades;
+	foreach( $grades as $title => $value)
+		$grades[$title] = $title;
 	display_select($row, $fieldID,$grades,$readonly);
 }
 
@@ -171,6 +170,48 @@ function display_ecole($row, $fieldID, $readonly)
 {
 	echo '<td colspan="3"><input name="fieldecole" value="'.$row->ecole.'" style="width: 100%;"/> </td>';
 }
+
+function display_rapports($row, $fieldId)
+{
+	global $typesRapportsUnites;
+
+	$is_unit= isset($typesRapportsUnites[$row->type]);
+
+	if($is_unit)
+		$reports = isset($row->unite) ? find_unit_reports($row->unite) : array();
+	else
+		$reports = (isset($row->nom) && isset($row->prenom)) ? find_people_reports($row->nom, $row->prenom) : array();
+
+
+
+	global $typesRapports;
+
+	echo "<td>";
+	if(count($reports) > 1)
+	{
+		echo "<table>";
+
+		foreach($reports as $report)
+		{
+			if(!isset($row->id) || $report->id != $row->id)
+			{
+				if(isset($typesRapports[$report->type]))
+					$type = $typesRapports[$report->type];
+				else
+				{
+					$type = "Unknown";
+				}
+				echo '<tr><td><a href="index.php?action=edit&amp;id='.$report->id.'">'.$report->id_session. " - " .$type."</a></td></tr>";
+			}
+		}
+
+		echo "</table>";
+	}
+
+	echo "</td>";
+
+}
+
 
 function display_fichiers($row, $fieldID, $readonly)
 {
@@ -186,7 +227,7 @@ function display_fichiers($row, $fieldID, $readonly)
 		$i = -1;
 		echo "<table><tr><td><table>\n";
 		echo '<tr><td style="padding-right: 10px">';
-		
+
 		$nb = intval((count($files) + 2)/ 3);
 
 		foreach($files as $date => $file)
@@ -219,7 +260,8 @@ function display_fichiers($row, $fieldID, $readonly)
 	value="candidatefile" />
 <input
 	type="hidden" name="MAX_FILE_SIZE" value="10000000" />
-<input name="uploadedfile" type="file" />
+<input name="uploadedfile"
+	type="file" />
 <input
 	type="submit" name="ajoutfichier" value="Ajouter fichier" />
 <?php 

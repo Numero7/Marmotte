@@ -282,7 +282,7 @@ function find_candidate_files($candidate, $fieldID, $force = false, $directories
 
 	if($force || $candidate->$fieldID == "" || !is_dir($basedir) || !is_associated_directory($candidate, $basedir))
 	{
-		echo "Looking for directory</br>";
+		echo "Looking for directory<br/>";
 
 		if($directories == NULL)
 			$directories = get_directories_list();
@@ -291,7 +291,7 @@ function find_candidate_files($candidate, $fieldID, $force = false, $directories
 			if( is_associated_directory($candidate, $directory) )
 			{
 				$dir = str_replace($dossiers_candidats,"",$directory);
-				echo "Changing cndidate dir for ".$directory." <br/>";
+				echo "Changing candidate dir for ".$directory." <br/>";
 				change_candidate_property($candidate->anneecandidature, $candidate->nom, $candidate->prenom, $fieldID, $dir);
 				$basedir = $directory;
 				$candidate->$fieldID = $directory;
@@ -330,7 +330,7 @@ function find_candidate_files($candidate, $fieldID, $force = false, $directories
 		}
 	}
 	else
-		echo "No directory found</br>";
+		echo "No directory found<br/>";
 
 
 	return array();

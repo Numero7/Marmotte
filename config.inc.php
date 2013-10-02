@@ -138,12 +138,14 @@ ini_set('xdebug.show_local_vars', 'on');
 	 */
 	$fieldsIndividual0 = array(
 			"type",
+			array(
 			"rapporteur",
-			"rapporteur2",
+			"rapporteur2",),
 //			"nom",
 //			"prenom",
+	array(
 		"grade_rapport",
-			"statut",
+			"statut",),
 			"unite",
 			"avis",
 			"rapport",
@@ -185,22 +187,27 @@ ini_set('xdebug.show_local_vars', 'on');
 	$fieldsIndividual = array_merge($fieldsIndividual0, $fieldsIndividual1, $fieldsIndividual2);
 	
 	$fieldsChercheursAll = array(
+			array(
 			"nom",
-			"prenom",
+			"prenom",),array(
 			"genre",
-			"statut_individu",
+			"statut_individu"),
+			array(
 			"grade",
-			"annee_recrutement",
+			"annee_recrutement",),
+			array(
 			"labo1",
 			"theme1",
 			"theme2",
-			"theme3",
+			"theme3",),
+			array(
 			"theseAnnee",
 			"theseLieu",
 			"theseloc",
 			"HDRAnnee",
-			"HDRLieu",
+			"HDRLieu",),
 			"fichiers",
+			"rapports"
 	);
 	
 	$fieldsRapportsIndividual = array(
@@ -321,6 +328,7 @@ ini_set('xdebug.show_local_vars', 'on');
 			"parcours" => "Parcours scientifique  (pour rapport d'audition)",
 			"concourspresentes" => "Concours",
 			"fichiers" => "Fichiers associés",
+			"rapports" => "Autres rapports"
 	);
 
 
@@ -358,6 +366,7 @@ ini_set('xdebug.show_local_vars', 'on');
 			"grade",
 			"annee_recrutement",
 			"fichiers",
+			"rapports",
 			"labo1",
 			"labo2",
 			"labo3",
@@ -395,6 +404,7 @@ ini_set('xdebug.show_local_vars', 'on');
 			"theseloc",
 			"HDRAnnee",
 			"HDRLieu",
+			"rapports",
 			"rapport",
 			"avis1",
 			"prerapport",
@@ -411,6 +421,7 @@ ini_set('xdebug.show_local_vars', 'on');
 			"finalisationHDR",
 			"national",
 			"unite",
+			"rapports",
 			"avis1",
 			"prerapport",
 			"labo1",
@@ -470,11 +481,15 @@ ini_set('xdebug.show_local_vars', 'on');
 	
 	
 	$fieldsUnites0 = array(
-			"statut",
+			array(
 			"type",
+			"statut",
+					),
+			array(
 			"rapporteur",
-			"rapporteur2",
+			"rapporteur2",),
 			"unite",
+			"rapports",
 		"avis",
 		"rapport",
 	);
@@ -764,6 +779,7 @@ ini_set('xdebug.show_local_vars', 'on');
 			"projetrecherche" => "long",
 			"parcours" => "long",
 			"fichiers" => "files",
+			"rapports" => "rapports",
 			"avissousjury" => "long",
 			"statut" => "statut"
 	);
@@ -775,13 +791,15 @@ ini_set('xdebug.show_local_vars', 'on');
 		'Evaluation-Vague' => 'Evaluation à Vague',
 		'Evaluation-MiVague' => 'Evaluation à Mi-Vague',
 		'Promotion' => 'Promotion',
-		'Titularisation' => 'Titularisation',
+			'Titularisation' => 'Titularisation',
 		'Affectation' => 'Confirmation d\'Affectation',
 		'Reconstitution' => 'Reconstitution de Carrière',
 		'Delegation' => 'Demande de Délégation',
 		'Emeritat' => 'Eméritat (1ere demande)',
 		'Emeritat-renouvellement' => 'Eméritat (renouvellement)',
-		'Changement-section' => 'Changement de section'
+		'Changement-section' => 'Changement de section',
+		'MedailleBronze' => 'Médaille de Bronze',
+		'MedailleArgent' => 'Médaille d\'Argent'
 	);
 
 	$typesRapportsChercheursShort = array(
@@ -795,6 +813,9 @@ ini_set('xdebug.show_local_vars', 'on');
 			'Changement-section' => 'Changt section',
 			'Emeritat' => 'Eméritat',
 			'Emeritat-renouvellement' => 'Eméritat Renouv.',
+			'MedailleBronze' => 'Méd Bronze',
+			'MedailleArgent' => 'Méd Argent'
+			
 	);
 	
 	$typesRapportsUnites = array(
@@ -896,6 +917,8 @@ ini_set('xdebug.show_local_vars', 'on');
 			'Evaluation-MiVague' => $fieldsArrayChercheur,
 			'Promotion' => $fieldsArrayChercheur,
 			'Changement-section' => $fieldsArrayChercheur,
+			'MedailleBronze' => $fieldsArrayChercheur,
+			'MedailleArgent' => $fieldsArrayChercheur,
 			'Titularisation' => $fieldsArrayChercheur,
 			'Affectation' => $fieldsArrayChercheur,
 			'Reconstitution' => $fieldsArrayChercheur,
@@ -1027,6 +1050,9 @@ ini_set('xdebug.show_local_vars', 'on');
 		'Comite-Evaluation' => $avis_binaire,
 		'Generique' => $avis_ternaire,
 		'Expertise' => $avis_ternaire,
+			'MedailleBronze' => $avis_classement,
+			'MedailleArgent' => $avis_classement,
+			
 	);
 	
 	$tous_avis = array_merge($avis_eval,$avis_classement,$avis_candidature,$avis_ie,$avis_pertinence,$avis_ecoles,$avis_binaire);
@@ -1096,6 +1122,8 @@ ini_set('xdebug.show_local_vars', 'on');
 			'Ecole' => '<span  style=\"font-weight:bold;\" >Objet de l’évaluation :</span><br/> Ecole Thématique',
 			'Comite-Evaluation' => '<span  style=\"font-weight:bold;\" >Objet de l’examen :</span> Comité d\'évaluation',
 			'Generique' => '&nbsp;',
+			'MedailleBronze' => '<span  style=\"font-weight:bold;\" >Objet de l’évaluation :</span><br/>Proposition de lauréat pour la médaille de bronze',
+			'MedailleArgent' => '<span  style=\"font-weight:bold;\" >Objet de l’évaluation :</span><br/>Proposition de lauréat pour la médaille d\'argent',
 			'Expertise' =>  '<span  style=\"font-weight:bold;\" >Objet de l’examen :</span> Expertise (projet ou suivi ou intégration équipe ou restructuration)',
 			'Equivalence' => '<span  style=\"font-weight:bold;\" >Objet de l’évaluation :</span><br/><EM>Equivalence titres et travaux</EM>',
 			'Emeritat' => '<span  style=\"font-weight:bold;\" >Objet de l’évaluation :</span><br/><EM>Eméritat (1ere demande)</EM>',
@@ -1116,6 +1144,8 @@ ini_set('xdebug.show_local_vars', 'on');
 	$typesRapportsToEnteteDroit = array(
 			'Evaluation-Vague' => 'Individu',
 			'Evaluation-MiVague' => 'Individu',
+			'MedailleBronze' => 'Individu',
+			'MedailleArgent' => 'Individu',
 			'Emeritat' => 'Individu',
 			'Emeritat-renouvellement' => 'Individu',
 			'Promotion' => 'Individu',
@@ -1384,6 +1414,18 @@ ini_set('xdebug.show_local_vars', 'on');
 	);
 	
 	$csv_preprocessing = array('nom' => 'normalizeName', 'prenom' => 'normalizeName','unit' => 'fromunittocode');
+	
+	$sgcn_keywords_to_eval_types = array(
+			"Evaluation" => 'Evaluation-Vague',
+			'Reconstitution' => 'Reconstitution',
+			'Titularisation' => 'Titularisation',
+			'promotion' => 'Promotion',
+			'Changement de direction' => 'Changement-Directeur',
+			'Changement de section' => 'Changement-section',
+			'Expertise' => 'Expertise',
+			"Renouvellement de GDR" =>  'Renouvellement',
+			"Evaluation" => "",
+	);
 	
 	$users_not_rapporteur = array('admin','yawn');
 	

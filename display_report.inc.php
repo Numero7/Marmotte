@@ -17,7 +17,7 @@ function displayEditableCandidate($candidate,$report = NULL,$canedit = true)
 	global $fieldsCandidatAvantAudition;
 	global $fieldsCandidatAuditionne;
 
-	
+
 	$hidden = array("action" => "update");
 
 	$hidden["previousnom"] = $candidate->nom;
@@ -48,7 +48,7 @@ function displayEditableCandidate($candidate,$report = NULL,$canedit = true)
 		echo '<h1>Candidate : '.$candidate->nom." ".$candidate->prenom." ".'</h1>';
 	else
 		echo '<h1>Candidat : '.$candidate->nom." ".$candidate->prenom." ".'</h1>';
-			
+
 
 	displayEditionFrameStart("",$hidden,array());
 
@@ -100,7 +100,7 @@ function displayEditableChercheur($chercheur,$report = NULL)
 		echo '<h1>Chercheuse : '.$chercheur->nom." ".$chercheur->prenom." ".'</h1>';
 	else
 		echo '<h1>Chercheur : '.$chercheur->nom." ".$chercheur->prenom." ".'</h1>';
-	
+
 	displayEditionFrameStart("",$hidden,array());
 
 	displayEditableObject("", $chercheur, $fieldsChercheursAll);
@@ -129,13 +129,108 @@ function displayEditionFrameEnd($titlle)
 	echo "<!-- Fin de displayEditableObject ".$titlle." -->\n";
 }
 
-function displayEditableObject($titlle, $row, $fields, $canedit = true, $use_special_tr = true)
+function displayEditableField($row, $fieldId, $canedit = true)
+{
+	global $fieldsAll;
+	global $fieldsTypes;
+	global $mandatory_edit_fields;
+
+	//echo $fieldId."<br/>";
+	if(isset($fieldsAll[$fieldId]) && is_field_visible($row, $fieldId))
+	{
+		$title = $fieldsAll[$fieldId];
+		if(isset($fieldsTypes[$fieldId]))
+		{
+
+			$editable = $canedit && is_field_editable($row, $fieldId);
+
+			/*
+			 if(!$use_special_tr || !in_array($fieldId, $specialtr_fields) || in_array($fieldId, $start_tr_fields))
+				echo '<tr>';
+			*/
+			echo '<td style="width:10%"><span>'.$title.'</span>';
+			echo '</td>';
+
+			/*
+			 if($use_special_tr && in_array($fieldId, $start_tr_fields))
+				echo '<td><table><tr>';
+			*/
+			if(!isset($row->$fieldId))
+				$row->$fieldId = '';
+
+
+			if(!$editable && in_array($fieldId, $mandatory_edit_fields))
+				echo '<input type="hidden" name="field'.$fieldId.'" value="'.$row->$fieldId.'"/>';
+
+			switch($fieldsTypes[$fieldId])
+			{
+				case "enum":
+					display_enum($row, $fieldId, !$editable);
+					break;
+				case "topic":
+					display_topic($row, $fieldId, !$editable);
+					break;
+				case "long":
+					display_long($row, $fieldId, !$editable);
+					break;
+				case "treslong":
+					display_treslong($row, $fieldId, !$editable);
+					break;
+				case "short":
+					display_short($row, $fieldId, !$editable);
+					break;
+				case "avis":
+					display_avis($row, $fieldId, !$editable);
+					break;
+				case "rapporteur":
+					display_rapporteur($row, $fieldId, !$editable);
+					break;
+				case "unit":
+					display_unit($row, $fieldId, !$editable);
+					break;
+				case "grade":
+					display_grade($row, $fieldId, !$editable);
+					break;
+				case "concours":
+					display_concours($row, $fieldId, !$editable);
+					break;
+				case "ecole":
+					display_ecole($row, $fieldId, !$editable);
+					break;
+				case "files":
+					display_fichiers($row, $fieldId, !$editable);
+					break;
+				case "rapports":
+					display_rapports($row, $fieldId);
+					break;
+				case "statut":
+					display_statut2($row, $fieldId, !$editable); break;
+				case "type":
+					display_type($row, $fieldId, !$editable); break;
+				case "sousjury":
+					display_sousjury($row, $fieldId, !$editable); break;
+			}
+			/*
+			 if(!$use_special_tr || !in_array($fieldId, $specialtr_fields))
+				*/
+
+			/*
+			 if($use_special_tr && in_array($fieldId, $end_tr_fields))
+				echo '</tr></table></td></tr>';
+			*/
+		}
+	}
+
+
+}
+
+function displayEditableObject($titlle, $row, $fields, $canedit = true)
 {
 	global $fieldsAll;
 
 	if($titlle != "")
 	{
-		echo '<table><tr><td></td><td><h2><span  style="font-weight:bold;" >'.$titlle.'</span></h2></td></tr>';
+		echo '<table><tr><td><h2><span  style="font-weight:bold;" >'.$titlle.'</span></h2></td></tr>';
 	}
 	else
 	{
@@ -143,9 +238,6 @@ function displayEditableObject($titlle, $row, $fields, $canedit = true, $use_spe
 	}
 
 
-	global $specialtr_fields;
-	global $start_tr_fields;
-	global $end_tr_fields;
 	global $fieldsAll;
 	global $fieldsTypes;
 	global $mandatory_edit_fields;
@@ -154,100 +246,34 @@ function displayEditableObject($titlle, $row, $fields, $canedit = true, $use_spe
 
 	$odd = true;
 
+	
 	foreach($fields as  $fieldId)
 	{
-		//echo $fieldId."<br/>";
-		if(isset($fieldsAll[$fieldId]) && is_field_visible($row, $fieldId))
+		$style = is_array($fieldId) ? getStyle($fieldId[0],$odd): getStyle($fieldId,$odd);
+		$odd = !$odd;
+
+		echo '<tr class="'.$style.'" style="width:90%"><td><table style="width:90%"><tr class="'.$style.'">';
+
+		if(is_array($fieldId))
 		{
-			$style = getStyle($fieldId,$odd);
-			$odd = !$odd;
-			$title = $fieldsAll[$fieldId];
-			if(isset($fieldsTypes[$fieldId]))
+			foreach($fieldId as $singleField)
 			{
-
-				$editable = $canedit && is_field_editable($row, $fieldId);
-
-				/*
-				 if(!$use_special_tr || !in_array($fieldId, $specialtr_fields) || in_array($fieldId, $start_tr_fields))
-					echo '<tr>';
-				*/
-				echo '<tr class="'.$style.'">';
-				echo '<td><span>'.$title.'</span>';
-				echo '</td>';
-
-				/*
-				 if($use_special_tr && in_array($fieldId, $start_tr_fields))
-					echo '<td><table><tr>';
-				*/
-				if(!isset($row->$fieldId))
-					$row->$fieldId = '';
-
-
-				if(!$editable && in_array($fieldId, $mandatory_edit_fields))
-					echo '<input type="hidden" name="field'.$fieldId.'" value="'.$row->$fieldId.'"/>';
-
-				switch($fieldsTypes[$fieldId])
-				{
-					case "enum":
-						display_enum($row, $fieldId, !$editable);
-						break;
-					case "topic":
-						display_topic($row, $fieldId, !$editable);
-						break;
-					case "long":
-						display_long($row, $fieldId, !$editable);
-						break;
-					case "treslong":
-						display_treslong($row, $fieldId, !$editable);
-						break;
-					case "short":
-						display_short($row, $fieldId, !$editable);
-						break;
-					case "avis":
-						display_avis($row, $fieldId, !$editable);
-						break;
-					case "rapporteur":
-						display_rapporteur($row, $fieldId, !$editable);
-						break;
-					case "unit":
-						display_unit($row, $fieldId, !$editable);
-						break;
-					case "grade":
-						display_grade($row, $fieldId, !$editable);
-						break;
-					case "concours":
-						display_concours($row, $fieldId, !$editable);
-						break;
-					case "ecole":
-						display_ecole($row, $fieldId, !$editable);
-						break;
-					case "files":
-						display_fichiers($row, $fieldId, !$editable);
-						break;
-					case "statut":
-						display_statut2($row, $fieldId, !$editable); break;
-					case "type":
-						display_type($row, $fieldId, !$editable); break;
-					case "sousjury":
-						display_sousjury($row, $fieldId, !$editable); break;
-				}
-				/*
-				 if(!$use_special_tr || !in_array($fieldId, $specialtr_fields))
-					*/
-				echo '</tr>';
-
-				/*
-				 if($use_special_tr && in_array($fieldId, $end_tr_fields))
-					echo '</tr></table></td></tr>';
-				*/
+				echo '<td style="width:'.strval(round(100/(count($fieldId) ))).'%">';
+				echo '<table style="width:100%"><tr class="'.$style.'">'."\n";
+				displayEditableField($row, $singleField);
+				echo "\n".'</tr></table></td>'."\n";
 			}
-
 		}
+		else
+		{
+			echo '<td style="100%"><table><tr class="'.$style.'">'."\n";
+			displayEditableField($row, $fieldId);
+			echo "\n".'</tr></table></td>'."\n";
+		}
+		echo '</tr></table></td></tr>';
 
 	}
-	?>
-</table>
-<?php 
+	echo "</table>\n";
 
 }
 
@@ -430,20 +456,20 @@ function displayEditableReport($row, $canedit = true)
 		if(isset($row->rapporteur) && $row->rapporteur != "")
 		{
 			echo '<td VALIGN="top">';
-			displayEditableObject("Prérapport 1".(isset($rapporteurs[$row->rapporteur]) ? (" - ".$rapporteurs[$row->rapporteur]) : "" ), $row,$fieldsIndividual1, $canedit, false);
+			displayEditableObject("Prérapport 1".(isset($rapporteurs[$row->rapporteur]) ? (" - ".$rapporteurs[$row->rapporteur]) : "" ), $row,$fieldsIndividual1, $canedit);
 			echo'</td>';
 		}
 
 		if(isset($row->rapporteur2) && $row->rapporteur2 != "")
 		{
 			echo '<td VALIGN="top">';
-			displayEditableObject("Prérapport 2".(isset($rapporteurs[$row->rapporteur2]) ? (" - ".$rapporteurs[$row->rapporteur2]) : "" ),$row,$fieldsIndividual2, $canedit, false);
+			displayEditableObject("Prérapport 2".(isset($rapporteurs[$row->rapporteur2]) ? (" - ".$rapporteurs[$row->rapporteur2]) : "" ),$row,$fieldsIndividual2, $canedit);
 			echo'</td>';
 		}
 
 		echo '</tr></table>';
-		$f = 
-		displayEditableObject("Rapport section", $row,$fieldsIndividual0, $canedit, false);
+		$f =
+		displayEditableObject("Rapport section", $row,$fieldsIndividual0, $canedit);
 	}
 	else if(array_key_exists($eval_type, $typesRapportsUnites))
 	{
@@ -462,34 +488,35 @@ function displayEditableReport($row, $canedit = true)
 		if(isset($row->rapporteur) && $row->rapporteur != "")
 		{
 			echo'<td>';
-			displayEditableObject("Prérapport 1", $row,$fieldsUnites1, $canedit, false);
+			displayEditableObject("Prérapport 1", $row,$fieldsUnites1, $canedit);
 			echo'</td>';
 		}
 		if(isset($row->rapporteur2) && $row->rapporteur2 != "")
 		{
 			echo'<td>';
-			displayEditableObject("Prérapport 2",$row,$fieldsUnites2, $canedit, false);
+			displayEditableObject("Prérapport 2",$row,$fieldsUnites2, $canedit);
 			echo'</td>';
 		}
 
 		echo'</tr></table>';
-		displayEditableObject("Rapport section", $row,$fieldsUnites0, $canedit, false);
-		
-		echo "</form>\n";
-	}
-	echo('
-						<script type="text/javascript">');
-		echo('
-						document.getElementById("debut").scrollIntoView();');
+		displayEditableObject("Rapport section", $row,$fieldsUnites0, $canedit);
 
-		/*
-		 echo('
-		 		var elt = document.getElementById( '$id' );
-		 		var top = (	return elt.offsetTop + ( elt.offsetParent ? elt.offsetParent.documentOffsetTop() : 0 )) - ( window.innerHeight / 2 );
-		 		window.scrollTo( 0, top );
-		 		');
-		*/
-		echo('		</script>');
+	}
+	echo "</form>\n";
+	
+	echo('
+			<script type="text/javascript">');
+	echo('
+			document.getElementById("debut").scrollIntoView();');
+
+	/*
+	 echo('
+	 		var elt = document.getElementById( '$id' );
+	 		var top = (	return elt.offsetTop + ( elt.offsetParent ? elt.offsetParent.documentOffsetTop() : 0 )) - ( window.innerHeight / 2 );
+	 		window.scrollTo( 0, top );
+	 		');
+	*/
+	echo('		</script>');
 
 }
 

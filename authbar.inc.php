@@ -24,7 +24,7 @@ global $typesRapportsChercheurs;
 							</td>
 						</tr>
 						<tr>
-							<td valign=top style="padding-top: 20px">
+							<td valign="top" style="padding-top: 20px">
 								<form method="get" style="display: inline;" action="index.php">
 									<input type="hidden" name="action" value="logout" /> <input
 										type="submit" name="logout" value="Logout" />
@@ -71,11 +71,11 @@ global $typesRapportsChercheurs;
 
 					</table>
 				</td>
-				<td valign=top>
+				<td valign="top">
 
 					<table>
 						<tr>
-							<td valign=top>Dossiers
+							<td valign="top">Dossiers
 								<ul>
 
 									<li><a href="index.php?action=view&amp;reset_filter=">Tous</a></li>
@@ -102,7 +102,7 @@ global $typesRapportsChercheurs;
 									{
 									?>
 									</td>
-									<td valign=top>
+									<td valign="top">
 									<?php 
 									}
 									?>
@@ -131,7 +131,7 @@ global $typesRapportsChercheurs;
 							if(is_current_session_concours())
 							{
 								?>
-							<td valign=top>Auditions
+							<td valign="top">Auditions
 								<ul>
 									<?php
 									echo "<li><a href=\"index.php?action=view&amp;reset_filter=&amp;filter_id_session=".current_session_id()."&amp;filter_type=Candidature &amp;filter_avis=oral\">Auditions</a></li>";
@@ -149,7 +149,7 @@ global $typesRapportsChercheurs;
 							else
 							{
 								?>
-							<td valign=top>Chercheurs
+							<td valign="top">Chercheurs
 								<ul>
 									<?php 
 									foreach($typesRapportsChercheursShort as $typeEval => $value)
@@ -167,7 +167,7 @@ global $typesRapportsChercheurs;
 							?>
 								</ul>
 							</td>
-							<td valign=top>Unités
+							<td valign="top">Unités
 								<ul>
 									<?php
 									foreach($typesRapportsUnitesShort as $typeEval => $value)
@@ -191,7 +191,7 @@ global $typesRapportsChercheurs;
 														}
 									
 									?>
-							<td valign=top>Sessions
+							<td valign="top">Sessions
 								<ul>
 									<?php
 

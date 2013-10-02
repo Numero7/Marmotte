@@ -882,6 +882,39 @@ function find_somebody_reports($candidate,$eval_type = "")
 		return  filterSortReports(array("nom"=>"","prenom" => "","type"=>""), array("nom"=>$candidate->nom,"prenom" => $candidate->prenom,"type"=>""));
 }
 
+function find_unit_reports($code)
+{
+	$sql = "SELECT * from ".reports_db. " WHERE id=id_origine AND statut!=\"supprime\"";
+	$sql .= ' AND unite="'.$code.'" ORDER BY id ASC';
+
+	$result=sql_request($sql);
+	
+	if($result == false)
+		throw new Exception("Echec de l'execution de la requete <br/>".$sql."<br/>");
+	
+	$rows = array();
+	while ($row = mysql_fetch_object($result))
+		$rows[] = $row;
+	
+	return $rows;
+	}
+
+function find_people_reports($nom, $prenom)
+{
+	$sql = "SELECT * from ".reports_db. " WHERE id=id_origine AND statut!=\"supprime\"";
+	$sql .= ' AND nom="'.$nom.'" AND prenom="'.$prenom.'" ORDER BY id ASC';
+
+	$result=sql_request($sql);
+	
+	if($result == false)
+		throw new Exception("Echec de l'execution de la requete <br/>".$sql."<br/>");
+	
+	$rows = array();
+	while ($row = mysql_fetch_object($result))
+		$rows[] = $row;
+	
+	return $rows;
+}
 
 function update_report_from_concours($id_origine,$concours,$login)
 {

@@ -254,19 +254,9 @@ function addCsvReport($subtype, $properties)
 	else
 		$properties["type"] = $subtype;
 
-	$types_keys = array(
-			"Evaluation" => 'Evaluation-Vague',
-			'Reconstitution' => 'Reconstitution',
-			'Titularisation' => 'Titularisation',
-			'promotion' => 'Promotion',
-			'Changement de direction' => 'Changement-Directeur',
-			'Changement de section' => 'Changement-section',
-			'Expertise' => 'Expertise',
-			"Renouvellement de GDR" =>  'Renouvellement',
-			"Evaluation" => "",
-			);
+	global $sgcn_keywords_to_eval_types;
 	
-	foreach($types_keys as $key => $value)
+	foreach($sgcn_keywords_to_eval_types as $key => $value)
 		if(strcontains($properties["type"],$key))
 		{
 			if($key == "promotion")
