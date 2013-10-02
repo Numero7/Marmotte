@@ -193,7 +193,7 @@ function display_rapports($row, $fieldId)
 
 		foreach($reports as $report)
 		{
-			if(!isset($row->id) || $report->id != $row->id)
+			if((!isset($row->id) || $report->id != $row->id) && isset($typesRapportsUnites[$report->type]))
 			{
 				if(isset($typesRapports[$report->type]))
 					$type = $typesRapports[$report->type];
