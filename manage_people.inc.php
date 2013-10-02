@@ -280,7 +280,7 @@ function get_people_directory($candidate, $session, $create_directory_if_nexists
 
 	if($create_directory_if_nexists && !is_dir($basedir))
 	{
-		$result = mkdir($basedir,"0755", true);
+		$result = mkdir($basedir,"0777", true);
 		if(!$result)
 			echo "Failed to create directory ".$basedir."<br/>";
 	}
