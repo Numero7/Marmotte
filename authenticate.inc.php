@@ -9,7 +9,7 @@ $firstlogin = authenticateBase('admin','password');
 <div class="large">
 	<div class="header">
 		<h2><span>Comité National de la Recherche Scientifique</span></h2>
-		<h1><a href="index.html">Section 6 : </a>Interface de saisie des prérapports</h1>
+		<h1>Interface de saisie des prérapports</h1>
 	</div>
 
 	<div class="content"> 
