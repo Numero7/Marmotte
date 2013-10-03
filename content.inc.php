@@ -145,7 +145,7 @@ function alertText($text)
 			switch($action)
 			{
 				case 'updateconfig':
-					put_raw_config(mysql_real_escape_string($_REQUEST['fieldconfig']));
+					put_raw_config($_REQUEST['fieldconfig']);
 					include 'admin.inc.php';
 					break;
 					

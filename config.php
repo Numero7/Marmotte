@@ -1,6 +1,7 @@
 <?php 
 
 require_once('xml_tools.inc.php');
+require_once('config.inc.php');
 
 
 function load_config($force = false)
@@ -8,7 +9,7 @@ function load_config($force = false)
 	if(!$force && isset($_SESSION['config']))
 		return;
 	$doc = new DOMDocument('1.0','utf-8');
-	if(file_exists(config_file)===false ||  $doc->load(config_file) === false)
+	if(file_exists(config_file) === false ||  $doc->load(config_file) === false)
 	{
 		$doc->load(config_file_save);
 		$doc->save(config_file);
@@ -42,7 +43,6 @@ function put_raw_config($data)
 
 function save_config()
 {
-
 	$doc = new DOMDocument('1.0','UTF-8');
 
 	$root = $doc->createElement("config");
@@ -55,7 +55,10 @@ function save_config()
 
 	$doc->formatOutput = true;
 
+	rrr();
+	
 	$doc->save(config_file);
+
 }
 
 function get_config($name)
