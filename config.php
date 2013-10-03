@@ -55,8 +55,6 @@ function save_config()
 
 	$doc->formatOutput = true;
 
-	rrr();
-	
 	$doc->save(config_file);
 
 }
