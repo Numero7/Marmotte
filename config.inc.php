@@ -1258,29 +1258,22 @@ ini_set('xdebug.show_local_vars', 'on');
 					"name" => "Texte",
 					"permissionlevel" => NIVEAU_PERMISSION_BASE,
 			),
-				
-			"html" => 	array(
-					"mime" => "text/html",
-					"xsl" => "xslt/html2.xsl",
-					"name" => "Html (rapports)",
-					"permissionlevel" => NIVEAU_PERMISSION_BASE,
-			),
-			"xml" => 	array(
-					"mime" => "text/xml",
-					"xsl" => "xslt/xmlidentity.xsl",
-					"name" => "XML",
-					"permissionlevel" => NIVEAU_PERMISSION_BASE,
-			),
 			"pdf" => 	array(
 					"mime" => "application/x-zip",
 					"xsl" => "",
-					"name" => "PDF",
+					"name" => "PDF (un pdf par dossier)",
 					"permissionlevel" => NIVEAU_PERMISSION_PRESIDENT_SECRETAIRE,
 			),
 			"csv" => 	array(
 					"mime" => "application/x-text",
 					"xsl" => "",
-					"name" => "CSV (fichiers multiples)",
+					"name" => "CSV (un fichier par dossier)",
+					"permissionlevel" => NIVEAU_PERMISSION_BASE
+			),
+			"csvsingle" => 	array(
+					"mime" => "application/x-text",
+					"xsl" => "",
+					"name" => "CSV (un fichier pour tous les dossiers)",
 					"permissionlevel" => NIVEAU_PERMISSION_BASE
 			),
 			"csvbureau" => 	array(
@@ -1288,12 +1281,6 @@ ini_set('xdebug.show_local_vars', 'on');
 					"xsl" => "",
 					"name" => "CSV (pour attribution rapporteurs)",
 					"permissionlevel" => NIVEAU_PERMISSION_BUREAU
-			),
-			"csvsingle" => 	array(
-					"mime" => "application/x-text",
-					"xsl" => "",
-					"name" => "CSV (un fichier)",
-					"permissionlevel" => NIVEAU_PERMISSION_BASE
 			),
 			"jad" => 	array(
 					"mime" => "application/x-text",
@@ -1306,8 +1293,21 @@ ini_set('xdebug.show_local_vars', 'on');
 					"xsl" => "",
 					"name" => "JAD - html",
 					"permissionlevel" => NIVEAU_PERMISSION_PRESIDENT_SECRETAIRE
-			)
+			),
 				
+			"html" => 	array(
+					"mime" => "text/html",
+					"xsl" => "xslt/html2.xsl",
+					"name" => "Html (prévisualisation des rapports)",
+					"permissionlevel" => NIVEAU_PERMISSION_BASE,
+			),
+			"xml" => 	array(
+					"mime" => "text/xml",
+					"xsl" => "xslt/xmlidentity.xsl",
+					"name" => "XML",
+					"permissionlevel" => NIVEAU_PERMISSION_BASE,
+			),
+			
 			);
 
 	$report_types_with_multiple_exports = array(
