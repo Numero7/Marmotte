@@ -117,10 +117,14 @@ function export_reports_as_csv($reports, $dir, $type = "")
 	
 	if($type == "attribution_rapporteurs")
 	{
-		$texte[] = array("Rapporteurs: ");
+		$texte[] = array("Pour attribuer les rapporteurs");
+		$texte[] = array("copier-coller les login correspondants");
+		$texte[] = array("(liste ci-dessous) dans les colonnes");
+		$texte[]= array("'rapporteur' et 'rapporteur2'");
+		$texte[]=array("");
 		$users = listUsers();		
 		foreach($users as $login => $value)
-			$texte[] = array("",$login);
+			$texte[] = array($login);
 		$texte[] = array();
 		$texte[] = array();
 	}
