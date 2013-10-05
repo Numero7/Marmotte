@@ -105,7 +105,27 @@ function export_reports_as_csv($reports, $dir, $type = "")
 	}
 
 	$file = $dir."/".$file;
-	$data = compileObjectsAsCSV($activefields, $reports);
+
+	$texte= array();
+	$texte[] = array();
+	
+	$text = array();
+	$text[] = strval(count($reports)) . " rapports";
+	$texte[] = $text;
+
+	$texte[] = array();
+	
+	if($type == "attribution_rapporteurs")
+	{
+		$texte[] = array("Rapporteurs: ");
+		$users = listUsers();		
+		foreach($users as $login => $value)
+			$texte[] = array("",$login);
+		$texte[] = array();
+		$texte[] = array();
+	}
+	
+	$data = compileObjectsAsCSV($activefields, $reports, $texte);
 	if($handle = fopen($file, 'w'))
 	{
 		fwrite ($handle, $data);

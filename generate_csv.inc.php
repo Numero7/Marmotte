@@ -14,9 +14,9 @@ function compileObjectsAsTXT($rows)
 		$result .= "******************************************************************************\n";
 		$result .= "****************$row->type ****************************************************\n";
 		$result .= "******************************************************************************\n";
-		
+
 		$first = true;
-			if(isset($row->type) && (in_array($row->type, $typesRapportsChercheurs) || in_array($row->type, $typesRapportsConcours) ))
+		if(isset($row->type) && (in_array($row->type, $typesRapportsChercheurs) || in_array($row->type, $typesRapportsConcours) ))
 		{
 			$candidat = get_or_create_candidate($row);
 			foreach($candidat as $field => $value)
@@ -27,10 +27,10 @@ function compileObjectsAsTXT($rows)
 				}
 			}
 		}
-		
+
 		foreach($row as $field => $value)
 		{
-				
+
 			if(is_field_visible($row, $field))
 			{
 				$result.= $field.":\n\t". str_replace('"', '#', $value)."\n";
@@ -43,12 +43,19 @@ function compileObjectsAsTXT($rows)
 
 }
 
-function compileObjectsAsCSV($fields, $rows,$sep =";" , $enc='"', $del="\n")
+function compileObjectsAsCSV($fields, $rows, $text=array(), $sep =";" , $enc='"', $del="\n")
 {
 	global $csv_composite_fields;
 	$result = "";
 
 	$first = true;
+
+	foreach($text as $mots)
+	{
+		foreach($mots as $mot)
+			$result.=$sep.$enc.$mot.$enc;
+		$result.=$del;
+	}
 
 	foreach($fields as $field)
 	{

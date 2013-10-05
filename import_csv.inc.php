@@ -21,6 +21,8 @@ function fixEncoding($in_str)
 
 function import_csv($type,$filename, $subtype = "", $sep=";", $del="\n",$enc='"', $esc='\\')
 {
+	
+	
 	global $fieldsAll;
 	global $csv_composite_fields;
 	global $fieldsUnitsDB;
@@ -33,8 +35,18 @@ function import_csv($type,$filename, $subtype = "", $sep=";", $del="\n",$enc='"'
 	if($file = fopen ( $filename , 'r') )
 	{
 		$is_utf8 = true;
+
 		
-		$rawfields = fgetcsv ( $file, 0, $sep , $enc, $esc );
+		/* skip lines starting with empty fields */
+		$rawfields = array();
+		$max = 100;
+		while($max > 1 && (count($rawfields)==0 || $rawfields[0]==""))
+		{
+			$rawfields = fgetcsv ( $file, 0, $sep , $enc, $esc );
+			$max --;
+		}
+		if($max <=2)
+			throw string("Trop de lignes blanches au début du csv");
 		
 		if($is_utf8)
 			foreach($rawfields as $field)
@@ -48,7 +60,11 @@ function import_csv($type,$filename, $subtype = "", $sep=";", $del="\n",$enc='"'
 		
 		$fields = array();
 		foreach($rawfields as $field)
+		{
+			if($field == "")
+				break;
 			$fields[] = mysql_real_escape_string($field);
+		}
 
 		$with_id = in_array("id",$fields);
 		$id_rank = array_search("id",$fields);

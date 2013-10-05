@@ -217,19 +217,19 @@ function display_fichiers($row, $fieldID, $session, $readonly)
 {
 	global $dossiers_candidats;
 
-	echo "<td>";
-	
-	
 	$files = find_people_files($row,true, $session, true);
 
 	$dir = get_people_directory($row, $session, false);
+	
+	echo "<td><table><tr>\n";
 	
 	if(count($files) > 0)
 	{
 		ksort($files);
 
 		$i = -1;
-		echo "<table><tr><td><table>\n";
+//	echo "<td><table><tr>";
+		echo "<td><table>\n";
 		echo '<tr><td style="padding-right: 10px">';
 
 		$nb = intval((count($files) + 2)/ 3);
@@ -237,7 +237,7 @@ function display_fichiers($row, $fieldID, $session, $readonly)
 		foreach($files as $date => $file)
 		{
 			if($i % $nb	 == $nb - 1 )
-				echo '</td><td style="padding-right: 10px">';
+				echo '</td></tr><tr><td style="padding-right: 10px">';
 
 			$prettyfile = str_replace("_", " ", $file);
 			if(strlen($file) > 20)
@@ -257,26 +257,44 @@ function display_fichiers($row, $fieldID, $session, $readonly)
 			if(is_picture($file))
 			echo '<img class="photoid" src="'.$dir."/".$file.'" alt="'.$file.'" />';
 
-		echo "</td></tr></table>";
-	}
+		echo "</td>";
 	
+				}
+		
+		if(!$readonly)
+		{
+			echo "<td>";
+			
 			?>
+			<table><tr><td>
+<input
+	type="submit" name="ajoutfichier" value="Ajouter fichier" />
+			</td></tr><tr><td>
 <input type="hidden" name="type"
 	value="candidatefile" />
 <input
 	type="hidden" name="MAX_FILE_SIZE" value="10000000" />
-	<input type="hidden" name="uploaddir" value=<?php echo $dir;?>/>
+	<input type="hidden" name="uploaddir" value="<?php echo $dir;?>"/>
 	<input name="uploadedfile"
 	type="file" />
-<input
-	type="submit" name="ajoutfichier" value="Ajouter fichier" />
+		</td></tr></table>
 <?php 
+		echo "</td>";
+		}
+
 		
 		if(isSecretaire() && (count($files) > 0))
 		{
+			echo "<td>";
+			
 			?>
-<input type="hidden" name="type"
+			<table><tr><td>
+<input
+	type="submit" name="suppressionfichier" value="Supprimer fichier" />
+	</td></tr><tr><td>
+	<input type="hidden" name="type"
 	value="candidatefile" />
+	<table><tr><td>
 <select name="deletedfile">
 	<?php
 	foreach($files as $date => $file)
@@ -285,12 +303,15 @@ function display_fichiers($row, $fieldID, $session, $readonly)
 	}
 	?>
 </select>
-<input
-	type="submit" name="suppressionfichier" value="Supprimer fichier" />
+	</td></tr></table>
+
 <?php 
+echo "</td>";
+
 		}
 		else
 		{
+			
 			$pictures = array();
 			foreach($files as $date => $file)
 				if(is_picture($file))
@@ -298,10 +319,12 @@ function display_fichiers($row, $fieldID, $session, $readonly)
 
 			if(count($pictures)  > 0  )
 			{
+			echo "<td>";
 				?>
-<input type="hidden" name="type"
+	<table><tr><td>
+	<input type="hidden" name="type"
 	value="candidatefile" />
-<select name="deletedfile">
+	<select name="deletedfile">
 	<?php
 	foreach($pictures as $file)
 	{
@@ -309,15 +332,18 @@ function display_fichiers($row, $fieldID, $session, $readonly)
 	}
 	?>
 </select>
+</td></tr><tr><td>
 <input
 	type="submit" name="suppressionfichier" value="Supprimer photo" />
+	</td></tr></table>
 <?php 
+echo "</td>";
+
 			}
 
 		}
+		echo "</tr></table></td>\n";
+		
 
-	
-
-	echo "</td>";
 }
 ?>
