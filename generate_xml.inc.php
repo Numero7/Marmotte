@@ -226,7 +226,10 @@ function EnteteDroit($row, $units)
 				$unit = $row->unite;
 				if(array_key_exists($row->unite,$units))
 					$unit = $units[$row->unite]->nickname;
-				$result .= $row->ecole." "."<br/>".$row->prenom." ".$row->nom." (".$unit.") ";
+				if($row->ecole != "")
+					$result .= $row->ecole." "."<br/>".$row->prenom." ".$row->nom." (".$unit.") ";
+				else
+					$result .= $row->nom." "."<br/>".$row->prenom." (".$unit.") ";
 			}
 			return $result;
 		}

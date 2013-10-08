@@ -1282,6 +1282,13 @@ ini_set('xdebug.show_local_vars', 'on');
 					"name" => "CSV (pour attribution rapporteurs)",
 					"permissionlevel" => NIVEAU_PERMISSION_BUREAU
 			),
+				
+			"html" => 	array(
+					"mime" => "text/html",
+					"xsl" => "xslt/html2.xsl",
+					"name" => "Html (prévisualisation des rapports)",
+					"permissionlevel" => NIVEAU_PERMISSION_BASE,
+			),
 			"jad" => 	array(
 					"mime" => "application/x-text",
 					"xsl" => "",
@@ -1293,13 +1300,6 @@ ini_set('xdebug.show_local_vars', 'on');
 					"xsl" => "",
 					"name" => "JAD - html",
 					"permissionlevel" => NIVEAU_PERMISSION_PRESIDENT_SECRETAIRE
-			),
-				
-			"html" => 	array(
-					"mime" => "text/html",
-					"xsl" => "xslt/html2.xsl",
-					"name" => "Html (prévisualisation des rapports)",
-					"permissionlevel" => NIVEAU_PERMISSION_BASE,
 			),
 			"xml" => 	array(
 					"mime" => "text/xml",
