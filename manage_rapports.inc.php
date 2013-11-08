@@ -1087,6 +1087,7 @@ function is_field_visible($row, $fieldId)
 	//echo $fieldId."<br/>";
 
 	global $typesRapportToFields;
+	global $alwaysVisibleFieldsTypes;
 	$extra = true;
 	/*
 	 if(isset($row->type) && isset($typesRapportToFields[$row->type]))
@@ -1098,6 +1099,9 @@ function is_field_visible($row, $fieldId)
 	if(in_array($fieldId, $nonVisibleFieldsTypes))
 		return false;
 
+	if(in_array($fieldId, $alwaysVisibleFieldsTypes))
+		return true;
+	
 	//editable info is always visible
 	if(is_field_editable($row, $fieldId))
 		return $extra;

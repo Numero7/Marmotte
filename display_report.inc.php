@@ -168,7 +168,7 @@ function displayEditableField($row, $fieldId, $canedit, $session)
 
 			if(!$editable && in_array($fieldId, $mandatory_edit_fields))
 				echo '<input type="hidden" name="field'.$fieldId.'" value="'.$row->$fieldId.'"/>';
-
+			
 			switch($fieldsTypes[$fieldId])
 			{
 				case "enum":
