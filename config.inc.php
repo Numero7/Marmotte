@@ -787,7 +787,7 @@ ini_set('xdebug.show_local_vars', 'on');
 	
 	$nonEditableFieldsTypes = array('id','auteur','date');
 	$nonVisibleFieldsTypes = array('id','auteur');
-	$alwaysVisibleFieldsTypes = array('fichiers');
+	$alwaysVisibleFieldsTypes = array('fichiers','rapports');
 	
 	$typesRapportsChercheurs = array(
 		'Evaluation-Vague' => 'Evaluation à Vague',
