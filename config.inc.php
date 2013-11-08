@@ -494,10 +494,12 @@ ini_set('xdebug.show_local_vars', 'on');
 	);
 
 	$fieldsUnites1 = array(
+			"avis1",
 			"prerapport"
 	);
 
 	$fieldsUnites2 = array(
+			"avis2",
 			"prerapport2"
 	);
 	
