@@ -151,11 +151,15 @@ function alertText($text)
 					
 				case 'delete':
 					$next = next_report($id_rapport);
-					$before = deleteReport($id_rapport);
+					$before = deleteReport($id_rapport, true);
 					echo "<p>Deleted report ".$id_rapport."</p>\n";
 					unset($_REQUEST['id']);
 					unset($_REQUEST['id_origine']);
-					displayWithRedirects( ($before != -1) ? $before : $next);
+//					displayWithRedirects( ($before != -1) ? $before : $next);
+					if($next != -1)
+						displayWithRedirects($next);
+					else
+						displayReports();
 					break;
 
 				case 'change_statut':

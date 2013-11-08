@@ -51,12 +51,21 @@ function send_file($local_filename, $remote_filename)
 
 }
 
+
+function create_dir_if_needed($dir)
+{
+	if(!is_dir($dir))
+		$result = mkdir($dir,0700, true);
+}
+
 function export_reports_as_txt($reports, $dir)
 {
 	if(count($reports) == 0)
 	{
 		throw new Exception("No reports to export");
 	}
+	
+	create_dir_if_needed($dir);
 
 	global $mandatory_export_fields;
 	$file = "reports";
@@ -74,6 +83,8 @@ function export_reports_as_txt($reports, $dir)
 
 function export_reports_as_csv($reports, $dir, $type = "")
 {
+	create_dir_if_needed($dir);
+	
 	if(count($reports) == 0)
 	{
 		throw new Exception("No reports to export");
@@ -143,6 +154,8 @@ function export_reports_as_csv($reports, $dir, $type = "")
 
 function export_report($report, $export_format, $dir)
 {
+	create_dir_if_needed($dir);
+	
 	global $mandatory_export_fields;
 
 	$file = filename_from_doc($report);
@@ -555,6 +568,7 @@ if($dbh!=0)
 										unlink($file); // delete file
 								}
 
+								create_dir_if_needed("reports");
 								$result = $xml_reports->save('reports/reports.xml');
 
 								if($result === false)

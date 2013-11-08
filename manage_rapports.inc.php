@@ -27,9 +27,9 @@ function deleteCurrentSelection()
 		$rows_id = $_SESSION['rows_id'];
 		$errors = "";
 		$n = count($rows_id) -1;
-		for($i = 0; $i < $n; $i++)
+		for($i = 0; $i <= $n; $i++)
 			try {
-			deleteReport($rows_id[$i]);
+			deleteReport($rows_id[$i], true);
 		}
 		catch(Exception $e)
 		{
@@ -361,7 +361,7 @@ function isReportCreatable()
 //UPDATE evaluations SET id_origine=-id_origine WHERE id_origine<0
 //UPDATE evaluations SET id=-id WHERE id<0
 
-function deleteReport($id_rapport)
+function deleteReport($id_rapport, $all_versions = false)
 {
 	$report = getReport($id_rapport);
 
@@ -374,7 +374,7 @@ function deleteReport($id_rapport)
 	$result= sql_request($sql);
 
 	$before = mysql_fetch_object($result);
-	if($before != false)
+	if($before != false && !$all_versions)
 	{
 		$previous_id = $before->id;
 		$sql = "UPDATE ".reports_db." SET id_origine=".intval($previous_id)." WHERE id_origine=".intval($id_rapport)." ;";
@@ -408,10 +408,22 @@ function deleteReport($id_rapport)
 		}
 	}
 
-	$sql = "UPDATE ".reports_db." SET statut=\"supprime\"WHERE id=".intval($id_rapport)." ;";
-	sql_request($sql);
-	$sql = "UPDATE ".reports_db." SET date=NOW() WHERE id=".intval($id_rapport)." ;";
-	sql_request($sql);
+	if(!$all_versions)
+	{
+		$sql = "UPDATE ".reports_db." SET statut=\"supprime\"WHERE id=".intval($id_rapport)." ;";
+		sql_request($sql);
+		$sql = "UPDATE ".reports_db." SET date=NOW() WHERE id=".intval($id_rapport)." ;";
+		sql_request($sql);
+	}
+	else
+	 {
+		$sql = "UPDATE ".reports_db." SET statut=\"supprime\"WHERE id_origine=".intval($id_rapport)." ;";
+		sql_request($sql);
+		$sql = "UPDATE ".reports_db." SET date=NOW() WHERE id_origine=".intval($id_rapport)." ;";
+		sql_request($sql);
+	}
+
+	
 
 	return ($before !=false) ? $before->id : -1;
 };
