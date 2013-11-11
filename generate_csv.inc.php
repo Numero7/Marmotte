@@ -31,7 +31,7 @@ function compileObjectsAsTXT($rows)
 		foreach($row as $field => $value)
 		{
 
-			if(is_field_visible($row, $field))
+			if(is_field_visible($row, $field) && $value != "")
 			{
 				$result.= $field.":\n\t". str_replace('"', '#', $value)."\n";
 			}
