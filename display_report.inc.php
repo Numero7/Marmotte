@@ -62,7 +62,7 @@ function displayEditableCandidate($candidate,$report = NULL,$canedit = true)
 
 }
 
-function displayEditableChercheur($chercheur,$report = NULL)
+function displayEditableChercheur($chercheur,$report = NULL, $canedit = true)
 {
 	global $fieldsChercheursAll;
 
@@ -112,7 +112,7 @@ function displayEditableChercheur($chercheur,$report = NULL)
 
 	displayEditionFrameStart("",$hidden,array());
 
-	displayEditableObject("", $chercheur, $fieldsChercheursAll, true, $session);
+	displayEditableObject("", $chercheur, $fieldsChercheursAll, $canedit, $session);
 
 	displayEditionFrameEnd("Données chercheur");
 
@@ -267,14 +267,14 @@ function displayEditableObject($titlle, $row, $fields, $canedit, $session)
 			{
 				echo '<td style="width:'.strval(round(100/(count($fieldId) ))).'%">';
 				echo '<table style="width:100%"><tr class="'.$style.'">'."\n";
-				displayEditableField($row, $singleField,true,$session);
+				displayEditableField($row, $singleField,$canedit,$session);
 				echo "\n".'</tr></table></td>'."\n";
 			}
 		}
 		else
 		{
 			echo '<td style="100%"><table><tr class="'.$style.'">'."\n";
-			displayEditableField($row, $fieldId,true,$session);
+			displayEditableField($row, $fieldId,$canedit,$session);
 			echo "\n".'</tr></table></td>'."\n";
 		}
 		echo '</tr></table></td></tr>';
