@@ -237,7 +237,7 @@ function alertText($text)
 					}
 					else if(isset($_REQUEST["deleteandeditnext"]))
 					{
-						$before = deleteReport($id_origine);
+						$before = deleteReport($id_origine, false);
 						if($before != -1)
 							editWithRedirect($before);
 						else if($next != -1)
