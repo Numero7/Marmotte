@@ -296,7 +296,8 @@ function createXMLReportElem($row, DOMDocument $doc, $keep_br = true)
 		if(array_key_exists($row->avis,$formulas))
 		{
 			$formula = $formulas[$row->avis];
-			$row->rapport .= "<br/><br/>".normalizeField($formula);
+//			appendLeaf("formulestandard",  $keep_br ? $row->$fieldID : remove_br($formula) , $doc, $rapportElem);
+			$row->rapport .= "<br/><br/>".normalizeField(htmlspecialchars ($formula));
 		}
 	}
 
