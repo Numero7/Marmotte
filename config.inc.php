@@ -1040,7 +1040,7 @@ ini_set('xdebug.show_local_vars', 'on');
 		'Changement-section' => $avis_chgt,
 		'Candidature' => $avis_candidature,
 		'Equivalence' => $avis_ie,
-		'Affectation' => $avis_binaire,
+		'Affectation' => $avis_ternaire,
 		'Reconstitution' => $avis_binaire,
 		'Titularisation' => $avis_ternaire,
 		'Delegation' => $avis_lettre,
