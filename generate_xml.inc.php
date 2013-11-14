@@ -177,9 +177,9 @@ function EnteteDroit($row, $units)
 	if(array_key_exists($row->unite,$units))
 	{
 		if($row->unite != $units[$row->unite]->nickname && $units[$row->unite]->nickname != "")
-			$bloc_unite .= " ".$row->unite." (".$units[$row->unite]->nickname.")<br/>".$units[$row->unite]->directeur;
+			$bloc_unite .= " ".$row->unite." (".$units[$row->unite]->nickname.")<br/>(".$units[$row->unite]->directeur.")";
 		else if($units[$row->unite]->directeur != "")
-			$bloc_unite .= " ".$row->unite."<br/>".$units[$row->unite]->directeur;
+			$bloc_unite .= " ".$row->unite."<br/>(".$units[$row->unite]->directeur.")";
 		else
 			$bloc_unite .= " ".$row->unite;
 	}
