@@ -106,6 +106,15 @@ function export_reports_as_csv($reports, $dir, $type = "")
 				'id'
 		);
 	}
+	else if($type == "releveconclusions")
+	{
+		$activefields =
+		array('type','nom','prenom',
+				"grade_rapport",
+				"unite",
+				"avis"
+		);
+	}
 	else
 	{
 	global $mandatory_export_fields;
@@ -202,7 +211,18 @@ function export_current_selection_as_single_csv($type = "")
 
 	$filenames = array();
 
-	$reports = filterSortReports(getCurrentFiltersList(),  $filter, getSortingValues(),false);
+	if($type == "releveconclusions")
+	{
+		$sorting = 	array(
+		'type' => '1+',
+		'grade_rapport' => '2+',
+		'avis' => '3+');
+		$reports = filterSortReports(getCurrentFiltersList(),  $filter, $sorting,false);
+	}
+	else
+	{
+		$reports = filterSortReports(getCurrentFiltersList(),  $filter, getSortingValues(),false);
+	}
 
 	if(count($reports) > 0)
 	{
@@ -582,6 +602,9 @@ if($dbh!=0)
 								break;
 							case "csvbureau":
 								export_current_selection_as_single_csv("attribution_rapporteurs");
+								break;
+							case "releveconclusions":
+								export_current_selection_as_single_csv("releveconclusions");
 								break;
 							case "csvsingle":
 								export_current_selection_as_single_csv();

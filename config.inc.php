@@ -1270,19 +1270,25 @@ ini_set('xdebug.show_local_vars', 'on');
 			"csv" => 	array(
 					"mime" => "application/x-text",
 					"xsl" => "",
-					"name" => "CSV (un fichier par dossier)",
+					"name" => "CSV (un par dossier)",
 					"permissionlevel" => NIVEAU_PERMISSION_BASE
 			),
 			"csvsingle" => 	array(
 					"mime" => "application/x-text",
 					"xsl" => "",
-					"name" => "CSV (un fichier pour tous les dossiers)",
+					"name" => "CSV (un pour tous les dossiers)",
 					"permissionlevel" => NIVEAU_PERMISSION_BASE
 			),
 			"csvbureau" => 	array(
 					"mime" => "application/x-text",
 					"xsl" => "",
-					"name" => "CSV (pour attribution rapporteurs)",
+					"name" => "CSV (attribution rapporteurs)",
+					"permissionlevel" => NIVEAU_PERMISSION_BUREAU
+			),
+			"releveconclusions" => 	array(
+					"mime" => "application/x-text",
+					"xsl" => "",
+					"name" => "CSV (relevé conclusions)",
 					"permissionlevel" => NIVEAU_PERMISSION_BUREAU
 			),
 				
