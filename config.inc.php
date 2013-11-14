@@ -1264,7 +1264,7 @@ ini_set('xdebug.show_local_vars', 'on');
 			"pdf" => 	array(
 					"mime" => "application/x-zip",
 					"xsl" => "",
-					"name" => "PDF (un pdf par dossier)",
+					"name" => "PDF (rapport final)",
 					"permissionlevel" => NIVEAU_PERMISSION_PRESIDENT_SECRETAIRE,
 			),
 			"csv" => 	array(

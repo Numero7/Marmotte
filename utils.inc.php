@@ -382,16 +382,7 @@ function filename_from_params($nom, $prenom, $grade, $unite, $type, $session, $a
 	$liste_unite = unitsList();
 	
 	if($type == "Promotion")
-	{
-		switch($grade)
-		{
-			case "CR2": $grade = "CR1"; break;
-			case "DR2": $grade = "DR1"; break;
-			case "DR1": $grade = "DRCE1"; break;
-			case "DRCE1": $grade = "DRCE2"; break;
-		}
 		$grade .= " - ".$avis;
-	}
 
 	if($type == "Evaluation-Vague" || $type == "Evaluation-MiVague")
 		$type .=  " - ".mb_convert_case($avis,MB_CASE_TITLE);
