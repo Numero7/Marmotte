@@ -184,7 +184,10 @@ function addToReport($report, $field, $data)
 		if(key_exists($field, $fieldsAll))
 		{
 			$preproc = preprocess($field, $data);
-			$report->$field .= $preproc;
+			if(isset($report->$field))
+				$report->$field .= $preproc;
+			else
+				$report->$field = $preproc;
 		}
 	}
 }
@@ -439,6 +442,9 @@ function addCsvUnite($properties)
 	if(isset($properties["Responsable nom"]))
 		$directeur.= " " . $properties["Responsable nom"];
 
+	if(isset($properties["Sigle unité"]))
+		$nickname = " " . $properties["Sigle unité"];
+	
 	addUnit($nickname, $code, $fullname, $directeur);
 }
 
