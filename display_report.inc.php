@@ -600,6 +600,8 @@ function displaySummary($filters, $filter_values, $sorting_values)
 	global $filtersReports;
 	global $fieldsTypes;
 
+	global $avis_classement;
+	
 	$rows = filterSortReports($filters, $filter_values, $sorting_values);
 
 	$rows_id = array();
@@ -608,8 +610,19 @@ function displaySummary($filters, $filter_values, $sorting_values)
 	$_SESSION['rows_id'] = $rows_id;
 
 
-	$fields = is_current_session_concours() ? $fieldsSummaryConcours : $fieldsSummary;
+	if(is_current_session_concours())
+		$fields = $fieldsSummaryConcours;
+	else
+		$fields = $fieldsSummary;
+	
+	if( isset($filter_values["type"]) && $filter_values["type"] == "Promotion")
+	{
+		$filters["avis"]["liste"] = $avis_classement;
+		$filters["avis1"]["liste"] = $avis_classement;
+		$filters["avis2"]["liste"] = $avis_classement;
 
+	}
+	
 	if(isSecretaire())
 		$fields = array_unique(array_merge($fields,array(/*"date","auteur","id",*/"statut")));
 
@@ -624,6 +637,8 @@ function displaySummary($filters, $filter_values, $sorting_values)
 		$fields = $new_field;
 	}
 
+	//if(is_current_session_concours() || (isset($filter_values["type"]) && $filter_values["type"] == "Promotion"))
+	
 
 	displayRows($rows,$fields, $filters, $filter_values, getCurrentSortingList(), $sorting_values);
 }
