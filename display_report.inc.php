@@ -284,6 +284,36 @@ function displayEditableObject($titlle, $row, $fields, $canedit, $session)
 
 }
 
+function voir_rapport_pdf($row)
+{
+	$eval_type = $row->type;
+	
+	if($eval_type  == "Candidature" && is_auditionne($row))
+	{
+		echo "<B>Rapports:</B>";
+		if(is_auditionneCR($row))
+		{
+			echo "<a href=\"export.php?action=viewpdf&amp;option=Audition&amp;id=".$row->id_origine."&amp;id_origine=".$row->id_origine."\">\n";
+			echo "d'audition\n";
+			echo "</a>\n";
+		}
+		if(is_classe($row))
+		{
+			echo "et <a href=\"export.php?action=viewpdf&amp;option=Classement&amp;id=".$row->id_origine."&amp;id_origine=".$row->id_origine."\">\n";
+			echo "sur le candidat classé\n";
+			echo "</a>\n";
+		}
+	}
+	else
+	{
+		echo "<a href=\"export.php?action=viewpdf&amp;id=".$row->id_origine."&amp;id_origine=".$row->id_origine."\">\n";
+		echo "Voir le rapport final\n";
+		echo "</a>\n";
+	}
+	
+	echo "<br/>";
+}
+
 function displayEditableReport($row, $canedit = true)
 {
 	global $fieldsAll;
@@ -349,30 +379,11 @@ function displayEditableReport($row, $canedit = true)
 
 	$eval_type = $row->type;
 
+	
 	displayEditionFrameStart("",$hidden,$submits);
-
-	if($eval_type  == "Candidature" && is_auditionne($row))
-	{
-		echo "<B>Rapports:</B>";
-		if(is_auditionneCR($row))
-		{
-			echo "<a href=\"export.php?action=viewpdf&amp;option=Audition&amp;id=".$row->id_origine."&amp;id_origine=".$row->id_origine."\">\n";
-			echo "d'audition\n";
-			echo "</a>\n";
-		}
-		if(is_classe($row))
-		{
-			echo "et <a href=\"export.php?action=viewpdf&amp;option=Classement&amp;id=".$row->id_origine."&amp;id_origine=".$row->id_origine."\">\n";
-			echo "sur le candidat classé\n";
-			echo "</a>\n";
-		}
-	}
-	else
-	{
-		echo "<a href=\"export.php?action=viewpdf&amp;id=".$row->id_origine."&amp;id_origine=".$row->id_origine."\">\n";
-		echo "Rapport\n";
-		echo "</a>\n";
-	}
+	
+	voir_rapport_pdf($row);
+	
 	$is_unite = array_key_exists($eval_type,$typesRapportsUnites);
 	$statut = $row->statut;
 
