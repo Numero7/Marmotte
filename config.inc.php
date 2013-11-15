@@ -133,11 +133,11 @@ ini_set('xdebug.show_local_vars', 'on');
 	$end_tr_fields = array("concourspresentes", "annee_recrutement", "labo3","theme3", "genre", "HDRLieu");
 	*/
 	/*
-	 * Les champs disponibles aux deux rapporteurs
-	 * pour un rapport individuel
+	 * Les champs disponibles au secrétaire pour un rapport individuel
 	 */
 	$fieldsIndividual0 = array(
 			"type",
+			"statut",
 			array(
 			"rapporteur",
 			"rapporteur2",),

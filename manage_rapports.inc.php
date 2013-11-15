@@ -1016,6 +1016,11 @@ function is_field_editable($row, $fieldId)
 
 	//echo $fieldId." ".$login." ".$row->rapporteur." ".$row->rapporteur2;
 
+	if($is_rapp1 && $fieldId == "rapport" && isset($row->statut) && ($row->statut != "prerapport"))
+	{
+		return true;
+	}
+	
 
 	if(isset($row->statut) && ($row->statut == "audition"))
 	{
@@ -1126,10 +1131,13 @@ function is_field_visible($row, $fieldId)
 	if($row->$fieldId == '')
 		return false;
 
-
+	
 	if(isset($row->statut) && $row->statut == "editable")
 		return true;
 
+	if($fieldId == "rapport" || $fieldId == "avis")
+		return true;
+	
 	//during prerapport edition we do not want rapporteurs to see each other reports
 	//only editable info is visible
 	$login = getLogin();
@@ -1139,7 +1147,6 @@ function is_field_visible($row, $fieldId)
 
 	if(isset($row->statut) && ($row->statut == "prerapport" || $row->statut == "vierge") && ($is_rapp1 || $is_rapp2))
 		return false;
-
 
 	return $extra;
 }
