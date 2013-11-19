@@ -951,7 +951,8 @@ ini_set('xdebug.show_local_vars', 'on');
 			"favorable" => "Favorable",
 			"differe" => "Différé",
 			"reserve" => "Réservé",
-			"alerte" => "Alerte"
+			"alerte" => "Alerte",
+			"sansavis" => "Pas d'avis"
 	);
 
 	/* Pour les promos*/
