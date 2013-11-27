@@ -176,7 +176,7 @@ function EnteteDroit($row, $units)
 	if( ($row->type == "Promotion") && ($row->grade_rapport != "CR1") && ($row->grade_rapport != "CR2"))
 	{
 		$result = $enTetesDroit['PromotionDR'];
-		$result .= $avis_classement[$row->avis].'<br/>';
+//		$result .= $avis_classement[$row->avis].'<br/>';
 		$result .= $row->nom." ".$row->prenom.'<br/>';
 		if(array_key_exists($row->unite,$units))
 			$result .= " ".$row->unite." (".$units[$row->unite]->nickname.")";
@@ -231,6 +231,13 @@ function EnteteDroit($row, $units)
 				else
 					$result .= $row->nom." "."<br/>".$row->prenom." (".$unit.") ";
 			}
+           else if($type == 'GDR')
+            {
+                $unit = $row->unite;
+                if(array_key_exists($row->unite,$units))
+                     $unit = $units[$row->unite]->nickname;
+                $result .= $row->ecole." "."<br/>".$row->prenom." ".$row->nom." (".$unit.") ";
+            }
 			return $result;
 		}
 	}
@@ -333,8 +340,8 @@ function createXMLReportElem($row, DOMDocument $doc, $keep_br = true)
 		appendLeaf("signataire", get_config("president"), $doc, $rapportElem);
 		
 		global $typesRapportsConcours;
-		if(!isset($typesRapportsConcours[$row->type]) && isset($row->statut) && $row->statut=="publie" && file_exists("img/signature.jpg"))
-			appendLeaf("signature", "img/signature.jpg", $doc, $rapportElem);
+		if(!isset($typesRapportsConcours[$row->type]) && isset($row->statut) && $row->statut=="publie" && file_exists("img/signature_blanche.jpg"))
+			appendLeaf("signature", "img/signature_blanche.jpg", $doc, $rapportElem);
 		else
 			appendLeaf("signature", "img/signature_blanche.jpg", $doc, $rapportElem);
 	}
@@ -413,9 +420,9 @@ function createXMLReportElem($row, DOMDocument $doc, $keep_br = true)
 	appendLeaf("signataire_titre", get_config("president_titre"), $doc, $rapportElem);
 
 	if(isSecretaire())
-		appendLeaf("signature_source", "img/signature.jpg", $doc, $rapportElem);
+		appendLeaf("signature_source", "img/signature_blanche.jpg", $doc, $rapportElem);
 	else
-		appendLeaf("signature_source", "img/signatureX.jpg", $doc, $rapportElem);
+		appendLeaf("signature_source", "img/signature_blanche.jpg", $doc, $rapportElem);
 
 
 	$row->session = $sessions[$row->id_session];

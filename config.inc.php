@@ -36,9 +36,9 @@ ini_set('xdebug.show_local_vars', 'on');
 		"prenom",
 		"grade_rapport",
 			"avis",
-			"theme1",
-			"theme2",
-			"theme3",
+//			"theme1",
+//			"theme2",
+//			"theme3",
 			"unite"
 	);
 	
@@ -791,12 +791,14 @@ ini_set('xdebug.show_local_vars', 'on');
 		'Evaluation-MiVague' => 'Evaluation à Mi-Vague',
 		'Promotion' => 'Promotion',
 			'Titularisation' => 'Titularisation',
+			'Detachement' => 'Détachement',
 		'Affectation' => 'Confirmation d\'Affectation',
 		'Reconstitution' => 'Reconstitution de Carrière',
 		'Delegation' => 'Demande de Délégation',
 		'Emeritat' => 'Eméritat (1ere demande)',
 		'Emeritat-renouvellement' => 'Eméritat (renouvellement)',
 		'Changement-section' => 'Changement de section',
+		      'Changement-labo' => 'Changement d\'affectation',
 		'MedailleBronze' => 'Médaille de Bronze',
 		'MedailleArgent' => 'Médaille d\'Argent'
 	);
@@ -808,6 +810,8 @@ ini_set('xdebug.show_local_vars', 'on');
 			'Titularisation' => 'Titularisation',
 			'Delegation' => 'Délégation',
 			'Affectation' => 'Affectation',
+			    'Detachement' => 'Détachement',
+			    'Changement-labo' => 'Changt labo',
 			'Reconstitution' => 'Reconstitution',
 			'Changement-section' => 'Changt section',
 			'Emeritat' => 'Eméritat',
@@ -823,6 +827,7 @@ ini_set('xdebug.show_local_vars', 'on');
 			'Renouvellement' => 'Renouvellement',
 			'Association' => 'Association',
 			'Ecole' => 'Ecole Thematique',
+			'GDR' => 'GDR',
 			'Comite-Evaluation' => 'Comité d\'Evaluation',
 			'Expertise' => 'Expertise',
 			'Generique' => 'Générique'
@@ -834,6 +839,7 @@ ini_set('xdebug.show_local_vars', 'on');
 			'Renouvellement' => 'Renouvellement',
 			'Association' => 'Association',
 			'Ecole' => 'Ecole Thematique',
+			'GDR' => 'GDR',
 			'Comite-Evaluation' => 'Comité d\'Evaluation',
 			'Expertise' => 'Expertise',
 			'Generique' => 'Générique'
@@ -917,6 +923,8 @@ ini_set('xdebug.show_local_vars', 'on');
 			'Promotion' => $fieldsArrayChercheur,
 			'Changement-section' => $fieldsArrayChercheur,
 			'MedailleBronze' => $fieldsArrayChercheur,
+            'Changement-labo' => $fieldsArrayChercheur,
+           'Detachement' => $fieldsArrayChercheur,
 			'MedailleArgent' => $fieldsArrayChercheur,
 			'Titularisation' => $fieldsArrayChercheur,
 			'Affectation' => $fieldsArrayChercheur,
@@ -928,6 +936,7 @@ ini_set('xdebug.show_local_vars', 'on');
 			'Renouvellement' => $fieldsArrayUnite,
 			'Association' => $fieldsArrayUnite,
 			'Ecole' => $fieldsArrayUnite,
+			'GDR' => $fieldsArrayUnite,
 			'Comite-Evaluation' => $fieldsArrayUnite,
 			'Generique' => $fieldsArrayUnite,
 			'Expertise' => $fieldsArrayUnite,
@@ -1035,6 +1044,8 @@ ini_set('xdebug.show_local_vars', 'on');
 		'Emeritat-renouvellement' => $avis_ternaire,
 		'Promotion' => $avis_classement,
 		'Changement-section' => $avis_chgt,
+        'Changement-labo' => $avis_chgt,
+       'Detachement' => $avis_ternaire,
 		'Candidature' => $avis_candidature,
 		'Equivalence' => $avis_ie,
 		'Affectation' => $avis_binaire,
@@ -1046,6 +1057,7 @@ ini_set('xdebug.show_local_vars', 'on');
 		'Renouvellement' => $avis_pertinence,
 		'Association' => $avis_pertinence,
 		'Ecole' => $avis_ecoles,
+		'GDR' => $avis_ecoles,
 		'Comite-Evaluation' => $avis_binaire,
 		'Generique' => $avis_ternaire,
 		'Expertise' => $avis_ternaire,
@@ -1093,7 +1105,8 @@ ini_set('xdebug.show_local_vars', 'on');
 	'Evaluation-MiVague' => $evalCheckboxes,
 	'Renouvellement' => $pertinenceCheckboxes,
 	'Association' => $pertinenceCheckboxes,
-	'Ecole' => $ecoleCheckboxes
+	'Ecole' => $ecoleCheckboxes,
+	'GDR' => $ecoleCheckboxes
 	);
 
 	$typesRapportsToCheckboxesTitles = array(
@@ -1101,7 +1114,8 @@ ini_set('xdebug.show_local_vars', 'on');
 			'Evaluation-MiVague' => '<span  style=\"font-weight:bold;\" >EVALUATION A MI-VAGUE DE CHERCHEUR<br/>Avis de la section sur l’activité du chercheur</span>',
 			'Renouvellement' => '<span  style=\"font-weight:bold;\" >AVIS DE PERTINENCE DU SOUTIEN DU CNRS AUX UNITES</span>',
 			'Association' => '<span  style=\"font-weight:bold;\" >AVIS DE PERTINENCE DU SOUTIEN DU CNRS AUX UNITES</span>',
-			'Ecole' => '<span  style=\"font-weight:bold;\" >AVIS SUR L\'ECOLE</span>'
+			'Ecole' => '<span  style=\"font-weight:bold;\" >AVIS SUR L\'ECOLE</span>',
+			'GDR' => '<span  style=\"font-weight:bold;\" >AVIS SUR LE GDR</span>'
 	);
 	
 
@@ -1119,8 +1133,11 @@ ini_set('xdebug.show_local_vars', 'on');
 			'Renouvellement' => '<span  style=\"font-weight:bold;\" >Objet de l’examen :</span> <EM>avis de pertinence d’association au CNRS : renouvellement</EM>',
 			'Association' => '<span  style=\"font-weight:bold;\" >Objet de l’examen :</span> <EM>avis de pertinence d’association au CNRS : projet d\'association</EM>',
 			'Ecole' => '<span  style=\"font-weight:bold;\" >Objet de l’évaluation :</span><br/> Ecole Thématique',
+			'GDR' => '<span  style=\"font-weight:bold;\" >Objet de l’évaluation :</span><br/> GDR',
 			'Comite-Evaluation' => '<span  style=\"font-weight:bold;\" >Objet de l’examen :</span> Comité d\'évaluation',
-			'Generique' => '&nbsp;',
+			'Generique' => '<span  style=\"font-weight:bold;\" >Objet de l’examen :</span><br/> Avis de la section',
+           'Changement-labo' => '<span  style=\"font-weight:bold;\" >Objet de l’évaluation :</span><br/><EM>Changement d\'affectation</EM>',
+           'Detachement' => '<span  style=\"font-weight:bold;\" >Objet de l’évaluation :</span><br/>Détachement',
 			'MedailleBronze' => '<span  style=\"font-weight:bold;\" >Objet de l’évaluation :</span><br/>Proposition de lauréat pour la médaille de bronze',
 			'MedailleArgent' => '<span  style=\"font-weight:bold;\" >Objet de l’évaluation :</span><br/>Proposition de lauréat pour la médaille d\'argent',
 			'Expertise' =>  '<span  style=\"font-weight:bold;\" >Objet de l’examen :</span> Expertise (projet ou suivi ou intégration équipe ou restructuration)',
@@ -1136,7 +1153,9 @@ ini_set('xdebug.show_local_vars', 'on');
 			'Equivalence' => '<span  style=\"font-weight:bold;\" >Nom et prénom du candidat :</span><br/>',
 			'Unite' => '<span  style=\"font-weight:bold;\" >Code, intitulé et nom<br/>du directeur de l’unité :</span><br/>',
 			'Ecole' => '<span  style=\"font-weight:bold;\" >Nom de l\'école et du porteur de projet :</span><br/>',
-			'PromotionDR' => '<span  style=\"font-weight:bold;\" >Classement, nom et unité :</span><br/>',
+			'GDR' => '<span  style=\"font-weight:bold;\" >Nom du GDR et du porteur de projet :</span><br/>',
+			'PromotionDR' => '<span  style=\"font-weight:bold;\" >Nom, prénom et unité :</span><br/>',
+'Generique' => '<span  style=\"font-weight:bold;\" >Nom, prénom et affectation du chercheur :</span><br/>',
 			'' => '&nbsp;'
 			);
 	
@@ -1149,6 +1168,8 @@ ini_set('xdebug.show_local_vars', 'on');
 			'Emeritat-renouvellement' => 'Individu',
 			'Promotion' => 'Individu',
 			'Changement-section' => 'Individu',
+        'Changement-labo' => 'Individu',
+  'Detachement' => 'Individu',
 			'Candidature' => 'Concours',
 			'Equivalence' => 'Equivalence',
 			'Affectation' => 'Individu',
@@ -1159,8 +1180,9 @@ ini_set('xdebug.show_local_vars', 'on');
 			'Renouvellement' => 'Unite',
 			'Association' => 'Unite',
 			'Ecole' => 'Ecole',
+			'GDR' => 'GDR',
 			'Comite-Evaluation' => 'Unite',
-			'Generique' => '',
+			'Generique' => 'Individu',
 			'Expertise' => 'Unite',
 			'' => ''
 	);
@@ -1170,7 +1192,7 @@ ini_set('xdebug.show_local_vars', 'on');
 	
 	$promotionFormula = array(
 			'oui'=> 'La section donne un avis favorable à la demande de promotion.',
-			'non'=> 'Le faible nombre de possibilités de promotions ne permet malheureusement pas à la Section 6 du Comité National de proposer ce chercheur à la Direction Générale du CNRS pour une promotion cette année.'
+			'non'=> 'Le faible nombre de possibilités de promotions ne permet malheureusement pas à la Section 19 du Comité National de proposer ce chercheur à la Direction Générale du CNRS pour une promotion cette année.'
 			);
 
 	$equivalenceFormula = array(
@@ -1182,7 +1204,7 @@ ini_set('xdebug.show_local_vars', 'on');
 			
 		'Promotion' => $promotionFormula,
 		'Equivalence' =>$equivalenceFormula,
-			'Titularisation' => array('favorable'=> 'La section donne un avis favorable à la titularisation.')
+			'Titularisation' => array('favorable'=> 'La section donne un avis à la titularisation.')
 	);
 
 	$typesRapportsToFormula = get_config("formules_standards");
@@ -1370,9 +1392,9 @@ ini_set('xdebug.show_local_vars', 'on');
 			'avis' => array('name'=>"Avis Section" , 'liste' => $avis_sessions, 'default_value' => "tous", 'default_name' => ""),
 			'avis1' => array('name'=>"Avis Rapp 1" , 'liste' => $avis_sessions, 'default_value' => "tous", 'default_name' => ""),
 			'avis2' => array('name'=>"Avis Rapp 2" , 'liste' => $avis_sessions, 'default_value' => "tous", 'default_name' => ""),
-			'theme1' => array('name'=>"Theme1" , 'liste' => $topics, 'default_value' => "tous", 'default_name' => ""),
-			'theme2' => array('name'=>"Theme2" , 'liste' => $topics, 'default_value' => "tous", 'default_name' => ""),
-			'theme3' => array('name'=>"Theme3" , 'liste' => $topics, 'default_value' => "tous", 'default_name' => ""),
+//			'theme1' => array('name'=>"Theme1" , 'liste' => $topics, 'default_value' => "tous", 'default_name' => ""),
+//			'theme2' => array('name'=>"Theme2" , 'liste' => $topics, 'default_value' => "tous", 'default_name' => ""),
+//			'theme3' => array('name'=>"Theme3" , 'liste' => $topics, 'default_value' => "tous", 'default_name' => ""),
 			'labo1' => array('name'=>"Labo1" , 'default_value' => "tous", 'default_name' => ""),
 			'statut' => array('name'=>"Statut" , 'liste' => $statutsRapports, 'default_value' => "tous", 'default_name' => "Tous les statuts"),
 			'id_session' => array('name'=>"Session", 'default_value' =>-1, 'default_name' => "Toutes les sessions"),

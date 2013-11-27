@@ -54,7 +54,7 @@ function display_long($row, $fieldID, $readonly)
 	else
 		echo '
 		<td colspan="3">
-		<textarea  rows="5" cols="60" name="field'.$fieldID.'" >'.remove_br($row->$fieldID).'</textarea>
+		<textarea  rows="5" cols="50" name="field'.$fieldID.'" >'.remove_br($row->$fieldID).'</textarea>
 		</td>
 		';
 }
@@ -65,8 +65,8 @@ function display_treslong($row, $fieldID, $readonly)
 		echo '<td colspan="3">'.$row->$fieldID.'</td>';
 	else
 		echo '
-		<td colspan="3">
-		<textarea  rows="25" cols="60" name="field'.$fieldID.'" >'.remove_br($row->$fieldID).'</textarea>
+		<td colspan="1">
+		<textarea  rows="25" cols="50" name="field'.$fieldID.'" >'.remove_br($row->$fieldID).'</textarea>
 		</td>
 		';
 }

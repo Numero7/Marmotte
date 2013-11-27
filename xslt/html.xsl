@@ -73,7 +73,7 @@ Les avis émis par les sections ne préjugent pas de la décision qui sera prise
 <tr>
 	<td><xsl:text> </xsl:text></td>
 	<td>
-		Le <xsl:value-of select="date"/>,
+		Paris, le <xsl:value-of select="date"/>,
 	</td>
 	<td rowspan="3">
 		<img height="150" width="150" src="img/signatureX.jpg"></img>

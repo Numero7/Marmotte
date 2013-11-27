@@ -1,4 +1,4 @@
-
+*~
 /configDB.inc.php
 /.project
 /C:/Program Files (x86)/EasyPHP-12.1/www/marmotte/.settings
@@ -11,17 +11,7 @@
 /tcpdf/images
 /.settings
 /C:/Program Files (x86)/EasyPHP-12.1/www/Marmotte/.gitignore
-/reports/Printemps 2013 -  - CR2 - _.pdf
-/reports/Printemps 2013 - Promotion - CR1 - Blunt_James.pdf
-/reports/Printemps 2013 - Evaluation-Vague - CR2 - _.pdf
-/reports/Printemps 2013 - Evaluation-Vague - CR2 - John_Kennedy.pdf
-/reports/Automne 2012 - Evaluation-Vague - CR2 - Jo_wede.pdf
-/reports/Printemps 2013 - Evaluation-MiVague - CR2 - Pass_Joe.pdf
-/reports/Automne 2012 - Evaluation-Vague - DR2 - Summer_Dona.pdf
-/reports/Printemps 2013 - Evaluation-Vague - CR2 - Johnn_KKenn.pdf
-/reports/Automne 2012 - Candidature - oj - Jo_wede.pdf
-/reports/reports_pdf.zip
-/reports_pdf.zip
+/reports/*
 /reports
 /zips
 /reports.zip

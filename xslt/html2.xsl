@@ -68,8 +68,25 @@ Les avis émis par les sections ne préjugent pas de la décision qui sera prise
 </p>
 
 
+<br/>
+<table>
+<tr align="right"><br/><br/>
+	<td><xsl:text> </xsl:text></td>
+	<td align="left">
+		Paris, le <xsl:value-of disable-output-escaping="yes" select="date"/>,
+	</td>	
+	<td><br/> 
+	<xsl:text> </xsl:text></td>
+</tr>
+<tr><br/><br/>
+	<td><xsl:text> </xsl:text></td>
+	<td><xsl:text> </xsl:text></td>
+</tr>
+</table>
 
 
+<br/>
+<br/>
 <p>
 <xsl:value-of disable-output-escaping="yes" select="rapport"/>
 </p>
@@ -80,29 +97,28 @@ Les avis émis par les sections ne préjugent pas de la décision qui sera prise
 <td>
 <br/>
 <br/>
-<table>
+<table align="right">
 <tr>
-	<td><xsl:text> </xsl:text></td>
-	<td>
-		Le <xsl:value-of disable-output-escaping="yes" select="date"/>,
-	</td>
 	<td rowspan="3">
 	<img height="150" width="150">
 	<xsl:attribute name="src"> <xsl:value-of disable-output-escaping="yes" select="signature"/>
 	</xsl:attribute>
 	</img>
 	</td>
-	
+	<td><xsl:text> </xsl:text></td>
+	<td align="left">
+	Bien cordialement,
+	</td>	
 </tr>
 <tr>
 	<td><xsl:text> </xsl:text></td>
-	<td>
+	<td align="left">
 		<xsl:value-of disable-output-escaping="yes" select="signataire"/>,
 	</td>
 </tr>
 <tr>
 	<td><xsl:text> </xsl:text></td>
-	<td>
+	<td align="left">
 		<xsl:value-of disable-output-escaping="yes" select="signataire_titre"/>.
 	</td>
 </tr>

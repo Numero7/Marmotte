@@ -413,9 +413,9 @@ function generate_jad_report($code)
 	appendLeaf("signataire_titre", get_config("president_titre"), $doc, $root);
 
 	if(isSecretaire())
-		appendLeaf("signature_source", "img/signature.jpg", $doc, $root);
+		appendLeaf("signature_source", "img/signature_blanche.jpg", $doc, $root);
 	else
-		appendLeaf("signature_source", "img/signatureX.jpg", $doc, $root);
+		appendLeaf("signature_source", "img/signature_blanche.jpg", $doc, $root);
 
 	return $doc;
 }

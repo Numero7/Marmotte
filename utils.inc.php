@@ -408,6 +408,9 @@ function filename_from_params($nom, $prenom, $grade, $unite, $type, $session, $a
 		else if($type == 'Ecole')
 			return $session." - ".$type." - ".$nom." - ".$unite;
 		else
+	if($type == 'GDR')
+            return $session." - ".$nom." - ".$unite;
+        else
 			return $session." - ".$type." - ".$unite;
 	}
 	else if( array_key_exists($type,$typesRapportsConcours) || $type=="Audition" || $type =="Classement" )
@@ -423,7 +426,7 @@ function filename_from_params($nom, $prenom, $grade, $unite, $type, $session, $a
 		}
 	}
 	else
-		return $session." - ".$type." - ".$grade." - ".$nom." ".$prenom;
+		return $session." - ".$type." - ".$unite." - ".$nom." ".$prenom;
 }
 
 function getStyle($fieldId,$odd)
