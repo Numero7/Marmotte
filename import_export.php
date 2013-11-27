@@ -200,7 +200,9 @@ catch(Exception $e)
 <p>
 	Le formulaire ci-dessous permet d'injecter des unités dans la base de
 	donnée.<br /> Les rapports sont envoyés sous forme de fichier csv fournis par votre ACN.<br />
-	Les données des labos déjà connus seront remplacées.
+	Si votre ACN ne connaît pas la procédure, dites-lui de se rapprocher de Florence Colombo.<br/>
+	Les données des labos déjà renseignés dans Marmotte seront remplacées.
+	
 </p>
 <form enctype="multipart/form-data" action="index.php" method="post"
 	onsubmit="return confirm('Etes vous sur de vouloir uploader ce fichier labos?');">

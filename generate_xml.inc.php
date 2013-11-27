@@ -173,16 +173,28 @@ function EnteteDroit($row, $units)
 
 	$result = "";
 
+	$bloc_unite = "";
+	if(array_key_exists($row->unite,$units))
+	{
+		if($row->unite != $units[$row->unite]->nickname && $units[$row->unite]->nickname != "")
+			$bloc_unite .= " ".$row->unite." (".$units[$row->unite]->nickname.")<br/>(".$units[$row->unite]->directeur.")";
+		else if($units[$row->unite]->directeur != "")
+			$bloc_unite .= " ".$row->unite."<br/>(".$units[$row->unite]->directeur.")";
+		else
+			$bloc_unite .= " ".$row->unite;
+	}
+	else
+	{
+		$bloc_unite .= " ".$row->unite;
+	}
+	
 	if( ($row->type == "Promotion") && ($row->grade_rapport != "CR1") && ($row->grade_rapport != "CR2"))
 	{
 		$result = $enTetesDroit['PromotionDR'];
 //		$result .= $avis_classement[$row->avis].'<br/>';
 		$result .= $row->nom." ".$row->prenom.'<br/>';
-		if(array_key_exists($row->unite,$units))
-			$result .= " ".$row->unite." (".$units[$row->unite]->nickname.")";
-		else
-			$result .= " ".$row->unite;
-		return $result;
+		$result .= $bloc_unite;
+				return $result;
 	}
 
 	if(array_key_exists($row->type, $typesRapportsToEnteteDroit))
@@ -194,10 +206,7 @@ function EnteteDroit($row, $units)
 			if($type == 'Individu')
 			{
 				$result .= $row->nom." ".$row->prenom."<br/>";
-				if(array_key_exists($row->unite,$units))
-					$result .= " ".$row->unite." (".$units[$row->unite]->nickname.")";
-				else
-					$result .= " ".$row->unite;
+				$result .= $bloc_unite;
 			}
 			else if($type == 'Equivalence')
 			{
@@ -211,20 +220,12 @@ function EnteteDroit($row, $units)
 			}
 			else if($type == 'Unite')
 			{
-				if(array_key_exists($row->unite,$units))
-				{
-					$unit = $units[$row->unite];
-					$result .= " ".$row->unite." (".$unit->nickname.")<br/>".$unit->directeur;
-				}
-				else
-				{
-					$result .= " ".$row->unite;
-				}
+				$result .= $bloc_unite;
 			}
 			else if($type == 'Ecole')
 			{
 				$unit = $row->unite;
-				if(array_key_exists($row->unite,$units))
+				if(array_key_exists($row->unite,$units) && $units[$row->unite]->nickname != "")
 					$unit = $units[$row->unite]->nickname;
 				if($row->ecole != "")
 					$result .= $row->ecole." "."<br/>".$row->prenom." ".$row->nom." (".$unit.") ";
@@ -302,8 +303,11 @@ function createXMLReportElem($row, DOMDocument $doc, $keep_br = true)
 		if(array_key_exists($row->avis,$formulas))
 		{
 			$formula = $formulas[$row->avis];
-			$row->rapport .= "<br/><br/>".normalizeField($formula);
-		}
+//			appendLeaf("formulestandard",  $keep_br ? $row->$fieldID : remove_br($formula) , $doc, $rapportElem);
+			$row->rapport .= "<br/><br/>".stripInvalidXml($formula);//normalizeField($formula);
+//			rrr();
+			
+		}		
 	}
 
 	global $fieldsRapportAll;

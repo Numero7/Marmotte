@@ -27,9 +27,9 @@ function deleteCurrentSelection()
 		$rows_id = $_SESSION['rows_id'];
 		$errors = "";
 		$n = count($rows_id) -1;
-		for($i = 0; $i < $n; $i++)
+		for($i = 0; $i <= $n; $i++)
 			try {
-			deleteReport($rows_id[$i]);
+			deleteReport($rows_id[$i], true);
 		}
 		catch(Exception $e)
 		{
@@ -361,7 +361,7 @@ function isReportCreatable()
 //UPDATE evaluations SET id_origine=-id_origine WHERE id_origine<0
 //UPDATE evaluations SET id=-id WHERE id<0
 
-function deleteReport($id_rapport)
+function deleteReport($id_rapport, $all_versions = false)
 {
 	$report = getReport($id_rapport);
 
@@ -374,7 +374,7 @@ function deleteReport($id_rapport)
 	$result= sql_request($sql);
 
 	$before = mysql_fetch_object($result);
-	if($before != false)
+	if($before != false && !$all_versions)
 	{
 		$previous_id = $before->id;
 		$sql = "UPDATE ".reports_db." SET id_origine=".intval($previous_id)." WHERE id_origine=".intval($id_rapport)." ;";
@@ -408,10 +408,22 @@ function deleteReport($id_rapport)
 		}
 	}
 
-	$sql = "UPDATE ".reports_db." SET statut=\"supprime\"WHERE id=".intval($id_rapport)." ;";
-	sql_request($sql);
-	$sql = "UPDATE ".reports_db." SET date=NOW() WHERE id=".intval($id_rapport)." ;";
-	sql_request($sql);
+	if(!$all_versions)
+	{
+		$sql = "UPDATE ".reports_db." SET statut=\"supprime\"WHERE id=".intval($id_rapport)." ;";
+		sql_request($sql);
+		$sql = "UPDATE ".reports_db." SET date=NOW() WHERE id=".intval($id_rapport)." ;";
+		sql_request($sql);
+	}
+	else
+	 {
+		$sql = "UPDATE ".reports_db." SET statut=\"supprime\"WHERE id_origine=".intval($id_rapport)." ;";
+		sql_request($sql);
+		$sql = "UPDATE ".reports_db." SET date=NOW() WHERE id_origine=".intval($id_rapport)." ;";
+		sql_request($sql);
+	}
+
+	
 
 	return ($before !=false) ? $before->id : -1;
 };
@@ -1004,6 +1016,11 @@ function is_field_editable($row, $fieldId)
 
 	//echo $fieldId." ".$login." ".$row->rapporteur." ".$row->rapporteur2;
 
+	if($is_rapp1 && $fieldId == "rapport" && isset($row->statut) && ($row->statut != "prerapport"))
+	{
+		return true;
+	}
+	
 
 	if(isset($row->statut) && ($row->statut == "audition"))
 	{
@@ -1087,6 +1104,7 @@ function is_field_visible($row, $fieldId)
 	//echo $fieldId."<br/>";
 
 	global $typesRapportToFields;
+	global $alwaysVisibleFieldsTypes;
 	$extra = true;
 	/*
 	 if(isset($row->type) && isset($typesRapportToFields[$row->type]))
@@ -1098,6 +1116,9 @@ function is_field_visible($row, $fieldId)
 	if(in_array($fieldId, $nonVisibleFieldsTypes))
 		return false;
 
+	if(in_array($fieldId, $alwaysVisibleFieldsTypes))
+		return true;
+	
 	//editable info is always visible
 	if(is_field_editable($row, $fieldId))
 		return $extra;
@@ -1110,10 +1131,13 @@ function is_field_visible($row, $fieldId)
 	if($row->$fieldId == '')
 		return false;
 
-
+	
 	if(isset($row->statut) && $row->statut == "editable")
 		return true;
 
+	if($fieldId == "rapport" || $fieldId == "avis")
+		return true;
+	
 	//during prerapport edition we do not want rapporteurs to see each other reports
 	//only editable info is visible
 	$login = getLogin();
@@ -1123,7 +1147,6 @@ function is_field_visible($row, $fieldId)
 
 	if(isset($row->statut) && ($row->statut == "prerapport" || $row->statut == "vierge") && ($is_rapp1 || $is_rapp2))
 		return false;
-
 
 	return $extra;
 }

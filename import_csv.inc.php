@@ -40,7 +40,7 @@ function import_csv($type,$filename, $subtype = "", $sep=";", $del="\n",$enc='"'
 		/* skip lines starting with empty fields */
 		$rawfields = array();
 		$max = 100;
-		while($max > 1 && (count($rawfields)==0 || $rawfields[0]==""))
+		while( $max > 1 && ( (count($rawfields)==0 || $rawfields[0]=="") || ($type == "unites" && isset($rawfields[0]) && $rawfields[0] != "Obs") ) )
 		{
 			$rawfields = fgetcsv ( $file, 0, $sep , $enc, $esc );
 			$max --;
@@ -184,7 +184,10 @@ function addToReport($report, $field, $data)
 		if(key_exists($field, $fieldsAll))
 		{
 			$preproc = preprocess($field, $data);
-			$report->$field .= $preproc;
+			if(isset($report->$field))
+				$report->$field .= $preproc;
+			else
+				$report->$field = $preproc;
 		}
 	}
 }
@@ -413,10 +416,19 @@ function addCsvUnite($properties)
 	$fullname = "";
 	$nickname = "";
 	
-	$labels = array("Code unité", "code", "Code Unité");
+	$labels = array("Code unité", "code", "Code Unité","Code");
+	
+	foreach($properties as $key => $value)
+		if(strpos($key,"Code") == 0 || strpos($key,"code") == 0)
+		$code = $value;
+	
 	foreach($labels as $label)
+	{		
 		if(isset($properties[$label]) && $properties[$label] != "")
-		$code = $properties[$label];
+		{
+			$code = $properties[$label];
+		}
+	}
 	
 	if($code =="")
 		throw new Exception("Cannot add unit with empty code");
@@ -430,6 +442,9 @@ function addCsvUnite($properties)
 	if(isset($properties["Responsable nom"]))
 		$directeur.= " " . $properties["Responsable nom"];
 
+	if(isset($properties["Sigle unité"]))
+		$nickname = " " . $properties["Sigle unité"];
+	
 	addUnit($nickname, $code, $fullname, $directeur);
 }
 

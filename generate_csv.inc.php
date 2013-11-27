@@ -9,6 +9,10 @@ function compileObjectsAsTXT($rows)
 
 	$first = true;
 
+	$result .= "******************************************************************************\n";
+	$result .= "**** Pour un bon affichage des accents, sélectionner l'encodage 'UTF-8' ******\n";
+	$result .= "******************************************************************************\n";
+	
 	foreach($rows as $row)
 	{
 		$result .= "******************************************************************************\n";
@@ -23,7 +27,7 @@ function compileObjectsAsTXT($rows)
 			{
 				if(is_field_visible($row, $field))
 				{
-					$result.= $field.":\n\t". str_replace('"', '#', $value)."\n";
+					$result.= $field.":\n\t". str_replace(array('"',"<br />"), array('#',''), $value)."\n";
 				}
 			}
 		}
@@ -31,9 +35,9 @@ function compileObjectsAsTXT($rows)
 		foreach($row as $field => $value)
 		{
 
-			if(is_field_visible($row, $field))
+			if(is_field_visible($row, $field) && $value != "")
 			{
-				$result.= $field.":\n\t". str_replace('"', '#', $value)."\n";
+				$result.= $field.":\n\t". str_replace(array('"',"<br />"), array('#',''), $value)."\n";
 			}
 		}
 

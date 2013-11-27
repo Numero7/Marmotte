@@ -62,7 +62,7 @@ function displayEditableCandidate($candidate,$report = NULL,$canedit = true)
 
 }
 
-function displayEditableChercheur($chercheur,$report = NULL)
+function displayEditableChercheur($chercheur,$report = NULL, $canedit = true)
 {
 	global $fieldsChercheursAll;
 
@@ -112,7 +112,7 @@ function displayEditableChercheur($chercheur,$report = NULL)
 
 	displayEditionFrameStart("",$hidden,array());
 
-	displayEditableObject("", $chercheur, $fieldsChercheursAll, true, $session);
+	displayEditableObject("", $chercheur, $fieldsChercheursAll, $canedit, $session);
 
 	displayEditionFrameEnd("Données chercheur");
 
@@ -168,7 +168,7 @@ function displayEditableField($row, $fieldId, $canedit, $session)
 
 			if(!$editable && in_array($fieldId, $mandatory_edit_fields))
 				echo '<input type="hidden" name="field'.$fieldId.'" value="'.$row->$fieldId.'"/>';
-
+			
 			switch($fieldsTypes[$fieldId])
 			{
 				case "enum":
@@ -273,7 +273,6 @@ function displayEditableObject($titlle, $row, $fields, $canedit, $session)
 			  {	
 			  displayEditableField($row, $singleField,false,$session);
 			  }
-
 				echo "\n".'</tr></table></td>'."\n";
 			}
 		}
@@ -292,11 +291,40 @@ function displayEditableObject($titlle, $row, $fields, $canedit, $session)
 		    echo '</tr></table></td>';
 		}		
 		  echo '</tr></table></td></tr>';
-
 	}
 
 	echo "</table>\n";
 
+}
+
+function voir_rapport_pdf($row)
+{
+	$eval_type = $row->type;
+	
+	if($eval_type  == "Candidature" && is_auditionne($row))
+	{
+		echo "<B>Rapports:</B>";
+		if(is_auditionneCR($row))
+		{
+			echo "<a href=\"export.php?action=viewpdf&amp;option=Audition&amp;id=".$row->id_origine."&amp;id_origine=".$row->id_origine."\">\n";
+			echo "d'audition\n";
+			echo "</a>\n";
+		}
+		if(is_classe($row))
+		{
+			echo "et <a href=\"export.php?action=viewpdf&amp;option=Classement&amp;id=".$row->id_origine."&amp;id_origine=".$row->id_origine."\">\n";
+			echo "sur le candidat classé\n";
+			echo "</a>\n";
+		}
+	}
+	else
+	{
+		echo "<a href=\"export.php?action=viewpdf&amp;id=".$row->id_origine."&amp;id_origine=".$row->id_origine."\">\n";
+		echo "Voir le rapport final\n";
+		echo "</a>\n";
+	}
+	
+	echo "<br/>";
 }
 
 function displayEditableReport($row, $canedit = true)
@@ -352,7 +380,7 @@ function displayEditableReport($row, $canedit = true)
 	}
 
 	if(isSecretaire())
-		$submits["deleteandeditnext"] = "Supprimer";
+		$submits["deleteandeditnext"] = "Supprimer dernière version";
 	$submits["retourliste"] = "Retour à la liste";
 
 	if($canedit)
@@ -364,30 +392,11 @@ function displayEditableReport($row, $canedit = true)
 
 	$eval_type = $row->type;
 
+	
 	displayEditionFrameStart("",$hidden,$submits);
-
-	if($eval_type  == "Candidature" && is_auditionne($row))
-	{
-		echo "<B>Rapports:</B>";
-		if(is_auditionneCR($row))
-		{
-			echo "<a href=\"export.php?action=viewpdf&amp;option=Audition&amp;id=".$row->id_origine."&amp;id_origine=".$row->id_origine."\">\n";
-			echo "d'audition\n";
-			echo "</a>\n";
-		}
-		if(is_classe($row))
-		{
-			echo "et <a href=\"export.php?action=viewpdf&amp;option=Classement&amp;id=".$row->id_origine."&amp;id_origine=".$row->id_origine."\">\n";
-			echo "sur le candidat classé\n";
-			echo "</a>\n";
-		}
-	}
-	else
-	{
-		echo "<a href=\"export.php?action=viewpdf&amp;id=".$row->id_origine."&amp;id_origine=".$row->id_origine."\">\n";
-		echo "Rapport\n";
-		echo "</a>\n";
-	}
+	
+	voir_rapport_pdf($row);
+	
 	$is_unite = array_key_exists($eval_type,$typesRapportsUnites);
 	$statut = $row->statut;
 
@@ -615,6 +624,8 @@ function displaySummary($filters, $filter_values, $sorting_values)
 	global $filtersReports;
 	global $fieldsTypes;
 
+	global $avis_classement;
+	
 	$rows = filterSortReports($filters, $filter_values, $sorting_values);
 
 	$rows_id = array();
@@ -623,8 +634,19 @@ function displaySummary($filters, $filter_values, $sorting_values)
 	$_SESSION['rows_id'] = $rows_id;
 
 
-	$fields = is_current_session_concours() ? $fieldsSummaryConcours : $fieldsSummary;
+	if(is_current_session_concours())
+		$fields = $fieldsSummaryConcours;
+	else
+		$fields = $fieldsSummary;
+	
+	if( isset($filter_values["type"]) && $filter_values["type"] == "Promotion")
+	{
+		$filters["avis"]["liste"] = $avis_classement;
+		$filters["avis1"]["liste"] = $avis_classement;
+		$filters["avis2"]["liste"] = $avis_classement;
 
+	}
+	
 	if(isSecretaire())
 		$fields = array_unique(array_merge($fields,array(/*"date","auteur","id",*/"statut")));
 
@@ -639,6 +661,8 @@ function displaySummary($filters, $filter_values, $sorting_values)
 		$fields = $new_field;
 	}
 
+	//if(is_current_session_concours() || (isset($filter_values["type"]) && $filter_values["type"] == "Promotion"))
+	
 
 	displayRows($rows,$fields, $filters, $filter_values, getCurrentSortingList(), $sorting_values);
 }

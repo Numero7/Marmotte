@@ -1,14 +1,13 @@
 -- phpMyAdmin SQL Dump
--- version 3.5.6
+-- version 3.3.7deb7
 -- http://www.phpmyadmin.net
 --
--- Host: localhost
--- Generation Time: Sep 20, 2013 at 01:08 PM
--- Server version: 5.1.63-0+squeeze1
--- PHP Version: 5.3.3-7+squeeze14
+-- Serveur: localhost
+-- Généré le : Mar 19 Novembre 2013 à 11:24
+-- Version du serveur: 5.1.72
+-- Version de PHP: 5.3.3-7+squeeze17
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
-SET time_zone = "+00:00";
 
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
@@ -17,13 +16,13 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8 */;
 
 --
--- Database: `cn62`
+-- Base de données: `cn62`
 --
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `people`
+-- Structure de la table `people`
 --
 
 DROP TABLE IF EXISTS `people`;
@@ -52,12 +51,12 @@ CREATE TABLE IF NOT EXISTS `people` (
   `genre` varchar(32) CHARACTER SET utf8 NOT NULL DEFAULT 'aucun',
   `theseloc` varchar(16) CHARACTER SET utf8 DEFAULT 'fr',
   `statut_individu` varchar(64) CHARACTER SET utf8 NOT NULL DEFAULT ''
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `reports`
+-- Structure de la table `reports`
 --
 
 DROP TABLE IF EXISTS `reports`;
@@ -69,10 +68,10 @@ CREATE TABLE IF NOT EXISTS `reports` (
   `nom` varchar(64) NOT NULL,
   `prenom` varchar(64) NOT NULL,
   `unite` varchar(50) NOT NULL,
-  `ecole` text NOT NULL,
+  `ecole` varchar(200) NOT NULL,
   `grade_rapport` varchar(32) NOT NULL,
   `type` varchar(32) NOT NULL,
-  `concours` text NOT NULL,
+  `concours` varchar(32) NOT NULL,
   `rapporteur` varchar(32) NOT NULL,
   `rapporteur2` varchar(32) NOT NULL,
   `prerapport` text NOT NULL,
@@ -105,12 +104,12 @@ CREATE TABLE IF NOT EXISTS `reports` (
   `finalisationHDR` varchar(16) NOT NULL DEFAULT '',
   `national` varchar(16) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=58122 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=60878 ;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `sessions`
+-- Structure de la table `sessions`
 --
 
 DROP TABLE IF EXISTS `sessions`;
@@ -124,7 +123,7 @@ CREATE TABLE IF NOT EXISTS `sessions` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `units`
+-- Structure de la table `units`
 --
 
 DROP TABLE IF EXISTS `units`;
@@ -138,7 +137,7 @@ CREATE TABLE IF NOT EXISTS `units` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `users`
+-- Structure de la table `users`
 --
 
 DROP TABLE IF EXISTS `users`;
@@ -151,7 +150,3 @@ CREATE TABLE IF NOT EXISTS `users` (
   `tel` text CHARACTER SET utf8 NOT NULL,
   `sousjury` text CHARACTER SET utf8 NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

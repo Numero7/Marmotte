@@ -51,12 +51,21 @@ function send_file($local_filename, $remote_filename)
 
 }
 
+
+function create_dir_if_needed($dir)
+{
+	if(!is_dir($dir))
+		$result = mkdir($dir,0700, true);
+}
+
 function export_reports_as_txt($reports, $dir)
 {
 	if(count($reports) == 0)
 	{
 		throw new Exception("No reports to export");
 	}
+	
+	create_dir_if_needed($dir);
 
 	global $mandatory_export_fields;
 	$file = "reports";
@@ -74,6 +83,8 @@ function export_reports_as_txt($reports, $dir)
 
 function export_reports_as_csv($reports, $dir, $type = "")
 {
+	create_dir_if_needed($dir);
+	
 	if(count($reports) == 0)
 	{
 		throw new Exception("No reports to export");
@@ -93,6 +104,15 @@ function export_reports_as_csv($reports, $dir, $type = "")
 				"theme2",
 				"theme3",
 				'id'
+		);
+	}
+	else if($type == "releveconclusions")
+	{
+		$activefields =
+		array('type','nom','prenom',
+				"grade_rapport",
+				"unite",
+				"avis"
 		);
 	}
 	else
@@ -143,6 +163,8 @@ function export_reports_as_csv($reports, $dir, $type = "")
 
 function export_report($report, $export_format, $dir)
 {
+	create_dir_if_needed($dir);
+	
 	global $mandatory_export_fields;
 
 	$file = filename_from_doc($report);
@@ -189,7 +211,18 @@ function export_current_selection_as_single_csv($type = "")
 
 	$filenames = array();
 
-	$reports = filterSortReports(getCurrentFiltersList(),  $filter, getSortingValues(),false);
+	if($type == "releveconclusions")
+	{
+		$sorting = 	array(
+		'type' => '1+',
+		'grade_rapport' => '2+',
+		'avis' => '3+');
+		$reports = filterSortReports(getCurrentFiltersList(),  $filter, $sorting,false);
+	}
+	else
+	{
+		$reports = filterSortReports(getCurrentFiltersList(),  $filter, getSortingValues(),false);
+	}
 
 	if(count($reports) > 0)
 	{
@@ -555,6 +588,7 @@ if($dbh!=0)
 										unlink($file); // delete file
 								}
 
+								create_dir_if_needed("reports");
 								$result = $xml_reports->save('reports/reports.xml');
 
 								if($result === false)
@@ -568,6 +602,9 @@ if($dbh!=0)
 								break;
 							case "csvbureau":
 								export_current_selection_as_single_csv("attribution_rapporteurs");
+								break;
+							case "releveconclusions":
+								export_current_selection_as_single_csv("releveconclusions");
 								break;
 							case "csvsingle":
 								export_current_selection_as_single_csv();

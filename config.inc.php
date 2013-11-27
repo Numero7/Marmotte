@@ -133,11 +133,11 @@ ini_set('xdebug.show_local_vars', 'on');
 	$end_tr_fields = array("concourspresentes", "annee_recrutement", "labo3","theme3", "genre", "HDRLieu");
 	*/
 	/*
-	 * Les champs disponibles aux deux rapporteurs
-	 * pour un rapport individuel
+	 * Les champs disponibles au secrétaire pour un rapport individuel
 	 */
 	$fieldsIndividual0 = array(
 			"type",
+			"statut",
 			array(
 			"rapporteur",
 			"rapporteur2",),
@@ -494,10 +494,12 @@ ini_set('xdebug.show_local_vars', 'on');
 	);
 
 	$fieldsUnites1 = array(
+			"avis1",
 			"prerapport"
 	);
 
 	$fieldsUnites2 = array(
+			"avis2",
 			"prerapport2"
 	);
 	
@@ -785,6 +787,7 @@ ini_set('xdebug.show_local_vars', 'on');
 	
 	$nonEditableFieldsTypes = array('id','auteur','date');
 	$nonVisibleFieldsTypes = array('id','auteur');
+	$alwaysVisibleFieldsTypes = array('fichiers','rapports');
 	
 	$typesRapportsChercheurs = array(
 		'Evaluation-Vague' => 'Evaluation à Vague',
@@ -957,7 +960,8 @@ ini_set('xdebug.show_local_vars', 'on');
 			"favorable" => "Favorable",
 			"differe" => "Différé",
 			"reserve" => "Réservé",
-			"alerte" => "Alerte"
+			"alerte" => "Alerte",
+			"sansavis" => "Pas d'avis"
 	);
 
 	/* Pour les promos*/
@@ -1048,7 +1052,7 @@ ini_set('xdebug.show_local_vars', 'on');
        'Detachement' => $avis_ternaire,
 		'Candidature' => $avis_candidature,
 		'Equivalence' => $avis_ie,
-		'Affectation' => $avis_binaire,
+		'Affectation' => $avis_ternaire,
 		'Reconstitution' => $avis_binaire,
 		'Titularisation' => $avis_ternaire,
 		'Delegation' => $avis_lettre,
@@ -1286,22 +1290,34 @@ ini_set('xdebug.show_local_vars', 'on');
 					"name" => "PDF (un pdf par dossier)",
 					"permissionlevel" => NIVEAU_PERMISSION_PRESIDENT_SECRETAIRE,
 			),
+			"pdf" => 	array(
+					"mime" => "application/x-zip",
+					"xsl" => "",
+					"name" => "PDF (rapport final)",
+					"permissionlevel" => NIVEAU_PERMISSION_PRESIDENT_SECRETAIRE,
+			),
 			"csv" => 	array(
 					"mime" => "application/x-text",
 					"xsl" => "",
-					"name" => "CSV (un fichier par dossier)",
+					"name" => "CSV (un par dossier)",
 					"permissionlevel" => NIVEAU_PERMISSION_BASE
 			),
 			"csvsingle" => 	array(
 					"mime" => "application/x-text",
 					"xsl" => "",
-					"name" => "CSV (un fichier pour tous les dossiers)",
+					"name" => "CSV (un pour tous les dossiers)",
 					"permissionlevel" => NIVEAU_PERMISSION_BASE
 			),
 			"csvbureau" => 	array(
 					"mime" => "application/x-text",
 					"xsl" => "",
-					"name" => "CSV (pour attribution rapporteurs)",
+					"name" => "CSV (attribution rapporteurs)",
+					"permissionlevel" => NIVEAU_PERMISSION_BUREAU
+			),
+			"releveconclusions" => 	array(
+					"mime" => "application/x-text",
+					"xsl" => "",
+					"name" => "CSV (relevé conclusions)",
 					"permissionlevel" => NIVEAU_PERMISSION_BUREAU
 			),
 				
