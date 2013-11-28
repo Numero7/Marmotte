@@ -344,8 +344,8 @@ function createXMLReportElem($row, DOMDocument $doc, $keep_br = true)
 		appendLeaf("signataire", get_config("president"), $doc, $rapportElem);
 		
 		global $typesRapportsConcours;
-		if(!isset($typesRapportsConcours[$row->type]) && isset($row->statut) && $row->statut=="publie" && file_exists("img/signature_blanche.jpg"))
-			appendLeaf("signature", "img/signature_blanche.jpg", $doc, $rapportElem);
+		if(!isset($typesRapportsConcours[$row->type]) && isset($row->statut) && $row->statut=="publie" && file_exists("img/signature.jpg"))
+			appendLeaf("signature", "img/signature.jpg", $doc, $rapportElem);
 		else
 			appendLeaf("signature", "img/signature_blanche.jpg", $doc, $rapportElem);
 	}
@@ -424,9 +424,9 @@ function createXMLReportElem($row, DOMDocument $doc, $keep_br = true)
 	appendLeaf("signataire_titre", get_config("president_titre"), $doc, $rapportElem);
 
 	if(isSecretaire())
-		appendLeaf("signature_source", "img/signature_blanche.jpg", $doc, $rapportElem);
+		appendLeaf("signature_source", "img/signature.jpg", $doc, $rapportElem);
 	else
-		appendLeaf("signature_source", "img/signature_blanche.jpg", $doc, $rapportElem);
+		appendLeaf("signature_source", "img/signatureX.jpg", $doc, $rapportElem);
 
 
 	$row->session = $sessions[$row->id_session];

@@ -36,9 +36,9 @@ ini_set('xdebug.show_local_vars', 'on');
 		"prenom",
 		"grade_rapport",
 			"avis",
-//			"theme1",
-//			"theme2",
-//			"theme3",
+			"theme1",
+			"theme2",
+			"theme3",
 			"unite"
 	);
 	
@@ -1208,7 +1208,7 @@ ini_set('xdebug.show_local_vars', 'on');
 			
 		'Promotion' => $promotionFormula,
 		'Equivalence' =>$equivalenceFormula,
-			'Titularisation' => array('favorable'=> 'La section donne un avis à la titularisation.')
+			'Titularisation' => array('favorable'=> 'La section donne un avis favorable à la titularisation.')
 	);
 
 	$typesRapportsToFormula = get_config("formules_standards");
@@ -1408,9 +1408,9 @@ ini_set('xdebug.show_local_vars', 'on');
 			'avis' => array('name'=>"Avis Section" , 'liste' => $avis_sessions, 'default_value' => "tous", 'default_name' => ""),
 			'avis1' => array('name'=>"Avis Rapp 1" , 'liste' => $avis_sessions, 'default_value' => "tous", 'default_name' => ""),
 			'avis2' => array('name'=>"Avis Rapp 2" , 'liste' => $avis_sessions, 'default_value' => "tous", 'default_name' => ""),
-//			'theme1' => array('name'=>"Theme1" , 'liste' => $topics, 'default_value' => "tous", 'default_name' => ""),
-//			'theme2' => array('name'=>"Theme2" , 'liste' => $topics, 'default_value' => "tous", 'default_name' => ""),
-//			'theme3' => array('name'=>"Theme3" , 'liste' => $topics, 'default_value' => "tous", 'default_name' => ""),
+			'theme1' => array('name'=>"Theme1" , 'liste' => $topics, 'default_value' => "tous", 'default_name' => ""),
+			'theme2' => array('name'=>"Theme2" , 'liste' => $topics, 'default_value' => "tous", 'default_name' => ""),
+			'theme3' => array('name'=>"Theme3" , 'liste' => $topics, 'default_value' => "tous", 'default_name' => ""),
 			'labo1' => array('name'=>"Labo1" , 'default_value' => "tous", 'default_name' => ""),
 			'statut' => array('name'=>"Statut" , 'liste' => $statutsRapports, 'default_value' => "tous", 'default_name' => "Tous les statuts"),
 			'id_session' => array('name'=>"Session", 'default_value' =>-1, 'default_name' => "Toutes les sessions"),
