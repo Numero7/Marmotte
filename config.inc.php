@@ -1434,6 +1434,11 @@ ini_set('xdebug.show_local_vars', 'on');
 			'Expertise' => 'Expertise',
 			"Renouvellement de GDR" =>  'Renouvellement',
 			"Evaluation" => "",
+			"Avis de pertinence sur un projet d'association au CNRS" =>'Association',
+			"Avis de pertinence sur un renouvellement d'association au CNRS" => "Renouvellement",
+			"Changement de direction d'unité" => "Changement-Directeur",
+			"Renouvellement de GDR" => "Renouvellement",
+			"Expertise (projet ou suivi ou intégration équipe ou restructuration)" => "Expertise"
 	);
 	
 	$users_not_rapporteur = array('admin','yawn');
