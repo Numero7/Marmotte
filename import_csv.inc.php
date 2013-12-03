@@ -299,6 +299,10 @@ function addCsvReport($subtype, $properties)
 	if(!isset($properties["type"]) || $properties["type"] =="")	
 		throw new Exception("Unimplemented report type:" . $type);
 
+	global $typesRapports;
+	if(!isset($typesRapports[$properties["type"]]))
+		$properties["type"] = 'Generique';
+
 	$copies = array(
 			"Nom" => "nom",
 			"Prénom" => "prenom",
