@@ -118,7 +118,7 @@ function import_csv($type,$filename, $subtype = "", $sep=";", $del="\n",$enc='"'
 					{			
 					/* Second case we create report */
 						$properties = array();
-						for($i = 0; $i < $nbfields; $i++)
+						for($i = 0; $i < $nbfields && $i < count($data); $i++)
 						{
 							$properties[$fields[$i]] =  $data[$i];
 						}
