@@ -9,7 +9,8 @@ $firstlogin = authenticateBase('admin','password');
 <div class="large">
 	<div class="header">
 		<h2><span>Comité National de la Recherche Scientifique</span></h2>
-		<h1>Interface de saisie des prérapports</h1>
+		<h1>Bienvenue sur Marmotte</h1>
+		<h2>outil de gestion des rapports du Comité national</h2> 
 	</div>
 
 	<div class="content"> 
