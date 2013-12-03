@@ -29,7 +29,7 @@ function getReportAsHtml($id_rapport)
 	$doc = getReportAsDOMDoc($id_rapport);
 		
 	$html = XMLToHTML($doc,type_to_xsl(getReport($id_rapport)->type));
-	
+		
 	return $html;
 }
 
@@ -53,9 +53,8 @@ function viewReportAsPdf($id_rapport,$option = "")
 
 	$xsl = type_to_xsl( $type);
 	
-	$html = XMLToHTML( $doc , $xsl );
+	$html = XMLToHTML( $doc , $xsl );	
 	
-
 	$pdf = HTMLToPDF($html);
 
 	$nodes =$doc->getElementsByTagName("rapport");

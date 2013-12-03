@@ -536,6 +536,10 @@ if($dbh!=0)
 			$action = isset($_REQUEST["action"]) ? mysql_real_escape_string($_REQUEST["action"]) : "single";
 			$id= isset($_REQUEST["id"]) ? mysql_real_escape_string($_REQUEST["id"]) : "-1";
 
+			
+			
+			
+			
 			switch($action)
 			{//Processing
 				case 'viewpdf':
@@ -570,6 +574,8 @@ if($dbh!=0)
 
 						$login = getLogin();
 
+						echo $type;
+						rr();
 
 						switch($type)
 						{
