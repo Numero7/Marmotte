@@ -828,6 +828,7 @@ ini_set('xdebug.show_local_vars', 'on');
 			'Ecole' => 'Ecole Thematique',
 			'Comite-Evaluation' => 'Comité d\'Evaluation',
 			'Expertise' => 'Expertise',
+			'Colloque' => 'Colloque',
 			'Generique' => 'Générique'
 	);
 
@@ -839,6 +840,7 @@ ini_set('xdebug.show_local_vars', 'on');
 			'Ecole' => 'Ecole Thematique',
 			'Comite-Evaluation' => 'Comité d\'Evaluation',
 			'Expertise' => 'Expertise',
+			'Colloque' => 'Colloque',
 			'Generique' => 'Générique'
 	);
 	
@@ -933,6 +935,7 @@ ini_set('xdebug.show_local_vars', 'on');
 			'Ecole' => $fieldsArrayUnite,
 			'Comite-Evaluation' => $fieldsArrayUnite,
 			'Generique' => $fieldsArrayUnite,
+			'Colloque' => $fieldsArrayUnite,
 			'Expertise' => $fieldsArrayUnite,
 	);
 	
@@ -1053,6 +1056,7 @@ ini_set('xdebug.show_local_vars', 'on');
 		'Comite-Evaluation' => $avis_binaire,
 		'Generique' => $avis_ternaire,
 		'Expertise' => $avis_ternaire,
+		'Colloque' => $avis_ternaire,
 			'MedailleBronze' => $avis_classement,
 			'MedailleArgent' => $avis_classement,
 			
@@ -1128,6 +1132,7 @@ ini_set('xdebug.show_local_vars', 'on');
 			'MedailleBronze' => '<span  style=\"font-weight:bold;\" >Objet de l’évaluation :</span><br/>Proposition de lauréat pour la médaille de bronze',
 			'MedailleArgent' => '<span  style=\"font-weight:bold;\" >Objet de l’évaluation :</span><br/>Proposition de lauréat pour la médaille d\'argent',
 			'Expertise' =>  '<span  style=\"font-weight:bold;\" >Objet de l’examen :</span> Expertise (projet ou suivi ou intégration équipe ou restructuration)',
+			'Colloque' =>  '<span  style=\"font-weight:bold;\" >Objet de l’examen :</span> Colloque',
 			'Equivalence' => '<span  style=\"font-weight:bold;\" >Objet de l’évaluation :</span><br/><EM>Equivalence titres et travaux</EM>',
 			'Emeritat' => '<span  style=\"font-weight:bold;\" >Objet de l’évaluation :</span><br/><EM>Eméritat (1ere demande)</EM>',
 			'Emeritat-renouvellement' => '<span  style=\"font-weight:bold;\" >Objet de l’évaluation :</span><br/><EM>Eméritat (renouvellement)</EM>',
@@ -1166,6 +1171,7 @@ ini_set('xdebug.show_local_vars', 'on');
 			'Comite-Evaluation' => 'Unite',
 			'Generique' => '',
 			'Expertise' => 'Unite',
+			'Colloque' => 'Unite',
 			'' => ''
 	);
 	

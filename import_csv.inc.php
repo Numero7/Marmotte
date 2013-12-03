@@ -311,6 +311,7 @@ function addCsvReport($subtype, $properties)
 			"Affectation #1" => "unite",
 			"Code Unité" => "unite",
 			"Code unité" => "unite",
+			"Code Colloque" => "unite",
 			"Affectation #1" => "unite",
 			"Titre" => "nom",
 			"Responsable principal" => "prenom"
