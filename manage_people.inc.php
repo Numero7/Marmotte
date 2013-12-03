@@ -292,6 +292,7 @@ function get_people_directory($candidate, $session, $create_directory_if_nexists
 function find_people_files($candidate, $force, $session, $create_directory_if_nexists = false, $directories = NULL)
 {
 	global $dossiers_candidats;
+	
 	if($candidate->nom == "" && $candidate->prenom == "")
 		return array();
 

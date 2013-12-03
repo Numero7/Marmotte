@@ -321,7 +321,17 @@ function addCsvReport($subtype, $properties)
 
 	global $typesRapports;
 	if(!isset($typesRapports[$properties["type"]]))
+	{
+		foreach($properties as $key => $value)
+		{
+			if($key == "Chercheur" || $key == "Nom" || $key == "Prenom")
+			{
+				$properties["type"] = 'GeneriqueChercheur';
+				break;
+			}
+		}
 		$properties["type"] = 'Generique';
+	}
 
 	$copies = array(
 			"Nom" => "nom",

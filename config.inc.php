@@ -801,7 +801,8 @@ ini_set('xdebug.show_local_vars', 'on');
 		'Emeritat-renouvellement' => 'Eméritat (renouvellement)',
 		'Changement-section' => 'Changement de section',
 		'MedailleBronze' => 'Médaille de Bronze',
-		'MedailleArgent' => 'Médaille d\'Argent'
+		'MedailleArgent' => 'Médaille d\'Argent',
+		'GeneriqueChercheur' => 'Générique (chercheur)'
 	);
 
 	$typesRapportsChercheursShort = array(
@@ -816,8 +817,8 @@ ini_set('xdebug.show_local_vars', 'on');
 			'Emeritat' => 'Eméritat',
 			'Emeritat-renouvellement' => 'Eméritat Renouv.',
 			'MedailleBronze' => 'Méd Bronze',
-			'MedailleArgent' => 'Méd Argent'
-			
+			'MedailleArgent' => 'Méd Argent',
+		'GeneriqueChercheur' => 'Générique'
 	);
 	
 	$typesRapportsUnites = array(
@@ -935,6 +936,7 @@ ini_set('xdebug.show_local_vars', 'on');
 			'Ecole' => $fieldsArrayUnite,
 			'Comite-Evaluation' => $fieldsArrayUnite,
 			'Generique' => $fieldsArrayUnite,
+			'GeneriqueChercheur' => $fieldsArrayChercheur,
 			'Colloque' => $fieldsArrayUnite,
 			'Expertise' => $fieldsArrayUnite,
 	);
@@ -1054,7 +1056,8 @@ ini_set('xdebug.show_local_vars', 'on');
 		'Association' => $avis_pertinence,
 		'Ecole' => $avis_ecoles,
 		'Comite-Evaluation' => $avis_binaire,
-		'Generique' => $avis_ternaire,
+		'Generique' => $avis_pertinence,
+		'GeneriqueChercheur' => $avis_pertinence,
 		'Expertise' => $avis_ternaire,
 		'Colloque' => $avis_ternaire,
 			'MedailleBronze' => $avis_classement,
@@ -1129,6 +1132,7 @@ ini_set('xdebug.show_local_vars', 'on');
 			'Ecole' => '<span  style=\"font-weight:bold;\" >Objet de l’évaluation :</span><br/> Ecole Thématique',
 			'Comite-Evaluation' => '<span  style=\"font-weight:bold;\" >Objet de l’examen :</span> Comité d\'évaluation',
 			'Generique' => '&nbsp;',
+			'GeneriqueChercheur' => '&nbsp;',
 			'MedailleBronze' => '<span  style=\"font-weight:bold;\" >Objet de l’évaluation :</span><br/>Proposition de lauréat pour la médaille de bronze',
 			'MedailleArgent' => '<span  style=\"font-weight:bold;\" >Objet de l’évaluation :</span><br/>Proposition de lauréat pour la médaille d\'argent',
 			'Expertise' =>  '<span  style=\"font-weight:bold;\" >Objet de l’examen :</span> Expertise (projet ou suivi ou intégration équipe ou restructuration)',
@@ -1169,7 +1173,8 @@ ini_set('xdebug.show_local_vars', 'on');
 			'Association' => 'Unite',
 			'Ecole' => 'Ecole',
 			'Comite-Evaluation' => 'Unite',
-			'Generique' => '',
+			'Generique' => 'Unite',
+			'GeneriqueChercheur' => 'Individu',
 			'Expertise' => 'Unite',
 			'Colloque' => 'Unite',
 			'' => ''
@@ -1444,7 +1449,8 @@ ini_set('xdebug.show_local_vars', 'on');
 			"Avis de pertinence sur un renouvellement d'association au CNRS" => "Renouvellement",
 			"Changement de direction d'unité" => "Changement-Directeur",
 			"Renouvellement de GDR" => "Renouvellement",
-			"Expertise (projet ou suivi ou intégration équipe ou restructuration)" => "Expertise"
+			"Expertise" => "Expertise",
+			"Rattachement" => "GeneriqueChercheur"
 	);
 	
 	$users_not_rapporteur = array('admin','yawn');

@@ -153,7 +153,7 @@ global $typesRapportsChercheurs;
 								<ul>
 									<?php 
 									$i=0;
-									$lim = 1+ count($typesRapportsChercheursShort) / 2;
+									$lim = intval(count($typesRapportsChercheursShort) / 2);
 									foreach($typesRapportsChercheursShort as $typeEval => $value)
 									{
 										?>
@@ -167,7 +167,9 @@ global $typesRapportsChercheurs;
 									<?php
 									$i++;
 									if($i == $lim)
+									{
 										echo "</ul></td><td><ul>";
+									}
 									}
 							?>
 								</ul>

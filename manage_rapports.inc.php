@@ -896,6 +896,9 @@ function find_somebody_reports($candidate,$eval_type = "")
 
 function find_unit_reports($code)
 {
+	if($code == "")
+		return array();
+	
 	$sql = "SELECT * from ".reports_db. " WHERE id=id_origine AND statut!=\"supprime\"";
 	$sql .= ' AND unite="'.$code.'" ORDER BY id ASC';
 
@@ -913,6 +916,9 @@ function find_unit_reports($code)
 
 function find_people_reports($nom, $prenom)
 {
+	if($nom == "" && $prenom == "")
+		return array();
+		
 	$sql = "SELECT * from ".reports_db. " WHERE id=id_origine AND statut!=\"supprime\"";
 	$sql .= ' AND nom="'.$nom.'" AND prenom="'.$prenom.'" ORDER BY id ASC';
 
