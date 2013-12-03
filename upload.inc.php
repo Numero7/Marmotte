@@ -45,13 +45,17 @@ function process_upload($directory = "", $extradata = null)
 						{
 							if(array_key_exists($suffix,$typeImports))
 							{
-								$target_path = "uploads/".$type.".".$suffix;
+								$dir = "uploads/";
+								if(!is_dir($dir) && !mkdir($dir))
+									throw new Exception("Failed to create directory ".$dir);
+								
+								$target_path = $dir.$type.".".$suffix;
 								if(move_uploaded_file($tmpname,$target_path))
 								{
 									return process_import($type,$suffix,$target_path,$subtype)."<br/>";
 								}
 								else
-									throw new Exception('Failed to store uploaded file "'.$tmpame.'" of size '.$_FILES['uploadedfile']['size'].' to '.$target_path);
+									throw new Exception('Failed to store uploaded file "'.$tmpname.'" of size '.$_FILES['uploadedfile']['size'].' to '.$target_path);
 							}
 							else
 								throw new Exception("File type *.'".$suffix."' not available for import, only *.csv and *.xml are accepted at the time");

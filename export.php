@@ -574,8 +574,6 @@ if($dbh!=0)
 
 						$login = getLogin();
 
-						echo $type;
-						rr();
 
 						switch($type)
 						{
