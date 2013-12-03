@@ -126,8 +126,8 @@ function import_csv($type,$filename, $subtype = "", $sep=";", $del="\n",$enc='"'
 						$subtype = checkTypeIsSpecified($properties);
 						if($subtype == "" && $oldsubtype != "")
 							$subtype = $oldsubtype;
-						if($subtype == "" )
-							throw new Exception("No type specified in the csv, please specify the type of the evaluation to import");
+//						if($subtype == "" )
+	//						throw new Exception("No type specified in the csv, please specify the type of the evaluation to import");
 						addCsvReport($subtype, $properties);
 					}
 				}
@@ -264,7 +264,24 @@ function addCsvReport($subtype, $properties)
 	$grade = "";
 
 	if($subtype == "")
-		throw new Exception("Cannot add csv report, no type specified");
+	{
+		foreach($properties as $key => $value)
+		{
+			if($key == "Code Colloque")
+			{
+				$subtype = "Colloque";
+				break;
+			}
+			if($key == "Titre")
+			{
+				$subtype = "Ecole";
+				break;
+			}
+		}
+	}
+	
+	if($subtype == "")
+		throw new Exception("Cannot add csv report, no type specified, please specify a type in the importation menu");
 	else
 		$properties["type"] = $subtype;
 
@@ -295,9 +312,12 @@ function addCsvReport($subtype, $properties)
 			else
 				$properties["type"] = $value;
 		}		
+
 	
 	if(!isset($properties["type"]) || $properties["type"] =="")	
-		throw new Exception("Unimplemented report type:" . $type);
+	{
+		throw new Exception("Unimplemented report type '" . $type."'");
+	}
 
 	global $typesRapports;
 	if(!isset($typesRapports[$properties["type"]]))

@@ -86,7 +86,7 @@ function displaySecretaryImport()
 		</td></tr>
 		<tr><td>Choix du type de rapport</td><td>
 		<select name="subtype">
-		<option value ="">Types multiples</option>
+		<option value ="">Autodétection</option>
 <?php   
 global $typesRapports;  
 foreach($typesRapports as $type => $name)  
