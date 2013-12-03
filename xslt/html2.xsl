@@ -71,7 +71,9 @@ Les avis émis par les sections ne préjugent pas de la décision qui sera prise
 
 
 <p>
+<span style="text-align:justify;">
 <xsl:value-of disable-output-escaping="yes" select="rapport"/>
+</span>
 </p>
 
 </td>

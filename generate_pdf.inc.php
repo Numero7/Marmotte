@@ -61,7 +61,7 @@ function viewReportAsPdf($id_rapport,$option = "")
 	$nodes =$doc->getElementsByTagName("rapport");
 	if($nodes)
 	{
-		$filename = filename_from_node($nodes->item(0)).".pdf";
+		$filename = filename_from_doc(getReport($id_rapport));
 		$pdf->Output($filename, 'D');
 	}
 };
