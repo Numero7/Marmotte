@@ -152,9 +152,9 @@ function import_csv($type,$filename, $subtype = "", $sep=";", $del="\n",$enc='"'
 			}
 		}
 		if($errors != "")
-			return $nb." rapports ont été ajoutés dans la base.<br/> Erreurs:<br/>\n\t".$errors."<br/> and output <br/>".$output;
+			return $nb." rapports ou unités ont été ajoutés dans la base.<br/> Erreurs:<br/>\n\t".$errors."<br/> and output <br/>".$output;
 		else if($output != "")
-			return $nb." rapports ont été ajoutés dans la base <br/>".$output;
+			return $nb." rapports ou unités ont été ajoutés dans la base <br/>".$output;
 		else
 			return $nb." rapports ont été ajoutés dans la base.";
 	}
