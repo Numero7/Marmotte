@@ -468,7 +468,7 @@ function alertText($text)
 					{
 						echo "Cannot process action ajoutlabo: missing data<br/>";
 					}
-					include "admin.inc.php";
+					include "unites.php";
 					break;
 				case 'mailing':
 				case 'email_rapporteurs':
