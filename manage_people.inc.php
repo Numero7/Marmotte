@@ -57,7 +57,6 @@ function is_auditionneCR($report)
 
 function updateCandidateFromRequest($request, $oldannee="")
 {
-	//rrr();
 	global $fieldsIndividualAll;
 
 	$data = (object) array();
@@ -86,6 +85,7 @@ function updateCandidateFromRequest($request, $oldannee="")
 function updateCandidateFromData($data)
 {
 	global $fieldsIndividualAll;
+	
 	
 	$candidate = get_or_create_candidate($data );
 
