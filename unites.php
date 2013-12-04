@@ -11,7 +11,8 @@ global $fieldsUnitsDB;
 	<tr>
 	<td>
 	
-	<h2>Ajout d'une unité</h2>
+	<h2>Ajout ou mise-à-jour d'une unité</h2>
+	<p>Si une unité avec le même code existe déjà, ses données seront mises à jour sans que l'unité ne soit dupliquée.</p>
 			<form enctype="multipart/form-data" action="index.php" method="post">
 				<table class="inputreport">
 					<tr>
