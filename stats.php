@@ -305,7 +305,7 @@ if(is_current_session_concours())
 						<?php 
 
 						/*
-						 $topics = get_config("topics");
+						 $topics = get_config_array("topics");
 						foreach($topics as $id => $topic)
 							echo "<th>$id</th>";
 						*/
