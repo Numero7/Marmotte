@@ -59,6 +59,15 @@ function save_config()
 
 }
 
+function get_config_array($name)
+{
+	$result = $get_config($name);
+	if(! is_array($result))
+		return array();
+	else
+		return $result;
+}
+
 function get_config($name)
 {
 	load_config();

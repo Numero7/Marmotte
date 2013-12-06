@@ -1200,7 +1200,7 @@ ini_set('xdebug.show_local_vars', 'on');
 			'Titularisation' => array('favorable'=> 'La section donne un avis favorable à la titularisation.')
 	);
 
-	$typesRapportsToFormula = get_config("formules_standards");
+	$typesRapportsToFormula = get_config_array("formules_standards");
 	
 /* Definition des différents grades*/
 	
@@ -1357,12 +1357,14 @@ ini_set('xdebug.show_local_vars', 'on');
 	);
 	
 	
-			$concours_ouverts = get_config("concours");
-			$postes_ouverts = get_config("postes_ouverts");
-			$presidents_sousjurys = get_config("presidents_sousjurys");
-				
+			$concours_ouverts = get_config_array("concours");
+			$postes_ouverts = get_config_array("postes_ouverts");
+			$presidents_sousjurys = get_config_array("presidents_sousjurys");
+			
 	
-	$sous_jurys = get_config("sousjurys");
+	$sous_jurys = get_config_array("sousjurys");
+	
+	
 	$tous_sous_jury = array();
 	foreach($sous_jurys as $code => $liste)
 	{
@@ -1380,7 +1382,7 @@ ini_set('xdebug.show_local_vars', 'on');
 	if(!isset($_SESSION['current_session']))
 		$_SESSION['current_session'] = "Automne 2012";
 		
-	$topics = get_config("topics");
+	$topics = get_config_array("topics");
 	$topics[""] = "Aucun";
 	
 	$filtersReports = array(
