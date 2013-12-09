@@ -127,6 +127,16 @@ ini_set('xdebug.show_local_vars', 'on');
 			"id_origine" => "Id origine",
 	);
 	
+	
+	$global_fields_renaming = get_config_array("renommage_champs");
+
+	$type_specific_fields_renaming = 
+	array(
+			"Expertise" => array("ecole" => "Type d'expertise"),
+			"Generique" => array("ecole" => "Type de rapport"),
+				"GeneriqueChercheur" => array("ecole" => "Type de rapport"),
+	);
+	
 	/*
 	$specialtr_fields = array("parcours","concourspresentes", "nom", "annee_recrutement", "prenom", "genre", "grade", "projetrecherche", "labo1","labo2","labo3","theme1","theme2","theme3", "theseLieu", "HDRAnnee", "theseAnnee","theseloc", "HDRLieu");
 	$start_tr_fields = array("projetrecherche", "grade", "nom", "labo1","theme1", "theseAnnee", "productionResume");
@@ -503,6 +513,12 @@ ini_set('xdebug.show_local_vars', 'on');
 			"prerapport2"
 	);
 	
+	$fieldsUnitesExtra = array(
+			'Expertise' => array('ecole'),
+			'Generique' => array('ecole'),
+				'GeneriqueChercheur' => array('ecole')
+	);
+	
 	$fieldsUnites = array_merge($fieldsUnites0, $fieldsUnites1, $fieldsUnites2);
 	
 	$fieldsUnitsDB = array(
@@ -674,7 +690,10 @@ ini_set('xdebug.show_local_vars', 'on');
 			"Les titres et/ou travaux dont le candidat est titulaire est /sont insuffisants ou/et n'/ne sont/est pas convaincants.";
 
 	$report_prototypes = array(
-			'Equivalence' => array('rapport' => $virgin_report_equivalence)
+			'Equivalence' => array('rapport' => $virgin_report_equivalence),
+			'Expertise' => array('ecole' => "Expertise (projet ou suivi ou intégration équipe ou restructuration)"),
+			'Generique' => array('ecole' => "Rapport"),
+			'GeneriqueChercheur' => array('ecole' => "Rapport"),
 	);
 
 	$candidat_prototypes = array(
@@ -1117,32 +1136,33 @@ ini_set('xdebug.show_local_vars', 'on');
 	
 
 	$typesRapportsToEnteteGauche = array(
-			'Evaluation-Vague' => '<span  style=\"font-weight:bold;\" >Objet de l’évaluation :</span><br/><EM>évaluation à vague de chercheur</EM>',
-			'Evaluation-MiVague' => '<span  style=\"font-weight:bold;\" >Objet de l’évaluation :</span><br/><EM>évaluation à mi-vague de chercheur</EM>',
-			'Promotion' => '<span  style=\"font-weight:bold;\" >Objet de l’évaluation :</span><br/>Avancement de grade<br/><span  style=\"font-weight:bold;\" >Au grade de :</span>',
-			'Changement-section' => '<span  style=\"font-weight:bold;\" >Objet de l’évaluation :</span><br/><EM>Changement de section, évaluation permanente par une deuxième section</EM>',
-			'Candidature' => '<span  style=\"font-weight:bold;\" >Objet de l’évaluation :</span><br/><EM>Candidature au concours</EM>',
-			'Affectation' => '<span  style=\"font-weight:bold;\" >Objet de l’évaluation :</span><br/>Affectation',
-			'Titularisation' => '<span  style=\"font-weight:bold;\" >Objet de l’évaluation :</span><br/>Titularisation',
-			'Reconstitution' => '<span  style=\"font-weight:bold;\" >Objet :</span><br/>Reconstitution de carrière',
-			'Changement-Directeur' =>  '<span  style=\"font-weight:bold;\" >Objet de l’évaluation :</span><br/>Changement de directeur',
-			'Changement-Directeur-Adjoint' =>  '<span  style=\"font-weight:bold;\" >Objet de l’évaluation :</span><br/>Changement de directeur adjoint',
-			'Renouvellement' => '<span  style=\"font-weight:bold;\" >Objet de l’examen :</span> <EM>avis de pertinence d’association au CNRS : renouvellement</EM>',
-			'Association' => '<span  style=\"font-weight:bold;\" >Objet de l’examen :</span> <EM>avis de pertinence d’association au CNRS : projet d\'association</EM>',
-			'Ecole' => '<span  style=\"font-weight:bold;\" >Objet de l’évaluation :</span><br/> Ecole Thématique',
-			'Comite-Evaluation' => '<span  style=\"font-weight:bold;\" >Objet de l’examen :</span> Comité d\'évaluation',
-			'Generique' => '&nbsp;',
-			'GeneriqueChercheur' => '&nbsp;',
-			'MedailleBronze' => '<span  style=\"font-weight:bold;\" >Objet de l’évaluation :</span><br/>Proposition de lauréat pour la médaille de bronze',
-			'MedailleArgent' => '<span  style=\"font-weight:bold;\" >Objet de l’évaluation :</span><br/>Proposition de lauréat pour la médaille d\'argent',
-			'Expertise' =>  '<span  style=\"font-weight:bold;\" >Objet de l’examen :</span> Expertise (projet ou suivi ou intégration équipe ou restructuration)',
-			'Colloque' =>  '<span  style=\"font-weight:bold;\" >Objet de l’examen :</span> Colloque',
-			'Equivalence' => '<span  style=\"font-weight:bold;\" >Objet de l’évaluation :</span><br/><EM>Equivalence titres et travaux</EM>',
-			'Emeritat' => '<span  style=\"font-weight:bold;\" >Objet de l’évaluation :</span><br/><EM>Eméritat (1ere demande)</EM>',
-			'Emeritat-renouvellement' => '<span  style=\"font-weight:bold;\" >Objet de l’évaluation :</span><br/><EM>Eméritat (renouvellement)</EM>',
+			'Evaluation-Vague' => '<B>Objet de l’évaluation :</B><br/><EM>évaluation à vague de chercheur</EM>',
+			'Evaluation-MiVague' => '<B>Objet de l’évaluation :</B><br/><EM>évaluation à mi-vague de chercheur</EM>',
+			'Promotion' => '<B>Objet de l’évaluation :</B><br/>Avancement de grade<br/><B>Au grade de :</B>',
+			'Changement-section' => '<B>Objet de l’évaluation :</B><br/><EM>Changement de section, évaluation permanente par une deuxième section</EM>',
+			'Candidature' => '<B>Objet de l’évaluation :</B><br/><EM>Candidature au concours</EM>',
+			'Affectation' => '<B>Objet de l’évaluation :</B><br/>Affectation',
+			'Titularisation' => '<B>Objet de l’évaluation :</B><br/>Titularisation',
+			'Reconstitution' => '<B>Objet :</B><br/>Reconstitution de carrière',
+			'Changement-Directeur' =>  '<B>Objet de l’évaluation :</B><br/>Changement de directeur',
+			'Changement-Directeur-Adjoint' =>  '<B>Objet de l’évaluation :</B><br/>Changement de directeur adjoint',
+			'Renouvellement' => '<B>Objet de l’examen :</B> <EM>avis de pertinence d’association au CNRS : renouvellement</EM>',
+			'Association' => '<B>Objet de l’examen :</B> <EM>avis de pertinence d’association au CNRS : projet d\'association</EM>',
+			'Ecole' => '<B>Objet de l’évaluation :</B><br/> Ecole Thématique',
+			'Comite-Evaluation' => '<B>Objet de l’examen :</B> Comité d\'évaluation',
+			'Generique' => '<B>Objet de l’évaluation :</B><br/>',
+			'GeneriqueChercheur' => '<B>Objet de l’évaluation :</B><br/>',
+			'MedailleBronze' => '<B>Objet de l’évaluation :</B><br/>Proposition de lauréat pour la médaille de bronze',
+			'MedailleArgent' => '<B>Objet de l’évaluation :</B><br/>Proposition de lauréat pour la médaille d\'argent',
+			'Expertise' =>  '<B>Objet de l’examen :</B><br/>',
+			'Colloque' =>  '<B>Objet de l’examen :</B> Colloque',
+			'Equivalence' => '<B>Objet de l’évaluation :</B><br/><EM>Equivalence titres et travaux</EM>',
+			'Emeritat' => '<B>Objet de l’évaluation :</B><br/><EM>Eméritat (1ere demande)</EM>',
+			'Emeritat-renouvellement' => '<B>Objet de l’évaluation :</B><br/><EM>Eméritat (renouvellement)</EM>',
 			'' => ''
 	);
 
+	
 	$enTetesDroit = array(
 			'Individu' => '<span  style=\"font-weight:bold;\" >Nom, prénom et affectation du chercheur :</span><br/>',
 			'Concours' => '<span  style=\"font-weight:bold;\" >Concours, classement, nom et prénom du candidat :</span><br/>',

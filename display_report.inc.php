@@ -136,6 +136,23 @@ function displayEditionFrameEnd($titlle)
 {
 }
 
+function compute_title($row, $fieldId)
+{
+	global $fieldsAll;
+	global $global_fields_renaming;
+	global $type_specific_fields_renaming;
+	
+	$title = $fieldsAll[$fieldId];
+	
+	if(key_exists($fieldId, $global_fields_renaming))
+		$title = $global_fields_renaming[$fieldId];
+	
+	if(isset($row->type) && key_exists($row->type, $type_specific_fields_renaming) && key_exists($fieldId, $type_specific_fields_renaming[$row->type]))
+		$title = $type_specific_fields_renaming[$row->type][$fieldId];
+	
+	return $title;
+}
+
 function displayEditableField($row, $fieldId, $canedit, $session)
 {
 	global $fieldsAll;
@@ -145,7 +162,7 @@ function displayEditableField($row, $fieldId, $canedit, $session)
 	//echo $fieldId."<br/>";
 	if(isset($fieldsAll[$fieldId]) && is_field_visible($row, $fieldId))
 	{
-		$title = $fieldsAll[$fieldId];
+		$title = compute_title($row, $fieldId);
 		if(isset($fieldsTypes[$fieldId]))
 		{
 
@@ -502,6 +519,11 @@ function displayEditableReport($row, $canedit = true)
 		$fieldsUnites1 = $typesRapportToFields[$eval_type][2];
 		$fieldsUnites2 = $typesRapportToFields[$eval_type][3];
 
+		global $fieldsUnitesExtra;
+		
+		if(key_exists($eval_name,$fieldsUnitesExtra))
+			$fieldsUnites0 = array_merge($fieldsUnites0, $fieldsUnitesExtra[$eval_name]);
+			
 		echo "<h1>".$eval_name. ": ". (isset($row->unite) ? $row->unite : "")." (#".(isset($row->id) && $row->id != 0 ? $row->id : "New").")</h1>";
 
 		displayEditionFrameStart("",$hidden,array());

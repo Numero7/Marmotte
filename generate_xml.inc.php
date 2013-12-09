@@ -255,6 +255,13 @@ function EnteteGauche($row)
 		$result .= "<br/>pour les concours ".$row->grade;
 	}
 
+	global $type_specific_fields_renaming;
+	if(isset($row->type) && isset($row->ecole) && isset($type_specific_fields_renaming[$row->type]) && isset($type_specific_fields_renaming[$row->type]['ecole']))
+	{
+		$result .= $row->ecole;
+	}
+	
+
 	return $result;
 }
 

@@ -555,7 +555,7 @@ function normalizeReport($report)
 		{
 			$prototype = $report_prototypes[$report->type];
 			foreach($prototype as $field => $value)
-				if( $report->$field=="")
+				if(!isset($report->$field) || $report->$field=="")
 				$report->$field = $value;
 		}
 		if($report->type == "Equivalence" && $report->prerapport=="" && isset($report->anneesequivalence))
