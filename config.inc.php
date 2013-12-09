@@ -990,7 +990,7 @@ ini_set('xdebug.show_local_vars', 'on');
 	
 	$max_classement = 30;
 	for($i = 1; $i <= $max_classement; $i++)
-		$avis_candidature[strval($i)] = $avis_classement[strval($i)] = "<span  style=\"font-weight:bold;\" >$i</span>";
+		$avis_candidature[strval($i)] = $avis_classement[strval($i)] = "<B>$i</B>";
 	
 	/* Pour les SPE par exemple*/
 	$avis_vide = array(""=>"");
@@ -1093,29 +1093,29 @@ ini_set('xdebug.show_local_vars', 'on');
 	
 	/*Pour les evals à vague et mi vague*/
 	$evalCheckboxes = array(
-			"favorable" => "<span  style=\"font-weight:bold;\" >Avis favorable</span>	
+			"favorable" => "<B>Avis favorable</B>	
 	<small> (l’activité du chercheur est conforme à ses obligations statutaires)</small>",
-			"differe" => "<span  style=\"font-weight:bold;\" >Avis différé</span>
+			"differe" => "<B>Avis différé</B>
 <small> (l’évaluation est renvoyée à la session suivante en raison de l’insuffisance ou de l'absence d'éléments du dossier)</small>",
-			"reserve" => "<span  style=\"font-weight:bold;\" >Avis réservé</span>
+			"reserve" => "<B>Avis réservé</B>
 <small> (la section a identifié dans l’activité du chercheur un ou plusieurs éléments qui nécessitent un suivi spécifique)</small>",
-			"alerte" => "<span  style=\"font-weight:bold;\" >Avis d'alerte</span>
+			"alerte" => "<B>Avis d'alerte</B>
 <small> (la section exprime des inquiétudes sur l’évolution de l’activité du chercheur))</small>");
 
 	/* Pour les renouvellements de gdr ou création d'unités*/
 	$pertinenceCheckboxes = array(
-			"tresfavorable" => "<span  style=\"font-weight:bold;\" >Avis très favorable</span>",
-			"favorable" => "<span  style=\"font-weight:bold;\" >Avis favorable</span>",
-			"defavorable" => "<span  style=\"font-weight:bold;\" >Avis défavorable</span>",
-			"reserve" => "<span  style=\"font-weight:bold;\" >Avis réservé</span>",
-			"sansavis" => "<span  style=\"font-weight:bold;\" >Pas d'avis</span>"
+			"tresfavorable" => "<B>Avis très favorable</B>",
+			"favorable" => "<B>Avis favorable</B>",
+			"defavorable" => "<B>Avis défavorable</B>",
+			"reserve" => "<B>Avis réservé</B>",
+			"sansavis" => "<B>Pas d'avis</B>"
 		);
 
 	/* Pour les écoles thématiques*/
 	$ecoleCheckboxes = array(
-			"tresfavorable" => "<span  style=\"font-weight:bold;\" >Avis très favorable</span>",
-			"favorable" => "<span  style=\"font-weight:bold;\" >Avis favorable</span>",
-			"defavorable" => "<span  style=\"font-weight:bold;\" >Avis défavorable</span>"
+			"tresfavorable" => "<B>Avis très favorable</B>",
+			"favorable" => "<B>Avis favorable</B>",
+			"defavorable" => "<B>Avis défavorable</B>"
 	);
 	
 	$typesRapportsToCheckboxes = array(
@@ -1127,11 +1127,11 @@ ini_set('xdebug.show_local_vars', 'on');
 	);
 
 	$typesRapportsToCheckboxesTitles = array(
-			'Evaluation-Vague' => '<span  style=\"font-weight:bold;\" >EVALUATION A VAGUE DE CHERCHEUR<br/>Avis de la section sur l’activité du chercheur</span>',
-			'Evaluation-MiVague' => '<span  style=\"font-weight:bold;\" >EVALUATION A MI-VAGUE DE CHERCHEUR<br/>Avis de la section sur l’activité du chercheur</span>',
-			'Renouvellement' => '<span  style=\"font-weight:bold;\" >AVIS DE PERTINENCE DU SOUTIEN DU CNRS AUX UNITES</span>',
-			'Association' => '<span  style=\"font-weight:bold;\" >AVIS DE PERTINENCE DU SOUTIEN DU CNRS AUX UNITES</span>',
-			'Ecole' => '<span  style=\"font-weight:bold;\" >AVIS SUR L\'ECOLE</span>'
+			'Evaluation-Vague' => '<B>EVALUATION A VAGUE DE CHERCHEUR<br/>Avis de la section sur l’activité du chercheur</B>',
+			'Evaluation-MiVague' => '<B>EVALUATION A MI-VAGUE DE CHERCHEUR<br/>Avis de la section sur l’activité du chercheur</B>',
+			'Renouvellement' => '<B>AVIS DE PERTINENCE DU SOUTIEN DU CNRS AUX UNITES</B>',
+			'Association' => '<B>AVIS DE PERTINENCE DU SOUTIEN DU CNRS AUX UNITES</B>',
+			'Ecole' => '<B>AVIS SUR L\'ECOLE</B>'
 	);
 	
 
@@ -1164,12 +1164,12 @@ ini_set('xdebug.show_local_vars', 'on');
 
 	
 	$enTetesDroit = array(
-			'Individu' => '<span  style=\"font-weight:bold;\" >Nom, prénom et affectation du chercheur :</span><br/>',
-			'Concours' => '<span  style=\"font-weight:bold;\" >Concours, classement, nom et prénom du candidat :</span><br/>',
-			'Equivalence' => '<span  style=\"font-weight:bold;\" >Nom et prénom du candidat :</span><br/>',
-			'Unite' => '<span  style=\"font-weight:bold;\" >Code, intitulé et nom<br/>du directeur de l’unité :</span><br/>',
-			'Ecole' => '<span  style=\"font-weight:bold;\" >Nom de l\'école et du porteur de projet :</span><br/>',
-			'PromotionDR' => '<span  style=\"font-weight:bold;\" >Classement, nom et unité :</span><br/>',
+			'Individu' => '<B>Nom, prénom et affectation du chercheur :</B><br/>',
+			'Concours' => '<B>Concours, classement, nom et prénom du candidat :</B><br/>',
+			'Equivalence' => '<B>Nom et prénom du candidat :</B><br/>',
+			'Unite' => '<B>Code, intitulé et nom<br/>du directeur de l’unité :</B><br/>',
+			'Ecole' => '<B>Nom de l\'école et du porteur de projet :</B><br/>',
+			'PromotionDR' => '<B>Classement, nom et unité :</B><br/>',
 			'' => '&nbsp;'
 			);
 	
