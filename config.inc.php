@@ -135,6 +135,7 @@ ini_set('xdebug.show_local_vars', 'on');
 			"Expertise" => array("ecole" => "Intitulé du rapport"),
 			"Generique" => array("ecole" => "Intitulé du rapport"),
 				"GeneriqueChercheur" => array("ecole" => "Intitulé du  rapport"),
+			"Changement-section" => array("ecole" => "Intitulé du  rapport")
 	);
 	
 	/*
@@ -516,7 +517,9 @@ ini_set('xdebug.show_local_vars', 'on');
 	$fieldsUnitesExtra = array(
 			'Expertise' => array('ecole'),
 			'Generique' => array('ecole'),
-				'GeneriqueChercheur' => array('ecole')
+				'GeneriqueChercheur' => array('ecole'),
+			'Changement-section' => array('ecole')
+			
 	);
 	
 	$fieldsUnites = array_merge($fieldsUnites0, $fieldsUnites1, $fieldsUnites2);
@@ -694,6 +697,7 @@ ini_set('xdebug.show_local_vars', 'on');
 			'Expertise' => array('ecole' => "Expertise (projet ou suivi ou intégration équipe ou restructuration)"),
 			'Generique' => array('ecole' => "Rapport sur unité"),
 			'GeneriqueChercheur' => array('ecole' => "Rapport sur chercheur"),
+			"Changement-section" => array('ecole' => "Changement de section, évaluation permanente par une deuxième section")
 	);
 
 	$candidat_prototypes = array(
@@ -1139,7 +1143,7 @@ ini_set('xdebug.show_local_vars', 'on');
 			'Evaluation-Vague' => '<B>Objet de l’évaluation :</B><br/><EM>évaluation à vague de chercheur</EM>',
 			'Evaluation-MiVague' => '<B>Objet de l’évaluation :</B><br/><EM>évaluation à mi-vague de chercheur</EM>',
 			'Promotion' => '<B>Objet de l’évaluation :</B><br/>Avancement de grade<br/><B>Au grade de :</B>',
-			'Changement-section' => '<B>Objet de l’évaluation :</B><br/><EM>Changement de section, évaluation permanente par une deuxième section</EM>',
+			'Changement-section' => '<B>Objet de l’évaluation :</B><br/>',
 			'Candidature' => '<B>Objet de l’évaluation :</B><br/><EM>Candidature au concours</EM>',
 			'Affectation' => '<B>Objet de l’évaluation :</B><br/>Affectation',
 			'Titularisation' => '<B>Objet de l’évaluation :</B><br/>Titularisation',
