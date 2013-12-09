@@ -484,6 +484,11 @@ function displayEditableReport($row, $canedit = true)
 		$fieldsIndividual1 = $typesRapportToFields[$eval_type][2];
 		$fieldsIndividual2 = $typesRapportToFields[$eval_type][3];
 
+		global $fieldsUnitesExtra;
+		
+		if(key_exists($eval_type,$fieldsUnitesExtra))
+			$fieldsIndividual0 = array_merge($fieldsUnitesExtra[$eval_type], $fieldsIndividual0);
+		
 			
 		echo "<h1>".$eval_name. ": ". (isset($row->nom) ? $row->nom : "")." ".(isset($row->prenom) ? $row->prenom : "");
 		echo " (".(isset($row->id) && $row->id != 0 ? "#".$row->id : "New").")</h1>";
@@ -521,8 +526,8 @@ function displayEditableReport($row, $canedit = true)
 
 		global $fieldsUnitesExtra;
 		
-		if(key_exists($eval_name,$fieldsUnitesExtra))
-			$fieldsUnites0 = array_merge($fieldsUnites0, $fieldsUnitesExtra[$eval_name]);
+		if(key_exists($eval_type,$fieldsUnitesExtra))
+			$fieldsUnites0 = array_merge($fieldsUnitesExtra[$eval_type],$fieldsUnites0);
 			
 		echo "<h1>".$eval_name. ": ". (isset($row->unite) ? $row->unite : "")." (#".(isset($row->id) && $row->id != 0 ? $row->id : "New").")</h1>";
 

@@ -132,9 +132,9 @@ ini_set('xdebug.show_local_vars', 'on');
 
 	$type_specific_fields_renaming = 
 	array(
-			"Expertise" => array("ecole" => "Type d'expertise"),
-			"Generique" => array("ecole" => "Type de rapport"),
-				"GeneriqueChercheur" => array("ecole" => "Type de rapport"),
+			"Expertise" => array("ecole" => "Intitulé du rapport"),
+			"Generique" => array("ecole" => "Intitulé du rapport"),
+				"GeneriqueChercheur" => array("ecole" => "Intitulé du  rapport"),
 	);
 	
 	/*
@@ -692,8 +692,8 @@ ini_set('xdebug.show_local_vars', 'on');
 	$report_prototypes = array(
 			'Equivalence' => array('rapport' => $virgin_report_equivalence),
 			'Expertise' => array('ecole' => "Expertise (projet ou suivi ou intégration équipe ou restructuration)"),
-			'Generique' => array('ecole' => "Rapport"),
-			'GeneriqueChercheur' => array('ecole' => "Rapport"),
+			'Generique' => array('ecole' => "Rapport sur unité"),
+			'GeneriqueChercheur' => array('ecole' => "Rapport sur chercheur"),
 	);
 
 	$candidat_prototypes = array(
