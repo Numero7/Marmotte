@@ -48,11 +48,12 @@ function displayEditableCandidate($candidate,$report = NULL,$canedit = true)
 	}
 
 
+	/*
 	if(isset($candidate->genre) && $candidate->genre == "femme")
 		echo '<h1>Candidate : '.$candidate->nom." ".$candidate->prenom." ".'</h1>';
 	else
 		echo '<h1>Candidat : '.$candidate->nom." ".$candidate->prenom." ".'</h1>';
-
+*/
 
 	displayEditionFrameStart("",$hidden,array());
 
@@ -410,6 +411,12 @@ function displayEditableReport($row, $canedit = true)
 	if(array_key_exists($eval_type, $typesRapportsConcours))
 	{
 		$candidate = get_or_create_candidate($row);
+		
+		if($eval_name == "Equivalence")
+			echo "<h1>Equivalence: ". $row->nom." ".$row->prenom. ( (isset($row->grade_rapport) &&  $row->grade_rapport != "") ? (" (grade  " .$row->grade_rapport) .")" : "") . "</h1>";
+		else
+			echo "<h1>".$eval_name. ": ". $row->nom." ".$row->prenom.( isset($row->concours)  ? (" / concours ".$row->concours) : ""). ( (isset($row->sousjury) && $row->sousjury != "")  ? (" sousjury ".$row->sousjury) : ""). "</h1>";
+		
 		displayEditableCandidate($candidate,$row,$canedit);
 
 		$other_reports = find_somebody_reports($candidate,$eval_type);
@@ -420,8 +427,11 @@ function displayEditableReport($row, $canedit = true)
 		$fieldsRapportsCandidat1 = $typesRapportToFields[$eval_type][2];
 		$fieldsRapportsCandidat2 = $typesRapportToFields[$eval_type][3];
 
-		echo "<h1>".$eval_name. ": ". $row->nom." ".$row->prenom.(isset($row->concours) ? (" / concours ".$row->concours) : ""). (isset($row->sousjury) ? (" sousjury ".$row->sousjury) : ""). "/ (rapport #".(isset($row->id) ? $row->id : " New").")</h1>";
-
+		if($eval_name == "Equivalence")
+			echo "<h1>Equivalence: ". $row->nom." ".$row->prenom. ( (isset($row->grade_rapport) &&  $row->grade_rapport != "") ? (" (grade  " .$row->grade_rapport) .")" : "") . "</h1>";
+		else
+			echo "<h1>".$eval_name. ": ". $row->nom." ".$row->prenom.( isset($row->concours)  ? (" / concours ".$row->concours) : ""). ( (isset($row->sousjury) && $row->sousjury != "")  ? (" sousjury ".$row->sousjury) : ""). "</h1>";
+		
 		$submits = array();
 
 		foreach($other_reports as $report)
