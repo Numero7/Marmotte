@@ -271,6 +271,7 @@ ini_set('xdebug.show_local_vars', 'on');
 	*/
 	$fieldsRapportsCandidat0 = array(
 			"statut",
+			"concours",
 			"sousjury",
 			"rapporteur",
 			"rapporteur2",
@@ -337,7 +338,7 @@ ini_set('xdebug.show_local_vars', 'on');
 			"productionResume" => "Production scientifique (pour rapport d'audition)",
 			"projetrecherche" => "Projet recherche  (pour rapport d'audition)",
 			"parcours" => "Parcours scientifique  (pour rapport d'audition)",
-			"concourspresentes" => "Concours",
+			"concourspresentes" => "Concours présentés",
 			"fichiers" => "Fichiers associés",
 	);
 
