@@ -348,7 +348,8 @@ function addCsvReport($subtype, $properties)
 			"Code Colloque" => "unite",
 			"Affectation #1" => "unite",
 			"Titre" => "nom",
-			"Responsable principal" => "prenom"
+			"Responsable principal" => "prenom",
+			"EXPERIENC" => "anneesequivalence"
 	);
 			
 	foreach($copies as $old => $new)
@@ -370,7 +371,6 @@ function addCsvReport($subtype, $properties)
 	foreach($properties as $key => $value)
 		if($value != "")
 		$properties["rapport"] .= $key . " : " . $value."\n\n";
-	
 	
 	$report = (object) array();
 	

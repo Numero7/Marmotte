@@ -897,7 +897,7 @@ ini_set('xdebug.show_local_vars', 'on');
 	"HDRAnnee",
 	"HDRLieu",
 	),
-	 		array("rapporteur",	"rapport", 	"avis"),
+	 		array("rapporteur",	"grade_rapport", "avis", "rapport"),
 	 		array("avis1", "prerapport"),
 	 		array()
 	 		);
