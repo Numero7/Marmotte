@@ -1002,6 +1002,7 @@ ini_set('xdebug.show_local_vars', 'on');
 	$avis_ie = array(
 			""=>"",
 			"favorable" => "Favorable",
+			"adiscuter" => "A discuter",
 			"defavorable" => "Défavorable"
 	);
 
