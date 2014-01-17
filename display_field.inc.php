@@ -260,10 +260,11 @@ function display_fichiers($row, $fieldID, $session, $readonly)
 		echo "</td>";
 	
 				}
-		
+				echo "</tr>";
+				
 		if(!$readonly)
 		{
-			echo "<td>";
+			echo "<tr><td>";
 			
 			?>
 			<table><tr><td>
@@ -279,14 +280,14 @@ function display_fichiers($row, $fieldID, $session, $readonly)
 	type="file" />
 		</td></tr></table>
 <?php 
-		echo "</td>";
+		echo "</td></tr>";
 		}
 
 		
 		if(isSecretaire() && (count($files) > 0))
 		{
-			echo "<td>";
-			
+			echo "<tr><td>";
+						
 			?>
 			<table><tr><td>
 <input
@@ -306,7 +307,7 @@ function display_fichiers($row, $fieldID, $session, $readonly)
 	</td></tr></table>
 
 <?php 
-echo "</td>";
+echo "</td></tr>";
 
 		}
 		else
@@ -319,7 +320,7 @@ echo "</td>";
 
 			if(count($pictures)  > 0  )
 			{
-			echo "<td>";
+			echo "<tr><td>";
 				?>
 	<table><tr><td>
 	<input type="hidden" name="type"
@@ -337,12 +338,12 @@ echo "</td>";
 	type="submit" name="suppressionfichier" value="Supprimer photo" />
 	</td></tr></table>
 <?php 
-echo "</td>";
+echo "</td></tr>";
 
 			}
 
 		}
-		echo "</tr></table></td>\n";
+		echo "</table></td>\n";
 		
 
 }
