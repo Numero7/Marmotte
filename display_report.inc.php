@@ -322,6 +322,7 @@ function voir_rapport_pdf($row)
 
 function displayEditableReport($row, $canedit = true)
 {
+//	rrr();
 	global $fieldsAll;
 	global $fieldsTypes;
 	global $actions;
@@ -402,11 +403,15 @@ function displayEditableReport($row, $canedit = true)
 	$rapporteurs  = listNomRapporteurs();
 
 	global $typesRapportToFields;
-
+	
 	if(isset($row->id_session))
-		$session = get_session($row->id_session);
+	{
+		$session = $row->id_session;
+	}
 	else
+	{
 		$session = current_session();
+	}
 
 	$year = substr($session, strlen($session) - 4, 4);
 	if(array_key_exists($eval_type, $typesRapportsConcours))
