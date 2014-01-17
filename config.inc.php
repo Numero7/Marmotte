@@ -1245,6 +1245,7 @@ ini_set('xdebug.show_local_vars', 'on');
 		'chercheur' => 'Chercheur contractuel',
 			'postdoc' => 'Postdoctorant',
 		'CR1_INRIA' => 'CR1 INRIA',
+		'IR_CNRS' => 'IR CNRS',
 			'None' => 'Pas de grade'
 	);
 	
