@@ -2,6 +2,7 @@
 require_once('config.php');
 require_once('generate_csv.inc.php');
 require_once('manage_unites.inc.php');
+require_once('manage_sessions.inc.php');
 
 
 function displayImport()
@@ -88,8 +89,23 @@ function displaySecretaryImport()
 		<select name="subtype">
 		<option value ="">Autodétection</option>
 <?php   
-global $typesRapports;  
-foreach($typesRapports as $type => $name)  
+$types = array();
+if(is_current_session_concours())
+{
+	global $typesRapportsConcours;  
+	$types = $typesRapportsConcours;
+}
+else if(is_current_session_delegation())
+{
+	$types = array('Delegation');
+}
+else
+{
+	global $typesRapportsChercheurs;
+	global $typesRapportsUnites;
+	$types = array_merge($typesRapportsChercheurs, $typesRapportsUnites);
+}
+foreach($types as $type => $name)  
 echo '<option value='.$type.'>'.$name.'</option><br/>'."\n";  
 ?> 
 </select>

@@ -94,6 +94,14 @@ function is_current_session_concours()
 	return  ($pref == "Conc") || ($pref == "conc");
 }
 
+function is_current_session_delegation()
+{
+	if(current_session() == "")
+		return false;
+	$pref = substr(current_session(),0,4);
+	return  ($pref == "Dele") || ($pref == "dele");
+}
+
 function showSessions()
 {
 	$finalResult = array();

@@ -339,6 +339,7 @@ function addCsvReport($subtype, $properties)
 			"NOMUSUEL" => "nom",
 			"Prénom" => "prenom",
 			"PRENOM" => "prenom",
+			"GRAD_CONC" => "grade_rapport",
 			"Grade" => "grade",
 			"Directeur" => "directeur",
 			"Affectation #1" => "unite",
@@ -383,12 +384,24 @@ function addCsvReport($subtype, $properties)
 	global $typesRapportsConcours;
 	
 	if( in_array($report->type, $typesRapportsChercheurs) || in_array($report->type, $typesRapportsConcours) )
+	{
+		if(isset($report->nom) && isset($report->prenom) && $report->nom != "")
+		{
 		updateCandidateFromData((object) $properties);
+		addReport($report,false);
 	
-	addReport($report,false);
-	
-	if(isset($report->unite))
-		updateUnitData($report->unite, (object) $report);
+		if(isset($report->unite))
+			updateUnitData($report->unite, (object) $report);
+		}
+	}
+	else
+	{
+		addReport($report,false);
+		
+		if(isset($report->unite))
+			updateUnitData($report->unite, (object) $report);
+		
+	}
 	
 }
 
