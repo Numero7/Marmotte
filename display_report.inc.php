@@ -24,7 +24,7 @@ function displayEditableCandidate($candidate,$report = NULL,$canedit = true)
 	$hidden["previousprenom"] = $candidate->prenom;
 
 	$session = current_session();
-	
+
 	if($report != NULL)
 	{
 		$hidden["id_origine"] = $report->id_origine;
@@ -42,9 +42,9 @@ function displayEditableCandidate($candidate,$report = NULL,$canedit = true)
 		$candidate->type = $report->type;
 		$candidate->statut = $report->statut;
 
-	if(isset($report->id_session))
-		$session = $report->id_session;
-		
+		if(isset($report->id_session))
+			$session = $report->id_session;
+
 	}
 
 
@@ -99,10 +99,10 @@ function displayEditableChercheur($chercheur,$report = NULL, $canedit = true)
 			$chercheur->statut = $report->statut;
 		else
 			$chercheur->statut = "";
-		
-	if(isset($report->id_session))
-		$session = $report->id_session;
-		
+
+		if(isset($report->id_session))
+			$session = $report->id_session;
+
 	}
 
 	if(isset($chercheur->genre) && $chercheur->genre == "femme")
@@ -136,22 +136,7 @@ function displayEditionFrameEnd($titlle)
 {
 }
 
-function compute_title($row, $fieldId)
-{
-	global $fieldsAll;
-	global $global_fields_renaming;
-	global $type_specific_fields_renaming;
-	
-	$title = $fieldsAll[$fieldId];
-	
-	if(key_exists($fieldId, $global_fields_renaming))
-		$title = $global_fields_renaming[$fieldId];
-	
-	if(isset($row->type) && key_exists($row->type, $type_specific_fields_renaming) && key_exists($fieldId, $type_specific_fields_renaming[$row->type]))
-		$title = $type_specific_fields_renaming[$row->type][$fieldId];
-	
-	return $title;
-}
+
 
 function displayEditableField($row, $fieldId, $canedit, $session)
 {
@@ -163,85 +148,88 @@ function displayEditableField($row, $fieldId, $canedit, $session)
 	if(isset($fieldsAll[$fieldId]) && is_field_visible($row, $fieldId))
 	{
 		$title = compute_title($row, $fieldId);
-		if(isset($fieldsTypes[$fieldId]))
+		if($title != "")
 		{
-
-			$editable = $canedit && is_field_editable($row, $fieldId);
-
-			/*
-			 if(!$use_special_tr || !in_array($fieldId, $specialtr_fields) || in_array($fieldId, $start_tr_fields))
-				echo '<tr>';
-			*/
-			echo '<td style="width:10%"><span>'.$title.'</span>';
-			echo '</td>';
-
-			/*
-			 if($use_special_tr && in_array($fieldId, $start_tr_fields))
-				echo '<td><table><tr>';
-			*/
-			if(!isset($row->$fieldId))
-				$row->$fieldId = '';
-
-
-			if(!$editable && in_array($fieldId, $mandatory_edit_fields))
-				echo '<input type="hidden" name="field'.$fieldId.'" value="'.$row->$fieldId.'"/>';
-			
-			switch($fieldsTypes[$fieldId])
+			if(isset($fieldsTypes[$fieldId]))
 			{
-				case "enum":
-					display_enum($row, $fieldId, !$editable);
-					break;
-				case "topic":
-					display_topic($row, $fieldId, !$editable);
-					break;
-				case "long":
-					display_long($row, $fieldId, !$editable);
-					break;
-				case "treslong":
-					display_treslong($row, $fieldId, !$editable);
-					break;
-				case "short":
-					display_short($row, $fieldId, !$editable);
-					break;
-				case "avis":
-					display_avis($row, $fieldId, !$editable);
-					break;
-				case "rapporteur":
-					display_rapporteur($row, $fieldId, !$editable);
-					break;
-				case "unit":
-					display_unit($row, $fieldId, !$editable);
-					break;
-				case "grade":
-					display_grade($row, $fieldId, !$editable);
-					break;
-				case "concours":
-					display_concours($row, $fieldId, !$editable);
-					break;
-				case "ecole":
-					display_ecole($row, $fieldId, !$editable);
-					break;
-				case "files":
-					display_fichiers($row, $fieldId, $session, !$editable);
-					break;
-				case "rapports":
-					display_rapports($row, $fieldId);
-					break;
-				case "statut":
-					display_statut2($row, $fieldId, !$editable); break;
-				case "type":
-					display_type($row, $fieldId, !$editable); break;
-				case "sousjury":
-					display_sousjury($row, $fieldId, !$editable); break;
-			}
-			/*
-			 if(!$use_special_tr || !in_array($fieldId, $specialtr_fields))
-				*/
 
-			/*
-			 if($use_special_tr && in_array($fieldId, $end_tr_fields))
-				echo '</tr></table></td></tr>';
-			*/
+				$editable = $canedit && is_field_editable($row, $fieldId);
+
+				/*
+				 if(!$use_special_tr || !in_array($fieldId, $specialtr_fields) || in_array($fieldId, $start_tr_fields))
+					echo '<tr>';
+				*/
+				echo '<td style="width:10%"><span>'.$title.'</span>';
+				echo '</td>';
+
+				/*
+				 if($use_special_tr && in_array($fieldId, $start_tr_fields))
+					echo '<td><table><tr>';
+				*/
+				if(!isset($row->$fieldId))
+					$row->$fieldId = '';
+
+
+				if(!$editable && in_array($fieldId, $mandatory_edit_fields))
+					echo '<input type="hidden" name="field'.$fieldId.'" value="'.$row->$fieldId.'"/>';
+					
+				switch($fieldsTypes[$fieldId])
+				{
+					case "enum":
+						display_enum($row, $fieldId, !$editable);
+						break;
+					case "topic":
+						display_topic($row, $fieldId, !$editable);
+						break;
+					case "long":
+						display_long($row, $fieldId, !$editable);
+						break;
+					case "treslong":
+						display_treslong($row, $fieldId, !$editable);
+						break;
+					case "short":
+						display_short($row, $fieldId, !$editable);
+						break;
+					case "avis":
+						display_avis($row, $fieldId, !$editable);
+						break;
+					case "rapporteur":
+						display_rapporteur($row, $fieldId, !$editable);
+						break;
+					case "unit":
+						display_unit($row, $fieldId, !$editable);
+						break;
+					case "grade":
+						display_grade($row, $fieldId, !$editable);
+						break;
+					case "concours":
+						display_concours($row, $fieldId, !$editable);
+						break;
+					case "ecole":
+						display_ecole($row, $fieldId, !$editable);
+						break;
+					case "files":
+						display_fichiers($row, $fieldId, $session, !$editable);
+						break;
+					case "rapports":
+						display_rapports($row, $fieldId);
+						break;
+					case "statut":
+						display_statut2($row, $fieldId, !$editable); break;
+					case "type":
+						display_type($row, $fieldId, !$editable); break;
+					case "sousjury":
+						display_sousjury($row, $fieldId, !$editable); break;
+				}
+				/*
+				 if(!$use_special_tr || !in_array($fieldId, $specialtr_fields))
+					*/
+
+				/*
+				 if($use_special_tr && in_array($fieldId, $end_tr_fields))
+					echo '</tr></table></td></tr>';
+				*/
+			}
 		}
 	}
 
@@ -270,7 +258,7 @@ function displayEditableObject($titlle, $row, $fields, $canedit, $session)
 
 	$odd = true;
 
-	
+
 	foreach($fields as  $fieldId)
 	{
 		$style = is_array($fieldId) ? getStyle($fieldId[0],$odd): getStyle($fieldId,$odd);
@@ -304,7 +292,7 @@ function displayEditableObject($titlle, $row, $fields, $canedit, $session)
 function voir_rapport_pdf($row)
 {
 	$eval_type = $row->type;
-	
+
 	if($eval_type  == "Candidature" && is_auditionne($row))
 	{
 		echo "<B>Rapports:</B>";
@@ -327,7 +315,7 @@ function voir_rapport_pdf($row)
 		echo "Voir le rapport final\n";
 		echo "</a>\n";
 	}
-	
+
 	echo "<br/>";
 }
 
@@ -396,11 +384,11 @@ function displayEditableReport($row, $canedit = true)
 
 	$eval_type = $row->type;
 
-	
+
 	displayEditionFrameStart("",$hidden,$submits);
-	
+
 	voir_rapport_pdf($row);
-	
+
 	$is_unite = array_key_exists($eval_type,$typesRapportsUnites);
 	$statut = $row->statut;
 
@@ -418,7 +406,7 @@ function displayEditableReport($row, $canedit = true)
 		$session = get_session($row->id_session);
 	else
 		$session = current_session();
-		
+
 	if(array_key_exists($eval_type, $typesRapportsConcours))
 	{
 		$candidate = get_or_create_candidate($row);
@@ -485,10 +473,10 @@ function displayEditableReport($row, $canedit = true)
 		$fieldsIndividual2 = $typesRapportToFields[$eval_type][3];
 
 		global $fieldsUnitesExtra;
-		
+
 		if(key_exists($eval_type,$fieldsUnitesExtra))
 			$fieldsIndividual0 = array_merge($fieldsUnitesExtra[$eval_type], $fieldsIndividual0);
-		
+
 			
 		echo "<h1>".$eval_name. ": ". (isset($row->nom) ? $row->nom : "")." ".(isset($row->prenom) ? $row->prenom : "");
 		echo " (".(isset($row->id) && $row->id != 0 ? "#".$row->id : "New").")</h1>";
@@ -525,7 +513,7 @@ function displayEditableReport($row, $canedit = true)
 		$fieldsUnites2 = $typesRapportToFields[$eval_type][3];
 
 		global $fieldsUnitesExtra;
-		
+
 		if(key_exists($eval_type,$fieldsUnitesExtra))
 			$fieldsUnites0 = array_merge($fieldsUnitesExtra[$eval_type],$fieldsUnites0);
 			
@@ -553,7 +541,7 @@ function displayEditableReport($row, $canedit = true)
 
 	}
 	echo "</form>\n";
-	
+
 	echo('
 			<script type="text/javascript">');
 	echo('
@@ -639,7 +627,7 @@ function displaySummary($filters, $filter_values, $sorting_values)
 	global $fieldsTypes;
 
 	global $avis_classement;
-	
+
 	$rows = filterSortReports($filters, $filter_values, $sorting_values);
 
 	$rows_id = array();
@@ -652,7 +640,7 @@ function displaySummary($filters, $filter_values, $sorting_values)
 		$fields = $fieldsSummaryConcours;
 	else
 		$fields = $fieldsSummary;
-	
+
 	if( isset($filter_values["type"]) && $filter_values["type"] == "Promotion")
 	{
 		$filters["avis"]["liste"] = $avis_classement;
@@ -660,7 +648,7 @@ function displaySummary($filters, $filter_values, $sorting_values)
 		$filters["avis2"]["liste"] = $avis_classement;
 
 	}
-	
+
 	if(isSecretaire())
 		$fields = array_unique(array_merge($fields,array(/*"date","auteur","id",*/"statut")));
 
@@ -676,7 +664,7 @@ function displaySummary($filters, $filter_values, $sorting_values)
 	}
 
 	//if(is_current_session_concours() || (isset($filter_values["type"]) && $filter_values["type"] == "Promotion"))
-	
+
 
 	displayRows($rows,$fields, $filters, $filter_values, getCurrentSortingList(), $sorting_values);
 }

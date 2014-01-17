@@ -332,10 +332,13 @@ function addCsvReport($subtype, $properties)
 		}
 		$properties["type"] = 'Generique';
 	}
-
+	
+//dirty, should be a parameter
 	$copies = array(
 			"Nom" => "nom",
+			"NOMUSUEL" => "nom",
 			"Prénom" => "prenom",
+			"PRENOM" => "prenom",
 			"Grade" => "grade",
 			"Directeur" => "directeur",
 			"Affectation #1" => "unite",

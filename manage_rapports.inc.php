@@ -6,6 +6,23 @@ require_once('manage_people.inc.php');
 require_once("config.inc.php");
 
 
+function compute_title($row, $fieldId)
+{
+	global $fieldsAll;
+	global $global_fields_renaming;
+	global $type_specific_fields_renaming;
+
+	$title = $fieldsAll[$fieldId];
+
+	if(key_exists($fieldId, $global_fields_renaming))
+		$title = $global_fields_renaming[$fieldId];
+
+	if(isset($row->type) && key_exists($row->type, $type_specific_fields_renaming) && key_exists($fieldId, $type_specific_fields_renaming[$row->type]))
+		$title = $type_specific_fields_renaming[$row->type][$fieldId];
+
+	return $title;
+}
+
 function getIDOrigine($id_rapport)
 {
 	$sql = "SELECT id_origine FROM ".reports_db." WHERE id=$id_rapport";
