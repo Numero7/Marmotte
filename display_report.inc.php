@@ -408,14 +408,15 @@ function displayEditableReport($row, $canedit = true)
 	else
 		$session = current_session();
 
+	$year = substr($session, strlen($session) - 4, 4);
 	if(array_key_exists($eval_type, $typesRapportsConcours))
 	{
 		$candidate = get_or_create_candidate($row);
 		
 		if($eval_name == "Equivalence")
-			echo "<h1>Equivalence: ". $row->nom." ".$row->prenom. ( (isset($row->grade_rapport) &&  $row->grade_rapport != "") ? (" (grade  " .$row->grade_rapport) .")" : "") . "</h1>";
+			echo "<h1>".$year." / Equivalence: ". $row->nom." ".$row->prenom. ( (isset($row->grade_rapport) &&  $row->grade_rapport != "") ? (" (grade  " .$row->grade_rapport) .")" : "") . "</h1>";
 		else
-			echo "<h1>".$eval_name. ": ". $row->nom." ".$row->prenom.( isset($row->concours)  ? (" / concours ".$row->concours) : ""). ( (isset($row->sousjury) && $row->sousjury != "")  ? (" sousjury ".$row->sousjury) : ""). "</h1>";
+			echo "<h1>".$year." / ".$eval_name. ": ". $row->nom." ".$row->prenom.( isset($row->concours)  ? (" / concours ".$row->concours) : ""). ( (isset($row->sousjury) && $row->sousjury != "")  ? (" sousjury ".$row->sousjury) : ""). "</h1>";
 		
 		displayEditableCandidate($candidate,$row,$canedit);
 
@@ -428,10 +429,10 @@ function displayEditableReport($row, $canedit = true)
 		$fieldsRapportsCandidat2 = $typesRapportToFields[$eval_type][3];
 
 		if($eval_name == "Equivalence")
-			echo "<h1>Equivalence: ". $row->nom." ".$row->prenom. ( (isset($row->grade_rapport) &&  $row->grade_rapport != "") ? (" (grade  " .$row->grade_rapport) .")" : "") . "</h1>";
+			echo "<h1>".$year." / Equivalence: ". $row->nom." ".$row->prenom. ( (isset($row->grade_rapport) &&  $row->grade_rapport != "") ? (" (grade  " .$row->grade_rapport) .")" : "") . "</h1>";
 		else
-			echo "<h1>".$eval_name. ": ". $row->nom." ".$row->prenom.( isset($row->concours)  ? (" / concours ".$row->concours) : ""). ( (isset($row->sousjury) && $row->sousjury != "")  ? (" sousjury ".$row->sousjury) : ""). "</h1>";
-		
+			echo "<h1>".$year." / ".$eval_name. ": ". $row->nom." ".$row->prenom.( isset($row->concours)  ? (" / concours ".$row->concours) : ""). ( (isset($row->sousjury) && $row->sousjury != "")  ? (" sousjury ".$row->sousjury) : ""). "</h1>";
+				
 		$submits = array();
 
 		foreach($other_reports as $report)
@@ -475,7 +476,7 @@ function displayEditableReport($row, $canedit = true)
 		$chercheur = get_or_create_candidate($row);
 		displayEditableChercheur($chercheur,$row,$canedit);
 
-		$other_reports = find_somebody_reports($chercheur,$eval_type);
+		//$other_reports = find_somebody_reports($chercheur,$eval_type);
 		echo "<br/><hr/><br/>";
 
 		$fieldsIndividual0 = $typesRapportToFields[$eval_type][1];
@@ -511,7 +512,6 @@ function displayEditableReport($row, $canedit = true)
 		}
 
 		echo '</tr></table>';
-		$f =
 		displayEditableObject("Rapport section", $row,$fieldsIndividual0, $canedit, $session);
 	}
 	else if(array_key_exists($eval_type, $typesRapportsUnites))
