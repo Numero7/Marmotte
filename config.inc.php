@@ -340,6 +340,7 @@ ini_set('xdebug.show_local_vars', 'on');
 			"parcours" => "Parcours scientifique  (pour rapport d'audition)",
 			"concourspresentes" => "Concours présentés",
 			"fichiers" => "Fichiers associés",
+			"conflits" => "Conflits"
 	);
 
 
@@ -376,6 +377,7 @@ ini_set('xdebug.show_local_vars', 'on');
 			"genre",
 			"grade",
 			"annee_recrutement",
+			"conflits",
 			"fichiers",
 			"rapports",
 			"labo1",
@@ -403,6 +405,7 @@ ini_set('xdebug.show_local_vars', 'on');
 			"prenom",
 			"genre",
 			"grade",
+			"conflits",
 			"avis",
 			"labo1",
 			"labo2",
@@ -791,6 +794,7 @@ ini_set('xdebug.show_local_vars', 'on');
 		"rayonnement2" => "long",		
 			"auteur" => "short",
 		"date" => "short",
+		"conflits" => "short",
 			"labo1" => "unit",
 			"labo2" => "unit",
 			"labo3" => "unit",

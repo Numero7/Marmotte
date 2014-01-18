@@ -55,7 +55,9 @@ function displayEditableCandidate($candidate,$report = NULL,$canedit = true)
 		echo '<h1>Candidat : '.$candidate->nom." ".$candidate->prenom." ".'</h1>';
 */
 
-	displayEditionFrameStart("",$hidden,array());
+	$submit = array("conflit" => "Se déclarer en conflit");
+	
+	displayEditionFrameStart("",$hidden,$submit);
 
 	displayEditableObject("", $candidate, $fieldsCandidat,$canedit,$session);
 
@@ -418,62 +420,69 @@ function displayEditableReport($row, $canedit = true)
 	{
 		$candidate = get_or_create_candidate($row);
 		
-		if($eval_name == "Equivalence")
-			echo "<h1>".$year." / Equivalence: ". $row->nom." ".$row->prenom. ( (isset($row->grade_rapport) &&  $row->grade_rapport != "") ? (" (grade  " .$row->grade_rapport) .")" : "") . "</h1>";
+		if(is_in_conflict(getLogin(), $candidate))
+		{
+			echo "Vous êtes en conflit avec ce candidat";
+		}
 		else
-			echo "<h1>".$year." / ".$eval_name. ": ". $row->nom." ".$row->prenom.( isset($row->concours)  ? (" / concours ".$row->concours) : ""). ( (isset($row->sousjury) && $row->sousjury != "")  ? (" sousjury ".$row->sousjury) : ""). "</h1>";
-		
-		displayEditableCandidate($candidate,$row,$canedit);
-
-		$other_reports = find_somebody_reports($candidate,$eval_type);
-		//rrr();
-		echo "<br/><hr/><br/>";
-
-		$fieldsRapportsCandidat0 = $typesRapportToFields[$eval_type][1];
-		$fieldsRapportsCandidat1 = $typesRapportToFields[$eval_type][2];
-		$fieldsRapportsCandidat2 = $typesRapportToFields[$eval_type][3];
-
-		if($eval_name == "Equivalence")
-			echo "<h1>".$year." / Equivalence: ". $row->nom." ".$row->prenom. ( (isset($row->grade_rapport) &&  $row->grade_rapport != "") ? (" (grade  " .$row->grade_rapport) .")" : "") . "</h1>";
-		else
-			echo "<h1>".$year." / ".$eval_name. ": ". $row->nom." ".$row->prenom.( isset($row->concours)  ? (" / concours ".$row->concours) : ""). ( (isset($row->sousjury) && $row->sousjury != "")  ? (" sousjury ".$row->sousjury) : ""). "</h1>";
-				
-		$submits = array();
-
-		foreach($other_reports as $report)
-			if($report->concours != $row->concours)
-			{
-				$submits["importconcours".$report->concours] = "Importer données concours ".$report->concours;
-			}
-
-			$hidden['fieldconcours'] = $row->concours;
-
-			displayEditionFrameStart("",$hidden,$submits);
-
-			echo'<table><tr>';
-
-			if(isset($row->rapporteur) && $row->rapporteur != "")
-			{
+		{
+			if($eval_name == "Equivalence")
+				echo "<h1>".$year." / Equivalence: ". $row->nom." ".$row->prenom. ( (isset($row->grade_rapport) &&  $row->grade_rapport != "") ? (" (grade  " .$row->grade_rapport) .")" : "") . "</h1>";
+			else
+				echo "<h1>".$year." / ".$eval_name. ": ". $row->nom." ".$row->prenom.( isset($row->concours)  ? (" / concours ".$row->concours) : ""). ( (isset($row->sousjury) && $row->sousjury != "")  ? (" sousjury ".$row->sousjury) : ""). "</h1>";
+			
+			displayEditableCandidate($candidate,$row,$canedit);
+			
+			$other_reports = find_somebody_reports($candidate,$eval_type);
+			//rrr();
+			echo "<br/><hr/><br/>";
+			
+			$fieldsRapportsCandidat0 = $typesRapportToFields[$eval_type][1];
+			$fieldsRapportsCandidat1 = $typesRapportToFields[$eval_type][2];
+			$fieldsRapportsCandidat2 = $typesRapportToFields[$eval_type][3];
+			
+			if($eval_name == "Equivalence")
+				echo "<h1>".$year." / Equivalence: ". $row->nom." ".$row->prenom. ( (isset($row->grade_rapport) &&  $row->grade_rapport != "") ? (" (grade  " .$row->grade_rapport) .")" : "") . "</h1>";
+			else
+				echo "<h1>".$year." / ".$eval_name. ": ". $row->nom." ".$row->prenom.( isset($row->concours)  ? (" / concours ".$row->concours) : ""). ( (isset($row->sousjury) && $row->sousjury != "")  ? (" sousjury ".$row->sousjury) : ""). "</h1>";
+			
+			$submits = array();
+			
+			foreach($other_reports as $report)
+				if($report->concours != $row->concours)
+				{
+					$submits["importconcours".$report->concours] = "Importer données concours ".$report->concours;
+				}
+			
+				$hidden['fieldconcours'] = $row->concours;
+			
+				displayEditionFrameStart("",$hidden,$submits);
+			
+				echo'<table><tr>';
+			
+				if(isset($row->rapporteur) && $row->rapporteur != "")
+				{
+					if(isset($row->rapporteur2) && $row->rapporteur2 != "")
+						echo '<td VALIGN="top" style="width: 50%">';
+					else
+						echo '<td VALIGN="top" style="width: 100%">';
+			
+					displayEditableObject("Prérapport 1".(isset($rapporteurs[$row->rapporteur]) ? (" - ".$rapporteurs[$row->rapporteur]) : "" ),$row,$fieldsRapportsCandidat1,$canedit, $session);
+					echo'</td>';
+				}
+			
 				if(isset($row->rapporteur2) && $row->rapporteur2 != "")
+				{
 					echo '<td VALIGN="top" style="width: 50%">';
-				else
-					echo '<td VALIGN="top" style="width: 100%">';
-
-				displayEditableObject("Prérapport 1".(isset($rapporteurs[$row->rapporteur]) ? (" - ".$rapporteurs[$row->rapporteur]) : "" ),$row,$fieldsRapportsCandidat1,$canedit, $session);
-				echo'</td>';
-			}
-
-			if(isset($row->rapporteur2) && $row->rapporteur2 != "")
-			{
-				echo '<td VALIGN="top" style="width: 50%">';
-				displayEditableObject("Prérapport 2".(isset($rapporteurs[$row->rapporteur2]) ? (" - ".$rapporteurs[$row->rapporteur2]) : "" ), $row,$fieldsRapportsCandidat2,$canedit, $session);
-				echo'</td>';
-			}
-
-
-			echo'</tr></table>';
-
-			displayEditableObject("Rapport section", $row, array_merge(array("statut"),$fieldsRapportsCandidat0),$canedit, $session);
+					displayEditableObject("Prérapport 2".(isset($rapporteurs[$row->rapporteur2]) ? (" - ".$rapporteurs[$row->rapporteur2]) : "" ), $row,$fieldsRapportsCandidat2,$canedit, $session);
+					echo'</td>';
+				}
+			
+			
+				echo'</tr></table>';
+			
+				displayEditableObject("Rapport section", $row, array_merge(array("statut"),$fieldsRapportsCandidat0),$canedit, $session);
+		}
 	}
 	else if(array_key_exists($eval_type, $typesRapportsChercheurs))
 	{

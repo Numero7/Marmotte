@@ -245,6 +245,11 @@ function alertText($text)
 						else
 							displayWithRedirects();
 					}
+					else if(isset($_REQUEST["conflit"]))
+					{
+						add_conflit_to_report(getLogin(), $id_origine);
+						viewWithRedirect($id_origine);
+					}
 					else if(isset($_REQUEST['ajoutfichier']) && isset($_REQUEST['uploaddir']))
 					{
 						$directory = $_REQUEST['uploaddir'];

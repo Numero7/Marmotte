@@ -50,10 +50,33 @@ function is_auditionne($report)
 function is_auditionneCR($report)
 {
 	global $concours_ouverts;
-	return (strlen($report->concours)>=1 && substr($concours_ouverts[$report->concours],0,2)=="CR")
+	return (isset($concours_ouverts[$report->concours]) && substr($concours_ouverts[$report->concours],0,2)=="CR")
 	&&(is_classe($report) || $report->avis=="oral" || $report->avis="nonclasse");
 }
 
+function is_in_conflict($login, $candidat)
+{
+//	echo "conflits '".$candidat->conflits."' login '".$login."'"; 
+	return isset($candidat->conflits) && (strpos($candidat->conflits,$login) !== false);
+}
+
+function add_conflit_to_report($login, $id_origine)
+{
+	$report = getReport($id_origine);
+	$row = normalizeReport($report);
+	$candidat = get_or_create_candidate($row);
+	if(isset($candidat->conflits))
+	{
+		$conflits = $candidat->conflits;
+		if(strpos($conflits,$login) === false)
+		{
+			$conflits .= ";".$login;
+			if(isset($candidat->nom) && isset($candidat->prenom) && $candidat->nom != "")
+			$candidat->conflits = $conflits;
+			updateCandidateFromData($candidat);
+		}
+	}
+}
 
 function updateCandidateFromRequest($request, $oldannee="")
 {
@@ -219,53 +242,6 @@ function get_or_create_candidate($data)
 	return get_or_create_candidate_from_nom($data->nom,$data->prenom);
 }
 
-function change_candidate_property($annee,$nom,$prenom, $property_name, $newvalue)
-{
-
-	$data = (object) array($property_name => $newvalue);
-
-	change_candidate_properties($annee,$nom,$prenom, $data);
-}
-
-function change_candidate_properties($annee,$nom,$prenom, $data)
-{
-	$data = (object) $data;
-	$sql = "SELECT * FROM ".people_db.' WHERE nom="'.$nom.'" AND prenom="'.$prenom.'";';
-	$result = sql_request($sql);
-
-	$candidate = mysql_fetch_object($result);
-	if($candidate == false)
-	{
-		$data = (object) array();
-		$data->nom = $nom;
-		$data->prenom = $prenom;
-		$data->anneecandidature = $annee;
-		$candidate = get_or_create_candidate($data);
-	}
-
-	foreach($data as $property_name => $newvalue)
-		if(!property_exists($candidate,$property_name))
-		throw new Exception("No property '".$property_name."' in candidate object");
-
-	$sqlcore = "";
-	$first = true;
-
-	$sql = "UPDATE ".people_db." SET ";
-	foreach($candidate as  $field => $value)
-	{
-		if (isset($candidate->$field) && isset($data->$field))
-		{
-			$sql .=$first ? "" : ",";
-			$sql .= " ".$field.'="'.mysql_real_escape_string(trim($data->$field)).'" ';
-			$first = false;
-		}
-	}
-
-	$sql .= ' WHERE nom="'.$candidate->nom.'" AND prenom="'.$candidate->prenom.'";';
-
-	sql_request($sql);
-
-}
 
 function is_associated_directory($candidate, $directory)
 {
@@ -308,18 +284,11 @@ function find_people_files($candidate, $force, $session, $create_directory_if_ne
 			{
 				echo "Renaming '".$directory . "' to '". $basedir."'<br/>";
 				rename($directory,$basedir);
-				/*
-				$dir = str_replace($dossiers_candidats,"",$directory);
-				echo "Changing candidate dir for ".$directory." <br/>";
-				change_candidate_property($candidate->anneecandidature, $candidate->nom, $candidate->prenom, $fieldID, $dir);
-				$basedir = $directory;
-				$candidate->$fieldID = $directory;
-				*/
+				
 				break;
 			}
 		}
 		//echo "No directory found for ".$candidate->nom." ".$candidate->nom." <br/>";
-		//change_candidate_property($candidate->anneecandidature, $candidate->nom, $candidate->prenom, $fieldID, "");
 	}
 
 	$basedir = get_people_directory($candidate, $session, $create_directory_if_nexists);

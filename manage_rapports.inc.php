@@ -1027,7 +1027,7 @@ function is_field_editable($row, $fieldId)
 		return isBureauUser();
 
 
-	if($fieldId == "statut" || $fieldId == "type")
+	if($fieldId == "statut" || $fieldId == "type" || $fieldId == "conflits")
 		return isSecretaire();
 
 
