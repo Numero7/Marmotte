@@ -201,7 +201,12 @@ function display_rapports($row, $fieldId)
 				{
 					$type = "Unknown";
 				}
-				echo '<tr><td><a href="index.php?action=edit&amp;id='.$report->id.'">'.$report->id_session. " - " .$type."</a></td></tr>";
+				
+				if($type == "Candidature" && isset($report->concours) )
+					echo '<tr><td><a href="index.php?action=edit&amp;id='.$report->id.'">'.$report->id_session. " - " .$type." - " . $report->concours ."</a></td></tr>";
+				else 
+					echo '<tr><td><a href="index.php?action=edit&amp;id='.$report->id.'">'.$report->id_session. " - " .$type."</a></td></tr>";
+					
 			}
 		}
 
