@@ -420,11 +420,13 @@ function displayEditableReport($row, $canedit = true)
 	{
 		$candidate = get_or_create_candidate($row);
 		
-		if(is_in_conflict(getLogin(), $candidate))
+		$conflit = (is_in_conflict(getLogin(), $candidate));
+		if($conflit)
 		{
-			echo "Vous êtes en conflit avec ce candidat";
+			echo "<h1>Vous êtes en conflit avec ce candidat.</h1>";
 		}
-		else
+
+		if(!$conflit || isSecretaire())
 		{
 			if($eval_name == "Equivalence")
 				echo "<h1>".$year." / Equivalence: ". $row->nom." ".$row->prenom. ( (isset($row->grade_rapport) &&  $row->grade_rapport != "") ? (" (grade  " .$row->grade_rapport) .")" : "") . "</h1>";
