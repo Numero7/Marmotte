@@ -424,6 +424,7 @@ function displayEditableReport($row, $canedit = true)
 		if($conflit)
 		{
 			echo "<h1>Vous êtes en conflit avec ce candidat.</h1>";
+			
 		}
 
 		if(!$conflit || isSecretaire())
