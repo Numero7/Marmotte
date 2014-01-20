@@ -720,7 +720,7 @@ ini_set('xdebug.show_local_vars', 'on');
 			 		"other" => "Autres",
 			 		"eu" => "Europe",
 			 		"ru" => "Russie",
-			 		"us" => "USA",
+			 		"us" => "Amérique du Nord",
 			 		"as" => "Asie"
 			 				 );
 	
