@@ -418,21 +418,26 @@ function displayEditableReport($row, $canedit = true)
 	$year = substr($session, strlen($session) - 4, 4);
 	if(array_key_exists($eval_type, $typesRapportsConcours))
 	{
+		$titre = "";
+		
+		if($eval_name == "Equivalence")
+			$titre= "<h1>".$year." / Equivalence: ". $row->nom." ".$row->prenom. ( (isset($row->grade_rapport) &&  $row->grade_rapport != "") ? (" (grade  " .$row->grade_rapport) .")" : "") . "</h1>";
+		else
+			$titre= "<h1>".$year." / ".$eval_name. ": ". $row->nom." ".$row->prenom.( isset($row->concours)  ? (" / concours ".$row->concours) : ""). ( (isset($row->sousjury) && $row->sousjury != "")  ? (" sousjury ".$row->sousjury) : ""). "</h1>";
+		
 		$candidate = get_or_create_candidate($row);
 		
 		$conflit = (is_in_conflict(getLogin(), $candidate));
+
+		echo $titre;
+		
 		if($conflit)
 		{
 			echo "<h1>Vous êtes en conflit avec ce candidat.</h1>";
-			
 		}
 
 		if(!$conflit || isSecretaire())
 		{
-			if($eval_name == "Equivalence")
-				echo "<h1>".$year." / Equivalence: ". $row->nom." ".$row->prenom. ( (isset($row->grade_rapport) &&  $row->grade_rapport != "") ? (" (grade  " .$row->grade_rapport) .")" : "") . "</h1>";
-			else
-				echo "<h1>".$year." / ".$eval_name. ": ". $row->nom." ".$row->prenom.( isset($row->concours)  ? (" / concours ".$row->concours) : ""). ( (isset($row->sousjury) && $row->sousjury != "")  ? (" sousjury ".$row->sousjury) : ""). "</h1>";
 			
 			displayEditableCandidate($candidate,$row,$canedit);
 			
@@ -444,11 +449,8 @@ function displayEditableReport($row, $canedit = true)
 			$fieldsRapportsCandidat1 = $typesRapportToFields[$eval_type][2];
 			$fieldsRapportsCandidat2 = $typesRapportToFields[$eval_type][3];
 			
-			if($eval_name == "Equivalence")
-				echo "<h1>".$year." / Equivalence: ". $row->nom." ".$row->prenom. ( (isset($row->grade_rapport) &&  $row->grade_rapport != "") ? (" (grade  " .$row->grade_rapport) .")" : "") . "</h1>";
-			else
-				echo "<h1>".$year." / ".$eval_name. ": ". $row->nom." ".$row->prenom.( isset($row->concours)  ? (" / concours ".$row->concours) : ""). ( (isset($row->sousjury) && $row->sousjury != "")  ? (" sousjury ".$row->sousjury) : ""). "</h1>";
-			
+			echo $titre;
+						
 			$submits = array();
 			
 			foreach($other_reports as $report)
