@@ -204,6 +204,8 @@ function display_rapports($row, $fieldId)
 				
 				if($type == "Candidature" && isset($report->concours) )
 					echo '<tr><td><a href="index.php?action=edit&amp;id='.$report->id.'">'.$report->id_session. " - " .$type." - " . $report->concours ."</a></td></tr>";
+				else if($type == "Equivalence" && isset($report->grade_rapport) )
+					echo '<tr><td><a href="index.php?action=edit&amp;id='.$report->id.'">'.$report->id_session. " - " .$type." - " . $report->grade_rapport ."</a></td></tr>";
 				else 
 					echo '<tr><td><a href="index.php?action=edit&amp;id='.$report->id.'">'.$report->id_session. " - " .$type."</a></td></tr>";
 					

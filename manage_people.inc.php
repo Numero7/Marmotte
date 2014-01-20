@@ -175,17 +175,19 @@ function add_candidate_to_database($data)
 	foreach($fieldsIndividualAll as $field => $desc)
 	{
 		$sqlfields .= ($first ? "" : ",") .$field;
-		$sqlvalues .= ($first ? "" : ",") .'"'.(isset($data->$field) ? $data->$field : $empty_individual[$field]).'"';
+		$sqlvalues .= ($first ? "" : ",") .'"'.(isset($data->$field) ? $data->$field : ( isset($empty_individual[$field]) ? $empty_individual[$field] : "") ).'"';
 		$first = false;
 	}
 
 
+	
 	$sql = "INSERT INTO ".people_db." ($sqlfields) VALUES ($sqlvalues);";
 	sql_request($sql);
 
 	$sql2 = 'SELECT * FROM '.people_db.' WHERE nom="'.$data->nom.'" AND prenom="'.$data->prenom.'";';
 	$result = sql_request($sql2);
 	$candidate = mysql_fetch_object($result);
+
 	if($candidate == false)
 	{
 		throw new Exception("Failed to add candidate with request <br/>".$sql2);
