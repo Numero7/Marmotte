@@ -20,6 +20,8 @@ function db_connect($serverName,$dbname,$login,$password)
 	mysql_query("SET NAMES utf8;");
 	
 	$databases = array(reports_db, users_db, sessions_db, units_db, people_db);
+	$new_columns = array(people_db => array("conflits" => "text") );
+	
 	foreach($databases as $database)	
 	{
 		$result = mysql_query("SHOW TABLES LIKE '$database'");
@@ -27,8 +29,28 @@ function db_connect($serverName,$dbname,$login,$password)
 			throw new Exception("Cannot count the number of databases with name ".$database."<br/>".mysql_error());
 		if(mysql_fetch_array($result) === false)
 			throw new Exception("No database with name ".$database);
+
+		if(key_exists($database, $new_columns))
+		{
+			foreach($new_columns[$database] as $name => $type)
+			{
+				
+				//$sql="if not exists (select ".$name." from INFORMATION_SCHEMA.columns where table_name = '";
+				//	$sql.=$database."' and column_name = '".$name."')";
+				$sql="alter table ".$database." add ".$name." ".$type." NOT NULL";
+
+//				echo $sql."</br>";
+				$result = mysql_query($sql);
+/*				if($result === false)
+				{
+					echo "Failed to add new column with name '".$name."' and type '".$type."' to table '".$database."' : <br/>";
+					echo mysql_error()."<br/>";
+				}
+				*/
+			}
+		}
 	}
-		
+	
 	return $dbh;
 } ;
 
