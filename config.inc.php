@@ -270,7 +270,6 @@ ini_set('xdebug.show_local_vars', 'on');
 	* pour un rapport candidat
 	*/
 	$fieldsRapportsCandidat0 = array(
-			"statut",
 			"concours",
 			"sousjury",
 			"rapporteur",
