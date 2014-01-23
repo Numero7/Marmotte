@@ -37,7 +37,7 @@ function displaySecretaryImport()
 		Demandez à votre ACN une extraction au format csv.<br/>
 		Si votre ACN ne connaît pas la procédure, dites-lui de se rapprocher de Florence Colombo.
 		</p>
-<!-- 	
+<!-- 	csvbureau
 	<p>
 	Le formulaire ci-dessous permet d'importer plusieurs rapports vierges dans Marmotte, en partant d'un fichier
 	excel fourni par le SGCN.<br /> Ces rapports pourront ensuite être édités en ligne par les rapporteurs.<br />

@@ -408,10 +408,11 @@ function filename_from_params($nom, $prenom, $grade, $unite, $type, $session, $a
 			$type .=  " - ".mb_convert_case($avis,MB_CASE_TITLE);
 			return $session." - ".$concours." - ".$type." - ".$nom." ".$prenom;
 		}
-		if($type == "Audition")
+		else if($type == "Audition")
 		{
 			return $session." - ".$concours." - ".$type." - sousjury ".$sousjury." - ".$nom." ".$prenom;
 		}
+		else return $session." - ".$type." - ".$grade." - ".$nom." ".$prenom;
 	}
 	else
 		return $session." - ".$type." - ".$grade." - ".$nom." ".$prenom;
