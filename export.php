@@ -14,6 +14,7 @@ require_once('tcpdf/config/lang/eng.php');
 require_once('tcpdf/tcpdf.php');
 require_once('manage_users.inc.php');
 require_once('manage_rapports.inc.php');
+require_once('manage_sessions.inc.php');
 require_once('generate_xml.inc.php');
 require_once('generate_csv.inc.php');
 require_once('generate_pdf.inc.php');
@@ -105,6 +106,10 @@ function export_reports_as_csv($reports, $dir, $type = "")
 				"theme3",
 				'id'
 		);
+		if(is_current_session_concours())
+		{
+			$activefields[] = "concours";
+		}
 	}
 	else if($type == "releveconclusions")
 	{
