@@ -295,6 +295,7 @@ function alertText($text)
 						{
 							$report = addReportFromRequest($id_origine,$_REQUEST);
 
+							
 							if(isset($_REQUEST["submitandeditnext"]))
 							{
 								editWithRedirectReport($next);

@@ -44,14 +44,14 @@ function is_classe($report)
 
 function is_auditionne($report)
 {
-	return is_classe($report) || $report->avis=="oral" || $report->avis="nonclasse";
+	return is_classe($report) || $report->avis=="oral" || $report->avis=="nonclasse";
 }
 
 function is_auditionneCR($report)
 {
 	global $concours_ouverts;
 	return (isset($concours_ouverts[$report->concours]) && substr($concours_ouverts[$report->concours],0,2)=="CR")
-	&&(is_classe($report) || $report->avis=="oral" || $report->avis="nonclasse");
+	&&(is_classe($report) || $report->avis=="oral" || $report->avis=="nonclasse");
 }
 
 function is_in_conflict($login, $candidat)

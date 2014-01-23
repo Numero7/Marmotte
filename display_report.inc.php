@@ -324,7 +324,7 @@ function voir_rapport_pdf($row)
 
 function displayEditableReport($row, $canedit = true)
 {
-//	rrr();
+	
 	global $fieldsAll;
 	global $fieldsTypes;
 	global $actions;
@@ -384,7 +384,7 @@ function displayEditableReport($row, $canedit = true)
 	else
 		$submits["viewnext"] = ">>";
 
-
+	
 
 	$eval_type = $row->type;
 
@@ -392,7 +392,7 @@ function displayEditableReport($row, $canedit = true)
 	displayEditionFrameStart("",$hidden,$submits);
 
 	voir_rapport_pdf($row);
-
+	
 	$is_unite = array_key_exists($eval_type,$typesRapportsUnites);
 	$statut = $row->statut;
 
@@ -418,6 +418,7 @@ function displayEditableReport($row, $canedit = true)
 	$year = substr($session, strlen($session) - 4, 4);
 	if(array_key_exists($eval_type, $typesRapportsConcours))
 	{
+		
 		$titre = "";
 		
 		if($eval_name == "Equivalence")
@@ -442,7 +443,6 @@ function displayEditableReport($row, $canedit = true)
 			displayEditableCandidate($candidate,$row,$canedit);
 			
 			$other_reports = find_somebody_reports($candidate,$eval_type);
-			//rrr();
 			echo "<br/><hr/><br/>";
 			
 			$fieldsRapportsCandidat0 = $typesRapportToFields[$eval_type][1];
@@ -593,7 +593,9 @@ function editReport($id_rapport)
 	try
 	{
 		$report = getReport($id_rapport);
+		
 		$row = normalizeReport($report);
+		
 		$candidat = get_or_create_candidate($row);
 		displayEditableReport($row, true);
 	}
