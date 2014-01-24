@@ -24,7 +24,7 @@
 						<td width="50%" style="padding-top:20px;">
 											<table style="padding-top:20px;">
 						<tr><td>
-							<B>Année 2013</B>
+							<B>Année <xsl:value-of select="annee_concours" /></B>
 							<br />
 							<B>
 								Concours
@@ -38,7 +38,7 @@
 							<br />
 							<B>
 								Concours n°
-								<xsl:value-of select="concours" />
+								<xsl:value-of select="nom_concours" />
 							</B>
 							<br />
 							<br />

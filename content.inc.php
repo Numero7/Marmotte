@@ -6,6 +6,7 @@ require_once("authbar.inc.php");
 require_once('display_report.inc.php');
 require_once('display_reports.inc.php');
 require_once('manage_filters_and_sort.inc.php');
+require_once('manage_concours.inc.php');
 
 ?>
 
@@ -177,6 +178,10 @@ function alertText($text)
 					break;
 				case 'deleteCurrentSelection':
 					deleteCurrentSelection();
+					displayReports();
+					break;
+				case 'affectersousjurys':
+					affectersousjurys();
 					displayReports();
 					break;
 				case 'edit':

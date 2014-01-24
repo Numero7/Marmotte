@@ -58,7 +58,7 @@ function displayExportGeneral()
 
 	
 	?>
-	<table align="left" ">
+	<table align="left" >
 	<tr>
 	<td><h2>Export</h2></td>
 	<?php 
@@ -152,7 +152,7 @@ function displayRows($rows, $fields, $filters, $filter_values, $sort_fields, $so
 	<?php 
 	displayExportGeneral();
 	?>
-	<td>
+	</td>
 	</tr>
 		<tr>
 			<td>
@@ -293,13 +293,21 @@ function displayRows($rows, $fields, $filters, $filter_values, $sort_fields, $so
 			if(isSecretaire())
 			{
 			?>
-			<tr><td>
+			<tr>
+			<td>
 <form onsubmit="return confirm('Etes vous sur de vouloir supprimer ces rapports?');"
 method="post" action="index.php">
 			<input type="hidden" name="action" value="deleteCurrentSelection" /> <input
 				type="submit" value="Supprimer ces rapports" />
 				</form>
-				</td></tr>
+				</td>
+			<td>
+<form method="post" action="index.php">
+			<input type="hidden" name="action" value="affectersousjurys" /> <input
+				type="submit" value="Affecter automatiquement les sous-jurys" />
+				</form>
+				</td>
+				</tr>
 				<?php 
 			}
 			?>

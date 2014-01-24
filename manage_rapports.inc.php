@@ -5,6 +5,7 @@ require_once('manage_unites.inc.php');
 require_once('manage_people.inc.php');
 require_once("config.inc.php");
 
+require_once('manage_filters_and_sort.inc.php');
 
 function compute_title($row, $fieldId)
 {
@@ -882,6 +883,10 @@ function change_report_properties($id_origine, $data)
 	return $result;
 }
 
+function get_current_selection()
+{
+	return filterSortReports(getCurrentFiltersList(), getFilterValues(), getSortingValues());
+}
 
 function getVirginReports($rapporteur)
 {

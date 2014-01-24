@@ -335,7 +335,16 @@ function createXMLReportElem($row, DOMDocument $doc, $keep_br = true)
 			appendLeaf("parcours", $candidat->parcours, $doc, $rapportElem);
 			appendLeaf("projet", $candidat->projetrecherche, $doc, $rapportElem);
 			appendLeaf("productionResume", $candidat->productionResume, $doc, $rapportElem);
-			appendLeaf("grade_concours", substr($concours_ouverts[$row->concours],0,2), $doc, $rapportElem);
+			appendLeaf("grade_concours", substr($concours_ouverts[$row->concours],0,3), $doc, $rapportElem);
+			
+			$conc = $sessions[$row->id_session];
+			appendLeaf("annee_concours", substr($conc,strlen($conc)-4,4), $doc, $rapportElem);
+			
+			$conc = $row->concours;
+			if(strlen($conc) == 4)
+				appendLeaf("nom_concours", (substr($conc,0,2)."/".substr($conc,2,4)), $doc, $rapportElem);
+			else
+				appendLeaf("nom_concours", $conc, $doc, $rapportElem);
 				
 		}
 	}
@@ -354,14 +363,18 @@ function createXMLReportElem($row, DOMDocument $doc, $keep_br = true)
 	{
 		global $concours_ouverts;
 		if(isset($concours_ouverts[$row->concours]))
-			appendLeaf("grade_concours", substr($concours_ouverts[$row->concours],0,2), $doc, $rapportElem);
+			appendLeaf("grade_concours", substr($concours_ouverts[$row->concours],0,3	), $doc, $rapportElem);
 		else
 			appendLeaf("grade_concours", "CR", $doc, $rapportElem);
+
+			$conc = $sessions[$row->id_session];
+			appendLeaf("annee_concours", substr($conc,strlen($conc)-4,4), $doc, $rapportElem);
 			
-		/*
-		echo "appended leaf ".substr($concours_ouverts[$row->concours],0,2);
-		return;
-		*/
+			$conc = $row->concours;
+			if(strlen($conc) == 4)
+				appendLeaf("nom_concours", (substr($conc,0,2)."/".substr($conc,2,4)), $doc, $rapportElem);
+			else
+				appendLeaf("nom_concours", $conc, $doc, $rapportElem);
 	}
 
 	//On ajoute les entete gauche et droit
