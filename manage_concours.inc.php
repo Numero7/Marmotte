@@ -7,23 +7,42 @@ function affectersousjurys()
 	$rows = get_current_selection();
 	$users = listUsers();
 	global $concours_ouverts;
+	global $sous_jurys;
+
+	foreach($users as $login => $data)
+	{
+		if(isset($data->sousjury))
+		{
+			foreach($sous_jurys as $concours => $sj)
+				foreach($sj as $code => $nom)
+			{
+				if($code != "")
+				{
+					if(strpos( $data->sousjury , $code) !== false)
+						$user[$login]->sousjurys[$concours] = $code;
+				}
+			}
+		}
+	}
+	
 	
 	foreach($rows as $row)
 	{
-		$sousjury = "";
-		if(isset($row->sousjury))
-			$sousjury = $row->sousjury;
-
-		$rapp = "";
-		if(isset($row->rapporteur))
+		if(isset($row->rapporteur) && isset($row->concours))
+		{
 			$rapp = $row->rapporteur;
+			$concours = $row->concours;
 		
-		$sousjury2 = "";
-		if( isset($users[$rapp]) && isset($users[$rapp]["sousjury"]))
-			$sousjury2 = $users[$rapp]["sousjury"];
-		
-	rrr();	
+			if(isset($user[$rapp]->sousjurys[$concours]))
+			{
+				$sj = $user[$rapp]->sousjurys[$concours];
+				if(!isset($row->sousjury) || ( isset($row->sousjury) && $row->sousjury != $sj))
+					change_report_property($row->id, "sousjury", $sj);
+			}
+		}
 	}
+	
+	
 }
 
 ?>
