@@ -320,8 +320,6 @@ function createXMLReportElem($row, DOMDocument $doc, $keep_br = true)
 	
 	if($row->type == "Audition")
 	{
-		if(isset($presidents_sousjurys[$row->sousjury]))
-		{
 			
 			global $concours_ouverts;
 			
@@ -329,6 +327,11 @@ function createXMLReportElem($row, DOMDocument $doc, $keep_br = true)
 			{
 				appendLeaf("signataire",$presidents_sousjurys[$row->sousjury]["nom"], $doc, $rapportElem);
 				appendLeaf("signature", $presidents_sousjurys[$row->sousjury]["signature"], $doc, $rapportElem);
+			}
+			else
+			{
+				appendLeaf("signataire","", $doc, $rapportElem);
+				appendLeaf("signature", "", $doc, $rapportElem);
 			}
 
 			$candidat = get_or_create_candidate($row);
@@ -346,7 +349,6 @@ function createXMLReportElem($row, DOMDocument $doc, $keep_br = true)
 			else
 				appendLeaf("nom_concours", $conc, $doc, $rapportElem);
 				
-		}
 	}
 	else
 	{
