@@ -569,13 +569,13 @@ function normalizeReport($report)
 	if(!isset($report->sousjury))
 		$report->sousjury = '';
 
-	if(isset($report->statut) && $report->statut == "vierge" && isset($report->type))
+	if(isset($report->type))
 	{
 		if(isset($report_prototypes[$report->type]))
 		{
 			$prototype = $report_prototypes[$report->type];
 			foreach($prototype as $field => $value)
-				if(!isset($report->$field) || $report->$field=="")
+				if(isset($report->$field) && $report->$field=="")
 				$report->$field = $value;
 		}
 		if($report->type == "Equivalence" && $report->prerapport=="" && isset($report->anneesequivalence))

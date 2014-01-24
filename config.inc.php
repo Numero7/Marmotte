@@ -704,6 +704,18 @@ ini_set('xdebug.show_local_vars', 'on');
 			"Changement-section" => array('ecole' => "Changement de section, évaluation permanente par une deuxième section")
 	);
 
+	$extra_report_prototypes = get_config("reports_prototypes");
+	if($extra_report_prototypes == "")
+		$extra_report_prototypes = array();
+	
+	foreach($extra_report_prototypes as $type => $champs)
+	{
+		if(!isset($report_prototypes[$type]))
+			$report_prototypes[$type] = array();
+		foreach($champs as $champ => $contenu)
+			$report_prototypes[$type][$champ] = $contenu;
+	}
+	
 	$candidat_prototypes = get_config("candidats_prototypes");
 	
 	
