@@ -704,9 +704,8 @@ ini_set('xdebug.show_local_vars', 'on');
 			"Changement-section" => array('ecole' => "Changement de section, évaluation permanente par une deuxième section")
 	);
 
-	$candidat_prototypes = array(
-			'avissousjury' => "Un commentaire sur l'audition du candidat, à renseigner par le premier rapporteur après l'audition."
-	);
+	$candidat_prototypes = get_config("candidats_prototypes");
+	
 	
 	$mergeableTypes = array("short","treslong","long","short");
 	$crashableTypes = array("auteur");

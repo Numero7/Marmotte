@@ -353,7 +353,11 @@ function createXMLReportElem($row, DOMDocument $doc, $keep_br = true)
 	if($row->type == "Classement")
 	{
 		global $concours_ouverts;
-		appendLeaf("grade_concours", substr($concours_ouverts[$row->concours],0,2), $doc, $rapportElem);
+		if(isset($concours_ouverts[$row->concours]))
+			appendLeaf("grade_concours", substr($concours_ouverts[$row->concours],0,2), $doc, $rapportElem);
+		else
+			appendLeaf("grade_concours", "CR", $doc, $rapportElem);
+			
 		/*
 		echo "appended leaf ".substr($concours_ouverts[$row->concours],0,2);
 		return;
