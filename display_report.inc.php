@@ -121,7 +121,6 @@ function displayEditableChercheur($chercheur,$report = NULL, $canedit = true)
 
 }
 
-
 function displayEditionFrameStart($titlle, $hidden, $submit)
 {
 
@@ -138,8 +137,6 @@ function displayEditionFrameStart($titlle, $hidden, $submit)
 function displayEditionFrameEnd($titlle)
 {
 }
-
-
 
 function displayEditableField($row, $fieldId, $canedit, $session)
 {
@@ -587,7 +584,6 @@ function displayEditableReport($row, $canedit = true)
 
 }
 
-
 function editReport($id_rapport)
 {
 	try
@@ -622,7 +618,6 @@ function viewReport($id_rapport)
 
 };
 
-
 function displayActionsMenu($row, $excludedaction = "", $actions)
 {
 	$id = $row->id;
@@ -644,9 +639,6 @@ function displayActionsMenu($row, $excludedaction = "", $actions)
 		}
 		echo "</tr></table>";
 }
-
-
-
 
 function displaySummary($filters, $filter_values, $sorting_values)
 {

@@ -50,13 +50,14 @@ ini_set('xdebug.show_local_vars', 'on');
 			"sousjury",
 			"avis",
 			"theseAnnee",
-			"grade_rapport",
+//			"grade_rapport",
 			"rapporteur",
 			"rapporteur2",
 			"theme1",
 			"theme2",
 			"labo1",
 			"labo2",
+			"labo3"
 	);
 	
 	$fieldsTriConcours = array(

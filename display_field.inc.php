@@ -165,7 +165,9 @@ function display_grade($row, $fieldID, $readonly)
 function display_concours($row, $fieldID, $readonly)
 {
 	global $concours_ouverts;
-	display_select($row, $fieldID,array_merge(array(""=>""), $concours_ouverts),$readonly);
+	$conc = $concours_ouverts;
+	$conc[""] = "";
+	display_select($row, $fieldID,$conc,$readonly);
 }
 
 function display_ecole($row, $fieldID, $readonly)

@@ -8,7 +8,9 @@ function xml_node_to_array($node, $protect ="")
 		{
 			if($subnode->localName != "")
 			{
-				$result[trim($subnode->localName,$protect)] = xml_node_to_array($subnode,$protect);
+				$key = trim($subnode->localName,$protect);
+				$val = xml_node_to_array($subnode,$protect);
+				$result[$key] = $val;
 				//echo($subnode->localName."<br/>");
 			}
 		}
