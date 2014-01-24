@@ -41,7 +41,7 @@
 							<br />
 							<B>
 								Concours n°
-								<xsl:value-of select="concours" />
+								<xsl:value-of select="nom_concours" />
 							</B>
 							<br />
 							<br />
