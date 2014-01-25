@@ -704,9 +704,7 @@ ini_set('xdebug.show_local_vars', 'on');
 			"Changement-section" => array('ecole' => "Changement de section, évaluation permanente par une deuxième section")
 	);
 
-	$extra_report_prototypes = get_config("reports_prototypes");
-	if($extra_report_prototypes == "")
-		$extra_report_prototypes = array();
+	$extra_report_prototypes = get_config_array("reports_prototypes");
 	
 	foreach($extra_report_prototypes as $type => $champs)
 	{
@@ -716,8 +714,7 @@ ini_set('xdebug.show_local_vars', 'on');
 			$report_prototypes[$type][$champ] = $contenu;
 	}
 	
-	$candidat_prototypes = get_config("candidats_prototypes");
-	
+	$candidat_prototypes = get_config_array("candidats_prototypes");
 	
 	$mergeableTypes = array("short","treslong","long","short");
 	$crashableTypes = array("auteur");
