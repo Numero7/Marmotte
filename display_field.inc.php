@@ -113,7 +113,8 @@ function display_select($row, $fieldID, $liste,$readonly)
 
 	if($readonly)
 	{
-		echo isset($liste[$current_value]) ? $liste[$current_value] : $current_value;
+		$val = htmlentities(isset($liste[$current_value]) ? $liste[$current_value] : $current_value);
+		echo $val;
 	}
 	else
 	{
@@ -124,7 +125,9 @@ function display_select($row, $fieldID, $liste,$readonly)
 	{
 		if($text == "") $text="   ";
 		$sel = ($value == $current_value) ? "selected=\"selected\"" : "";
-		echo  "\t\t\t\t\t<option value=\"".($value)."\" ".$sel.">".substr($text, 0,150)."</option>\n";
+		$val = htmlentities(substr($text, 0,150));
+		echo  "\t\t\t\t\t<option value=\"".($value)."\" ".$sel.">".$val."</option>\n";
+		
 	}
 	?>
 </select>

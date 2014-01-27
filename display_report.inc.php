@@ -624,6 +624,7 @@ function displayActionsMenu($row, $excludedaction = "", $actions)
 	$id_origine = $row->id_origine;
 	echo "<table><tr>";
 	foreach($actions as $action => $actiondata)
+	{
 		if ($action!=$excludedaction)
 		{
 			$title = $actiondata['title'];
@@ -637,6 +638,8 @@ function displayActionsMenu($row, $excludedaction = "", $actions)
 				echo "<img class=\"icon\" width=\"24\" height=\"24\" src=\"$icon\" alt=\"$title\"/>\n</a>\n</td>\n";
 			}
 		}
+	}
+//	rrr();
 		echo "</tr></table>";
 }
 

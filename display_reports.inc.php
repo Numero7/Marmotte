@@ -184,7 +184,7 @@ function displayRows($rows, $fields, $filters, $filter_values, $sort_fields, $so
 <hr />
 <table class="summary">
 	<tr>
-		<th></th>
+		<th class="oddrow"><span class="nomColonne"></span></th>
 		<?php
 		$rapporteurs = listNomRapporteurs();
 		global $tous_avis;
@@ -219,7 +219,7 @@ function displayRows($rows, $fields, $filters, $filter_values, $sort_fields, $so
 	<tr id="t<?php echo $row->id;?>" class="<?php echo $style;?>">
 		<?php
 			
-		echo '<td>';
+		echo '<td width="5%">';
 		displayActionsMenu($row,"", $actions1,$row->rapporteur, $row->rapporteur);
 		echo '</td>';
 
