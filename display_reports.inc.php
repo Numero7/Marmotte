@@ -219,7 +219,7 @@ function displayRows($rows, $fields, $filters, $filter_values, $sort_fields, $so
 	<tr id="t<?php echo $row->id;?>" class="<?php echo $style;?>">
 		<?php
 			
-		echo '<td width="5%">';
+		echo '<td>';
 		displayActionsMenu($row,"", $actions1,$row->rapporteur, $row->rapporteur);
 		echo '</td>';
 
