@@ -280,15 +280,15 @@ function display_fichiers($row, $fieldID, $session, $readonly)
 			?>
 			<table><tr><td>
 <input
-	type="submit" name="ajoutfichier" value="Ajouter fichier" />
-			</td></tr><tr><td>
-<input type="hidden" name="type"
-	value="candidatefile" />
-<input
 	type="hidden" name="MAX_FILE_SIZE" value="10000000" />
 	<input type="hidden" name="uploaddir" value="<?php echo $dir;?>"/>
 	<input name="uploadedfile"
 	type="file" />
+			<input
+	type="submit" name="ajoutfichier" value="Ajouter fichier" />
+			</td></tr><tr><td>
+<input type="hidden" name="type"
+	value="candidatefile" />
 		</td></tr></table>
 <?php 
 		echo "</td></tr>";

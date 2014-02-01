@@ -451,10 +451,12 @@ function displayEditableReport($row, $canedit = true)
 			$submits = array();
 			
 			foreach($other_reports as $report)
+			{
 				if($report->concours != $row->concours)
 				{
 					$submits["importconcours".$report->concours] = "Importer données concours ".$report->concours;
 				}
+			}
 			
 				$hidden['fieldconcours'] = $row->concours;
 			

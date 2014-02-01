@@ -1051,7 +1051,7 @@ function is_field_editable($row, $fieldId)
 		return true;
 	}
 	
-
+	
 	if(isset($row->statut) && ($row->statut == "audition"))
 	{
 		if(isset($row->sousjury) && isPresidentSousJury($row->sousjury))
