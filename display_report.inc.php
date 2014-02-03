@@ -425,7 +425,7 @@ function displayEditableReport($row, $canedit = true)
 		
 		$candidate = get_or_create_candidate($row);
 		
-		$conflit = (is_in_conflict(getLogin(), $candidate));
+		$conflit = (is_in_conflict(getLogin(), $candidate)) && !isSecretaire();
 
 		echo $titre;
 		
@@ -481,6 +481,10 @@ function displayEditableReport($row, $canedit = true)
 				}
 			
 				echo'</tr></table>';
+				}
+				else 
+				{
+					
 				}
 				displayEditableObject("Rapport section", $row, array_merge(array("statut"),$fieldsRapportsCandidat0),$canedit, $session);
 		}
