@@ -121,7 +121,6 @@ function getAllReportsOfType($type,$id_session=-1)
 
 function filterSortReports($filters, $filter_values = array(), $sorting_values = array(), $rapporteur_or = true)
 {
-
 	$sql = "SELECT *, ".people_db.".nom AS people_nom, ".people_db.".prenom AS people_prenom, ".reports_db.".nom AS nom, ".reports_db.".prenom AS prenom FROM ".reports_db." left join ".people_db." on ".reports_db.".nom=".people_db.".nom AND ".reports_db.".prenom=".people_db.".prenom WHERE ".reports_db.".id=".reports_db.".id_origine AND ".reports_db.".statut!=\"supprime\"";
 	//$sql = "SELECT * FROM ".reports_db." WHERE id = id_origine AND statut!=\"supprime\"";
 	//$sql = "SELECT * FROM ".reports_db." WHERE date = (SELECT MAX(date) FROM evaluations AS mostrecent WHERE mostrecent.id_origine = evaluations.id_origine AND statut!=\"supprime\")";

@@ -222,13 +222,13 @@ function export_current_selection_as_single_csv($type = "")
 		'type' => '1+',
 		'grade_rapport' => '2+',
 		'avis' => '3+');
-		$reports = filterSortReports(getCurrentFiltersList(),  $filter, $sorting,false);
+		$reports = filterSortReports(getCurrentFiltersList(),  $filter, $sorting);
 	}
 	else
 	{
-		$reports = filterSortReports(getCurrentFiltersList(),  $filter, getSortingValues(),false);
+		$reports = filterSortReports(getCurrentFiltersList(),  $filter, getSortingValues());
 	}
-
+	
 	if(count($reports) > 0)
 	{
 		$dir = "csv/".$login;
