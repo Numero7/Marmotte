@@ -429,12 +429,8 @@ function displayEditableReport($row, $canedit = true)
 
 		echo $titre;
 		
-		if($conflit)
-		{
-			echo "<h1>Vous êtes en conflit avec ce candidat.</h1>";
-		}
 
-		if(!$conflit || isSecretaire())
+		if(true)
 		{
 			
 			displayEditableCandidate($candidate,$row,$canedit);
@@ -462,6 +458,8 @@ function displayEditableReport($row, $canedit = true)
 			
 				displayEditionFrameStart("",$hidden,$submits);
 			
+				if(!$conflit)
+				{
 				echo'<table><tr>';
 			
 				if(isset($row->rapporteur) && $row->rapporteur != "")
@@ -482,9 +480,8 @@ function displayEditableReport($row, $canedit = true)
 					echo'</td>';
 				}
 			
-			
 				echo'</tr></table>';
-			
+				}
 				displayEditableObject("Rapport section", $row, array_merge(array("statut"),$fieldsRapportsCandidat0),$canedit, $session);
 		}
 	}
@@ -511,6 +508,9 @@ function displayEditableReport($row, $canedit = true)
 		echo " (".(isset($row->id) && $row->id != 0 ? "#".$row->id : "New").")</h1>";
 
 
+		if(!$conflit)
+		{
+		
 		displayEditionFrameStart("",$hidden,array());
 
 		echo'<table><tr>';
@@ -530,6 +530,7 @@ function displayEditableReport($row, $canedit = true)
 		}
 
 		echo '</tr></table>';
+		}
 		displayEditableObject("Rapport section", $row,$fieldsIndividual0, $canedit, $session);
 	}
 	else if(array_key_exists($eval_type, $typesRapportsUnites))
