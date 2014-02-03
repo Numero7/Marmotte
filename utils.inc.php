@@ -418,7 +418,7 @@ function filename_from_params($nom, $prenom, $grade, $unite, $type, $session, $a
 		return $session." - ".$type." - ".$grade." - ".$nom." ".$prenom;
 }
 
-function getStyle($fieldId,$odd)
+function getStyle($fieldId,$odd, $conflict = false)
 {
 	global $fieldsIndividualAll;
 	global $fieldsCandidat;
@@ -438,6 +438,11 @@ function getStyle($fieldId,$odd)
 	{  $style .= "Bis"; }
 	else if ($individual)
 	{  $style .= "Individual"; }
+
+	if ($conflict)
+	{
+		$style .=  "Conflict";
+	}			
 	
 	return $style;
 }

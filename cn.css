@@ -310,6 +310,32 @@ font-weight:bold;
 	background: #f7d7d9;
 }
 
+.oddrowConflit{
+	background: #f9f0f0;
+}
+
+.evenrowConflit{
+	background: #f7d7d9;
+}
+
+.oddrowIndividualConflit{
+	background: #f9f0f0;
+}
+
+.evenrowIndividualConflit{
+	background: #f7d7d9;
+}
+
+.oddrowBisConflit{
+	background: #f9f0f0;
+}
+
+.evenrowBisConflit{
+	background: #f7d7d9;
+}
+
+
+
 dt{
   margin-left:0;
   font-weight: bold;
