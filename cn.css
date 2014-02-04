@@ -310,30 +310,29 @@ font-weight:bold;
 	background: #f7d7d9;
 }
 
-.oddrowConflict{
-	background: #bf0000;
+.oddrowConflit{
+	background: #f9f0f0;
 }
 
-.evenrowConflict{
-	background: #bf0000;
+.evenrowConflit{
+	background: #f7d7d9;
 }
 
-.oddrowIndividualConflict{
-	background: #bf0000;
+.oddrowIndividualConflit{
+	background: #f9f0f0;
 }
 
-.evenrowIndividualConflict{
-	background: #bf0000;
+.evenrowIndividualConflit{
+	background: #f7d7d9;
 }
 
-.oddrowBisConflict{
-	background: #bf0000;
+.oddrowBisConflit{
+	background: #f9f0f0;
 }
 
-.evenrowBisConflict{
-	background: #bf0000;
+.evenrowBisConflit{
+	background: #f7d7d9;
 }
-
 
 
 dt{
