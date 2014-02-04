@@ -214,7 +214,7 @@ function displayRows($rows, $fields, $filters, $filter_values, $sort_fields, $so
 			// is_in_conflict(getLogin(), $candidate)
 			$candidate = get_or_create_candidate($row);
 			$conflit = is_in_conflict(getLogin(), $candidate);
-			$style = getStyle("",$odd);
+			$style = getStyle("",$odd,$conflit);
 			$odd = !$odd;
 			?>
 	
