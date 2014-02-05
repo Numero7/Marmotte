@@ -1415,7 +1415,7 @@ ini_set('xdebug.show_local_vars', 'on');
 		NIVEAU_PERMISSION_BASE => "rapporteur",
 		NIVEAU_PERMISSION_BUREAU => "bureau",
 		NIVEAU_PERMISSION_PRESIDENT_SECRETAIRE => "secrétaire/président(e)",
-		NIVEAU_PERMISSION_SUPER_UTILISATEUR => "super utilisateur",
+//		NIVEAU_PERMISSION_SUPER_UTILISATEUR => "super utilisateur",
 	);
 	
 	if(!isset($_SESSION['current_session']))
