@@ -293,10 +293,14 @@ function displayRows($rows, $fields, $filters, $filter_values, $sort_fields, $so
 		}
 		?>
 <?php 
-			if(isSecretaire())
+			if(isPresidentSousJury() || isSecretaire())
 			{
 			?>
 			<tr>
+			<?php 
+			if(isSecretaire() )
+			{
+			?>
 			<td>
 <form onsubmit="return confirm('Etes vous sur de vouloir supprimer ces rapports?');"
 method="post" action="index.php">
@@ -304,6 +308,11 @@ method="post" action="index.php">
 				type="submit" value="Supprimer ces rapports" />
 				</form>
 				</td>
+				<?php 
+			}
+			?>
+			<?php 
+				?>
 			<td>
 <form method="post" action="index.php">
 			<input type="hidden" name="action" value="affectersousjurys" /> <input

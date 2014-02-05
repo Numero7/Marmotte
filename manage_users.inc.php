@@ -198,11 +198,20 @@ function isSousJury($sousjury, $login = "")
 		return false;
 }
 
-function isPresidentSousJury($sousjury)
+function isPresidentSousJury($sousjury = "")
 {
 	global $presidents_sousjurys;
-	return (isset($presidents_sousjurys[$sousjury]['login']) && getLogin() == $presidents_sousjurys[$sousjury]['login']);
+	if($sousjury != "")
+		return (isset($presidents_sousjurys[$sousjury]['login']) && getLogin() == $presidents_sousjurys[$sousjury]['login']);
+	else
+	{
+		foreach($presidents_sousjurys as $pres => $data)
+			if(isset($data['login']) && $data['login'] == getLogin())
+			return true;
+	}
+	return false;
 }
+
 
 
 function addCredentials($login,$pwd)
