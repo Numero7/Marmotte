@@ -23,7 +23,7 @@
 			<img height="80" width="80" src="img/CNRSlogo.png"></img>
 		</td>
 		<td  width="380" valign="center">
-		<B>Année 2013</B><br/>
+		<B>Année <xsl:value-of select="annee_concours" /></B><br/>
 		<B>Concours <xsl:value-of select="grade_concours"/></B>
 		</td>
 	</tr>
