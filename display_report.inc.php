@@ -425,7 +425,7 @@ function displayEditableReport($row, $canedit = true)
 		
 		$candidate = get_or_create_candidate($row);
 		
-		$conflit = (is_in_conflict(getLogin(), $candidate)) && !isSecretaire();
+		$conflit = ( is_in_conflict(getLogin(), $candidate)) && !isSecretaire() && !( isset($row->avis) && ($row->avis == "nonauditionne" ) );
 
 		echo $titre;
 		

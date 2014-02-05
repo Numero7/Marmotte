@@ -400,6 +400,7 @@ function generate_jad_report($code)
 	$filters["avis"] = "oral";
 	$admissibles = filterSortReports(getCurrentFiltersList(), $filters, array("nom" => "1+"));
 
+	rrr();
 	global $concours_ouverts;
 	$nom_concours = $concours_ouverts[$code];
 
