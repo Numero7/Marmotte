@@ -38,7 +38,6 @@ function computeArrays($filters, $columnFilters, $rowFilter)
 	$sql .= filtersCriteriaToSQL(getCurrentFiltersList(),$filters);
 	$sql .= "GROUP BY ".$fieldsSQL;
 	$sql .= ";";
-	
 	$result = sql_request($sql);
 
 	if($result == false)
@@ -49,6 +48,7 @@ function computeArrays($filters, $columnFilters, $rowFilter)
 	{
 		$finresult[] = $truc;
 	}
+//	rrr();
 	return $finresult;
 }
 
@@ -79,7 +79,7 @@ function displayArrays($filters, $columnFilters, $rowFilters,$format = "",$rowti
 			}
 			$current[$truc->$fieldcatname][$fieldcatname] = $truc->total;
 		}
-	}	
+	}
 	displayArraysAux($processedTab,0,$columnFilters,$rowFilters,$rowtitles);	
 }
 
@@ -100,6 +100,7 @@ function displayCounts($vals,$rowFilters)
 		$first = 0;
 	}
 }
+
 function displayArraysAux($tab,$currLevel, $columnFilters,$rowFilters,$rowtitles = array())
 {
 	if ($currLevel >= count($columnFilters)-1){
@@ -358,7 +359,7 @@ if(is_current_session_concours())
 <h1>Stats rapporteurs</h1>
 <p>
 Statistiques sur le nombre de rapports de candidats auditionnés par rapporteur et par thème,
-en premier rapporteur et entre parenthèses en second rapporteur.
+en premier rapporteur.
 </p>
 <?php 
 
@@ -367,6 +368,7 @@ if(is_current_session_concours())
 	$filters = array(
 		'type' => "Candidature",
 		'avis' => "oral",
+			'id_session' => current_session_id()
 	);
 
 	$columnFilters = array(
@@ -375,7 +377,25 @@ if(is_current_session_concours())
 	);
 	$rowFilters = array(
 		'theme1' => 'Theme principal',
-		'theme2' => 'Theme secondaire',
+//		'theme2' => 'Theme secondaire',
+	);
+	displayArrays($filters, $columnFilters, $rowFilters);
+?>
+
+<p>
+La même chose
+en second rapporteur.
+</p>
+
+<?php 
+	$columnFilters = array(
+			"concours" => "Concours",
+			'rapporteur2' => 'Rapporteur2',
+	);
+	$rowFilters = array(
+		'theme1' => 'Theme principal',
+			//'rapporteur' => 'Rapporteur1',
+//		'theme2' => 'Theme secondaire',
 	);
 	displayArrays($filters, $columnFilters, $rowFilters);
 	
@@ -394,6 +414,7 @@ Statistiques sur le nombre de rapports de candidats par localisation de these
 	global $theseslocs;
 	$filters = array(
 			'type' => "Candidature",
+			'id_session' => current_session_id()
 	);
 	
 	$columnFilters = array(
@@ -415,6 +436,7 @@ if(is_current_session_concours())
 	$filters = array(
 			'type' => "Candidature",
 			'avis' => "oral",
+			'id_session' => current_session_id()
 	);
 
 	$columnFilters = array(
@@ -442,6 +464,7 @@ Statistiques sur la répartition thématique par candidats.
 
 	$filters = array(
 		'type' => "Candidature",
+			'id_session' => current_session_id()
 	);
 
 	$columnFilters = array(
@@ -465,6 +488,7 @@ Statistiques sur la répartition de genre des candidats.
 
 	$filters = array(
 		'type' => "Candidature",
+			'id_session' => current_session_id()
 	);
 
 	$columnFilters = array(
@@ -499,7 +523,8 @@ global $topics;
 
 	$users = listUsers();
 
-	$filters = array();
+	$filters = array('id_session' => current_session_id());
+	
 	if(countReports($filters) > 0)
 	{
 		echo "<tr>\n<td></td><td></td><td>".statBaseAvancement($filters)."</td>\n";
@@ -555,9 +580,9 @@ global $topics;
 		echo '<div style="float: left">';
 		echo '<table class="stats">';
 
-		$filters = array("concours" => $code, "avis1" => "", "type"=>"Candidature");
+		$filters = array("concours" => $code, "avis1" => "", "type"=>"Candidature",'id_session' => current_session_id());
 		$missing1 = filterSortReports(getCurrentFiltersList(),$filters);
-		$filters = array("concours" => $code, "avis2" => "", "type"=>"Candidature");
+		$filters = array("concours" => $code, "avis2" => "", "type"=>"Candidature",'id_session' => current_session_id());
 		$missing2 = filterSortReports(getCurrentFiltersList(),$filters);
 
 		foreach($missing1 as $report)

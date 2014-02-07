@@ -3,13 +3,15 @@
 /**
  * Formset processing library
  *
- * @package PhpMyAdmin-setup
+ * @package PhpMyAdmin-Setup
  */
 
 /**
  * Processes forms registered in $form_display, handles error correction
  *
  * @param FormDisplay $form_display
+ *
+ * @return void
  */
 function process_formset(FormDisplay $form_display)
 {
@@ -19,7 +21,10 @@ function process_formset(FormDisplay $form_display)
         // drop post data
         header('HTTP/1.1 303 See Other');
         header('Location: index.php');
-        exit;
+
+        if (!defined('TESTSUITE')) {
+            exit;
+        }
     }
     if (!$form_display->process(false)) {
         // handle form view and failed POST
@@ -28,14 +33,14 @@ function process_formset(FormDisplay $form_display)
         // check for form errors
         if ($form_display->hasErrors()) {
             // form has errors, show warning
-            $separator = PMA_get_arg_separator('html');
+            $separator = PMA_URL_getArgSeparator('html');
             $page = filter_input(INPUT_GET, 'page');
             $formset = filter_input(INPUT_GET, 'formset');
             $formset = $formset ? "{$separator}formset=$formset" : '';
             $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
             if ($id === null && $page == 'servers') {
                 // we've just added a new server, get it's id
-                $id = ConfigFile::getInstance()->getServerCount();
+                $id = $form_display->getConfigFile()->getServerCount();
             }
             $id = $id ? "{$separator}id=$id" : '';
             ?>
@@ -53,7 +58,9 @@ function process_formset(FormDisplay $form_display)
             // drop post data
             header('HTTP/1.1 303 See Other');
             header('Location: index.php');
-            exit;
+            if (!defined('TESTSUITE')) {
+                exit;
+            }
         }
     }
 }
