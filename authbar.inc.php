@@ -146,6 +146,22 @@ global $typesRapportsChercheurs;
 							</td>
 							<?php 				
 							}
+							else if(is_current_session_delegation())
+							{
+								?>
+								<td  valign="top">Dossiers
+								<ul>
+																	<li><a
+										href="index.php?action=view&amp;filter_type=delegation">Délégations
+									</a> <?php 
+									if(isSecretaire())
+										echo " <a href=\"index.php?action=new&amp;type=delegation\">+</a>";
+									?>
+									</li>
+																</ul>
+																</td>
+							<?php 				
+							}
 							else
 							{
 								?>
@@ -203,10 +219,16 @@ global $typesRapportsChercheurs;
 									<?php
 
 									$sessions = sessionArrays();
+									
+									$i = count($sessions);
 									foreach($sessions as $id => $nom)
 									{
+										$i--;
+										if($i  <= 4)
+										{
 										//$typesRapports = getTypesEval($s["id"]);
 										echo "<li><a href=\"index.php?action=view&amp;reset_filter=&amp;filter_id_session=".strval($id)."\">".$nom."</a></li>";
+										}
 										/*			?>
 										 <!--
 										<ul>
