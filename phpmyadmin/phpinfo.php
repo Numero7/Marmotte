@@ -9,8 +9,6 @@
 /**
  * Gets core libraries and defines some variables
  */
- phpinfo();
- 
 require_once 'libraries/common.inc.php';
 PMA_Response::getInstance()->disable();
 
