@@ -491,9 +491,14 @@ function displayEditableReport($row, $canedit = true)
 	}
 	else if(array_key_exists($eval_type, $typesRapportsChercheurs))
 	{
+		
+		
 		//todo $chercheur = chercheur_of_report($row);
 		$chercheur = get_or_create_candidate($row);
-		displayEditableChercheur($chercheur,$row,$canedit);
+
+			$conflit = ( is_in_conflict(getLogin(), $chercheur)) && !isSecretaire()  ;
+		
+				displayEditableChercheur($chercheur,$row,$canedit);
 
 		//$other_reports = find_somebody_reports($chercheur,$eval_type);
 		echo "<br/><hr/><br/>";

@@ -1044,6 +1044,14 @@ ini_set('xdebug.show_local_vars', 'on');
 			"B-"=>"B-",
 			"C"=>"C"
 	);
+
+	$avis_deleg = array(
+			""=>"",
+			"A+"=>"A+",
+			"A"=>"A",
+			"B"=>"B",
+			"C"=>"C"
+	);
 	
 	$avis_ternaire = array(
 			""=>"", 
@@ -1086,7 +1094,7 @@ ini_set('xdebug.show_local_vars', 'on');
 		'Affectation' => $avis_ternaire,
 		'Reconstitution' => $avis_binaire,
 		'Titularisation' => $avis_ternaire,
-		'Delegation' => $avis_lettre,
+		'Delegation' => $avis_deleg,
 		'Changement-Directeur' => $avis_pertinence,
 		'Changement-Directeur-Adjoint' => $avis_pertinence,
 		'Renouvellement' => $avis_pertinence,

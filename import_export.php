@@ -97,7 +97,7 @@ if(is_current_session_concours())
 }
 else if(is_current_session_delegation())
 {
-	$types = array('Delegation');
+	$types = array('Delegation'=>'Délégation');
 }
 else
 {

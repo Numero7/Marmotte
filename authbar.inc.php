@@ -152,10 +152,10 @@ global $typesRapportsChercheurs;
 								<td  valign="top">Dossiers
 								<ul>
 																	<li><a
-										href="index.php?action=view&amp;filter_type=delegation">Délégations
+										href="index.php?action=view&amp;filter_type=Delegation">Délégations
 									</a> <?php 
 									if(isSecretaire())
-										echo " <a href=\"index.php?action=new&amp;type=delegation\">+</a>";
+										echo " <a href=\"index.php?action=new&amp;type=Delegation\">+</a>";
 									?>
 									</li>
 																</ul>
