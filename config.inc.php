@@ -199,25 +199,21 @@ ini_set('xdebug.show_local_vars', 'on');
 	$fieldsIndividual = array_merge($fieldsIndividual0, $fieldsIndividual1, $fieldsIndividual2);
 	
 	$fieldsChercheursAll = array(
-			array(
 			"nom",
-			"prenom",),array(
+			"prenom",
 			"genre",
-			"statut_individu"),
-			array(
+			"statut_individu",
 			"grade",
-			"annee_recrutement",),
-			array(
+			"annee_recrutement",
 			"labo1",
 			"theme1",
 			"theme2",
-			"theme3",),
-			array(
+			"theme3",
 			"theseAnnee",
 			"theseLieu",
 			"theseloc",
 			"HDRAnnee",
-			"HDRLieu",),
+			"HDRLieu",
 			"fichiers",
 			"rapports"
 	);
@@ -941,7 +937,7 @@ ini_set('xdebug.show_local_vars', 'on');
 	"finalisationHDR",
 	"national",
 	"unite",
-//	"avis1",
+	"avis1",
 //	"prerapport"
 					),
 			array()
