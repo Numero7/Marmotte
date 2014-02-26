@@ -941,8 +941,8 @@ ini_set('xdebug.show_local_vars', 'on');
 	"finalisationHDR",
 	"national",
 	"unite",
-	"avis1",
-	"prerapport"
+//	"avis1",
+//	"prerapport"
 					),
 			array()
 );
