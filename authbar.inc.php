@@ -120,7 +120,7 @@ global $typesRapportsChercheurs;
 										{
 											echo "<li><a href=\"index.php?action=view&amp;reset_filter=&amp;filter_rapporteur=".getLogin()."&amp;filter_id_session=".current_session_id()."&amp;filter_type=".urlencode($value)."\">Mes ".$value."s</a></li>";
 										}
-										echo "<li><a href=\"index.php?action=view&amp;reset_filter=&amp;filter_rapporteur=".getLogin()."&amp;filter_id_session=".current_session_id()."&amp;filter_type=Candidature; filter_avis=oral\">Mes Auditions</a></li>";
+										echo "<li><a href=\"index.php?action=view&amp;reset_filter=&amp;filter_rapporteur=".getLogin()."&amp;filter_id_session=".current_session_id()."&amp;filter_type=Candidature&amp;filter_avis=oral\">Mes Auditions</a></li>";
 									}
 									?>
 
