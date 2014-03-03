@@ -1057,6 +1057,9 @@ function is_field_editable($row, $fieldId)
 		{
 			return $extra;
 		}
+		
+		if($fieldId == "fichiers")
+			return $extra;
 
 
 		if( $is_rapp1  && ($fieldId == "prerapport" || $fieldId == "avissousjury" || $fieldId=="productionResume" || $fieldId == "parcours" || $fieldId=="projetrecherche"))

@@ -144,6 +144,7 @@ function displayEditableField($row, $fieldId, $canedit, $session)
 	global $fieldsTypes;
 	global $mandatory_edit_fields;
 
+	
 	//echo $fieldId."<br/>";
 	if(isset($fieldsAll[$fieldId]) && is_field_visible($row, $fieldId))
 	{
@@ -155,6 +156,12 @@ function displayEditableField($row, $fieldId, $canedit, $session)
 
 				$editable = $canedit && is_field_editable($row, $fieldId);
 
+				if($fieldId == "fichiers")
+				{
+					if(isset($row->statut) && $row->statut == "audition")
+						$editable = true;
+				}
+				
 				/*
 				 if(!$use_special_tr || !in_array($fieldId, $specialtr_fields) || in_array($fieldId, $start_tr_fields))
 					echo '<tr>';
