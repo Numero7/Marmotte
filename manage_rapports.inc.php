@@ -497,7 +497,6 @@ function addReportFromRequest($id_origine, $request)
 
 
 	$report = createReportFromRequest($id_origine, $request);
-
 	
 	$id_nouveau = addReportToDatabase($report,false);
 
@@ -516,7 +515,8 @@ function createReportFromRequest($id_origine, $request)
 
 	$row = (object) array();
 
-	$row->id_session = current_session_id();
+	if(!isset($row->id_session))
+		$row->id_session = current_session_id();
 
 	foreach($fieldsRapportAll as  $field => $comment)
 		if (isset($request["field".$field]))
