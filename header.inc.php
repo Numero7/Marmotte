@@ -10,6 +10,6 @@
 <link rel="stylesheet" type="text/css" href="default.css" media="screen" />
 <link rel="stylesheet" type="text/css" href="cn.css" media="all" />
 <link rel="stylesheet" type="text/css" href="cseprint.css" media="print" />
-<title>MARMOTTE : Gestion des rapports de section du coCNRS</title>
+<title>Marmotte</title>
 </head>
 <body>

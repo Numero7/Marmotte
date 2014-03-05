@@ -9,9 +9,9 @@ $firstlogin = authenticateBase('admin','password');
 <div class="large">
 	<div class="header">
 		<h2><span>Comité National de la Recherche Scientifique</span></h2>
-		<h1>Bienvenue sur Marmotte</h1>
-		<h1> (@Matthieu: ou pas)</h1>
-	</div>
+		<h1>  Marmotte vous souhaite une excellente journée d'audition,</h1>
+		<h1>dans la joie et la bonne humeur</h1>
+		</div>
 
 	<div class="content"> 
  <p>
