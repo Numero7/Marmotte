@@ -9,8 +9,15 @@ $firstlogin = authenticateBase('admin','password');
 <div class="large">
 	<div class="header">
 		<h2><span>Comité National de la Recherche Scientifique</span></h2>
-		<h1>"Il vaut mieux pomper même s'il ne se passe rien que de risquer qu'il se passe quelque chose de pire en ne pompant pas." Devise Shadok
-		</h1>
+		<br/>
+		<br/>
+		<br/>
+		<br/>
+		<br/>
+		
+		<h3>"Il vaut mieux pomper même s'il ne se passe rien que de risquer qu'il se passe quelque chose de pire en ne pompant pas."
+		 Devise Shadok.
+		</h3>
 		</div>
 
 	<div class="content"> 
