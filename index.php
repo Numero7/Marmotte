@@ -152,5 +152,8 @@ catch(Exception $e)
 	echo $e->getMessage();
 }
 ?>
+<p>
+Le site web Marmotte a été développé par Hugo Gimbert et Yann Ponty. Code libre d'utilisation par les sections du comité national. Utilisations commerciales réservées aux auteurs.
+</p>
 </body>
 </html>
