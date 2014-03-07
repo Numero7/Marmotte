@@ -325,6 +325,11 @@ method="post" action="index.php">
 			?>
 		
 </table>
+<p>
+Le site web Marmotte a été développé par Hugo Gimbert et Yann Ponty.<br/>
+Code libre d'utilisation par les sections du Comité national.<br/>
+Utilisations commerciales réservées.
+</p>
 <?php
 } ;
 
