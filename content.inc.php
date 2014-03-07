@@ -7,6 +7,7 @@ require_once('display_report.inc.php');
 require_once('display_reports.inc.php');
 require_once('manage_filters_and_sort.inc.php');
 require_once('manage_concours.inc.php');
+require_once('export.inc.php');
 
 ?>
 
