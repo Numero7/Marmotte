@@ -326,7 +326,7 @@ ini_set('xdebug.show_local_vars', 'on');
 			"theme1" => "Theme 1",
 			"theme2" => "Theme 2",
 			"theme3" => "Theme 3",
-			"theseAnnee" => "Année début thèse",
+			"theseAnnee" => "Années début et fin de thèse",
 			"theseLieu" => "Lieu thèse",
 			"theseloc" => "Loc thèse",
 			"HDRAnnee" => "Annee HDR",
