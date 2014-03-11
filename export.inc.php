@@ -567,4 +567,3 @@ function generate_exemple_csv($types,$fields)
 
 
 ?>
-
