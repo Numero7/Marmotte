@@ -761,11 +761,10 @@ function next_report($id)
 	if(isset($_SESSION['rows_id']))
 	{
 		$rows_id = $_SESSION['rows_id'];
-		$id;
-		$n = count($rows_id) ;
+		$n = count($rows_id);
 		for($i = 0; $i < $n; $i++)
 		{
-			if($rows_id[$i] == $id)
+			if(getIDOrigine($rows_id[$i]) == getIDOrigine($id))
 			{
 				if($i < $n - 1)
 					return $rows_id[$i+1];
