@@ -224,7 +224,7 @@ global $typesRapportsChercheurs;
 									foreach($sessions as $id => $nom)
 									{
 										$i--;
-										if($i  <= 4)
+										if($i  <= 6)
 										{
 										//$typesRapports = getTypesEval($s["id"]);
 										echo "<li><a href=\"index.php?action=view&amp;reset_filter=&amp;filter_id_session=".strval($id)."\">".$nom."</a></li>";
