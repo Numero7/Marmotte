@@ -51,9 +51,11 @@ function viewReportAsPdf($id_rapport,$option = "")
 	else
 		$type = getReport($id_rapport)->type;
 
+	
 	$xsl = type_to_xsl( $type);
 	
 	$html = XMLToHTML( $doc , $xsl );	
+	
 	
 	$pdf = HTMLToPDF($html);
 

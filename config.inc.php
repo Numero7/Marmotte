@@ -1139,13 +1139,22 @@ ini_set('xdebug.show_local_vars', 'on');
 			"favorable" => "<B>Avis favorable</B>",
 			"defavorable" => "<B>Avis défavorable</B>"
 	);
+
+	/* Pour les écoles thématiques*/
+	$delegCheckboxes = array(
+			"A+" => "<B>A+</B>",
+			"A" => "<B>A</B>",
+			"B" => "<B>B</B>",
+			"C" => "<B>C</B>",
+	);
 	
 	$typesRapportsToCheckboxes = array(
 	'Evaluation-Vague' => $evalCheckboxes,
 	'Evaluation-MiVague' => $evalCheckboxes,
 	'Renouvellement' => $pertinenceCheckboxes,
 	'Association' => $pertinenceCheckboxes,
-	'Ecole' => $ecoleCheckboxes
+	'Ecole' => $ecoleCheckboxes,
+	'Delegation' => $delegCheckboxes,
 	);
 
 	$typesRapportsToCheckboxesTitles = array(
@@ -1153,11 +1162,13 @@ ini_set('xdebug.show_local_vars', 'on');
 			'Evaluation-MiVague' => '<B>EVALUATION A MI-VAGUE DE CHERCHEUR<br/>Avis de la section sur l’activité du chercheur</B>',
 			'Renouvellement' => '<B>AVIS DE PERTINENCE DU SOUTIEN DU CNRS AUX UNITES</B>',
 			'Association' => '<B>AVIS DE PERTINENCE DU SOUTIEN DU CNRS AUX UNITES</B>',
+			'Delegation' => '<B>AVIS DE LA SECTION</B>',
 			'Ecole' => '<B>AVIS SUR L\'ECOLE</B>'
 	);
 	
 
 	$typesRapportsToEnteteGauche = array(
+			'Delegation' => '<B>Objet de l’évaluation :</B><br/><EM>demande de délégation</EM>',
 			'Evaluation-Vague' => '<B>Objet de l’évaluation :</B><br/><EM>évaluation à vague de chercheur</EM>',
 			'Evaluation-MiVague' => '<B>Objet de l’évaluation :</B><br/><EM>évaluation à mi-vague de chercheur</EM>',
 			'Promotion' => '<B>Objet de l’évaluation :</B><br/>Avancement de grade<br/><B>Au grade de :</B>',
@@ -1196,6 +1207,7 @@ ini_set('xdebug.show_local_vars', 'on');
 			);
 	
 	$typesRapportsToEnteteDroit = array(
+			'Delegation' => 'Individu',
 			'Evaluation-Vague' => 'Individu',
 			'Evaluation-MiVague' => 'Individu',
 			'MedailleBronze' => 'Individu',
