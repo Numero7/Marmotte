@@ -1511,7 +1511,12 @@ ini_set('xdebug.show_local_vars', 'on');
 			"Changement de direction d'unité" => "Changement-Directeur",
 			"Renouvellement de GDR" => "Renouvellement",
 			"Expertise" => "Expertise",
-			"Rattachement" => "GeneriqueChercheur"
+			"Rattachement" => "GeneriqueChercheur",
+			"Suivi" => "GeneriqueChercheur",
+			"Emeritat (renouvellement)" => "Emeritat-renouvellement",
+			"Emeritat (1" => "Emeritat",
+			"Renouvellement de mise" => "GeneriqueChercheur",
+			"Accueil" => "GeneriqueChercheur"
 	);
 	
 	$users_not_rapporteur = array('admin','yawn');
