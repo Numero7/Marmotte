@@ -26,6 +26,9 @@ function compute_title($row, $fieldId)
 
 function getIDOrigine($id_rapport)
 {
+	if($id_rapport <= 0)
+		return 0;
+	
 	$sql = "SELECT id_origine FROM ".reports_db." WHERE id=$id_rapport";
 	$result=sql_request($sql);
 	$report = mysql_fetch_object($result);

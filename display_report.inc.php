@@ -329,7 +329,6 @@ function voir_rapport_pdf($row)
 function displayEditableReport($row, $canedit = true)
 {
 
-	
 	global $fieldsAll;
 	global $fieldsTypes;
 	global $actions;
@@ -350,19 +349,9 @@ function displayEditableReport($row, $canedit = true)
 	echo '<div id="debut"></div>';
 	echo '<form enctype="multipart/form-data" method="post" action="index.php" style="width: 100%">'."\n";
 
-	
-	if($row->id_origine != 0)
-	{
-		$next = next_report($row->id_origine);
-		$previous = previous_report($row->id_origine);
-	}
-	else
-	{
-		$next = 0;
-		$previous = 0;
-	}
+	$next = next_report($row->id_origine);
+	$previous = previous_report($row->id_origine);
 
-	
 	$hidden = array(
 			"next_id" => strval($next),
 			"previous_id" => strval($previous),
@@ -373,7 +362,6 @@ function displayEditableReport($row, $canedit = true)
 
 	$submits = array();
 
-	
 	if($canedit)
 		$submits["editprevious"] = "<<";
 	else
