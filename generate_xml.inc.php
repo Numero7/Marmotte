@@ -296,6 +296,7 @@ function createXMLReportElem($row, DOMDocument $doc, $keep_br = true)
 
 	$fieldsspecial = array('unite','date','type');
 
+	
 	//On ajoute une formule à la fin du rapport si nécessaire
 	if(array_key_exists($row->type,$typesRapportsToFormula))
 	{
@@ -317,6 +318,7 @@ function createXMLReportElem($row, DOMDocument $doc, $keep_br = true)
 		appendLeaf($fieldID,   $keep_br ? $row->$fieldID : remove_br($row->$fieldID) , $doc, $rapportElem);
 
 	global $presidents_sousjurys;
+	
 	
 	if($row->type == "Audition")
 	{
