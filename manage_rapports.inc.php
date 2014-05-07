@@ -1083,7 +1083,7 @@ function is_field_editable($row, $fieldId)
 	if(isset($row->statut) && ($row->statut == "rapport" || $row->statut == "publie"))
 		return isSecretaire();
 
-	if($is_rapp1 && ($fieldId == "rapport") && isset($row->type) && ($row->type == Delegation))
+	if($is_rapp1 && ($fieldId == "rapport"))
 		return true;
 	
 	if(!$is_rapp1 && !$is_rapp2 && !isSecretaire())
