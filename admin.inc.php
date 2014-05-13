@@ -179,7 +179,6 @@ if(isSecretaire())
 		echo '<table>';
 		foreach($users as $user => $data)
 		{
-			echo '<tr><td >';
 			if ($data->permissions <= getUserPermissionLevel())
 			{
 				echo "<tr><td >".ucfirst($data->description)."</td><td> [".$user."]</td>\n";
@@ -225,13 +224,12 @@ if(isSecretaire())
 						echo "</select>\n";
 						
 					}
-					echo "</form>";
 				}
 
 				echo "<input type=\"hidden\" name=\"login\" value=\"$user\"/>\n";
 				echo "<input type=\"hidden\" name=\"action\" value=\"infosrapporteur\"/>\n";
 				echo " <input type=\"submit\" value=\"Valider\"/>\n";
-				echo "</td></tr>\n";
+				echo "</form>\n";
 			}
 			echo '</table>';
 		}
