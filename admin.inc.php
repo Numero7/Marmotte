@@ -20,8 +20,8 @@ if(isSecretaire())
 <hr/>
 	<h2 id="membres">Membres de la section</h2>
 
+	<h3 id="adminnewaccount">Création nouveau rapporteur</h3>
 <table>
-	<h3 id="adminnewaccount">Création nouveau rapporteur</h2>
 	<tr>
 		<td>
 			<form method="post" action="index.php">
@@ -103,7 +103,7 @@ if(isSecretaire())
 		</tr>
 		<tr>
 		<td>
-			<h3 id="adminnewpwd">Modifier un mot de passe</h2>
+			<h3 id="adminnewpwd">Modifier un mot de passe</h3>
 			<form method="post" action="index.php">
 				<table class="inputreport">
 					<tr>
@@ -147,7 +147,7 @@ if(isSecretaire())
 			</form>
 		</td>
 		<td>
-			<h3>Vérifier un mot de passe</h2>
+			<h3>Vérifier un mot de passe</h3>
 			<form method="post" action="index.php">
 				<table class="inputreport">
 					<tr>
@@ -158,7 +158,7 @@ if(isSecretaire())
 					<tr>
 						<td><input type="hidden" name="action" value="checkpwd" />
 						
-						<td><input type="submit" value="Vérifier" />
+						<input type="submit" value="Vérifier" />
 						</td>
 					</tr>
 				</table>
@@ -169,20 +169,22 @@ if(isSecretaire())
 </table>
 
 
-<h3 id="infosrapporteur">Statut des membres</h2>
+<h3 id="infosrapporteur">Statut des membres</h3>
 	<table>
 		<?php 
 		global $sous_jurys;
 		global $concours_ouverts;
 
 		$users = listUsers();
+		echo '<table>';
 		foreach($users as $user => $data)
 		{
-			echo '<form method="post" action="index.php">';
+			echo '<tr><td >';
 			if ($data->permissions <= getUserPermissionLevel())
 			{
 				echo "<tr><td >".ucfirst($data->description)."</td><td> [".$user."]</td>\n";
 				echo "<td>\n";
+				echo '<form method="post" action="index.php">';
 				echo "<select name=\"permissions\">\n";
 				foreach($permission_levels as $val => $level)
 				{
@@ -223,14 +225,15 @@ if(isSecretaire())
 						echo "</select>\n";
 						
 					}
-
+					echo "</form>";
 				}
 
 				echo "<input type=\"hidden\" name=\"login\" value=\"$user\"/>\n";
 				echo "<input type=\"hidden\" name=\"action\" value=\"infosrapporteur\"/>\n";
 				echo " <input type=\"submit\" value=\"Valider\"/>\n";
-				echo "</form></td></tr>\n";
+				echo "</td></tr>\n";
 			}
+			echo '</table>';
 		}
 		?>
 	</table>

@@ -6,9 +6,9 @@ require_once('manage_sessions.inc.php');
 
 <h3>Session courante</h3>
 
-<table>
-			<form method="post" action="index.php"
-				<table class="inputreport">
+<p>
+<form method="post" action="index.php">
+		<table class="inputreport">
 					<tr>
 						<td style="width: 20em;">Nom de session</td>
 			
@@ -42,6 +42,7 @@ require_once('manage_sessions.inc.php');
 
 </table>
 </form>
+</p>
 			<h3>Ajout d'une session</h3>
 			<form method="post" action="index.php"
 				onsubmit="return confirm('Etes vous sur de vouloir ajouter cette session ?');">
@@ -55,6 +56,7 @@ require_once('manage_sessions.inc.php');
 					<?php
 						echo  '<option value="Concours">Concours</option>';
 						echo  '<option value="Delegations">Delegations</option>';
+						echo  '<option value="PES">PES</option>';
 						echo  '<option value="Printemps">Printemps</option>';
 						echo  '<option value="Automne">Automne</option>';
 						?>
