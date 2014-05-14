@@ -136,6 +136,8 @@ function createSession($name,$annee)
 				$date = "01/03/".$annee; break;
 			case "Automne":
 				$date = "01/10/".$annee; break;
+			case "PES":
+				$date = "01/05/".$annee; break;
 			default:
 				throw new Exception("Unknown session name: $name");
 		}
