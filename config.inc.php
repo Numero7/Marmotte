@@ -1488,7 +1488,7 @@ ini_set('xdebug.show_local_vars', 'on');
 			'theme3' => array('name'=>"Theme3" , 'liste' => $topics, 'default_value' => "tous", 'default_name' => ""),
 			'labo1' => array('name'=>"Labo1" , 'default_value' => "tous", 'default_name' => ""),
 			'labo2' => array('name'=>"Labo2" , 'default_value' => "tous", 'default_name' => ""),
-			'labo3' => array('name'=>"Labo3" , 'default_value' => "tous", 'default_name' => ""),
+			'genre' => array('name' =>"Genre", 'liste' => $genreCandidat, 'default_value' => "", 'default_name' => "Tous les genre"),
 			'concours' => array('name'=>"Concours" , 'liste' => $conc, 'default_value' => "tous", 'default_name' => ""),
 			'sousjury' => array('name'=>"Sous-jury" , 'liste' => $tous_sous_jury, 'default_value' => "tous", 'default_name' => ""),
 			'rapporteur' => array('name'=>"Rapporteur" , 'default_value' =>"tous", 'default_name' => ""),
