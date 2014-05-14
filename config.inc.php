@@ -88,6 +88,12 @@ ini_set('xdebug.show_local_vars', 'on');
 			 'publie'=>"Rapport publié"
 			);
 
+	$genreCandidat = array(
+			'' => "None",
+			'homme'=>'Homme',
+			'femme' => "Femme",
+	);
+	
 		
 	$fieldsRapportAll = array(
 		"statut" => "Statut rapport",
@@ -1461,6 +1467,7 @@ ini_set('xdebug.show_local_vars', 'on');
 			'theme3' => array('name'=>"Theme3" , 'liste' => $topics, 'default_value' => "tous", 'default_name' => ""),
 			'labo1' => array('name'=>"Labo1" , 'default_value' => "tous", 'default_name' => ""),
 			'statut' => array('name'=>"Statut" , 'liste' => $statutsRapports, 'default_value' => "tous", 'default_name' => "Tous les statuts"),
+			'genre' => array('name' =>"Genre", 'liste' => $genreCandidat, 'default_value' => "", 'default_name' => "Tous les genre"),
 			'id_session' => array('name'=>"Session", 'default_value' =>-1, 'default_name' => "Toutes les sessions"),
 			'avancement' => array('name'=>"Avancement" , 'default_value' => "", 'default_name' => ""),
 			'id_origine' => array('default_value' =>-1),
