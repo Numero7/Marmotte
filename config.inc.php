@@ -79,9 +79,16 @@ ini_set('xdebug.show_local_vars', 'on');
 			"date"
 	);
 	
-	$statutsRapports = array( 'vierge' => "Rapport vierge", 'prerapport'=>'Prérapport', 'editable' => "Editable", 'rapport'=>"Rapport", 'audition'=>"Audition", 'publie'=>"Rapport publié");
-	
-	
+	$statutsRapports = array(
+			 'vierge' => "Rapport vierge",
+			 'prerapport'=>'Prérapport',
+			 'editable' => "Editable",
+			 'rapport'=>"Rapport",
+			 'audition'=>"Audition",
+			 'publie'=>"Rapport publié"
+			);
+
+		
 	$fieldsRapportAll = array(
 		"statut" => "Statut rapport",
 		"concours" => "Concours",
