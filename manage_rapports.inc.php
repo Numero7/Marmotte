@@ -266,7 +266,7 @@ function filtersCriteriaToSQL($filters, $filter_values, $rapporteur_or = true)
 				if($filter_values[$filter] == "classe")
 					$sql .= " AND ".reports_db.".$filter REGEXP \"^[0-9]\" ";
 				else if($filter_values[$filter] == "oral")
-					$sql .= " AND (".reports_db.".$filter=\"oral\" OR ".reports_db.".$filter REGEXP \"^[0-9]\" )";
+					$sql .= " AND (".reports_db.".$filter=\"oral\" OR ".reports_db.".$filter=\"nonclasse\" OR ".reports_db.".$filter REGEXP \"^[0-9]\" )";
 				else
 					$sql .= " AND ".reports_db.".$filter=\"$filter_values[$filter]\" ";
 			}
