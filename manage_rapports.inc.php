@@ -1028,14 +1028,18 @@ function is_field_editable($row, $fieldId)
 		return false;
 
 
-	if($fieldId == "statut" || $fieldId == "type" || $fieldId == "conflits")
+	if($fieldId == "statut")
+		return isSecretaire();
+
+	if(isset($row->statut) && ($row->statut == "publie"))
+		return false;
+	
+	if($fieldId == "type" || $fieldId == "conflits")
 		return isSecretaire();
 
 	if($fieldId == 'rapporteur' || $fieldId == 'rapporteur2')
 		return isBureauUser();
 	
-	if(isset($row->statut) && ($row->statut == "publie"))
-		return false;
 
 	if(isSecretaire())
 			return true;

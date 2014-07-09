@@ -248,7 +248,7 @@ global $typesRapportsChercheurs;
 									global $statutsRapports;
 
 									echo '
-		Statut
+		Statut des rapports sélectionnés
 		<form method="post"  action="index.php">
 		<select name="new_statut">';
 									foreach ($statutsRapports as $val => $nom)
