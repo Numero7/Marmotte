@@ -1027,17 +1027,19 @@ function is_field_editable($row, $fieldId)
 	if(in_array($fieldId, $nonEditableFieldsTypes))
 		return false;
 
-	if(isSecretaire())
-		return true;
-
-
-	if($fieldId == 'rapporteur' || $fieldId == 'rapporteur2')
-		return isBureauUser();
-
 
 	if($fieldId == "statut" || $fieldId == "type" || $fieldId == "conflits")
 		return isSecretaire();
 
+	if($fieldId == 'rapporteur' || $fieldId == 'rapporteur2')
+		return isBureauUser();
+	
+	if(isset($row->statut) && ($row->statut == "publie"))
+		return false;
+
+	if(isSecretaire())
+			return true;
+		
 
 	$login = getLogin();
 

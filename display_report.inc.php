@@ -399,6 +399,10 @@ function displayEditableReport($row, $canedit = true)
 
 	$is_unite = array_key_exists($eval_type,$typesRapportsUnites);
 	$statut = $row->statut;
+	
+	if($statut == "publie")
+		$canedit = false;
+	
 
 	$eval_name = $eval_type;
 	if(array_key_exists($eval_type, $typesRapports))
