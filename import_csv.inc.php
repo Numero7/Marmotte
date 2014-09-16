@@ -272,7 +272,7 @@ function addCsvReport($subtype, $properties)
 				$subtype = "Colloque";
 				break;
 			}
-			if($key == "Titre")
+			if($key == "Titre" || $key == "TITRE")
 			{
 				$subtype = "Ecole";
 				break;
