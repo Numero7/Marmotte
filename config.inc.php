@@ -1511,6 +1511,7 @@ ini_set('xdebug.show_local_vars', 'on');
 	$csv_preprocessing = array('nom' => 'normalizeName', 'prenom' => 'normalizeName','unit' => 'fromunittocode');
 	
 	$sgcn_keywords_to_eval_types = array(
+			"cole th" => "Ecole",
 			"Evaluation" => 'Evaluation-Vague',
 			'Reconstitution' => 'Reconstitution',
 			'Titularisation' => 'Titularisation',

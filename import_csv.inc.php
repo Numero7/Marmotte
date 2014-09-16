@@ -290,6 +290,7 @@ function addCsvReport($subtype, $properties)
 	foreach($sgcn_keywords_to_eval_types as $key => $value)
 		if(strcontains($properties["type"],$key))
 		{
+			
 			if($key == "promotion")
 			{
 				if(strcontains($properties["type"],"CR1"))
