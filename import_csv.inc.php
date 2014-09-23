@@ -334,6 +334,8 @@ function addCsvReport($subtype, $properties)
 		$properties["type"] = 'Generique';
 	}
 	
+	
+	
 //dirty, should be a parameter
 	$copies = array(
 			"Nom" => "nom",
@@ -364,7 +366,6 @@ function addCsvReport($subtype, $properties)
 		unset($properties[$old]);
 	}
 
-		
 	
 	if(isset($properties["unite"]))
 		$properties["code"] = $properties["unite"];
