@@ -220,15 +220,13 @@ global $typesRapportsChercheurs;
 
 									$sessions = sessionArrays();
 									
-									$i = count($sessions);
+									$i = 0;
 									foreach($sessions as $id => $nom)
 									{
-										$i--;
-										if($i  <= 6)
-										{
+										$i++;
+										if($i > 7) break;
 										//$typesRapports = getTypesEval($s["id"]);
 										echo "<li><a href=\"index.php?action=view&amp;reset_filter=&amp;filter_id_session=".strval($id)."\">".$nom."</a></li>";
-										}
 										/*			?>
 										 <!--
 										<ul>
