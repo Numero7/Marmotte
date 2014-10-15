@@ -195,7 +195,8 @@ function alertText($text)
 					historyReport($id_origine);
 					break;
 				case 'upload':
-					$result= process_upload();
+					$create = isset($_REQUEST["create"]);
+					$result= process_upload($create);
 					alertText($result);
 					displayReports();
 					break;

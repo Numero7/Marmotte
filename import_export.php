@@ -80,6 +80,7 @@ function displaySecretaryImport()
 <tr><td>
 	<input type="hidden" name="type" value="evaluations"></input>
 	<input	type="hidden" name="action" value="upload" />
+	<input	type="hidden" name="create" value="true" />
 	<input type="hidden" name="MAX_FILE_SIZE" value="10000000" />
 		</td></tr>
 		<tr><td>Fichier</td><td> <input name="uploadedfile"

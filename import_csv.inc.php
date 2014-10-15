@@ -19,18 +19,49 @@ function fixEncoding($in_str)
 		return utf8_encode($in_str);
 }
 
-function import_csv($type,$filename, $subtype = "", $sep=";", $del="\n",$enc='"', $esc='\\')
+function import_csv($type,$filename, $subtype = "", $create = false, $sep="?", $del="\n",$enc='"', $esc='\\')
 {
+	ini_set('auto_detect_line_endings',TRUE);
 	global $fieldsAll;
 	global $csv_composite_fields;
 	global $fieldsUnitsDB;
 
 	$output = "";
-
+	
+	
+	if($sep == "?")
+	{
+		/* auto detecte if data are separataed by ; or \t */
+		if($file = fopen ( $filename , 'r') )
+		{
+			$tabnb = 0;
+			$comanb = 0;
+			while(!feof($file)){
+				$line = fgets($file);
+				$tabnb += substr_count($line,"\t");
+				$comanb += substr_count($line,";");
+			}
+			if($comanb > 10 * $tabnb)
+				$sep = ";";
+			else if ($tabnb > 10 * $comanb)
+				$sep = "\t";
+			else
+				$sep = ";";
+			fclose($file);
+		}
+			else
+			{
+				throw new Exception("Failed to open file ".$filename." for reading");
+			}
+	}
+	
+	
+	
 	if($file = fopen ( $filename , 'r') )
 	{
 		$is_utf8 = true;
 
+		
 		
 		/* skip lines starting with empty fields */
 		$rawfields = array();
@@ -100,7 +131,7 @@ function import_csv($type,$filename, $subtype = "", $sep=";", $del="\n",$enc='"'
 				if($type == 'evaluations')
 				{
 					/* First case we update data about an already existing report */
-					if($with_id)
+					if(!$create && $with_id)
 					{
 						if(count($data) != $nbfields)
 							$errors .= "Line ".$nb." : failed to process : wrong number of data fields ".count(data)." instead of ".$nbfields." like the first line<br/>";
@@ -120,7 +151,8 @@ function import_csv($type,$filename, $subtype = "", $sep=";", $del="\n",$enc='"'
 						$properties = array();
 						for($i = 0; $i < $nbfields && $i < count($data); $i++)
 						{
-							$properties[$fields[$i]] =  $data[$i];
+							if($fields[$i] != "id")
+								$properties[$fields[$i]] =  $data[$i];
 						}
 						$oldsubtype = $subtype;
 						$subtype = checkTypeIsSpecified($properties);
@@ -146,6 +178,7 @@ function import_csv($type,$filename, $subtype = "", $sep=";", $del="\n",$enc='"'
 				$errors .= "Line ".$nb." : failed to process : ". $exc->getMessage()."<br/>";
 			}
 		}
+		fclose($file);
 		if($errors != "")
 			return $nb." rapports ou unités ont été ajoutés dans la base.<br/> Erreurs:<br/>\n\t".$errors."<br/> and output <br/>".$output;
 		else if($output != "")

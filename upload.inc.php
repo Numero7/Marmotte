@@ -5,7 +5,7 @@ require_once 'import.inc.php';
 require_once 'manage_people.inc.php';
 
 
-function process_upload($directory = "", $extradata = null)
+function process_upload($create = false)
 {
 	global $typeImports;
 
@@ -52,7 +52,7 @@ function process_upload($directory = "", $extradata = null)
 								$target_path = $dir.$type.".".$suffix;
 								if(move_uploaded_file($tmpname,$target_path))
 								{
-									return process_import($type,$suffix,$target_path,$subtype)."<br/>";
+									return process_import($type,$suffix,$target_path,$subtype,$create)."<br/>";
 								}
 								else
 									throw new Exception('Failed to store uploaded file "'.$tmpname.'" of size '.$_FILES['uploadedfile']['size'].' to '.$target_path);
