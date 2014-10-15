@@ -36,8 +36,7 @@ function import_csv($type,$filename, $subtype = "", $create = false, $sep="?", $
 		{
 			$tabnb = 0;
 			$comanb = 0;
-			while(!feof($file)){
-				$line = fgets($file);
+			while(($line = fgets($file)) !== false){
 				$tabnb += substr_count($line,"\t");
 				$comanb += substr_count($line,";");
 			}
