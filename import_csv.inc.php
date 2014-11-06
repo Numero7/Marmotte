@@ -28,7 +28,6 @@ function import_csv($type,$filename, $subtype = "", $create = false, $sep="?", $
 
 	$output = "";
 	
-	
 	if($sep == "?")
 	{
 		/* auto detecte if data are separataed by ; or \t */

@@ -14,10 +14,11 @@ $firstlogin = authenticateBase('admin','password');
 		<br/>
 		<br/>
 		<br/>
-		
+		<!-- 
 		<h3>"Il vaut mieux pomper même s'il ne se passe rien que de risquer qu'il se passe quelque chose de pire en ne pompant pas."
 		 Devise Shadok.
 		</h3>
+		 -->
 		</div>
 
 	<div class="content"> 

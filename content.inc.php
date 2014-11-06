@@ -260,14 +260,7 @@ function alertText($text)
 					else if(isset($_REQUEST['ajoutfichier']) && isset($_REQUEST['uploaddir']))
 					{
 						$directory = $_REQUEST['uploaddir'];
-						echo 
-							process_upload(
-									$directory,
-						 		get_or_create_candidate(
-						 			getReport($id_origine)
-						 		)
-						  	)
-						;
+						echo process_upload(true,	$directory);
 						editReport($id_origine);
 					}
 					else if(isset($_REQUEST['suppressionfichier']))
