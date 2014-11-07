@@ -384,14 +384,18 @@ function addCsvReport($subtype, $properties)
 			"Titre" => "nom",
 			"Responsable principal" => "prenom",
 			"EXPERIENC" => "anneesequivalence",
-			"PUBCONC" => "concours"
+			"PUBCONC" => "concours",
+			"Rapporteur1" => "rapporteur",
+			"Rapporteur2" => "rapporteur2",
+			"Rapporteur 1" => "rapporteur",
+			"Rapporteur 2" => "rapporteur2"
 	);
 			
 	foreach($copies as $old => $new)
 		if(isset($properties[$old]) )
 	{
 		$properties[$new] = $properties[$old];
-		if($old == "PUBCONC")
+		if($old == "PUBCONC" || $old="CONCOURS")
 		{
 			$properties[$new] = str_replace(" ","",str_replace("/","",$properties[$old]));
 //			hh();
