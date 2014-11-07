@@ -392,7 +392,9 @@ function addCsvReport($subtype, $properties)
 	{
 		$properties[$new] = $properties[$old];
 		if($old == "PUBCONC")
-			$properties[$new] = str_replace("/","",$properties[$old]);
+		{
+			$properties[$new] = str_replace(" ","",str_replace("/","",$properties[$old]));
+		}
 			
 		unset($properties[$old]);
 	}
