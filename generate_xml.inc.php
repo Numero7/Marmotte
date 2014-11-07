@@ -252,7 +252,7 @@ function EnteteGauche($row)
 	}
 	else if($row->type == "Equivalence")
 	{
-		$result .= "<br/>pour les concours ".$row->grade;
+		$result .= "<br/>pour les concours ".(isset($row->grade) ? $row->grade : "");
 	}
 
 	global $type_specific_fields_renaming;
