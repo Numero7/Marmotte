@@ -395,7 +395,7 @@ function addCsvReport($subtype, $properties)
 		if(isset($properties[$old]) )
 	{
 		$properties[$new] = $properties[$old];
-		if($old == "PUBCONC" || $old="CONCOURS")
+		if($old == "PUBCONC" || $old =="CONCOURS")
 		{
 			$properties[$new] = str_replace(" ","",str_replace("/","",$properties[$old]));
 //			hh();
