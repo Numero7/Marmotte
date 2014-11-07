@@ -200,11 +200,11 @@ if(isSecretaire())
 				{
 					foreach($concours_ouverts as $concours => $nom)
 					{
+						if(isset($sous_jurys[$concours]) && count($sous_jurys[$concours]) > 0)
+						{
 						echo "<select name=\"sousjury".$concours."\">\n";
 						echo "<option value=\"\"$sel></option>\n";
 
-						if(isset($sous_jurys[$concours]))
-						{
 							foreach($sous_jurys[$concours] as $val => $nom)
 							{
 								//echo $data->sousjury."\n".$val."\n";
@@ -217,12 +217,8 @@ if(isSecretaire())
 								}
 								echo "<option value=\"".$val."\"$sel>".$concours." ".$nom."</option>\n";
 							}
-						}
-						else
-						{
-						}
 						echo "</select>\n";
-						
+						}
 					}
 				}
 
