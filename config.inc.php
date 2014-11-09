@@ -24,7 +24,7 @@ ini_set('xdebug.show_local_vars', 'on');
 	load_config(true);
 	//save_config();
 	
-	$dossiers_candidats = get_config("people_files_root");
+	$dossier_racine = get_config("people_files_root");
 
 	//include_once(section_config_file);
 	
@@ -512,6 +512,7 @@ ini_set('xdebug.show_local_vars', 'on');
 			"rapporteur",
 			"rapporteur2",),
 			"unite",
+			"fichiers",
 			"rapports",
 		"avis",
 		"rapport",

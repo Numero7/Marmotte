@@ -2,6 +2,7 @@
 
 require_once('config.inc.php');
 require_once('manage_sessions.inc.php');
+require_once('manage_files.php');
 
 /*
  function generateKey($annee, $nom,$prenom)
@@ -245,137 +246,7 @@ function get_or_create_candidate($data)
 }
 
 
-function is_associated_directory($candidate, $directory)
-{
-	return ($candidate->nom == "" || strpos(norm_name($directory), norm_name($candidate->nom) ) != false ) && ( $candidate->prenom == "" || strpos(norm_name($directory), norm_name($candidate->prenom) )  != false );
-}
 
-function get_people_directory($candidate, $session, $create_directory_if_nexists = false)
-{
-	global $dossiers_candidats;
-	$basedir = $dossiers_candidats."/".$session."/".$candidate->nom."_".$candidate->prenom."/";
-
-
-	if($create_directory_if_nexists && !is_dir($basedir))
-	{
-		echo "Creating directory ".$basedir."<br/>";
-		$result = mkdir($basedir,0700, true);
-		if(!$result)
-			echo "Failed to create directory ".$basedir."<br/>";
-	}
-	
-	return $basedir;
-}
-
-function find_people_files($candidate, $force, $session, $create_directory_if_nexists = false, $directories = NULL)
-{
-	global $dossiers_candidats;
-	
-	if($candidate->nom == "" && $candidate->prenom == "")
-		return array();
-
-	$basedir = get_people_directory($candidate, $session, false);
-	
-	if($force && !is_dir($basedir))
-	{
-		if($directories == NULL)
-			$directories = get_directories_list($session);
-		foreach($directories as $directory)
-		{
-			if( is_associated_directory($candidate, $directory) )
-			{
-				echo "Renaming '".$directory . "' to '". $basedir."'<br/>";
-				rename($directory,$basedir);
-				
-				break;
-			}
-		}
-		//echo "No directory found for ".$candidate->nom." ".$candidate->nom." <br/>";
-	}
-
-	$basedir = get_people_directory($candidate, $session, $create_directory_if_nexists);
-	
-	if ( is_dir($basedir) )
-	{
-		$handle = opendir($basedir);
-		if($handle != false)
-		{
-			$files = array();
-			while(1)
-			{
-				$file = readdir($handle);
-				if($file === false)
-					break;
-				if($file != "." && $file != "..")
-				{
-					$filenames[] = $file;
-					foreach($filenames as $file)
-					{
-						$timestamp = filemtime($basedir."/".$file);
-						if($timestamp != false)
-							$files[date("d/m/Y - h:i:s",$timestamp).$file]=$file;
-					}
-				}
-			}
-			closedir($handle);
-
-			return $files;
-		}
-	}
-	else
-		echo "No directory found<br/>";
-
-
-	return array();
-}
-
-function get_directories_list($session)
-{
-	global $dossiers_candidats;
-
-	$directories = array();
-	$files = glob($dossiers_candidats . "/".$session."/*" );
-
-	foreach($files as $file)
-	{
-		if(is_dir($file))
-		{
-			$directories[]= $file;
-		}
-	}
-
-	return $directories;
-}
-
-function link_files_to_candidates()
-{
-	throw string("Not implemented anymore");
-
-	/*global $dossiers_candidats;
-
-	echo "Linking files to candidates<br/>";
-
-	$candidates = getAllCandidates();
-
-	$directories = get_directories_list();
-
-	$nb = 0;
-	foreach($candidates as $candidate)
-	{
-		echo "Linking files to candidate ".$candidate->nom." <br/>";
-		try
-		{
-			find_people_files($candidate, true, current_session(), $false, $directories);
-			$nb++;
-		}
-		catch(Exception $e)
-		{
-			echo $e."<br/>";
-		}
-	}
-	echo "Found files for ".$nb. "/".count($candidates)."  candidates<br/>";
-	*/
-}
 
 function norm_name($nom)
 {

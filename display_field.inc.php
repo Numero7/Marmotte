@@ -226,11 +226,25 @@ function display_rapports($row, $fieldId)
 
 function display_fichiers($row, $fieldID, $session, $readonly)
 {
-	global $dossiers_candidats;
+	global $dossier_racine;
+	global $typesRapportsUnites;
 
-	$files = find_people_files($row,true, $session, true);
+	if(!isset($row->type))
+		return;
 
-	$dir = get_people_directory($row, $session, false);
+	
+	if(  isset($typesRapportsUnites[$row->type]))
+	{
+		
+		$files = find_unit_files($row,true, $session, true);
+		$dir = get_unit_directory($row, $session, false);
+		
+	}
+	else
+	{
+		$files = find_people_files($row,true, $session, true);
+		$dir = get_people_directory($row, $session, false);
+	}
 	
 	echo "<td><table><tr>\n";
 	
