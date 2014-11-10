@@ -14,11 +14,8 @@ $firstlogin = authenticateBase('admin','password');
 		<br/>
 		<br/>
 		<br/>
-		<!-- 
-		<h3>"Il vaut mieux pomper même s'il ne se passe rien que de risquer qu'il se passe quelque chose de pire en ne pompant pas."
-		 Devise Shadok.
+		<h3>"We can only see a short distance ahead, but we can see plenty there that needs to be done." Alan Turing.
 		</h3>
-		 -->
 		</div>
 
 	<div class="content"> 
