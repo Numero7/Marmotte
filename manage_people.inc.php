@@ -90,7 +90,6 @@ function updateCandidateFromRequest($request, $oldannee="")
 		if (isset($request["field".$field]))
 		$data->$field = nl2br(trim($request["field".$field]),true);
 
-	$candidate = updateCandidateFromData($data);
 	
 	if(isset($request['previousnom']) && isset($request['previousprenom']) && ($request['previousnom']!= "" || $request['previousprenom'] != "") )
 	{
@@ -101,6 +100,10 @@ function updateCandidateFromRequest($request, $oldannee="")
 			$sql = "DELETE FROM ".people_db." WHERE nom =\"".mysql_real_escape_string($request['previousnom'])."\" AND prenom=\"".mysql_real_escape_string($request['previousprenom'])."\"";
 			sql_request($sql);
 		}
+	}
+	else
+	{
+		$candidate = updateCandidateFromData($data);
 	}
 	
 	return $candidate;
