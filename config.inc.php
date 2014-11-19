@@ -518,6 +518,21 @@ ini_set('xdebug.show_local_vars', 'on');
 		"rapport",
 	);
 
+	$fieldsEcoles0 = array(
+			array(
+			"type",
+			"statut"),
+					array("ecole"),
+			array(
+			"rapporteur",
+			"rapporteur2",),
+			"unite",
+			"fichiers",
+			"rapports",
+		"avis",
+		"rapport"
+			);
+	
 	$fieldsUnites1 = array(
 			"avis1",
 			"prerapport"
@@ -537,6 +552,7 @@ ini_set('xdebug.show_local_vars', 'on');
 	);
 	
 	$fieldsUnites = array_merge($fieldsUnites0, $fieldsUnites1, $fieldsUnites2);
+	$fieldsEcoles = array_merge($fieldsEcoles0, $fieldsUnites1, $fieldsUnites2);
 	
 	$fieldsUnitsDB = array(
 			"code" => "Code",
@@ -557,18 +573,6 @@ ini_set('xdebug.show_local_vars', 'on');
 		"prerapport"
 	);
 	
-	$fieldsEcoles = array(
-			"statut",
-			"rapporteur",
-			"rapporteur2",
-			"ecole",
-			"nom",
-			"prenom",
-			"unite",
-			"avis",
-			"rapport",
-			"prerapport"
-	);
 	
 	$examples = array(
 		"nom" => "",
@@ -896,11 +900,13 @@ ini_set('xdebug.show_local_vars', 'on');
 		'Equivalence' => 'Equivalence',
 	);
 	
+	
 	$typesRapports = array_merge($typesRapportsChercheurs, $typesRapportsUnites, $typesRapportsConcours);
 
 	$fieldsArrayCandidat = array($fieldsCandidat, $fieldsRapportsCandidat0, $fieldsRapportsCandidat1, $fieldsRapportsCandidat2);
 	$fieldsArrayChercheur = array($fieldsChercheursAll, $fieldsIndividual0,$fieldsIndividual1,$fieldsIndividual2);
 	$fieldsArrayUnite = array(array(), $fieldsUnites0, $fieldsUnites1, $fieldsUnites2);
+	$fieldsArrayEcole = array(array(), $fieldsEcoles0, $fieldsUnites1, $fieldsUnites2);
 	$fieldsArrayEquivalence =
 	 array(
 	 		array(
@@ -979,7 +985,7 @@ ini_set('xdebug.show_local_vars', 'on');
 			'Changement-Directeur-Adjoint' => $fieldsArrayUnite,
 			'Renouvellement' => $fieldsArrayUnite,
 			'Association' => $fieldsArrayUnite,
-			'Ecole' => $fieldsArrayUnite,
+			'Ecole' => $fieldsArrayEcole,
 			'Comite-Evaluation' => $fieldsArrayUnite,
 			'Generique' => $fieldsArrayUnite,
 			'GeneriqueChercheur' => $fieldsArrayChercheur,
