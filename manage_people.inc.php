@@ -91,13 +91,20 @@ function updateCandidateFromRequest($request, $oldannee="")
 		$data->$field = nl2br(trim($request["field".$field]),true);
 
 	
-	if(isset($request['previousnom']) && isset($request['previousprenom']) && ($request['previousnom']!= "" || $request['previousprenom'] != "") )
+	if(	isset($request['previousnom']) && isset($request['previousprenom']))
+			{
+	$ppnom = mysql_real_escape_string($request['previousnom']);
+	$ppprenom = mysql_real_escape_string($request['previousprenom']);
+	
+	$candidate = get_or_create_candidate($data );
+	
+	if($ppnom != $candidate->nom || $ppprenom != $candidate->prenom)
 	{
-		if(mysql_real_escape_string($request['previousnom']) != $candidate->nom || mysql_real_escape_string($request['previousprenom']) != $candidate->prenom)
+		if(($request['previousnom']!= "" || $request['previousprenom'] != ""))
 		{
-			$sql = "UPDATE ".reports_db." SET nom=\"".$candidate->nom."\", prenom=\"".$candidate->prenom."\" WHERE nom =\"".mysql_real_escape_string($request['previousnom'])."\" AND prenom=\"".mysql_real_escape_string($request['previousprenom'])."\"";
+			$sql = "UPDATE ".reports_db." SET nom=\"".$candidate->nom."\", prenom=\"".$candidate->prenom."\" WHERE nom =\"".$ppnom."\" AND prenom=\"".$ppprenom."\"";
 			sql_request($sql);
-			$sql = "DELETE FROM ".people_db." WHERE nom =\"".mysql_real_escape_string($request['previousnom'])."\" AND prenom=\"".mysql_real_escape_string($request['previousprenom'])."\"";
+			$sql = "DELETE FROM ".people_db." WHERE nom =\"".$ppnom."\" AND prenom=\"".$ppprenom."\"";
 			sql_request($sql);
 		}
 	}
@@ -105,6 +112,8 @@ function updateCandidateFromRequest($request, $oldannee="")
 	{
 		$candidate = updateCandidateFromData($data);
 	}
+			}
+			
 	
 	return $candidate;
 }
