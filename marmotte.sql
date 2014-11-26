@@ -51,7 +51,7 @@ CREATE TABLE IF NOT EXISTS `people` (
   `genre` varchar(32) CHARACTER SET utf8 NOT NULL DEFAULT 'aucun',
   `theseloc` varchar(16) CHARACTER SET utf8 DEFAULT 'fr',
   `statut_individu` varchar(64) CHARACTER SET utf8 NOT NULL DEFAULT ''
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -118,7 +118,7 @@ CREATE TABLE IF NOT EXISTS `sessions` (
   `nom` varchar(60) CHARACTER SET utf8 NOT NULL,
   `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -132,7 +132,7 @@ CREATE TABLE IF NOT EXISTS `units` (
   `code` text CHARACTER SET utf8 NOT NULL,
   `fullname` text CHARACTER SET utf8 NOT NULL,
   `directeur` text CHARACTER SET utf8 NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -149,4 +149,4 @@ CREATE TABLE IF NOT EXISTS `users` (
   `email` text CHARACTER SET utf8 NOT NULL,
   `tel` text CHARACTER SET utf8 NOT NULL,
   `sousjury` text CHARACTER SET utf8 NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

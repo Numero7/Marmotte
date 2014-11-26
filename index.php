@@ -29,7 +29,7 @@ try
 	{
 
 		include("header.inc.php");
-		echo "<h1>Failed to connect to database: ".$e."</h1>";
+		echo "<h1>Failed to connect to database.</h1>";
 		db_from_scratch();
 		$dbh = false;
 	}
