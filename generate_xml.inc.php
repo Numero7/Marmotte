@@ -497,6 +497,7 @@ function filename_from_node(DOMNode $node)
 	$session = "Session";
 	$avis = "";
 	$concours = "";
+	$ecole = "";
 
 	foreach($node->childNodes as $child)
 	{
@@ -510,6 +511,7 @@ function filename_from_node(DOMNode $node)
 			case "session": $session = $child->nodeValue; break;
 			case "avis": $avis = $child->nodeValue; break;
 			case "concours": $concours = $child->nodeValue; break;
+			case "ecole": $ecole = $child->nodeValue; break;
 		}
 	}
 

@@ -371,16 +371,17 @@ function filename_from_doc($doc)
 
 	$sessions = sessionArrays();
 	$session = $sessions[$doc->id_session];
-	return filename_from_params($nom, $prenom, $doc->grade_rapport, $doc->unite, $doc->type, $session, $doc->avis, $doc->concours, $doc->sousjury);
+	return filename_from_params($nom, $prenom, $doc->grade_rapport, $doc->unite, $doc->type, $session, $doc->avis, $doc->concours, $doc->sousjury, $doc->ecole);
 }
 
-function filename_from_params($nom, $prenom, $grade, $unite, $type, $session, $avis, $concours = "", $sousjury="")
+function filename_from_params($nom, $prenom, $grade, $unite, $type, $session, $avis, $concours = "", $sousjury="", $ecole = "")
 {
 	global $typesRapportsUnites;
 	global $typesRapportsConcours;
 
 	$liste_unite = unitsList();
 	
+	$section = get_config("section_shortname");
 	if($type == "Promotion")
 		$grade .= " - ".$avis;
 
@@ -395,11 +396,11 @@ function filename_from_params($nom, $prenom, $grade, $unite, $type, $session, $a
 		
 
 		if($type == 'Generique')
-			return $session." - ".$nom." ".$prenom." - ".$unite;
+			return $section." - ".$session." - ".$nom." ".$prenom." - ".$unite;
 		else if($type == 'Ecole')
-			return $session." - ".$type." - ".$nom." - ".$unite;
+			return $section." - ".$session." - ".$type." - ".$ecole."-".$nom." - ".$unite;
 		else
-			return $session." - ".$type." - ".$unite;
+			return $section." - ".$session." - ".$type." - ".$unite;
 	}
 	else if( array_key_exists($type,$typesRapportsConcours) || $type=="Audition" || $type =="Classement" )
 	{
@@ -415,7 +416,7 @@ function filename_from_params($nom, $prenom, $grade, $unite, $type, $session, $a
 		else return $session." - ".$type." - ".$grade." - ".$nom." ".$prenom;
 	}
 	else
-		return $session." - ".$type." - ".$grade." - ".$nom." ".$prenom;
+		return $section." - ".$session." - ".$type." - ".$grade." - ".$nom." ".$prenom;
 }
 
 function getStyle($fieldId,$odd, $conflict = false)
