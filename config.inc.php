@@ -523,6 +523,7 @@ ini_set('xdebug.show_local_vars', 'on');
 			"type",
 			"statut"),
 					array("ecole"),
+					array("nom"), array("prenom"),
 			array(
 			"rapporteur",
 			"rapporteur2",),
