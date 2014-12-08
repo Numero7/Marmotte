@@ -201,7 +201,7 @@ function downloadReport($id_rapport)
 		$prefix = filename_from_doc($report);
 		
 		$dir = "download/".$login;
-		if(!is_dir($dir) && !mkdir($dir,null,true))
+		if(!is_dir($dir) && !mkdir($dir,0700,true))
 			throw new Exception("Failed to create directory ".$dir);
 
 		$file = export_reports_as_txt(array($report), $dir, $prefix);
