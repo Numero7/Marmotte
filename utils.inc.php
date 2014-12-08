@@ -378,7 +378,6 @@ function filename_from_params($nom, $prenom, $grade, $unite, $type, $session, $a
 {
 	global $typesRapportsUnites;
 	global $typesRapportsConcours;
-
 	$liste_unite = unitsList();
 	
 	$section = get_config("section_shortname");

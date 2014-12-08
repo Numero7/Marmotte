@@ -160,7 +160,23 @@ function appendLeaf($fieldname, $fieldvalue, DOMDocument $doc, DOMElement $node)
 {
 	$leaf = $doc->createElement($fieldname);
 	//$leaf->appendChild($doc->createCDATASection ( stripInvalidXml($fieldvalue)));
-	$leaf->appendChild($doc->createCDATASection (normalizeFieldCDATA($fieldvalue)));
+	$stripped = stripInvalidXml($fieldvalue);
+	//echo $stripped;
+	
+	$stripped = str_replace(
+			array("<b>","</b>", "<B>", "</B>", "<br/>", "<br />","<i>", "</i>", "<b>", "</b>", "<I>", "</I>", "<B>", "</B>"),
+			array("#b#","#/b#", "#B#", "#/B#", "#br/#", "#br/#", "#i#", "#/i#", "#b#", "#/b#", "#I#", "#/I#", "#B#", "#/B#"),
+			$stripped);
+
+//	echo $stripped;
+
+	$stripped = str_replace(
+			array("<", ">", "#b#","#/b#", "#B#", "#/B#", "#br/#", "#i#", "#/i#", "#b#", "#/b#", "#I#", "#/I#", "#B#", "#/B#"),
+			array("&lt;", "&gt;", "<b>","</b>", "<B>", "</B>", "<br/>", "<i>", "</i>", "<b>", "</b>", "<I>", "</I>", "<B>", "</B>"),
+			$stripped);
+//	echo $stripped;
+	
+	$leaf->appendChild($doc->createCDATASection($stripped));
 	$node->appendChild($leaf);
 }
 
@@ -305,7 +321,7 @@ function createXMLReportElem($row, DOMDocument $doc, $keep_br = true)
 		{
 			$formula = $formulas[$row->avis];
 //			appendLeaf("formulestandard",  $keep_br ? $row->$fieldID : remove_br($formula) , $doc, $rapportElem);
-			$row->rapport .= "<br/><br/>".stripInvalidXml($formula);//normalizeField($formula);
+			$row->rapport .= "<br/><br/>".stripInvalidXml($formula);
 //			rrr();
 			
 		}		
