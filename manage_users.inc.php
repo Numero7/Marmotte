@@ -4,14 +4,6 @@ require_once('config.inc.php');
 require_once('manage_sessions.inc.php');
 require_once('generate_xml.inc.php');
 
-function init_session()
-{
-	set_current_session_id(get_config("current_session"));
-
-	ini_set("session.gc_maxlifetime", 3600);
-	//echo "Timeout: ". (ini_get("session.gc_maxlifetime")/60)." minutes<br/>";
-
-}
 
 function createhtpasswd()
 {
@@ -30,17 +22,53 @@ function createhtpasswd()
 
 }
 
-function getDescription($login)
+
+function getSection($login)
+{
+	$sql = "SELECT * FROM ".users_db." WHERE login='".mysql_real_escape_string($login)."';";
+	$result=mysql_query($sql);
+	if ($row = mysql_fetch_object($result))
+	{
+		$section = $row->last_section_selected;
+		$sections = $row->sections;
+	}
+	$all_sections = split(";", $sections);
+	if(count($all_sections) == 0)
+		throw exception("User with login ".$login." is not a member of any section");
+
+	if( array_key_exists(str($section), $all_sections) )
+		$section = intval($all_sections[0]);
+	
+	return $section;
+} ;
+
+function belongsToSection($login, $section)
 {
 	$sql = "SELECT * FROM ".users_db." WHERE login='$login';";
 	$result=mysql_query($sql);
 	if ($row = mysql_fetch_object($result))
 	{
-		return $row->description;
+		$section = $row->last_section_selected;
+		$sections = $row->sections;
 	}
-	return NULL;
+	$all_sections = split(";", $sections);
+	return array_key_exists(str($section), $all_sections);
 } ;
 
+function currentSection()
+{
+	return getFilterValue('section');	
+}
+
+function change_current_section($section)
+{
+	if(!belongsToSection(getLogin(), $section))
+		throw exception("Cannot change current section, user ".$login." does not belong to section ".$section);
+
+	$sql = "UPDATE ".users_db." SET last_section_selected='".mysql_real_escape_string($section)."'WHERE login='".mysql_real_escape_string($login)."';";
+	mysql_query($sql);
+	setFilterValue("section",$section);
+}
 
 /* Caching users list for performance */
 

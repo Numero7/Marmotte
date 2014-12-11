@@ -3,6 +3,22 @@
 require_once('config.inc.php');
 require_once('manage_filters_and_sort.inc.php');
 
+function init_session()
+{
+	if(!isset($_SESSION['login']))
+		throw exception("Cannot init session, user not logged in");
+
+	$login = getLogin();
+	
+	set_current_section( getSection($login) );
+
+	set_current_session_id(get_config("current_session"));
+
+	ini_set("session.gc_maxlifetime", 3600);
+	//echo "Timeout: ". (ini_get("session.gc_maxlifetime")/60)." minutes<br/>";
+
+}
+
 function sessionArrays($force = false)
 {
 	if($force || !isset($_SESSION['all_sessions']))
@@ -50,6 +66,11 @@ function current_session_id()
 function set_current_session_id($id)
 {
 	$_SESSION['filter_id_session'] = $id;
+}
+
+function set_current_section($section)
+{
+	$_SESSION['filter_section'] = $section;
 }
 
 function check_current_session_exists()

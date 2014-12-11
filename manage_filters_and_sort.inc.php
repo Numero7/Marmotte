@@ -1,6 +1,11 @@
 <?php
 
 
+function setFilterValue($filter_name, $value)
+{
+	$_SESSION["filter_".$filter_name] = $value;
+}
+
 function getFilterValue($filter_name)
 {
 	global $filtersAll;
