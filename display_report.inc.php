@@ -28,7 +28,6 @@ function displayEditableCandidate($candidate,$report = NULL,$canedit = true)
 	if($report != NULL)
 	{
 		$hidden["id_origine"] = $report->id_origine;
-		$hidden["fieldanneecandidature"] = session_year($report->id_session);
 		$hidden["type"] = $report->type;
 		if(isset($report->avis) && in_array($report->avis, $avis_candidature_necessitant_pas_rapport_sousjury))
 			$fields = $fieldsCandidatAvantAudition;

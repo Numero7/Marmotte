@@ -161,20 +161,6 @@ function getAllCandidates()
 	return $rows;
 }
 
-function annee_from_data($data, $pref = "")
-{
-	$annee = session_year(current_session_id());
-
-	$champ1 = $pref."anneecandidature";
-	$champ2 = $pref."annee_recrutement";
-	if(isset($data->$champ1))
-		$annee = $data->$champ1;
-	else if(isset($data->$champ2))
-		$annee = $data->$champ2;
-
-	return $annee;
-}
-
 function add_candidate_to_database($data)
 {
 	global $fieldsIndividualAll;

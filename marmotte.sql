@@ -27,7 +27,6 @@ SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 
 DROP TABLE IF EXISTS `people`;
 CREATE TABLE IF NOT EXISTS `people` (
-  `anneecandidature` text CHARACTER SET utf8 NOT NULL,
   `nom` text CHARACTER SET utf8 NOT NULL,
   `prenom` text CHARACTER SET utf8 NOT NULL,
   `grade` varchar(32) CHARACTER SET utf8 NOT NULL DEFAULT '',

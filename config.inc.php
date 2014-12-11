@@ -326,7 +326,6 @@ ini_set('xdebug.show_local_vars', 'on');
 	
 	
 	$fieldsIndividualAll = array(
-			"anneecandidature" => "Année de candidature",
 			"nom" => "Nom",
 			"prenom" => "Prénom",
 			"genre" => "Genre",
@@ -675,7 +674,6 @@ ini_set('xdebug.show_local_vars', 'on');
 	
 	$empty_individual = array(
 			"statut_individu" => "None",
-			"anneecandidature" => "1970",
 			"nom" => "",
 			"prenom" => "",
 			"genre" => "None",
@@ -826,7 +824,6 @@ ini_set('xdebug.show_local_vars', 'on');
 			"theme3" => "topic",
 			"anneesequivalence" =>"short",
 			"id" =>"short",
-			"anneecandidature" => "short",
 			"productionResume" => "long",
 			"projetrecherche" => "long",
 			"parcours" => "long",

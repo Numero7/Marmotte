@@ -167,7 +167,6 @@ function appendLeaf($fieldname, $fieldvalue, DOMDocument $doc, DOMElement $node)
 			array("<b>","</b>", "<B>", "</B>", "<br/>", "<br />","<i>", "</i>", "<b>", "</b>", "<I>", "</I>", "<B>", "</B>"),
 			array("#b#","#/b#", "#B#", "#/B#", "#br/#", "#br/#", "#i#", "#/i#", "#b#", "#/b#", "#I#", "#/I#", "#B#", "#/B#"),
 			$stripped);
-
 //	echo $stripped;
 
 	$stripped = str_replace(
