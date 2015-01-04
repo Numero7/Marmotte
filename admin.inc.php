@@ -1,6 +1,6 @@
 <?php
 $password = genere_motdepasse();
-require_once('config.php');
+require_once('config_tools.inc.php');
 require_once('generate_csv.inc.php');
 require_once('manage_unites.inc.php');
 ?>

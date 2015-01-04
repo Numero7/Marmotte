@@ -12,7 +12,10 @@ function getFilterValue($filter_name)
 	$filters = $filtersAll;
 	$answer = $filters[$filter_name]['default_value'];
 	if(isset($_REQUEST["filter_".$filter_name]))
-		$answer = mysql_real_escape_string($_REQUEST["filter_".$filter_name]);
+	{
+		$answer = real_escape_string($_REQUEST["filter_".$filter_name]);
+		/* this should not be there but.. */
+	}
 		//$answer = $_REQUEST["filter_".$filter_name] != "" ? $_REQUEST["filter_".$filter_name] : $filters[$filter_name]['default_value'];
 	else if(isset($_SESSION["filter_".$filter_name]))
 		$answer =   $_SESSION["filter_".$filter_name];
@@ -34,9 +37,9 @@ function getSortingValue($filter_name)
 	$filters = $filtersAll;
 	$answer = "";
 	if(isset($_REQUEST["tri_".$filter_name]))
-		$answer = mysql_real_escape_string($_REQUEST["tri_".$filter_name]);
+		$answer = real_escape_string($_REQUEST["tri_".$filter_name]);
 	else if(isset($_SESSION["tri_".$filter_name]))
-		$answer =   mysql_real_escape_string($_SESSION["tri_".$filter_name]);
+		$answer =   real_escape_string($_SESSION["tri_".$filter_name]);
 
 	$last = substr($answer,strlen($answer) -1,1);
 	if( $last != "+" && $last != "-")
@@ -131,6 +134,10 @@ function getCurrentSortingList()
 
 function getFilterValues()
 {
+	/* should not be here but ... */
+	if(isset($_REQUEST['filter_section']))
+		change_current_section($_REQUEST['filter_section']);
+	
 	$filters = getCurrentFiltersList();
 	$filter_values = array();
 	foreach($filters as $filter => $data)

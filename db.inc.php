@@ -7,56 +7,44 @@ function db_from_scratch()
 	$msg .= "and/or initialize the database with <h1><a href=\"marmotte.sql\">this SQL script</a></h1></br></br></br>.";
 }
 
+$dbh = NULL;
+
 function db_connect($serverName,$dbname,$login,$password)
 {
-	$dbh = @mysql_connect($serverName, $login, $password);
+	global $dbh;
+	$dbh = mysqli_connect($serverName, $login, $password, $dbname) or die("Could not connect to the server '".$serverName."<br/>".mysqli_error($dbh));
 	
-	if(!$dbh)
-		throw new Exception("Could not connect to the server '".$serverName."<br/>".mysql_error());
-
-	if(!@mysql_select_db($dbname, $dbh))
-		throw new Exception("Could not connect to the database '".$dbname."<br/>".mysql_error());
-		
-	mysql_query("SET NAMES utf8;");
+	mysqli_query($dbh, "SET NAMES utf8;");
 	
-	$databases = array(reports_db, users_db, sessions_db, units_db, people_db);
+	$databases = array(reports_db, users_db, sessions_db, units_db, people_db, config_db,concours_db);
 	$new_columns = array(people_db => array("conflits" => "text") );
 	
 	foreach($databases as $database)	
 	{
-		$result = mysql_query("SHOW TABLES LIKE '$database'");
+		$result = mysqli_query($dbh, "SHOW TABLES LIKE '$database'");
 		if($result == false)
 			throw new Exception("Cannot count the number of databases with name ".$database."<br/>".mysql_error());
-		if(mysql_fetch_array($result) === false)
+		if(mysqli_fetch_array($result) === false)
 			throw new Exception("No database with name ".$database);
 
 		if(key_exists($database, $new_columns))
 		{
 			foreach($new_columns[$database] as $name => $type)
 			{
-				
-				//$sql="if not exists (select ".$name." from INFORMATION_SCHEMA.columns where table_name = '";
-				//	$sql.=$database."' and column_name = '".$name."')";
 				$sql="alter table ".$database." add ".$name." ".$type." NOT NULL";
-
-//				echo $sql."</br>";
-				$result = mysql_query($sql);
-/*				if($result === false)
-				{
-					echo "Failed to add new column with name '".$name."' and type '".$type."' to table '".$database."' : <br/>";
-					echo mysql_error()."<br/>";
-				}
-				*/
+				$result = mysqli_query($dbh, $sql);
 			}
 		}
 	}
-	
+		
 	return $dbh;
 } ;
 
-function db_disconnect(&$dbh)
+function db_disconnect()
 {
-	mysql_close($dbh);
+	global $dbh;
+	
+	mysqli_close($dbh);
 	$dbh=0;
 } ;
 

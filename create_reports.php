@@ -1,15 +1,26 @@
 <?php
 
+error_reporting(E_ALL);
+ini_set('display_errors', TRUE);
+ini_set('display_startup_errors', TRUE);
+ini_set('xdebug.collect_vars', 'on');
+ini_set('xdebug.collect_params', '4');
+ini_set('xdebug.dump_globals', 'on');
+ini_set('xdebug.dump.SERVER', 'REQUEST_URI');
+ini_set('xdebug.show_local_vars', 'on');
+
 session_start();
 
-require_once("utils.inc.php");
-
 require_once("db.inc.php");
+require_once('authenticate_tools.inc.php');
+
+db_connect($servername,$dbname,$serverlogin,$serverpassword);
+
+require_once("utils.inc.php");
 require_once("manage_users.inc.php");
 
-
-require_once 'generate_pdf.inc.php';
-require_once 'generate_zip.inc.php';
+require_once('generate_pdf.inc.php');
+require_once('generate_zip.inc.php');
 
 require_once 'header.inc.php';
 require_once("authbar.inc.php");

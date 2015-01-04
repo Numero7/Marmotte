@@ -5,9 +5,9 @@ function unitsList()
 	if(!isset($_SESSION['all_units']))
 	{
 		$units = array();
-		$sql = "SELECT * FROM ".units_db." ORDER BY nickname ASC;";
-		if($result=mysql_query($sql))
-			while ($row = mysql_fetch_object($result))
+		$sql = "SELECT * FROM ".units_db." WHERE `section`='". real_escape_string($_SESSION['filter_section'])."' ORDER BY nickname ASC;";
+		if($result= sql_request($sql))
+			while ($row = mysqli_fetch_object($result))
 			$units[$row->code] = $row;
 
 		$maxsize = 0;
@@ -19,7 +19,8 @@ function unitsList()
 			$unit->prettyname = str_replace(" ","&nbsp;", $unit->nickname);
 			$unit->prettyname .= str_pad("", $maxsize +10 - $l , " ")."- ".$unit->code;
 		}
-
+//		rr();
+		
 		$_SESSION['all_units'] = $units;
 	}
 	return $_SESSION['all_units'];
@@ -47,23 +48,21 @@ function updateUnitData($unite, $data)
 			$sql .= " $field='$value' ";
 		if($sql != "")
 		{
-
 			$sql = "UPDATE FROM ".units_db." SET ".$sql;
-			$sql .=  " WHERE code='$unite';";
-			mysql_query($sql);
+			$sql .=  " WHERE code='$unite' AND `section`='". real_escape_string($_SESSION['filter_section']).";";
+			mysqli_query($sql);
 		}
 	}
 	else
 	{
 		$sql = "INSERT INTO ".reports_db." ($sqlfields) VALUES ($sqlvalues);";
-
 	}
 }
 
 function updateUnitDirecteur($unite, $directeur)
 {
 	$sql = "UPDATE FROM ".units_db." SET directeur='$directeur' WHERE code='$unite';";
-	mysql_query($sql);
+	sql_request($sql);
 }
 
 function simpleUnitsList($short = false)
@@ -94,12 +93,13 @@ function addUnit($nickname, $code, $fullname, $directeur)
 	$sql = "DELETE FROM ".units_db." WHERE code = \"".$code."\";";
 	sql_request($sql);
 
-	$values = "\"".mysql_real_escape_string($nickname)."\",";
-	$values .= "\"".str_replace(' ','',mysql_real_escape_string($code))."\",";
-	$values .= "\"".mysql_real_escape_string($fullname)."\",";
-	$values .= "\"".mysql_real_escape_string($directeur)."\"";
-
-	$sql = "INSERT INTO ".units_db." (nickname, code, fullname, directeur) VALUES ($values);";
+	$values = "\"".real_escape_string($nickname)."\",";
+	$values .= "\"".str_replace(' ','',real_escape_string($code))."\",";
+	$values .= "\"".real_escape_string($fullname)."\",";
+	$values .= "\"".real_escape_string($directeur)."\",";
+	$values .= "\"".real_escape_string($_SESSION['filter_section'])."\"";
+	
+	$sql = "INSERT INTO ".units_db." (nickname, code, fullname, directeur, section) VALUES ($values);";
 	sql_request($sql);
 }
 

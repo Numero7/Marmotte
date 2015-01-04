@@ -10,30 +10,26 @@ ini_set('xdebug.dump.SERVER', 'REQUEST_URI');
 ini_set('xdebug.show_local_vars', 'on');
 
 require_once("db.inc.php");
-
-require_once("export.inc.php");
-
+require_once('authenticate_tools.inc.php');
 
 session_start();
 
-$dbh = db_connect($servername,$dbname,$serverlogin,$serverpassword);
+global $dbh;
 
-if($dbh!=0)
-{
+db_connect($servername,$dbname,$serverlogin,$serverpassword);
+
 	if (authenticate())
 	{
+		require_once("export.inc.php");
+		
 		try {
-			$action = isset($_REQUEST["action"]) ? mysql_real_escape_string($_REQUEST["action"]) : "single";
-			$id= isset($_REQUEST["id"]) ? mysql_real_escape_string($_REQUEST["id"]) : "-1";
-
-			
-			
-			
+			$action = isset($_REQUEST["action"]) ? real_escape_string($_REQUEST["action"]) : "single";
+			$id= isset($_REQUEST["id"]) ? real_escape_string($_REQUEST["id"]) : "-1";
 			
 			switch($action)
 			{//Processing
 				case 'viewpdf':
-					$option = isset($_REQUEST["option"]) ? mysql_real_escape_string($_REQUEST["option"]) : "";
+					$option = isset($_REQUEST["option"]) ? real_escape_string($_REQUEST["option"]) : "";
 					viewReportAsPdf($id,$option); break;
 				case 'viewhtml':
 					viewReportAsHtml($id);	break;
@@ -44,9 +40,9 @@ if($dbh!=0)
 					{
 						if (isset($_REQUEST["save"]) and isset($_REQUEST["avis"]) and isset($_REQUEST["rapport"]))
 						{
-							$idtosave = intval(mysql_real_escape_string($_REQUEST["save"]));
-							$avis = mysql_real_escape_string($_REQUEST["avis"]);
-							$rapport = mysql_real_escape_string($_REQUEST["rapport"]);
+							$idtosave = intval(real_escape_string($_REQUEST["save"]));
+							$avis = real_escape_string($_REQUEST["avis"]);
+							$rapport = real_escape_string($_REQUEST["rapport"]);
 							if (!isset($_REQUEST["cancel"]))
 								try
 								{
@@ -60,13 +56,8 @@ if($dbh!=0)
 
 						if(!isset($_REQUEST["type"]))
 							throw new Exception("No type specified for exportation");
-						$type = mysql_real_escape_string($_REQUEST["type"]);
-
-
-						$id_edit = isset($_REQUEST["id_edit"]) ? mysql_real_escape_string($_REQUEST["id_edit"]) : -1;
-
-						$login = getLogin();
-
+						$type = real_escape_string($_REQUEST["type"]);
+						$id_edit = isset($_REQUEST["id_edit"]) ? real_escape_string($_REQUEST["id_edit"]) : -1;
 
 						switch($type)
 						{
@@ -174,6 +165,5 @@ if($dbh!=0)
 			echo $e->getMessage();
 		}
 	}
-}
-/* activit */
+
 ?>

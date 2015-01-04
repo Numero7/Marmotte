@@ -16,24 +16,17 @@ function candidateExists($nom,$prenom)
 	$sql = "SELECT * FROM ".people_db.' WHERE nom="'.$nom.'" AND prenom="'.$prenom.'";';
 
 	$result = sql_request($sql);
-	return	(mysql_num_rows($result) > 0);
+	return	(mysqli_num_rows($result) > 0);
 }
 
 function normalizeCandidat($data)
 {
-	global $candidat_prototypes;
-
 	$data2 = (object) $data;
 
 	if(!isset($data2->nom))
 		$data2->nom = "";
 	if(!isset($data2->prenom))
 		$data2->prenom = "";
-
-	foreach($candidat_prototypes as $field => $value)
-		if(isset($data2->$field))
-		if($data2->$field=="")
-		$data2->$field = $value;
 
 	return $data2;
 }
@@ -93,8 +86,8 @@ function updateCandidateFromRequest($request, $oldannee="")
 	
 	if(	isset($request['previousnom']) && isset($request['previousprenom']))
 			{
-	$ppnom = mysql_real_escape_string($request['previousnom']);
-	$ppprenom = mysql_real_escape_string($request['previousprenom']);
+	$ppnom = mysqli_real_escape_string($request['previousnom']);
+	$ppprenom = mysqli_real_escape_string($request['previousprenom']);
 	
 	$candidate = get_or_create_candidate($data );
 	
@@ -133,7 +126,7 @@ function updateCandidateFromData($data)
 		if(key_exists($field, $fieldsIndividualAll))
 		{
 			$sqlcore.=$first ? "" : ",";
-			$sqlcore.=$field.'="'.mysql_real_escape_string($value).'" ';
+			$sqlcore.=$field.'="'.mysqli_real_escape_string($value).'" ';
 			$first = false;
 		}
 	}
@@ -149,13 +142,15 @@ function updateCandidateFromData($data)
 
 function getAllCandidates()
 {
-	$sql = "SELECT * FROM ".people_db.";";
-	$result=mysql_query($sql);
+	$sql = "SELECT * FROM ".people_db." WHERE ";
+	$sql .= " `section`='". mysqli_real_escape_string($_SESSION['filter_section'])."'";
+	$sql .= ";";
+	$result=sql_request($sql);
 	if($result == false)
 		throw new Exception("Failed to process sql query ".$sql);
 	$rows = array();
 
-	while ($row = mysql_fetch_object($result))
+	while ($row = mysqli_fetch_object($result))
 		$rows[] = $row;
 
 	return $rows;
@@ -164,36 +159,32 @@ function getAllCandidates()
 function add_candidate_to_database($data)
 {
 	global $fieldsIndividualAll;
-
 	$sqlvalues = "";
 	$sqlfields = "";
 	$first = true;
 
 	global $empty_individual;
-
 	foreach($fieldsIndividualAll as $field => $desc)
 	{
 		$sqlfields .= ($first ? "" : ",") .$field;
 		$sqlvalues .= ($first ? "" : ",") .'"'.(isset($data->$field) ? $data->$field : ( isset($empty_individual[$field]) ? $empty_individual[$field] : "") ).'"';
 		$first = false;
 	}
-
-
+	
+	$sqlfields .= ",section";
+	$sqlvalues .= ",".$_SESSION['filter_section'];
 	
 	$sql = "INSERT INTO ".people_db." ($sqlfields) VALUES ($sqlvalues);";
 	sql_request($sql);
 
 	$sql2 = 'SELECT * FROM '.people_db.' WHERE nom="'.$data->nom.'" AND prenom="'.$data->prenom.'";';
 	$result = sql_request($sql2);
-	$candidate = mysql_fetch_object($result);
+	$candidate = mysqli_fetch_object($result);
 
 	if($candidate == false)
-	{
 		throw new Exception("Failed to add candidate with request <br/>".$sql2);
-	}
 
 	return $candidate;
-
 }
 
 /*
@@ -205,15 +196,11 @@ function get_or_create_candidate_from_nom($nom, $prenom)
 {
 	try
 	{
-
-		mysql_query("LOCK TABLES ".people_db." WRITE;");
-
-
+		sql_request("LOCK TABLES ".people_db." WRITE;");
 		$sql = "SELECT * FROM ".people_db.' WHERE nom="'.$nom.'" AND prenom="'.$prenom.'" ;';
-
 		$result = sql_request($sql);
 
-		$cdata = mysql_fetch_object($result);
+		$cdata = mysqli_fetch_object($result);
 		if($cdata == false)
 		{
 			$data = (object) array();
@@ -221,17 +208,17 @@ function get_or_create_candidate_from_nom($nom, $prenom)
 			$data->prenom = $prenom;
 			add_candidate_to_database($data);
 			$result = sql_request($sql);
-			$cdata = mysql_fetch_object($result);
+			$cdata = mysqli_fetch_object($result);
 			if($cdata == false)
 				throw new Exception("Failed to find candidate previously added<br/>".$sql);
 		}
 
-		mysql_query("UNLOCK TABLES");
+		sql_request("UNLOCK TABLES");
 		return normalizeCandidat($cdata);
 	}
 	catch(Exception $exc)
 	{
-		mysql_query("UNLOCK TABLES;");
+		sql_request("UNLOCK TABLES;");
 		throw new Exception("Failed to add candidate from report:<br/>".$exc->getMessage());
 	}
 }

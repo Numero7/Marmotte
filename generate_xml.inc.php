@@ -337,13 +337,10 @@ function createXMLReportElem($row, DOMDocument $doc, $keep_br = true)
 	
 	if($row->type == "Audition")
 	{
-			
 			global $concours_ouverts;
-			
-			if(isset($presidents_sousjurys[$row->sousjury]["nom"]) && isset($presidents_sousjurys[$row->sousjury]["signature"]))
+			if(isset($presidents_sousjurys[$row->sousjury]["nom"]))
 			{
 				appendLeaf("signataire",$presidents_sousjurys[$row->sousjury]["nom"], $doc, $rapportElem);
-				appendLeaf("signature", $presidents_sousjurys[$row->sousjury]["signature"], $doc, $rapportElem);
 			}
 			else
 			{
@@ -353,8 +350,7 @@ function createXMLReportElem($row, DOMDocument $doc, $keep_br = true)
 
 			$candidat = get_or_create_candidate($row);
 			appendLeaf("parcours", $candidat->parcours, $doc, $rapportElem);
-			appendLeaf("projet", $candidat->projetrecherche, $doc, $rapportElem);
-			appendLeaf("productionResume", $candidat->productionResume, $doc, $rapportElem);
+			appendLeaf("audition", $candidat->audition, $doc, $rapportElem);
 			appendLeaf("grade_concours", substr($concours_ouverts[$row->concours],0,3), $doc, $rapportElem);
 			
 			$conc = $sessions[$row->id_session];

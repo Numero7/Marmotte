@@ -2,7 +2,7 @@
 require_once('manage_sessions.inc.php');
 require_once('manage_rapports.inc.php');
 require_once('utils.inc.php');
-require_once('config.php');
+require_once('config_tools.inc.php');
 
 
 function fieldsToSQL($columnFilters, $rowFilter)
@@ -510,14 +510,6 @@ global $topics;
 	<tr>
 		<th>Nom</th>
 		<th>Total</th>
-		<?php 
-		if(is_current_session_concours())
-		{
-			echo "<th>Equivalence</th>\n";
-			foreach($concours_ouverts as $code => $nom)
-				echo '<th>'.$nom."</th>\n";
-		}
-		?>
 	</tr>
 	<?php
 
@@ -531,8 +523,6 @@ global $topics;
 
 		if(is_current_session_concours())
 		{
-			$filters['type'] = "Equivalence";
-			echo '<td>'.statBaseAvancement($filters)."</td>\n";
 			$filters['type'] = "Candidature";
 			foreach($concours_ouverts as $code => $nom)
 			{
@@ -552,8 +542,6 @@ global $topics;
 
 			if(is_current_session_concours())
 			{
-				$filters['type'] = "Equivalence";
-				echo '<td>'.statBaseAvancement($filters)."</td>\n";
 				$filters['type'] = "Candidature";
 				foreach($concours_ouverts as $code => $nom)
 				{

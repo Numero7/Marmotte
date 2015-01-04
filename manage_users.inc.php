@@ -3,7 +3,7 @@
 require_once('config.inc.php');
 require_once('manage_sessions.inc.php');
 require_once('generate_xml.inc.php');
-
+require_once('authenticate_tools.inc.php');
 
 function createhtpasswd()
 {
@@ -23,51 +23,28 @@ function createhtpasswd()
 }
 
 
-function getSection($login)
-{
-	$sql = "SELECT * FROM ".users_db." WHERE login='".mysql_real_escape_string($login)."';";
-	$result=mysql_query($sql);
-	if ($row = mysql_fetch_object($result))
-	{
-		$section = $row->last_section_selected;
-		$sections = $row->sections;
-	}
-	$all_sections = split(";", $sections);
-	if(count($all_sections) == 0)
-		throw exception("User with login ".$login." is not a member of any section");
-
-	if( array_key_exists(str($section), $all_sections) )
-		$section = intval($all_sections[0]);
-	
-	return $section;
-} ;
 
 function belongsToSection($login, $section)
 {
-	$sql = "SELECT * FROM ".users_db." WHERE login='$login';";
-	$result=mysql_query($sql);
-	if ($row = mysql_fetch_object($result))
-	{
-		$section = $row->last_section_selected;
-		$sections = $row->sections;
-	}
-	$all_sections = split(";", $sections);
-	return array_key_exists(str($section), $all_sections);
-} ;
+	$all_sections = getSections($login);
+	return in_array($section, $all_sections);
+};
 
 function currentSection()
 {
-	return getFilterValue('section');	
+	return $_SESSION['filter_section'];	
 }
 
 function change_current_section($section)
 {
 	if(!belongsToSection(getLogin(), $section))
-		throw exception("Cannot change current section, user ".$login." does not belong to section ".$section);
+		throw new Exception("Cannot change current section, user ".$login." does not belong to section ".$section);
 
-	$sql = "UPDATE ".users_db." SET last_section_selected='".mysql_real_escape_string($section)."'WHERE login='".mysql_real_escape_string($login)."';";
-	mysql_query($sql);
-	setFilterValue("section",$section);
+	$sql = "UPDATE ".users_db." SET last_section_selected='";
+	$sql .= real_escape_string($section);
+	$sql .= "'WHERE login='".real_escape_string(getLogin())."';";
+	sql_request($sql);
+	$_SESSION['filter_section'] = $section;
 }
 
 /* Caching users list for performance */
@@ -109,31 +86,24 @@ function listUsers($forcenew = false)
 	if(!isset($_SESSION['all_users']))
 	{
 		$listusers = array();
+		//$sql = "SELECT * FROM ".users_db." WHERE `section`='". real_escape_string($_SESSION['filter_section'])."' ORDER BY description ASC;";
 		$sql = "SELECT * FROM ".users_db." ORDER BY description ASC;";
-		$result=mysql_query($sql);
+		$result= sql_request($sql);
 		if($result ==  false)
-			throw new Exception("Failed to process query sql ".$sql);
-
-		while ($row = mysql_fetch_object($result))
-			$listusers[$row->login] = $row;
-
-			
+			throw new Exception("Failed to process sql query ".$sql.": ".mysql_error());
+		$section = currentSection();
+		while ($row = mysqli_fetch_object($result))
+		{
+			$sections = explode(";", $row->sections);
+			if( in_array($section,$sections) )
+				$listusers[$row->login] = $row;
+		}
 		$_SESSION['all_users'] = $listusers;
 	}
-	return $_SESSION['all_users'];
+	$all_users = $_SESSION['all_users'];
+	return $all_users;
 }
 
-function createAdminPasswordIfNeeded()
-{
-
-	$users = listUsers(true);
-	if(!isset($users['admin']))
-		createUser('admin','password','admin','admin@admin.org',false,false);
-
-	if(authenticateBase('admin','password'))
-		echo "The 'admin' password is 'password', please change it right after login.";
-
-}
 
 function simpleListUsers()
 {
@@ -145,12 +115,15 @@ function simpleListUsers()
 }
 
 function getUserPermissionLevel($login = "")
-{
-	if ($login=="" && isset($_SESSION["login"]))
+{	
+	if ($login=="")
+	{
+		if(!isset($_SESSION["login"]))
+			throw new Exception("User not logged in !");
 		$login = $_SESSION["login"];
+	}
 
 	$login = strtolower($login);
-
 	if ($login == "admin")
 		return NIVEAU_PERMISSION_SUPER_UTILISATEUR;
 	$users = listUsers();
@@ -161,8 +134,9 @@ function getUserPermissionLevel($login = "")
 	}
 	else
 	{
+//		rr();
 		removeCredentials();
-		throw new Exception("Unknown user");
+		throw new Exception("Unknown user '" + $login + "'");
 	}
 }
 
@@ -230,11 +204,11 @@ function isPresidentSousJury($sousjury = "")
 {
 	global $presidents_sousjurys;
 	if($sousjury != "")
-		return (isset($presidents_sousjurys[$sousjury]['login']) && getLogin() == $presidents_sousjurys[$sousjury]['login']);
+		return (isset($presidents_sousjurys[$sousjury]) && getLogin() == $presidents_sousjurys[$sousjury]);
 	else
 	{
-		foreach($presidents_sousjurys as $pres => $data)
-			if(isset($data['login']) && $data['login'] == getLogin())
+		foreach($presidents_sousjurys as $pres => $login)
+			if($login == getLogin())
 			return true;
 	}
 	return false;
@@ -242,66 +216,7 @@ function isPresidentSousJury($sousjury = "")
 
 
 
-function addCredentials($login,$pwd)
-{
-	$_SESSION = array();
-	$_SESSION['login'] = $login;
-	$_SESSION['pass'] = $pwd;
-} ;
 
-function removeCredentials()
-{
-	$_SESSION = array();
-} ;
-
-function authenticateBase($login,$pwd)
-{
-	$realPassHash = getPassHash($login);
-	if ($realPassHash != NULL)
-	{
-		if (crypt($pwd, $realPassHash) == $realPassHash)
-		{
-			return true;
-		}
-	}
-	return false;
-}
-
-function checkPasswords($password)
-{
-	$users = listUsers();
-	foreach($users as $login => $data)
-	{
-		if(authenticateBase($login, $password))
-			echo $login." a le mot de passe '". $password."'<br/>";
-		else
-			echo "Checked ".$login."<br/>";
-	}
-}
-
-function authenticate()
-{
-	if (isset($_SESSION['login']) and isset($_SESSION['pass']))
-	{
-		$login  = $_SESSION['login'];
-		$pwd = $_SESSION['pass'];
-		return authenticateBase($login,$pwd);
-	}
-	return false;
-} ;
-
-function getPassHash($login)
-{
-	$sql = "SELECT * FROM ".users_db." WHERE login='".mysql_real_escape_string($login)."';";
-	$result=mysql_query($sql);
-	if ($row = mysql_fetch_object($result))
-	{
-		//There is no upper/lower case filter in sql requests
-		if($row->login == $login)
-			return $row->passHash;
-	}
-	return NULL;
-} ;
 
 function changePwd($login,$old,$new1,$new2, $envoiparemail)
 {
@@ -313,7 +228,7 @@ function changePwd($login,$old,$new1,$new2, $envoiparemail)
 		if ($oldPassHash != NULL)
 		{
 			$newPassHash = crypt($new1, $oldPassHash);
-			$sql = "UPDATE ".users_db." SET passHash='$newPassHash' WHERE login='".mysql_real_escape_string($login)."';";
+			$sql = "UPDATE ".users_db." SET passHash='$newPassHash' WHERE login='".real_escape_string($login)."';";
 			sql_request($sql);
 
 			try
@@ -359,7 +274,7 @@ function changeUserInfos($login,$permissions, $sousjury)
 {
 	if (isSecretaire())
 	{
-		$sql = "UPDATE ".users_db." SET permissions=$permissions, sousjury=\"$sousjury\" WHERE login='".mysql_real_escape_string($login)."';";
+		$sql = "UPDATE ".users_db." SET permissions=$permissions, sousjury=\"$sousjury\" WHERE login='".real_escape_string($login)."';";
 	}
 	else
 	{
@@ -377,6 +292,12 @@ function existsUser($login)
 	return array_key_exists($login, $users);
 }
 
+function addUserToSection($login,$section)
+{
+	if (isSecretaire())
+		$sql = "UPDATE ".users_db." SET sections=$section;`sections` WHERE login='".real_escape_string($login)."';";
+}
+
 function createUser($login,$pwd,$desc,$email, $envoiparemail = false, $check_secretary = true)
 {
 	$login = strtolower($login);
@@ -391,12 +312,14 @@ function createUser($login,$pwd,$desc,$email, $envoiparemail = false, $check_sec
 		unset($_SESSION['all_users']);
 
 		$passHash = crypt($pwd);
-		$sql = "INSERT INTO ".users_db." (login,passHash,description,email,tel,sousjury) VALUES ('".mysql_real_escape_string($login)."','".mysql_real_escape_string($passHash)."','".mysql_real_escape_string($desc)."','".mysql_real_escape_string($email)."','','');";
+		$sql = "INSERT INTO ".users_db." (login,sections,passHash,description,email,tel,sousjury) VALUES ('";
+		$sql .= real_escape_string($login)."','";
+		$sql .= real_escape_string($_SESSION['filter_section'])."','";
+		$sql .= real_escape_string($passHash)."','";
+		$sql .= real_escape_string($desc)."','";
+		$sql .= real_escape_string($email)."','','');";
 
-		$result = mysql_query($sql);
-
-		if($result == false)
-			throw new Exception("Failed to process sql query: <br/>\t".mysql_error()."<br/>".$sql);
+		$result = sql_request($sql);
 		
 		createhtpasswd();
 
@@ -431,13 +354,17 @@ function createUser($login,$pwd,$desc,$email, $envoiparemail = false, $check_sec
 	}
 }
 
+
 function deleteUser($login)
 {
-	if (isSecretaire())
+	/* Since a user can be shared by several sections,
+	 * only superuser can delete a user
+	 */
+	if (isSuperUser())
 	{
 		unset($_SESSION['all_users']);
-		$sql = "DELETE FROM ".users_db." WHERE login='".mysql_real_escape_string($login)."';";
-		mysql_query($sql);
+		$sql = "DELETE FROM ".users_db." WHERE login='".real_escape_string($login)."';";
+		sql_request($sql);
 		createhtpasswd();
 	}
 }

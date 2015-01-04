@@ -52,32 +52,6 @@ function displayTri($rows, $sortFields, $sorting_values)
 
 }
 
-function displayExportGeneral()
-{
-	global $typeExports;
-
-	
-	?>
-	<table align="left" >
-	<tr>
-	<td><h2>Export</h2></td>
-	<?php 
-	foreach($typeExports as $idexp => $exp)
-	{
-		$expname= $exp["name"];
-		$level = $exp["permissionlevel"];
-		if (getUserPermissionLevel()>=$level)
-		{
-			echo '<td style="padding-left: 20px"><a href="export.php?action=export&amp;type='.$idexp.'">';
-			//echo "<img class=\"icon\" width=\"40\" height=\"40\" src=\"img/$idexp-icon-50px.png\" alt=\"$expname\"/></a>";
-			echo "$expname</a></td>";
-		}
-	}
-	?>
-	</tr></table>
-	<?php 
-}
-
 
 function displayFiltrage($rows, $fields, $filters, $filter_values)
 {
@@ -148,23 +122,12 @@ function displayRows($rows, $fields, $filters, $filter_values, $sort_fields, $so
 <form method="post" action="index.php">
 	<table>
 	<tr>
-	<td>
-	<?php 
-	displayExportGeneral();
-	?>
-	</td>
 	</tr>
 		<tr>
 			<td>
 				<table>
 					<tr>
 						<td><?php 
-						//displayTri($rows, $sort_fields, $sorting_values);
-						?>
-						</td>
-					</tr>
-					<tr>
-						<td><hr /> <?php 
 						displayFiltrage($rows, $fields, $filters, $filter_values);
 						?>
 						</td>
@@ -174,8 +137,8 @@ function displayRows($rows, $fields, $filters, $filter_values, $sort_fields, $so
 			</td>
 		</tr>
 		<tr>
-			<td><hr /> <input type="hidden" name="action" value="view" /> <input
-				type="submit" value="Rafraîchir" /> <?php 	echo "(".count($rows)." rapports)";?>
+			<td><input type="hidden" name="action" value="view" /> <input
+				type="submit" value="Filtrer" /> <?php 	echo "(".count($rows)." rapports)";?>
 			</td>
 			</tr>
 
@@ -297,20 +260,6 @@ function displayRows($rows, $fields, $filters, $filter_values, $sort_fields, $so
 			{
 			?>
 			<tr>
-			<?php 
-			if(isSecretaire() )
-			{
-			?>
-			<td>
-<form onsubmit="return confirm('Etes vous sur de vouloir supprimer ces rapports?');"
-method="post" action="index.php">
-			<input type="hidden" name="action" value="deleteCurrentSelection" /> <input
-				type="submit" value="Supprimer ces rapports" />
-				</form>
-				</td>
-				<?php 
-			}
-			?>
 			<?php 
 				?>
 			<td>

@@ -87,7 +87,7 @@ function import_csv($type,$filename, $subtype = "", $create = false, $sep="?", $
 		{
 			if($field == "")
 				break;
-			$fields[] = mysql_real_escape_string($field);
+			$fields[] = real_escape_string($field);
 		}
 
 		$with_id = in_array("id",$fields);
@@ -383,7 +383,6 @@ function addCsvReport($subtype, $properties)
 			"Affectation #1" => "unite",
 			"Titre" => "nom",
 			"Responsable principal" => "prenom",
-			"EXPERIENC" => "anneesequivalence",
 			"PUBCONC" => "concours",
 			"Rapporteur1" => "rapporteur",
 			"Rapporteur2" => "rapporteur2",

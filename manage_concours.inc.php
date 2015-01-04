@@ -14,8 +14,9 @@ function affectersousjurys()
 		if(isset($data->sousjury))
 		{
 			foreach($sous_jurys as $concours => $sj)
-				foreach($sj as $code => $nom)
+				foreach($sj as $code => $data)
 			{
+				$nom = $data["nom"];
 				if($code != "")
 				{
 					if(strpos( $data->sousjury , $code) !== false)

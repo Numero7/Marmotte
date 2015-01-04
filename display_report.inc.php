@@ -375,7 +375,7 @@ function displayEditableReport($row, $canedit = true)
 	{
 		if(isSecretaire())
 			$submits["submitandkeepviewing"] = "Enregistrer";
-		$submits["edit"] = "Edition";
+		$submits["edit"] = "Editer";
 	}
 
 	if(isSecretaire())

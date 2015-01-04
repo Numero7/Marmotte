@@ -31,7 +31,7 @@ function getIDOrigine($id_rapport)
 	
 	$sql = "SELECT id_origine FROM ".reports_db." WHERE id=$id_rapport";
 	$result=sql_request($sql);
-	$report = mysql_fetch_object($result);
+	$report = mysqli_fetch_object($result);
 	if($report == false)
 	{
 		throw new Exception("No report with id ".$id_rapport);
@@ -54,7 +54,7 @@ function deleteCurrentSelection()
 		}
 		catch(Exception $e)
 		{
-			$errors .= "Failed to delete report with id ".str($rows_id[$i]).": ".$e."\n<br/>";
+			$errors .= "Failed to delete report with id ".$rows_id[$i].": ".$e."\n<br/>";
 		}
 		if($errors != "")
 			throw new Exception($errors);
@@ -71,7 +71,7 @@ function getReport($id_rapport, $most_recent = true)
 		$id_rapport = getIDOrigine($id_rapport);
 	$sql = "SELECT * FROM ".reports_db." WHERE id=$id_rapport";
 	$result=sql_request($sql);
-	$report = mysql_fetch_object($result);
+	$report = mysqli_fetch_object($result);
 
 	if($report == false)
 	{
@@ -124,7 +124,10 @@ function getAllReportsOfType($type,$id_session=-1)
 
 function filterSortReports($filters, $filter_values = array(), $sorting_values = array(), $rapporteur_or = true)
 {
-	$sql = "SELECT *, ".people_db.".nom AS people_nom, ".people_db.".prenom AS people_prenom, ".reports_db.".nom AS nom, ".reports_db.".prenom AS prenom FROM ".reports_db." left join ".people_db." on ".reports_db.".nom=".people_db.".nom AND ".reports_db.".prenom=".people_db.".prenom WHERE ".reports_db.".id=".reports_db.".id_origine AND ".reports_db.".statut!=\"supprime\"";
+	$section = $_SESSION['filter_section'];
+	$sql = "SELECT *, ".reports_db.".id AS report_id, ".people_db.".id AS people_id, ".people_db.".nom AS people_nom, ".people_db.".prenom AS people_prenom, ".reports_db.".nom AS nom, ".reports_db.".prenom AS prenom FROM ".reports_db;
+	$sql .=" left join ".people_db." on ".reports_db.".nom=".people_db.".nom AND ".reports_db.".prenom=".people_db.".prenom WHERE ";
+	$sql .= reports_db.".id=".reports_db.".id_origine AND ".reports_db.".statut!=\"supprime\" AND ".reports_db.".section=".$section." AND ".people_db.".section=".$section;
 	//$sql = "SELECT * FROM ".reports_db." WHERE id = id_origine AND statut!=\"supprime\"";
 	//$sql = "SELECT * FROM ".reports_db." WHERE date = (SELECT MAX(date) FROM evaluations AS mostrecent WHERE mostrecent.id_origine = evaluations.id_origine AND statut!=\"supprime\")";
 	//$sql = "SELECT * FROM ( SELECT id, MAX(date) AS date FROM evaluations GROUP BY id_origine) mostrecent ON tt.date = mostrecent.date";
@@ -143,23 +146,13 @@ function filterSortReports($filters, $filter_values = array(), $sorting_values =
 		throw new Exception("Echec de l'execution de la requete <br/>".$sql."<br/>");
 
 	$rows = array();
-	//echo $sql."<br/>".count($rows)." rows ".mysql_num_rows($result)." sqlrows<br/>";
+	//echo $sql."<br/>".count($rows)." rows ".mysqli_num_rows($result)." sqlrows<br/>";
 
-	while ($row = mysql_fetch_object($result))
+	while ($row = mysqli_fetch_object($result))
+	{
+		$row->id = $row->report_id;
 		$rows[] = $row;
-
-	
-	/*
-	 * TODO: merge avc candidats
-	*/
-	/*
-	 foreach($rows as $row)
-	 {
-	$candidat = get_or_create_candidate($row);
-	foreach($candidat as $key => $value)
-		$row->$key = $value;
-
-	}*/
+	}
 
 	return $rows;
 }
@@ -336,7 +329,7 @@ function checkReportIsEditable($rapport)
 	{
 		$sousjury = $rapport->sousjury;
 		global $presidents_sousjurys;
-		if(isset($presidents_sousjurys[$sousjury]['login']) && $login == $presidents_sousjurys[$sousjury]['login'])
+		if(isset($presidents_sousjurys[$sousjury]) && $login == $presidents_sousjurys[$sousjury])
 			return true;
 	}
 	else if( ($rapport->rapporteur != "") && ($rapport->rapporteur != $login) && ($rapport->rapporteur2 != $login))
@@ -393,7 +386,7 @@ function deleteReport($id_rapport, $all_versions = false)
 	$sql = "SELECT * FROM ".reports_db." WHERE date = (SELECT MAX(date) FROM ".reports_db." AS mostrecent WHERE mostrecent.id_origine=$id_rapport AND mostrecent.id != $id_rapport AND mostrecent.statut!=\"supprime\")";
 	$result= sql_request($sql);
 
-	$before = mysql_fetch_object($result);
+	$before = mysqli_fetch_object($result);
 	if($before != false && !$all_versions)
 	{
 		$previous_id = $before->id;
@@ -456,6 +449,7 @@ function newReport($type_rapport)
 
 	$row = array();
 	$row['type'] = $type_rapport;
+	$row['section'] = $_SESSION['filter_section'];
 
 	return normalizeReport($row);
 } ;
@@ -471,6 +465,8 @@ function addReport($report)
 		if(!isset($report->$key))
 		$report->$key = $value;
 
+	$report->section = $_SESSION['filter_section'];
+	
 	return addReportToDatabase($report);
 };
 
@@ -580,11 +576,6 @@ function normalizeReport($report)
 				if(isset($report->$field) && $report->$field=="")
 				$report->$field = $value;
 		}
-		if($report->type == "Equivalence" && $report->prerapport=="" && isset($report->anneesequivalence))
-		{
-			//$report->prerapport = "Raison de la demande: ". $raison."\n";
-			$report->prerapport .= "Annees d'équivalence annoncées par le candidat: ". $report->anneesequivalence;
-		}
 	}
 
 
@@ -597,10 +588,8 @@ function addReportToDatabase($report,$normalize = true)
 	global $fieldsRapportAll;
 	global $fieldsPermissions;
 
-
 	if($normalize)
 	 $report = normalizeReport($report);
-
 
 	if(isset($report->statut) && $report->statut == "vierge" && $report->id_origine != 0)
 		$report->statut = "prerapport";
@@ -609,12 +598,9 @@ function addReportToDatabase($report,$normalize = true)
 		createUnitIfNeeded($report->unite);
 
 	$specialRule = array("date","id","id_origine","auteur");
-
-
-	mysql_query("LOCK TABLES evaluations WRITE;");
+	sql_request("LOCK TABLES ".reports_db." WRITE;");
 
 	$id_origine = isset($report->id_origine) ? $report->id_origine : 0;
-
 	if($id_origine == 0)
 	{
 		global $empty_report;
@@ -626,8 +612,6 @@ function addReportToDatabase($report,$normalize = true)
 	$level = getUserPermissionLevel();
 	try
 	{
-
-
 		$current_report = array();
 		try
 		{
@@ -702,6 +686,7 @@ function addReportToDatabase($report,$normalize = true)
 		$specialRule = array("date","id");
 
 		$current_report->auteur = getLogin();
+		$current_report->section = $_SESSION['filter_section'];
 
 		$first = true;
 
@@ -710,7 +695,7 @@ function addReportToDatabase($report,$normalize = true)
 			if (key_exists($field, $fieldsRapportAll) && !in_array($field,$specialRule))
 			{
 				$sqlfields.= ($first ? "" : ",").$field;
-				$sqlvalues.=($first ? "" : ",")."\"".mysql_real_escape_string($value)."\"";
+				$sqlvalues.=($first ? "" : ",")."\"".real_escape_string($value)."\"";
 				$first = false;
 			}
 		}
@@ -718,7 +703,8 @@ function addReportToDatabase($report,$normalize = true)
 		$sql = "INSERT INTO ".reports_db." ($sqlfields) VALUES ($sqlvalues);";
 		sql_request($sql);
 
-		$new_id = mysql_insert_id();
+		global $dbh;
+		$new_id = mysqli_insert_id($dbh);
 
 		if($id_origine != 0 && isset($current_report->id))
 		{
@@ -736,7 +722,7 @@ function addReportToDatabase($report,$normalize = true)
 	}
 	catch(Exception $e)
 	{
-		mysql_query("UNLOCK TABLES");
+		mysqli_query("UNLOCK TABLES");
 		throw $e;
 	}
 
@@ -933,7 +919,7 @@ function find_unit_reports($code)
 		throw new Exception("Echec de l'execution de la requete <br/>".$sql."<br/>");
 	
 	$rows = array();
-	while ($row = mysql_fetch_object($result))
+	while ($row = mysqli_fetch_object($result))
 		$rows[] = $row;
 	
 	return $rows;
@@ -953,7 +939,7 @@ function find_people_reports($nom, $prenom)
 		throw new Exception("Echec de l'execution de la requete <br/>".$sql."<br/>");
 	
 	$rows = array();
-	while ($row = mysql_fetch_object($result))
+	while ($row = mysqli_fetch_object($result))
 		$rows[] = $row;
 	
 	return $rows;
@@ -1069,8 +1055,7 @@ function is_field_editable($row, $fieldId)
 		if($fieldId == "fichiers")
 			return $extra;
 
-
-		if( $is_rapp1  && ($fieldId == "prerapport" || $fieldId == "avissousjury" || $fieldId=="productionResume" || $fieldId == "parcours" || $fieldId=="projetrecherche"))
+		if( $is_rapp1  && ($fieldId == "prerapport" || $fieldId == "avissousjury" || $fieldId=="audition"))
 			return $extra;
 
 		if( $is_rapp2  && ($fieldId == "prerapport2"))

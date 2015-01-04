@@ -7,11 +7,7 @@ require_once("manage_sessions.inc.php");
 global $typesRapportsConcours;
 global $typesRapportsChercheurs;
 
-
-
 ?>
-
-
 <div class="footer">
 	<div id="authbar">
 		<table class="toptable">
@@ -51,21 +47,12 @@ global $typesRapportsChercheurs;
 									<input type="hidden" name="action" value="displayunits" /> <input
 										type="submit" value="Unités" />
 								</form>
-
+<!-- 
 								<form method="post" style="display: inline;" action="index.php">
 									<input type="hidden" name="action" value="displaystats" /> <input
 										type="submit" value="Stats" />
 								</form>
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<form method="post" style="display: inline;" action="index.php">
-									<input type="hidden" name="action" value="displayimportexport" />
-									<input type="submit" value="Import/Export" />
-								</form>
-
-
+								 -->
 							</td>
 						</tr>
 
@@ -79,7 +66,7 @@ global $typesRapportsChercheurs;
 								<ul>
 
 									<li><a href="index.php?action=view&amp;reset_filter=">Tous</a></li>
-									<li><a href="index.php?action=view">Sélection en cours</a>
+									<li><a href="index.php?action=view">Sélection</a>
 									</li>
 
 									<?php
@@ -127,142 +114,112 @@ global $typesRapportsChercheurs;
 								</ul>
 
 							</td>
-							<?php 
-							if(is_current_session_concours())
-							{
-								?>
-							<td valign="top">Auditions
-								<ul>
+							<td>
 									<?php
-									echo "<li><a href=\"index.php?action=view&amp;reset_filter=&amp;filter_id_session=".current_session_id()."&amp;filter_type=Candidature &amp;filter_avis=oral\">Auditions</a></li>";
-
-									global $concours_ouverts;
-									foreach($concours_ouverts as $code => $intitule)
-									{
-										echo "<li><a href=\"index.php?action=view&amp;reset_filter=&amp;filter_id_session=".current_session_id()."&amp;filter_type=Candidature&amp;filter_concours=$code&amp;filter_avis=oral\">$intitule</a></li>";
-									}
-									?>
-								</ul>
-							</td>
-							<?php 				
-							}
-							else if(is_current_session_delegation())
-							{
-								?>
-								<td  valign="top">Dossiers
-								<ul>
-																	<li><a
-										href="index.php?action=view&amp;filter_type=Delegation">Délégations
-									</a> <?php 
-									if(isSecretaire())
-										echo " <a href=\"index.php?action=new&amp;type=Delegation\">+</a>";
-									?>
-									</li>
-																</ul>
-																</td>
-							<?php 				
-							}
-							else
-							{
-								?>
-							<td valign="top">Chercheurs
-								<ul>
-									<?php 
-									$i=0;
-									$lim = intval(count($typesRapportsChercheursShort) / 2);
-									foreach($typesRapportsChercheursShort as $typeEval => $value)
+									$login = getLogin();
+									$sections = getSections($login);
+									if(isset($_REQUEST['filter_section']))
+										$cur_section = $_REQUEST['filter_section'];
+									else
+										$cur_section = $_SESSION['filter_section'];
+										
+									if(count($sections) >= 1)
 									{
 										?>
-									<li><a
-										href="index.php?action=view&amp;filter_type=<?php echo $typeEval ?>"><?php echo $value?>
-									</a> <?php 
-									if(isSecretaire())
-										echo " <a href=\"index.php?action=new&amp;type=".$typeEval."\">+</a>";
-									?>
-									</li>
+							<form method="post" action="index.php">
+									<input type="submit" value="Section"/>
+									<input type="hidden" name="reset_filter" value=""/>
+									<input type="hidden" name="action" value="view"/>
+									<select name="filter_section">
 									<?php
-									$i++;
-									if($i == $lim)
-									{
-										echo "</ul></td><td><ul>";
-									}
-									}
-							?>
-								</ul>
-							</td>
-							<td valign="top">Unités
-								<ul>
-									<?php
-									foreach($typesRapportsUnitesShort as $typeEval => $value)
-									{
-										?>
-									<li><a
-										href="index.php?action=view&amp;filter_type=<?php echo $typeEval ?>"><?php echo $value?>
-									</a> <?php 
-									if(isSecretaire())
-										echo " <a href=\"index.php?action=new&amp;type=".$typeEval."\">+</a>";
-									?>
-									</li>
-
-									<?php
-									}
-									?>
-																	</ul>
-							</td>
-																	<?php 
-								
-														}
-									
-									?>
-							<td valign="top">Sessions
-								<ul>
-									<?php
-
-									$sessions = sessionArrays();
-									
-									$i = 0;
-									foreach($sessions as $id => $nom)
-									{
-										$i++;
-										if($i > 7) break;
-										//$typesRapports = getTypesEval($s["id"]);
-										echo "<li><a href=\"index.php?action=view&amp;reset_filter=&amp;filter_id_session=".strval($id)."\">".$nom."</a></li>";
-							/*			?>
-										 <!--
-										<ul>
-										<?php
-										foreach($typesRapports as $typeEval)
-											echo "\t\t<li><a href=\"?action=view&amp;id_session=".$s["id"]."&amp;type_eval=".urlencode($typeEval)."\">$typeEval</a></li>\n";
-										?>
-										</ul>
-										-->
-										<?php
-										*/
-									}
-									?>
-								</ul> <?php 
-								if ( isSecretaire())
-								{
-									global $statutsRapports;
-
-									echo '
-		Statut des rapports sélectionnés
-		<form method="post"  action="index.php">
-		<select name="new_statut">';
-									foreach ($statutsRapports as $val => $nom)
+									foreach($sections as $section)
 									{
 										$sel = "";
-										echo "<option value=\"".$val."\" $sel>".$nom."</option>\n";
+										if ($section == $cur_section)
+											$sel = ' selected="selected"';
+										echo '<option value="'.$section."\" $sel>".$section."</option>\n";
 									}
-									echo '
+											?>
 									</select>
-									<input type="hidden" name="action" value="change_statut"/>
-									<input type="submit" value="Changer statut"/>
-									</form>';
-								}
-									
-								?>
-
+									</form>
+									<?php 
+						}
+									?>
+							
+							<form method="post" action="index.php">
+									<input type="submit" value="Session"/>
+									<input type="hidden" name="reset_filter" value=""/>
+									<input type="hidden" name="action" value="view"/>
+									<select name="filter_id_session">
+									<?php
+									$sessions = sessionArrays();
+									$cur = current_session_id();
+									foreach($sessions as $id => $nom)
+									{
+										$sel = "";
+										if ($id	 == $cur)
+											$sel = ' selected="selected"';
+										echo '<option value="'.strval($id)."\" $sel>".$nom."</option>\n";
+									}
+											?>
+									</select>
+									</form>
+		
+		<form method="post" action="export.php">
+		<input type="submit" value="Exporter"/>
+		<input type="hidden" name="action" value="export"/>
+		<select name="type">
+		<?php 
+		global $typeExports;
+		foreach($typeExports as $idexp => $exp)
+		{
+			$expname= $exp["name"];
+			$level = $exp["permissionlevel"];
+			if (getUserPermissionLevel()>=$level)
+				echo '<option value="'.$idexp.'">'.$exp["name"]."</option>\n";
+		}
+		?>
+		</select>
+		</form>
+		
+								<?php 
+		if ( isSecretaire())
+		{
+		global $statutsRapports;
+?>
+		<li>
+		<form method="post"  action="index.php">
+		<input type="submit" value="Changer statut"/>
+		<select name="new_statut">
+		<?php  
+		foreach ($statutsRapports as $val => $nom)
+		{
+			$sel = "";
+			echo "<option value=\"".$val."\" $sel>".$nom."</option>\n";
+		}
+		?>
+		</select>
+		<input type="hidden" name="action" value="change_statut"/>
+		</form>
+		</li>
+				<li>
+				<form onsubmit="return confirm('Etes vous sur de vouloir supprimer ces rapports?');"
+method="post" action="index.php">
+				<input type="hidden" name="action" value="deleteCurrentSelection" /> <input
+				type="submit" value="Supprimer les rapports" />
+					</form>
+				</li>
+				<li>
+				<form method="post" style="display: inline;" action="index.php">
+				<input type="hidden" name="action" value="displayimportexport" />
+				<input type="submit" value="Import/Ajout" />
+				</form>
+				</li>
+			<?php 
+			}
+			?>
+</ul>
+								
 							</td>
 
 						</tr>

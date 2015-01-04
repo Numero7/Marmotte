@@ -36,8 +36,8 @@ function process_upload($create = false, $directory = null)
 					throw new Exception("Filename '"+ $filename+"' too short");
 
 				$suffix = substr($filename,strlen($filename) -3, 3);
-				$type = isset($_REQUEST['type']) ? mysql_real_escape_string($_REQUEST['type']) : "";
-				$subtype = isset($_REQUEST['subtype']) ? mysql_real_escape_string($_REQUEST['subtype']) : "";
+				$type = isset($_REQUEST['type']) ? real_escape_string($_REQUEST['type']) : "";
+				$subtype = isset($_REQUEST['subtype']) ? real_escape_string($_REQUEST['subtype']) : "";
 				switch($type)
 				{
 					case "evaluations":

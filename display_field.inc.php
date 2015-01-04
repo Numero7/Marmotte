@@ -9,9 +9,13 @@ require_once('manage_rapports.inc.php');
 function display_sousjury($row, $fieldId, $readonly)
 {
 	global $sous_jurys;
-	$sousjurys = (isset($row->concours) && isset($sous_jurys[substr($row->concours,-4,4)])) ? $sous_jurys[$row->concours] : array();
+	$souj = array();
 
-	display_select($row, $fieldId, $sousjurys,$readonly);
+	if( isset($row->concours) && isset($sous_jurys[$row->concours] ) )
+		foreach($sous_jurys[$row->concours] as $code -> $data)
+			$souj[$code] = $data["nom"];
+
+	display_select($row, $fieldId, $souj,$readonly);
 }
 
 function display_type($row, $fieldID, $readonly)
@@ -208,8 +212,6 @@ function display_rapports($row, $fieldId)
 				
 				if($type == "Candidature" && isset($report->concours) )
 					echo '<tr><td><a href="index.php?action=edit&amp;id='.$report->id.'">'.$report->id_session. " - " .$type." - " . $report->concours ."</a></td></tr>";
-				else if($type == "Equivalence" && isset($report->grade_rapport) )
-					echo '<tr><td><a href="index.php?action=edit&amp;id='.$report->id.'">'.$report->id_session. " - " .$type." - " . $report->grade_rapport ."</a></td></tr>";
 				else 
 					echo '<tr><td><a href="index.php?action=edit&amp;id='.$report->id.'">'.$report->id_session. " - " .$type."</a></td></tr>";
 					

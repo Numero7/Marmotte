@@ -70,11 +70,11 @@ function alertText($text)
 
 
 
-		$id_rapport = isset($_REQUEST["id"]) ? mysql_real_escape_string($_REQUEST["id"]) : -1;
-		$id_origine = isset($_REQUEST["id_origine"]) ? mysql_real_escape_string($_REQUEST["id_origine"]) : 0;
-		$id_toupdate = isset($_REQUEST["id_toupdate"]) ? mysql_real_escape_string($_REQUEST["id_toupdate"]) : 0;
+		$id_rapport = isset($_REQUEST["id"]) ? mysqli_real_escape_string($dbh,$_REQUEST["id"]) : -1;
+		$id_origine = isset($_REQUEST["id_origine"]) ? mysqli_real_escape_string($dbh,$_REQUEST["id_origine"]) : 0;
+		$id_toupdate = isset($_REQUEST["id_toupdate"]) ? mysqli_real_escape_string($dbh,$_REQUEST["id_toupdate"]) : 0;
 
-		$action = isset($_REQUEST["action"]) ? mysql_real_escape_string($_REQUEST["action"]) : "";
+		$action = isset($_REQUEST["action"]) ? mysqli_real_escape_string($dbh,$_REQUEST["action"]) : "";
 
 		if(isset($_REQUEST["reset_filter"]))
 			resetFilterValuesExceptSession();
@@ -168,14 +168,14 @@ function alertText($text)
 					if(isset($_REQUEST["new_statut"]))
 					{
 						$filterValues = getFilterValues();
-						$new_statut =  mysql_real_escape_string($_REQUEST["new_statut"]);
+						$new_statut =  mysqli_real_escape_string($dbh,$_REQUEST["new_statut"]);
 						change_statuts($new_statut, $filterValues);
 						$filterValues['statut']	 = $new_statut;
 						displaySummary(getCurrentFiltersList(), $filterValues, getSortingValues());
 					}
 					break;
 				case 'view':
-					displayReports($id_rapport);
+					displayReports();
 					break;
 				case 'deleteCurrentSelection':
 					deleteCurrentSelection();
@@ -191,21 +191,12 @@ function alertText($text)
 				case 'read':
 					viewReport($id_rapport);
 					break;
-				case 'history':
-					historyReport($id_origine);
-					break;
 				case 'upload':
 					$create = isset($_REQUEST["create"]);
 					$result= process_upload($create);
 					alertText($result);
 					displayReports();
 					break;
-
-				case 'view':
-					displayWithRedirects($next);
-					//viewWithRedirect($next);
-					break;
-						
 				case 'update':
 
 					$next = next_report($id_origine);
@@ -337,11 +328,11 @@ function alertText($text)
 				case 'adminnewpwd':
 					if (isset($_REQUEST["oldpwd"]) and isset($_REQUEST["newpwd1"]) and isset($_REQUEST["newpwd2"]) and isset($_REQUEST["login"]))
 					{
-						$old = mysql_real_escape_string($_REQUEST["oldpwd"]);
-						$pwd1 = mysql_real_escape_string($_REQUEST["newpwd1"]);
-						$pwd2 = mysql_real_escape_string($_REQUEST["newpwd2"]);
-						$login = mysql_real_escape_string($_REQUEST["login"]);
-						$envoiparemail = isset($_REQUEST["envoiparemail"])  ? mysql_real_escape_string($_REQUEST["envoiparemail"]) : false;
+						$old = mysqli_real_escape_string($dbh,$_REQUEST["oldpwd"]);
+						$pwd1 = mysqli_real_escape_string($dbh,$_REQUEST["newpwd1"]);
+						$pwd2 = mysqli_real_escape_string($dbh,$_REQUEST["newpwd2"]);
+						$login = mysqli_real_escape_string($dbh,$_REQUEST["login"]);
+						$envoiparemail = isset($_REQUEST["envoiparemail"])  ? mysqli_real_escape_string($dbh,$_REQUEST["envoiparemail"]) : false;
 
 						if (($pwd1==$pwd2))
 						{
@@ -439,7 +430,7 @@ function alertText($text)
 					break;
 				case 'admindeletesession':
 					if (isset($_REQUEST["sessionid"]))
-						deleteSession(mysql_real_escape_string($_REQUEST["sessionid"]), isset($_REQUEST["supprimerdossiers"]));
+						deleteSession(mysqli_real_escape_string($dbh,$_REQUEST["sessionid"]), isset($_REQUEST["supprimerdossiers"]));
 					else
 						throw new Exception("Vous n'avez fourni toutes les informations nécessaires pour supprimer une session, veuillez nous contacter (Yann ou Hugo) en cas de difficultés.");
 					include "admin.inc.php";
@@ -451,12 +442,12 @@ function alertText($text)
 					if(isset($_REQUEST["nickname"]) and isset($_REQUEST["code"]) and isset($_REQUEST["fullname"]) and isset($_REQUEST["directeur"]))
 					{
 						addUnit(
-						mysql_real_escape_string($_REQUEST["nickname"]),
-						 mysql_real_escape_string($_REQUEST["code"]),
-						 mysql_real_escape_string($_REQUEST["fullname"]),
-						 mysql_real_escape_string($_REQUEST["directeur"])
+						mysqli_real_escape_string($dbh,$_REQUEST["nickname"]),
+						 mysqli_real_escape_string($dbh,$_REQUEST["code"]),
+						 mysqli_real_escape_string($dbh,$_REQUEST["fullname"]),
+						 mysqli_real_escape_string($dbh,$_REQUEST["directeur"])
 						 );
-						echo "Added unit \"".mysql_real_escape_string($_REQUEST["nickname"])."\"<br/>";
+						echo "Added unit \"".mysqli_real_escape_string($dbh,$_REQUEST["nickname"])."\"<br/>";
 					}
 					else
 					{
@@ -467,8 +458,8 @@ function alertText($text)
 				case 'deletelabo':
 					if(isset($_REQUEST["unite"]))
 					{
-						deleteUnit(mysql_real_escape_string($_REQUEST["unite"]));
-						echo "Deleted unit \"".mysql_real_escape_string($_REQUEST["unite"])."\"<br/>";
+						deleteUnit(mysqli_real_escape_string($dbh,$_REQUEST["unite"]));
+						echo "Deleted unit \"".mysqli_real_escape_string($dbh,$_REQUEST["unite"])."\"<br/>";
 					}
 					else
 					{
@@ -511,7 +502,7 @@ function alertText($text)
 					if(substr($action,0,3)=="set")
 					{
 						$fieldId = substr($action,3);
-						$newvalue = isset($_REQUEST['new'.$fieldId]) ? mysql_real_escape_string($_REQUEST['new'.$fieldId]) : "";
+						$newvalue = isset($_REQUEST['new'.$fieldId]) ? mysqli_real_escape_string($dbh,$_REQUEST['new'.$fieldId]) : "";
 						$newid = change_report_property($id_toupdate, $fieldId, $newvalue);
 						displayWithRedirects($newid);
 					}

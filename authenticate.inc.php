@@ -1,6 +1,5 @@
 <?php 
-require_once('manage_users.inc.php');
-createAdminPasswordIfNeeded();
+//require_once('manage_user
 
 $firstlogin = authenticateBase('admin','password');
 

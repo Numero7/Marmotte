@@ -72,21 +72,9 @@
 					<td colspan = "2" height="520" >
 
 				<p>
-					<xsl:value-of disable-output-escaping="yes" select="parcours" />
+					<xsl:value-of disable-output-escaping="yes" select="audition" />
 				</p>
 
-				<p>
-					<xsl:value-of disable-output-escaping="yes" select="productionResume" />
-				</p>
-
-
-				<p>
-					<xsl:value-of disable-output-escaping="yes" select="projet" />
-				</p>
-
-				<p>
-					<xsl:value-of disable-output-escaping="yes" select="avissousjury" />
-				</p>
 
 </td></tr>
 <tr style="text-align:left;"><td height="120">
