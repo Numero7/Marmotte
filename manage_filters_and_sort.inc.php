@@ -134,10 +134,6 @@ function getCurrentSortingList()
 
 function getFilterValues()
 {
-	/* should not be here but ... */
-	if(isset($_REQUEST['filter_section']))
-		change_current_section($_REQUEST['filter_section']);
-	
 	$filters = getCurrentFiltersList();
 	$filter_values = array();
 	foreach($filters as $filter => $data)

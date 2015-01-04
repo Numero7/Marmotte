@@ -73,8 +73,8 @@ try
 		{			
 			require_once("utils.inc.php");
 			require_once("manage_users.inc.php");
-		try
-		{
+
+			
 			switch($action)
 			{
 				case 'adminnewsession':
@@ -84,7 +84,7 @@ try
 						$annee = real_escape_string($_REQUEST["sessionannee"]);
 						require_once('manage_sessions.inc.php');
 						createSession($name,$annee);
-						include 'admin.inc.php';
+						$_REQUEST["action"] = 'admin';
 					}
 					else
 						echo "<p><strong>Erreur :</strong> Vous n'avez fourni toutes les informations nécessaires pour créer une session, veuillez nous contacter (Yann ou Hugo) en cas de difficultés.</p>";
@@ -96,18 +96,16 @@ try
 						$id = real_escape_string($_REQUEST["sessionname"]);
 						set_config('current_session',$id);
 						set_current_session_id($id);
-						include 'admin.inc.php';
+						$_REQUEST["action"] = 'admin';
 					}
 					break;
 			}
-		}
-		catch(Exception $exc)
-		{
-			$text = 'Impossible d\'exécuter l\'action "'.$action.'"<br/>Exception: '.$exc->getMessage();
-			echo "<p>".$text."</p>";
-		}
 
 		try{
+			/* should not be here but ... */
+			if(isset($_REQUEST['filter_section']))
+				change_current_section($_REQUEST['filter_section']);
+			
 			$id = current_session_id();
 			
 				if(!check_current_session_exists())

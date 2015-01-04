@@ -15,7 +15,7 @@ global $typesRapportsChercheurs;
 				<td>
 					<table>
 						<tr>
-							<td><span class='login'><?php echo getLogin(). " - ".current_session();?>
+							<td><span class='login'><?php echo getLogin(). " - ".$_SESSION['filter_section']." - ".current_session();?>
 							</span>
 							</td>
 						</tr>

@@ -45,6 +45,8 @@ function change_current_section($section)
 	$sql .= "'WHERE login='".real_escape_string(getLogin())."';";
 	sql_request($sql);
 	$_SESSION['filter_section'] = $section;
+	unset($_SESSION["config"]);
+	$_SESSION['filter_id_session'] = get_config("current_session");
 }
 
 /* Caching users list for performance */

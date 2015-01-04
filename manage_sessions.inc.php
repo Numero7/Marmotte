@@ -5,11 +5,6 @@ require_once('manage_filters_and_sort.inc.php');
 require_once('utils.inc.php');
 
 
-function getCurrentSection()
-{
-	return getFilterValue("section");
-}
-
 function sessionArrays($force = false)
 {
 	global $dbh;
@@ -62,11 +57,6 @@ function current_session_id()
 function set_current_session_id($id)
 {
 	$_SESSION['filter_id_session'] = $id;
-}
-
-function set_current_section($section)
-{
-	$_SESSION['filter_section'] = $section;
 }
 
 function check_current_session_exists()
@@ -142,12 +132,9 @@ function createSession($name,$annee)
 			case "PES":
 				$date = "01/05/".$annee; break;
 			default:
-				throw new Exception("Unknown session name: $name");
+				$date = "01/07/".$annee; break;
 		}
-		echo $date."<br>";
-		echo strtotime($date)."<br>";
-		echo date("Y-m-d h:m:s",strtotime($date));
-		$sql = "INSERT INTO ".sessions_db."(id,nom,date) VALUES ('".real_escape_string($name).real_escape_string($annee)."','".real_escape_string($name)."','".date("Y-m-d h:m:s",strtotime($date))."');";
+		$sql = "INSERT INTO ".sessions_db."(id,section,nom,date) VALUES ('".real_escape_string($name.$annee)."','".$_SESSION['filter_section']."','".real_escape_string($name)."','".date("Y-m-d h:m:s",strtotime($date))."');";
 		sql_request($sql);
 		sessionArrays(true);
 		return true;
