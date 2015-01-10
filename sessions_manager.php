@@ -11,16 +11,10 @@ require_once('manage_sessions.inc.php');
 <form method="post" action="index.php">
 		<table class="inputreport">
 					<tr>
-						<td style="width: 20em;">Nom de session</td>
-			
-						<td>
-										 <select
-				name="sessionname">
+<td><B>Session courante</B><td>						<select	name="sessionname">
 					<?php
 					$curid = current_session_id();
-					
 					$sessions =  showSessions();						
-						
 					foreach($sessions as $session)
 					{
 						$id = $session["id"];
@@ -29,18 +23,11 @@ require_once('manage_sessions.inc.php');
 							$sel = " selected=\"selected\"";
 						echo '<option value="'.$id."\" ".$sel.">".$id.'</option>';
 					}
-					
 						?>
 			</select>
-			</td></tr>
-								<tr>
-						<td><input type="hidden" name="action" value="sessioncourante" />
-						</td>
-						<td><input type="submit" value="Changer session courante" />
-						</td>
-					</tr>
-			
-
+			</td>
+			<td><input type="hidden" name="action" value="sessioncourante" /><input type="submit" value="Changer session courante" /></td>
+			</tr>
 </table>
 </form>
 			<h3>Ajout d'une session</h3>
@@ -48,9 +35,8 @@ require_once('manage_sessions.inc.php');
 				onsubmit="return confirm('Etes vous sur de vouloir ajouter cette session ?');">
 				<table class="inputreport">
 					<tr>
-						<td style="width: 20em;">Nom de session</td>
-						<td>
-										 <select
+						<td >Type
+																 <select
 				name="sessionname">
 					<?php
 						echo  '<option value="Concours">Concours</option>';
@@ -61,20 +47,18 @@ require_once('manage_sessions.inc.php');
 						echo  '<option value="Generique">Generique</option>';
 						?>
 			</select>
+						</td>
+												<td>Année
+						<input name="sessionannee" />
+						</td>
+						
+						<td>
 			</td>
+									<td>
+									<input type="hidden" name="action" value="adminnewsession" />
+						<input type="submit" value="Ajouter session" />
+						</td>
 			</tr>
-					<tr>
-						<td style="width: 20em;">Année
-						</td>
-						<td style="width: 20em;"><input name="sessionannee" />
-						</td>
-					</tr>
-					<tr>
-						<td><input type="hidden" name="action" value="adminnewsession" />
-						</td>
-						<td><input type="submit" value="Ajouter session" />
-						</td>
-					</tr>
 				</table>
 			</form>
 			<h3>Suppression d'une session</h3>
@@ -93,14 +77,13 @@ require_once('manage_sessions.inc.php');
 								}
 								?>
 						</select>
-						<input type="checkbox" name="supprimerdossiers" unchecked
-									style="width: 10px;" /> Supprimer définitivement les dossiers
 						</td>
-					</tr>
-					<tr>
 						<td><input type="hidden" name="action" value="admindeletesession" />
+						<input type="submit" value="Supprimer session" />
 						</td>
-						<td><input type="submit" value="Supprimer session" />
+						<td>
+												<input type="checkbox" name="supprimerdossiers" unchecked
+									style="width: 10px;" /> Supprimer définitivement les dossiers
 						</td>
 					</tr>
 				</table>

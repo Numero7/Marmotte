@@ -24,17 +24,6 @@ function getTypesEval($id_session,$section)
 }
 
 
-function getExample($type)
-{
-	global $examples;
-	$tmp = "Exemple : ";
-	if (isset($examples[$type]))
-	{
-		$tmp .= $examples[$type];
-	}
-	return $tmp;
-}
-
 function highlightDiff(&$prevVals,$key,$val)
 {
 	if (isset($prevVals[$key]))

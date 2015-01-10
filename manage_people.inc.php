@@ -86,8 +86,8 @@ function updateCandidateFromRequest($request, $oldannee="")
 	
 	if(	isset($request['previousnom']) && isset($request['previousprenom']))
 			{
-	$ppnom = mysqli_real_escape_string($request['previousnom']);
-	$ppprenom = mysqli_real_escape_string($request['previousprenom']);
+	$ppnom = real_escape_string($request['previousnom']);
+	$ppprenom = real_escape_string($request['previousprenom']);
 	
 	$candidate = get_or_create_candidate($data );
 	
@@ -126,7 +126,7 @@ function updateCandidateFromData($data)
 		if(key_exists($field, $fieldsIndividualAll))
 		{
 			$sqlcore.=$first ? "" : ",";
-			$sqlcore.=$field.'="'.mysqli_real_escape_string($value).'" ';
+			$sqlcore.=$field.'="'.real_escape_string($value).'" ';
 			$first = false;
 		}
 	}
@@ -143,7 +143,7 @@ function updateCandidateFromData($data)
 function getAllCandidates()
 {
 	$sql = "SELECT * FROM ".people_db." WHERE ";
-	$sql .= " `section`='". mysqli_real_escape_string($_SESSION['filter_section'])."'";
+	$sql .= " `section`='". real_escape_string($_SESSION['filter_section'])."'";
 	$sql .= ";";
 	$result=sql_request($sql);
 	if($result == false)

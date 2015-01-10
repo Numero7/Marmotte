@@ -420,7 +420,7 @@ function addCsvReport($subtype, $properties)
 	foreach($properties as $key => $value)
 		addToReport($report,$key, replace_accents($value));
 
-	$report->statut = 'vierge';
+	$report->statut = 'doubleaveugle';
 	$report->id_session = current_session_id();
 	
 	global $typesRapportsChercheurs;
@@ -449,54 +449,6 @@ function addCsvReport($subtype, $properties)
 }
 
 
-/*
-function addCsvReport($type, $data, $fields)
-{
-
-	if(isset($data["code"]))
-		$data["unite"] = $data["code"];
-	if(isset($data["unite"]))
-		$data["code"] = $data["unite"];
-
-	$non_empty = false;
-	foreach($data as $d)
-		if($d != "")
-		$non_empty = true;
-
-	if(!$non_empty)
-		return;
-
-	$report = getDocFromCsv($data,$fields);
-	$report->statut = 'vierge';
-
-	if(isset($report->type) && $report->type != "")
-	{
-		$type = $report->type;
-	}
-	else if($type != "")
-	{
-		$report->type = $type;
-	}
-	else
-	{
-		echo "Skipping report</br>";
-		return;
-	}
-
-	$report->id_session = current_session_id();
-
-	global $typesRapportsChercheurs;
-	global $typesRapportsConcours;
-
-	if( in_array($report->type, $typesRapportsChercheurs) || in_array($report->type, $typesRapportsConcours) )
-		updateCandidateFromData((object) $data);
-
-	addReport($report,false);
-
-	if(isset($data->unite))
-		updateUnitData($data->unite, (object) $data);
-}
-*/
 
 function addCsvUnite($properties)
 {

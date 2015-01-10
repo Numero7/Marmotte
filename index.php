@@ -108,7 +108,7 @@ try
 			
 			$id = current_session_id();
 			
-				if(!check_current_session_exists())
+				if(!check_current_session_exists() && !isSuperUser())
 				{
 					echo "<p>La session courante intitulée '".$id."' n'existe pas dans la base de données<br/>";
 					echo "<p>Veuillez créer une session intitulée '".$id."' ou changer de session courante</p>";

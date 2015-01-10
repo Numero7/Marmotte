@@ -121,8 +121,6 @@ function displayRows($rows, $fields, $filters, $filter_values, $sort_fields, $so
 	?>
 <form method="post" action="index.php">
 	<table>
-	<tr>
-	</tr>
 		<tr>
 			<td>
 				<table>
@@ -137,12 +135,43 @@ function displayRows($rows, $fields, $filters, $filter_values, $sort_fields, $so
 			</td>
 		</tr>
 		<tr>
+		<table><tr>
 			<td><input type="hidden" name="action" value="view" /> <input
 				type="submit" value="Filtrer" /> <?php 	echo "(".count($rows)." rapports)";?>
 			</td>
-			</tr>
-
-	</table>
+<?php if(isSecretaire()){
+?>
+<td>
+		<form onsubmit="return confirm('Changer les statuts des rapports?');" method="post"  action="index.php">
+			<input type="submit" value="Changer statuts"/>
+			<select name="new_statut">
+			<?php  
+			global $statutsRapports;
+			foreach ($statutsRapports as $val => $nom)
+			{
+				$sel = "";
+				echo "<option value=\"".$val."\" $sel>".$nom."</option>\n";
+			}
+			?>
+			</select>
+			<input type="hidden" name="action" value="change_statut"/>
+		</form>
+		</td><td>
+		<form onsubmit="return confirm('Supprimer ces rapports?');" method="post" action="index.php">
+				<input type="hidden" name="action" value="deleteCurrentSelection" /> <input	type="submit" value="Supprimer rapports" />
+		</form>
+		</td>
+		<td>
+			<td>
+<form method="post" action="index.php" onsubmit="return confirm('Affecter les sous-jurys?');">
+			<input type="hidden" name="action" value="affectersousjurys" /> <input
+				type="submit" value="Affecter sous-jurys" />
+				</form>
+				</td>
+				<?php 
+	} ?>
+	</tr></table>
+			</tr>	</table>
 </form>
 <hr />
 <table class="summary">
@@ -255,24 +284,6 @@ function displayRows($rows, $fields, $filters, $filter_values, $sort_fields, $so
 	<?php
 		}
 		?>
-<?php 
-			if(isPresidentSousJury() || isSecretaire())
-			{
-			?>
-			<tr>
-			<?php 
-				?>
-			<td>
-<form method="post" action="index.php">
-			<input type="hidden" name="action" value="affectersousjurys" /> <input
-				type="submit" value="Affecter automatiquement les sous-jurys" />
-				</form>
-				</td>
-				</tr>
-				<?php 
-			}
-			?>
-		
 </table>
 <p>
 Le site web Marmotte a été développé par Hugo Gimbert et Yann Ponty.<br/>

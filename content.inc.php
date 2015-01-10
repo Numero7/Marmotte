@@ -70,11 +70,11 @@ function alertText($text)
 
 
 
-		$id_rapport = isset($_REQUEST["id"]) ? mysqli_real_escape_string($dbh,$_REQUEST["id"]) : -1;
-		$id_origine = isset($_REQUEST["id_origine"]) ? mysqli_real_escape_string($dbh,$_REQUEST["id_origine"]) : 0;
-		$id_toupdate = isset($_REQUEST["id_toupdate"]) ? mysqli_real_escape_string($dbh,$_REQUEST["id_toupdate"]) : 0;
+		$id_rapport = isset($_REQUEST["id"]) ? real_escape_string($_REQUEST["id"]) : -1;
+		$id_origine = isset($_REQUEST["id_origine"]) ? real_escape_string($_REQUEST["id_origine"]) : 0;
+		$id_toupdate = isset($_REQUEST["id_toupdate"]) ? real_escape_string($_REQUEST["id_toupdate"]) : 0;
 
-		$action = isset($_REQUEST["action"]) ? mysqli_real_escape_string($dbh,$_REQUEST["action"]) : "";
+		$action = isset($_REQUEST["action"]) ? real_escape_string($_REQUEST["action"]) : "";
 
 		if(isset($_REQUEST["reset_filter"]))
 			resetFilterValuesExceptSession();
@@ -84,21 +84,9 @@ function alertText($text)
 
 		function scrollToId($id)
 		{
-
-			echo('
-					<script type="text/javascript">');
-
-			echo('
-					document.getElementById("'.$id.'").scrollIntoView();');
-			/*
-			 echo('
-			 		var elt = document.getEleme	ntById( '.$id.' );
-			 		var top = (	return elt.offsetTop + ( elt.offsetParent ? elt.offsetParent.documentOffsetTop() : 0 )) - ( window.innerHeight / 2 );
-			 		window.scrollTo( 0, top );
-			 		');
-			*/
-			echo('		</script>');
-
+			echo('<script type="text/javascript">');
+			echo('document.getElementById("'.$id.'").scrollIntoView();');
+			echo('</script>');
 		}
 		function displayReports($centralid = 0)
 		{
@@ -168,7 +156,7 @@ function alertText($text)
 					if(isset($_REQUEST["new_statut"]))
 					{
 						$filterValues = getFilterValues();
-						$new_statut =  mysqli_real_escape_string($dbh,$_REQUEST["new_statut"]);
+						$new_statut =  real_escape_string($_REQUEST["new_statut"]);
 						change_statuts($new_statut, $filterValues);
 						$filterValues['statut']	 = $new_statut;
 						displaySummary(getCurrentFiltersList(), $filterValues, getSortingValues());
@@ -328,11 +316,11 @@ function alertText($text)
 				case 'adminnewpwd':
 					if (isset($_REQUEST["oldpwd"]) and isset($_REQUEST["newpwd1"]) and isset($_REQUEST["newpwd2"]) and isset($_REQUEST["login"]))
 					{
-						$old = mysqli_real_escape_string($dbh,$_REQUEST["oldpwd"]);
-						$pwd1 = mysqli_real_escape_string($dbh,$_REQUEST["newpwd1"]);
-						$pwd2 = mysqli_real_escape_string($dbh,$_REQUEST["newpwd2"]);
-						$login = mysqli_real_escape_string($dbh,$_REQUEST["login"]);
-						$envoiparemail = isset($_REQUEST["envoiparemail"])  ? mysqli_real_escape_string($dbh,$_REQUEST["envoiparemail"]) : false;
+						$old = real_escape_string($_REQUEST["oldpwd"]);
+						$pwd1 = real_escape_string($_REQUEST["newpwd1"]);
+						$pwd2 = real_escape_string($_REQUEST["newpwd2"]);
+						$login = real_escape_string($_REQUEST["login"]);
+						$envoiparemail = isset($_REQUEST["envoiparemail"])  ? real_escape_string($_REQUEST["envoiparemail"]) : false;
 
 						if (($pwd1==$pwd2))
 						{
@@ -342,16 +330,11 @@ function alertText($text)
 						else
 							throw new Exception("Erreur :</strong> Les deux saisies du nouveau mot de passe  diffèrent, veuillez réessayer.</p>");
 					}
-					else
-						throw new Exception("Erreur :</strong> Vous n'avez fourni les informations nécessaires pour modifier votre mot de passe, veuillez nous contacter (Yann ou Hugo) en cas de difficultés.</p>");
 					include 'admin.inc.php';
-
 					break;
 				case 'admin':
 					if (isSecretaire())
 						include "admin.inc.php";
-					else
-						throw new Exception("<p>Vous n'avez pas les droits nécessaires pour effectuer cette action, veuillez nous contacter (Yann ou Hugo) en cas de difficultés.</p>");
 					break;
 				case 'admindeleteaccount':
 					if (isSecretaire())
@@ -362,36 +345,27 @@ function alertText($text)
 							deleteUser($login);
 							include "admin.inc.php";
 						}
-						else
-							throw new Exception("<p><strong>Erreur :</strong> Vous n'avez fourni toutes les informations nécessaires pour créer un utilisateur, veuillez nous contacter (Yann ou Hugo) en cas de difficultés.</p>");
 					}
-					else
-						throw new Exception("<p>Vous n'avez pas les droits nécessaires pour effectuer cette action, veuillez nous contacter (Yann ou Hugo) en cas de difficultés.</p>");
+					break;
 				case 'infosrapporteur':
-					if (isBureauUser())
+					if (isSecretaire())
 					{
 						if (isset($_REQUEST["login"]) and isset($_REQUEST["permissions"]))
 						{
 							global  $concours_ouverts;
 							$login = $_REQUEST["login"];
 							$permissions = $_REQUEST["permissions"];
-							$sousjury = "";
+							$sections = $_REQUEST["sections"];
 							foreach($concours_ouverts as $concours => $nom)
 								if(isset($_REQUEST["sousjury".$concours]))
-									$sousjury .= $_REQUEST["sousjury".$concours];
-
-							changeUserInfos($login,$permissions,$sousjury);
-						}
-						else
-						{
-							echo "<p><strong>Erreur :</strong> Vous n'avez fourni toutes les informations nécessaires pour modifier les droits de cet utilisateur, veuillez nous contacter (Yann ou Hugo) en cas de difficultés.</p>";
+							{
+								addSousJury($concours, $_REQUEST["sousjury".$concours], $login);
+							}
+							changeUserInfos($login,$permissions,$sections);
+							$aa = $_REQUEST;
 						}
 						include "admin.inc.php";
 						scrollToId('infosrapporteur');
-					}
-					else
-					{
-						echo "<p>Vous n'avez pas les droits nécessaires pour effectuer cette action, veuillez nous contacter (Yann ou Hugo) en cas de difficultés.</p>";
 					}
 					break;
 				case 'checkpwd':
@@ -411,43 +385,61 @@ function alertText($text)
 							$pwd2 = $_REQUEST["newpwd2"];
 							$login = $_REQUEST["login"];
 							$email = $_REQUEST["email"];
+							$permissions = $_REQUEST["permissions"];
+							$sections = $_REQUEST["sections"];
 							$envoiparemail = $_REQUEST["envoiparemail"] === 'on';
 							if (($pwd1==$pwd2))
-								echo "<p><strong>".createUser($login,$pwd2,$desc, $email, $envoiparemail)."</p></strong>";
+								echo "<p><strong>".createUser($login,$pwd2,$desc, $email, $sections,$permissions, $envoiparemail)."</p></strong>";
 							else
 								echo "<p><strong>Erreur :</strong> Les deux saisies du nouveau mot de passe  diffèrent, veuillez réessayer.</p>";
 						}
-						else
-						{
-							echo "<p><strong>Erreur :</strong> Vous n'avez fourni toutes les informations nécessaires pour créer un utilisateur, veuillez nous contacter (Yann ou Hugo) en cas de difficultés.</p>";
-						}
 						include "admin.inc.php";
-					}
-					else
-					{
-						echo "<p>Vous n'avez pas les droits nécessaires pour effectuer cette action, veuillez nous contacter (Yann ou Hugo) en cas de difficultés.</p>";
 					}
 					break;
 				case 'admindeletesession':
-					if (isset($_REQUEST["sessionid"]))
-						deleteSession(mysqli_real_escape_string($dbh,$_REQUEST["sessionid"]), isset($_REQUEST["supprimerdossiers"]));
-					else
-						throw new Exception("Vous n'avez fourni toutes les informations nécessaires pour supprimer une session, veuillez nous contacter (Yann ou Hugo) en cas de difficultés.");
-					include "admin.inc.php";
+					if (isset($_REQUEST["sessionid"]) && isSecretaire())
+					{
+						deleteSession(real_escape_string($_REQUEST["sessionid"]), isset($_REQUEST["supprimerdossiers"]));
+						include "admin.inc.php";
+					}
 					break;
 				case 'changepwd':
 					include "changePwd.inc.php";
 					break;
-				case 'ajoutlabo':
+				case 'add_concours':
+					if(isSecretaire())
+					{
+					$concours = (object) array();
+					$fields = array("code", "intitule","postes",
+							 "sousjury1","sousjury2", "sousjury3", "sousjury4",
+							 "president1", "president2", "president3", "president4",
+							"membressj1","membressj2", "membressj3","membressj4"
+							);
+					foreach($fields as $field)
+						$concours->$field = isset($_REQUEST[$field]) ? $_REQUEST[$field] : "";
+					setConcours($concours);
+					}
+					include "admin.inc.php";
+					scrollToId('concours');
+					
+					break;
+				case 'delete_concours':
+					if(isSecretaire())
+						deleteConcours($_REQUEST["code"]);
+					include "admin.inc.php";
+					scrollToId('concours');
+					
+					break;
+					case 'ajoutlabo':
 					if(isset($_REQUEST["nickname"]) and isset($_REQUEST["code"]) and isset($_REQUEST["fullname"]) and isset($_REQUEST["directeur"]))
 					{
 						addUnit(
-						mysqli_real_escape_string($dbh,$_REQUEST["nickname"]),
-						 mysqli_real_escape_string($dbh,$_REQUEST["code"]),
-						 mysqli_real_escape_string($dbh,$_REQUEST["fullname"]),
-						 mysqli_real_escape_string($dbh,$_REQUEST["directeur"])
+						real_escape_string($_REQUEST["nickname"]),
+						 real_escape_string($_REQUEST["code"]),
+						 real_escape_string($_REQUEST["fullname"]),
+						 real_escape_string($_REQUEST["directeur"])
 						 );
-						echo "Added unit \"".mysqli_real_escape_string($dbh,$_REQUEST["nickname"])."\"<br/>";
+						echo "Added unit \"".real_escape_string($_REQUEST["nickname"])."\"<br/>";
 					}
 					else
 					{
@@ -458,8 +450,8 @@ function alertText($text)
 				case 'deletelabo':
 					if(isset($_REQUEST["unite"]))
 					{
-						deleteUnit(mysqli_real_escape_string($dbh,$_REQUEST["unite"]));
-						echo "Deleted unit \"".mysqli_real_escape_string($dbh,$_REQUEST["unite"])."\"<br/>";
+						deleteUnit(real_escape_string($_REQUEST["unite"]));
+						echo "Deleted unit \"".real_escape_string($_REQUEST["unite"])."\"<br/>";
 					}
 					else
 					{
@@ -502,7 +494,7 @@ function alertText($text)
 					if(substr($action,0,3)=="set")
 					{
 						$fieldId = substr($action,3);
-						$newvalue = isset($_REQUEST['new'.$fieldId]) ? mysqli_real_escape_string($dbh,$_REQUEST['new'.$fieldId]) : "";
+						$newvalue = isset($_REQUEST['new'.$fieldId]) ? real_escape_string($_REQUEST['new'.$fieldId]) : "";
 						$newid = change_report_property($id_toupdate, $fieldId, $newvalue);
 						displayWithRedirects($newid);
 					}

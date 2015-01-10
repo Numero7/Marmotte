@@ -37,6 +37,7 @@ function displayEditableCandidate($candidate,$report = NULL,$canedit = true)
 
 		$candidate->rapporteur = $report->rapporteur;
 		$candidate->rapporteur2 = $report->rapporteur2;
+		$candidate->rapporteur3 = $report->rapporteur3;
 		$candidate->sousjury = $report->sousjury;
 		$candidate->type = $report->type;
 		$candidate->statut = $report->statut;
@@ -92,6 +93,11 @@ function displayEditableChercheur($chercheur,$report = NULL, $canedit = true)
 		else
 			$chercheur->rapporteur2 = "";
 
+		if(isset($report->rapporteur3))
+			$chercheur->rapporteur3 = $report->rapporteur3;
+		else
+			$chercheur->rapporteur3 = "";
+		
 		if(isset($report->type))
 			$chercheur->type = $report->type;
 		else
@@ -420,6 +426,16 @@ function displayEditableReport($row, $canedit = true)
 	}
 
 	$year = substr($session, strlen($session) - 4, 4);
+	
+	$nb_rapporteurs = 0;
+	$has_rapp = (isset($row->rapporteur) && $row->rapporteur != "");
+	$has_rapp2 = (isset($row->rapporteur2) && $row->rapporteur2 != "");
+	$has_rapp3 = (isset($row->rapporteur3) && $row->rapporteur3 != "");
+	
+	if($has_rapp) $nb_rapporteurs++;
+	if($has_rapp2) $nb_rapporteurs++;
+	if($has_rapp3) $nb_rapporteurs++;
+	
 	if(array_key_exists($eval_type, $typesRapportsConcours))
 	{
 
@@ -468,29 +484,28 @@ function displayEditableReport($row, $canedit = true)
 			$hidden['fieldconcours'] = $row->concours;
 				
 			displayEditionFrameStart("",$hidden,$submits);
-				
+							
 			if(!$conflit)
 			{
 				echo'<table><tr>';
-					
-				if(isset($row->rapporteur) && $row->rapporteur != "")
+				if($has_rapp)
 				{
-					if(isset($row->rapporteur2) && $row->rapporteur2 != "")
-						echo '<td VALIGN="top" style="width: 50%">';
-					else
-						echo '<td VALIGN="top" style="width: 100%">';
-						
+					echo '<td VALIGN="top" style="width: ".(100 / $nb_rapporteurs)."%">';
 					displayEditableObject("Prérapport 1".(isset($rapporteurs[$row->rapporteur]) ? (" - ".$rapporteurs[$row->rapporteur]) : "" ),$row,$fieldsRapportsCandidat1,$canedit, $session);
 					echo'</td>';
 				}
-					
-				if(isset($row->rapporteur2) && $row->rapporteur2 != "")
+				if($has_rapp2)
 				{
-					echo '<td VALIGN="top" style="width: 50%">';
-					displayEditableObject("Prérapport 2".(isset($rapporteurs[$row->rapporteur2]) ? (" - ".$rapporteurs[$row->rapporteur2]) : "" ), $row,$fieldsRapportsCandidat2,$canedit, $session);
+					echo '<td VALIGN="top" style="width: ".(100 / $nb_rapporteurs)."%">';
+					displayEditableObject("Prérapport 2".(isset($rapporteurs[$row->rapporteur2]) ? (" - ".$rapporteurs[$row->rapporteur2]) : "" ),$row,$fieldsRapportsCandidat2,$canedit, $session);
 					echo'</td>';
 				}
-					
+				if($has_rapp3)
+				{
+					echo '<td VALIGN="top" style="width: ".(100 / $nb_rapporteurs)."%">';
+					displayEditableObject("Prérapport 3".(isset($rapporteurs[$row->rapporteur3]) ? (" - ".$rapporteurs[$row->rapporteur3]) : "" ),$row,$fieldsRapportsCandidat3,$canedit, $session);
+					echo'</td>';
+				}
 				echo'</tr></table>';
 			}
 
@@ -514,7 +529,8 @@ function displayEditableReport($row, $canedit = true)
 		$fieldsIndividual0 = $typesRapportToFields[$eval_type][1];
 		$fieldsIndividual1 = $typesRapportToFields[$eval_type][2];
 		$fieldsIndividual2 = $typesRapportToFields[$eval_type][3];
-
+		$fieldsIndividual3 = $typesRapportToFields[$eval_type][4];
+		
 		global $fieldsUnitesExtra;
 
 		if(key_exists($eval_type,$fieldsUnitesExtra))
@@ -531,22 +547,25 @@ function displayEditableReport($row, $canedit = true)
 			displayEditionFrameStart("",$hidden,array());
 
 			echo'<table><tr>';
-
-			if(isset($row->rapporteur) && $row->rapporteur != "")
+			if($has_rapp)
 			{
-				echo '<td VALIGN="top">';
-				displayEditableObject("Prérapport 1".(isset($rapporteurs[$row->rapporteur]) ? (" - ".$rapporteurs[$row->rapporteur]) : "" ), $row,$fieldsIndividual1, $canedit, $session);
+				echo '<td VALIGN="top" style="width: ".(100 / $nb_rapporteurs)."%">';
+				displayEditableObject("Prérapport 1".(isset($rapporteurs[$row->rapporteur]) ? (" - ".$rapporteurs[$row->rapporteur]) : "" ),$row,$fieldsIndividual1,$canedit, $session);
 				echo'</td>';
 			}
-
-			if(isset($row->rapporteur2) && $row->rapporteur2 != "")
+			if($has_rapp2)
 			{
-				echo '<td VALIGN="top">';
-				displayEditableObject("Prérapport 2".(isset($rapporteurs[$row->rapporteur2]) ? (" - ".$rapporteurs[$row->rapporteur2]) : "" ),$row,$fieldsIndividual2, $canedit, $session);
+				echo '<td VALIGN="top" style="width: ".(100 / $nb_rapporteurs)."%">';
+				displayEditableObject("Prérapport 2".(isset($rapporteurs[$row->rapporteur2]) ? (" - ".$rapporteurs[$row->rapporteur2]) : "" ),$row,$fieldsIndividual2,$canedit, $session);
 				echo'</td>';
 			}
-
-			echo '</tr></table>';
+			if($has_rapp3)
+			{
+				echo '<td VALIGN="top" style="width: ".(100 / $nb_rapporteurs)."%">';
+				displayEditableObject("Prérapport 3".(isset($rapporteurs[$row->rapporteur3]) ? (" - ".$rapporteurs[$row->rapporteur3]) : "" ),$row,$fieldsIndividual3,$canedit, $session);
+				echo'</td>';
+			}
+						echo '</tr></table>';
 		}
 		displayEditableObject("Rapport section", $row,$fieldsIndividual0, $canedit, $session);
 	}
@@ -692,7 +711,6 @@ function displaySummary($filters, $filter_values, $sorting_values)
 		$filters["avis"]["liste"] = $avis_classement;
 		$filters["avis1"]["liste"] = $avis_classement;
 		$filters["avis2"]["liste"] = $avis_classement;
-
 	}
 
 	if(isSecretaire())
