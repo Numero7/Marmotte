@@ -17,14 +17,6 @@ function getFilterValue($filter_name)
 	else if(isset($_SESSION["filter_".$filter_name]))
 		$answer =   $_SESSION["filter_".$filter_name];
 	$_SESSION["filter_".$filter_name] = $answer;
-
-	
-	if($filter_name == "statut" && $answer != 'tous')
-	{
-		$a = $_REQUEST;
-		rr();	
-	}
-		
 	return $answer;
 }
 

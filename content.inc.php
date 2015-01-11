@@ -129,23 +129,37 @@ function alertText($text)
 							<?php 
 				}
 				
-				
+		
 		try
 		{
 			/* checking permissions */
-			global $actions;
-			if(isset($actions[$action]) && getUserPermissionLevel() < $actions[$action])
+			global $actions_level;
+			if(isset($actions_level[$action]) && getUserPermissionLevel() < $actions_level[$action])
 				throw new Exception("Vous n'avez pas le niveau de permission suffisant pour exécuter l'action '".$action."'");
 
 			switch($action)
 			{
+				case 'addrubrique':
+					add_rubrique($_REQUEST["index"], $_REQUEST["rubrique"], ($_REQUEST["type"] == "people"));
+					include 'admin.inc.php';
+					scrollToId('rubriques');					
+					break;
+				case 'removerubrique':
+					remove_rubrique($_REQUEST["index"], ($_REQUEST["type"] == "people"));
+					include 'admin.inc.php';
+					scrollToId('rubriques');					
+					break;
 				case 'addtopic':
 					add_topic($_REQUEST["index"], $_REQUEST["motcle"]);
+					global $topics;
+					$topics = get_topics();
 					include 'admin.inc.php';
 					scrollToId('config');					
 					break;
 				case 'removetopic':
 					remove_topic($_REQUEST["index"]);
+					global $topics;
+					$topics = get_topics();
 					include 'admin.inc.php';
 					scrollToId('config');					
 					break;
@@ -289,6 +303,7 @@ function alertText($text)
 					{
 						$type = $_REQUEST["type"];
 						$report = newReport($type);
+						$report->id_origine = $id_origine;
 						displayEditableReport($report);
 					}
 					break;

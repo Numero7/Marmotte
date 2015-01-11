@@ -86,6 +86,7 @@ echo '<option value='.$type.'>'.$name.'</option><br/>'."\n";
 <form enctype="multipart/form-data" action="index.php" method="post">
 <table>
 <tr><td>
+<input	type="hidden" name="id_origine" value="0" />
 <input	type="hidden" name="action" value="new" />
 </td></tr>
 <tr><td>Choix du type de rapport</td><td>

@@ -85,7 +85,7 @@ function export_reports_as_csv($reports, $dir, $type = "")
 	if($type == "attribution_rapporteurs")
 	{
 		$activefields =
-		array('type','nom','prenom','rapporteur','rapporteur2',
+		array('type','nom','prenom','rapporteur','rapporteur2','rapporteur3',
 				"grade_rapport",
 				"unite",
 				"theme1",
@@ -132,7 +132,7 @@ function export_reports_as_csv($reports, $dir, $type = "")
 		$texte[] = array("Pour attribuer les rapporteurs");
 		$texte[] = array("copier-coller les login correspondants");
 		$texte[] = array("(liste ci-dessous) dans les colonnes");
-		$texte[]= array("'rapporteur' et 'rapporteur2'");
+		$texte[]= array("'rapporteur' et 'rapporteur2' et 'rapporteur3'");
 		$texte[]=array("");
 		$users = listUsers();		
 		foreach($users as $login => $value)

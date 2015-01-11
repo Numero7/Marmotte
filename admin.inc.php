@@ -394,12 +394,12 @@ if(isSecretaire() && ! isSuperUser())
 <h2 id="config">Configuration</h2>
 <form>
 <table>
-<tr>people_files
+<tr>
 <?php 
 global $configs;
 echo "<tr><th>Clé</th><th>Valeur</th></tr>\n";
 foreach($_SESSION["config"] as $key=> $value)
-	if(substr($key, 0,6) != "topics" && substr($key, 0,7) != "formule" && $key!= "current_session")
+	if(substr($key, 0,6) != "topics" && substr($key, 0,7) != "formule" && $key!= "current_session" && substr($key, 0,8) != "rubrique" )
 		echo "<tr><td>$key</td><td><input style=width:500px value='$value' name='$key'></input></td></tr>\n";
 ?>
 <tr><td>
@@ -415,14 +415,8 @@ foreach($_SESSION["config"] as $key=> $value)
 $configs = get_topics();
 	echo '<tr><th>Index</th><th>Mot-clé</th><th></th></tr>';
 foreach($configs as $key => $value)
-{
-	echo '<tr><td>'.$key.'</td><td>'.$value.'</td>';
-	echo '<td><form>';
-	echo '<input type="hidden" name="action" value="removetopic" />';
-	echo '<input type="hidden" name="index" value="'.$key.'" />';
-	echo '<input type="submit" value="Supprimer mot-clé" /></form></td></tr>';
-}
-?>
+	echo '<tr><td>'.$key.'</td><td>'.$value.'</td></tr>';
+	?>
 </table>
 <form>
 <table>
@@ -436,6 +430,66 @@ foreach($configs as $key => $value)
 </tr>
 </table>
 </form>
+<form>
+<table>
+<tr>
+<td>
+<select name='index'>
+<?php 
+foreach($configs as $key => $value)
+	echo '<option value='.$key.'>'.$key.' '.$value.'</option>';
+?>
+</select>
+</td>
+<td>
+<input type="hidden" name="action" value="removetopic" />
+<input type="submit" value="Supprimer mot-clé" />
+</td>
+</tr>
+</table></form>
+<hr/>
+<h2 id="rubriques">Rubriques supplémentaires</h2>
+<h3>Rubriques personnes</h3>
+<table>
+<?php 
+$rubriques_people = get_rubriques(true);
+echo '<tr><th>Index</th><th>Rubrique</th></tr>';
+foreach($rubriques_people as $index => $rubrique)
+	echo '<tr><td>'.$index.'</td><td>'.$rubrique.'</td></tr>';
+?>
+</table>
+<form>
+<table>
+<tr>
+<td>Index <input name="index"></input></td>
+<td>Rubrique <input name="rubrique"></input></td>
+<td>
+<input type="hidden" name="type" value="people" />
+<input type="hidden" name="action" value="addrubrique" />
+<input type="submit" value="Ajouter rubrique" />
+</td>
+</tr>
+</table>
+</form>
+<form>
+<table>
+<tr>
+<td>
+<select name='index'>
+<?php 
+foreach($rubriques_people as $index => $value)
+	echo '<option value='.$index.'>'.$index.' '.$value.'</option>';
+?>
+</select>
+</td>
+<td>
+<input type="hidden" name="type" value="people" />
+<input type="hidden" name="action" value="removerubrique" />
+<input type="submit" value="Supprimer rubrique" />
+</td>
+</tr>
+</table></form>
+
 <!-- 
 <h2>Stats rapporteurs</h2>
 <p>Envoi d'emails de rappel aux rapporteurs ayant encore des rapports

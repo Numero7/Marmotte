@@ -27,7 +27,8 @@ ini_set('xdebug.show_local_vars', 'on');
 		"type",
 		"rapporteur",
 		"rapporteur2",
-		"nom",
+		"rapporteur3",
+			"nom",
 		"prenom",
 		"grade_rapport",
 			"avis",
@@ -136,8 +137,7 @@ ini_set('xdebug.show_local_vars', 'on');
 		"id" => "Id",
 			"id_session" => "Id session",
 			"id_origine" => "Id origine",
-	);
-	
+	);	
 	
 	$global_fields_renaming = array(); //get_config_array("renommage_champs");
 
@@ -291,6 +291,10 @@ ini_set('xdebug.show_local_vars', 'on');
 			"conflits" => "Conflits"
 	);
 
+	$rubriques_people = get_rubriques(true);
+	foreach($rubriques_people as $index => $rubrique)
+		$fieldsIndividualAll["Info".$index] = $rubrique;
+	
 
 	$mandatory_edit_fields=
 	array('id','nom','prenom'
@@ -311,7 +315,6 @@ ini_set('xdebug.show_local_vars', 'on');
 	);
 	
 	$fieldsAll = array_merge($fieldsRapportAll, $fieldsIndividualAll, array("rapports" => "Autres rapports"));
-	
 	$fieldsCandidatAvantAudition = array(
 			"nom",
 			"prenom",
@@ -329,10 +332,12 @@ ini_set('xdebug.show_local_vars', 'on');
 			"concourspresentes"
 	);
 
-	$fieldsCandidatAuditionne = array_merge($fieldsCandidatAvantAudition, array("audition"));
+	$rubriques_people = get_rubriques(true);
+	foreach($rubriques_people as $index => $rubrique)
+		$fieldsCandidatAvantAudition[] = "Info".$index;
 	
+	$fieldsCandidatAuditionne = array_merge($fieldsCandidatAvantAudition, array("audition"));
 	$fieldsCandidat = $fieldsCandidatAuditionne;
-		
 
 	$fieldsDelegation = array(
 			"statut",
@@ -682,21 +687,7 @@ Une phrase de conclusion sur le candidat incluant un commentaire sur l'audition
 		"prerapport3" => "treslong",
 		"anciennete_grade" => "short",
 		"annee_recrutement" => "short",
-		"production" => "long",
 		"avissousjury" => "avis",
-			"transfert" => "long",
-		"encadrement" => "long",
-		"responsabilites" => "long",
-		"mobilite" => "long",
-		"animation" => "long",
-		"rayonnement" => "long",		
-		"production2" => "long",
-		"transfert2" => "long",
-		"encadrement2" => "long",
-		"responsabilites2" => "long",
-		"mobilite2" => "long",
-		"animation2" => "long",
-		"rayonnement2" => "long",		
 			"auteur" => "short",
 		"date" => "short",
 		"conflits" => "short",
@@ -711,8 +702,12 @@ Une phrase de conclusion sur le candidat incluant un commentaire sur l'audition
 			"fichiers" => "files",
 			"rapports" => "rapports",
 			"avissousjury" => "avis",
-			"statut" => "statut"
+			"statut" => "statut",
 	);
+	
+	$rubriques_people = get_rubriques(true);
+	foreach($rubriques_people as $index => $rubrique)
+		$fieldsTypes["Info".$index] = "long";
 	
 	$nonEditableFieldsTypes = array('id','auteur','date');
 	$nonVisibleFieldsTypes = array('id','auteur');
@@ -1081,7 +1076,9 @@ Une phrase de conclusion sur le candidat incluant un commentaire sur l'audition
 	define("NIVEAU_PERMISSION_INFINI", 10000000);
 	
 	/* permissions levels for actions */
-	$actions = array(
+	$actions_level = array(
+			"removerubrique" => NIVEAU_PERMISSION_SECRETAIRE,
+			"addrubrique" => NIVEAU_PERMISSION_SECRETAIRE,
 			"removetopic" => NIVEAU_PERMISSION_SECRETAIRE,
 			"addtopic" => NIVEAU_PERMISSION_SECRETAIRE,
 			"updateconfig" => NIVEAU_PERMISSION_SECRETAIRE,
@@ -1260,29 +1257,7 @@ Une phrase de conclusion sur le candidat incluant un commentaire sur l'audition
 		$code = $result->code;
 		$concours_ouverts[$code] = $result->intitule;
 		$postes_ouverts[$code] = $result->postes;
-		
-		/*
-		$sous_jurys[$code][""]["nom"] = "";
-		$sous_jurys[$code][""]["membres"] = array();
-		$tous_sous_jury[$code] = array();
-		
-		for($i = 1; î <= 4 ; $i++)
-		{
-		if($result->$key != "")
-		{
-			$data = explode(";",$result->sousjury1);
-			if(count($data) <= 3)
-				throw new Exception("Invalid sous jury");
-			$sous_jurys[$code][$data[0]]["nom"] = $data[1];
-			$tous_sous_jury[$code] = $data[1];
-			$sous_jurys[$code][$data[0]]["membres"] = array();
-			$presidents_sousjurys[$data[0]] = $data[2];
-			for($i = 2; $i < count($data); $i++)
-				$sous_jurys[$code][$data[0]]["membres"][] = $data[$i];
 		}
-		}
-		*/
-	}
 	
 	
 	$permission_levels = array(

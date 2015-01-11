@@ -38,7 +38,6 @@ function displayEditableCandidate($candidate,$report = NULL,$canedit = true)
 		$candidate->rapporteur = $report->rapporteur;
 		$candidate->rapporteur2 = $report->rapporteur2;
 		$candidate->rapporteur3 = $report->rapporteur3;
-		$candidate->sousjury = $report->sousjury;
 		$candidate->type = $report->type;
 		$candidate->statut = $report->statut;
 
@@ -149,11 +148,10 @@ function displayEditableField($row, $fieldId, $canedit, $session)
 	global $fieldsTypes;
 	global $mandatory_edit_fields;
 
-
-	//echo $fieldId."<br/>";
 	if(isset($fieldsAll[$fieldId]) && is_field_visible($row, $fieldId))
 	{
-		$title = compute_title($row, $fieldId);
+	
+	$title = compute_title($row, $fieldId);
 		if($title != "")
 		{
 			if(isset($fieldsTypes[$fieldId]))
@@ -161,7 +159,7 @@ function displayEditableField($row, $fieldId, $canedit, $session)
 
 				$editable = $canedit && is_field_editable($row, $fieldId);
 
-				if($fieldId == "fichiers")
+				if($fieldId === "fichiers")
 				{
 					if(isset($row->statut) && $row->statut == "audition")
 						$editable = true;
@@ -174,6 +172,7 @@ function displayEditableField($row, $fieldId, $canedit, $session)
 				echo '<td style="width:10%"><span>'.$title.'</span>';
 				echo '</td>';
 
+				
 				/*
 				 if($use_special_tr && in_array($fieldId, $start_tr_fields))
 					echo '<td><table><tr>';
@@ -181,6 +180,7 @@ function displayEditableField($row, $fieldId, $canedit, $session)
 				if(!isset($row->$fieldId))
 					$row->$fieldId = '';
 
+				
 
 				if(!$editable && in_array($fieldId, $mandatory_edit_fields))
 					echo '<input type="hidden" name="field'.$fieldId.'" value="'.$row->$fieldId.'"/>';
@@ -417,13 +417,9 @@ function displayEditableReport($row, $canedit = true)
 	global $typesRapportToFields;
 
 	if(isset($row->id_session))
-	{
 		$session = $row->id_session;
-	}
 	else
-	{
 		$session = current_session();
-	}
 
 	$year = substr($session, strlen($session) - 4, 4);
 	
@@ -438,16 +434,13 @@ function displayEditableReport($row, $canedit = true)
 	
 	if(array_key_exists($eval_type, $typesRapportsConcours))
 	{
-
 		$titre = "";
-
 		if($eval_name == "Equivalence")
 			$titre= "<h1>".$year." / Equivalence: ". $row->nom." ".$row->prenom. ( (isset($row->grade_rapport) &&  $row->grade_rapport != "") ? (" (grade  " .$row->grade_rapport) .")" : "") . "</h1>";
 		else
 			$titre= "<h1>".$year." / ".$eval_name. ": ". $row->nom." ".$row->prenom.( isset($row->concours)  ? (" / concours ".$row->concours) : ""). ( (isset($row->sousjury) && $row->sousjury != "")  ? (" sousjury ".$row->sousjury) : ""). "</h1>";
 
 		$candidate = get_or_create_candidate($row);
-
 		$conflit = (
 				 is_in_conflict(getLogin(), $candidate))
 		 && !isSecretaire()
@@ -600,7 +593,13 @@ function displayEditableReport($row, $canedit = true)
 			displayEditableObject("Prérapport 2",$row,$fieldsUnites2, $canedit, $session);
 			echo'</td>';
 		}
-
+		if(isset($row->rapporteur3) && $row->rapporteur3 != "")
+		{
+			echo'<td>';
+			displayEditableObject("Prérapport 3",$row,$fieldsUnites3, $canedit, $session);
+			echo'</td>';
+		}
+		
 		echo'</tr></table>';
 		displayEditableObject("Rapport section", $row,$fieldsUnites0, $canedit, $session);
 

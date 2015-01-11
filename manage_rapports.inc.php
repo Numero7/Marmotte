@@ -359,11 +359,6 @@ function checkReportDeletable($rapport)
 function isReportCreatable()
 {
 	return isSecretaire();
-	/*
-	 if(!isSecretaire())
-		throw new Exception("Vous n'avez pas les permissions nécessaires pour créer un rapport<br/>");
-	else return true;
-	*/
 }
 
 //to migrate from previous system
@@ -482,20 +477,16 @@ function addReportFromRequest($id_origine, $request)
 		catch (Exception $e)
 		{
 			$id_origine = 0;
-
 		}
-		/*		if(!checkReportIsEditable($report))
-			throw new Exception("Le compte ".getLogin()." n'a pas la permission de mettre à jour le rapport, veuillez contacter le bureau");*/
 	}
-	else if(!isReportCreatable())
+	else
+	{
+		if(!isReportCreatable())
 		throw new Exception("Le compte ".getLogin()." n'a pas la permission de créer un rapport, veuillez contacter le bureau");
-
-
+	}
 
 	$report = createReportFromRequest($id_origine, $request);
-	
 	$id_nouveau = addReportToDatabase($report,false);
-
 	
 	if(isset($report->type) && (in_array($report->type, $typesRapportsConcours) || isset($typesRapportsChercheurs[$report->type]) ) )
 		updateCandidateFromRequest($request);
@@ -507,7 +498,6 @@ function createReportFromRequest($id_origine, $request)
 {
 	global $fieldsRapportAll;
 	global $fieldsTypes;
-
 
 	$row = (object) array();
 
@@ -522,50 +512,34 @@ function createReportFromRequest($id_origine, $request)
 	$row->auteur = getLogin();
 
 	return $row;
-
 }
 
 function normalizeReport($report)
 {
 	global $report_prototypes;
-
 	$report = (object) $report;
-
-	if(!isset($report->id_session))
-		$report->id_session = current_session_id();
-
-	if(!isset($report->auteur))
-		$report->auteur = getLogin();
-
-	if(!isset($report->id_origine))
-		$report->id_origine = 0;
-
-	if(!isset($report->id))
-		$report->id = 0;
-
-
-	if(!isset($report->statut))
-		$report->statut = 'doubleaveugle';
-
-
-	// Could be hacky...
-	if(!isset($report->avis))
-		$report->avis = '';
-	if(!isset($report->rapport))
-		$report->rapport = '';
-	if(!isset($report->prerapport))
-		$report->prerapport = '';
-	if(!isset($report->concours))
-		$report->concours = '';
-	if(!isset($report->rapporteur))
-		$report->rapporteur = '';
-	if(!isset($report->rapporteur2))
-		$report->rapporteur2 = '';
-	if(!isset($report->sousjury))
-		$report->sousjury = '';
-
+	$default = array(
+			"id_session" => current_session_id(),
+			"auteur" => getLogin(),
+			"id_origine" => "",
+			"id" => "",
+			"nom" => "",
+			"prenom" => "",
+			"avis" => "",
+			"rapport" => "",
+			"prerapport" => "",
+			"concours" => "",
+			"statut" => "doubleaveugle",
+			"rapporteur" => "",
+			"rapporteur2" => "",
+			"rapporteur3" => ""
+	);
+	
+	foreach($default as $key => $value)
+		if(!isset($report->$key))
+		$report->$key = $value;
+	
 	if(isset($report->type))
-	{
 		if(isset($report_prototypes[$report->type]))
 		{
 			$prototype = $report_prototypes[$report->type];
@@ -573,10 +547,6 @@ function normalizeReport($report)
 				if(isset($report->$field) && $report->$field=="")
 				$report->$field = $value;
 		}
-	}
-
-
-
 	return $report;
 }
 
@@ -718,7 +688,7 @@ function addReportToDatabase($report,$normalize = true)
 	}
 	catch(Exception $e)
 	{
-		mysqli_query("UNLOCK TABLES");
+		sql_request("UNLOCK TABLES");
 		throw $e;
 	}
 
@@ -1004,12 +974,7 @@ function is_field_editable($row, $fieldId)
 	$eval_type = isset($row->type) ? $row->type : "";
 
 	global $typesRapportToFields;
-	$extra = true;
-	/*	if(isset($typesRapportToFields[$eval_type]))
-	 {
-	$extra = in_array($fieldId,$typesRapportToFields[$row->type]);
-	}
-	*/
+
 	global $nonEditableFieldsTypes;
 	if(in_array($fieldId, $nonEditableFieldsTypes))
 		return false;
@@ -1031,9 +996,7 @@ function is_field_editable($row, $fieldId)
 	if(isSecretaire())
 			return true;
 		
-
 	$login = getLogin();
-
 
 	$is_rapp1 = isset($row->rapporteur) && ($login == $row->rapporteur);
 	$is_rapp2 = isset($row->rapporteur2) && ($login == $row->rapporteur2);
@@ -1042,34 +1005,29 @@ function is_field_editable($row, $fieldId)
 	//echo $fieldId." ".$login." ".$row->rapporteur." ".$row->rapporteur2;
 
 	if($is_rapp1 && $fieldId == "rapport" && isset($row->statut) && ($row->statut != "doubleaveugle"))
-	{
 		return true;
-	}
 	
 	
 	if(isset($row->statut) && ($row->statut == "audition"))
 	{
 		if(isset($row->sousjury) && isBureauUser() )
-		{
-			return $extra;
-		}
+			return true;
 		
 		if($fieldId == "fichiers")
-			return $extra;
+			return true;
 
 		if( $is_rapp1  && ($fieldId == "prerapport" || $fieldId == "avissousjury" || $fieldId=="audition"))
-			return $extra;
+			return true;
 
 		if( $is_rapp2  && ($fieldId == "prerapport2"))
-			return $extra;
+			return true;
 
 		if(isset($row->type) && $row->type == "Candidature" && isset($row->avis) && is_numeric($row->avis) && $fieldId =="rapport" && ($is_rapp1 || $is_rapp2 || $is_rapp3))
 			return true;
 
 		return false;
-
 	}
-
+	
 
 	if(isset($row->statut) && ($row->statut == "rapport" || $row->statut == "publie"))
 		return isSecretaire();
@@ -1086,8 +1044,9 @@ function is_field_editable($row, $fieldId)
 
 	//individual fields are always editable
 	if(isset($fieldsIndividualAll[$fieldId]))
-		return $extra && (isSecretaire() || $is_rapp1 || $is_rapp2);
+		return $extra && (isSecretaire() || $is_rapp1 || $is_rapp2 || $is_rapp3);
 
+	
 	global $typesRapportsConcours;
 	global $typesRapportsChercheurs;
 	global $typesRapportsUnites;
@@ -1142,27 +1101,19 @@ function is_field_editable($row, $fieldId)
 
 function is_field_visible($row, $fieldId)
 {
-	//echo $fieldId."<br/>";
-
 	global $typesRapportToFields;
 	global $alwaysVisibleFieldsTypes;
-	$extra = true;
-	/*
-	 if(isset($row->type) && isset($typesRapportToFields[$row->type]))
-	 {
-	$extra = in_array($fieldId,$typesRapportToFields[$row->type]);
-	}*/
-
+	
 	global $nonVisibleFieldsTypes;
 	if(in_array($fieldId, $nonVisibleFieldsTypes))
 		return false;
 
 	if(in_array($fieldId, $alwaysVisibleFieldsTypes))
 		return true;
-	
+		
 	//editable info is always visible
 	if(is_field_editable($row, $fieldId))
-		return $extra;
+		return true;
 
 	//when non editable non existing fields are not visible
 	if(!isset($row->$fieldId))
@@ -1189,7 +1140,7 @@ function is_field_visible($row, $fieldId)
 	if(isset($row->statut) && ($row->statut == "doubleaveugle") && ($is_rapp1 || $is_rapp2 || $is_rapp3))
 		return false;
 
-	return $extra;
+	return true;
 }
 
 function get_editable_fields($row)

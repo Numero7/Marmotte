@@ -386,8 +386,10 @@ function addCsvReport($subtype, $properties)
 			"PUBCONC" => "concours",
 			"Rapporteur1" => "rapporteur",
 			"Rapporteur2" => "rapporteur2",
+			"Rapporteur3" => "rapporteur3",
 			"Rapporteur 1" => "rapporteur",
-			"Rapporteur 2" => "rapporteur2"
+			"Rapporteur 2" => "rapporteur2",
+			"Rapporteur 3" => "rapporteur3"
 	);
 			
 	foreach($copies as $old => $new)
