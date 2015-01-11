@@ -388,18 +388,37 @@ if(isSecretaire() && ! isSuperUser())
 				</form>
 		<?php 
 	}
-	
 	?>	
 <hr />
-<!--  <h2 id="config">Configuration</h2>-->
+<h2 id="config">Configuration</h2>
+<form>
+<table>
+<tr>people_files
 <?php 
-//include("config_manager.php");
-}
-
-if(isSecretaire())
+global $configs;
+foreach($_SESSION["config"] as $key=> $value)
 {
-	?>
-	<!-- 
+	if(substr($key, 0,6) != "topics" && substr($key, 0,7) != "formule" && $key!= "current_session")
+	{
+		echo "<tr><td>$key</td><td><input style=width:500px value='$value' name='$key'></input></td></tr>\n";
+	}
+}
+?>
+<tr><td>
+				<input type="hidden" name="action" value="updateconfig" />
+				<input type="submit" value="Enregistrer config" />
+</td></tr>
+</table>	
+</form>
+<h2 id="motscles">Mots-clés de la section</h2>
+<table>
+<?php 
+$configs = get_configs();
+foreach($configs as $key => $value)
+{
+}
+?></table>
+<!-- 
 <h2>Stats rapporteurs</h2>
 <p>Envoi d'emails de rappel aux rapporteurs ayant encore des rapports
 	attribués et à faire.</p>

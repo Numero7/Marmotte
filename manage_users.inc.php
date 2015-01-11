@@ -156,7 +156,7 @@ function isSecretaire($login = "")
 {
 	if($login == "")
 		$login = getLogin();
-	return getUserPermissionLevel($login) >= NIVEAU_PERMISSION_PRESIDENT_SECRETAIRE;
+	return getUserPermissionLevel($login) >= NIVEAU_PERMISSION_SECRETAIRE;
 };
 
 function getLogin()
@@ -167,10 +167,23 @@ function getLogin()
 		return "";
 }
 
-function isBureauPresidencyUser($login = "")
+function getSecretaire()
 {
-	return getUserPermissionLevel($login) >= NIVEAU_PERMISSION_PRESIDENT_SECRETAIRE;
-};
+	$users = listUsers();
+	foreach($users as $user)
+		if($user->permissions == NIVEAU_PERMISSION_SECRETAIRE)
+		return $user;
+	return null;
+}
+
+function getPresident()
+{
+	$users = listUsers();
+	foreach($users as $user)
+		if($user->permissions == NIVEAU_PERMISSION_PRESIDENT)
+		return $user;
+	return null;
+}
 
 function isBureauUser($login = "")
 {

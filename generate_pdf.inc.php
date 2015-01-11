@@ -82,10 +82,11 @@ function HTMLToPDF($html)
 
 	// set document information
 	$pdf->SetCreator(get_config("secretaire"));
-	$pdf->SetAuthor(get_config("section_fullname"));
-	$pdf->SetTitle('Rapport de la '.get_config("section_fullname"));
-	$pdf->SetSubject('Rapport de la '.get_config("section_fullname"));
-	$pdf->SetKeywords('Rapport de la '.get_config("section_fullname"));
+	$section = "Section ".currentSection();
+	$pdf->SetAuthor($section);
+	$pdf->SetTitle('Rapport de la '.$section);
+	$pdf->SetSubject('Rapport de la '.$section);
+	$pdf->SetKeywords('Rapport de la '.$section);
 
 	// set default monospaced font
 	$pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);

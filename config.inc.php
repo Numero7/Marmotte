@@ -20,8 +20,9 @@ ini_set('xdebug.show_local_vars', 'on');
 	define("signature_file","img/signature.jpg");
 //	define("config_file_save","config/config.sauv.xml");
 	
-	$dossier_racine = get_config("people_files_root");
+	$dossier_racine = "";
 	
+
 	$fieldsSummary = array(
 		"type",
 		"rapporteur",
@@ -532,9 +533,7 @@ Une phrase de conclusion sur le candidat incluant un commentaire sur l'audition
 			<b>(à préparer par le rapporteur après l'audition, et qui sera validé en jury d’admissibilité)</b>.",
 			"concourspresentes" => ""
 	);
-				
-	$sousjurys = get_config("sousjurys");
-	
+					
 	$virgin_report_equivalence = 
 			"La ".get_config("section_shortname")." réunie en instance d'équivalence considère que la somme des titres et travaux présentés dans le dossier du candidat est équivalente à un doctorat d'une université française.\n\n".
 			"La ".get_config("section_shortname")." réunie en instance d'équivalence considère que la somme des titres et travaux présentés dans le dossier du candidat est équivalente à plus de 4/8/12 années d'exercice des métiers de la recherche.\n\n".
@@ -617,6 +616,7 @@ Une phrase de conclusion sur le candidat incluant un commentaire sur l'audition
 	
 	/*********** PROTOTYPES DE RAPPORT **********************/
 	
+	/*
 	foreach($typesRapports as $type => $intitule)
 	{
 		$report_prototypes[$type]["rapport"] = get_config("prototype_".$type."_rapport");
@@ -624,6 +624,7 @@ Une phrase de conclusion sur le candidat incluant un commentaire sur l'audition
 		$report_prototypes[$type]["prerapport2"] = get_config("prototype_".$type."_prerapport2");
 	}
 		
+		*/
 	$mergeableTypes = array("short","treslong","long","short");
 	$crashableTypes = array("auteur");
 	
@@ -1074,9 +1075,48 @@ Une phrase de conclusion sur le candidat incluant un commentaire sur l'audition
 	
 	define("NIVEAU_PERMISSION_BASE", 0);
 	define("NIVEAU_PERMISSION_BUREAU", 100);
-	define("NIVEAU_PERMISSION_PRESIDENT_SECRETAIRE", 500);
+	define("NIVEAU_PERMISSION_SECRETAIRE", 500);
+	define("NIVEAU_PERMISSION_PRESIDENT", 700);
 	define("NIVEAU_PERMISSION_SUPER_UTILISATEUR", 1000);
 	define("NIVEAU_PERMISSION_INFINI", 10000000);
+	
+	/* permissions levels for actions */
+	$actions = array(
+			"updateconfig" => NIVEAU_PERMISSION_SECRETAIRE,
+			"delete" => NIVEAU_PERMISSION_SECRETAIRE,
+			"change_statut" => NIVEAU_PERMISSION_SECRETAIRE,
+			"view" => NIVEAU_PERMISSION_BASE,
+			"deleteCurrentSelection" => NIVEAU_PERMISSION_SECRETAIRE,
+			"affectersousjurys" => NIVEAU_PERMISSION_SECRETAIRE,
+			"edit" => NIVEAU_PERMISSION_BASE,
+			"read" => NIVEAU_PERMISSION_BASE,
+			"upload" => NIVEAU_PERMISSION_SECRETAIRE,
+			"update" => NIVEAU_PERMISSION_BASE,
+			"change_current_session" => NIVEAU_PERMISSION_SECRETAIRE,
+			"new" => NIVEAU_PERMISSION_SECRETAIRE,
+			"newpwd" => NIVEAU_PERMISSION_SECRETAIRE,
+			"adminnewpwd" => NIVEAU_PERMISSION_SECRETAIRE,
+			"admin" => NIVEAU_PERMISSION_SECRETAIRE,
+			"admindeleteaccount" => NIVEAU_PERMISSION_SECRETAIRE,
+			"infosrapporteur" => NIVEAU_PERMISSION_SECRETAIRE,
+			"checkpwd" => NIVEAU_PERMISSION_SECRETAIRE,
+			"adminnewaccount" => NIVEAU_PERMISSION_SECRETAIRE,
+			"admindeletesession" => NIVEAU_PERMISSION_SECRETAIRE,
+			"changepwd" => NIVEAU_PERMISSION_BASE,
+			"add_concours" => NIVEAU_PERMISSION_SECRETAIRE,
+			"delete_concours" => NIVEAU_PERMISSION_SECRETAIRE,
+			"ajoutlabo" => NIVEAU_PERMISSION_SECRETAIRE,
+			"deletelabo" => NIVEAU_PERMISSION_SECRETAIRE,
+			"mailing" => NIVEAU_PERMISSION_SECRETAIRE,
+			"email_rapporteurs" => NIVEAU_PERMISSION_SECRETAIRE,
+			"createhtpasswd" => NIVEAU_PERMISSION_SECRETAIRE,
+			"trouverfichierscandidats" => NIVEAU_PERMISSION_SECRETAIRE,
+			"creercandidats" => NIVEAU_PERMISSION_SECRETAIRE,
+			"creercandidats" => NIVEAU_PERMISSION_SECRETAIRE,
+			"injectercandidats" => NIVEAU_PERMISSION_SECRETAIRE,
+			"displayunits" => NIVEAU_PERMISSION_SECRETAIRE,
+			"displayimportexport" => NIVEAU_PERMISSION_SECRETAIRE
+	);
 	
 	$actions1 = array(
 /*		'details' => array('left' => true, 'title' => "Détails", 'level' => NIVEAU_PERMISSION_BASE, 'page' =>'', 'icon' => 'img/details-icon-24px.png'),*/
@@ -1084,21 +1124,21 @@ Une phrase de conclusion sur le candidat incluant un commentaire sur l'audition
 		'download' => array('left' => true, 'title' => "Exporter", 'level' => NIVEAU_PERMISSION_BASE, 'page' =>'export.php', 'icon' => 'img/zip-icon-24px.png')
 	);
 	$actions2 = array(
-			'history' => array('title' => "Historique", 'level' => NIVEAU_PERMISSION_PRESIDENT_SECRETAIRE, 'page' =>'', 'icon' => 'img/history-icon-24px.png'),
-			'delete' => array('title' => "Supprimer", 'level' => NIVEAU_PERMISSION_PRESIDENT_SECRETAIRE, 'page' =>'', 'icon' => 'img/delete-icon-24px.png'),
+			'history' => array('title' => "Historique", 'level' => NIVEAU_PERMISSION_SECRETAIRE, 'page' =>'', 'icon' => 'img/history-icon-24px.png'),
+			'delete' => array('title' => "Supprimer", 'level' => NIVEAU_PERMISSION_SECRETAIRE, 'page' =>'', 'icon' => 'img/delete-icon-24px.png'),
 			'viewpdf' => array('title' => "Voir en PDF", 'level' => NIVEAU_PERMISSION_BASE, 'page' =>'export.php', 'icon' => 'img/pdf-icon-24px.png'),
 			'viewhtml' => array('title' => "Voir en HTML", 'level' => NIVEAU_PERMISSION_BASE, 'page' =>'export.php', 'icon' => 'img/html-icon-24px.png'),
 	);
 	$actions = array_merge($actions1, $actions2);
 	
 	$fieldsPermissions = array(
-			"statut" => NIVEAU_PERMISSION_PRESIDENT_SECRETAIRE,
-			"concours" => NIVEAU_PERMISSION_PRESIDENT_SECRETAIRE,
-			"type" => NIVEAU_PERMISSION_PRESIDENT_SECRETAIRE,
+			"statut" => NIVEAU_PERMISSION_SECRETAIRE,
+			"concours" => NIVEAU_PERMISSION_SECRETAIRE,
+			"type" => NIVEAU_PERMISSION_SECRETAIRE,
 			"rapporteur" => NIVEAU_PERMISSION_BUREAU,
 			"rapporteur2" => NIVEAU_PERMISSION_BUREAU,
 			"rapporteur3" => NIVEAU_PERMISSION_BUREAU,
-			"avis" => NIVEAU_PERMISSION_PRESIDENT_SECRETAIRE,
+			"avis" => NIVEAU_PERMISSION_SECRETAIRE,
 			"auteur" => NIVEAU_PERMISSION_INFINI,
 			"date" => NIVEAU_PERMISSION_INFINI,
 			"id" => NIVEAU_PERMISSION_INFINI,
@@ -1120,7 +1160,7 @@ Une phrase de conclusion sur le candidat incluant un commentaire sur l'audition
 					"mime" => "application/x-zip",
 					"xsl" => "",
 					"name" => "Rapports (pdf)",
-					"permissionlevel" => NIVEAU_PERMISSION_PRESIDENT_SECRETAIRE,
+					"permissionlevel" => NIVEAU_PERMISSION_SECRETAIRE,
 			),
 			"html" => 	array(
 					"mime" => "text/html",
@@ -1165,13 +1205,13 @@ Une phrase de conclusion sur le candidat incluant un commentaire sur l'audition
 					"mime" => "application/x-text",
 					"xsl" => "",
 					"name" => "JAD (pdf)",
-					"permissionlevel" => NIVEAU_PERMISSION_PRESIDENT_SECRETAIRE
+					"permissionlevel" => NIVEAU_PERMISSION_SECRETAIRE
 			),
 			"jadhtml" => 	array(
 					"mime" => "application/x-text",
 					"xsl" => "",
 					"name" => "JAD (html)",
-					"permissionlevel" => NIVEAU_PERMISSION_PRESIDENT_SECRETAIRE
+					"permissionlevel" => NIVEAU_PERMISSION_SECRETAIRE
 			)
 			);
 
@@ -1246,7 +1286,8 @@ Une phrase de conclusion sur le candidat incluant un commentaire sur l'audition
 	$permission_levels = array(
 		NIVEAU_PERMISSION_BASE => "rapporteur",
 		NIVEAU_PERMISSION_BUREAU => "bureau",
-		NIVEAU_PERMISSION_PRESIDENT_SECRETAIRE => "secrétaire/président(e)",
+		NIVEAU_PERMISSION_SECRETAIRE => "secrétaire",
+		NIVEAU_PERMISSION_PRESIDENT => "président(e)",
 		NIVEAU_PERMISSION_SUPER_UTILISATEUR => "admin"
 	);
 			

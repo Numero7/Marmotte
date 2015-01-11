@@ -132,13 +132,18 @@ function alertText($text)
 				
 		try
 		{
+			/* checking permissions */
+			global $actions;
+			if(isset($actions[$action]) && getUserPermissionLevel() < $actions[$action])
+				throw new Exception("Vous n'avez pas le niveau de permission suffisant pour exécuter l'action '".$action."'");
+
 			switch($action)
 			{
 				case 'updateconfig':
-					put_raw_config($_REQUEST['fieldconfig']);
+					save_config_from_request();
 					include 'admin.inc.php';
+					scrollToId('config');					
 					break;
-					
 				case 'delete':
 					$next = next_report($id_rapport);
 					$before = deleteReport($id_rapport, true);
@@ -186,35 +191,20 @@ function alertText($text)
 					displayReports();
 					break;
 				case 'update':
-
 					$next = next_report($id_origine);
 					$previous = previous_report($id_origine);
-
-
 					if(isset($_REQUEST["read"]))
-					{
 						viewWithRedirect($id_origine);
-					}
 					else if(isset($_REQUEST["edit"]))
-					{
 						editWithRedirect($id_origine);
-					}
 					else if(isset($_REQUEST["editnext"]))
-					{
 						editWithRedirect($next);
-					}
 					else if(isset($_REQUEST["viewnext"]))
-					{
 						viewWithRedirect($next);
-					}
 					else if(isset($_REQUEST["editprevious"]))
-					{
 						editWithRedirect($previous);
-					}
 					else if(isset($_REQUEST["viewprevious"]))
-					{
 						viewWithRedirect($previous);
-					}
 					else if(isset($_REQUEST["retourliste"]))
 					{
 						unset($_REQUEST["id_origine"]);
@@ -256,44 +246,28 @@ function alertText($text)
 					else
 					{
 						$done = false;
-
 						foreach($concours_ouverts as $concours => $nom)
-						{
 							if(isset($_REQUEST['importconcours'.$concours]))
 							{
 								$done = true;
 								$newreport = update_report_from_concours($id_origine,$concours, getLogin());
 								editWithRedirect($newreport->id);
 								break;
-									
 							}
-						}
-
 
 						if(!$done)
 						{
 							$report = addReportFromRequest($id_origine,$_REQUEST);
-
-							
 							if(isset($_REQUEST["submitandeditnext"]))
-							{
 								editWithRedirectReport($next);
-							}
 							else if(isset($_REQUEST["submitandviewnext"]))
-							{
 								viewWithRedirect($next);
-							}
 							else if(isset($_REQUEST["submitandkeepediting"]))
-							{
 								editWithRedirect($report->id);
-							}
 							else if(isset($_REQUEST["submitandkeepviewing"]))
-							{
 								viewWithRedirect($report->id);
-							}
 						}
 					}
-
 					break;
 				case 'change_current_session':
 					if(isset($_REQUEST["current_session"]))
@@ -306,10 +280,6 @@ function alertText($text)
 						$type = $_REQUEST["type"];
 						$report = newReport($type);
 						displayEditableReport($report);
-					}
-					else
-					{
-						throw new Exception("Cannot create new document because no type_eval provided");
 					}
 					break;
 				case'newpwd':
@@ -333,23 +303,17 @@ function alertText($text)
 					include 'admin.inc.php';
 					break;
 				case 'admin':
-					if (isSecretaire())
-						include "admin.inc.php";
+					include "admin.inc.php";
 					break;
 				case 'admindeleteaccount':
-					if (isSecretaire())
-					{
 						if (isset($_REQUEST["login"]))
 						{
 							$login = $_REQUEST["login"];
 							deleteUser($login);
 							include "admin.inc.php";
 						}
-					}
 					break;
 				case 'infosrapporteur':
-					if (isSecretaire())
-					{
 						if (isset($_REQUEST["login"]) and isset($_REQUEST["permissions"]))
 						{
 							global  $concours_ouverts;
@@ -358,12 +322,8 @@ function alertText($text)
 							$sections = $_REQUEST["sections"];
 							foreach($concours_ouverts as $concours => $nom)
 								if(isset($_REQUEST["sousjury".$concours]))
-							{
 								addSousJury($concours, $_REQUEST["sousjury".$concours], $login);
-							}
 							changeUserInfos($login,$permissions,$sections);
-							$aa = $_REQUEST;
-						}
 						include "admin.inc.php";
 						scrollToId('infosrapporteur');
 					}
@@ -376,8 +336,6 @@ function alertText($text)
 					}
 					break;
 				case 'adminnewaccount':
-					if (isSecretaire())
-					{
 						if (isset($_REQUEST["email"]) and isset($_REQUEST["description"]) and isset($_REQUEST["newpwd1"]) and isset($_REQUEST["newpwd2"]) and isset($_REQUEST["login"]))
 						{
 							$desc = $_REQUEST["description"];
@@ -394,10 +352,9 @@ function alertText($text)
 								echo "<p><strong>Erreur :</strong> Les deux saisies du nouveau mot de passe  diffèrent, veuillez réessayer.</p>";
 						}
 						include "admin.inc.php";
-					}
 					break;
 				case 'admindeletesession':
-					if (isset($_REQUEST["sessionid"]) && isSecretaire())
+					if (isset($_REQUEST["sessionid"]))
 					{
 						deleteSession(real_escape_string($_REQUEST["sessionid"]), isset($_REQUEST["supprimerdossiers"]));
 						include "admin.inc.php";
@@ -407,8 +364,6 @@ function alertText($text)
 					include "changePwd.inc.php";
 					break;
 				case 'add_concours':
-					if(isSecretaire())
-					{
 					$concours = (object) array();
 					$fields = array("code", "intitule","postes",
 							 "sousjury1","sousjury2", "sousjury3", "sousjury4",
@@ -418,17 +373,13 @@ function alertText($text)
 					foreach($fields as $field)
 						$concours->$field = isset($_REQUEST[$field]) ? $_REQUEST[$field] : "";
 					setConcours($concours);
-					}
 					include "admin.inc.php";
 					scrollToId('concours');
-					
 					break;
 				case 'delete_concours':
-					if(isSecretaire())
-						deleteConcours($_REQUEST["code"]);
+					deleteConcours($_REQUEST["code"]);
 					include "admin.inc.php";
 					scrollToId('concours');
-					
 					break;
 					case 'ajoutlabo':
 					if(isset($_REQUEST["nickname"]) and isset($_REQUEST["code"]) and isset($_REQUEST["fullname"]) and isset($_REQUEST["directeur"]))
@@ -441,10 +392,6 @@ function alertText($text)
 						 );
 						echo "Added unit \"".real_escape_string($_REQUEST["nickname"])."\"<br/>";
 					}
-					else
-					{
-						echo "Cannot process action ajoutlabo: missing data<br/>";
-					}
 					include "unites.php";
 					break;
 				case 'deletelabo':
@@ -452,10 +399,6 @@ function alertText($text)
 					{
 						deleteUnit(real_escape_string($_REQUEST["unite"]));
 						echo "Deleted unit \"".real_escape_string($_REQUEST["unite"])."\"<br/>";
-					}
-					else
-					{
-						echo "Cannot process action ajoutlabo: missing data<br/>";
 					}
 					include "unites.php";
 					break;
@@ -482,9 +425,6 @@ function alertText($text)
 					break;
 				case "displayunits":
 					include "unites.php";
-					break;
-				case "displaystats":
-					include "stats.php";
 					break;
 				case "displayimportexport":
 					include "import_export.php";
