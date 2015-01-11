@@ -1082,6 +1082,8 @@ Une phrase de conclusion sur le candidat incluant un commentaire sur l'audition
 	
 	/* permissions levels for actions */
 	$actions = array(
+			"removetopic" => NIVEAU_PERMISSION_SECRETAIRE,
+			"addtopic" => NIVEAU_PERMISSION_SECRETAIRE,
 			"updateconfig" => NIVEAU_PERMISSION_SECRETAIRE,
 			"delete" => NIVEAU_PERMISSION_SECRETAIRE,
 			"change_statut" => NIVEAU_PERMISSION_SECRETAIRE,
@@ -1292,22 +1294,8 @@ Une phrase de conclusion sur le candidat incluant un commentaire sur l'audition
 	);
 			
 	/* initializes topics */
-	$topics_codes = explode(";",get_config("topics_codes"));
-	$topics_labels = explode(";",get_config("topics_labels"));
-	
-	if(count($topics_codes) != count($topics_labels))
-	{
-		set_config("topics_codes","");
-		set_config("topics_labels","");
-		$topics_codes = array();
-		$topics_labels = array();
-	}
-	
-	$topics[""] = "";
-	for($i = 0 ; $i < count($topics_codes); $i++)
-		$topics[$topics_codes[$i]] = $topics_labels[$i];
-	
-	
+	$topics = get_topics();
+
 	/** FILTERS **/
 	$filtersReports = array(
 			'type' => array('name'=>"Type d'évaluation" , 'liste' => $typesRapports,'default_value' => "tous", 'default_name' => "Tous les types"),
@@ -1321,7 +1309,7 @@ Une phrase de conclusion sur le candidat incluant un commentaire sur l'audition
 			'avis1' => array('name'=>"Avis Rapp 1" , 'liste' => $avis_sessions, 'default_value' => "tous", 'default_name' => ""),
 			//'avis2' => array('name'=>"Avis Rapp 2" , 'liste' => $avis_sessions, 'default_value' => "tous", 'default_name' => ""),
 			//'avis3' => array('name'=>"Avis Rapp 3" , 'liste' => $avis_sessions, 'default_value' => "tous", 'default_name' => ""),
-			'statut' => array('name'=>"Statut" , 'liste' => $statutsRapports, 'default_value' => " ", 'default_name' => "Tous les statuts"),
+			'statut' => array('name'=>"Statut" , 'liste' => $statutsRapports, 'default_value' => "tous", 'default_name' => "Tous les statuts"),
 			//'theme3' => array('name'=>"Theme3" , 'liste' => $topics, 'default_value' => "tous", 'default_name' => ""),
 			'genre' => array('name' =>"Genre", 'liste' => $genreCandidat, 'default_value' => "", 'default_name' => "Tous les genre"),
 			'id_session' => array('name'=>"Session", 'default_value' =>-1, 'default_name' => "Toutes les sessions"),
@@ -1338,13 +1326,14 @@ Une phrase de conclusion sur le candidat incluant un commentaire sur l'audition
 	$filtersConcours = array(
 			'avis' => array('name'=>"Avis" , 'liste' => $avis_candidature_short, 'default_value' => "tous", 'default_name' => ""),
 			'avis1' => array('name'=>"Avis Rapp 1" , 'liste' => $avis_candidature_short, 'default_value' => "tous", 'default_name' => ""),
-			'avis2' => array('name'=>"Avis Rapp 2" , 'liste' => $avis_candidature_short, 'default_value' => "tous", 'default_name' => ""),
-			'avis3' => array('name'=>"Avis Rapp 3" , 'liste' => $avis_candidature_short, 'default_value' => "tous", 'default_name' => ""),
+			//'avis2' => array('name'=>"Avis Rapp 2" , 'liste' => $avis_candidature_short, 'default_value' => "tous", 'default_name' => ""),
+			//'avis3' => array('name'=>"Avis Rapp 3" , 'liste' => $avis_candidature_short, 'default_value' => "tous", 'default_name' => ""),
 			'theme1' => array('name'=>"Theme1" , 'liste' => $topics, 'default_value' => "tous", 'default_name' => ""),
 			'theme2' => array('name'=>"Theme2" , 'liste' => $topics, 'default_value' => "tous", 'default_name' => ""),
-			'theme3' => array('name'=>"Theme3" , 'liste' => $topics, 'default_value' => "tous", 'default_name' => ""),
+			'statut' => array('name'=>"Statut" , 'liste' => $statutsRapports, 'default_value' => "tous", 'default_name' => "Tous les statuts"),
+			//'theme3' => array('name'=>"Theme3" , 'liste' => $topics, 'default_value' => "tous", 'default_name' => ""),
 			'labo1' => array('name'=>"Labo1" , 'default_value' => "tous", 'default_name' => ""),
-			'labo2' => array('name'=>"Labo2" , 'default_value' => "tous", 'default_name' => ""),
+			//'labo2' => array('name'=>"Labo2" , 'default_value' => "tous", 'default_name' => ""),
 			'genre' => array('name' =>"Genre", 'liste' => $genreCandidat, 'default_value' => "", 'default_name' => "Tous les genre"),
 			'concours' => array('name'=>"Concours" , 'liste' => $conc, 'default_value' => "tous", 'default_name' => ""),
 			'sousjury' => array('name'=>"Sous-jury" , 'liste' => $tous_sous_jury, 'default_value' => "tous", 'default_name' => ""),

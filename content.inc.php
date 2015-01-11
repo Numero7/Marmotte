@@ -139,6 +139,16 @@ function alertText($text)
 
 			switch($action)
 			{
+				case 'addtopic':
+					add_topic($_REQUEST["index"], $_REQUEST["motcle"]);
+					include 'admin.inc.php';
+					scrollToId('config');					
+					break;
+				case 'removetopic':
+					remove_topic($_REQUEST["index"]);
+					include 'admin.inc.php';
+					scrollToId('config');					
+					break;
 				case 'updateconfig':
 					save_config_from_request();
 					include 'admin.inc.php';

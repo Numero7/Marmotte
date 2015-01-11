@@ -11,15 +11,20 @@ function getFilterValue($filter_name)
 	global $filtersAll;
 	$filters = $filtersAll;
 	$answer = $filters[$filter_name]['default_value'];
+
 	if(isset($_REQUEST["filter_".$filter_name]))
-	{
 		$answer = real_escape_string($_REQUEST["filter_".$filter_name]);
-		/* this should not be there but.. */
-	}
-		//$answer = $_REQUEST["filter_".$filter_name] != "" ? $_REQUEST["filter_".$filter_name] : $filters[$filter_name]['default_value'];
 	else if(isset($_SESSION["filter_".$filter_name]))
 		$answer =   $_SESSION["filter_".$filter_name];
 	$_SESSION["filter_".$filter_name] = $answer;
+
+	
+	if($filter_name == "statut" && $answer != 'tous')
+	{
+		$a = $_REQUEST;
+		rr();	
+	}
+		
 	return $answer;
 }
 
@@ -112,14 +117,7 @@ function getCurrentFiltersList()
 		if($type=='unit' && isset($filters[$field]))
 		$filters[$field]['liste'] = $units;
 	
-	if(isSecretaire())
-	{
-		global $statutsRapports;
-		$filters['statut'] =  array('name'=>"Statut" , 'liste' => $statutsRapports, 'default_value' => "tous", 'default_name' => "");
-	}
-	
 	return $filters;
-	
 }
 
 function getCurrentSortingList()

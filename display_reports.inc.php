@@ -119,29 +119,31 @@ function displayRows($rows, $fields, $filters, $filter_values, $sort_fields, $so
 	global $end_tr_fields;
 
 	?>
-<form method="post" action="index.php">
 	<table>
 		<tr>
 			<td>
-				<table>
+<form method="post" action="index.php">
+			<table>
 					<tr>
 						<td><?php 
 						displayFiltrage($rows, $fields, $filters, $filter_values);
 						?>
 						</td>
 					</tr>
-				</table>
-
-			</td>
-		</tr>
 		<tr>
-		<table><tr>
 			<td><input type="hidden" name="action" value="view" /> <input
 				type="submit" value="Filtrer" /> <?php 	echo "(".count($rows)." rapports)";?>
 			</td>
-<?php if(isSecretaire()){
+			</tr>
+			</table>
+			</form>
+			</td>
+</tr>
+			<?php if(isSecretaire()){
 ?>
+<tr>
 <td>
+<table><tr><td>
 		<form onsubmit="return confirm('Changer les statuts des rapports?');" method="post"  action="index.php">
 			<input type="submit" value="Changer statuts"/>
 			<select name="new_statut">
@@ -156,23 +158,23 @@ function displayRows($rows, $fields, $filters, $filter_values, $sort_fields, $so
 			</select>
 			<input type="hidden" name="action" value="change_statut"/>
 		</form>
-		</td><td>
+</td>
+<td>
 		<form onsubmit="return confirm('Supprimer ces rapports?');" method="post" action="index.php">
 				<input type="hidden" name="action" value="deleteCurrentSelection" /> <input	type="submit" value="Supprimer rapports" />
 		</form>
-		</td>
-		<td>
-			<td>
+</td>
+<td>
 <form method="post" action="index.php" onsubmit="return confirm('Affecter les sous-jurys?');">
 			<input type="hidden" name="action" value="affectersousjurys" /> <input
 				type="submit" value="Affecter sous-jurys" />
 				</form>
-				</td>
 				<?php 
 	} ?>
+	</td>
 	</tr></table>
-			</tr>	</table>
-</form>
+	</td></tr>
+	</table>
 <hr />
 <table class="summary">
 	<tr>

@@ -789,9 +789,7 @@ function previous_report($id)
 /* Hugo could be optimized in one sql update request?*/
 function change_statuts($new_statut, $filter_values)
 {
-	//echo "Changing status to " .$new_statut." <br/>";
 	$rows = filterSortReports(getCurrentFiltersList(), $filter_values, getSortingValues());
-
 	foreach($rows as $row)
 		change_statut($row->id, $new_statut);
 }

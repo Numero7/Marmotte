@@ -13,6 +13,7 @@ if(isSecretaire())
 <li><a href="#membres">Membres</a></li>
 <li><a href="#concours">Concours</a></li>
 <li><a href="#config">Configuration</a></li>
+<li><a href="#topics">Mots-clés</a></li>
 </ul>
 
 <?php 	
@@ -396,13 +397,10 @@ if(isSecretaire() && ! isSuperUser())
 <tr>people_files
 <?php 
 global $configs;
+echo "<tr><th>Clé</th><th>Valeur</th></tr>\n";
 foreach($_SESSION["config"] as $key=> $value)
-{
 	if(substr($key, 0,6) != "topics" && substr($key, 0,7) != "formule" && $key!= "current_session")
-	{
 		echo "<tr><td>$key</td><td><input style=width:500px value='$value' name='$key'></input></td></tr>\n";
-	}
-}
 ?>
 <tr><td>
 				<input type="hidden" name="action" value="updateconfig" />
@@ -410,14 +408,34 @@ foreach($_SESSION["config"] as $key=> $value)
 </td></tr>
 </table>	
 </form>
+<hr/>
 <h2 id="motscles">Mots-clés de la section</h2>
 <table>
 <?php 
-$configs = get_configs();
+$configs = get_topics();
+	echo '<tr><th>Index</th><th>Mot-clé</th><th></th></tr>';
 foreach($configs as $key => $value)
 {
+	echo '<tr><td>'.$key.'</td><td>'.$value.'</td>';
+	echo '<td><form>';
+	echo '<input type="hidden" name="action" value="removetopic" />';
+	echo '<input type="hidden" name="index" value="'.$key.'" />';
+	echo '<input type="submit" value="Supprimer mot-clé" /></form></td></tr>';
 }
-?></table>
+?>
+</table>
+<form>
+<table>
+<tr>
+<td>Index <input name="index"></input></td>
+<td>Mot-clé <input name="motcle"></input></td>
+<td>
+<input type="hidden" name="action" value="addtopic" />
+<input type="submit" value="Ajouter mot-clé" />
+</td>
+</tr>
+</table>
+</form>
 <!-- 
 <h2>Stats rapporteurs</h2>
 <p>Envoi d'emails de rappel aux rapporteurs ayant encore des rapports
