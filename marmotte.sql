@@ -174,8 +174,7 @@ CREATE TABLE IF NOT EXISTS `sessions` (
   `section` int(11) NOT NULL,
   `nom` text NOT NULL,
   `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `statut` text,
-  PRIMARY KEY (`id`)
+  `statut` text
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------

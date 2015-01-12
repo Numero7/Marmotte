@@ -1,4 +1,3 @@
-
 <?php
 require_once("db.inc.php");
 
@@ -88,6 +87,7 @@ function authenticateBase($login,$pwd)
 
 function authenticate()
 {
+	
 	if (isset($_SESSION['login']) and isset($_SESSION['pass']))
 	{
 		$login  = $_SESSION['login'];
