@@ -22,7 +22,6 @@ function fixEncoding($in_str)
 function import_csv($type,$filename, $subtype = "", $create = false, $sep="?", $del="\n",$enc='"', $esc='\\')
 {
 	ini_set('auto_detect_line_endings',TRUE);
-	global $fieldsAll;
 	global $csv_composite_fields;
 	global $fieldsUnitsDB;
 

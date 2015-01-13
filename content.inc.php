@@ -140,12 +140,12 @@ function alertText($text)
 			switch($action)
 			{
 				case 'addrubrique':
-					add_rubrique($_REQUEST["index"], $_REQUEST["rubrique"], ($_REQUEST["type"] == "people"));
+					add_rubrique($_REQUEST["index"], $_REQUEST["rubrique"], $_REQUEST["type"]);
 					include 'admin.inc.php';
 					scrollToId('rubriques');					
 					break;
 				case 'removerubrique':
-					remove_rubrique($_REQUEST["index"], ($_REQUEST["type"] == "people"));
+					remove_rubrique($_REQUEST["index"], $_REQUEST["type"]);
 					include 'admin.inc.php';
 					scrollToId('rubriques');					
 					break;

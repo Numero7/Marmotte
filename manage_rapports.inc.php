@@ -10,14 +10,46 @@ require_once('manage_filters_and_sort.inc.php');
 function compute_title($row, $fieldId)
 {
 	global $fieldsAll;
-	global $global_fields_renaming;
 	global $type_specific_fields_renaming;
 
-	$title = $fieldsAll[$fieldId];
+	
+	$title = "";
+	if( substr($fieldId, 0, 4) == "Info" )
+	{
+		global $typesRapportsChercheurs;
+		global $typesRapportsConcours;
+		global $add_rubriques_people;
+		global $add_rubriques_candidats;
+		
+		$suff = intval(substr($fieldId,4)) /3;
+		
+		if( isset($typesRapportsChercheurs[$row->type]) )
+			$title = $add_rubriques_people[$suff];
+		else if( isset($typesRapportsConhercheurs[$row->type]) )
+			$title = $add_rubriques_candidats[$suff];
+	}
+	else if( substr($fieldId, 0, 7) == "Generic" )
+	{
+		global $typesRapportsChercheurs;
+		global $typesRapportsUnites;
+		global $typesRapportsConcours;
+		global $add_rubriques_concours;
+		global $add_rubriques_chercheurs;
+		global $add_rubriques_unites;
 
-	if(key_exists($fieldId, $global_fields_renaming))
-		$title = $global_fields_renaming[$fieldId];
-
+		$suff = intval(substr($fieldId,7))/3;
+				
+		if( isset($typesRapportsChercheurs[$row->type]) )
+			$title = $add_rubriques_chercheurs[$suff];
+		else if( isset($typesRapportsConcours[$row->type]) )
+			$title = $add_rubriques_concours[$suff];
+		else if( isset($typesRapportsUnites[$row->type]) )
+			$title = $add_rubriques_unites[$suff];
+	}
+	else if(isset($fieldsAll[$fieldId]))
+		$title = $fieldsAll[$fieldId];
+	
+	
 	if(isset($row->type) && key_exists($row->type, $type_specific_fields_renaming) && key_exists($fieldId, $type_specific_fields_renaming[$row->type]))
 		$title = $type_specific_fields_renaming[$row->type][$fieldId];
 
@@ -486,6 +518,7 @@ function addReportFromRequest($id_origine, $request)
 	}
 
 	$report = createReportFromRequest($id_origine, $request);
+	
 	$id_nouveau = addReportToDatabase($report,false);
 	
 	if(isset($report->type) && (in_array($report->type, $typesRapportsConcours) || isset($typesRapportsChercheurs[$report->type]) ) )
@@ -507,7 +540,7 @@ function createReportFromRequest($id_origine, $request)
 	foreach($fieldsRapportAll as  $field => $comment)
 		if (isset($request["field".$field]))
 		$row->$field = nl2br(trim($request["field".$field]),true);
-
+	
 	$row->id_origine = $id_origine;
 	$row->auteur = getLogin();
 
@@ -591,13 +624,6 @@ function addReportToDatabase($report,$normalize = true)
 				{
 					if(isset($report->$field) && isset($previous_report->$field) &&($previous_report->$field != $report->$field) && isset($fieldsPermissions[$field]) &&  $fieldsPermissions[$field] > $level)
 						throw new Exception("Vous n'avez pas les autorisations nécessaires (".$level."<".$fieldsPermissions[$field].") pour modifier le champ ".$field);
-
-					/*
-					 if( isset($current_report->$field) && isset($previous_report->$field) && $previous_report->$field != $current_report->$field)
-					 {
-					echo "Parallel edition of field '".$field."' by '".$current_report->auteur."' changed from '".$previous_report->$field."' to '".$current_report->$field."'<br/>";
-					}
-					*/
 					if( isset($report->$field) && isset($previous_report->$field) && $previous_report->$field != $report->$field)
 					{
 						if(! is_field_editable($previous_report, $field))
@@ -628,7 +654,6 @@ function addReportToDatabase($report,$normalize = true)
 						}
 						else
 						{
-							//echo "Updating field ".$field." was '".$previous_report->$field."' now '".$report->$field."'<br/>";
 							$current_report->$field = $report->$field;
 						}
 
@@ -798,12 +823,8 @@ function change_report_property($id_origine, $property_name, $newvalue)
 
 function change_report_properties($id_origine, $data)
 {
-	global $fieldsAll;
-
 	$row = NULL;
-
 	$request = array();
-
 	try
 	{
 		$report = getReport($id_origine);
@@ -830,11 +851,7 @@ function change_report_properties($id_origine, $data)
 			$request["field".$key] = $data[$key];
 		}
 	}
-
-
 	$result = addReportFromRequest($id_origine,$request);
-	//echo "report added new id ".$result->id."<br/>";
-	
 	return $result;
 }
 
@@ -1146,26 +1163,20 @@ function is_field_visible($row, $fieldId)
 function get_editable_fields($row)
 {
 	global $fieldsAll;
-
 	$result = array();
-
 	foreach($fieldsAll as $field => $data)
 		if(is_field_editable($row,$field))
 		$result[] = $field;
-
 	return $result;
 }
 
 function get_readable_fields($row)
 {
 	global $fieldsAll;
-
 	$result = array();
-
 	foreach($fieldsAll as $field => $data)
 		if(is_field_visible($row,$field))
 		$result[] = $field;
-
 	return $result;
 }
 

@@ -77,6 +77,39 @@ function get_config($key,$default_value="", $create_if_needed=true)
 	return $_SESSION["config"][$key];
 }
 
+function get_array_config($key,$delimiter ="|")
+{
+	if($key == "")
+		throw new Exception("No config with empty key");
+
+	if(!isset($_SESSION["config"]))
+		init_config();
+
+	if(!isset($_SESSION["config"][$key]))
+			set_config($key,"");
+
+	$to_parse = explode($delimiter, $_SESSION["config"][$key]);
+	$result = array();
+	for($i = 0; $i < count($to_parse) -1; $i+=2)
+		$result[$to_parse[$i]] = $to_parse[$i+1];
+	
+	return $result;
+}
+
+function set_array_config($key,$value,$delimiter ="|")
+{
+	
+	if($key == "")
+		throw new Exception("No config with empty key");
+	if(!is_array($value))
+		throw new Exception("Cannot set array config with non array value");
+	ksort($value);
+	$linear = "";
+	foreach($value as $index => $val)
+		$linear .= str_replace($delimiter," ",$index).$delimiter.str_replace($delimiter," ",$val).$delimiter;
+	set_config($key, $linear);
+}
+
 function get_configs()
 {
 	if(!isset($_SESSION["config"]))
@@ -103,53 +136,37 @@ function remove_topic($index)
 
 function set_topics($topics)
 {
-	$topics_str = "";
-	foreach($topics as $code => $value)
-	if($value != "")
-		$topics_str .= str_replace(";",",",$code).";".str_replace(";",",",$value).";";
-		
-	set_config("topics", $topics_str);
+	set_array_config("topics", $topics);
 }
 
 function get_topics()
 {
-	$topics = array();
-	$topexpl = explode(";",get_config("topics"));
-	for($i = 0; $i + 1< count($topexpl); $i+=2)
-		$topics[$topexpl[$i]] = $topexpl[$i+1]; 
-	return $topics;
+	return get_array_config("topics");
 }
 
-function get_rubriques($people = true)
+function get_rubriques($type)
 {
-	$rubriques = array();
-	if($people)
-		$topexpl = explode(";",get_config("rubriques_people"));
-	else
-		$topexpl = explode(";",get_config("rubriques_rapports"));
-	for($i = 0; $i + 1< count($topexpl); $i+=2)
-		$rubriques[$topexpl[$i]] = $topexpl[$i+1];
-	ksort($rubriques);
-	return $rubriques;
+	global $rubriques_supplementaires;
+	$key = $rubriques_supplementaires[$type][0];
+	return get_array_config($key);
 }
 
-function set_rubriques($rubriques, $people = true)
+function set_rubriques($rubriques, $type)
 {
-	$rubrique_str = "";
-	foreach($rubriques as $index => $rubrique)
-		if($rubrique != "")
-		$rubrique_str .= str_replace(";",",",$index).";".str_replace(";",",",$rubrique).";";
-	if($people)
-		set_config("rubriques_people", $rubrique_str);
-	else
-		set_config("rubriques_rapports", $rubrique_str);
+	global $rubriques_supplementaires;
+	$key = $rubriques_supplementaires[$type][0];	
+	set_array_config($key, $rubriques);
 }
 
-function add_rubrique($index, $rubrique, $people = true)
+function add_rubrique($index, $rubrique, $type)
 {
-	$rubriques = get_rubriques($people);
-	$rubriques[$index] = $rubrique;
-	set_rubriques($rubriques, $people);
+	global $rubriques_supplementaires;
+	/*
+	$pref = $rubriques_supplementaires[$type][1];
+	*/
+	$rubriques = get_rubriques($type);
+	$rubriques[/*$pref.*/$index] = $rubrique;
+	set_rubriques($rubriques, $type);
 }
 
 
