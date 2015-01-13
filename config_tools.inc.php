@@ -15,9 +15,11 @@ function init_config()
 {
 	global $dbh;
 	global $configs;
+	
 	if(!isset($_SESSION['filter_section']))
 		throw new Exception("Cannot init config, unknown section");
 	$section = $_SESSION['filter_section'];
+
 	$sql = "SELECT * FROM ".config_db." WHERE `section`='".$section."';";
 	$query = mysqli_query($dbh,$sql);
 	if(!$query)
@@ -66,7 +68,7 @@ function get_config($key,$default_value="", $create_if_needed=true)
 		
 	if(!isset($_SESSION["config"]))
 		init_config();
-	
+
 	if(!isset($_SESSION["config"][$key]))
 	{
 		if(!$create_if_needed)

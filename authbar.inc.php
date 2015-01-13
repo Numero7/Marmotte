@@ -107,6 +107,10 @@ else
 		</select>
 		</form>
 		</li>
+		<?php 
+		if(isSecretaire())
+		{
+		?>
 						<li>
 				<form method="post" style="display: inline;" action="index.php">
 				<input type="hidden" name="action" value="displayimportexport" />
@@ -127,6 +131,7 @@ else
 								
 							</td>
 											<?php 
+		}
 						}
 						else
 						{

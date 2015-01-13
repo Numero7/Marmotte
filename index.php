@@ -30,16 +30,12 @@ try
 	global $dbh;
 	if($dbh)
 	{
-
-		//create the admin/admin initial password if needed
 		createAdminPasswordIfNeeded();
 		if(authenticateBase('admin','password'))
 			echo "The 'admin' password is 'password', please change it right after login.";
 		
 		$action = isset($_REQUEST["action"]) ? mysqli_real_escape_string($dbh, $_REQUEST["action"]) : "";
-
 		$errorLogin = 0;
-		
 		if($action == "auth")
 		{
 			if(isset($_REQUEST["login"]) and isset($_REQUEST["password"]))
@@ -60,7 +56,6 @@ try
 			}
 		}
 		
-		
 		if(!authenticate() || $action == 'logout' || ($errorLogin == 1))
 		{
 			removeCredentials();
@@ -71,8 +66,6 @@ try
 		{			
 			require_once("utils.inc.php");
 			require_once("manage_users.inc.php");
-
-			
 			switch($action)
 			{
 				case 'adminnewsession':
