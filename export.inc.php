@@ -40,7 +40,7 @@ function send_file($local_filename, $remote_filename)
 function create_dir_if_needed($dir)
 {
 	if(!is_dir($dir))
-		$result = mkdir($dir,0700, true);
+		$result = mkdir($dir,0770, true);
 }
 
 function export_reports_as_txt($reports, $dir, $prefix = "reports")

@@ -83,7 +83,7 @@ function create_dir_if_needed2($basedir)
 	if(!is_dir($basedir))
 	{
 		echo "Creating directory ".$basedir."<br/>";
-		$result = mkdir($basedir,0700, true);
+		$result = mkdir($basedir,0770, true);
 		if(!$result)
 			echo "Failed to create directory ".$basedir."<br/>";
 	}
