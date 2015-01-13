@@ -229,10 +229,8 @@ function display_rapports($row, $fieldId)
 function display_fichiers($row, $fieldID, $session, $readonly)
 {
 	global $typesRapportsUnites;
-
 	if(!isset($row->type))
 		return;
-
 	
 	if(  isset($typesRapportsUnites[$row->type]))
 	{
@@ -251,7 +249,6 @@ function display_fichiers($row, $fieldID, $session, $readonly)
 	if(count($files) > 0)
 	{
 		ksort($files);
-
 		$i = -1;
 //	echo "<td><table><tr>";
 		echo "<td><table>\n";

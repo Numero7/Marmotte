@@ -92,7 +92,7 @@ function create_dir_if_needed2($basedir)
 function get_people_directory($candidate, $session, $create_directory_if_nexists = false)
 {
 	global $dossier_stockage;
-	$basedir = $dossier_stockage."/".currentSection()."/".$session."/".$candidate->nom."_".$candidate->prenom."/";
+	$basedir = $dossier_stockage."/".$session."/".$candidate->nom."_".$candidate->prenom."/";
 	if($create_directory_if_nexists)
 		create_dir_if_needed2($basedir);
 	return $basedir;
@@ -101,7 +101,7 @@ function get_people_directory($candidate, $session, $create_directory_if_nexists
 function get_unit_directory($unit, $session, $create_directory_if_nexists = false)
 {
 	global $dossier_stockage;
-	$basedir = $dossier_stockage."/".currentSection()."/".$session."/".$unit->unite."/";
+	$basedir = $dossier_stockage."/".$session."/".$unit->unite."/";
 	if($create_directory_if_nexists)
 		create_dir_if_needed2($basedir);
 	return $basedir;
