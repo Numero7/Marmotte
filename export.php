@@ -72,21 +72,19 @@ if (authenticate())
 								$filename = "";
 								$xml_reports->formatOutput = true;
 
-								$files = glob('reports/*'); // get all file names
-								foreach($files as $file){ // iterate files
+								$dir = dossier_temp();
+								$files = glob($dir."/*");
+								foreach($files as $file)
 									if(is_file($file))
-										unlink($file); // delete file
-								}
+										unlink($file);
 
-								create_dir_if_needed("reports");
-								$result = $xml_reports->save('reports/reports.xml');
+								$result = $xml_reports->save($dir."/reports.xml");
 
 								if($result === false)
 									throw new Exception("Failed to save file reports/reports.xml");
 
 								if($type =="pdf")
 									echo "<script>window.location = 'create_reports.php'</script>";
-
 								if($type=="zip")
 									echo "<script>window.location = 'create_reports.php?zip_files=oui'</script>";
 								break;
@@ -117,13 +115,9 @@ if (authenticate())
 								if(isset($_POST['fields']))
 								{
 									if(!isset($_POST['types']))
-									{
 										throw new Exception("Sélectionnez au moins un type de rapport");
-									}
 									else	
-									{
 										generate_exemple_csv($_POST['types'], $_POST['fields']);
-									}
 								}
 								else
 									throw new Exception("No fields provided,, cannot genrate exemple csv");

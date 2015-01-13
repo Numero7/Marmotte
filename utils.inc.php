@@ -77,23 +77,6 @@ function is_picture($file)
 	$suffix = strtolower(substr($file,-3,3));
 	return $suffix == "png" || $suffix == "jpg" || $suffix == "bmp";
 }
-	
-
-function statut_to_choose($row)
-{
-	return isSecretaire();
-}
-
-
-function type_to_choose($row)
-{
-	$eval_type = $row->type;
-	return $eval_type == "Evaluation-Vague" || $eval_type == "Evaluation-MiVague";
-}
-
-
-
-
 
 function message_handler($subject,$body)
 {
@@ -210,8 +193,6 @@ function filename_from_params($nom, $prenom, $grade, $unite, $type, $session, $a
 	{
 		if(isset($liste_unite[$unite]))
 			$unite = $unite . " - " . $liste_unite[$unite]->nickname;
-		
-		
 
 		if($type == 'Generique')
 			return $section." - ".$session." - ".$nom." ".$prenom." - ".$unite;

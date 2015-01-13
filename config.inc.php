@@ -18,9 +18,12 @@ ini_set('xdebug.show_local_vars', 'on');
 	
 //	define("config_file","config/config.xml");
 	define("signature_file","img/signature.jpg");
-//	define("config_file_save","config/config.sauv.xml");
-	
-	$dossier_racine = "";
+	define("signature_blanche","img/signature_blanche.jpg");
+	//	define("config_file_save","config/config.sauv.xml");
+
+	global $rootdir;
+	$dossier_temp = $rootdir."./tmp/".$_SESSION['filter_section']."/";
+	$dossier_stockage = $rootdir."./storage/".$_SESSION['filter_section']."/";
 	
 
 	$rubriques_supplementaires = array(
