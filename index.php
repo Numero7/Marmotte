@@ -27,7 +27,7 @@ try
 		db_from_scratch();
 	}
 	
-	
+	global $dbh;
 	if($dbh)
 	{
 

@@ -11,8 +11,8 @@ require_once('utils.inc.php');
 
 function displayEditableCandidate($candidate,$report = NULL,$canedit = true)
 {
-
 	global $fieldsCandidat;
+	
 	global $avis_candidature_necessitant_pas_rapport_sousjury;
 	global $fieldsCandidatAvantAudition;
 	global $fieldsCandidatAuditionne;
@@ -46,14 +46,6 @@ function displayEditableCandidate($candidate,$report = NULL,$canedit = true)
 
 	}
 
-
-	/*
-	 if(isset($candidate->genre) && $candidate->genre == "femme")
-		echo '<h1>Candidate : '.$candidate->nom." ".$candidate->prenom." ".'</h1>';
-	else
-		echo '<h1>Candidat : '.$candidate->nom." ".$candidate->prenom." ".'</h1>';
-	*/
-
 	$submit = array("conflit" => "Se déclarer en conflit");
 
 	displayEditionFrameStart("",$hidden,$submit);
@@ -66,9 +58,8 @@ function displayEditableCandidate($candidate,$report = NULL,$canedit = true)
 
 function displayEditableChercheur($chercheur,$report = NULL, $canedit = true)
 {
-	global $fieldsChercheursAll;
-
-
+	
+global $fieldsChercheursAll;
 	$hidden = array("action" => "update");
 
 
@@ -148,13 +139,11 @@ function displayEditableField($row, $fieldId, $canedit, $session)
 	global $fieldsTypes;
 	global $mandatory_edit_fields;
 
-	if(isset($fieldsAll[$fieldId]) && is_field_visible($row, $fieldId))
-	{
-	
 	$title = compute_title($row, $fieldId);
-		if($title != "")
-		{
-			if(isset($fieldsTypes[$fieldId]))
+	
+	if($title != "" && is_field_visible($row, $fieldId))
+	{		
+		if(isset($fieldsTypes[$fieldId]))
 			{
 
 				$editable = $canedit && is_field_editable($row, $fieldId);
@@ -165,22 +154,11 @@ function displayEditableField($row, $fieldId, $canedit, $session)
 						$editable = true;
 				}
 
-				/*
-				 if(!$use_special_tr || !in_array($fieldId, $specialtr_fields) || in_array($fieldId, $start_tr_fields))
-					echo '<tr>';
-				*/
 				echo '<td style="width:10%"><span>'.$title.'</span>';
 				echo '</td>';
 
-				
-				/*
-				 if($use_special_tr && in_array($fieldId, $start_tr_fields))
-					echo '<td><table><tr>';
-				*/
 				if(!isset($row->$fieldId))
 					$row->$fieldId = '';
-
-				
 
 				if(!$editable && in_array($fieldId, $mandatory_edit_fields))
 					echo '<input type="hidden" name="field'.$fieldId.'" value="'.$row->$fieldId.'"/>';
@@ -233,36 +211,17 @@ function displayEditableField($row, $fieldId, $canedit, $session)
 					case "sousjury":
 						display_sousjury($row, $fieldId, !$editable); break;
 				}
-				/*
-				 if(!$use_special_tr || !in_array($fieldId, $specialtr_fields))
-					*/
-
-				/*
-				 if($use_special_tr && in_array($fieldId, $end_tr_fields))
-					echo '</tr></table></td></tr>';
-				*/
 			}
 		}
-	}
-
-
 }
 
 function displayEditableObject($titlle, $row, $fields, $canedit, $session)
 {
-	global $fieldsAll;
-
 	if($titlle != "")
-	{
 		echo '<table><tr><td><h2><span  style="font-weight:bold;" >'.$titlle.'</span></h2></td></tr>';
-	}
 	else
-	{
 		echo '<table>';
-	}
 
-
-	global $fieldsAll;
 	global $fieldsTypes;
 	global $mandatory_edit_fields;
 
@@ -289,7 +248,7 @@ function displayEditableObject($titlle, $row, $fields, $canedit, $session)
 			}
 		}
 		else
-		{
+		{	
 			echo '<td style="100%"><table><tr class="'.$style.'">'."\n";
 			displayEditableField($row, $fieldId,$canedit,$session);
 			echo "\n".'</tr></table></td>'."\n";
@@ -333,8 +292,6 @@ function voir_rapport_pdf($row)
 
 function displayEditableReport($row, $canedit = true)
 {
-
-	global $fieldsAll;
 	global $fieldsTypes;
 	global $actions;
 	global $avis_eval;
@@ -393,10 +350,7 @@ function displayEditableReport($row, $canedit = true)
 	else
 		$submits["viewnext"] = ">>";
 
-
-
 	$eval_type = $row->type;
-
 
 	displayEditionFrameStart("",$hidden,$submits);
 
@@ -404,7 +358,6 @@ function displayEditableReport($row, $canedit = true)
 
 	$is_unite = array_key_exists($eval_type,$typesRapportsUnites);
 	$statut = $row->statut;
-	
 
 	$eval_name = $eval_type;
 	if(array_key_exists($eval_type, $typesRapports))
@@ -452,7 +405,6 @@ function displayEditableReport($row, $canedit = true)
 
 		if(true)
 		{
-				
 			displayEditableCandidate($candidate,$row,$canedit);
 				
 			$other_reports = find_somebody_reports($candidate,$eval_type);
@@ -461,18 +413,15 @@ function displayEditableReport($row, $canedit = true)
 			$fieldsRapportsCandidat0 = $typesRapportToFields[$eval_type][1];
 			$fieldsRapportsCandidat1 = $typesRapportToFields[$eval_type][2];
 			$fieldsRapportsCandidat2 = $typesRapportToFields[$eval_type][3];
-				
+			$fieldsRapportsCandidat3 = $typesRapportToFields[$eval_type][4];
+			
 			echo $titre;
 
 			$submits = array();
 				
 			foreach($other_reports as $report)
-			{
 				if($report->concours != $row->concours)
-				{
 					$submits["importconcours".$report->concours] = "Importer données concours ".$report->concours;
-				}
-			}
 				
 			$hidden['fieldconcours'] = $row->concours;
 				
@@ -507,11 +456,7 @@ function displayEditableReport($row, $canedit = true)
 	}
 	else if(array_key_exists($eval_type, $typesRapportsChercheurs))
 	{
-
-
-		//todo $chercheur = chercheur_of_report($row);
 		$chercheur = get_or_create_candidate($row);
-
 		$conflit = ( is_in_conflict(getLogin(), $chercheur)) && !isSecretaire()  ;
 
 		displayEditableChercheur($chercheur,$row,$canedit);

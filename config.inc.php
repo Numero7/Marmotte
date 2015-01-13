@@ -23,6 +23,20 @@ ini_set('xdebug.show_local_vars', 'on');
 	$dossier_racine = "";
 	
 
+	$rubriques_supplementaires = array(
+			"individus" => array("rubriques_individus","Info","chercheur"),
+			"candidats" => array("rubriques_candidats", "Info","candidat"),
+			"concours" => array("rubriques_concours", "Generic","rapport concours"),
+			"chercheurs" => array("rubriques_chercheurs", "Generic","rapport chercheur"),
+			"unites" => array("rubriques_unites", "Generic","rapport unite")
+	);
+	
+	$add_rubriques_people = get_rubriques("individus");
+	$add_rubriques_candidats = get_rubriques("candidats");
+	$add_rubriques_concours = get_rubriques("concours");
+	$add_rubriques_chercheurs = get_rubriques("chercheurs");
+	$add_rubriques_unites = get_rubriques("unites");
+		
 	$fieldsSummary = array(
 		"type",
 		"rapporteur",
@@ -116,22 +130,6 @@ ini_set('xdebug.show_local_vars', 'on');
 		"prerapport" => "Prérapport 1",
 		"prerapport2" => "Prérapport 2",
 		"prerapport3" => "Prérapport 3",
-			/*
-			"production" => "Production<br/>scientifique",
-			"production2" => "Production<br/>scientifique<br/>(rapp. 2)",
-		"transfert" => "Transfert<br/>et valorisation",
-		"transfert2" => "Transfert<br/>et valorisation<br/>(rapp. 2)",
-		"encadrement" => "Encadrement",
-		"encadrement2" => "Encadrement<br/>(rapp. 2)",
-		"responsabilites" => "Responsabilités<br/>collectives",
-		"responsabilites2" => "Responsabilités<br/>collectives<br/>(rapp. 2)",
-		"mobilite" => "Mobilité",
-		"mobilite2" => "Mobilité<br/>(rapp. 2)",
-		"animation" => "Animation<br/>scientifique",
-		"animation2" => "Animation<br/>scientifique<br/>(rapp. 2)",
-		"rayonnement" => "Rayonnement",		
-		"rayonnement2" => "Rayonnement<br/>(rapp. 2)",	
-		*/	
 		"auteur" => "Auteur dernière modif",
 		"date" => "Date modification",
 		"id" => "Id",
@@ -139,8 +137,6 @@ ini_set('xdebug.show_local_vars', 'on');
 			"id_origine" => "Id origine",
 	);	
 	
-	$global_fields_renaming = array(); //get_config_array("renommage_champs");
-
 	$type_specific_fields_renaming = 
 	array(
 			"Expertise" => array("ecole" => "Intitulé du rapport"),
@@ -170,25 +166,17 @@ ini_set('xdebug.show_local_vars', 'on');
 			"rapport",
 	);
 
-	/*
-	 * Les champs disponibles au rapporteur 1
-	*/
-	$fieldsIndividual1 = array(
-			"avis1",
-			"prerapport"
-	);
-
-		/*
-	 * Les champs disponibles au rapporteur 2
-	*/
-	$fieldsIndividual2 = array(
-			"avis2",
-			"prerapport2"
-	);
-	$fieldsIndividual3 = array(
-			"avis3",
-			"prerapport3"
-	);
+	$fieldsIndividual1 = array("avis1","prerapport");
+	$fieldsIndividual2 = array("avis2","prerapport2");
+	$fieldsIndividual3 = array("avis3","prerapport3");
+	
+	foreach($add_rubriques_chercheurs as $index => $rubrique)
+	{
+		$fieldsIndividual1[] = "Generic".(3*$index);
+		$fieldsIndividual2[] = "Generic".(3*$index+1);
+		$fieldsIndividual3[] = "Generic".(3*$index+2);
+	}
+	
 	
 	/*
 	 * Tous les champs d'un rapport individuel
@@ -208,33 +196,9 @@ ini_set('xdebug.show_local_vars', 'on');
 			"fichiers",
 			"rapports"
 	);
-	
-	$fieldsRapportsIndividual = array(
-			"nom",
-			"prenom",
-			"genre",
-			"annee_recrutement",
-			"labo1",
-			"theme1",
-			"theme2",
-			"theme3",
-			"fichiers",
-			"rapporteur",
-			"rapporteur2",
-			"rapporteur3",
-			"statut",
-			"unite",
-			"grade",
-			"grade_rapport",
-			"avis",
-			"rapport",
-			"avis1",
-			"prerapport",
-			"avis2",
-			"prerapport2",
-			"avis3",
-			"prerapport3"
-	);
+		
+	foreach($add_rubriques_people as $code => $rubrique)
+		$fieldsChercheursAll[] = "Info".$code;
 	
 	/*
 	* Les champs disponibles aux deux rapporteurs
@@ -270,6 +234,12 @@ ini_set('xdebug.show_local_vars', 'on');
 			"prerapport3"
 	);
 		
+	foreach($add_rubriques_concours as $index => $rubrique)
+	{
+		$fieldsRapportsCandidat1[] = "Generic".(3*$index);
+		$fieldsRapportsCandidat2[] = "Generic".(3*$index+1);
+		$fieldsRapportsCandidat3[] = "Generic".(3*$index+2);
+	}
 	
 	$fieldsRapportsCandidat = array_merge($fieldsRapportsCandidat0, $fieldsRapportsCandidat1, $fieldsRapportsCandidat2, $fieldsRapportsCandidat3);
 	
@@ -291,8 +261,8 @@ ini_set('xdebug.show_local_vars', 'on');
 			"conflits" => "Conflits"
 	);
 
-	$rubriques_people = get_rubriques(true);
-	foreach($rubriques_people as $index => $rubrique)
+	
+	foreach($add_rubriques_people as $index => $rubrique)
 		$fieldsIndividualAll["Info".$index] = $rubrique;
 	
 
@@ -313,8 +283,16 @@ ini_set('xdebug.show_local_vars', 'on');
 			"audition",
 			"concourspresentes"
 	);
+
+	/* dirty */
+	for($i = 0; $i <= 30; $i++)
+	{
+		$fieldsIndividualAll["Info".$i] = "Info".$i;
+		$fieldsRapportAll["Generic".$i] = "Generic".$i;
+	}
 	
 	$fieldsAll = array_merge($fieldsRapportAll, $fieldsIndividualAll, array("rapports" => "Autres rapports"));
+
 	$fieldsCandidatAvantAudition = array(
 			"nom",
 			"prenom",
@@ -331,10 +309,9 @@ ini_set('xdebug.show_local_vars', 'on');
 			"theme3",
 			"concourspresentes"
 	);
-
-	$rubriques_people = get_rubriques(true);
-	foreach($rubriques_people as $index => $rubrique)
-		$fieldsCandidatAvantAudition[] = "Info".$index;
+	
+	foreach($add_rubriques_candidats as $index => $rubrique)
+		$fieldsCandidatAvantAudition[] = $index;
 	
 	$fieldsCandidatAuditionne = array_merge($fieldsCandidatAvantAudition, array("audition"));
 	$fieldsCandidat = $fieldsCandidatAuditionne;
@@ -436,6 +413,13 @@ ini_set('xdebug.show_local_vars', 'on');
 			"prerapport3"
 	);
 	
+	foreach($add_rubriques_unites as $index => $rubrique)
+	{
+		$fieldsUnites1[] = "Generic".(3*$index);
+		$fieldsUnites2[] = "Generic".(3*$index+1);
+		$fieldsUnites3[] = "Generic".(3*$index+2);
+	}
+	
 	$fieldsUnitesExtra = array(
 			'Expertise' => array('ecole'),
 			'Generique' => array('ecole'),
@@ -444,8 +428,8 @@ ini_set('xdebug.show_local_vars', 'on');
 			
 	);
 	
-	$fieldsUnites = array_merge($fieldsUnites0, $fieldsUnites1, $fieldsUnites2);
-	$fieldsEcoles = array_merge($fieldsEcoles0, $fieldsUnites1, $fieldsUnites2);
+	$fieldsUnites = array_merge($fieldsUnites0, $fieldsUnites1, $fieldsUnites2, $fieldsUnites3);
+	$fieldsEcoles = array_merge($fieldsEcoles0, $fieldsUnites1, $fieldsUnites2, $fieldsUnites3);
 	
 	$fieldsUnitsDB = array(
 			"code" => "Code",
@@ -705,9 +689,11 @@ Une phrase de conclusion sur le candidat incluant un commentaire sur l'audition
 			"statut" => "statut",
 	);
 	
-	$rubriques_people = get_rubriques(true);
-	foreach($rubriques_people as $index => $rubrique)
-		$fieldsTypes["Info".$index] = "long";
+	for($i = 0 ; $i < 30; $i++)
+	{
+		$fieldsTypes["Generic".$i] = "long";
+		$fieldsTypes["Info".$i] = "long";
+	}
 	
 	$nonEditableFieldsTypes = array('id','auteur','date');
 	$nonVisibleFieldsTypes = array('id','auteur');

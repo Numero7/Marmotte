@@ -97,12 +97,9 @@ function compileObjectsAsCSV($fields, $rows, $text=array(), $sep =";" , $enc='"'
 function compileReportsAsCSV($rows, $fields = null)
 {
 	global $mandatory_export_fields;
-
-
 	$activefields = $fields;
 	if($activefields == null)
 		$activefields = array_unique(array_merge($mandatory_export_fields, get_editable_fields($rows[0])));
-
 	if(count($rows) < 1)
 	{
 		$fakerow = (object) array();
@@ -111,8 +108,6 @@ function compileReportsAsCSV($rows, $fields = null)
 		$fakerow->type = "Evaluation-Vague";
 		$rows[] = $fakerow;
 	}
-
-
 	return compileObjectsAsCSV($activefields, $rows);
 }
 

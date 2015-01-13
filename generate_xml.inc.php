@@ -117,9 +117,7 @@ function exportReportAsXML($report,$activefields,$filename)
 
 function getReportsAsXML($filter_values, $sort_criteria = array(), $keep_br = true)
 {
-	global $fieldsAll;
 	global $report_types_with_multiple_exports;
-	
 
 	$doc = new DOMDocument("1.0","UTF-8");
 	$root = $doc->createElement("rapports");

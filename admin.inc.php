@@ -447,49 +447,76 @@ foreach($configs as $key => $value)
 </td>
 </tr>
 </table></form>
-<hr/>
+<hr/>	
 <h2 id="rubriques">Rubriques supplémentaires</h2>
-<h3>Rubriques personnes</h3>
+<?php 
+global $rubriques_supplementaires;
+foreach($rubriques_supplementaires as $field => $intitule)
+{
+?>
+<h3 <?php echo "id=\"rubriques".$field."\"";?>>Rubriques <?php echo $intitule[2];?></h3>
 <table>
 <?php 
-$rubriques_people = get_rubriques(true);
+$rubriques = get_rubriques($field);
+if(count($rubriques) > 0)
+{
 echo '<tr><th>Index</th><th>Rubrique</th></tr>';
-foreach($rubriques_people as $index => $rubrique)
+foreach($rubriques as $index => $rubrique)
 	echo '<tr><td>'.$index.'</td><td>'.$rubrique.'</td></tr>';
+}
 ?>
 </table>
+<br/>
 <form>
 <table>
 <tr>
-<td>Index <input name="index"></input></td>
+<td>
+Index 
+<select name="index">
+<?php 
+for($i = 0; $i <= 10;$i++)
+	echo "<option value=\"".$i."\">".$i."</option>"
+?>
+</select>
 <td>Rubrique <input name="rubrique"></input></td>
 <td>
-<input type="hidden" name="type" value="people" />
+<input type="hidden" name="type" value="<?php echo $field;?>" />
 <input type="hidden" name="action" value="addrubrique" />
-<input type="submit" value="Ajouter rubrique" />
+<input type="submit" value="Ajouter rubrique <?php echo $intitule[2];?>" />
 </td>
 </tr>
 </table>
 </form>
+<?php 
+if(count($rubriques) > 0)
+{
+	?>
 <form>
 <table>
 <tr>
 <td>
 <select name='index'>
 <?php 
-foreach($rubriques_people as $index => $value)
+foreach($rubriques as $index => $value)
 	echo '<option value='.$index.'>'.$index.' '.$value.'</option>';
 ?>
 </select>
 </td>
 <td>
-<input type="hidden" name="type" value="people" />
+<input type="hidden" name="type" value="<?php echo $field;?>" />
 <input type="hidden" name="action" value="removerubrique" />
-<input type="submit" value="Supprimer rubrique" />
+<input type="submit" value="Supprimer rubrique <?php echo $intitule[2];?>" />
 </td>
 </tr>
 </table></form>
-
+<?php 
+}
+?>
+<br/>
+<br/>
+<?php 
+}
+?>
 <!-- 
 <h2>Stats rapporteurs</h2>
 <p>Envoi d'emails de rappel aux rapporteurs ayant encore des rapports

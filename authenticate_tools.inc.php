@@ -5,10 +5,9 @@ require_once("db.inc.php");
 function createAdminPasswordIfNeeded()
 {
 	global $dbh;
-		$listusers = array();
-		$sql = "SELECT * FROM ". mysqli_real_escape_string($dbh, users_db)." WHERE login='admin';";
-		$result=mysqli_query($dbh, $sql);
-		if( mysqli_fetch_lengths($result) == 0)
+		$sql = "SELECT * FROM `". mysqli_real_escape_string($dbh, users_db)."`  WHERE `login`=\"admin\";";
+		$result= mysqli_query($dbh, $sql);
+		if( mysqli_num_rows($result) == 0)
 		{
 			$sql = "INSERT INTO `".mysqli_real_escape_string($dbh, users_db);
 			$sql .="`(`login`, `sections`, `last_section_selected`, `passHash`, `description`, `permissions`, `email`, `tel`) ";
