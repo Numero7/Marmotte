@@ -12,11 +12,9 @@ require_once('utils.inc.php');
 function displayEditableCandidate($candidate,$report = NULL,$canedit = true)
 {
 	global $fieldsCandidat;
-	
 	global $avis_candidature_necessitant_pas_rapport_sousjury;
 	global $fieldsCandidatAvantAudition;
 	global $fieldsCandidatAuditionne;
-
 
 	$hidden = array("action" => "update");
 
@@ -222,9 +220,7 @@ function displayEditableObject($titlle, $row, $fields, $canedit, $session)
 	{
 		$style = is_array($fieldId) ? getStyle($fieldId[0],$odd): getStyle($fieldId,$odd);
 		$odd = !$odd;
-
 		echo '<tr class="'.$style.'" style="width:90%"><td><table style="width:90%"><tr class="'.$style.'">';
-
 		if(is_array($fieldId))
 		{
 			foreach($fieldId as $singleField)
@@ -242,10 +238,8 @@ function displayEditableObject($titlle, $row, $fields, $canedit, $session)
 			echo "\n".'</tr></table></td>'."\n";
 		}
 		echo '</tr></table></td></tr>';
-
 	}
 	echo "</table>\n";
-
 }
 
 function voir_rapport_pdf($row)

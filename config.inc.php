@@ -270,7 +270,8 @@ ini_set('xdebug.show_local_vars', 'on');
 			"theme3" => "Theme 3",
 			"audition" => "Rapport d'audition",
 			"concourspresentes" => "Concours présentés",
-			"conflits" => "Conflits"
+			"conflits" => "Conflits",
+			"fichiers"=> "Fichiers"
 	);
 
 	
@@ -312,6 +313,7 @@ ini_set('xdebug.show_local_vars', 'on');
 			"grade",
 			"annee_recrutement",
 			"conflits",
+			"fichiers",
 			"rapports",
 			"labo1",
 			"labo2",
