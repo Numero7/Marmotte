@@ -49,7 +49,6 @@ function compute_title($row, $fieldId)
 	else if(isset($fieldsAll[$fieldId]))
 		$title = $fieldsAll[$fieldId];
 	
-	
 	if(isset($row->type) && key_exists($row->type, $type_specific_fields_renaming) && key_exists($fieldId, $type_specific_fields_renaming[$row->type]))
 		$title = $type_specific_fields_renaming[$row->type][$fieldId];
 
