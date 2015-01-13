@@ -234,7 +234,7 @@ if(isSecretaire())
 				echo "statut <select name=\"permissions\">\n";
 				foreach($permission_levels as $val => $level)
 				{
-					if ($val<=getUserPermissionLevel())
+					if ($val - getUserPermissionLevel() <= 200)
 					{
 						$sel = "";
 						if ($val==$data->permissions)
@@ -400,7 +400,7 @@ global $configs;
 echo "<tr><th>Clé</th><th>Valeur</th></tr>\n";
 foreach($_SESSION["config"] as $key=> $value)
 	if(substr($key, 0,6) != "topics" && substr($key, 0,7) != "formule" && $key!= "current_session" && substr($key, 0,8) != "rubrique" )
-		echo "<tr><td>$key</td><td><input style=width:500px value='$value' name='$key'></input></td></tr>\n";
+		echo "<tr><td>$key</td><td><input style=width:500px value=\"".$value."\" name=\"".$key."\"></input></td></tr>\n";
 ?>
 <tr><td>
 				<input type="hidden" name="action" value="updateconfig" />
