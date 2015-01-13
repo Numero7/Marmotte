@@ -212,7 +212,6 @@ function displayRows($rows, $fields, $filters, $filter_values, $sort_fields, $so
 			$odd = !$odd;
 			?>
 	
-	
 	<tr id="t<?php echo $row->id;?>" class="<?php echo $style;?>">
 		<?php
 			

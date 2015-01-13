@@ -29,11 +29,10 @@ function displayEditableCandidate($candidate,$report = NULL,$canedit = true)
 	{
 		$hidden["id_origine"] = $report->id_origine;
 		$hidden["type"] = $report->type;
-		if(isset($report->avis) && in_array($report->avis, $avis_candidature_necessitant_pas_rapport_sousjury))
+		if(($report->avis == "IE") || (isset($report->avis) && in_array($report->avis, $avis_candidature_necessitant_pas_rapport_sousjury)))
 			$fields = $fieldsCandidatAvantAudition;
 		else
 			$fields = $fieldsCandidatAuditionne;
-
 
 		$candidate->rapporteur = $report->rapporteur;
 		$candidate->rapporteur2 = $report->rapporteur2;
@@ -43,17 +42,12 @@ function displayEditableCandidate($candidate,$report = NULL,$canedit = true)
 
 		if(isset($report->id_session))
 			$session = $report->id_session;
-
 	}
-
 	$submit = array("conflit" => "Se déclarer en conflit");
 
 	displayEditionFrameStart("",$hidden,$submit);
-
-	displayEditableObject("", $candidate, $fieldsCandidat,$canedit,$session);
-
+	displayEditableObject("", $candidate, $fields,$canedit,$session);
 	displayEditionFrameEnd("Données candidat");
-
 }
 
 function displayEditableChercheur($chercheur,$report = NULL, $canedit = true)
@@ -145,14 +139,10 @@ function displayEditableField($row, $fieldId, $canedit, $session)
 	{		
 		if(isset($fieldsTypes[$fieldId]))
 			{
-
 				$editable = $canedit && is_field_editable($row, $fieldId);
-
 				if($fieldId === "fichiers")
-				{
 					if(isset($row->statut) && $row->statut == "audition")
 						$editable = true;
-				}
 
 				echo '<td style="width:10%"><span>'.$title.'</span>';
 				echo '</td>';
@@ -228,8 +218,6 @@ function displayEditableObject($titlle, $row, $fields, $canedit, $session)
 	$inline = false;
 
 	$odd = true;
-
-
 	foreach($fields as  $fieldId)
 	{
 		$style = is_array($fieldId) ? getStyle($fieldId[0],$odd): getStyle($fieldId,$odd);
@@ -660,8 +648,6 @@ function displaySummary($filters, $filter_values, $sorting_values)
 	if(isSecretaire())
 		$fields = array_unique(array_merge($fields,array(/*"date","auteur","id",*/"statut")));
 
-
-	//Remove the type filter if useless
 	if($filter_values['type'] != $filters['type']['default_value'] )
 	{
 		$new_field = array();
@@ -670,9 +656,6 @@ function displaySummary($filters, $filter_values, $sorting_values)
 			$new_field[] = $field;
 		$fields = $new_field;
 	}
-
-	//if(is_current_session_concours() || (isset($filter_values["type"]) && $filter_values["type"] == "Promotion"))
-
 
 	displayRows($rows,$fields, $filters, $filter_values, getCurrentSortingList(), $sorting_values);
 }

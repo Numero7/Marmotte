@@ -13,7 +13,7 @@ if(isSecretaire())
 <li><a href="#membres">Membres</a></li>
 <li><a href="#concours">Concours</a></li>
 <li><a href="#config">Configuration</a></li>
-<li><a href="#topics">Mots-clés</a></li>
+<li><a href="#motscles">Mots-clés</a></li>
 </ul>
 
 <?php 	

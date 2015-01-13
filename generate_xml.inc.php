@@ -182,7 +182,7 @@ function EnteteDroit($row, $units)
 	global $enTetesDroit;
 	global $typesRapportsToEnteteDroit;
 	global $avis_classement;
-	global $avis_candidature;
+	global $avis_candidatur_shorte;
 
 	$result = "";
 
@@ -227,7 +227,7 @@ function EnteteDroit($row, $units)
 			}
 			else if($type == 'Concours')
 			{
-				$result .= $avis_candidature[$row->avis];
+				$result .= $avis_candidature_short[$row->avis];
 				$result .= "<br/>";
 				$result .= $row->nom." ".$row->prenom;
 			}
