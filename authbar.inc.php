@@ -32,6 +32,10 @@ else
 						</ul>
 						
 						</td>
+						<?php 
+						if(!isSuperUser())
+						{
+						?>
 				<td valign="top">
 								<ul>
 								<li><a href="index.php?action=view&amp;reset_filter=">Tous les dossiers</a></li>
@@ -103,6 +107,10 @@ else
 		</select>
 		</form>
 		</li>
+		<?php 
+		if(isSecretaire())
+		{
+		?>
 						<li>
 				<form method="post" style="display: inline;" action="index.php">
 				<input type="hidden" name="action" value="displayimportexport" />
@@ -122,13 +130,24 @@ else
 </ul>
 								
 							</td>
+											<?php 
+		}
+						}
+						else
+						{
+						?>
+						<td>
+				<form method="get" style="display: inline;" action="index.php">
+				<input type="hidden" name="action" value="admin" />
+				<input type="submit" value="Admin" />
+				</form>
+						</td>
+						<?php 
+						}
+						?>
+							
 
 						</tr>
 					</table>
-				</td>
-			</tr>
-		</table>
-
-
 	</div>
 </div>

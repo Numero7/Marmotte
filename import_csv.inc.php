@@ -51,15 +51,9 @@ function import_csv($type,$filename, $subtype = "", $create = false, $sep="?", $
 				throw new Exception("Failed to open file ".$filename." for reading");
 			}
 	}
-	
-	
-	
 	if($file = fopen ( $filename , 'r') )
 	{
 		$is_utf8 = true;
-
-		
-		
 		/* skip lines starting with empty fields */
 		$rawfields = array();
 		$max = 100;
@@ -100,12 +94,9 @@ function import_csv($type,$filename, $subtype = "", $create = false, $sep="?", $
 				throw new Exception("Vous n'avez pas les permissions nécessaires pour importer des données autres que des évaluations.");
 		}
 
-
 		$nbfields = count($fields);
-
 		$nb = 0;
 		$errors = "";
-
 
 		while(($data = fgetcsv ( $file, 0, $sep , $enc ,$esc)) != false)
 		{
@@ -120,7 +111,6 @@ function import_csv($type,$filename, $subtype = "", $create = false, $sep="?", $
 				for($i = 0 ; $i < count($data); $i++)
 				$data[$i] = utf8_encode($data[$i]);
 			}
-
 
 			try
 			{
@@ -147,16 +137,12 @@ function import_csv($type,$filename, $subtype = "", $create = false, $sep="?", $
 					/* Second case we create report */
 						$properties = array();
 						for($i = 0; $i < $nbfields && $i < count($data); $i++)
-						{
 							if($fields[$i] != "id")
 								$properties[$fields[$i]] =  $data[$i];
-						}
 						$oldsubtype = $subtype;
 						$subtype = checkTypeIsSpecified($properties);
 						if($subtype == "" && $oldsubtype != "")
 							$subtype = $oldsubtype;
-//						if($subtype == "" )
-	//						throw new Exception("No type specified in the csv, please specify the type of the evaluation to import");
 						addCsvReport($subtype, $properties);
 					}
 				}
@@ -294,7 +280,6 @@ function addCsvReport($subtype, $properties)
 	$grade = "";
 
 	if($subtype == "")
-	{
 		foreach($properties as $key => $value)
 		{
 			if($key == "Code Colloque")
@@ -308,7 +293,6 @@ function addCsvReport($subtype, $properties)
 				break;
 			}
 		}
-	}
 	
 	if($subtype == "")
 		throw new Exception("Cannot add csv report, no type specified, please specify a type in the importation menu");
@@ -320,7 +304,6 @@ function addCsvReport($subtype, $properties)
 	foreach($sgcn_keywords_to_eval_types as $key => $value)
 		if(strcontains($properties["type"],$key))
 		{
-			
 			if($key == "promotion")
 			{
 				if(strcontains($properties["type"],"CR1"))
@@ -340,76 +323,38 @@ function addCsvReport($subtype, $properties)
 				else
 					$properties["type"] = 'Evaluation-Vague';
 			}
-			else
-				$properties["type"] = $value;
+			else $properties["type"] = $value;
 		}		
-
 	
 	if(!isset($properties["type"]) || $properties["type"] =="")	
-	{
 		throw new Exception("Unimplemented report type '" . $type."'");
-	}
 
 	global $typesRapports;
 	if(!isset($typesRapports[$properties["type"]]))
 	{
 		foreach($properties as $key => $value)
-		{
 			if($key == "Chercheur" || $key == "Nom" || $key == "Prenom")
 			{
 				$properties["type"] = 'GeneriqueChercheur';
 				break;
 			}
-		}
 		$properties["type"] = 'Generique';
 	}
-	
-	
-	
-//dirty, should be a parameter
-	$copies = array(
-			"Nom" => "nom",
-			"NOMUSUEL" => "nom",
-			"Prénom" => "prenom",
-			"PRENOM" => "prenom",
-			"GRAD_CONC" => "grade_rapport",
-			"Grade" => "grade",
-			"Directeur" => "directeur",
-			"Affectation #1" => "unite",
-			"Code Unité" => "unite",
-			"Code unité" => "unite",
-			"Code Colloque" => "unite",
-			"Affectation #1" => "unite",
-			"Titre" => "nom",
-			"Responsable principal" => "prenom",
-			"PUBCONC" => "concours",
-			"Rapporteur1" => "rapporteur",
-			"Rapporteur2" => "rapporteur2",
-			"Rapporteur3" => "rapporteur3",
-			"Rapporteur 1" => "rapporteur",
-			"Rapporteur 2" => "rapporteur2",
-			"Rapporteur 3" => "rapporteur3"
-	);
-			
+
+	global $copies;
 	foreach($copies as $old => $new)
 		if(isset($properties[$old]) )
 	{
 		$properties[$new] = $properties[$old];
 		if($old == "PUBCONC" || $old =="CONCOURS")
-		{
 			$properties[$new] = str_replace(" ","",str_replace("/","",$properties[$old]));
-//			hh();
-		}
-			
 		unset($properties[$old]);
 	}
-
 	
 	if(isset($properties["unite"]))
 		$properties["code"] = $properties["unite"];
 	if(isset($properties["grade"]) && !isset($properties["grade_rapport"]))
 		$properties["grade_rapport"] = $properties["grade"];
-	
 	
 	$properties["rapport"] = "";
 	foreach($properties as $key => $value)
@@ -433,7 +378,6 @@ function addCsvReport($subtype, $properties)
 		{
 		updateCandidateFromData((object) $properties);
 		addReport($report,false);
-	
 		if(isset($report->unite))
 			updateUnitData($report->unite, (object) $report);
 		}
@@ -441,12 +385,9 @@ function addCsvReport($subtype, $properties)
 	else
 	{
 		addReport($report,false);
-		
 		if(isset($report->unite))
 			updateUnitData($report->unite, (object) $report);
-		
 	}
-	
 }
 
 

@@ -19,6 +19,8 @@ db_connect($servername,$dbname,$serverlogin,$serverpassword);
 require_once("utils.inc.php");
 require_once("manage_users.inc.php");
 
+require_once("manage_files.php");
+
 require_once('generate_pdf.inc.php');
 require_once('generate_zip.inc.php');
 
@@ -34,18 +36,15 @@ require_once("authbar.inc.php");
 		{
 			//load xml file
 			$doc = new DOMDocument("1.0","utf-8");
-			$result = $doc->load('reports/reports.xml');
+			$dir = dossier_temp();
+			$result = $doc->load($dir.'reports.xml');
 
 			if($result === false)
-				throw new Exception("Failed to load reports/reports.xml");
+				throw new Exception("Failed to load reports.xml");
 
 			$reports = $doc->getElementsByTagName("rapport");
-
-
 			$next_report = NULL;
 			$filenames = array();
-
-
 
 			if(isset($_REQUEST['zip_file']))
 			{
@@ -58,14 +57,12 @@ require_once("authbar.inc.php");
 			foreach($reports as $report)
 			{
 				if(!$report->hasAttributes())
-				{
 					continue;
-				}
 
 				$is_done = $report->hasAttribute('done');
 
 				$filename = $report->getAttribute('filename').".pdf";
-				$filenames['reports/'.$filename] = $filename;
+				$filenames[$dir.$filename] = $filename;
 
 				if(!$is_done)
 				{
@@ -76,27 +73,21 @@ require_once("authbar.inc.php");
 						echo '<td><font color="red">Processing...</font></td></tr>'."\n";
 					}
 					else
-					{
 						echo '<td>Todo</td></tr>'."\n";
-					}
-
 				}
 				//echo if($report->attributes->getNamedItem('status') == '')
 			}
 			foreach($reports as $report)
 			{
 				if(!$report->hasAttributes())
-				{
 					continue;
-				}
 
 				if($report->hasAttribute('done'))
 				{
 					$filename = $report->getAttribute('filename').".pdf";
-					echo '<tr><td><a href="reports/'.$filename.'">'.$filename.'</a></td>'."\n";
+					echo '<tr><td><a href="'.$dir.'/'.$filename.'">'.$filename.'</a></td>'."\n";
 					echo '<td><font>Done</font></td></tr>'."\n";
 				}
-				//echo if($report->attributes->getNamedItem('status') == '')
 			}
 
 
@@ -104,7 +95,6 @@ require_once("authbar.inc.php");
 
 			if($next_report != NULL)
 			{
-
 					$xsl = new DOMDocument("1.0","UTF-8");
 					$type = $next_report->getAttribute('type');
 					$xsl_path = type_to_xsl($type);
@@ -114,50 +104,40 @@ require_once("authbar.inc.php");
 					$proc->importStyleSheet($xsl);
 
 					if($type=="Classement")
-					{
 						echo $xsl_path;
-						//return;
-					}
 					
-					$filename = 'reports/'.$next_report->getAttribute('filename').".pdf";
+					$filename = $dir.$next_report->getAttribute('filename').".pdf";
 
 					$subreport = new DOMDocument("1.0","UTF-8");
 					$node = $subreport->importNode($next_report,true);
 					$subreport->appendChild($node);
 					$html = $proc->transformToXML($subreport);
 
-
 					$pdf = HTMLToPDF($html);
 					$pdf->Output($filename,"F");
 
 					$next_report->setAttribute('done','');
 
-					$doc->save('reports/reports.xml');
-
+					$doc->save($dir.'reports.xml');
 					?>
 		<script>window.location = 'create_reports.php'</script>
 		<?php
 			}
 			else
 			{
-
-
-
 				if(!isset($_REQUEST['zip_file']))
 					try
 					{
 						$filenames = array();
-
 						foreach($reports as $report)
 						{
 							if($report->hasAttribute('done'))
 							{
 								$filename = $report->getAttribute('filename').".pdf";
-								$filenames['reports/'.$filename] = $filename;
+								$filenames[$dir.$filename] = $filename;
 							}
 						}
-							
-						$filename = zip_files($filenames,'reports/reports.zip');
+						$filename = zip_files($filenames,$dir.'reports.zip');
 						?>
 		<script>window.location = 'create_reports.php<?php echo "?zip_file=".$filename;?>'</script>
 		<?php
@@ -167,7 +147,6 @@ require_once("authbar.inc.php");
 				echo "Failed to generate zip file: ".$exc->getMessage();
 			}
 	}
-
 }
 catch(Exception $e)
 {

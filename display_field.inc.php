@@ -228,7 +228,6 @@ function display_rapports($row, $fieldId)
 
 function display_fichiers($row, $fieldID, $session, $readonly)
 {
-	global $dossier_racine;
 	global $typesRapportsUnites;
 
 	if(!isset($row->type))
@@ -237,10 +236,8 @@ function display_fichiers($row, $fieldID, $session, $readonly)
 	
 	if(  isset($typesRapportsUnites[$row->type]))
 	{
-		
 		$files = find_unit_files($row,true, $session, true);
 		$dir = get_unit_directory($row, $session, false);
-		
 	}
 	else
 	{
@@ -369,10 +366,7 @@ echo "</td></tr>";
 echo "</td></tr>";
 
 			}
-
 		}
 		echo "</table></td>\n";
-		
-
 }
 ?>

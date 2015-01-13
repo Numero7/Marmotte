@@ -182,7 +182,7 @@ function EnteteDroit($row, $units)
 	global $enTetesDroit;
 	global $typesRapportsToEnteteDroit;
 	global $avis_classement;
-	global $avis_candidature;
+	global $avis_candidatur_shorte;
 
 	$result = "";
 
@@ -227,7 +227,7 @@ function EnteteDroit($row, $units)
 			}
 			else if($type == 'Concours')
 			{
-				$result .= $avis_candidature[$row->avis];
+				$result .= $avis_candidature_short[$row->avis];
 				$result .= "<br/>";
 				$result .= $row->nom." ".$row->prenom;
 			}
@@ -366,10 +366,11 @@ function createXMLReportElem($row, DOMDocument $doc, $keep_br = true)
 		appendLeaf("signataire", get_config("president"), $doc, $rapportElem);
 		
 		global $typesRapportsConcours;
-		if(!isset($typesRapportsConcours[$row->type]) && isset($row->statut) && $row->statut=="publie" && file_exists("img/signature.jpg"))
-			appendLeaf("signature", "img/signature.jpg", $doc, $rapportElem);
+		global $dossier_stockage;
+		if(!isset($typesRapportsConcours[$row->type]) && isset($row->statut) && $row->statut=="publie" && file_exists($dossier_stockage.signature_file))
+			appendLeaf("signature", $dossier_stockage.signature_file, $doc, $rapportElem);
 		else
-			appendLeaf("signature", "img/signature_blanche.jpg", $doc, $rapportElem);
+			appendLeaf("signature", $dossier_stockage.signature_blanche, $doc, $rapportElem);
 	}
 
 	if($row->type == "Classement")
@@ -453,11 +454,11 @@ function createXMLReportElem($row, DOMDocument $doc, $keep_br = true)
 	//On ajoute le nom et le tire du signataire
 	appendLeaf("signataire_titre", get_config("president_titre"), $doc, $rapportElem);
 
+	global $dossier_stockage;
 	if(isSecretaire())
-		appendLeaf("signature_source", "img/signature.jpg", $doc, $rapportElem);
+		appendLeaf("signature_source", $dossier_stockage.signature_file, $doc, $rapportElem);
 	else
-		appendLeaf("signature_source", "img/signatureX.jpg", $doc, $rapportElem);
-
+		appendLeaf("signature_source", $dossier_stockage.signature_blanche, $doc, $rapportElem);
 
 	$row->session = $sessions[$row->id_session];
 
@@ -469,7 +470,6 @@ function createXMLReportElem($row, DOMDocument $doc, $keep_br = true)
 	$rapportElem->setAttribute('type', $row->type);
 	
 	return $rapportElem;
-
 }
 
 function rowToXMLDoc($row)

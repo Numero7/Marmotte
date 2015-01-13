@@ -12,8 +12,6 @@ require_once('generate_zip.inc.php');
 
 function send_file($local_filename, $remote_filename)
 {
-
-
 	if(!is_file($local_filename))
 		throw new Exception("Cannot find file .$local_filename");
 
@@ -36,8 +34,6 @@ function send_file($local_filename, $remote_filename)
 
 	if(readfile($local_filename) === false)
 		throw new Exception("Failed to read file .$local_filename");
-
-
 }
 
 
@@ -50,9 +46,7 @@ function create_dir_if_needed($dir)
 function export_reports_as_txt($reports, $dir, $prefix = "reports")
 {
 	if(count($reports) == 0)
-	{
 		throw new Exception("No reports to export");
-	}
 	
 	create_dir_if_needed($dir);
 
@@ -199,15 +193,10 @@ function downloadReport($id_rapport)
 		$login = getLogin();
 		
 		$prefix = filename_from_doc($report);
+		$dir = dossier_temp();
 		
-		$dir = "download/".$login;
-		if(!is_dir($dir) && !mkdir($dir,0700,true))
-			throw new Exception("Failed to create directory ".$dir);
-
 		$file = export_reports_as_txt(array($report), $dir, $prefix);
-		
 		$filenames[$file] = $prefix.".txt";
-		
 		
 		if( isset($report->type) && ($report->type == "Candidature" || $report->type == "Equivalence") )
 		{
@@ -238,8 +227,6 @@ function downloadReport($id_rapport)
 
 function export_current_selection_as_single_csv($type = "")
 {
-
-
 	$size = 0;
 
 	$login = getLogin();
@@ -266,35 +253,21 @@ function export_current_selection_as_single_csv($type = "")
 	
 	if(count($reports) > 0)
 	{
-		$dir = "csv/".$login;
-		if(!is_dir($dir) && !mkdir($dir))
-			throw new Exception("Failed to create directory ".$dir);
-
+		$dir = dossier_temp();
 		$file = export_reports_as_csv($reports, $dir, $type);
 		$filenames[$file] = substr($file,strlen($dir."/"));
-
 		$remote_filename = 'marmotte_reports_'.$login.'.zip';
 		$filename = zip_files($filenames,$dir.'/'.$remote_filename);
-
-
 		if($filename == false)
 			throw new Exception("Failed to zip files");
-
 		send_file($filename, $remote_filename);
-
 	}
-
-
 }
 
 function export_current_selection_as_single_txt()
 {
-
-
 	$size = 0;
-
 	$login = getLogin();
-
 	$filter = getFilterValues();
 
 	$filenames = array();
@@ -306,42 +279,26 @@ function export_current_selection_as_single_txt()
 
 	if(count($reports) > 0)
 	{
-		$dir = "csv/".$login;
-		if(!is_dir($dir) && !mkdir($dir))
-			throw new Exception("Failed to create directory ".$dir);
-
+		$dir = dossier_temp();
 		$file = export_reports_as_txt($reports, $dir);
-
 		send_file($file, "rapports_marmotte.txt");
-
 	}
-
-
 }
 
 function export_current_selection($export_format)
 {
-
 	$size = 0;
-
 	$login = getLogin();
-
 	$filter = getFilterValues();
-
 	$filenames = array();
 	$items = array();
 
-
 	$filenames = array();
-
 	$reports = filterSortReports(getCurrentFiltersList(),  $filter, getSortingValues(),false);
 
 	if(count($reports) > 0)
 	{
-		$dir = "csv/".$login;
-		if(!is_dir($dir) && !mkdir($dir))
-			throw new Exception("Failed to create directory ".$dir);
-			
+		$dir = dossier_temp();
 		foreach($reports as $report)
 		{
 			$file = export_report($report, $export_format, $dir);
@@ -351,13 +308,11 @@ function export_current_selection($export_format)
 		$remote_filename = 'marmotte_reports_'.$login.'.zip';
 		$filename = zip_files($filenames,$dir.'/'.$remote_filename);
 
-
 		if($filename == false)
 			throw new Exception("Failed to zip files");
 
 		send_file($filename, $remote_filename);
 	}
-
 }
 
 function generate_jad_reports()
@@ -365,16 +320,10 @@ function generate_jad_reports()
 	global $concours_ouverts;
 	$docs = array();
 	foreach($concours_ouverts as $concours => $code)
-	{
 			$docs[$code] = generate_jad_report($concours);
-	}
 
 	$login = getLogin();
-
-	$dir = "csv/".$login;
-	if(!is_dir($dir) && !mkdir($dir))
-		throw new Exception("Failed to create directory ".$dir);
-
+	$dir = dossier_temp();
 	$filenames = array();
 	foreach($docs as $code => $doc)
 	{
@@ -404,17 +353,11 @@ function display_jad_reports()
 	foreach($concours_ouverts as $concours => $code)
 		$docs[$code] = generate_jad_report($concours);
 
-	$login = getLogin();
-
-	$dir = "csv/".$login;
-	if(!is_dir($dir) && !mkdir($dir))
-		throw new Exception("Failed to create directory ".$dir);
-
+	$dir = dossier_temp();
 	$filenames = array();
 	foreach($docs as $code => $doc)
 	{
 		$doc->formatOutput = true;
-
 		echo XMLToHTML($doc,'xslt/jad.xsl');
 	}
 }
@@ -424,7 +367,6 @@ function generate_jad_report($code)
 	$doc = new DOMDocument("1.0","UTF-8");
 	$root = $doc->createElement("jad");
 	$doc->appendChild($root);
-
 
 	$filters = array();
 
@@ -485,10 +427,11 @@ function generate_jad_report($code)
 	appendLeaf("signataire", get_config("president"), $doc, $root);
 	appendLeaf("signataire_titre", get_config("president_titre"), $doc, $root);
 
+	global $dossier_stockage;
 	if(isSecretaire())
-		appendLeaf("signature_source", "img/signature.jpg", $doc, $root);
+		appendLeaf("signature_source", $dossier_stockage.signature_file, $doc, $root);
 	else
-		appendLeaf("signature_source", "img/signatureX.jpg", $doc, $root);
+		appendLeaf("signature_source", $dossier_stockage.signature_blanche, $doc, $root);
 
 	return $doc;
 }
@@ -497,20 +440,6 @@ function generate_exemple_csv($types,$fields)
 {
 	try
 	{
-		/*
-		if( !in_array('nomprenom', $fields) && ( !in_array('nom', $fields) || !in_array('prenom', $fields) ))
-			throw new Exception("Check either the 'nomprenom' checkbox or both the 'nom' and the 'prenom' checkbox");
-*/
-		/*
-		$sql = "SELECT * FROM ".reports_db." LIMIT 0,5";
-		$result = sql_request($sql);
-
-		$rows = array();
-		while ($row = mysql_fetch_object($result))
-			$rows[] = $row;
-
-*/
-
 		$rows = array();
 
 		foreach($types as $type)
@@ -546,8 +475,11 @@ function generate_exemple_csv($types,$fields)
 		
 		$fields =  array_merge(array("type"), $fields);
 		
+
 		$csv_reports = compileReportsAsCSV($rows,$fields);
-		$filename = "csv/trame_rapport_vierges.csv";
+		
+		$dir = dossier_temp();
+		$filename = $dir."trame_rapport_vierges.csv";
 		if($handle = fopen($filename, 'w'))
 		{
 			fwrite ($handle, $csv_reports);

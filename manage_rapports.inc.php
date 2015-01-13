@@ -12,20 +12,20 @@ function compute_title($row, $fieldId)
 	global $fieldsAll;
 	global $type_specific_fields_renaming;
 
-	
 	$title = "";
 	if( substr($fieldId, 0, 4) == "Info" )
 	{
+		
 		global $typesRapportsChercheurs;
 		global $typesRapportsConcours;
 		global $add_rubriques_people;
 		global $add_rubriques_candidats;
 		
 		$suff = intval(substr($fieldId,4)) /3;
-		
+
 		if( isset($typesRapportsChercheurs[$row->type]) )
 			$title = $add_rubriques_people[$suff];
-		else if( isset($typesRapportsConhercheurs[$row->type]) )
+		else if( isset($typesRapportsConcours[$row->type]) )
 			$title = $add_rubriques_candidats[$suff];
 	}
 	else if( substr($fieldId, 0, 7) == "Generic" )
@@ -1061,7 +1061,7 @@ function is_field_editable($row, $fieldId)
 
 	//individual fields are always editable
 	if(isset($fieldsIndividualAll[$fieldId]))
-		return $extra && (isSecretaire() || $is_rapp1 || $is_rapp2 || $is_rapp3);
+		return (isSecretaire() || $is_rapp1 || $is_rapp2 || $is_rapp3);
 
 	
 	global $typesRapportsConcours;
@@ -1082,13 +1082,13 @@ function is_field_editable($row, $fieldId)
 	{
 		global $fieldsCandidat;
 		$f = in_array($fieldId,$fieldsCandidat);
-		return $extra && (isSecretaire() && ($f || $f0 || $f1 || $f2 || f3)) || ( $is_rapp1 && ($f1 || $f) )  || ($is_rapp2 && ($f2 || $f)) || ($is_rapp3 && ($f3 || $f) );
+		return (isSecretaire() && ($f || $f0 || $f1 || $f2 || f3)) || ( $is_rapp1 && ($f1 || $f) )  || ($is_rapp2 && ($f2 || $f)) || ($is_rapp3 && ($f3 || $f) );
 	}
 
 	if(isset($typesRapportsUnites[$eval_type]))
 	{
 		global $fieldsUnites;
-		return $extra && in_array($fieldId,$fieldsUnites) &&
+		return in_array($fieldId,$fieldsUnites) &&
 		 (isSecretaire()
 		 		 || ($fieldId == "prerapport" && $is_rapp1)
 		 		 || ($fieldId == "prerapport2" && $is_rapp2)
@@ -1100,7 +1100,7 @@ function is_field_editable($row, $fieldId)
 	{
 		global $fieldsChercheursAll;
 		$f = in_array($fieldId,$fieldsChercheursAll);
-		return $extra &&
+		return 
 		 (isSecretaire() &&
 		 		 ($f || $f0 || $f1 || $f2 || $f3))
 		 || ( $is_rapp1 && ($f1 || $f) )
@@ -1109,11 +1109,8 @@ function is_field_editable($row, $fieldId)
 		  ;
 	}
 
-
 	global $fieldsGeneric;
-	return $extra && in_array($fieldId,$fieldsGeneric);
-
-
+	return in_array($fieldId,$fieldsGeneric);
 }
 
 function is_field_visible($row, $fieldId)

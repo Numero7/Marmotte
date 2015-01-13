@@ -91,6 +91,9 @@ function alertText($text)
 		function displayReports($centralid = 0)
 		{
 
+			if(isSuperUser())
+				return ;
+			
 			displaySummary(getCurrentFiltersList(), getFilterValues(), getSortingValues());
 
 			if($centralid != 0 && $centralid != -1)
@@ -326,6 +329,7 @@ function alertText($text)
 							throw new Exception("Erreur :</strong> Les deux saisies du nouveau mot de passe  diffèrent, veuillez réessayer.</p>");
 					}
 					include 'admin.inc.php';
+					scrollToId("membres");
 					break;
 				case 'admin':
 					include "admin.inc.php";
@@ -336,6 +340,7 @@ function alertText($text)
 							$login = $_REQUEST["login"];
 							deleteUser($login);
 							include "admin.inc.php";
+							scrollToId("membres");
 						}
 					break;
 				case 'infosrapporteur':
@@ -359,6 +364,8 @@ function alertText($text)
 						$password = $_REQUEST["password"];
 						checkPasswords($password);
 					}
+					include "admin.inc.php";
+					scrollToId("membres");
 					break;
 				case 'adminnewaccount':
 						if (isset($_REQUEST["email"]) and isset($_REQUEST["description"]) and isset($_REQUEST["newpwd1"]) and isset($_REQUEST["newpwd2"]) and isset($_REQUEST["login"]))
@@ -369,20 +376,24 @@ function alertText($text)
 							$login = $_REQUEST["login"];
 							$email = $_REQUEST["email"];
 							$permissions = $_REQUEST["permissions"];
-							$sections = $_REQUEST["sections"];
-							$envoiparemail = $_REQUEST["envoiparemail"] === 'on';
+							$sections = "";
+							if(isSuperUser())
+								$sections = $_REQUEST["sections"];
+							$envoiparemail = isset($_REQUEST["envoiparemail"]) && ($_REQUEST["envoiparemail"] === 'on');
 							if (($pwd1==$pwd2))
 								echo "<p><strong>".createUser($login,$pwd2,$desc, $email, $sections,$permissions, $envoiparemail)."</p></strong>";
 							else
 								echo "<p><strong>Erreur :</strong> Les deux saisies du nouveau mot de passe  diffèrent, veuillez réessayer.</p>";
 						}
 						include "admin.inc.php";
+						scrollToId("membres");
 					break;
 				case 'admindeletesession':
 					if (isset($_REQUEST["sessionid"]))
 					{
 						deleteSession(real_escape_string($_REQUEST["sessionid"]), isset($_REQUEST["supprimerdossiers"]));
 						include "admin.inc.php";
+						scrollToId("sessions");
 					}
 					break;
 				case 'changepwd':

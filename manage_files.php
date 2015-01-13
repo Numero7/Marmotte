@@ -3,6 +3,14 @@
 require_once('config.inc.php');
 require_once('manage_sessions.inc.php');
 
+function dossier_temp()
+{
+	global $dossier_temp;
+	$dir = $dossier_temp.getLogin()."/";
+	create_dir_if_needed2($dir);
+	return $dir;
+}
+
 
 function is_associated_directory_people($candidate, $directory)
 {
@@ -16,8 +24,6 @@ function is_associated_directory_unit($unit, $directory)
 
 function find_people_files($candidate, $force, $session, $create_directory_if_nexists = false, $directories = NULL)
 {
-	global $dossier_racine;
-
 	if($candidate->nom == "" && $candidate->prenom == "")
 		return array();
 
@@ -34,7 +40,6 @@ function find_people_files($candidate, $force, $session, $create_directory_if_ne
 			{
 				echo "Renaming '".$directory . "' to '". $basedir."'<br/>";
 				rename($directory,$basedir);
-
 				break;
 			}
 		}
@@ -65,14 +70,11 @@ function find_people_files($candidate, $force, $session, $create_directory_if_ne
 				}
 			}
 			closedir($handle);
-
 			return $files;
 		}
 	}
 	else
 		echo "No directory found<br/>";
-
-
 	return array();
 }
 
@@ -89,8 +91,8 @@ function create_dir_if_needed2($basedir)
 
 function get_people_directory($candidate, $session, $create_directory_if_nexists = false)
 {
-	global $dossier_racine;
-	$basedir = $dossier_racine."/".$session."/".$candidate->nom."_".$candidate->prenom."/";
+	global $dossier_stockage;
+	$basedir = $dossier_stockage."/".currentSection()."/".$session."/".$candidate->nom."_".$candidate->prenom."/";
 	if($create_directory_if_nexists)
 		create_dir_if_needed2($basedir);
 	return $basedir;
@@ -98,8 +100,8 @@ function get_people_directory($candidate, $session, $create_directory_if_nexists
 
 function get_unit_directory($unit, $session, $create_directory_if_nexists = false)
 {
-	global $dossier_racine;
-	$basedir = $dossier_racine."/".$session."/".$unit->unite."/";
+	global $dossier_stockage;
+	$basedir = $dossier_stockage."/".currentSection()."/".$session."/".$unit->unite."/";
 	if($create_directory_if_nexists)
 		create_dir_if_needed2($basedir);
 	return $basedir;
@@ -108,24 +110,19 @@ function get_unit_directory($unit, $session, $create_directory_if_nexists = fals
 
 function get_directories_list($session)
 {
-	global $dossier_racine;
-
+	global $dossier_stockage;
 	$directories = array();
-	$files = glob($dossier_racine . "/".$session."/*" );
-
+	$files = glob($dossier_stockage."/".currentSection()."/".$session."/*" );
 	foreach($files as $file)
 		if(is_dir($file))
 			$directories[]= $file;
-
 	return $directories;
 }
 
 
 function find_unit_files($unit, $force, $session, $create_directory_if_nexists = false, $directories = NULL)
 {
-
 	$basedir = get_unit_directory($unit, $session, false);
-
 	if($force && !is_dir($basedir))
 	{
 		if($directories == NULL)
@@ -136,14 +133,10 @@ function find_unit_files($unit, $force, $session, $create_directory_if_nexists =
 			{
 				echo "Renaming '".$directory . "' to '". $basedir."'<br/>";
 				rename($directory,$basedir);
-
 				break;
 			}
 		}
-		//echo "No directory found for ".$candidate->nom." ".$candidate->nom." <br/>";
 	}
-
-	
 	
 	$basedir = get_unit_directory($unit, $session, $create_directory_if_nexists);
 	
@@ -170,13 +163,10 @@ function find_unit_files($unit, $force, $session, $create_directory_if_nexists =
 				}
 			}
 			closedir($handle);
-
 			return $files;
 		}
 	}
 	else
 		echo "No directory found<br/>";
-
-
 	return array();
 }

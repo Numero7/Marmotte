@@ -18,9 +18,12 @@ ini_set('xdebug.show_local_vars', 'on');
 	
 //	define("config_file","config/config.xml");
 	define("signature_file","img/signature.jpg");
-//	define("config_file_save","config/config.sauv.xml");
-	
-	$dossier_racine = "";
+	define("signature_blanche","img/signature_blanche.jpg");
+	//	define("config_file_save","config/config.sauv.xml");
+
+	global $rootdir;
+	$dossier_temp = $rootdir."./tmp/".$_SESSION['filter_section']."/";
+	$dossier_stockage = $rootdir."./storage/".$_SESSION['filter_section']."/";
 	
 
 	$rubriques_supplementaires = array(
@@ -66,7 +69,7 @@ ini_set('xdebug.show_local_vars', 'on');
 			"theme2",
 			"labo1",
 			"labo2",
-			"labo3"
+			"grade_rapport"
 	);
 	
 	$fieldsTriConcours = array(
@@ -114,9 +117,9 @@ ini_set('xdebug.show_local_vars', 'on');
 		"unite" => "Unité",
 		"type" => "Type",
 		"grade_rapport" => "Grade (rapport)",
-		"rapporteur" => "Rapporteur 1",
-		"rapporteur2" => "Rapporteur 2",
-		"rapporteur3" => "Rapporteur 3",
+		"rapporteur" => "Rapp. 1",
+		"rapporteur2" => "Rapp. 2",
+		"rapporteur3" => "Rapp. 3",
 			"avis" => "Avis Section",
 			"avis1" => "Avis rapp. 1",
 			"avis2" => "Avis rapp. 2",
@@ -215,6 +218,15 @@ ini_set('xdebug.show_local_vars', 'on');
 			"rapport"
 	);
 
+	$fieldsRapportsIE0 = array(
+			"grade_rapport",
+			"rapporteur",
+			"rapporteur2",
+			"rapporteur3",
+			"avis",
+			"rapport"
+	);
+	
 	/*
 	 * Les champs disponibles au rapporteur 1
 	* pour un rapport candidat
@@ -311,7 +323,7 @@ ini_set('xdebug.show_local_vars', 'on');
 	);
 	
 	foreach($add_rubriques_candidats as $index => $rubrique)
-		$fieldsCandidatAvantAudition[] = $index;
+		$fieldsCandidatAvantAudition[] = "Info".$index;
 	
 	$fieldsCandidatAuditionne = array_merge($fieldsCandidatAvantAudition, array("audition"));
 	$fieldsCandidat = $fieldsCandidatAuditionne;
@@ -597,7 +609,8 @@ Une phrase de conclusion sur le candidat incluant un commentaire sur l'audition
 	);
 	
 	$typesRapportsConcours = array(
-			'Candidature' => 'Candidature'
+			'Candidature' => 'Candidature',
+			'IE' => 'IE'
 	);
 	
 	
@@ -699,8 +712,8 @@ Une phrase de conclusion sur le candidat incluant un commentaire sur l'audition
 	$nonVisibleFieldsTypes = array('id','auteur');
 	$alwaysVisibleFieldsTypes = array('fichiers','rapports');
 	
-
 	$fieldsArrayCandidat = array($fieldsCandidat, $fieldsRapportsCandidat0, $fieldsRapportsCandidat1, $fieldsRapportsCandidat2, $fieldsRapportsCandidat3);
+	$fieldsArrayIE = array($fieldsCandidatAvantAudition, $fieldsRapportsIE0, $fieldsRapportsCandidat1, $fieldsRapportsCandidat2, $fieldsRapportsCandidat3);
 	$fieldsArrayChercheur = array($fieldsChercheursAll, $fieldsIndividual0,$fieldsIndividual1,$fieldsIndividual2,$fieldsIndividual3);
 	$fieldsArrayUnite = array(array(), $fieldsUnites0, $fieldsUnites1, $fieldsUnites2, $fieldsUnites3);
 	$fieldsArrayEcole = array(array(), $fieldsEcoles0, $fieldsUnites1, $fieldsUnites2, $fieldsUnites3);
@@ -738,6 +751,7 @@ Une phrase de conclusion sur le candidat incluant un commentaire sur l'audition
 	array(
 			'Delegation' => $fieldsArrayDelegation,
 		'Candidature' => 	$fieldsArrayCandidat,
+		'IE' => 	$fieldsArrayIE,
 			'Evaluation-Vague' => $fieldsArrayChercheur,
 			'Evaluation-MiVague' => $fieldsArrayChercheur,
 			'Promotion' => $fieldsArrayChercheur,
@@ -759,6 +773,31 @@ Une phrase de conclusion sur le candidat incluant un commentaire sur l'audition
 			'GeneriqueChercheur' => $fieldsArrayChercheur,
 			'Colloque' => $fieldsArrayUnite,
 			'Expertise' => $fieldsArrayUnite,
+	);
+	
+	$copies = array(
+			"Nom" => "nom",
+			"NOMUSUEL" => "nom",
+			"Prénom" => "prenom",
+			"PRENOM" => "prenom",
+			"GRAD_CONC" => "grade_rapport",
+			"Grade" => "grade",
+			"Directeur" => "directeur",
+			"Affectation #1" => "unite",
+			"Code Unité" => "unite",
+			"Code unité" => "unite",
+			"Code Colloque" => "unite",
+			"Affectation #1" => "unite",
+			"Titre" => "nom",
+			"Responsable principal" => "prenom",
+			"PUBCONC" => "concours",
+			"CONCOURS" => "concours",
+			"Rapporteur1" => "rapporteur",
+			"Rapporteur2" => "rapporteur2",
+			"Rapporteur3" => "rapporteur3",
+			"Rapporteur 1" => "rapporteur",
+			"Rapporteur 2" => "rapporteur2",
+			"Rapporteur 3" => "rapporteur3"
 	);
 	
 	$typesRapportsToXSL = array(
@@ -785,8 +824,17 @@ Une phrase de conclusion sur le candidat incluant un commentaire sur l'audition
 	
 
 	/* Pour les concours*/
-	$avis_candidature = array(""=>"", "adiscuter"=>"à discuter", 	'desistement' => 'Desistement', "nonauditionne"=>"Non Auditionné", "oral"=>"Auditionné", "nonclasse"=>"Non Classé", "nonconcur"=>"Non Admis à Concourir");
-	$avis_candidature_short = array("tous" => "", "" =>"sans avis", 'desistement' => 'Desistement', "adiscuter"=>"à discuter", "nonauditionne"=>"Non Auditionné", "oral"=>"Auditionné", "nonclasse"=>"Non Classé", "classe"=>"Classé", "nonconcur"=>"Non Admis à Concourir");
+	$avis_candidature_short =
+	 array(
+	 		 "" =>"Sans avis",
+	 		 'desistement' => 'Desistement',
+	 		 "adiscuter"=>"A discuter",
+	 		 "nonauditionne"=>"Non-auditionné",
+	 		 "oral"=>"Auditionné",
+	 		 "nonclasse"=>"Non-classé",
+	 		 "classe"=>"Classé", 
+	 		"nonconcur"=>"Non-admis à concourir"
+	 		);
 	$avis_candidature_necessitant_pas_rapport_sousjury = array("", "adiscuter", "nonauditionne", "desistement");
 	
 	$max_classement = 30;
@@ -873,7 +921,8 @@ Une phrase de conclusion sur le candidat incluant un commentaire sur l'audition
 		'Emeritat-renouvellement' => $avis_ternaire,
 		'Promotion' => $avis_classement,
 		'Changement-section' => $avis_chgt,
-		'Candidature' => $avis_candidature,
+		'Candidature' => $avis_candidature_short,
+		'IE' => $avis_ie,
 		'Affectation' => $avis_ternaire,
 		'Reconstitution' => $avis_binaire,
 		'Titularisation' => $avis_ternaire,
@@ -893,7 +942,7 @@ Une phrase de conclusion sur le candidat incluant un commentaire sur l'audition
 			
 	);
 	
-	$tous_avis = array_merge($avis_eval,$avis_classement,$avis_candidature,$avis_ie,$avis_pertinence,$avis_ecoles,$avis_binaire);
+	$tous_avis = array_merge($avis_eval,$avis_classement,$avis_candidature_short,$avis_ie,$avis_pertinence,$avis_ecoles,$avis_binaire);
 
 	for($i = 1; $i <= $max_classement; $i++)
 		$tous_avis[$i] = strval($i);
@@ -1106,13 +1155,13 @@ Une phrase de conclusion sur le candidat incluant un commentaire sur l'audition
 	$actions1 = array(
 /*		'details' => array('left' => true, 'title' => "Détails", 'level' => NIVEAU_PERMISSION_BASE, 'page' =>'', 'icon' => 'img/details-icon-24px.png'),*/
 		'edit' => array('left' => true, 'title' => "Modifier", 'level' => NIVEAU_PERMISSION_BASE, 'page' =>'', 'icon' => 'img/details-icon-24px.png'),
-		'download' => array('left' => true, 'title' => "Exporter", 'level' => NIVEAU_PERMISSION_BASE, 'page' =>'export.php', 'icon' => 'img/zip-icon-24px.png')
+		'viewpdf' => array('title' => "Voir en PDF", 'level' => NIVEAU_PERMISSION_BASE, 'page' =>'export.php', 'icon' => 'img/pdf-icon-24px.png'),
+		'export&amp;type=text' => array('left' => true, 'title' => "Exporter", 'level' => NIVEAU_PERMISSION_BASE, 'page' =>'export.php', 'icon' => 'img/zip-icon-24px.png')
 	);
 	$actions2 = array(
-			'history' => array('title' => "Historique", 'level' => NIVEAU_PERMISSION_SECRETAIRE, 'page' =>'', 'icon' => 'img/history-icon-24px.png'),
+//			'history' => array('title' => "Historique", 'level' => NIVEAU_PERMISSION_SECRETAIRE, 'page' =>'', 'icon' => 'img/history-icon-24px.png'),
 			'delete' => array('title' => "Supprimer", 'level' => NIVEAU_PERMISSION_SECRETAIRE, 'page' =>'', 'icon' => 'img/delete-icon-24px.png'),
-			'viewpdf' => array('title' => "Voir en PDF", 'level' => NIVEAU_PERMISSION_BASE, 'page' =>'export.php', 'icon' => 'img/pdf-icon-24px.png'),
-			'viewhtml' => array('title' => "Voir en HTML", 'level' => NIVEAU_PERMISSION_BASE, 'page' =>'export.php', 'icon' => 'img/html-icon-24px.png'),
+//			'viewhtml' => array('title' => "Voir en HTML", 'level' => NIVEAU_PERMISSION_BASE, 'page' =>'export.php', 'icon' => 'img/html-icon-24px.png'),
 	);
 	$actions = array_merge($actions1, $actions2);
 	

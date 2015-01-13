@@ -97,22 +97,27 @@ function authenticate()
 		$login  = $_SESSION['login'];
 		$pwd = $_SESSION['pass'];
 		$result = authenticateBase($login,$pwd);
-			if($result && !isset($_SESSION['permission']))
+		if(!$result) return false;
+		if(!isset($_SESSION['permission']))
+		{
+			global $dbh;
+			$sql = "SELECT * FROM ".users_db." WHERE login='".mysqli_real_escape_string($dbh, $login)."';";
+			$result=mysqli_query($dbh, $sql);
+			if ($row = mysqli_fetch_object($result))
 			{
-				global $dbh;
-				$sql = "SELECT * FROM ".users_db." WHERE login='".mysqli_real_escape_string($dbh, $login)."';";
-				$result=mysqli_query($dbh, $sql);
-				if ($row = mysqli_fetch_object($result))
-				{
-					$_SESSION['permission'] = $row->permissions;
-					$_SESSION['filter_section'] = $row->last_section_selected;
-				}
-				else
+				$_SESSION['permission'] = $row->permissions;
+				if($row->sections == "" && $row->permissions < NIVEAU_PERMISSION_SUPER_UTILISATEUR )
 					return false;
+				$last  = $row->last_section_selected;
+				$all = explode(";",$row->sections);
+				if( array_search($last,$all) === false)
+					$last = $all[0];
+				$_SESSION['filter_section'] = $last;
 			}
-		return $result;
+		}
+		return true;
 	}
 	return false;
-} ;
+};
 
 ?>

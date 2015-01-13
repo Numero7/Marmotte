@@ -43,27 +43,17 @@ function viewReportAsHtml($id_rapport)
 
 function viewReportAsPdf($id_rapport,$option = "")
 {
-	
 	$doc = getReportAsDOMDoc($id_rapport, $option);
-
 	$report = getReport($id_rapport);
 	
-	if($option != "")
-		$type = $option;
-	else
-		$type = $report->type;
+	$type = ($option != "") ? $option : $report->type;
 
-	
 	global $typesRapportsConcours;
 	if(isset($typesRapportsConcours[$type]) && $type != "Audition")
 		$type = "Classement";
 	
-	
 	$xsl = type_to_xsl( $type);
-	
 	$html = XMLToHTML( $doc , $xsl );	
-	
-	
 	$pdf = HTMLToPDF($html);
 
 	$nodes =$doc->getElementsByTagName("rapport");

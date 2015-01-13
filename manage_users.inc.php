@@ -8,18 +8,39 @@ require_once('authenticate_tools.inc.php');
 function createhtpasswd()
 {
 	$list = listUsers(true);
-	if($handle=fopen(".htpasswd","w"))
+	global $dossier_temp;
+	global $dossier_stockage;
+	foreach(array($dossier_temp,$dossier_stockage) as $dir)
+	{
+		create_dir_if_needed($dir);
+	if( $handle = fopen($dir.".htpasswd" , "w" ) )
 	{
 		foreach($list as $user => $data)
 			fwrite($handle,$user.":".$data->passHash."\n");
 		fclose($handle);
-		echo "Generated htpasswd.<br/>";
 	}
 	else
-	{
 		throw new Exception("Failed to open htpasswd file for writing");
-	}
+	
+	$realp = realpath($dir.".htpasswd");
+	if($realp == false)
+		throw new Exception("Warning, security breach, htaccess could not be properly generated");
 
+	if( $handle = fopen($dir.".htaccess" , "w" ) )
+	{
+		fwrite($handle,
+"AuthUserFile ".$realp."\n
+AuthName \"Vous pénétrez dans une section réservée aux membres, veuillez vous identifier\"\n
+AuthType Basic\n
+Require valid-user\n"
+);
+		fclose($handle);
+	}
+	else
+		throw new Exception("Failed to open htaccess file for writing");
+	
+	}
+	echo "Regenerated access files.<br/>";
 }
 
 function belongsToSection($login, $section)
@@ -278,17 +299,13 @@ function changePwd($login,$old,$new1,$new2, $envoiparemail)
 function changeUserInfos($login,$permissions, $sections)
 {
 	if($permissions >= NIVEAU_PERMISSION_SUPER_UTILISATEUR)
-		$sections = "0";
+		$sections = "";
 	if(isSuperUser())
-		$sql = "UPDATE ".users_db." SET sections=$sections permissions=$permissions WHERE login='".real_escape_string($login)."';";
-	if (isSecretaire())
-		$sql = "UPDATE ".users_db." SET permissions=$permissions WHERE login='".real_escape_string($login)."';";
-	
+		$sql = "UPDATE `".users_db."` SET `sections`='".real_escape_string($sections)."', `permissions`='".real_escape_string($permissions)."' WHERE `login`='".real_escape_string($login)."';";
+	else if (isSecretaire())
+		$sql = "UPDATE `".users_db."` SET `permissions`=\"".real_escape_string($permissions)."\" WHERE `login`='".real_escape_string($login)."';";
 	sql_request($sql);
-	
 	unset($_SESSION['all_users']);
-
-	
 }
 
 function existsUser($login)
@@ -297,11 +314,6 @@ function existsUser($login)
 	return array_key_exists($login, $users);
 }
 
-function addUserToSection($login,$section)
-{
-	if (isSecretaire())
-		$sql = "UPDATE ".users_db." SET sections=$section;`sections` WHERE login='".real_escape_string($login)."';";
-}
 
 function createUser($login,$pwd,$desc,$email, $sections, $permissions, $envoiparemail = false)
 {
@@ -369,12 +381,25 @@ function createUser($login,$pwd,$desc,$email, $sections, $permissions, $envoipar
 function deleteUser($login)
 {
 	/* Since a user can be shared by several sections,
-	 * only superuser can delete a user
+	 * only superuser can definitively delete a user
 	 */
 	if (isSuperUser())
 	{
 		unset($_SESSION['all_users']);
 		$sql = "DELETE FROM ".users_db." WHERE login='".real_escape_string($login)."';";
+		sql_request($sql);
+		createhtpasswd();
+	}
+	else if(isSecretaire())
+	{
+		unset($_SESSION['all_users']);
+		
+		$sections = getSections($login);
+		$newsections ="";
+		foreach($sections as $section)
+			if($section != currentSection())
+			$newsections .= $section.";";
+		$sql = "UPDATE `".users_db."` SET `sections`=\"$newsections\" WHERE `login`=\"".real_escape_string($login)."\";";
 		sql_request($sql);
 		createhtpasswd();
 	}
