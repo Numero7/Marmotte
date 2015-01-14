@@ -29,7 +29,8 @@ function find_people_files($candidate, $force, $session, $create_directory_if_ne
 
 	$basedir = get_people_directory($candidate, $session, false);
 
-	/* rename if the directory name is not marmotte style (happens when imported from GETCC) */
+	
+		/* rename if the directory name is not marmotte style (happens when imported from GETCC) */
 	if($force && !is_dir($basedir))
 	{
 		if($directories == NULL)
@@ -112,7 +113,7 @@ function get_directories_list($session)
 {
 	global $dossier_stockage;
 	$directories = array();
-	$files = glob($dossier_stockage."/".currentSection()."/".$session."/*" );
+	$files = glob($dossier_stockage."/".$session."/*" );
 	foreach($files as $file)
 		if(is_dir($file))
 			$directories[]= $file;
