@@ -72,7 +72,12 @@ function removeCredentials()
 	unset($_SESSION['pass']);
 	unset($_SESSION['all_units']);
 	unset($_SESSION['filter_id_session']);
+	unset($_SESSION['filter_section']);
+	unset($_SESSION['all_sessions']);
+	unset($_SESSION['current_session']);
 	unset($_SESSION["config"]);
+	unset($_SESSION["all_users"]);
+	unset($_SESSION["rows_id"]);
 }
 
 function authenticateBase($login,$pwd)
