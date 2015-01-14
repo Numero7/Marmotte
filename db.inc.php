@@ -96,4 +96,137 @@ function import_db($dbname)
 }
 
 
+function migrate( $section, $serverName, $dbname, $login, $password, $type)
+{
+	$remote_dbh = mysqli_connect($serverName, $login, $password, $dbname) or die("Could not connect to the server '".$serverName."<br/>");
+	mysqli_query($remote_dbh, "SET NAMES utf8;");
+
+	global $dbh;
+	
+	switch($type)
+	{
+		case "users":
+			$sql = "SELECT * FROM `".users_db."` WHERE 1;";
+			$result = mysqli_query($remote_dbh, $sql);
+			if($result == false)
+				throw new Exception("Cannot perform remote request\n".mysql_error());
+			while($row = mysqli_fetch_object($result))
+			{
+				try
+				{
+					echo "<b>Importing user '".$row->login." of section ".$section."'</b><br/>";
+					createUser($row->login, $row->passHash,$row->description,$row->email, $section, $row->permissions, false);
+				}
+				catch(Exception $e)
+				{
+					echo "Failed to import user '".$row->login."' of section ".$section.":<br/>".$e->getMessage()."<br/>";
+				}
+			}
+			break;
+		case "reports":
+			$sql = "SELECT * FROM `".reports_db."` WHERE id=id_origine and statut!=\"supprime\";";
+			$result = mysqli_query($remote_dbh, $sql);
+			if($result == false)
+				throw new Exception("Cannot perform remote request\n".mysql_error());
+			
+			global $fieldsRapportAll;
+			$forbid = array("DU","international","finalisationHDR","national","id","id_origine");
+			while($data = mysqli_fetch_object($result))
+			{
+				try
+				{
+					echo "<b>Importing report '".$data->nom." ".$data->prenom."' of section ".$section."</b><br/>";
+					$sqlvalues = '"'.$section.'"';
+					$sqlfields = "section";
+					foreach($fieldsRapportAll as $field => $desc)
+					{
+						if($field != "fichiers" && $field != "" && isset($data->$field) && !in_array($field, $forbid))
+						{
+							$sqlfields .= ",`".$field."`";
+							$sqlvalues .= ',"'.(isset($data->$field) ? mysqli_escape_string($dbh, $data->$field) : "" ).'"';
+							$first = false;
+						}
+					}
+			
+					$sql = "INSERT INTO ".reports_db." ($sqlfields) VALUES ($sqlvalues);";
+					sql_request($sql);
+					
+					$new_id = mysqli_insert_id($dbh);
+					$sql = "UPDATE ".reports_db." SET id_origine=".intval($new_id)." WHERE id=".intval($new_id).";";
+					sql_request($sql);
+				}
+				catch(Exception $e)
+				{
+					echo "Failed: ".$e->getMessage()."<br/>";
+					rr();
+				}
+			}
+			break;
+		case "people":
+			$sql = "SELECT * FROM `".people_db."` WHERE 1;";
+			$result = mysqli_query($remote_dbh, $sql);
+			if($result == false)
+				throw new Exception("Cannot perform remote request\n".mysql_error());
+
+			global $fieldsIndividualAll;
+			while($data = mysqli_fetch_object($result))
+			{
+				try
+				{
+					echo "<b>Importing people '".$data->nom." ".$data->prenom."' of section ".$section."</b><br/>";
+					$sqlvalues = "";
+					$sqlfields = "";
+					$first = true;
+					foreach($fieldsIndividualAll as $field => $desc)
+					{
+						if($field != "fichiers" && $field != "" && isset($data->$field))
+						{
+							$sqlfields .= ($first ? "" : ",") ."`".$field."`";
+							$sqlvalues .= ($first ? "" : ",") .'"'.(isset($data->$field) ? $data->$field : ( isset($empty_individual[$field]) ? $empty_individual[$field] : "") ).'"';
+							$first = false;
+						}
+					}
+					
+						$sqlfields .= ",section";
+						$sqlvalues .= ",".$_SESSION['filter_section'];
+					
+						$sql = "INSERT INTO ".people_db." ($sqlfields) VALUES ($sqlvalues);";
+						sql_request($sql);
+				}
+				catch(Exception $e)
+				{
+					echo "Failed: ".$e->getMessage()."<br/>";
+				}
+			}
+			break;
+		case "sessions":
+				$sql = "SELECT * FROM `".sessions_db."` WHERE 1;";
+			$result = mysqli_query($remote_dbh, $sql);
+			if($result == false)
+				throw new Exception("Cannot perform remote request\n".mysql_error());
+			while($row = mysqli_fetch_object($result))
+			{
+				try
+				{
+					if(strlen($row->id) > 4)
+					{
+					echo "<b>Importing session '".$row->id."' of section ".$section."</b><br/>";
+						$year = substr($row->id, strlen($row->id) -4, 4);
+					createSession($row->nom, $year,$section);
+					}
+					else
+						echo "<b>Skipping session '".$row->id."' of section ".$section."</b><br/>";
+						
+				}
+				catch(Exception $e)
+				{
+					echo "Failed to create session:<br/>".$e->getMessage()."<br/>";
+				}
+			}
+			break;
+			
+	}
+	mysqli_close($remote_dbh);
+}
+
 ?>

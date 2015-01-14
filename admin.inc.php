@@ -579,54 +579,31 @@ foreach($rubriques as $index => $value)
 }
 }
 
-function migrate( $section, $serverName, $dbname, $login, $password, $type)
-{
-	$remote_dbh = mysqli_connect($serverName, $login, $password, $dbname) or die("Could not connect to the server '".$serverName."<br/>".mysqli_error($dbh));
-	mysqli_query($remote_dbh, "SET NAMES utf8;");
-
-	switch($type)
-	{
-		case "users":
-			$sql = "SELECT * FROM `".users_db."` WHERE `section`='". real_escape_string($section)."'";
-			$result = mysqli_query($dbh, $sql);
-			if($result == false)
-				throw new Exception("Cannot perform remote request\n".mysql_error());
-			while($row = mysqli_fetch_object())
-			{
-				try
-				{
-					createUser($row->$login, $row->$passHash,$row->$description,$row->$email, array($section), $row->$permissions, false);
-				}
-				catch(Exception $e)
-				{
-					echo "Failed to import user '".$row->login."' of section ".$section.":<br/>".str($e); 
-				}				
-			}
-
-
-			break;
-	}
-
-	mysqli_close($remote_dbh);
-
-}
-
 if(isSuperUser())
 {
 	?>
 	<h2>Migration depuis Marmotte 1.0</h2>
-	<h3>Migration users</h3>
-	<?php  $type = 'users'; ?>
 <form method="post" action="index.php">
-	<input type="hidden" name="type" value="$type" />
+<table>
+<?php 
+$inputs = array("section" => "6", "db_ip" => "127.0.0.1", "db_name" => "cn6", "db_user" => "cn6", "db_pass" => "");
+foreach($inputs as $input => $val)
+echo "<tr><td>".$input."</td><td><input name=\"".$input."\" value=\"".$val."\"></input></td></tr>";	
+?>
+<tr><td>
+<?php 
+	$types = array("users","reports","people","sessions");
+	foreach($types as $type)
+echo $type.'<input type="checkbox" name="'.$type.'"envoiparemail" />';
+?>
 <input type="hidden" name="action" value="migrate" /> <input
-		type="submit" value="Créer htpasswd" />
+		type="submit" value="Migrer" />
+		</td></tr>
+		</table>
 	</form>
 	<?php 
+	}
 	?>
 	<h2>Purge dossiers</h2>
 	<h3>Purge historique</h3>
 	<h3>Purge session</h3>
-<?php 
-}
-?>

@@ -1297,7 +1297,6 @@ Une phrase de conclusion sur le candidat incluant un commentaire sur l'audition
 		$postes_ouverts[$code] = $result->postes;
 		}
 	
-	
 	$permission_levels = array(
 		NIVEAU_PERMISSION_BASE => "rapporteur",
 		NIVEAU_PERMISSION_BUREAU => "bureau",
