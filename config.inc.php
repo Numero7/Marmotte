@@ -100,7 +100,7 @@ ini_set('xdebug.show_local_vars', 'on');
 			);
 
 	$genreCandidat = array(
-			'' => "None",
+			'' => "",
 			'homme'=>'Homme',
 			'femme' => "Femme",
 	);
@@ -646,7 +646,7 @@ Une phrase de conclusion sur le candidat incluant un commentaire sur l'audition
 			 				 );
 	
 	$enumFields = array(
-			"genre" => array(""=>"None", "homme" => "Homme","femme" => "Femme"),
+			"genre" => array(""=>"", "homme" => "Homme","femme" => "Femme"),
 			"theseloc" => $theseslocs,
 			"DU" => array(""=>"","oui" => "Oui","non"=>"Non"),
 			"international" => array(""=>"","oui" => "Oui","non"=>"Non"),
@@ -1321,9 +1321,9 @@ Une phrase de conclusion sur le candidat incluant un commentaire sur l'audition
 			'avis1' => array('name'=>"Avis Rapp 1" , 'liste' => $avis_sessions, 'default_value' => "tous", 'default_name' => ""),
 			//'avis2' => array('name'=>"Avis Rapp 2" , 'liste' => $avis_sessions, 'default_value' => "tous", 'default_name' => ""),
 			//'avis3' => array('name'=>"Avis Rapp 3" , 'liste' => $avis_sessions, 'default_value' => "tous", 'default_name' => ""),
-			'statut' => array('name'=>"Statut" , 'liste' => $statutsRapports, 'default_value' => "tous", 'default_name' => "Tous les statuts"),
+			'statut' => array('name'=>"Statut" , 'liste' => $statutsRapports, 'default_value' => "tous", 'default_name' => "Tous"),
 			//'theme3' => array('name'=>"Theme3" , 'liste' => $topics, 'default_value' => "tous", 'default_name' => ""),
-			'genre' => array('name' =>"Genre", 'liste' => $genreCandidat, 'default_value' => "", 'default_name' => "Tous les genre"),
+			'genre' => array('name' =>"Genre", 'liste' => $genreCandidat, 'default_value' => "tous", 'default_name' => "Tous"),
 			'id_session' => array('name'=>"Session", 'default_value' =>-1, 'default_name' => "Toutes les sessions"),
 			'avancement' => array('name'=>"Avancement" , 'default_value' => "", 'default_name' => ""),
 			'id_origine' => array('default_value' =>-1),
@@ -1346,7 +1346,7 @@ Une phrase de conclusion sur le candidat incluant un commentaire sur l'audition
 			//'theme3' => array('name'=>"Theme3" , 'liste' => $topics, 'default_value' => "tous", 'default_name' => ""),
 			'labo1' => array('name'=>"Labo1" , 'default_value' => "tous", 'default_name' => ""),
 			//'labo2' => array('name'=>"Labo2" , 'default_value' => "tous", 'default_name' => ""),
-			'genre' => array('name' =>"Genre", 'liste' => $genreCandidat, 'default_value' => "", 'default_name' => "Tous les genre"),
+			'genre' => array('name' =>"Genre", 'liste' => $genreCandidat, 'default_value' => "tous", 'default_name' => "Tous"),
 			'concours' => array('name'=>"Concours" , 'liste' => $conc, 'default_value' => "tous", 'default_name' => ""),
 			'sousjury' => array('name'=>"Sous-jury" , 'liste' => $tous_sous_jury, 'default_value' => "tous", 'default_name' => ""),
 			'rapporteur' => array('name'=>"Rapporteur" , 'default_value' =>"tous", 'default_name' => ""),
