@@ -182,7 +182,6 @@ function display_ecole($row, $fieldID, $readonly)
 function display_rapports($row, $fieldId)
 {
 	global $typesRapportsUnites;
-
 	$is_unit= isset($typesRapportsUnites[$row->type]);
 
 	if($is_unit)
@@ -190,15 +189,11 @@ function display_rapports($row, $fieldId)
 	else
 		$reports = (isset($row->nom) && isset($row->prenom)) ? find_people_reports($row->nom, $row->prenom) : array();
 
-
-
 	global $typesRapports;
-
 	echo "<td>";
 	if(count($reports) > 1)
 	{
 		echo "<table>";
-
 		foreach($reports as $report)
 		{
 			if((!isset($row->id) || $report->id != $row->id) && (!$is_unit || isset($typesRapportsUnites[$report->type])))
@@ -206,23 +201,18 @@ function display_rapports($row, $fieldId)
 				if(isset($typesRapports[$report->type]))
 					$type = $typesRapports[$report->type];
 				else
-				{
 					$type = "Unknown";
-				}
-				
 				if($type == "Candidature" && isset($report->concours) )
 					echo '<tr><td><a href="index.php?action=edit&amp;id='.$report->id.'">'.$report->id_session. " - " .$type." - " . $report->concours ."</a></td></tr>";
+				else if($type == "IE")
+					echo '<tr><td><a href="index.php?action=edit&amp;id='.$report->id.'">'.$report->id_session. " - " .$type." - " . $report->grade_rapport ."</a></td></tr>";
 				else 
 					echo '<tr><td><a href="index.php?action=edit&amp;id='.$report->id.'">'.$report->id_session. " - " .$type."</a></td></tr>";
-					
 			}
 		}
-
 		echo "</table>";
 	}
-
 	echo "</td>";
-
 }
 
 
