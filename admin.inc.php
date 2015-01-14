@@ -222,7 +222,7 @@ if(isSecretaire())
 		echo '<table>';
 		foreach($users as $user => $data)
 		{
-			if ($data->permissions <= getUserPermissionLevel())
+			if ($data->permissions <= getUserPermissionLevel() || ($data->permissions  < NIVEAU_PERMISSION_SUPER_UTILISATEUR && isSecretaire()))
 			{
 				echo "\n<tr><td><b>".ucfirst($data->description)."</b></td><td> [".$user."]</td>\n";
 				echo '<td><form method="post" action="index.php">';
@@ -234,7 +234,7 @@ if(isSecretaire())
 				echo "statut <select name=\"permissions\">\n";
 				foreach($permission_levels as $val => $level)
 				{
-					if ($val<=getUserPermissionLevel())
+					if ($val<=getUserPermissionLevel() || (isSecretaire() && $val == NIVEAU_PERMISSION_PRESIDENT))
 					{
 						$sel = "";
 						if ($val==$data->permissions)
@@ -578,5 +578,55 @@ foreach($rubriques as $index => $value)
 <?php 
 }
 }
-?>
 
+function migrate( $section, $serverName, $dbname, $login, $password, $type)
+{
+	$remote_dbh = mysqli_connect($serverName, $login, $password, $dbname) or die("Could not connect to the server '".$serverName."<br/>".mysqli_error($dbh));
+	mysqli_query($remote_dbh, "SET NAMES utf8;");
+
+	switch($type)
+	{
+		case "users":
+			$sql = "SELECT * FROM `".users_db."` WHERE `section`='". real_escape_string($section)."'";
+			$result = mysqli_query($dbh, $sql);
+			if($result == false)
+				throw new Exception("Cannot perform remote request\n".mysql_error());
+			while($row = mysqli_fetch_object())
+			{
+				try
+				{
+					createUser($row->$login, $row->$passHash,$row->$description,$row->$email, array($section), $row->$permissions, false);
+				}
+				catch(Exception $e)
+				{
+					echo "Failed to import user '".$row->login."' of section ".$section.":<br/>".str($e); 
+				}				
+			}
+
+
+			break;
+	}
+
+	mysqli_close($remote_dbh);
+
+}
+
+if(isSuperUser())
+{
+	?>
+	<h2>Migration depuis Marmotte 1.0</h2>
+	<h3>Migration users</h3>
+	<?php  $type = 'users'; ?>
+<form method="post" action="index.php">
+	<input type="hidden" name="type" value="$type" />
+<input type="hidden" name="action" value="migrate" /> <input
+		type="submit" value="Créer htpasswd" />
+	</form>
+	<?php 
+	?>
+	<h2>Purge dossiers</h2>
+	<h3>Purge historique</h3>
+	<h3>Purge session</h3>
+<?php 
+}
+?>

@@ -142,6 +142,9 @@ function alertText($text)
 
 			switch($action)
 			{
+				case 'migrate':
+					migrate( $_REQUEST["section"], $_REQUEST["db_ip"], $_REQUEST["db_name"],$_REQUEST["db_user"],  $_REQUEST["db_pass"],$_REQUEST["type"]);
+					break;
 				case 'addrubrique':
 					add_rubrique($_REQUEST["index"], $_REQUEST["rubrique"], $_REQUEST["type"]);
 					include 'admin.inc.php';
