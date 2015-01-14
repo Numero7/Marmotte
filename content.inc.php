@@ -143,7 +143,7 @@ function alertText($text)
 			switch($action)
 			{
 				case 'migrate':
-					$types = array("users","reports","people","sessions");
+					$types = array("users","reports","people","sessions","units");
 					foreach($types as $type)
 						if(isset($_REQUEST[$type]) && $_REQUEST[$type]=="on")
 						migrate( $_REQUEST["section"], $_REQUEST["db_ip"], $_REQUEST["db_name"],$_REQUEST["db_user"],  $_REQUEST["db_pass"], $type);

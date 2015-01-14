@@ -105,7 +105,37 @@ function migrate( $section, $serverName, $dbname, $login, $password, $type)
 	
 	switch($type)
 	{
-		case "users":
+		case "units":
+			$sql = "SELECT * FROM `".units_db."` WHERE 1;";
+			$result = mysqli_query($remote_dbh, $sql);
+			if($result == false)
+				throw new Exception("Cannot perform remote request\n".mysql_error());
+			
+			while($data = mysqli_fetch_object($result))
+			{
+				try
+				{
+					echo "<b>Importing code '".$data->code."' named '".$data->nickname."' of section ".$section."</b><br/>";
+					$sql = "DELETE FROM ".units_db." WHERE `code`=\"".$data->code."\";";
+					sql_request($sql);
+					
+					$sqlvalues = '"'.$section.'"';
+					$sqlfields = "section";
+					foreach($data as $field => $value)
+					{
+							$sqlfields .= ",`".$field."`";
+							$sqlvalues .= ',"'.$value.'"';
+					}
+					$sql = "INSERT INTO ".units_db." ($sqlfields) VALUES ($sqlvalues);";
+					sql_request($sql);
+				}
+				catch(Exception $e)
+				{
+					echo "Failed to import unit code '".$data->code."' named '".$data->nickname."' of section ".$section.":<br/>".$e->getMessage()."<br/>";
+				}
+				}
+			break;
+					case "users":
 			$sql = "SELECT * FROM `".users_db."` WHERE 1;";
 			$result = mysqli_query($remote_dbh, $sql);
 			if($result == false)
