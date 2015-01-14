@@ -218,7 +218,7 @@ function migrate( $section, $serverName, $dbname, $login, $password, $type)
 					}
 					
 						$sqlfields .= ",section";
-						$sqlvalues .= ",".$_SESSION['filter_section'];
+						$sqlvalues .= ",".$section;
 					
 						$sql = "INSERT INTO ".people_db." ($sqlfields) VALUES ($sqlvalues);";
 						sql_request($sql);
