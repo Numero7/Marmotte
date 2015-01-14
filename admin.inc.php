@@ -586,7 +586,10 @@ if(isSuperUser())
 <form method="post" action="index.php">
 <table>
 <?php 
-$inputs = array("section" => "6", "db_ip" => "127.0.0.1", "db_name" => "cn6", "db_user" => "cn6", "db_pass" => "");
+global $serverlogin;
+global $serverpassword;
+
+$inputs = array("section" => "6", "db_ip" => "127.0.0.1", "db_name" => "cn6", "db_user" => $serverlogin, "db_pass" => $serverpassword);
 foreach($inputs as $input => $val)
 echo "<tr><td>".$input."</td><td><input name=\"".$input."\" value=\"".$val."\"></input></td></tr>";	
 ?>
