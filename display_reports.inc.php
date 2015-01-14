@@ -138,14 +138,17 @@ function displayRows($rows, $fields, $filters, $filter_values, $sort_fields, $so
 			</table>
 			</form>
 			</td>
-</tr>
-			<?php if(isSecretaire()){
-?>
-<tr>
+<?php 
+if(isSecretaire())
+{
+	?>
 <td>
-<table><tr><td>
+<table><tr>
+<td>
 		<form onsubmit="return confirm('Changer les statuts des rapports?');" method="post"  action="index.php">
+		<table><tr><td>
 			<input type="submit" value="Changer statuts"/>
+			</td><td>
 			<select name="new_statut">
 			<?php  
 			global $statutsRapports;
@@ -157,23 +160,30 @@ function displayRows($rows, $fields, $filters, $filter_values, $sort_fields, $so
 			?>
 			</select>
 			<input type="hidden" name="action" value="change_statut"/>
+			</td>
+			</tr></table>
 		</form>
 </td>
+</tr><tr>
 <td>
 		<form onsubmit="return confirm('Supprimer ces rapports?');" method="post" action="index.php">
 				<input type="hidden" name="action" value="deleteCurrentSelection" /> <input	type="submit" value="Supprimer rapports" />
 		</form>
 </td>
+</tr>
+<tr>
 <td>
 <form method="post" action="index.php" onsubmit="return confirm('Affecter les sous-jurys?');">
 			<input type="hidden" name="action" value="affectersousjurys" /> <input
 				type="submit" value="Affecter sous-jurys" />
 				</form>
-				<?php 
-	} ?>
 	</td>
 	</tr></table>
-	</td></tr>
+	</td>
+	<?php 
+}
+?>
+			</tr>
 	</table>
 <hr />
 <table class="summary">
