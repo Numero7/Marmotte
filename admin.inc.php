@@ -592,7 +592,7 @@ echo "<tr><td>".$input."</td><td><input name=\"".$input."\" value=\"".$val."\"><
 ?>
 <tr><td>
 <?php 
-	$types = array("users","reports","people","sessions");
+	$types = array("users","reports","people","sessions","units");
 	foreach($types as $type)
 echo $type.'<input type="checkbox" name="'.$type.'"envoiparemail" />';
 ?>
