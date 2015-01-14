@@ -143,7 +143,10 @@ function alertText($text)
 			switch($action)
 			{
 				case 'migrate':
-					migrate( $_REQUEST["section"], $_REQUEST["db_ip"], $_REQUEST["db_name"],$_REQUEST["db_user"],  $_REQUEST["db_pass"],$_REQUEST["type"]);
+					$types = array("users","reports","people","sessions");
+					foreach($types as $type)
+						if(isset($_REQUEST[$type]) && $_REQUEST[$type]=="on")
+						migrate( $_REQUEST["section"], $_REQUEST["db_ip"], $_REQUEST["db_name"],$_REQUEST["db_user"],  $_REQUEST["db_pass"], $type);
 					break;
 				case 'addrubrique':
 					add_rubrique($_REQUEST["index"], $_REQUEST["rubrique"], $_REQUEST["type"]);

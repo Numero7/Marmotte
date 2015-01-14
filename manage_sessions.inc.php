@@ -114,8 +114,9 @@ function showSessions()
 
 
 
-function createSession($name,$annee)
+function createSession($name,$annee, $section ="")
 {
+	if($section == "") $section = $_SESSION['filter_section'];
 	if (isSecretaire())
 	{
 		date_default_timezone_set('Europe/Paris');
@@ -134,7 +135,7 @@ function createSession($name,$annee)
 			default:
 				$date = "01/07/".$annee; break;
 		}
-		$sql = "INSERT INTO ".sessions_db."(id,section,nom,date) VALUES ('".real_escape_string($name.$annee)."','".$_SESSION['filter_section']."','".real_escape_string($name)."','".date("Y-m-d h:m:s",strtotime($date))."');";
+		$sql = "INSERT INTO ".sessions_db."(id,section,nom,date) VALUES ('".real_escape_string($name.$annee)."','".$section."','".real_escape_string($name)."','".date("Y-m-d h:m:s",strtotime($date))."');";
 		sql_request($sql);
 		sessionArrays(true);
 		return true;

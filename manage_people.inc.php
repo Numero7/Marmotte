@@ -165,7 +165,7 @@ function add_candidate_to_database($data)
 
 	global $empty_individual;
 	foreach($fieldsIndividualAll as $field => $desc)
-				     if($field != "fichiers")
+     if($field != "fichiers")
 	{
 		$sqlfields .= ($first ? "" : ",") ."`".$field."`";
 		$sqlvalues .= ($first ? "" : ",") .'"'.(isset($data->$field) ? $data->$field : ( isset($empty_individual[$field]) ? $empty_individual[$field] : "") ).'"';
