@@ -1131,7 +1131,7 @@ Une phrase de conclusion sur le candidat incluant un commentaire sur l'audition
 			"update" => NIVEAU_PERMISSION_BASE,
 			"change_current_session" => NIVEAU_PERMISSION_SECRETAIRE,
 			"new" => NIVEAU_PERMISSION_SECRETAIRE,
-			"newpwd" => NIVEAU_PERMISSION_SECRETAIRE,
+			"newpwd" => NIVEAU_PERMISSION_BASE,
 			"adminnewpwd" => NIVEAU_PERMISSION_SECRETAIRE,
 			"admin" => NIVEAU_PERMISSION_SECRETAIRE,
 			"admindeleteaccount" => NIVEAU_PERMISSION_SECRETAIRE,
