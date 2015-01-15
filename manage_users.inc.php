@@ -352,8 +352,6 @@ function createUser($login,$pwd,$desc,$email, $sections, $permissions, $envoipar
 			$body = "Marmotte est un site web destiné à faciliter la répartition, le dépôt, l'édition et la production\r\n";
 			$body .= "des rapports par les sections du comité national.\r\n";
 			$body .= "\r\nLe site est accessible à l'adresse \r\n\t\t\t".curPageURL()."\r\n";
-			$body .= "\r\nCe site a été développé par Hugo Gimbert et Yann Ponty.\r\n";
-			$body .= "\r\nL'accès au site est restreint aux membres de la section ".get_config("section_nb")." qui doivent s'authentifier pour y accéder et déposer, éditer ou consulter des rapports.\r\n";
 			$body .= "\r\nUn compte Marmotte vient d'être créé pour vous:\r\n\r\n";
 			$body .= "\t\t\t login: '".$login."'\r\n";
 			$body .= "\t\t\t motdepasse: '".$pwd."'\r\n";
