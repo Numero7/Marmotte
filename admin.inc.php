@@ -389,6 +389,9 @@ if(isSecretaire() && ! isSuperUser())
 				</form>
 		<?php 
 	}
+}
+if(isSecretaire())
+{
 	?>	
 <hr />
 <h2 id="config">Configuration</h2>
@@ -409,7 +412,11 @@ foreach($_SESSION["config"] as $key=> $value)
 </table>	
 </form>
 <hr/>
-<h2 id="motscles">Mots-clés de la section</h2>
+<?php 
+}
+if(isSecretaire() && ! isSuperUser())
+{
+?><h2 id="motscles">Mots-clés de la section</h2>
 <table>
 <?php 
 $configs = get_topics();
