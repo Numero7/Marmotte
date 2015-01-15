@@ -611,9 +611,9 @@ echo $type.'<input type="checkbox" name="'.$type.'"envoiparemail" />';
 		</td></tr>
 		</table>
 	</form>
-	<?php 
-	}
-	?>
 	<h2>Purge dossiers</h2>
 	<h3>Purge historique</h3>
 	<h3>Purge session</h3>
+	<?php 
+	}
+	?>
