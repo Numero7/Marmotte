@@ -27,7 +27,7 @@ function displayEditableCandidate($candidate,$report = NULL,$canedit = true)
 	{
 		$hidden["id_origine"] = $report->id_origine;
 		$hidden["type"] = $report->type;
-		if(($report->avis == "IE") || (isset($report->avis) && in_array($report->avis, $avis_candidature_necessitant_pas_rapport_sousjury)))
+		if(($report->avis == "Equivalence") || (isset($report->avis) && in_array($report->avis, $avis_candidature_necessitant_pas_rapport_sousjury)))
 			$fields = $fieldsCandidatAvantAudition;
 		else
 			$fields = $fieldsCandidatAuditionne;

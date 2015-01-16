@@ -612,7 +612,7 @@ Une phrase de conclusion sur le candidat incluant un commentaire sur l'audition
 	
 	$typesRapportsConcours = array(
 			'Candidature' => 'Candidature',
-			'IE' => 'IE'
+			'Equivalence' => 'IE'
 	);
 	
 	
@@ -753,7 +753,7 @@ Une phrase de conclusion sur le candidat incluant un commentaire sur l'audition
 	array(
 			'Delegation' => $fieldsArrayDelegation,
 		'Candidature' => 	$fieldsArrayCandidat,
-		'IE' => 	$fieldsArrayIE,
+		'Equivalence' => 	$fieldsArrayIE,
 			'Evaluation-Vague' => $fieldsArrayChercheur,
 			'Evaluation-MiVague' => $fieldsArrayChercheur,
 			'Promotion' => $fieldsArrayChercheur,
@@ -924,7 +924,7 @@ Une phrase de conclusion sur le candidat incluant un commentaire sur l'audition
 		'Promotion' => $avis_classement,
 		'Changement-section' => $avis_chgt,
 		'Candidature' => $avis_candidature_short,
-		'IE' => $avis_ie,
+		'Equivalence' => $avis_ie,
 		'Affectation' => $avis_ternaire,
 		'Reconstitution' => $avis_binaire,
 		'Titularisation' => $avis_ternaire,

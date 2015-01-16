@@ -399,7 +399,6 @@ if(isSecretaire())
 <table>
 <tr>
 <?php 
-global $configs;
 echo "<tr><th>Clé</th><th>Valeur</th></tr>\n";
 foreach($_SESSION["config"] as $key=> $value)
 	if(substr($key, 0,6) != "topics" && substr($key, 0,7) != "formule" && $key!= "current_session" && substr($key, 0,8) != "rubrique" )
