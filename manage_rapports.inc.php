@@ -392,11 +392,6 @@ function isReportCreatable()
 	return isSecretaire();
 }
 
-//to migrate from previous system
-//UPDATE evaluations SET statut="supprime" WHERE id<0
-//UPDATE evaluations SET id_origine=-id_origine WHERE id_origine<0
-//UPDATE evaluations SET id=-id WHERE id<0
-
 function deleteReport($id_rapport, $all_versions = false)
 {
 	$report = getReport($id_rapport);
@@ -464,7 +459,6 @@ function deleteReport($id_rapport, $all_versions = false)
 	return ($before !=false) ? $before->id : -1;
 };
 
-
 function newReport($type_rapport)
 {
 	if(!isReportCreatable())
@@ -492,7 +486,6 @@ function addReport($report)
 	
 	return addReportToDatabase($report);
 };
-
 
 function addReportFromRequest($id_origine, $request)
 {
@@ -883,7 +876,6 @@ function getTodoReports($login)
 	return filterSortReports(getCurrentFiltersList(), array("avancement" => "todo", rapporteur => $login, "id_session=" => current_session_id()) ,getSortingValues() );
 }
 
-
 function find_somebody_reports($candidate,$eval_type = "")
 {
 	if($eval_type == "")
@@ -991,6 +983,8 @@ function is_field_editable($row, $fieldId)
 
 	global $typesRapportToFields;
 
+	global $fieldsPeople;
+	
 	global $nonEditableFieldsTypes;
 	if(in_array($fieldId, $nonEditableFieldsTypes))
 		return false;
@@ -999,18 +993,21 @@ function is_field_editable($row, $fieldId)
 	if($fieldId == "statut")
 		return isSecretaire();
 
+	
 	if(isset($row->statut) && ($row->statut == "publie"))
 		return false;
-	
+
 	if($fieldId == "type" || $fieldId == "conflits")
 		return isSecretaire();
 
 	if($fieldId == 'rapporteur' || $fieldId == 'rapporteur2' || $fieldId == 'rapporteur3')
 		return isBureauUser();
 	
-
 	if(isSecretaire())
 			return true;
+		
+	if(isBureauUser() && in_array($fieldId, $fieldsPeople) )
+		return true;
 		
 	$login = getLogin();
 
@@ -1022,7 +1019,6 @@ function is_field_editable($row, $fieldId)
 
 	if($is_rapp1 && $fieldId == "rapport" && isset($row->statut) && ($row->statut != "doubleaveugle"))
 		return true;
-	
 	
 	if(isset($row->statut) && ($row->statut == "audition"))
 	{

@@ -720,6 +720,8 @@ Une phrase de conclusion sur le candidat incluant un commentaire sur l'audition
 	$fieldsArrayUnite = array(array(), $fieldsUnites0, $fieldsUnites1, $fieldsUnites2, $fieldsUnites3);
 	$fieldsArrayEcole = array(array(), $fieldsEcoles0, $fieldsUnites1, $fieldsUnites2, $fieldsUnites3);
 	
+	$fieldsPeople = array_merge($fieldsCandidat, $fieldsChercheursAll);
+	
 	$fieldsArrayDelegation =
 	array(
 			array(
