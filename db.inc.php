@@ -141,6 +141,7 @@ function migrate( $section, $serverName, $dbname, $login, $password, $type)
 			if($result == false)
 				throw new Exception("Cannot perform remote request\n".mysql_error());
 			$fields = array("login", "passHash", "description", "permissions", "email", "tel");
+			unset($_SESSION['all_users']);
 			while($data = mysqli_fetch_object($result))
 			{
 				try
