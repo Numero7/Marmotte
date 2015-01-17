@@ -66,8 +66,6 @@ function displayFiltrage($rows, $fields, $filters, $filter_values)
 <!--  Menu filtrage -->
 <table>
 	<tr>
-		<td style="width: 10em;"><h3><a href="index.php?reset_filter=">Reset</a></h3>
-		</td>
 		<td>
 			<table class="inputreport">
 				<tr>
@@ -98,7 +96,10 @@ function displayFiltrage($rows, $fields, $filters, $filter_values)
 					if($count %3 == 0)
 						echo '</tr><tr>';
 						}
-						?>
+						?><td></td>
+								<td style="width: 10em;"><h3><a href="index.php?reset_filter=">Réinitialiser filtres</a></h3>
+		</td>
+						
 				</tr>
 			</table>
 		</td>
