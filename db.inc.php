@@ -147,7 +147,7 @@ function migrate( $section, $serverName, $dbname, $login, $password, $type)
 				{
 					echo "<b>Importing user '".$data->login." of section ".$section."'</b><br/>";
 					if(existsUser($data->login))
-						throw new Exception("Failed to create user: le login '".$login."' est déja utilisé.");
+						throw new Exception("Failed to create user: le login '".$data->login."' est déja utilisé.");
 					$sqlvalues = '"'.$section.'"';
 					$sqlfields = "sections";
 					foreach($fields as $field)
