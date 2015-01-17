@@ -22,15 +22,40 @@ else
 			<tr>
 				<td>
 				<ul>
-				<li>
+								<li>
 <span class='login'>&nbsp;&nbsp;&nbsp;<?php echo getLogin();?>&nbsp;&nbsp;&nbsp;	</span>
 						</li>
 								<li>&nbsp;</li>	
-								<a href="index.php?action=logout">Déconnexion</a><li>
-								<a href="index.php?action=changepwd">Mot de passe</a>
-								</li>
-						</ul>
-						
+				
+						<li>
+						Section/CID
+									<select id="session" onchange="window.location='index.php?reset_filter=&action=view&filter_section=' + this.value;">
+									<?php
+									foreach($sections as $section)
+									{
+										$sel = "";
+										if ($section == $cur_section)
+											$sel = ' selected="selected"';
+										echo '<option value="'.$section."\" $sel>".$section."</option>\n";
+									}
+											?>
+									</select>
+							</li>
+							<li>
+									<select id="session" onchange="window.location='index.php?reset_filter=&action=view&filter_id_sessions=' + this.value;">
+									<?php
+									$sessions = sessionArrays();
+									$cur = current_session_id();
+									foreach($sessions as $id => $nom)
+									{
+										$sel = "";
+										if ($id	 == $cur)
+											$sel = ' selected="selected"';
+										echo '<option value="'.strval($id)."\" $sel>".$nom."</option>\n";
+									}
+											?>
+									</select>
+							</ul>
 						</td>
 						<?php 
 						if(!isSuperUser())
@@ -46,47 +71,6 @@ else
 //									echo "<li><a href=\"index.php?action=view&amp;reset_filter=&amp;filter_avancement=done&amp;filter_rapporteur=".getLogin()."&amp;filter_id_session=".current_session_id()."\">Faits</a></li>";
 									?>
 									</td>
-															<td>
-						<ul>
-						<li>
-									<form method="post" action="index.php">
-									<input type="submit" value="Section / CID"/>
-									<input type="hidden" name="reset_filter" value=""/>
-									<input type="hidden" name="action" value="view"/>
-									<select name="filter_section">
-									<?php
-									foreach($sections as $section)
-									{
-										$sel = "";
-										if ($section == $cur_section)
-											$sel = ' selected="selected"';
-										echo '<option value="'.$section."\" $sel>".$section."</option>\n";
-									}
-											?>
-									</select>
-									</form>
-							</li><li>
-							<form method="post" action="index.php">
-									<input type="submit" value="Session"/>
-									<input type="hidden" name="reset_filter" value=""/>
-									<input type="hidden" name="action" value="view"/>
-									<select name="filter_id_session">
-									<?php
-									$sessions = sessionArrays();
-									$cur = current_session_id();
-									foreach($sessions as $id => $nom)
-									{
-										$sel = "";
-										if ($id	 == $cur)
-											$sel = ' selected="selected"';
-										echo '<option value="'.strval($id)."\" $sel>".$nom."</option>\n";
-									}
-											?>
-									</select>
-									</form>
-									</li>
-							</ul>
-				</td>
 									<td>
 <ul>
 <li>
@@ -145,8 +129,15 @@ else
 						<?php 
 						}
 						?>
-							
-
+							<td>
+							<ul>
+																<li>
+								<a href="index.php?action=logout">Déconnexion</a></li>
+							<li>
+								<a href="index.php?action=changepwd">Mot de passe</a>
+								</li>
+							</ul>
+</td>
 						</tr>
 					</table>
 	</div>
