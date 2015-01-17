@@ -135,23 +135,36 @@ function migrate( $section, $serverName, $dbname, $login, $password, $type)
 				}
 				}
 			break;
-					case "users":
+				case "users":
 			$sql = "SELECT * FROM `".users_db."` WHERE 1;";
 			$result = mysqli_query($remote_dbh, $sql);
 			if($result == false)
 				throw new Exception("Cannot perform remote request\n".mysql_error());
-			while($row = mysqli_fetch_object($result))
+			$fields = array("login", "passHash", "description", "permissions", "email", "tel");
+			while($data = mysqli_fetch_object($result))
 			{
 				try
 				{
-					echo "<b>Importing user '".$row->login." of section ".$section."'</b><br/>";
-					createUser($row->login, $row->passHash,$row->description,$row->email, $section, $row->permissions, false);
+					echo "<b>Importing user '".$data->login." of section ".$section."'</b><br/>";
+					if(existsUser($data->login))
+						throw new Exception("Failed to create user: le login '".$login."' est déja utilisé.");
+					$sqlvalues = '"'.$section.'"';
+					$sqlfields = "sections";
+					foreach($fields as $field)
+					{
+							$sqlfields .= ",`".$field."`";
+							$sqlvalues .= ',"'.(isset($data->$field) ? mysqli_escape_string($dbh, $data->$field) : "" ).'"';
+							$first = false;
+					}
+					$sql = "INSERT INTO ".users_db." ($sqlfields) VALUES ($sqlvalues);";
+					sql_request($sql);
 				}
 				catch(Exception $e)
 				{
-					echo "Failed to import user '".$row->login."' of section ".$section.":<br/>".$e->getMessage()."<br/>";
+					echo "Failed to import user '".$data->login."' of section ".$section.":<br/>".$e->getMessage()."<br/>";
 				}
 			}
+			unset($_SESSION['all_users']);
 			break;
 		case "reports":
 			$sql = "SELECT * FROM `".reports_db."` WHERE id=id_origine and statut!=\"supprime\";";
