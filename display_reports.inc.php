@@ -66,12 +66,11 @@ function displayFiltrage($rows, $fields, $filters, $filter_values)
 <!--  Menu filtrage -->
 <table>
 	<tr>
-		<td style="width: 10em;"><h2>Filtrage</h2>
+		<td style="width: 10em;"><h3><a href="index.php?reset_filter=">Reset</a></h3>
 		</td>
 		<td>
 			<table class="inputreport">
 				<tr>
-
 					<?php
 					$count = 0;
 					foreach($filters as $filter => $data)
@@ -80,7 +79,8 @@ function displayFiltrage($rows, $fields, $filters, $filter_values)
 							$count++;
 							?>
 					<td><?php echo $data['name'];?></td>
-					<td><select name="filter_<?php echo $filter?>">
+					<td>
+					<select   onchange="window.location='index.php?action=view&filter_<?php echo $filter?>=' + this.value;">
 							<option value="<?php echo $data['default_value']; ?>">
 								<?php echo $data['default_name']; ?>
 							</option>
@@ -122,7 +122,6 @@ function displayRows($rows, $fields, $filters, $filter_values, $sort_fields, $so
 	<table>
 		<tr>
 			<td>
-<form method="post" action="index.php">
 			<table>
 					<tr>
 						<td><?php 
@@ -130,13 +129,7 @@ function displayRows($rows, $fields, $filters, $filter_values, $sort_fields, $so
 						?>
 						</td>
 					</tr>
-		<tr>
-			<td><input type="hidden" name="action" value="view" /> <input
-				type="submit" value="Filtrer" /> <?php 	echo "(".count($rows)." rapports)";?>
-			</td>
-			</tr>
 			</table>
-			</form>
 			</td>
 <?php 
 if(isSecretaire())

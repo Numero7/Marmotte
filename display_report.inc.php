@@ -636,7 +636,7 @@ function displaySummary($filters, $filter_values, $sorting_values)
 	{
 		$filters["avis"]["liste"] = $avis_classement;
 		$filters["avis1"]["liste"] = $avis_classement;
-		$filters["avis2"]["liste"] = $avis_classement;
+//		$filters["avis2"]["liste"] = $avis_classement;
 	}
 
 	if(isSecretaire())
