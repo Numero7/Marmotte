@@ -42,7 +42,7 @@ else
 									</select>
 							</li>
 							<li>
-									<select id="session" onchange="window.location='index.php?reset_filter=&action=view&filter_id_sessions=' + this.value;">
+									<select id="session" onchange="window.location='index.php?reset_filter=&action=view&filter_id_session=' + this.value;">
 									<?php
 									$sessions = sessionArrays();
 									$cur = current_session_id();
