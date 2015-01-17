@@ -65,6 +65,9 @@ function change_current_section($section)
 	sql_request($sql);
 	$_SESSION['filter_section'] = $section;
 	unset($_SESSION["config"]);
+	unset($_SESSION['all_units']);
+	unset($_SESSION["all_users"]);
+	unset($_SESSION["rows_id"]);
 	$_SESSION['filter_id_session'] = get_config("current_session");
 }
 

@@ -29,7 +29,7 @@ else
 				
 						<li>
 						Section/CID
-									<select id="session" onchange="window.location='index.php?reset_filter=&action=view&filter_section=' + this.value;">
+									<select id="session" onchange="window.location='index.php?reset_filter=&action=change_section&filter_section=' + this.value;">
 									<?php
 									foreach($sections as $section)
 									{

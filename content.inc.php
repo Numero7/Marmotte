@@ -142,6 +142,9 @@ function alertText($text)
 
 			switch($action)
 			{
+				case 'change_section':
+					displayReports();
+					break;
 				case 'migrate':
 					$types = array("users","reports","people","sessions","units");
 					foreach($types as $type)
