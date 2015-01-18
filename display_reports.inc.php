@@ -86,7 +86,7 @@ function displayFiltrage($rows, $fields, $filters, $filter_values)
 							foreach ($data['liste'] as $value => $nomitem)
 							{
 								$sel = "";
-								if ($value == $filter_values[$filter])
+								if ($value === $filter_values[$filter])
 									$sel = " selected=\"selected\"";
 								echo "<option value=\"".$value."\" $sel>".$nomitem."</option>\n";
 							}
