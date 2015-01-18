@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.1.6
+-- version 4.0.10deb1
 -- http://www.phpmyadmin.net
 --
--- Client :  localhost
--- Généré le :  Lun 12 Janvier 2015 à 23:02
--- Version du serveur :  5.6.10
--- Version de PHP :  5.5.5
+-- Client: localhost
+-- Généré le: Sam 17 Janvier 2015 à 22:01
+-- Version du serveur: 5.5.40-0ubuntu0.14.04.1
+-- Version de PHP: 5.5.9-1ubuntu4.5
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -17,10 +17,8 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8 */;
 
 --
--- Base de données :  `cn62`
+-- Base de données: `panda`
 --
-CREATE DATABASE IF NOT EXISTS `panda` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
-USE `panda`;
 
 -- --------------------------------------------------------
 
@@ -28,7 +26,6 @@ USE `panda`;
 -- Structure de la table `concours`
 --
 
-DROP TABLE IF EXISTS `concours`;
 CREATE TABLE IF NOT EXISTS `concours` (
   `section` int(11) NOT NULL COMMENT 'numero section ou cid',
   `session` text NOT NULL COMMENT 'l''année du concours',
@@ -55,7 +52,6 @@ CREATE TABLE IF NOT EXISTS `concours` (
 -- Structure de la table `config`
 --
 
-DROP TABLE IF EXISTS `config`;
 CREATE TABLE IF NOT EXISTS `config` (
   `section` int(11) NOT NULL,
   `key` text NOT NULL,
@@ -68,7 +64,6 @@ CREATE TABLE IF NOT EXISTS `config` (
 -- Structure de la table `people`
 --
 
-DROP TABLE IF EXISTS `people`;
 CREATE TABLE IF NOT EXISTS `people` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `section` int(11) NOT NULL,
@@ -118,7 +113,7 @@ CREATE TABLE IF NOT EXISTS `people` (
   `Info30` text,
   `conflits` text,
   UNIQUE KEY `id` (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=79 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=5296 ;
 
 -- --------------------------------------------------------
 
@@ -126,7 +121,6 @@ CREATE TABLE IF NOT EXISTS `people` (
 -- Structure de la table `reports`
 --
 
-DROP TABLE IF EXISTS `reports`;
 CREATE TABLE IF NOT EXISTS `reports` (
   `section` int(11) NOT NULL,
   `statut` varchar(32) NOT NULL DEFAULT 'doubleaveugle',
@@ -160,7 +154,7 @@ CREATE TABLE IF NOT EXISTS `reports` (
   `sousjury` text,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=61222 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=71447 ;
 
 -- --------------------------------------------------------
 
@@ -168,7 +162,6 @@ CREATE TABLE IF NOT EXISTS `reports` (
 -- Structure de la table `sessions`
 --
 
-DROP TABLE IF EXISTS `sessions`;
 CREATE TABLE IF NOT EXISTS `sessions` (
   `id` varchar(64) NOT NULL,
   `section` int(11) NOT NULL,
@@ -183,7 +176,6 @@ CREATE TABLE IF NOT EXISTS `sessions` (
 -- Structure de la table `units`
 --
 
-DROP TABLE IF EXISTS `units`;
 CREATE TABLE IF NOT EXISTS `units` (
   `section` int(11) NOT NULL,
   `nickname` text NOT NULL,
@@ -198,7 +190,6 @@ CREATE TABLE IF NOT EXISTS `units` (
 -- Structure de la table `users`
 --
 
-DROP TABLE IF EXISTS `users`;
 CREATE TABLE IF NOT EXISTS `users` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `login` varchar(40) NOT NULL,
@@ -210,7 +201,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `email` text NOT NULL,
   `tel` text NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=5759 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=6038 ;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

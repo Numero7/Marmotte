@@ -276,7 +276,7 @@ function changePwd($login,$old,$new1,$new2, $envoiparemail)
 
 			if($envoiparemail)
 			{
-				$body = "Votre mot de passe pour le site \r\n".curPageURL()."\r\n a été mis à jour:\r\n";
+				$body = "Votre mot de passe pour le site \r\n".get_config("adresse_du_site")."\r\n a été mis à jour:\r\n";
 				$body .= "\t\t\t login: '".$login."'\r\n";
 				$body .= "\t\t\t motdepasse: '".$new1."'\r\n";
 				$body .= "\r\n\r\n\t Amicalement, ".get_config("secretaire").".";

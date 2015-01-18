@@ -4,48 +4,120 @@ require_once('config_tools.inc.php');
 require_once('generate_csv.inc.php');
 require_once('manage_unites.inc.php');
 
+$admin_sessions = isset($_REQUEST["admin_sessions"]) && isSecretaire() && !isSuperUser();
+$admin_users = isset($_REQUEST["admin_users"]) && isSecretaire();
+$admin_concours = isset($_REQUEST["admin_concours"]) && isSecretaire() && !isSuperUser();
+$admin_config = isset($_REQUEST["admin_config"]) && isSecretaire();
+$admin_keywords = isset($_REQUEST["admin_keywords"]) && isSecretaire();
+$admin_rubriques = isset($_REQUEST["admin_rubriques"]) && isSecretaire() && !isSuperUser();
+
+
 if(isSecretaire())
 {
 	?>
 <h1>Interface d'administration</h1>
 <ul>
-<li><a href="#sessions">Sessions</a></li>
-<li><a href="#membres">Membres</a></li>
-<li><a href="#concours">Concours</a></li>
-<li><a href="#config">Configuration</a></li>
-<li><a href="#motscles">Mots-clés</a></li>
+<li><a href="index.php?action=admin&amp;admin_sessions=">Sessions</a></li>
+<li><a href="index.php?action=admin&amp;admin_users=">Membres</a></li>
+<li><a href="index.php?action=admin&amp;admin_concours=">Concours</a></li>
+<li><a href="index.php?action=admin&amp;admin_config=">Configuration</a></li>
+<li><a href="index.php?action=admin&amp;admin_rubriques=">Rubriques</a></li>
+<li><a href="index.php?action=admin&amp;admin_keywords=">Mots-clés</a></li>
 </ul>
 
-<?php 	
-	if(isSecretaire() && !isSuperUser())
-{
-	?>
-<br>
+<hr />
 <hr />
 
-<h2 id="sessions">Sessions</h2>
-
+<?php 	
+	if($admin_sessions)
+{
+	?>
+	<h2 id="sessions">Sessions</h2>
 <?php 
 include 'sessions_manager.php';
 ?>
-
 <hr />
 <?php 
 }	
 ?>
 
 <?php 
-if(isSecretaire())
+if($admin_users)
 {
 ?>
-<hr/>
 	<h2 id="membres">Membres de la section</h2>
 
-	
-	<h3 id="adminnewaccount">Création nouveau rapporteur</h3>
-<table>
-	<tr>
-		<td>
+<hr/>
+							<h3 id="infosrapporteur">Statut des membres</h3>
+	<table>
+		<?php 
+		global $sous_jurys;
+		global $concours_ouverts;
+
+		$users = listUsers();
+		foreach($users as $user => $data)
+		{
+			if ($data->permissions <= getUserPermissionLevel() || ($data->permissions  < NIVEAU_PERMISSION_SUPER_UTILISATEUR && isSecretaire()))
+			{
+				echo "\n<tr><td><b>".ucfirst($data->description)."</b></td><td> [".$user."]</td>\n";
+				echo '<td><form method="post" action="index.php">';
+				if(isSuperUser())
+					echo "Sections <input name=\"sections\" value=\"".$data->sections."\"></input>";
+				else
+					echo "<input type=\"hidden\" name=\"sections\" value=\"".$data->sections."\"></input>";
+				echo "<select name=\"permissions\">\n";
+				foreach($permission_levels as $val => $level)
+				{
+					if ($val<=getUserPermissionLevel() || (isSecretaire() && $val == NIVEAU_PERMISSION_PRESIDENT))
+					{
+						$sel = "";
+						if ($val==$data->permissions)
+							$sel = " selected=\"selected\"";
+						echo "<option value=\"$val\"$sel>".ucfirst($level)."</option>\n";
+					}
+				}
+				echo "</select>";
+				if(is_current_session_concours())
+				{
+					$concours_ouverts = getConcours();
+					foreach($concours_ouverts as $code => $concours)
+					{
+						if($concours->sousjury1 != "")
+						{
+						echo "<td>$concours->intitule <select name=\"sousjury".$code."\">\n";
+						echo "<option value=\"\"$sel></option>\n";
+							$sel = strcontains($concours->membressj1,$user) ? " selected=\"selected\"" : ""; 
+							echo "<option value=\"1\" 	$sel>".$concours->sousjury1."</option>\n";
+						if($concours->sousjury2 != "")
+						{
+							$sel = strcontains($concours->membressj2,$user) ? " selected=\"selected\"" : ""; 
+							echo "<option value=\"2\" $sel>".$concours->sousjury2."</option>\n";
+						}
+						if($concours->sousjury3 != "")
+						{
+							$sel = strcontains($concours->membressj3,$user) ? " selected=\"selected\"" : ""; 
+							echo "<option value=\"3\" $sel>".$concours->sousjury3."</option>\n";
+						}
+						if($concours->sousjury4 != "")
+						{
+							$sel = strcontains($concours->membressj4,$user) ? " selected=\"selected\"" : ""; 
+							echo "<option value=\"4\" $sel>".$concours->sousjury4."</option>\n";
+						}
+				echo "</select>\n";
+						}
+					}
+				}
+				
+				echo "<input type=\"hidden\" name=\"login\" value=\"$user\"/>\n";
+				echo "<input type=\"hidden\" name=\"action\" value=\"infosrapporteur\"/>\n";
+				echo " <input type=\"submit\" value=\"Valider\"/>\n";
+				echo "</form></td></tr>\n";
+			}
+		}
+		?>
+	</table>
+	<hr/>
+	<h3 id="adminnewaccount">Création nouveau membre</h3>
 			<form method="post" action="index.php">
 				<table class="inputreport">
 					<tr>
@@ -67,7 +139,8 @@ if(isSecretaire())
 						</td>
 					</tr>
 					<tr>
-					<td>Statut</td><td>
+					<td>Statut</td>
+					<td>
 					<select name="permissions">
 					<?php 
 				foreach($permission_levels as $val => $level)
@@ -102,30 +175,23 @@ if(isSecretaire())
 						</td>
 					</tr>
 						<tr>
-						<td></td>
+						<td>
+												<input type="submit" value="Ajouter rapporteur" />
+						<input type="hidden" name="oldpwd" value="" />
+						<input type="hidden" name="action" value="adminnewaccount" />
+												</td>
 						<td>
 						<input type="checkbox" name="envoiparemail" checked='checked' style="width: 10px;" /> Prévenir par email
 						</td>
 						</tr>
-					<tr>
-						<td>
-						<input type="hidden" name="oldpwd" value="" />
-						<input type="hidden" name="action" value="adminnewaccount" />
-						</td>
-						<td>
-						<input type="submit" value="Ajouter rapporteur" />
-						</td>
-					</tr>
 				</table>
 			</form>
-		</td></tr><tr>
-		<td valign="top">
-			<h3 id="admindeleteaccount">Suppression d'un rapporteur</h3>
+<br/>
+			<hr/>
+						<h3 id="admindeleteaccount">Suppression d'un membre</h3>
 			<form method="post" action="index.php"
 				onsubmit="return confirm('Etes vous sur de vouloir supprimer cet utilisateur ?');">
-				<table class="inputreport">
-					<tr>
-						<td><select name="login">
+<select name="login">
 								<?php 
 								$users = listUsers();
 								foreach($users as $user => $data)
@@ -135,20 +201,12 @@ if(isSecretaire())
 								}
 								?>
 						</select>
-						</td>
-					</tr>
-					<tr>
-						<td><input type="hidden" name="action" value="admindeleteaccount" />
+<input type="hidden" name="action" value="admindeleteaccount" />
 							<input type="submit" value="Supprimer rapporteur" />
-						</td>
-					</tr>
-				</table>
 			</form>
-		</td>
-		</tr>
-		<tr>
-		<td>
-			<h3 id="adminnewpwd">Modifier un mot de passe</h3>
+<br/>
+<hr/>
+						<h3 id="adminnewpwd">Modification d'un mot de passe</h3>
 			<form method="post" action="index.php">
 				<table class="inputreport">
 					<tr>
@@ -177,21 +235,17 @@ if(isSecretaire())
 						</td>
 					</tr>
 					<tr>
-					<td></td>						<td><input type="checkbox" name="envoiparemail" checked='checked'
+					<td>
+											<input type="hidden" name="oldpwd" value="" /> <input
+							type="hidden" name="action" value="adminnewpwd" />
+						<input type="submit" value="Modifier mot de passe" />
+					</td>						<td><input type="checkbox" name="envoiparemail" checked='checked'
 							style="width: 10px;" /> Prévenir par email</td>
 					
 					</tr>
-					<tr>
-						<td><input type="hidden" name="oldpwd" value="" /> <input
-							type="hidden" name="action" value="adminnewpwd" />
-						</td>
-						<td><input type="submit" value="Valider modification" />
-						</td>
-					</tr>
 				</table>
 			</form>
-		</td>
-		<td>
+		<!-- 
 			<h3>Vérifier un mot de passe</h3>
 			<form method="post" action="index.php">
 				<table class="inputreport">
@@ -208,91 +262,17 @@ if(isSecretaire())
 					</tr>
 				</table>
 			</form>
-		</td>
-
-	</tr>
-</table>
-	<h3 id="infosrapporteur">Statut des membres</h3>
-	<table>
-		<?php 
-		global $sous_jurys;
-		global $concours_ouverts;
-
-		$users = listUsers();
-		echo '<table>';
-		foreach($users as $user => $data)
-		{
-			if ($data->permissions <= getUserPermissionLevel() || ($data->permissions  < NIVEAU_PERMISSION_SUPER_UTILISATEUR && isSecretaire()))
-			{
-				echo "\n<tr><td><b>".ucfirst($data->description)."</b></td><td> [".$user."]</td>\n";
-				echo '<td><form method="post" action="index.php">';
-				if(isSuperUser())
-					echo "Sections <input name=\"sections\" value=\"".$data->sections."\"></input>";
-				else
-					echo "<input type=\"hidden\" name=\"sections\" value=\"".$data->sections."\"></input>";
-				echo "</td><td>";
-				echo "statut <select name=\"permissions\">\n";
-				foreach($permission_levels as $val => $level)
-				{
-					if ($val<=getUserPermissionLevel() || (isSecretaire() && $val == NIVEAU_PERMISSION_PRESIDENT))
-					{
-						$sel = "";
-						if ($val==$data->permissions)
-							$sel = " selected=\"selected\"";
-						echo "<option value=\"$val\"$sel>".ucfirst($level)."</option>\n";
-					}
-				}
-				echo "</select></td>";
-				if(is_current_session_concours())
-				{
-					$concours_ouverts = getConcours();
-					foreach($concours_ouverts as $code => $concours)
-					{
-						if($concours->sousjury1 != "")
-						{
-						echo "<td>$concours->intitule <select name=\"sousjury".$code."\">\n";
-						echo "<option value=\"\"$sel></option>\n";
-							$sel = strcontains($concours->membressj1,$user) ? " selected=\"selected\"" : ""; 
-							echo "<option value=\"1\" 	$sel>".$concours->sousjury1."</option>\n";
-						if($concours->sousjury2 != "")
-						{
-							$sel = strcontains($concours->membressj2,$user) ? " selected=\"selected\"" : ""; 
-							echo "<option value=\"2\" $sel>".$concours->sousjury2."</option>\n";
-						}
-						if($concours->sousjury3 != "")
-						{
-							$sel = strcontains($concours->membressj3,$user) ? " selected=\"selected\"" : ""; 
-							echo "<option value=\"3\" $sel>".$concours->sousjury3."</option>\n";
-						}
-						if($concours->sousjury4 != "")
-						{
-							$sel = strcontains($concours->membressj4,$user) ? " selected=\"selected\"" : ""; 
-							echo "<option value=\"4\" $sel>".$concours->sousjury4."</option>\n";
-						}
-				echo "</select></td>\n";
-						}
-					}
-				}
-				
-				echo "<td><input type=\"hidden\" name=\"login\" value=\"$user\"/>\n";
-				echo "<input type=\"hidden\" name=\"action\" value=\"infosrapporteur\"/>\n";
-				echo " <input type=\"submit\" value=\"Valider\"/>\n";
-				echo "</form></td></tr>\n";
-			}
-		}
-}
-		?>
-	</table>
+			 -->
+<hr/>
 
 	
 <?php
-if(isSecretaire() && ! isSuperUser())
+}
+if($admin_concours)
 {
 	if( is_current_session_concours() )
 	{
 		?>
-		<hr/>
-				<hr/>
 		<h2 id="concours">Concours</h2>
 				<hr/>
 		
@@ -316,6 +296,7 @@ if(isSecretaire() && ! isSuperUser())
 		?>
 		</table>
 		
+		<br/>
 		<hr/>
 		<h3>Ajouter un concours</h3>
 		<form method="post" action="index.php">
@@ -373,8 +354,9 @@ if(isSecretaire() && ! isSuperUser())
 				<input type="hidden" name="action" value="add_concours" />
 				<input type="submit" value="Ajouter" />
 				</form>
+		<br/>
 				<hr/>
-		<h3>Supprimer un concours</h3>
+				<h3>Supprimer un concours</h3>
 		<form method="post" action="index.php">
 		<?php 
 		$concours = getConcours();
@@ -387,13 +369,14 @@ if(isSecretaire() && ! isSuperUser())
 				<input type="hidden" name="action" value="delete_concours" />
 				<input type="submit" value="Supprimer" />
 				</form>
-		<?php 
+		<hr/>
+				<?php 
 	}
 }
-if(isSecretaire())
+
+if($admin_config)
 {
 	?>	
-<hr />
 <h2 id="config">Configuration</h2>
 <form>
 <table>
@@ -406,16 +389,17 @@ foreach($_SESSION["config"] as $key=> $value)
 ?>
 <tr><td>
 				<input type="hidden" name="action" value="updateconfig" />
-				<input type="submit" value="Enregistrer config" />
+				<input type="submit" value="Enregistrer configuration" />
 </td></tr>
 </table>	
 </form>
 <hr/>
 <?php 
 }
-if(isSecretaire() && ! isSuperUser())
+if($admin_keywords)
 {
-?><h2 id="motscles">Mots-clés de la section</h2>
+?>
+<h2 id="motscles">Mots-clés de la section</h2>
 <table>
 <?php 
 $configs = get_topics();
@@ -453,7 +437,13 @@ foreach($configs as $key => $value)
 </td>
 </tr>
 </table></form>
-<hr/>	
+	<hr/>
+<?php 
+}
+
+if($admin_rubriques)
+{
+?>
 <h2 id="rubriques">Rubriques supplémentaires</h2>
 <?php 
 global $rubriques_supplementaires;
@@ -515,6 +505,7 @@ foreach($rubriques as $index => $value)
 </td>
 </tr>
 </table></form>
+<hr/>	
 <?php 
 }
 ?>
