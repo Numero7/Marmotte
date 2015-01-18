@@ -512,10 +512,12 @@ function addReportFromRequest($id_origine, $request)
 	$report = createReportFromRequest($id_origine, $request);
 	
 	$id_nouveau = addReportToDatabase($report,false);
-	
-	if(isset($report->type) && (in_array($report->type, $typesRapportsConcours) || isset($typesRapportsChercheurs[$report->type]) ) )
-		updateCandidateFromRequest($request);
 
+//	rr();
+	
+	if(isset($report->type) && ( isset($typesRapportsConcours[$report->type]) || isset($typesRapportsChercheurs[$report->type]) ) )
+		updateCandidateFromRequest($request);
+	
 	return getReport($id_nouveau);
 }
 

@@ -115,9 +115,7 @@ function updateCandidateFromData($data)
 {
 	global $fieldsIndividualAll;
 	
-	
 	$candidate = get_or_create_candidate($data );
-
 	$sqlcore = "";
 
 	$first = true;
