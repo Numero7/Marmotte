@@ -222,6 +222,7 @@ ini_set('xdebug.show_local_vars', 'on');
 	);
 
 	$fieldsRapportsIE0 = array(
+			"type",
 			"grade_rapport",
 			"rapporteur",
 			"rapporteur2",
