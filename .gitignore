@@ -46,3 +46,8 @@
 /csv/exemple.csv
 /csv/exemple_unites.csv
 /config/config.xml
+/storage
+/tmp
+/phpmyadmin/config.inc.php
+/phpmyadmin/config/config.inc.php
+/.htaccess

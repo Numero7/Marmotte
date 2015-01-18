@@ -89,14 +89,29 @@ function create_dir_if_needed2($basedir)
 			echo "Failed to create directory ".$basedir."<br/>";
 	}
 }
+function get_dir($session,$nom,$prenom)
+{
+	global $dossier_stockage;
+	$session = str_replace( "..", "" ,$session);
+	$nom = str_replace("..", "",$nom);
+	$prenom = str_replace("..", "",$prenom);
+	return  $dossier_stockage."/".$session."/".$nom."_".$prenom."/";
+}
 
 function get_people_directory($candidate, $session, $create_directory_if_nexists = false)
 {
-	global $dossier_stockage;
-	$basedir = $dossier_stockage."/".$session."/".$candidate->nom."_".$candidate->prenom."/";
+	$basedir = get_dir($session, $candidate->nom, $candidate->prenom);
+	// $dossier_stockage."/".$session."/".$candidate->nom."_".$candidate->prenom."/";
 	if($create_directory_if_nexists)
 		create_dir_if_needed2($basedir);
 	return $basedir;
+}
+
+function rename_people_directory($session, $nom,$prenom,  $pnom,$pprenom)
+{
+	$basedir = get_dir($session, $nom, $prenom);
+	$pbasedir = get_dir($session, $pnom, $pprenom);
+	rename($pbasedir,$basedir);	
 }
 
 function get_unit_directory($unit, $session, $create_directory_if_nexists = false)

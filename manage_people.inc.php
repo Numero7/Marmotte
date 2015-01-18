@@ -42,7 +42,7 @@ function is_auditionneCR($report)
 
 function is_in_conflict($login, $candidat)
 {
-//	echo "conflits '".$candidat->conflits."' login '".$login."'"; 
+	//	echo "conflits '".$candidat->conflits."' login '".$login."'";
 	return isset($candidat->conflits) && (strpos($candidat->conflits,$login) !== false);
 }
 
@@ -58,7 +58,7 @@ function add_conflit_to_report($login, $id_origine)
 		{
 			$conflits .= ";".$login;
 			if(isset($candidat->nom) && isset($candidat->prenom) && $candidat->nom != "")
-			$candidat->conflits = $conflits;
+				$candidat->conflits = $conflits;
 			updateCandidateFromData($candidat);
 		}
 	}
@@ -66,6 +66,7 @@ function add_conflit_to_report($login, $id_origine)
 
 function updateCandidateFromRequest($request, $oldannee="")
 {
+
 	global $fieldsIndividualAll;
 
 	$data = (object) array();
@@ -75,38 +76,32 @@ function updateCandidateFromRequest($request, $oldannee="")
 		if (isset($request["field".$field]))
 		$data->$field = nl2br(trim($request["field".$field]),true);
 
-	
+
 	if(	isset($request['previousnom']) && isset($request['previousprenom']))
-			{
-	$ppnom = real_escape_string($request['previousnom']);
-	$ppprenom = real_escape_string($request['previousprenom']);
-	
-	$candidate = get_or_create_candidate($data );
-	
-	if($ppnom != $candidate->nom || $ppprenom != $candidate->prenom)
 	{
-		if(($request['previousnom']!= "" || $request['previousprenom'] != ""))
+		$ppnom = $request['previousnom'];
+		$ppprenom = $request['previousprenom'];
+
+		if( (isset($data->nom) && $data->nom != $ppnom) || (isset($data->nom) && $data->nom != $ppnom) )
 		{
-			$sql = "UPDATE ".reports_db." SET nom=\"".$candidate->nom."\", prenom=\"".$candidate->prenom."\" WHERE nom =\"".$ppnom."\" AND prenom=\"".$ppprenom."\"  AND section=\"".currentSection()."\"";
+			$sql = "UPDATE ".reports_db." SET nom=\"".$data->nom."\", prenom=\"".$data->prenom."\" WHERE nom =\"".$ppnom."\" AND prenom=\"".$ppprenom."\"  AND section=\"".currentSection()."\"";
 			sql_request($sql);
-			$sql = "DELETE FROM ".people_db." WHERE nom =\"".$ppnom."\" AND prenom=\"".$ppprenom."\"  AND section=\"".currentSection()."\"";
+			$sql = "UPDATE ".people_db." SET nom=\"".$data->nom."\", prenom=\"".$data->prenom."\" WHERE nom =\"".$ppnom."\" AND prenom=\"".$ppprenom."\"  AND section=\"".currentSection()."\"";
 			sql_request($sql);
+			rename_people_directory(current_session_id(), $data->nom, $data->prenom, $ppnom, $ppprenom);
 		}
+
 	}
-	else
-	{
-		$candidate = updateCandidateFromData($data);
-	}
-			}
-			
-	
+
+	$candidate = updateCandidateFromData($data);
+
 	return $candidate;
 }
 
 function updateCandidateFromData($data)
 {
 	global $fieldsIndividualAll;
-	
+
 	$candidate = get_or_create_candidate($data );
 	$sqlcore = "";
 
@@ -148,7 +143,7 @@ function add_candidate_to_database($data,$section="")
 {
 	if($section == "")
 		$section = currentSection();
-	
+
 	global $fieldsIndividualAll;
 	$sqlvalues = "";
 	$sqlfields = "";
@@ -156,27 +151,27 @@ function add_candidate_to_database($data,$section="")
 
 	global $empty_individual;
 	foreach($fieldsIndividualAll as $field => $desc)
-     if($field != "fichiers")
-	{
-		$sqlfields .= ($first ? "" : ",") ."`".$field."`";
-		$sqlvalues .= ($first ? "" : ",") .'"'.(isset($data->$field) ? $data->$field : ( isset($empty_individual[$field]) ? $empty_individual[$field] : "") ).'"';
-		$first = false;
-	}
-	
-	$sqlfields .= ",section";
-	$sqlvalues .= ",".$section;
-	
-	$sql = "INSERT INTO ".people_db." ($sqlfields) VALUES ($sqlvalues);";
-	sql_request($sql);
+		if($field != "fichiers")
+		{
+			$sqlfields .= ($first ? "" : ",") ."`".$field."`";
+			$sqlvalues .= ($first ? "" : ",") .'"'.(isset($data->$field) ? $data->$field : ( isset($empty_individual[$field]) ? $empty_individual[$field] : "") ).'"';
+			$first = false;
+		}
 
-	$sql2 = 'SELECT * FROM '.people_db.' WHERE `nom`="'.$data->nom.'" AND `prenom`="'.$data->prenom.'" AND section="'.$section.'";';
-	$result = sql_request($sql2);
-	$candidate = mysqli_fetch_object($result);
+		$sqlfields .= ",section";
+		$sqlvalues .= ",".$section;
 
-	if($candidate == false)
-		throw new Exception("Failed to add candidate with request <br/>".$sql2);
+		$sql = "INSERT INTO ".people_db." ($sqlfields) VALUES ($sqlvalues);";
+		sql_request($sql);
 
-	return $candidate;
+		$sql2 = 'SELECT * FROM '.people_db.' WHERE `nom`="'.$data->nom.'" AND `prenom`="'.$data->prenom.'" AND section="'.$section.'";';
+		$result = sql_request($sql2);
+		$candidate = mysqli_fetch_object($result);
+
+		if($candidate == false)
+			throw new Exception("Failed to add candidate with request <br/>".$sql2);
+
+		return $candidate;
 }
 
 /*
