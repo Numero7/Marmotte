@@ -468,9 +468,6 @@ function alertText($text)
 					injectercandidats();
 					include "admin.inc.php";
 					break;
-				case "displayunits":
-					include "unites.php";
-					break;
 				case "displayimportexport":
 					include "import_export.php";
 					break;

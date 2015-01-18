@@ -11,6 +11,7 @@ $admin_config = isset($_REQUEST["admin_config"]) && isSecretaire();
 $admin_keywords = isset($_REQUEST["admin_keywords"]) && isSecretaire();
 $admin_rubriques = isset($_REQUEST["admin_rubriques"]) && isSecretaire() && !isSuperUser();
 $admin_migration = isset($_REQUEST["admin_migration"]) && isSuperUser();
+$admin_unites = isset($_REQUEST["admin_unites"]) && isSecretaire();
 
 
 if(isSecretaire())
@@ -29,6 +30,7 @@ if(isSecretaire())
 {
 ?>
 <li><a href="index.php?action=admin&amp;admin_users=">Membres</a></li>
+<li><a href="index.php?action=admin&amp;admin_unites">Unités</a>
 <?php 
 if(isSecretaire() && !isSuperUser())
 {
@@ -293,6 +295,11 @@ if($admin_users)
 	
 <?php
 }
+if($admin_unites)
+{
+		include "unites.php";
+}
+
 if($admin_concours)
 {
 	if( is_current_session_concours() )
@@ -607,6 +614,7 @@ foreach($rubriques as $index => $value)
 <?php 
 }
 }
+
 
 if($admin_migration)
 {

@@ -124,11 +124,15 @@ function display_select($row, $fieldID, $liste,$readonly)
 		?>
 <select  name="field<?php echo $fieldID;?>">
 	<?php
+	$first = true;
 	foreach($liste as $value => $text)
 	{
+		if($first && $value != "")
+			echo  "<option value=\"\"></option>\n";
 		if($text == "") $text="   ";
 		$sel = ($value === $current_value) ? "selected=\"selected\"" : "";
 		echo  "\t\t\t\t\t<option value=\"".($value)."\" ".$sel.">".substr($text, 0,150)."</option>\n";
+		$first = false;
 	}
 	/*
 	if($fieldID == "theme1")

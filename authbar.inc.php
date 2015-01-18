@@ -131,13 +131,6 @@ if(!isSuperUser())
 </li>						
 <?php 
 		}
-		if(isSuperUser())
-		{
-		?>
-				<li>
-						<a href="index.php?action=displayunits">Unités</a>
-				</li>
-				<?php }
 				?>
 </ul>
 						</tr>
