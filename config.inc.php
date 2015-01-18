@@ -707,7 +707,7 @@ Une phrase de conclusion sur le candidat incluant un commentaire sur l'audition
 	for($i = 0 ; $i < 30; $i++)
 	{
 		$fieldsTypes["Generic".$i] = "long";
-		$fieldsTypes["Info".$i] = "long";
+		$fieldsTypes["Info".$i] = "short";
 	}
 	
 	$nonEditableFieldsTypes = array('id','auteur','date');
