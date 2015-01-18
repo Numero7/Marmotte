@@ -157,8 +157,8 @@ function filterSortReports($filters, $filter_values = array(), $sorting_values =
 {
 	$section = $_SESSION['filter_section'];
 	$sql = "SELECT *, ".reports_db.".id AS report_id, ".people_db.".id AS people_id, ".people_db.".nom AS people_nom, ".people_db.".prenom AS people_prenom, ".reports_db.".nom AS nom, ".reports_db.".prenom AS prenom FROM ".reports_db;
-	$sql .=" left join ".people_db." on ".reports_db.".nom=".people_db.".nom AND ".reports_db.".prenom=".people_db.".prenom WHERE ";
-	$sql .= reports_db.".id=".reports_db.".id_origine AND ".reports_db.".statut!=\"supprime\" AND ".reports_db.".section=".$section." AND ".people_db.".section=".$section;
+	$sql .=" left join ".people_db." on ".reports_db.".nom=".people_db.".nom AND ".reports_db.".prenom=".people_db.".prenom AND ".reports_db.".section=".people_db.".section WHERE ";
+	$sql .= reports_db.".id=".reports_db.".id_origine AND ".reports_db.".statut!=\"supprime\" AND ".reports_db.".section=\"".$section."\"";
 	//$sql = "SELECT * FROM ".reports_db." WHERE id = id_origine AND statut!=\"supprime\"";
 	//$sql = "SELECT * FROM ".reports_db." WHERE date = (SELECT MAX(date) FROM evaluations AS mostrecent WHERE mostrecent.id_origine = evaluations.id_origine AND statut!=\"supprime\")";
 	//$sql = "SELECT * FROM ( SELECT id, MAX(date) AS date FROM evaluations GROUP BY id_origine) mostrecent ON tt.date = mostrecent.date";
@@ -170,6 +170,7 @@ function filterSortReports($filters, $filter_values = array(), $sorting_values =
 	$sql .= filtersCriteriaToSQL($filters,$filter_values, $rapporteur_or);
 	$sql .= sortCriteriaToSQL($sorting_values);
 	$sql .= ";";
+	
 	//echo $sql;
 	$result=sql_request($sql);
 
@@ -473,6 +474,11 @@ function newReport($type_rapport)
 
 function addReport($report)
 {
+/*	
+	if($report->prenom == "Anthonin")
+		rrrr();
+	
+	*/
 	if(!isReportCreatable())
 		throw new Exception("Le compte ".$login." n'a pas la permission de créer un rapport, veuillez contacter le secrétaire scientifique.");
 

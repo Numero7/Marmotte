@@ -154,8 +154,11 @@ function getAllCandidates()
 	return $rows;
 }
 
-function add_candidate_to_database($data)
+function add_candidate_to_database($data,$section="")
 {
+	if($section == "")
+		$section = currentSection();
+	
 	global $fieldsIndividualAll;
 	$sqlvalues = "";
 	$sqlfields = "";
@@ -171,12 +174,12 @@ function add_candidate_to_database($data)
 	}
 	
 	$sqlfields .= ",section";
-	$sqlvalues .= ",".$_SESSION['filter_section'];
+	$sqlvalues .= ",".$section;
 	
 	$sql = "INSERT INTO ".people_db." ($sqlfields) VALUES ($sqlvalues);";
 	sql_request($sql);
 
-	$sql2 = 'SELECT * FROM '.people_db.' WHERE `nom`="'.$data->nom.'" AND `prenom`="'.$data->prenom.'";';
+	$sql2 = 'SELECT * FROM '.people_db.' WHERE `nom`="'.$data->nom.'" AND `prenom`="'.$data->prenom.'" AND section="'.$section.'";';
 	$result = sql_request($sql2);
 	$candidate = mysqli_fetch_object($result);
 
@@ -191,12 +194,15 @@ function add_candidate_to_database($data)
 * created if needed,
 * or throw an exception
 */
-function get_or_create_candidate_from_nom($nom, $prenom)
+function get_or_create_candidate_from_nom($nom, $prenom, $section="")
 {
+	if($section == "")
+		$section = currentSection();
+
 	try
 	{
 		sql_request("LOCK TABLES ".people_db." WRITE;");
-		$sql = "SELECT * FROM ".people_db.' WHERE nom="'.$nom.'" AND prenom="'.$prenom.'" ;';
+		$sql = "SELECT * FROM ".people_db.' WHERE nom="'.$nom.'" AND prenom="'.$prenom.'" AND section="'.$section.'" ;';
 		$result = sql_request($sql);
 
 		$cdata = mysqli_fetch_object($result);
@@ -205,7 +211,7 @@ function get_or_create_candidate_from_nom($nom, $prenom)
 			$data = (object) array();
 			$data->nom = $nom;
 			$data->prenom = $prenom;
-			add_candidate_to_database($data);
+			add_candidate_to_database($data,$section);
 			$result = sql_request($sql);
 			$cdata = mysqli_fetch_object($result);
 			if($cdata == false)

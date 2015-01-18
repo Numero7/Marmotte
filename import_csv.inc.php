@@ -107,10 +107,8 @@ function import_csv($type,$filename, $subtype = "", $create = false, $sep="?", $
 				$is_utf8 = $is_utf8 && mb_check_encoding($data[$i],"UTF-8");
 
 			if(!$is_utf8)
-			{
 				for($i = 0 ; $i < count($data); $i++)
 				$data[$i] = utf8_encode($data[$i]);
-			}
 
 			try
 			{
@@ -137,8 +135,14 @@ function import_csv($type,$filename, $subtype = "", $create = false, $sep="?", $
 					/* Second case we create report */
 						$properties = array();
 						for($i = 0; $i < $nbfields && $i < count($data); $i++)
+						{
+//							echo "[".$fields[$i]." ".$data[$i]."] ";
 							if($fields[$i] != "id")
+							{
 								$properties[$fields[$i]] =  $data[$i];
+							}
+						}
+//						echo "<br/>\n";
 						$oldsubtype = $subtype;
 						$subtype = checkTypeIsSpecified($properties);
 						if($subtype == "" && $oldsubtype != "")
@@ -388,6 +392,10 @@ function addCsvReport($subtype, $properties)
 		if(isset($report->unite))
 			updateUnitData($report->unite, (object) $report);
 	}
+	
+/*	if($report->prenom == "Anthonin")
+		rr();
+	*/
 }
 
 
