@@ -6,9 +6,9 @@ function unitsList()
 	{
 		$units = array();
 		if(isSuperUser())
-			$sql = "SELECT * FROM ".units_db." WHERE `section`='". real_escape_string($_SESSION['filter_section'])."' ORDER BY nickname ASC;";
-		else
 			$sql = "SELECT * FROM ".units_db." ORDER BY nickname ASC;";
+		else
+			$sql = "SELECT * FROM ".units_db." WHERE `section`='". real_escape_string($_SESSION['filter_section'])."' ORDER BY nickname ASC;";
 			
 		if($result= sql_request($sql))
 			while ($row = mysqli_fetch_object($result))
