@@ -464,7 +464,11 @@ foreach($configs as $key => $value)
 <select name='index'>
 <?php 
 foreach($configs as $key => $value)
+{
+	if(strlen($value)> 30)
+		$value = substr($value,0,30);
 	echo '<option value='.$key.'>'.$key.' '.$value.'</option>';
+}
 ?>
 </select>
 </td>
