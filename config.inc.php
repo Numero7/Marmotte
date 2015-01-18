@@ -659,7 +659,7 @@ Une phrase de conclusion sur le candidat incluant un commentaire sur l'audition
 		"ecole" => "ecole",
 		"concours" => "concours",
 		"sousjury" => "sousjury",
-		"concourspresentes" => "long",
+		"concourspresentes" => "short",
 		"nom" => "short",
 		"prenom" => "short",
 		"genre" => "enum",
