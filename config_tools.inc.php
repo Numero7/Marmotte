@@ -146,7 +146,10 @@ function set_topics($topics)
 
 function get_topics()
 {
-	return get_array_config("topics");
+	$result = get_array_config("topics");
+	foreach($result as $key => $value)
+		$result[$key] = $key . " - " . $value;
+	return $result;
 }
 
 function get_rubriques($type)
