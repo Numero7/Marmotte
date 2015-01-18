@@ -216,8 +216,8 @@ if($admin_users)
 						<h3 id="admindeleteaccount">Suppression d'un membre</h3>
 			<form method="post" action="index.php"
 				onsubmit="return confirm('Etes vous sur de vouloir supprimer cet utilisateur ?');">
-<select name="login">
 			<input type="hidden" name="admin_users"></input>
+				<select name="login">
 								<?php 
 								$users = listUsers();
 								foreach($users as $user => $data)
