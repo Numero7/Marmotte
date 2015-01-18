@@ -137,10 +137,8 @@ function display_select($row, $fieldID, $liste,$readonly)
 		$first = false;
 	}
 	
-	/*
-	if($fieldID == "theme1")
-		rr();
-		*/
+/*	if($fieldID == "genre")
+		rr();*/
 	?>
 </select>
 <?php

@@ -169,7 +169,7 @@ if($admin_users)
 					<select name="permissions">
 					<?php 
 				foreach($permission_levels as $val => $level)
-					if ($val<=getUserPermissionLevel())
+					if ($val<=getUserPermissionLevel()  || (isSecretaire() && $val == NIVEAU_PERMISSION_PRESIDENT))
 						echo "<option value=\"$val\">".ucfirst($level)."</option>\n";
 				?>
 				</select>
@@ -309,7 +309,7 @@ if($admin_concours)
 				<hr/>
 		
 		<h3>Liste des concours</h3>
-		<table class="inputreport">
+		<table>
 		<?php 
 		$concours = getConcours();
 		echo "<tr><th> Code </th><th> Intitule </th><th>Postes</th>";
@@ -331,6 +331,9 @@ if($admin_concours)
 		<br/>
 		<hr/>
 		<h3>Ajouter un concours</h3>
+		<p>Ce menu permet d'ajouter un concours. Si le jury est plénier, laisser les champs "SousJury*" et "President*" vides.
+		L'intitulé du concours doit être court, par exemple "CR2" ou "CR2_Coloriage".
+		</p>
 		<form method="post" action="index.php">
 					<input type="hidden" name="admin_concours"></input>
 		<table><tr><td>
@@ -390,6 +393,7 @@ if($admin_concours)
 		<br/>
 				<hr/>
 				<h3>Supprimer un concours</h3>
+				<p>Ce menu permet de supprimer un concours.</p>
 		<form method="post" action="index.php">
 							<input type="hidden" name="admin_concours"></input>
 		<?php 
@@ -403,6 +407,7 @@ if($admin_concours)
 				<input type="hidden" name="action" value="delete_concours" />
 				<input type="submit" value="Supprimer" />
 				</form>
+				</br>
 		<hr/>
 				<?php 
 	}

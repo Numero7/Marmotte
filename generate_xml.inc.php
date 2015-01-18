@@ -182,7 +182,7 @@ function EnteteDroit($row, $units)
 	global $enTetesDroit;
 	global $typesRapportsToEnteteDroit;
 	global $avis_classement;
-	global $avis_candidatur_shorte;
+	global $avis_candidature_short;
 
 	$result = "";
 
