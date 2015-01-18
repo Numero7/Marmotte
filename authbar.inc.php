@@ -26,7 +26,10 @@ else
 <span class='login'>&nbsp;&nbsp;&nbsp;<?php echo getLogin();?>&nbsp;&nbsp;&nbsp;	</span>
 						</li>
 								<li>&nbsp;</li>	
-				
+<?php 
+if(!isSuperUser())
+{
+?>				
 						<li>
 						Section/CID
 									<select id="session" onchange="window.location='index.php?reset_filter=&action=change_section&filter_section=' + this.value;">
@@ -55,6 +58,9 @@ else
 									}
 											?>
 									</select>
+									</li>
+									<?php 
+}?>
 							</ul>
 						</td>
 						<?php 
@@ -71,11 +77,22 @@ else
 //									echo "<li><a href=\"index.php?action=view&amp;reset_filter=&amp;filter_avancement=done&amp;filter_rapporteur=".getLogin()."&amp;filter_id_session=".current_session_id()."\">Faits</a></li>";
 									?>
 									</td>
+									<?php 
+						}?>
 									<td>
-<ul>
-<li>
+									<ul>
+														<li>
+								<a href="index.php?action=logout">Déconnexion</a></li>
+							<li>
+								<a href="index.php?action=changepwd">Mot de passe</a>
+								</li>
+								<?php 
+								if(!isSuperUser())
+								{
+								?>
+									<li>
 			<form method="post" action="export.php">
-		<input type="submit" value="Exporter"/>
+		<input type="submit" value="Export"/>
 		<input type="hidden" name="action" value="export"/>
 		<select name="type">
 		<?php 
@@ -90,54 +107,39 @@ else
 		?>
 		</select>
 		</form>
-		</li>
+						</li>
+							</ul>
+													<?php 
+						}
+						?>
+</td>
+<td>
+<ul>
 		<?php 
-		if(isSecretaire())
+		if(isSecretaire() && !isSuperUser())
 		{
 		?>
 						<li>
-				<form method="post" style="display: inline;" action="index.php">
-				<input type="hidden" name="action" value="displayimportexport" />
-				<input type="submit" value="Import/Ajout" />
-				</form>
-				<form method="get" style="display: inline;" action="index.php">
-				<input type="hidden" name="action" value="admin" />
-				<input type="submit" value="Admin" />
-				</form>
-				</li>
-				<li>
-				<form method="get" style="display: inline;" action="index.php">
-				<input type="hidden" name="action" value="displayunits" />
-				<input type="submit" value="Unités" />
-				</form>
-				</li>
-</ul>
-								
-							</td>
-											<?php 
-		}
-						}
-						else
-						{
-						?>
-						<td>
-				<form method="get" style="display: inline;" action="index.php">
-				<input type="hidden" name="action" value="admin" />
-				<input type="submit" value="Admin" />
-				</form>
-						</td>
+						<a href="index.php?action=displayimportexport">Import/Ajout</a>
+						</li>
 						<?php 
-						}
-						?>
-							<td>
-							<ul>
-																<li>
-								<a href="index.php?action=logout">Déconnexion</a></li>
-							<li>
-								<a href="index.php?action=changepwd">Mot de passe</a>
-								</li>
-							</ul>
-</td>
+		}
+		if(isSecretaire())
+		{?>
+						<li>
+						<a href="index.php?action=admin">Administration</a>
+</li>						
+<?php 
+		}
+		if(isSuperUser())
+		{
+		?>
+				<li>
+						<a href="index.php?action=displayunits">Unités</a>
+				</li>
+				<?php }
+				?>
+</ul>
 						</tr>
 					</table>
 	</div>

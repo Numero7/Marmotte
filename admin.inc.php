@@ -10,6 +10,7 @@ $admin_concours = isset($_REQUEST["admin_concours"]) && isSecretaire() && !isSup
 $admin_config = isset($_REQUEST["admin_config"]) && isSecretaire();
 $admin_keywords = isset($_REQUEST["admin_keywords"]) && isSecretaire();
 $admin_rubriques = isset($_REQUEST["admin_rubriques"]) && isSecretaire() && !isSuperUser();
+$admin_migration = isset($_REQUEST["admin_migration"]) && isSuperUser();
 
 
 if(isSecretaire())
@@ -17,13 +18,33 @@ if(isSecretaire())
 	?>
 <h1>Interface d'administration</h1>
 <ul>
+<?php 
+if(isSecretaire() && !isSuperUser())
+{	
+?>
 <li><a href="index.php?action=admin&amp;admin_sessions=">Sessions</a></li>
+<?php 
+}
+if(isSecretaire())
+{
+?>
 <li><a href="index.php?action=admin&amp;admin_users=">Membres</a></li>
+<?php 
+if(isSecretaire() && !isSuperUser())
+{
+?>
 <li><a href="index.php?action=admin&amp;admin_concours=">Concours</a></li>
 <li><a href="index.php?action=admin&amp;admin_config=">Configuration</a></li>
 <li><a href="index.php?action=admin&amp;admin_rubriques=">Rubriques</a></li>
 <li><a href="index.php?action=admin&amp;admin_keywords=">Mots-clés</a></li>
-</ul>
+<?php 
+}
+if(isSuperUser())
+?>
+<li><a href="index.php?action=admin&amp;admin_migration=">Migration</a></li>
+<?php 
+}	
+?></ul>
 
 <hr />
 <hr />
@@ -65,6 +86,7 @@ if($admin_users)
 					echo "Sections <input name=\"sections\" value=\"".$data->sections."\"></input>";
 				else
 					echo "<input type=\"hidden\" name=\"sections\" value=\"".$data->sections."\"></input>";
+				echo "<input type=\"hidden\" name=\"admin_users\"></input>";
 				echo "<select name=\"permissions\">\n";
 				foreach($permission_levels as $val => $level)
 				{
@@ -119,6 +141,7 @@ if($admin_users)
 	<hr/>
 	<h3 id="adminnewaccount">Création nouveau membre</h3>
 			<form method="post" action="index.php">
+			<input type="hidden" name="admin_users"></input>
 				<table class="inputreport">
 					<tr>
 						<td style="width: 20em;">Identifiant</td>
@@ -192,6 +215,7 @@ if($admin_users)
 			<form method="post" action="index.php"
 				onsubmit="return confirm('Etes vous sur de vouloir supprimer cet utilisateur ?');">
 <select name="login">
+			<input type="hidden" name="admin_users"></input>
 								<?php 
 								$users = listUsers();
 								foreach($users as $user => $data)
@@ -202,12 +226,13 @@ if($admin_users)
 								?>
 						</select>
 <input type="hidden" name="action" value="admindeleteaccount" />
-							<input type="submit" value="Supprimer rapporteur" />
+							<input type="submit" value="Supprimer" />
 			</form>
 <br/>
 <hr/>
 						<h3 id="adminnewpwd">Modification d'un mot de passe</h3>
 			<form method="post" action="index.php">
+						<input type="hidden" name="admin_users"></input>
 				<table class="inputreport">
 					<tr>
 						<td style="width: 20em;">Utilisateur</td>
@@ -300,6 +325,7 @@ if($admin_concours)
 		<hr/>
 		<h3>Ajouter un concours</h3>
 		<form method="post" action="index.php">
+					<input type="hidden" name="admin_concours"></input>
 		<table><tr><td>
 		code <input name="code" value="0601"></input>
 		</td><td>
@@ -358,6 +384,7 @@ if($admin_concours)
 				<hr/>
 				<h3>Supprimer un concours</h3>
 		<form method="post" action="index.php">
+							<input type="hidden" name="admin_concours"></input>
 		<?php 
 		$concours = getConcours();
 		echo " Concours <select name=\"code\">\n";
@@ -379,6 +406,7 @@ if($admin_config)
 	?>	
 <h2 id="config">Configuration</h2>
 <form>
+					<input type="hidden" name="admin_config"></input>
 <table>
 <tr>
 <?php 
@@ -409,6 +437,7 @@ foreach($configs as $key => $value)
 	?>
 </table>
 <form>
+					<input type="hidden" name="admin_keywords"></input>
 <table>
 <tr>
 <td>Index <input name="index"></input></td>
@@ -421,6 +450,7 @@ foreach($configs as $key => $value)
 </table>
 </form>
 <form>
+					<input type="hidden" name="admin_keywords"></input>
 <table>
 <tr>
 <td>
@@ -464,6 +494,7 @@ foreach($rubriques as $index => $rubrique)
 </table>
 <br/>
 <form>
+					<input type="hidden" name="admin_rubriques"></input>
 <table>
 <tr>
 <td>
@@ -488,6 +519,7 @@ if(count($rubriques) > 0)
 {
 	?>
 <form>
+					<input type="hidden" name="admin_rubriques"></input>
 <table>
 <tr>
 <td>
@@ -576,7 +608,7 @@ foreach($rubriques as $index => $value)
 }
 }
 
-if(isSuperUser())
+if($admin_migration)
 {
 	?>
 	<h2>Migration depuis Marmotte 1.0</h2>

@@ -1,6 +1,13 @@
 <?php
 require_once("db.inc.php");
 
+define("NIVEAU_PERMISSION_BASE", 0);
+define("NIVEAU_PERMISSION_BUREAU", 100);
+define("NIVEAU_PERMISSION_SECRETAIRE", 500);
+define("NIVEAU_PERMISSION_PRESIDENT", 700);
+define("NIVEAU_PERMISSION_SUPER_UTILISATEUR", 1000);
+define("NIVEAU_PERMISSION_INFINI", 10000000);
+
 
 function createAdminPasswordIfNeeded()
 {

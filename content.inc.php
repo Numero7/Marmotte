@@ -485,8 +485,15 @@ function alertText($text)
 					}
 					else
 					{
+						if(isSuperUser())
+						{
+							include "admin.inc.php";
+						}
+							else
+							{
 						echo get_config("welcome_message");
 						displayWithRedirects();
+							}
 					}
 					break;
 			}

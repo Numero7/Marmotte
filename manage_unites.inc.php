@@ -5,7 +5,11 @@ function unitsList()
 	if(!isset($_SESSION['all_units']))
 	{
 		$units = array();
-		$sql = "SELECT * FROM ".units_db." WHERE `section`='". real_escape_string($_SESSION['filter_section'])."' ORDER BY nickname ASC;";
+		if(isSuperUser())
+			$sql = "SELECT * FROM ".units_db." WHERE `section`='". real_escape_string($_SESSION['filter_section'])."' ORDER BY nickname ASC;";
+		else
+			$sql = "SELECT * FROM ".units_db." ORDER BY nickname ASC;";
+			
 		if($result= sql_request($sql))
 			while ($row = mysqli_fetch_object($result))
 			$units[$row->code] = $row;
@@ -49,7 +53,11 @@ function updateUnitData($unite, $data)
 		if($sql != "")
 		{
 			$sql = "UPDATE FROM ".units_db." SET ".$sql;
-			$sql .=  " WHERE code='$unite' AND `section`='". real_escape_string($_SESSION['filter_section']).";";
+			if(isSuperUser())
+				$sql .=  " WHERE code='$unite';";
+			else
+				$sql .=  " WHERE code='$unite' AND `section`='". real_escape_string($_SESSION['filter_section']).";";
+				
 			mysqli_query($sql);
 		}
 	}
@@ -61,7 +69,7 @@ function updateUnitData($unite, $data)
 
 function updateUnitDirecteur($unite, $directeur)
 {
-	$sql = "UPDATE FROM ".units_db." SET directeur='$directeur' WHERE code='$unite';";
+	$sql = "UPDATE FROM ".units_db." SET directeur='$directeur' WHERE code='$unite' AND `section`='". real_escape_string($_SESSION['filter_section'])."';";
 	sql_request($sql);
 }
 
