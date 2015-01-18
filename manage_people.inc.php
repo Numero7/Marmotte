@@ -10,14 +10,6 @@ require_once('manage_files.php');
 return mb_strtolower(replace_accents(trim($annee.$nom.$prenom," '-")));
 }
 */
-function candidateExists($nom,$prenom)
-{
-
-	$sql = "SELECT * FROM ".people_db.' WHERE nom="'.$nom.'" AND prenom="'.$prenom.'";';
-
-	$result = sql_request($sql);
-	return	(mysqli_num_rows($result) > 0);
-}
 
 function normalizeCandidat($data)
 {
@@ -95,9 +87,9 @@ function updateCandidateFromRequest($request, $oldannee="")
 	{
 		if(($request['previousnom']!= "" || $request['previousprenom'] != ""))
 		{
-			$sql = "UPDATE ".reports_db." SET nom=\"".$candidate->nom."\", prenom=\"".$candidate->prenom."\" WHERE nom =\"".$ppnom."\" AND prenom=\"".$ppprenom."\"";
+			$sql = "UPDATE ".reports_db." SET nom=\"".$candidate->nom."\", prenom=\"".$candidate->prenom."\" WHERE nom =\"".$ppnom."\" AND prenom=\"".$ppprenom."\"  AND section=\"".currentSection()."\"";
 			sql_request($sql);
-			$sql = "DELETE FROM ".people_db." WHERE nom =\"".$ppnom."\" AND prenom=\"".$ppprenom."\"";
+			$sql = "DELETE FROM ".people_db." WHERE nom =\"".$ppnom."\" AND prenom=\"".$ppprenom."\"  AND section=\"".currentSection()."\"";
 			sql_request($sql);
 		}
 	}
@@ -128,7 +120,7 @@ function updateCandidateFromData($data)
 			$first = false;
 		}
 	}
-	$sql = "UPDATE ".people_db." SET ".$sqlcore." WHERE nom=\"".$data->nom."\" AND prenom=\"".$data->prenom."\";";
+	$sql = "UPDATE ".people_db." SET ".$sqlcore." WHERE nom=\"".$data->nom."\" AND prenom=\"".$data->prenom."\" AND section=\"".currentSection()."\" ;";
 
 	sql_request($sql);
 
@@ -140,9 +132,7 @@ function updateCandidateFromData($data)
 
 function getAllCandidates()
 {
-	$sql = "SELECT * FROM ".people_db." WHERE ";
-	$sql .= " `section`='". real_escape_string($_SESSION['filter_section'])."'";
-	$sql .= ";";
+	$sql = "SELECT * FROM ".people_db." WHERE section=\"".currentSection()."\" ;";
 	$result=sql_request($sql);
 	if($result == false)
 		throw new Exception("Failed to process sql query ".$sql);
