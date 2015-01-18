@@ -143,7 +143,7 @@ function set_topics($topics)
 
 function get_topics()
 {
-	return get_array_config("topics");
+	return array_merge(array("" =>""), get_array_config("topics"));
 }
 
 function get_rubriques($type)
