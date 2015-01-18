@@ -21,7 +21,7 @@ function compute_title($row, $fieldId)
 		global $add_rubriques_people;
 		global $add_rubriques_candidats;
 		
-		$suff = intval(substr($fieldId,4)) /3;
+		$suff = intval(substr($fieldId,4));
 
 		if( isset($typesRapportsChercheurs[$row->type]) )
 			$title = $add_rubriques_people[$suff];
