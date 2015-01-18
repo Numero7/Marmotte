@@ -133,6 +133,9 @@ function displayEditableField($row, $fieldId, $canedit, $session)
 
 	$title = compute_title($row, $fieldId);
 	
+//	if($fieldId == "type")
+	//	rr();
+	
 	if($title != "" && is_field_visible($row, $fieldId))
 	{		
 		if(isset($fieldsTypes[$fieldId]))
@@ -286,6 +289,7 @@ function displayEditableReport($row, $canedit = true)
 	global $typesRapportsUnites;
 
 
+	
 	//phpinfo();
 	if(!isset($row->id_origine))
 		$row->id_origine = 0;

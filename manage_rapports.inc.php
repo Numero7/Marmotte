@@ -51,7 +51,7 @@ function compute_title($row, $fieldId)
 	
 	if(isset($row->type) && key_exists($row->type, $type_specific_fields_renaming) && key_exists($fieldId, $type_specific_fields_renaming[$row->type]))
 		$title = $type_specific_fields_renaming[$row->type][$fieldId];
-
+	
 	return $title;
 }
 
@@ -1128,6 +1128,9 @@ function is_field_visible($row, $fieldId)
 	if(in_array($fieldId, $alwaysVisibleFieldsTypes))
 		return true;
 		
+	if($fieldId == "type" && !isSecretaire())
+		return false;
+	
 	//editable info is always visible
 	if(is_field_editable($row, $fieldId))
 		return true;

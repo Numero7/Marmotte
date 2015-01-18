@@ -210,6 +210,7 @@ ini_set('xdebug.show_local_vars', 'on');
 	* pour un rapport candidat
 	*/
 	$fieldsRapportsCandidat0 = array(
+			"type",
 			"concours",
 			"sousjury",
 			"rapporteur",
@@ -523,7 +524,7 @@ ini_set('xdebug.show_local_vars', 'on');
 			"prenom" => "",
 			"genre" => "None",
 			"grade" => "None",
-			"annee_recrutement" => "1970",
+			"annee_recrutement" => "",
 			"labo1" => "",
 			"labo2" => "",
 			"labo3" => "",
