@@ -105,6 +105,7 @@ function displayFiltrage($rows, $fields, $filters, $filter_values)
 		</td>
 	</tr>
 </table>
+
 <!-- END  Menu filtrage -->
 
 <?php
@@ -158,7 +159,8 @@ if(isSecretaire())
 			</tr></table>
 		</form>
 </td>
-</tr><tr>
+</tr>
+<tr>
 <td>
 		<form onsubmit="return confirm('Supprimer ces rapports?');" method="post" action="index.php">
 				<input type="hidden" name="action" value="deleteCurrentSelection" /> <input	type="submit" value="Supprimer rapports" />
@@ -180,8 +182,9 @@ if(isSecretaire())
 			</tr>
 	</table>
 <hr />
+<p><?php  echo count($rows); ?> rapports</p>
 <table class="summary">
-	<tr>
+<tr>
 		<th class="oddrow"><span class="nomColonne"></span></th>
 		<?php
 		$rapporteurs = listNomRapporteurs();
