@@ -270,7 +270,7 @@ function display_fichiers($row, $fieldID, $session, $readonly)
 				$arr2 = array("","");
 				$prettyfile = str_replace($arr, $arr2, $prettyfile);
 			}
-			echo '<a href="'.$dir."/".$file.'">'.$prettyfile."</a><br/>\n";
+			echo '<a  target="_blank" href="'.$dir."/".$file.'">'.$prettyfile."</a><br/>\n";
 			$i++;
 		}
 		echo '</td></tr>';
