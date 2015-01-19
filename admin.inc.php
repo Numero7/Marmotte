@@ -330,8 +330,9 @@ if($admin_concours)
 		
 		<br/>
 		<hr/>
-		<h3>Ajouter un concours</h3>
-		<p>Ce menu permet d'ajouter un concours. Si le jury est plénier, laisser les champs "SousJury*" et "President*" vides.
+		<h3>Ajouter ou mettre à jour un concours</h3>
+		<p>Ce menu permet d'ajouter ou de mettre à jour un concours. Si le jury est plénier ou si vous ne savez pas encore la liste de vos soujurys,
+		laisser les champs "SousJury*" et "President*" vides.
 		L'intitulé du concours doit être court, par exemple "CR2" ou "CR2_Coloriage".
 		</p>
 		<form method="post" action="index.php">
@@ -388,7 +389,7 @@ if($admin_concours)
 								</td>
 				</tr></table>
 				<input type="hidden" name="action" value="add_concours" />
-				<input type="submit" value="Ajouter" />
+				<input type="submit" value="Ajouter / Mettre à jour" />
 				</form>
 		<br/>
 				<hr/>
