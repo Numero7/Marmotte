@@ -66,6 +66,9 @@ try
 		{			
 			require_once("utils.inc.php");
 			require_once("manage_users.inc.php");
+			if(isSecretaire())
+				createhtpasswd();
+				
 			switch($action)
 			{
 				case 'adminnewsession':

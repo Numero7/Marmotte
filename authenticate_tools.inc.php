@@ -121,6 +121,8 @@ function authenticate()
 					$last = $all[0];
 				$_SESSION['filter_section'] = $last;
 			}
+			else
+				return false;
 		}
 		return true;
 	}

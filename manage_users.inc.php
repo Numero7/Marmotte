@@ -4,6 +4,7 @@ require_once('config.inc.php');
 require_once('manage_sessions.inc.php');
 require_once('generate_xml.inc.php');
 require_once('authenticate_tools.inc.php');
+require_once('manage_files.php');
 
 function createhtpasswd()
 {
@@ -12,7 +13,7 @@ function createhtpasswd()
 	global $dossier_stockage;
 	foreach(array($dossier_temp,$dossier_stockage) as $dir)
 	{
-		create_dir_if_needed($dir);
+		create_dir_if_needed2($dir);
 	if( $handle = fopen($dir.".htpasswd" , "w" ) )
 	{
 		foreach($list as $user => $data)
