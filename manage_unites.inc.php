@@ -1,4 +1,7 @@
 <?php
+function cmpunits($a, $b) {
+	return strnatcmp($a->nickname, $b->nickname);
+}
 
 function unitsList()
 {
@@ -23,6 +26,8 @@ function unitsList()
 			$unit->prettyname = str_replace(" ","&nbsp;", $unit->nickname);
 			$unit->prettyname .= str_pad("", $maxsize +10 - $l , " ")."- ".$unit->code;
 		}
+		
+		uasort($units, 'cmpunits');
 //		rr();
 		
 		$_SESSION['all_units'] = $units;
