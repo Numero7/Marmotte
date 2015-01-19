@@ -78,15 +78,20 @@ function displayFiltrage($rows, $fields, $filters, $filter_values)
 							?>
 					<td><?php echo $data['name'];?></td>
 					<td>
-					<select   onchange="window.location='index.php?action=view&filter_<?php echo $filter?>=' + this.value;">
+					<select   onchange="window.location='index.php?action=view&amp;filter_<?php echo $filter?>=' + this.value;">
 							<option value="<?php echo $data['default_value']; ?>">
 								<?php echo $data['default_name']; ?>
 							</option>
 							<?php
 							foreach ($data['liste'] as $value => $nomitem)
 							{
+								if(is_numeric($value))
+									$value = strval($value);
+								$cur_val = $filter_values[$filter];
+								if(is_numeric($cur_val))
+									$cur_val = strval($cur_val);
 								$sel = "";
-								if ($value === $filter_values[$filter])
+								if ($value === $cur_val)
 									$sel = " selected=\"selected\"";
 								echo "<option value=\"".$value."\" $sel>".$nomitem."</option>\n";
 							}
