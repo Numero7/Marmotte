@@ -400,7 +400,7 @@ function displayEditableReport($row, $canedit = true)
 			$fieldsRapportsCandidat1 = $typesRapportToFields[$eval_type][2];
 			$fieldsRapportsCandidat2 = $typesRapportToFields[$eval_type][3];
 			$fieldsRapportsCandidat3 = $typesRapportToFields[$eval_type][4];
-			
+						
 			echo $titre;
 
 			$submits = array();

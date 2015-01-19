@@ -8,12 +8,11 @@ require_once('manage_rapports.inc.php');
 
 function display_sousjury($row, $fieldId, $readonly)
 {
-	global $sous_jurys;
+	global $tous_sous_jury;
 	$souj = array();
-
-	if( isset($row->concours) && isset($sous_jurys[$row->concours] ) )
-		foreach($sous_jurys[$row->concours] as $code -> $data)
-			$souj[$code] = $data["nom"];
+	if( isset($row->concours) && isset($tous_sous_jury[$row->concours] ) )
+		foreach($tous_sous_jury[$row->concours] as $code => $president)
+			$souj[$code] = $code;
 
 	display_select($row, $fieldId, $souj,$readonly);
 }

@@ -1289,13 +1289,22 @@ Une phrase de conclusion sur le candidat incluant un commentaire sur l'audition
 
 	
 	/* Ugly hack translated from former xml configuration system ... */
+	
 	while($result = mysqli_fetch_object($query))
 	{
 		$code = $result->code;
 		$concours_ouverts[$code] = $result->intitule;
 		$postes_ouverts[$code] = $result->postes;
+		$tous_sous_jury[$code] = array();
+		for($i = 1 ; $i <= 4; $i++)
+		{
+			$suff = "sousjury".$i;
+			$suffp = "president".$i;
+			if($result->$suff != "")
+				$tous_sous_jury[$code][$result->$suff] = $result->$suffp;
 		}
-	
+	}
+		
 	$permission_levels = array(
 		NIVEAU_PERMISSION_BASE => "rapporteur",
 		NIVEAU_PERMISSION_BUREAU => "bureau",
@@ -1336,10 +1345,15 @@ Une phrase de conclusion sur le candidat incluant un commentaire sur l'audition
 	foreach($concours_ouverts as $code => $data)
 		$conc[strval($code)] = $data;
 	
+	$liste_sous_jurys = array();
+	foreach($tous_sous_jury as $conc => $sousjurys)
+		foreach($sousjurys as $code => $president)
+			$liste_sous_jurys[$code] = $conc." - ".$code;
+	
 	$filtersConcours = array(
 			'type' => array('name'=>"Type d'évaluation" , 'liste' => $typesRapportsConcours,'default_value' => "tous", 'default_name' => ""),
 			'concours' => array('name'=>"Concours" , 'liste' => $conc, 'default_value' => "tous", 'default_name' => ""),
-			'sousjury' => array('name'=>"Sous-jury" , 'liste' => $tous_sous_jury, 'default_value' => "tous", 'default_name' => ""),
+			'sousjury' => array('name'=>"Sous-jury" , 'liste' => $liste_sous_jurys, 'default_value' => "tous", 'default_name' => ""),
 			'avis' => array('name'=>"Avis section" , 'liste' => $avis_candidature_short, 'default_value' => "tous", 'default_name' => ""),
 			'rapporteur' => array('name'=>"Rapporteur" , 'default_value' =>"tous", 'default_name' => ""),
 			'rapporteur2' => array('name'=>"Rapporteur2" , 'default_value' =>"tous", 'default_name' => ""),
