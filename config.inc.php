@@ -1306,6 +1306,8 @@ Une phrase de conclusion sur le candidat incluant un commentaire sur l'audition
 			
 	/* initializes topics */
 	$topics = get_topics();
+	foreach($topics as $key => $value)
+		$topics[$key] = $key . " - " . $value;
 
 	/** FILTERS **/
 	$filtersReports = array(

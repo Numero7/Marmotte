@@ -164,14 +164,12 @@ function alertText($text)
 				case 'addtopic':
 					add_topic($_REQUEST["index"], $_REQUEST["motcle"]);
 					global $topics;
-					$topics = get_topics();
 					include 'admin.inc.php';
 					scrollToId('config');					
 					break;
 				case 'removetopic':
 					remove_topic($_REQUEST["index"]);
 					global $topics;
-					$topics = get_topics();
 					include 'admin.inc.php';
 					scrollToId('config');					
 					break;

@@ -141,6 +141,12 @@ function remove_topic($index)
 
 function set_topics($topics)
 {
+	foreach($topics as $key => $value)
+	{
+	while( strpos($value,  $key . " - ") !== FALSE )
+		$value = substr($value, strlen($key . " - "));
+	$topics[$key] = $value;
+	}
 	set_array_config("topics", $topics);
 }
 
@@ -148,7 +154,7 @@ function get_topics()
 {
 	$result = get_array_config("topics");
 	foreach($result as $key => $value)
-		$result[$key] = $key . " - " . $value;
+		$result[$key] = $value;
 	return $result;
 }
 
