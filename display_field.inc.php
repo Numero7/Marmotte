@@ -129,6 +129,8 @@ function display_select($row, $fieldID, $liste,$readonly)
 	{
 		if(is_numeric($value))
 			$value = strval($value);
+		if(is_numeric($current_value))
+			$current_value = strval($current_value);		
 		if($first && $value != "")
 			echo  "<option value=\"\"></option>\n";
 		if($text == "") $text="   ";
