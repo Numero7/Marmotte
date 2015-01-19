@@ -275,7 +275,9 @@ ini_set('xdebug.show_local_vars', 'on');
 			"audition" => "Rapport d'audition",
 			"concourspresentes" => "Concours présentés",
 			"conflits" => "Conflits",
-			"fichiers"=> "Fichiers"
+			"fichiers"=> "Fichiers",
+			"birth" => "Date naissance",
+			"diploma" => "Date diplôme"
 	);
 
 	
@@ -316,6 +318,8 @@ ini_set('xdebug.show_local_vars', 'on');
 			"genre",
 			"grade",
 			"annee_recrutement",
+			"diploma",
+			"birth",
 			"conflits",
 			"fichiers",
 			"rapports",
@@ -526,6 +530,8 @@ ini_set('xdebug.show_local_vars', 'on');
 			"genre" => "None",
 			"grade" => "None",
 			"annee_recrutement" => "",
+			"birth" => "",
+			"diploma" => "",
 			"labo1" => "",
 			"labo2" => "",
 			"labo3" => "",
@@ -694,6 +700,8 @@ Une phrase de conclusion sur le candidat incluant un commentaire sur l'audition
 			"auteur" => "short",
 		"date" => "short",
 		"conflits" => "short",
+			"birth" => "short",
+			"diploma" => "short",
 			"labo1" => "unit",
 			"labo2" => "unit",
 			"labo3" => "unit",
@@ -805,7 +813,10 @@ Une phrase de conclusion sur le candidat incluant un commentaire sur l'audition
 			"Rapporteur3" => "rapporteur3",
 			"Rapporteur 1" => "rapporteur",
 			"Rapporteur 2" => "rapporteur2",
-			"Rapporteur 3" => "rapporteur3"
+			"Rapporteur 3" => "rapporteur3",
+			"DATNAISS" => "birth",
+			"DATOBTDIP" => "diploma",
+			"DATENOMIN" => "annee_recrutement"
 	);
 	
 	$typesRapportsToXSL = array(
@@ -1341,18 +1352,19 @@ Une phrase de conclusion sur le candidat incluant un commentaire sur l'audition
 	);
 
 	
-	$conc = array("CR"=>"tous CR","DR"=>"tous DR");
-	foreach($concours_ouverts as $code => $data)
-		$conc[strval($code)] = $data;
 	
 	$liste_sous_jurys = array();
 	foreach($tous_sous_jury as $conc => $sousjurys)
 		foreach($sousjurys as $code => $president)
 			$liste_sous_jurys[$code] = $conc." - ".$code;
+
+	$tous_concours = array("CR"=>"tous CR","DR"=>"tous DR");
+	foreach($concours_ouverts as $code => $data)
+		$tous_concours[strval($code)] = $data;
 	
 	$filtersConcours = array(
 			'type' => array('name'=>"Type d'évaluation" , 'liste' => $typesRapportsConcours,'default_value' => "tous", 'default_name' => ""),
-			'concours' => array('name'=>"Concours" , 'liste' => $conc, 'default_value' => "tous", 'default_name' => ""),
+			'concours' => array('name'=>"Concours" , 'liste' => $tous_concours, 'default_value' => "tous", 'default_name' => ""),
 			'sousjury' => array('name'=>"Sous-jury" , 'liste' => $liste_sous_jurys, 'default_value' => "tous", 'default_name' => ""),
 			'avis' => array('name'=>"Avis section" , 'liste' => $avis_candidature_short, 'default_value' => "tous", 'default_name' => ""),
 			'rapporteur' => array('name'=>"Rapporteur" , 'default_value' =>"tous", 'default_name' => ""),
