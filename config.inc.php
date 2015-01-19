@@ -1311,11 +1311,14 @@ Une phrase de conclusion sur le candidat incluant un commentaire sur l'audition
 		{
 			$suff = "sousjury".$i;
 			$suffp = "president".$i;
+			$suffm = "membressj".$i;
 			if($result->$suff != "")
-				$tous_sous_jury[$code][$result->$suff] = $result->$suffp;
+			{
+				$tous_sous_jury[$code][$result->$suff] = array("president"=> $result->$suffp, "membres" => explode(";", $result->$suffm));
+			}
 		}
 	}
-		
+
 	$permission_levels = array(
 		NIVEAU_PERMISSION_BASE => "rapporteur",
 		NIVEAU_PERMISSION_BUREAU => "bureau",

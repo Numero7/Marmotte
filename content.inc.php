@@ -210,7 +210,7 @@ function alertText($text)
 					break;
 				case 'affectersousjurys':
 					affectersousjurys();
-					displayReports();
+					include 'admin.inc.php';
 					break;
 				case 'edit':
 					editReport($id_rapport);
@@ -410,8 +410,7 @@ function alertText($text)
 					$concours = (object) array();
 					$fields = array("code", "intitule","postes",
 							 "sousjury1","sousjury2", "sousjury3", "sousjury4",
-							 "president1", "president2", "president3", "president4",
-							"membressj1","membressj2", "membressj3","membressj4"
+							 "president1", "president2", "president3", "president4"
 							);
 					foreach($fields as $field)
 						$concours->$field = isset($_REQUEST[$field]) ? $_REQUEST[$field] : "";

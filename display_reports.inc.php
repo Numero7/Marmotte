@@ -172,14 +172,7 @@ if(isSecretaire())
 		</form>
 </td>
 </tr>
-<tr>
-<td>
-<form method="post" action="index.php" onsubmit="return confirm('Affecter les sous-jurys?');">
-			<input type="hidden" name="action" value="affectersousjurys" /> <input
-				type="submit" value="Affecter sous-jurys" />
-				</form>
-	</td>
-	</tr></table>
+</table>
 	</td>
 	<?php 
 }

@@ -319,10 +319,13 @@ if($admin_concours)
 		{
 			echo "<tr>";
 			echo "<td><b>".$conc->code . "</b></td><td>". $conc->intitule. "</td><td>".$conc->postes;
-			echo "</td><td>".$conc->sousjury1. "</td><td>".$conc->president1;
-			echo "</td><td>".$conc->sousjury2. "</td><td>".$conc->president2;
-			echo "</td><td>".$conc->sousjury3. "</td><td>".$conc->president3;
-			echo "</td><td>".$conc->sousjury4. "</td><td>".$conc->president4;
+			for($i = 1; $i <= 4; $i++)
+			{
+				$suff = "sousjury".$i;
+				$suffp = "president".$i;
+				$suffm = "membressj".$i;
+				echo "</td><td>".$conc->$suff. "</td><td>".$conc->$suffp;
+			}
 			echo "</td></tr>";
 		}
 		?>
@@ -343,10 +346,20 @@ if($admin_concours)
 		intitule <input name="intitule" value="DR2"></input>
 		</td><td>
 		postes <select  name="postes"><?php for($i = 0 ; $i < 100; $i++) echo "<option value=\"".$i."\">".$i."</option>"; ?></select>
-				</td></tr><tr><td>
-		SousJury1 <input name="sousjury1"></input>
+				</td></tr><tr>
+				<?php 
+				
+				for($i = 1; $i <= 4; $i++)
+				{
+					$suff = "sousjury".$i;
+					$suffp = "president".$i;
+					$suffm = "membressj".$i;
+					?>
+					<td>
+							SousJury<?php echo $i;?> <input name="sousjury<?php echo $i;?>"/>
 			</td><td>
-		President1<select name="president1">
+		President<?php echo $i;?>
+		<select name="president<?php echo $i;?>">
 				<option value=""></option>
 		<?php 
 								$users = listUsers();
@@ -354,45 +367,32 @@ if($admin_concours)
 									echo "<option value=\"$user\">".ucfirst($data->description)."</option>";
 								?>
 						</select>
-						</td><td>
-		SousJury2 <input name="sousjury2"></input>
-		 </td><td>
-		President2<select name="president2">
-						<option value=""></option>
-								<?php 
-								$users = listUsers();
-								foreach($users as $user => $data)
-									echo "<option value=\"$user\">".ucfirst($data->description)."</option>";
-								?>
-						</select>
-						</td></tr>
-						<tr><td>
-				SousJury3 <input name="sousjury3"></input></td><td>
-				President3<select name="president3">
-				<option value=""></option>
-								<?php 
-								$users = listUsers();
-								foreach($users as $user => $data)
-									echo "<option value=\"$user\">".ucfirst($data->description)."</option>";
-								?>
-						</select>
-						</td><td>
-				SousJury4 <input name="sousjury4"></input></td><td>
-		President4<select name="president4">
-						<option value=""></option>
-								<?php 
-								$users = listUsers();
-								foreach($users as $user => $data)
-									echo "<option value=\"$user\">".ucfirst($data->description)."</option>";
-								?>
-						</select>
-								</td>
+						</td>
+					<?php 
+					if($i == 2) echo "</tr><tr>";
+				}
+				
+				?>
+
 				</tr></table>
+									<input type="hidden" name="admin_concours"></input>
 				<input type="hidden" name="action" value="add_concours" />
 				<input type="submit" value="Ajouter / Mettre à jour" />
 				</form>
 		<br/>
 				<hr/>
+				
+<h3>Affecter les sous-jurys</h3>
+<p>Cette fonction affecte automatiquement chaque candidat au sous-jury auquel appartient son premier rapporteur.</p>				
+
+<form method="post" action="index.php" onsubmit="return confirm('Affecter les sous-jurys?');">
+			<input type="hidden" name="action" value="affectersousjurys" />
+			 <input 	type="submit" value="Affecter sous-jurys" />
+							<input type="hidden" name="admin_concours"></input>
+			 </form>	
+			 <br/>
+				<hr/>
+				
 				<h3>Supprimer un concours</h3>
 				<p>Ce menu permet de supprimer un concours.</p>
 		<form method="post" action="index.php">
