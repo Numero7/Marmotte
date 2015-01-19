@@ -154,7 +154,7 @@ function get_topics()
 {
 	$result = get_array_config("topics");
 	foreach($result as $key => $value)
-		$result[$key] = $value;
+		$result[$key] = str_replace("\\", "", $value);
 	return $result;
 }
 
