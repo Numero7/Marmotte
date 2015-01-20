@@ -66,12 +66,8 @@ function export_reports_as_txt($reports, $dir, $prefix = "reports")
 function export_reports_as_csv($reports, $dir, $type = "")
 {
 	create_dir_if_needed($dir);
-	
 	if(count($reports) == 0)
-	{
 		throw new Exception("No reports to export");
-	}
-
 
 	$file = "reports.csv";
 

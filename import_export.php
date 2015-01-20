@@ -150,10 +150,12 @@ function displayExport()
 	}
 	echo "</ul>";
 }
+
+if(false)
+{
 ?>
 
 
-<!-- 
 <h2>Export</h2>
 <p>Ce menu permet d'exporter l'ensemble des rapports de la sélection en
 	cours dans différents formats. Pour une édition des rapports
@@ -161,7 +163,6 @@ function displayExport()
 
 <?php displayExport();?>
 	<hr/>
-	 -->
 <h2>Mise à jour d'un ou plusieurs rapports</h2>
 <p>
 Le formulaire suivant vous permet d'importer un ou plusieurs rapports édités offline.<br/>
@@ -169,11 +170,10 @@ Le fichier à importer doit avoir été récupéré au préalable via la fonctio
 </p>
 <?php 
 	displayImport();
-	?>
 
+}
 	
-<?php 
-if(isSecretaire())
+	if(isSecretaire())
 {
 	?>
 	<hr/>
@@ -208,13 +208,11 @@ catch(Exception $e)
 }
 */
 
-?>
-	
-	<?php 
 	displaySecretaryImport();
+
 	?>
 
-
+	
 <h2>Ajout et mise à jour des unités  (pour Secrétaires)</h2>
 <p>
 <p>
