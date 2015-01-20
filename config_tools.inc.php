@@ -2,7 +2,7 @@
 
 $configs = array(
 		"section_shortname"=> array("intitulé court de la section ou CID","Section 6"),
-		"section_intitule"=> array("intitulé long de la section","Sciences de l'information : fondements de l'informatique, calculs, algorithmes, représentations, exploitations"),
+		"section_intitule"=> array("intitulé long de la section","Sciences de l\'information : fondements de l\'informatique, calculs, algorithmes, représentations, exploitations"),
 		"president_titre" => array("titre du président, utilisé pour signer les rapports", "Président de la Section 6"),
 		"president" => array("nom du président, utilisé pour signer les rapports", "Alan Türing"),
 		"webmaster" => array("expéditeur des emails", "alan.turing@cnrs.fr"),
