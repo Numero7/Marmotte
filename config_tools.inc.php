@@ -1,14 +1,13 @@
 <?php 
 
 $configs = array(
-		"section_shortname"=> array("intitule court de la section ou CID","Section 6"),
-		"section_intitule"=> array("intitule long de la section","Sciences de l'information : fondements de l'informatique, calculs, algorithmes, représentations, exploitations"),
+		"section_shortname"=> array("intitulé court de la section ou CID","Section 6"),
+		"section_intitule"=> array("intitulé long de la section","Sciences de l'information : fondements de l'informatique, calculs, algorithmes, représentations, exploitations"),
 		"president_titre" => array("titre du président, utilisé pour signer les rapports", "Président de la Section 6"),
 		"president" => array("nom du président, utilisé pour signer les rapports", "Alan Türing"),
-		"topics" => array("liste des mots clés et leurs codes séparés par des ';' ", "1a;graphes;1b;automates;2;calcul intensif;3;théorie des jeux"),
 		"webmaster" => array("expéditeur des emails", "alan.turing@cnrs.fr"),
-		"webmaster_nom" => array("nom du webmaster, utilisé pour signer les emails", "Alan Türing"),
-		"welcome_message" => array("mesage d'accueil", "Bienvenue sur le site de la section 6")
+		"webmaster_nom" => array("signataire des emails et pdfs", "Alan Türing"),
+		"welcome_message" => array("message d'accueil", "Bienvenue sur le site de la section 6")
 );
 
 function init_config()
@@ -41,15 +40,18 @@ function set_config($key,$value)
 		throw new Exception("Cannot set config, section unknown");
 	$section = $_SESSION['filter_section'];
 
+	if($section == "") $section = 0;
+	
 	$sql = "DELETE FROM ".config_db." WHERE `section`='".$section."' and `key`='".$key."';";
 	mysqli_query($dbh,$sql);
 	
 	$sql = "INSERT INTO ".config_db."(`section`, `key`, `value`)";
 	$sql .= " VALUES ('".mysqli_real_escape_string($dbh,$section)."','".mysqli_real_escape_string($dbh,$key)."','".mysqli_real_escape_string($dbh,$value)."')";
+	
 	$result = mysqli_query($dbh,$sql);
 	
 	if(!$result)
-		throw new exception("Failed to add default_value to config key '".$key." for section '".$section."'");
+		throw new exception("Failed to add default_value to config key '".$key." for section '".$section."':<br/>".mysqli_error($dbh));
 
 	$_SESSION["config"][mysqli_real_escape_string($dbh,$key)] = mysqli_real_escape_string($dbh,$value);
 }

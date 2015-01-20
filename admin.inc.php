@@ -418,11 +418,17 @@ if($admin_config)
 					<input type="hidden" name="admin_config"></input>
 <table>
 <tr>
+
 <?php 
-echo "<tr><th>Clé</th><th>Valeur</th></tr>\n";
-foreach($_SESSION["config"] as $key=> $value)
-	if(substr($key, 0,6) != "topics" && substr($key, 0,7) != "formule" && $key!= "current_session" && substr($key, 0,8) != "rubrique" )
-		echo "<tr><td>$key</td><td><input style=width:500px value=\"".$value."\" name=\"".$key."\"></input></td></tr>\n";
+echo "<tr><th>Clé</th><th>Valeur</th><th>Description</th></tr>\n";
+global $configs;
+foreach($configs as $key => $data)
+{
+	$value = $data[1];
+	if(isset($_SESSION["config"][$key]))
+		$value = $_SESSION["config"][$key];
+		echo "<tr><td>$key</td><td><input style=width:500px value=\"".$value."\" name=\"".$key."\"></input></td><td>".$data[0]."</tr>\n";
+}
 ?>
 <tr><td>
 				<input type="hidden" name="action" value="updateconfig" />
