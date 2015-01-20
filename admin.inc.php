@@ -152,7 +152,7 @@ if($admin_users)
 						</td>
 					</tr>
 					<tr>
-						<td style="width: 20em;">Email</td>
+						<td style="width: 20em;">Email JANUS</td>
 						<td style="width: 20em;"><input name="email"
 							value="<?php if(isset($email)) echo $email; ?>" />
 						</td>
