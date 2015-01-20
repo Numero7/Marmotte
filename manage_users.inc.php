@@ -31,7 +31,7 @@ function createhtpasswd()
 	{
 		fwrite($handle,
 "AuthUserFile ".$realp."\n
-AuthName \"Vous pénétrez dans une section réservée aux membres, veuillez vous identifier\"\n
+AuthName \"Veuillez vous identifier avec votre login et votre mot de passe Marmotte\"\n
 AuthType Basic\n
 Require valid-user\n"
 );
