@@ -102,7 +102,10 @@ function export_reports_as_csv($reports, $dir, $type = "")
 	global $mandatory_export_fields;
 		$activefields =
 	array_unique(
-			array_merge($mandatory_export_fields, get_editable_fields($reports[0]))
+			array_merge(
+					$mandatory_export_fields,
+					 get_editable_fields($reports[0])
+					)
 	);
 	}
 

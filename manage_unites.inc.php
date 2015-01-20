@@ -11,7 +11,7 @@ function unitsList()
 		if(isSuperUser())
 			$sql = "SELECT * FROM ".units_db." ORDER BY nickname ASC;";
 		else
-			$sql = "SELECT * FROM ".units_db." WHERE `section`='". real_escape_string($_SESSION['filter_section'])."' ORDER BY nickname ASC;";
+			$sql = "SELECT * FROM ".units_db." WHERE `section`='". real_escape_string(currentSection())."' ORDER BY nickname ASC;";
 			
 		if($result= sql_request($sql))
 			while ($row = mysqli_fetch_object($result))
@@ -48,6 +48,11 @@ function createUnitIfNeeded($code)
 
 function updateUnitData($unite, $data)
 {
+	if(isSuperUser() && !isset($data->section))
+	{
+		echo "Superuser cannot update lab with generic section";
+		return;
+	}
 	global $fieldsUnitsDB;
 	if(unitExists($unite))
 	{
@@ -59,7 +64,7 @@ function updateUnitData($unite, $data)
 		{
 			$sql = "UPDATE FROM ".units_db." SET ".$sql;
 			if(isSuperUser())
-				$sql .=  " WHERE code='$unite';";
+				$sql .=  " WHERE code='$unite' AND `section`='". real_escape_string($data->section).";";
 			else
 				$sql .=  " WHERE code='$unite' AND `section`='". real_escape_string($_SESSION['filter_section']).";";
 				
@@ -74,7 +79,7 @@ function updateUnitData($unite, $data)
 
 function updateUnitDirecteur($unite, $directeur)
 {
-	$sql = "UPDATE FROM ".units_db." SET directeur='$directeur' WHERE code='$unite' AND `section`='". real_escape_string($_SESSION['filter_section'])."';";
+	$sql = "UPDATE FROM ".units_db." SET directeur='$directeur' WHERE code='$unite' AND `section`='". currentSection()."';";
 	sql_request($sql);
 }
 
@@ -103,14 +108,14 @@ function addUnit($nickname, $code, $fullname, $directeur)
 	}
 
 	unset($_SESSION['all_units']);
-	$sql = "DELETE FROM ".units_db." WHERE code = \"".$code."\";";
+	$sql = "DELETE FROM ".units_db." WHERE code = \"".$code."\" and section =\"".currentSection()."\";";
 	sql_request($sql);
 
 	$values = "\"".real_escape_string($nickname)."\",";
 	$values .= "\"".str_replace(' ','',real_escape_string($code))."\",";
 	$values .= "\"".real_escape_string($fullname)."\",";
 	$values .= "\"".real_escape_string($directeur)."\",";
-	$values .= "\"".real_escape_string($_SESSION['filter_section'])."\"";
+	$values .= "\"".real_escape_string(currentSection())."\"";
 	
 	$sql = "INSERT INTO ".units_db." (nickname, code, fullname, directeur, section) VALUES ($values);";
 	sql_request($sql);
@@ -119,7 +124,7 @@ function addUnit($nickname, $code, $fullname, $directeur)
 function deleteUnit($code)
 {
 	unset($_SESSION['all_units']);
-	$sql = "DELETE FROM ".units_db." WHERE code = \"".$code."\";";
+	$sql = "DELETE FROM ".units_db." WHERE code = \"".$code."\" and section=\"".currentSection()."\";";
 	sql_request($sql);
 }
 
