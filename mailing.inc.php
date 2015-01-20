@@ -43,7 +43,7 @@ function mailIndividualRapporteur($email_titre, $email_body, $email_fin, $rappor
 }
 
 
-$email_titre = "[conrs section ".get_config("section_nb")."] liste de vos rapports";
+$email_titre = "[conrs section ".currentSection()."] liste de vos rapports";
 
 $email_body ="Bonjour,\r\n\r\n\r\n\t veuillez trouver ci-dessous la liste des rapports pour lesquels ";
 $email_body .= "vous avez été désigné comme rapporteur et qui ne sont pas encore édités.\r\n\r\n\r\n\r\n";

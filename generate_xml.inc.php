@@ -446,7 +446,7 @@ function createXMLReportElem($row, DOMDocument $doc, $keep_br = true)
 
 
 	//On ajoute le numero de la section
-	appendLeaf("section_nb", get_config("section_nb"), $doc, $rapportElem);
+	appendLeaf("section_nb", currentSection(), $doc, $rapportElem);
 
 	//On ajoute l'intitulé de la section
 	appendLeaf("section_intitule", get_config("section_intitule"), $doc, $rapportElem);

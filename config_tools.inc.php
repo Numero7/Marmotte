@@ -7,6 +7,7 @@ $configs = array(
 		"president" => array("nom du président, utilisé pour signer les rapports", "Alan Türing"),
 		"topics" => array("liste des mots clés et leurs codes séparés par des ';' ", "1a;graphes;1b;automates;2;calcul intensif;3;théorie des jeux"),
 		"webmaster" => array("expéditeur des emails", "alan.turing@cnrs.fr"),
+		"webmaster_nom" => array("nom du webmaster, utilisé pour signer les emails", "Alan Türing"),
 		"welcome_message" => array("mesage d'accueil", "Bienvenue sur le site de la section 6")
 );
 
@@ -48,7 +49,7 @@ function set_config($key,$value)
 	$result = mysqli_query($dbh,$sql);
 	
 	if(!$result)
-		throw exception("Failed to add default_value to config key '".$key." for section '".$section."'");
+		throw new exception("Failed to add default_value to config key '".$key." for section '".$section."'");
 
 	$_SESSION["config"][mysqli_real_escape_string($dbh,$key)] = mysqli_real_escape_string($dbh,$value);
 }

@@ -280,7 +280,7 @@ function changePwd($login,$old,$new1,$new2, $envoiparemail)
 				$body = "Votre mot de passe pour le site \r\n".adresse_du_site."\r\n a été mis à jour:\r\n";
 				$body .= "\t\t\t login: '".$login."'\r\n";
 				$body .= "\t\t\t motdepasse: '".$new1."'\r\n";
-				$body .= "\r\n\r\n\t Amicalement, ".get_config("secretaire").".";
+				$body .= "\r\n\r\n\t Amicalement, ".get_config("webmaster_nom").".";
 				$cc = "";
 				foreach($users as $user)
 				{
@@ -360,7 +360,7 @@ function createUser($login,$pwd,$desc,$email, $sections, $permissions, $envoipar
 			$body .= "\t\t\t login: '".$login."'\r\n";
 			$body .= "\t\t\t motdepasse: '".$pwd."'\r\n";
 			$body .= "\r\nLors de votre première connexion vous pourrez changer votre mot de passe.\r\n";
-			$body .= "\r\n\r\n\t Amicalement, ".get_config("secretaire").".";
+			$body .= "\r\n\r\n\t Amicalement, ".get_config("webmaster_nom").".";
 
 			$cc = "";
 			$currLogin = getLogin();
