@@ -858,7 +858,7 @@ Une phrase de conclusion sur le candidat incluant un commentaire sur l'audition
 	
 	$max_classement = 30;
 	for($i = 1; $i <= $max_classement; $i++)
-		$avis_candidature[strval($i)] = $avis_classement[strval($i)] = "<B>$i</B>";
+		$avis_candidature_short[strval($i)] = $avis_classement[strval($i)] = "<B>$i</B>";
 	
 	/* Pour les SPE par exemple*/
 	$avis_vide = array(""=>"");
