@@ -116,7 +116,7 @@ function migrate( $section, $serverName, $dbname, $login, $password, $type)
 				try
 				{
 					echo "<b>Importing code '".$data->code."' named '".$data->nickname."' of section ".$section."</b><br/>";
-					$sql = "DELETE FROM ".units_db." WHERE `code`=\"".$data->code."\";";
+					$sql = "DELETE FROM ".units_db." WHERE `code`=\"".$data->code."\" AND section=\"".$section."\";";
 					sql_request($sql);
 					
 					$sqlvalues = '"'.$section.'"';
