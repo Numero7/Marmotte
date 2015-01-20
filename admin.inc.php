@@ -31,17 +31,19 @@ if(isSecretaire())
 ?>
 <li><a href="index.php?action=admin&amp;admin_users=">Membres</a></li>
 <li><a href="index.php?action=admin&amp;admin_unites">Unités</a>
+<li><a href="index.php?action=admin&amp;admin_config=">Configuration</a></li>
 <?php 
+}
 if(isSecretaire() && !isSuperUser())
 {
 ?>
 <li><a href="index.php?action=admin&amp;admin_concours=">Concours</a></li>
-<li><a href="index.php?action=admin&amp;admin_config=">Configuration</a></li>
 <li><a href="index.php?action=admin&amp;admin_rubriques=">Rubriques</a></li>
 <li><a href="index.php?action=admin&amp;admin_keywords=">Mots-clés</a></li>
 <?php 
 }
 if(isSuperUser())
+{
 ?>
 <li><a href="index.php?action=admin&amp;admin_migration=">Migration</a></li>
 <?php 
