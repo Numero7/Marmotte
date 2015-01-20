@@ -222,7 +222,7 @@ if($admin_users)
 								$users = listUsers();
 								foreach($users as $user => $data)
 								{
-									if ($data->permissions <= getUserPermissionLevel())
+									if ($data->permissions <= getUserPermissionLevel() || (isSecretaire() && $data->permissions == NIVEAU_PERMISSION_PRESIDENT))
 										echo "<option value=\"$user\">".ucfirst($data->description)."</option>";
 								}
 								?>
