@@ -5,7 +5,6 @@ $configs = array(
 		"section_intitule"=> array("intitule long de la section","Sciences de l'information : fondements de l'informatique, calculs, algorithmes, représentations, exploitations"),
 		"president_titre" => array("titre du président, utilisé pour signer les rapports", "Président de la Section 6"),
 		"president" => array("nom du président, utilisé pour signer les rapports", "Alan Türing"),
-		"adresse_du_site" => array("adresse web du site","https://marmotte2.cn6.fr"),
 		"topics" => array("liste des mots clés et leurs codes séparés par des ';' ", "1a;graphes;1b;automates;2;calcul intensif;3;théorie des jeux"),
 		"webmaster" => array("expéditeur des emails", "alan.turing@cnrs.fr"),
 		"welcome_message" => array("mesage d'accueil", "Bienvenue sur le site de la section 6")

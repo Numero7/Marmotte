@@ -375,12 +375,12 @@ function alertText($text)
 					scrollToId("membres");
 					break;
 				case 'adminnewaccount':
-						if (isset($_REQUEST["email"]) and isset($_REQUEST["description"]) and isset($_REQUEST["newpwd1"]) and isset($_REQUEST["newpwd2"]) and isset($_REQUEST["login"]))
+						if (isset($_REQUEST["email"]) and isset($_REQUEST["description"]) and isset($_REQUEST["newpwd1"]) and isset($_REQUEST["newpwd2"]))
 						{
 							$desc = $_REQUEST["description"];
 							$pwd1 = $_REQUEST["newpwd1"];
 							$pwd2 = $_REQUEST["newpwd2"];
-							$login = $_REQUEST["login"];
+							$login = $_REQUEST["email"];
 							$email = $_REQUEST["email"];
 							$permissions = $_REQUEST["permissions"];
 							$sections = "";

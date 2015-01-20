@@ -277,7 +277,7 @@ function changePwd($login,$old,$new1,$new2, $envoiparemail)
 
 			if($envoiparemail)
 			{
-				$body = "Votre mot de passe pour le site \r\n".get_config("adresse_du_site")."\r\n a été mis à jour:\r\n";
+				$body = "Votre mot de passe pour le site \r\n".adresse_du_site."\r\n a été mis à jour:\r\n";
 				$body .= "\t\t\t login: '".$login."'\r\n";
 				$body .= "\t\t\t motdepasse: '".$new1."'\r\n";
 				$body .= "\r\n\r\n\t Amicalement, ".get_config("secretaire").".";
@@ -355,7 +355,7 @@ function createUser($login,$pwd,$desc,$email, $sections, $permissions, $envoipar
 		{
 			$body = "Marmotte est un site web destiné à faciliter la répartition, le dépôt, l'édition et la production\r\n";
 			$body .= "des rapports par les sections du comité national.\r\n";
-			$body .= "\r\nLe site est accessible à l'adresse \r\n\t\t\t".get_config("adresse_du_site")."\r\n";
+			$body .= "\r\nLe site est accessible à l'adresse \r\n\t\t\t".adresse_du_site."\r\n";
 			$body .= "\r\nUn compte Marmotte vient d'être créé pour vous:\r\n\r\n";
 			$body .= "\t\t\t login: '".$login."'\r\n";
 			$body .= "\t\t\t motdepasse: '".$pwd."'\r\n";

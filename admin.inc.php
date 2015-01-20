@@ -146,15 +146,9 @@ if($admin_users)
 			<input type="hidden" name="admin_users"></input>
 				<table class="inputreport">
 					<tr>
-						<td style="width: 20em;">Identifiant</td>
-						<td style="width: 20em;"><input name="login"
-							value="login" />
-						</td>
-					</tr>
-					<tr>
-						<td style="width: 20em;">Description</td>
+						<td style="width: 20em;">Nom prenom</td>
 						<td style="width: 20em;"><input name="description"
-							value="<?php if(isset($description)) echo $description; ?>" />
+							value="Alan Turing" />
 						</td>
 					</tr>
 					<tr>
