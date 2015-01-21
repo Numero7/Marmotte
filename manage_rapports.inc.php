@@ -622,14 +622,14 @@ function addReportToDatabase($report,$normalize = true)
 			{
 				if (!in_array($field,$specialRule))
 				{
-					if(isset($report->$field) && isset($previous_report->$field) &&($previous_report->$field != $report->$field) && isset($fieldsPermissions[$field]) &&  $fieldsPermissions[$field] > $level)
+					if(isset($report->$field) && isset($previous_report->$field) &&($previous_report->$field !== $report->$field) && isset($fieldsPermissions[$field]) &&  $fieldsPermissions[$field] > $level)
 						throw new Exception("Vous n'avez pas les autorisations nécessaires (".$level."<".$fieldsPermissions[$field].") pour modifier le champ ".$field);
-					if( isset($report->$field) && isset($previous_report->$field) && $previous_report->$field != $report->$field)
+					if( isset($report->$field) && isset($previous_report->$field) && $previous_report->$field !== $report->$field)
 					{
 						if(! is_field_editable($previous_report, $field))
 							throw new Exception("Le compte ".getLogin()." n'a pas la permission de mettre à jour le champ ".$field." du rapport ".$id_origine.". Si nécessaire, veuillez contacter le bureau pour demander un changement de rapporteur.");
 
-						if( isset($current_report->$field) && ($previous_report->$field != $current_report->$field)  && ($current_report->$field != $report->$field))
+						if( isset($current_report->$field) && ($previous_report->$field !== $current_report->$field)  && ($current_report->$field !== $report->$field))
 						{
 							global $mergeableTypes;
 							global $crashableTypes;
