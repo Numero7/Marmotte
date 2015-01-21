@@ -620,16 +620,25 @@ function addReportToDatabase($report,$normalize = true)
 			//echo "id_origine $id_origine current_id ".$current_report->id."<br/>";
 			foreach($fieldsRapportAll as $field => $comment)
 			{
+				
 				if (!in_array($field,$specialRule))
 				{
 					if(isset($report->$field) && isset($previous_report->$field) &&($previous_report->$field !== $report->$field) && isset($fieldsPermissions[$field]) &&  $fieldsPermissions[$field] > $level)
 						throw new Exception("Vous n'avez pas les autorisations nécessaires (".$level."<".$fieldsPermissions[$field].") pour modifier le champ ".$field);
-					if( isset($report->$field) && isset($previous_report->$field) && $previous_report->$field !== $report->$field)
+					if(isset($report->$field))
+					{
+					if(!isset($previous_report->$field) || $previous_report->$field !== $report->$field)
 					{
 						if(! is_field_editable($previous_report, $field))
 							throw new Exception("Le compte ".getLogin()." n'a pas la permission de mettre à jour le champ ".$field." du rapport ".$id_origine.". Si nécessaire, veuillez contacter le bureau pour demander un changement de rapporteur.");
 
-						if( isset($current_report->$field) && ($previous_report->$field !== $current_report->$field)  && ($current_report->$field !== $report->$field))
+						if( 
+								isset($current_report->$field)
+								&& isset($report->$field)
+								&& isset($previous_report->$field)
+								&& ($previous_report->$field !== $current_report->$field)
+								&& ($current_report->$field !== $report->$field)
+								)
 						{
 							global $mergeableTypes;
 							global $crashableTypes;
@@ -656,7 +665,7 @@ function addReportToDatabase($report,$normalize = true)
 						{
 							$current_report->$field = $report->$field;
 						}
-
+					}
 					}
 				}
 			}
@@ -670,7 +679,7 @@ function addReportToDatabase($report,$normalize = true)
 			$current_report = $report;
 		}
 
-
+//rr();
 		$sqlfields = "";
 		$sqlvalues = "";
 
@@ -692,6 +701,7 @@ function addReportToDatabase($report,$normalize = true)
 		}
 
 		$sql = "INSERT INTO ".reports_db." ($sqlfields) VALUES ($sqlvalues);";
+		//echo $sql;
 		sql_request($sql);
 
 		global $dbh;
