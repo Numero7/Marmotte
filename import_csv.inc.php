@@ -165,7 +165,7 @@ function import_csv($type,$filename, $subtype = "", $create = false, $sep="?", $
 		else if($output != "")
 			return $nb." rapports ou unités ont été ajoutés dans la base <br/>".$output;
 		else
-			return $nb." rapports ont été ajoutés dans la base.";
+			return $nb." rapports ou unités ont été ajoutés dans la base.";
 	}
 	else
 	{
