@@ -330,9 +330,12 @@ if($admin_concours)
 		<br/>
 		<hr/>
 		<h3>Ajouter ou mettre à jour un concours</h3>
-		<p>Ce menu permet d'ajouter ou de mettre à jour un concours. Si le jury est plénier ou si vous ne savez pas encore la liste de vos soujurys,
-		laisser les champs "SousJury*" et "President*" vides.
-		L'intitulé du concours doit être court, par exemple "CR2" ou "CR2_Coloriage".
+		<p>Ce menu permet d'ajouter ou de mettre à jour un concours.<br/>
+		Le code du concours doit être numérique, par exempe "0602", les caractères non-numériques seront supprimés automatiquement.</br>
+		L'intitulé du concours doit être court, par exemple "CR2" ou "CR2_Coloriage".<br/>
+		 Si le jury est plénier ou si vous ne connaissez pas encore la liste de vos sous-jurys,
+		laisser les champs "SousJury*" et "President*" vides.<br/>
+		
 		</p>
 		<form method="post" action="index.php">
 					<input type="hidden" name="admin_concours"></input>
