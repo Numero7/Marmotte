@@ -74,6 +74,14 @@ if($admin_users)
 
 <hr/>
 							<h3 id="infosrapporteur">Statut des membres</h3>
+							<p>Droits des différents statuts:</p>
+								<ul>
+	<li><b>Rapporteur</b>: peut voir tous les rapports et éditer les rapports et candidats ceux dont on est rapporteur.</li>
+<li><b>Bureau</b>: peut changer les rapporteurs et éditer les infos candidats.</li>
+<li><b>Secrétaire et président</b>: tous les droits sur tout dans la section.</li>
+<li><b>Admin</b>: tous les droits sur tout dans toutes les sections.</b>
+</ul>	
+							
 	<table>
 		<?php 
 		global $sous_jurys;
@@ -144,6 +152,7 @@ if($admin_users)
 	</table>
 	<hr/>
 	<h3 id="adminnewaccount">Création nouveau membre</h3>
+	<p>Ce formulaire permet de créer un nouveau rapporteur</p>
 			<form method="post" action="index.php">
 			<input type="hidden" name="admin_users"></input>
 				<table class="inputreport">
