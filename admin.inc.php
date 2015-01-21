@@ -268,7 +268,8 @@ if($admin_users)
 					</tr>
 					<tr>
 					<td>
-											<input type="hidden" name="oldpwd" value="" /> <input
+											<input type="hidden" name="oldpwd" value="" />
+											 <input
 							type="hidden" name="action" value="adminnewpwd" />
 						<input type="submit" value="Modifier mot de passe" />
 					</td>						<td><input type="checkbox" name="envoiparemail" checked='checked'
@@ -296,7 +297,14 @@ if($admin_users)
 			</form>
 			 -->
 <hr/>
-
+<h3>Perte temporaire des droits desecrétaire</h3>
+<p>Pour perdre vos droits de secrétaire et voir marmotte depuis le point de vue d'un rapporteur,
+cliquer sur le bouton.</p>
+<form>
+											 <input
+							type="hidden" name="action" value="lose_secretary_status" />
+						<input type="submit" value="Perdre son statut de secrétaire" />
+</form>
 	
 <?php
 }

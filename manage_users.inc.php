@@ -141,7 +141,12 @@ function simpleListUsers()
 function getUserPermissionLevel($login = "")
 {	
 	if ($login=="" || $login == getLogin())
-		return isset($_SESSION['permission']) ? $_SESSION['permission'] : 0;
+	{
+	$result = isset($_SESSION['permission']) ? $_SESSION['permission'] : 0;
+	if(isset($_SESSION["lose_secretary_status"]) && $result >= NIVEAU_PERMISSION_BASE)
+			return NIVEAU_PERMISSION_BASE;
+	else return $result;
+	}
 
 		if(!isset($_SESSION["login"]))
 			throw new Exception("User not logged in !");
@@ -150,10 +155,14 @@ function getUserPermissionLevel($login = "")
 	$login = strtolower($login);
 	if ($login == "admin")
 		return NIVEAU_PERMISSION_SUPER_UTILISATEUR;
+
 	$users = listUsers();
 	if (isset($users[$login]))
 	{
 		$data = $users[$login];
+		if(isset($_SESSION["lose_secretary_status"]) && $data->permissions >= NIVEAU_PERMISSION_BASE)
+			return NIVEAU_PERMISSION_BASE;
+		
 		return $data->permissions;
 	}
 	else
@@ -172,13 +181,24 @@ function genere_motdepasse($len=10)
 
 function isSuperUser($login = "")
 {
+	if(isset($_SESSION["lose_secretary_status"]))
+		return false;
+	
 	if($login == "")
 		$login = getLogin();
 	return getUserPermissionLevel($login) >= NIVEAU_PERMISSION_SUPER_UTILISATEUR;
 };
 
+function lose_secretary_status()
+{
+	$_SESSION["lose_secretary_status"]	= true;
+}
+
 function isSecretaire($login = "")
 {
+	if(isset($_SESSION["lose_secretary_status"]))
+		return false;
+	
 	if($login == "")
 		$login = getLogin();
 	return getUserPermissionLevel($login) >= NIVEAU_PERMISSION_SECRETAIRE;

@@ -142,6 +142,9 @@ function alertText($text)
 
 			switch($action)
 			{
+				case 'lose_secretary_status':
+					lose_secretary_status();
+					break;
 				case 'change_section':
 					displayReports();
 					break;

@@ -1124,6 +1124,7 @@ Une phrase de conclusion sur le candidat incluant un commentaire sur l'audition
 	
 	/* permissions levels for actions */
 	$actions_level = array(
+			"lose_secretary_status" => NIVEAU_PERMISSION_SECRETAIRE,
 			"migrate" => NIVEAU_PERMISSION_SUPER_UTILISATEUR,
 			"removerubrique" => NIVEAU_PERMISSION_SECRETAIRE,
 			"addrubrique" => NIVEAU_PERMISSION_SECRETAIRE,
