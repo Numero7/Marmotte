@@ -186,6 +186,9 @@ if(isSecretaire())
 		<th class="oddrow"><span class="nomColonne"></span></th>
 		<?php
 		$rapporteurs = listNomRapporteurs();
+		$bur = isBureauUser();
+		$sec = isSecretaire();
+		
 		global $tous_avis;
 		$prettyunits = unitsList();
 		
@@ -231,7 +234,7 @@ if(isSecretaire())
 			$data = $row->$fieldID;
 			$type = isset($fieldsTypes[$fieldID]) ?  $fieldsTypes[$fieldID] : "";
 
-			if(isBureauUser() && !isSecretaire() && strpos($type,"rapporteur") !==false)
+			if($bur && !$sec && strpos($type,"rapporteur") !==false)
 			{
 				?>
 				<select onchange="window.location='index.php?action=update&id_origine=<?php echo $row->id_origine; ?>&field<?php echo $fieldID; ?>=' + this.value;">
@@ -246,7 +249,7 @@ if(isSecretaire())
 				<?php 
 //		echo (isset($rapporteurs[$row->$fieldID]) ? $rapporteurs[$row->$fieldID] : $row->$fieldID);
 			}
-			else if(isSecretaire() &&  $type=="avis")
+			else if($sec &&  $type=="avis")
 			{
 //		displayAvisMenu($fieldID,$row);
 		echo isset($tous_avis[$row->$fieldID]) ? $tous_avis[$row->$fieldID] : $row->$fieldID;
