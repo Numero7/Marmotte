@@ -351,6 +351,10 @@ function addCsvReport($subtype, $properties)
 	
 	if(isset($properties["unite"]))
 		$properties["code"] = $properties["unite"];
+
+	if(isset($properties["SIGLE"]))
+		$properties["genre"] = ($properties["SIGLE"] == "Mr")? "homme" : ($properties["SIGLE"] == "Mme" ? "femme" : "");
+	
 	if(isset($properties["grade"]) && !isset($properties["grade_rapport"]))
 		$properties["grade_rapport"] = $properties["grade"];
 	
