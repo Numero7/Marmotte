@@ -86,6 +86,7 @@ function removeCredentials()
 	unset($_SESSION["all_users"]);
 	unset($_SESSION["rows_id"]);
 	unset($_SESSION["lose_secretary_status"]);
+	unset($_SESSION["permission_mask"]);
 }
 
 function authenticateBase($login,$pwd)

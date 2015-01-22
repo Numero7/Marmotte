@@ -138,14 +138,17 @@ function simpleListUsers()
 	return $result;
 }
 
-function getUserPermissionLevel($login = "")
+function getUserPermissionLevel($login = "", $use_mask = true )
 {	
+	$mask = NIVEAU_PERMISSION_INFINI;
+	
+	if($use_mask && isset($_SESSION["permission_mask"]))
+		$mask = $_SESSION["permission_mask"];
+
 	if ($login=="" || $login == getLogin())
 	{
-	$result = isset($_SESSION['permission']) ? $_SESSION['permission'] : 0;
-	if(isset($_SESSION["lose_secretary_status"]) && $result >= NIVEAU_PERMISSION_BASE)
-			return NIVEAU_PERMISSION_BASE;
-	else return $result;
+		$result = isset($_SESSION['permission']) ? $_SESSION['permission'] : 0;
+		return min($mask, $result);
 	}
 
 		if(!isset($_SESSION["login"]))
@@ -159,11 +162,8 @@ function getUserPermissionLevel($login = "")
 	$users = listUsers();
 	if (isset($users[$login]))
 	{
-		$data = $users[$login];
-		if(isset($_SESSION["lose_secretary_status"]) && $data->permissions >= NIVEAU_PERMISSION_BASE)
-			return NIVEAU_PERMISSION_BASE;
-		
-		return $data->permissions;
+		$data = $users[$login];		
+		return min($mask, $data->permissions);
 	}
 	else
 	{
@@ -189,19 +189,11 @@ function isSuperUser($login = "")
 	return getUserPermissionLevel($login) >= NIVEAU_PERMISSION_SUPER_UTILISATEUR;
 };
 
-function lose_secretary_status()
+function isSecretaire($login = "", $use_mask = true)
 {
-	$_SESSION["lose_secretary_status"]	= true;
-}
-
-function isSecretaire($login = "")
-{
-	if(isset($_SESSION["lose_secretary_status"]))
-		return false;
-	
 	if($login == "")
 		$login = getLogin();
-	return getUserPermissionLevel($login) >= NIVEAU_PERMISSION_SECRETAIRE;
+	return getUserPermissionLevel($login, $use_mask) >= NIVEAU_PERMISSION_SECRETAIRE;
 };
 
 function getLogin()
@@ -230,14 +222,9 @@ function getPresident()
 	return null;
 }
 
-function isBureauUser($login = "")
+function isBureauUser($login = "", $use_mask = true)
 {
-	return getUserPermissionLevel($login) >= NIVEAU_PERMISSION_BUREAU;
-};
-
-function isRapporteurUser($login = "")
-{
-	return getUserPermissionLevel($login) >= NIVEAU_PERMISSION_BASE;
+	return getUserPermissionLevel($login, $use_mask) >= NIVEAU_PERMISSION_BUREAU;
 };
 
 function isSousJury($sousjury, $login = "")

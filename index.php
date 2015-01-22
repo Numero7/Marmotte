@@ -96,6 +96,12 @@ try
 						$_REQUEST["action"] = 'admin';
 					}
 					break;
+				case 'change_role':
+					$role = isset($_REQUEST["role"]) ? $_REQUEST["role"] : 0;
+					$role = min( $role, getUserPermissionLevel("",false));
+					$_SESSION["permission_mask"] = $role;
+				break;
+					
 			}
 
 		try{

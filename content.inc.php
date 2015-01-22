@@ -129,7 +129,8 @@ function alertText($text)
 							<script type="text/javascript">
 							window.location = "index.php?action=view&id=<?php echo $id;?>"
 							</script>
-							<?php 
+							here
+							<?php
 				}
 				
 		
@@ -142,9 +143,6 @@ function alertText($text)
 
 			switch($action)
 			{
-				case 'lose_secretary_status':
-					lose_secretary_status();
-					break;
 				case 'change_section':
 					displayReports();
 					break;
@@ -205,7 +203,7 @@ function alertText($text)
 					}
 					break;
 				case 'view':
-					displayReports();
+					displayReports(isset($_REQUEST["id"])?$_REQUEST["id"]:0);
 					break;
 				case 'deleteCurrentSelection':
 					deleteCurrentSelection();
@@ -303,6 +301,11 @@ function alertText($text)
 								editWithRedirect($report->id);
 							else if(isset($_REQUEST["submitandkeepviewing"]))
 								viewWithRedirect($report->id);
+							else
+							{
+								displayWithRedirects($report->id);
+							}
+							
 						}
 					}
 					break;

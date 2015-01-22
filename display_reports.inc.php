@@ -231,22 +231,24 @@ if(isSecretaire())
 			$data = $row->$fieldID;
 			$type = isset($fieldsTypes[$fieldID]) ?  $fieldsTypes[$fieldID] : "";
 
-			if($type=="rapporteur")
+			if(isBureauUser() && strpos($type,"rapporteur") !==false)
 			{
 				?>
-		<!-- Displaying rapporteur menu -->
-		<?php 
-/*		displayRapporteurMenu($fieldID,$row,$users);*/
-		
-		echo (isset($rapporteurs[$row->$fieldID]) ? $rapporteurs[$row->$fieldID] : $row->$fieldID);
+				<select onchange="window.location='index.php?action=update&id_origine=<?php echo $row->id_origine; ?>&field<?php echo $fieldID; ?>=' + this.value;">
+				<?php 
+				foreach($rapporteurs as $rapporteur => $nom)
+				{
+					$selected = ($rapporteur == $row->$fieldID) ? "selected=on" : "";
+					echo "<option ".$selected." value=\"".$rapporteur."\">".$nom."</option>\n";
+				}
+				?>
+				</select>
+				<?php 
+//		echo (isset($rapporteurs[$row->$fieldID]) ? $rapporteurs[$row->$fieldID] : $row->$fieldID);
 			}
 			else if(isSecretaire() &&  $type=="avis")
 			{
-				?>
-		<!-- Displaying avis menu -->
-		<?php 
-/*
-		displayAvisMenu($fieldID,$row);*/
+//		displayAvisMenu($fieldID,$row);
 		echo isset($tous_avis[$row->$fieldID]) ? $tous_avis[$row->$fieldID] : $row->$fieldID;
 			}
 			else if($fieldID=="sousjury")

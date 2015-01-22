@@ -131,6 +131,30 @@ if(!isSuperUser())
 </li>						
 <?php 
 		}
+		if(isBureauUser("", false))
+		{
+			?>
+			<li>
+			Mode:
+			<select id="session" onchange="window.location='index.php?action=change_role&role=' + this.value;">
+			<?php 
+					if(isSecretaire("", false))
+					{
+						$levels = array(NIVEAU_PERMISSION_SECRETAIRE => "Admin", NIVEAU_PERMISSION_BUREAU => "Bureau", NIVEAU_PERMISSION_BASE => "Normal");
+						foreach($levels as $level => $name)
+						{
+							if(getUserPermissionLevel("",false) >= $level )
+							{
+								$selected = (isset($_SESSION["permission_mask"]) && $_SESSION["permission_mask"] == $level) ? "selected=on" : "";
+								echo "<option ".$selected." value=\"".$level."\">".$name."</option>\n";
+							}
+						}
+					}
+			?>
+			</select>
+			</li>
+			<?php
+					}
 				?>
 </ul>
 						</tr>

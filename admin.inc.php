@@ -297,6 +297,7 @@ if($admin_users)
 			</form>
 			 -->
 <hr/>
+<!--
 <h3>Perte temporaire des droits desecrétaire</h3>
 <p>Pour perdre vos droits de secrétaire et voir marmotte depuis le point de vue d'un rapporteur,
 cliquer sur le bouton.</p>
@@ -305,7 +306,7 @@ cliquer sur le bouton.</p>
 							type="hidden" name="action" value="lose_secretary_status" />
 						<input type="submit" value="Perdre son statut de secrétaire" />
 </form>
-	
+-->	
 <?php
 }
 if($admin_unites)

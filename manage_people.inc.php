@@ -92,7 +92,6 @@ function updateCandidateFromRequest($request, $oldannee="")
 		}
 
 	}
-
 	$candidate = updateCandidateFromData($data);
 
 	return $candidate;
