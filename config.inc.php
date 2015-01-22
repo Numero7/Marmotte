@@ -294,6 +294,7 @@ ini_set('xdebug.show_local_vars', 'on');
 	array('id','nom','prenom','genre','type','concours',
 			"grade",
 			"annee_recrutement",
+			"diploma",
 			"labo1",
 			"labo2",
 			"labo3",
