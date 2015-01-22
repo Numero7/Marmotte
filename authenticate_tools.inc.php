@@ -122,6 +122,7 @@ function authenticate()
 				if( array_search($last,$all) === false)
 					$last = $all[0];
 				$_SESSION['filter_section'] = $last;
+				$_SESSION["permission_mask"] = 0;
 			}
 			else
 				return false;
