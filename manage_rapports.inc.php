@@ -928,7 +928,7 @@ function find_people_reports($nom, $prenom)
 		return array();
 		
 	$sql = "SELECT * from ".reports_db. " WHERE id=id_origine AND statut!=\"supprime\"";
-	$sql .= ' AND nom="'.$nom.'" AND prenom="'.$prenom.'" ORDER BY id ASC';
+	$sql .= ' AND nom="'.$nom.'" AND prenom="'.$prenom.'" AND section="'.currentSection().'" ORDER BY id ASC';
 
 	$result=sql_request($sql);
 	
