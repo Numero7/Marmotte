@@ -231,7 +231,7 @@ if(isSecretaire())
 			$data = $row->$fieldID;
 			$type = isset($fieldsTypes[$fieldID]) ?  $fieldsTypes[$fieldID] : "";
 
-			if(isBureauUser() && strpos($type,"rapporteur") !==false)
+			if(isBureauUser() && !isSecretaire() && strpos($type,"rapporteur") !==false)
 			{
 				?>
 				<select onchange="window.location='index.php?action=update&id_origine=<?php echo $row->id_origine; ?>&field<?php echo $fieldID; ?>=' + this.value;">
