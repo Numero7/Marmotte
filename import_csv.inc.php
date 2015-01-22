@@ -353,7 +353,10 @@ function addCsvReport($subtype, $properties)
 		$properties["code"] = $properties["unite"];
 
 	if(isset($properties["SIGLE"]))
-		$properties["genre"] = ($properties["SIGLE"] == "Mr")? "homme" : ($properties["SIGLE"] == "Mme" ? "femme" : "");
+	{
+		$properties["genre"] =  (strpos($properties["SIGLE"],"Mr") !== false) ? "homme" : ( (strpos($properties["SIGLE"],"Mme") !== false) ? "femme" : "");
+//		rr();
+	}
 	
 	if(isset($properties["grade"]) && !isset($properties["grade_rapport"]))
 		$properties["grade_rapport"] = $properties["grade"];
