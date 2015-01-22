@@ -559,6 +559,9 @@ function editReport($id_rapport)
 	{
 		$report = getReport($id_rapport);
 
+		if($report->section != currentSection())
+			throw new Exception("Bas les pattes, ce rapport est un rapport de la section/cide ".$report-section);
+		
 		$row = normalizeReport($report);
 
 		$candidat = get_or_create_candidate($row);
@@ -576,6 +579,9 @@ function viewReport($id_rapport)
 	try
 	{
 		$report = getReport($id_rapport);
+		if($report->section != currentSection())
+			throw new Exception("Bas les pattes, ce rapport est un rapport de la section/cide ".$report-section);
+		
 		$row = normalizeReport($report);
 		$candidat = get_or_create_candidate($row);
 		displayEditableReport($row, false);
