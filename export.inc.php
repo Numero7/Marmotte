@@ -385,10 +385,16 @@ function generate_jad_report($code)
 	$grade_concours = substr($nom_concours, 0,3);
 	appendLeaf("grade_concours", $grade_concours, $doc, $root);
 
-	$n = strlen($nom_concours);
-	$num_concours = substr($nom_concours, $n - 4, 2) ."/" .substr($nom_concours, $n - 2, 2);
-	appendLeaf("code_concours", $num_concours, $doc, $root);
+	$session = current_session_id();
+	$annee_concours = substr($session,strlen($session) -4,4);
+	appendLeaf("annee_concours", $annee_concours, $doc, $root);
 
+	if(strlen($code) >= 4)
+		$num_concours = substr($code,0,2) ."/".substr($code,2,2);
+	else
+		$num_concours = $strlen($code); // peut etre renseigné à la main par le président
+	appendLeaf("code_concours", $num_concours, $doc, $root);
+	
 	global $postes_ouverts;
 	appendLeaf("postes_ouverts", $postes_ouverts[$code], $doc, $root);
 
@@ -399,7 +405,7 @@ function generate_jad_report($code)
 		appendLeaf("avis_jad", "", $doc, $root);
 	appendLeaf("date_jad", get_config("date_jad"), $doc, $root);
 	
-	appendLeaf("examines", strval(count($candidats)), $doc, $root);
+	appendLeaf("examines", "<b>".strval(count($candidats))."</b>", $doc, $root);
 	$leaf = $doc->createElement("candidats");
 	$root->appendChild($leaf);
 	foreach($candidats as $key => $candidat)
@@ -410,7 +416,10 @@ function generate_jad_report($code)
 		$leaf->appendChild($subleaf);
 	}
 
-	appendLeaf("auditionnes", strval(count($admissibles)), $doc, $root);
+	$n = count($admissibles);
+	$sn = "<b>".strval($n)."</b>";
+	appendLeaf("auditionnes", $sn, $doc, $root);
+	
 	$leaf = $doc->createElement("admissibles");
 	$root->appendChild($leaf);
 	foreach($admissibles as $key => $candidat)
