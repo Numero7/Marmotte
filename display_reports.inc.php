@@ -188,6 +188,7 @@ if(isSecretaire())
 		$rapporteurs = listNomRapporteurs();
 		$bur = isBureauUser();
 		$sec = isSecretaire();
+		$concours = getConcours();
 		
 		global $tous_avis;
 		$prettyunits = unitsList();
@@ -247,12 +248,16 @@ if(isSecretaire())
 				?>
 				</select>
 				<?php 
-//		echo (isset($rapporteurs[$row->$fieldID]) ? $rapporteurs[$row->$fieldID] : $row->$fieldID);
+				//		echo (isset($rapporteurs[$row->$fieldID]) ? $rapporteurs[$row->$fieldID] : $row->$fieldID);
 			}
 			else if($sec &&  $type=="avis")
 			{
-//		displayAvisMenu($fieldID,$row);
-		echo isset($tous_avis[$row->$fieldID]) ? $tous_avis[$row->$fieldID] : $row->$fieldID;
+		//		displayAvisMenu($fieldID,$row);
+				echo isset($tous_avis[$row->$fieldID]) ? $tous_avis[$row->$fieldID] : $row->$fieldID;
+			}
+			else if($fieldID == "concours")
+			{
+				echo isset($concours[$row->$fieldID]) ? $concours[$row->$fieldID]->intitule : "";
 			}
 			else if($fieldID=="sousjury")
 			{

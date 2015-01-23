@@ -51,6 +51,7 @@ function getConcours()
 	$result = sql_request($sql);
 	while ($row = mysqli_fetch_object($result))
 		$concours[ $row->code ] = $row;
+	
 	return $concours;
 }
 
