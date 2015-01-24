@@ -111,7 +111,7 @@ function replace_accents($string)
 
 function normalizeName($name)
 {
-	return str_replace('\' ', '\'', ucwords(str_replace('\'', '\' ', strtolower($name))));
+	return str_replace('\' ', '\'', ucwords(strtolower($name)));
 }
 
 function real_escape_string($string)

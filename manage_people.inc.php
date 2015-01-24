@@ -4,12 +4,6 @@ require_once('config.inc.php');
 require_once('manage_sessions.inc.php');
 require_once('manage_files.php');
 
-/*
- function generateKey($annee, $nom,$prenom)
- {
-return mb_strtolower(replace_accents(trim($annee.$nom.$prenom," '-")));
-}
-*/
 
 function normalizeCandidat($data)
 {
@@ -183,6 +177,7 @@ function get_or_create_candidate_from_nom($nom, $prenom, $section="")
 	if($section == "")
 		$section = currentSection();
 
+	
 	try
 	{
 		sql_request("LOCK TABLES ".people_db." WRITE;");
@@ -202,6 +197,9 @@ function get_or_create_candidate_from_nom($nom, $prenom, $section="")
 				throw new Exception("Failed to find candidate previously added<br/>".$sql);
 		}
 
+		$cdata->nom = ucwords(strtolower($cdata->nom));
+		$cdata->prenom = ucwords(strtolower($cdata->prenom));
+		
 		sql_request("UNLOCK TABLES");
 		return normalizeCandidat($cdata);
 	}
