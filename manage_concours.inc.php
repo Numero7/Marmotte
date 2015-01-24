@@ -55,8 +55,16 @@ function getConcours()
 	return $concours;
 }
 
+function getPresidentSousJury($sousjury)
+{
+	
+}
+
 function setConcours($conc)
 {
+	if( strpos($conc->intitule,$conc->niveau) !==0)
+		$conc->intitule = $conc->niveau.$conc->intitule;
+	
 	if(!isset($conc->membressj1))
 	{
 		for($i = 1; $i <= 4; $i++)

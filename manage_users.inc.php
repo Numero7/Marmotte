@@ -245,16 +245,11 @@ function isSousJury($sousjury, $login = "")
 
 function isPresidentSousJury($sousjury = "")
 {
-	global $presidents_sousjurys;
-	if($sousjury != "")
-		return (isset($presidents_sousjurys[$sousjury]) && getLogin() == $presidents_sousjurys[$sousjury]);
-	else
-	{
-		foreach($presidents_sousjurys as $pres => $login)
-			if($login == getLogin())
-			return true;
-	}
-	return false;
+	global $tous_sous_jury;
+	return 
+		(isset($tous_sous_jury[$concours]))
+	 &&  (isset($tous_sous_jury[$concours][$sousjury]))
+	 && (getLogin() === $tous_sous_jury[$concours][$sousjury]["president"]);
 }
 
 function changePwd($login,$old,$new1,$new2, $envoiparemail)

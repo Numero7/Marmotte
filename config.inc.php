@@ -1298,7 +1298,6 @@ Une phrase de conclusion sur le candidat incluant un commentaire sur l'audition
 	
 	$concours_ouverts = array();
 	$postes_ouverts = array();
-	$presidents_sousjurys = array();
 	$tous_sous_jury = array();
 
 	

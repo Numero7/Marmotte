@@ -363,9 +363,10 @@ function checkReportIsEditable($rapport)
 	}
 	else if($rapport->type == "Candidature")
 	{
+		$concours = $rapport->concours;
 		$sousjury = $rapport->sousjury;
-		global $presidents_sousjurys;
-		if(isset($presidents_sousjurys[$sousjury]) && $login == $presidents_sousjurys[$sousjury])
+		global $tous_sous_jury;
+		if(isset($tous_sous_jury[$concours]) &&  isset($tous_sous_jury[$concours][$sousjury]) && $login == $tous_sous_jury[$concours][$sousjury]["president"])
 			return true;
 	}
 	else if( ($rapport->rapporteur != "") && ($rapport->rapporteur != $login) && ($rapport->rapporteur2 != $login)&& ($rapport->rapporteur3 != $login))

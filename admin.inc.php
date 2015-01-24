@@ -359,7 +359,14 @@ if($admin_concours)
 					<input type="hidden" name="admin_concours"></input>
 		<table><tr><td>
 		code <input name="code" value="0601"></input>
-		</td><td>
+		</td>
+		<td>
+		niveau <select name="niveau">
+		<option value="CR">CR</option>
+		<option value="DR">DR</option>
+		</select>
+		</td>
+		<td>
 		intitule <input name="intitule" value="DR2"></input>
 		</td><td>
 		postes <select  name="postes"><?php for($i = 0 ; $i < 100; $i++) echo "<option value=\"".$i."\">".$i."</option>"; ?></select>

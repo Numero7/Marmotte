@@ -317,10 +317,7 @@ function createXMLReportElem($row, DOMDocument $doc, $keep_br = true)
 		if(array_key_exists($row->avis,$formulas))
 		{
 			$formula = $formulas[$row->avis];
-//			appendLeaf("formulestandard",  $keep_br ? $row->$fieldID : remove_br($formula) , $doc, $rapportElem);
 			$row->rapport .= "<br/><br/>".stripInvalidXml($formula);
-//			rrr();
-			
 		}		
 	}
 
@@ -330,15 +327,24 @@ function createXMLReportElem($row, DOMDocument $doc, $keep_br = true)
 		if(isset($row->$fieldID) && !in_array($fieldID,$fieldsspecial))
 		appendLeaf($fieldID,   $keep_br ? $row->$fieldID : remove_br($row->$fieldID) , $doc, $rapportElem);
 
-	global $presidents_sousjurys;
 	
 	
 	if($row->type == "Audition")
 	{
 			global $concours_ouverts;
-			if(isset($presidents_sousjurys[$row->sousjury]["nom"]))
+			global $liste_sous_jurys;
+			
+			global $tous_sous_jury;
+			$concours = $row->concours;
+			$sousjury = $row->sousjury;
+			if(isset($tous_sous_jury[$concours]) &&  isset($tous_sous_jury[$concours][$sousjury]))
 			{
-				appendLeaf("signataire",$presidents_sousjurys[$row->sousjury]["nom"], $doc, $rapportElem);
+				$users = listUsers();
+				$login = isset($tous_sous_jury[$concours][$sousjury]["president"]);
+				$description = isset($users["login"]) ? $users["login"]->description : "";
+	//			$description = ""; 
+				appendLeaf("signataire",$description, $doc, $rapportElem);
+				appendLeaf("signature", "", $doc, $rapportElem);
 			}
 			else
 			{
@@ -347,7 +353,6 @@ function createXMLReportElem($row, DOMDocument $doc, $keep_br = true)
 			}
 
 			$candidat = get_or_create_candidate($row);
-//			appendLeaf("parcours", $candidat->parcours, $doc, $rapportElem);
 			appendLeaf("audition", $candidat->audition, $doc, $rapportElem);
 			appendLeaf("grade_concours", substr($concours_ouverts[$row->concours],0,3), $doc, $rapportElem);
 			
@@ -359,12 +364,10 @@ function createXMLReportElem($row, DOMDocument $doc, $keep_br = true)
 				appendLeaf("nom_concours", (substr($conc,0,2)."/".substr($conc,2,4)), $doc, $rapportElem);
 			else
 				appendLeaf("nom_concours", $conc, $doc, $rapportElem);
-				
 	}
 	else
 	{
 		appendLeaf("signataire", get_config("president"), $doc, $rapportElem);
-		
 		global $typesRapportsConcours;
 		global $dossier_stockage;
 		if(!isset($typesRapportsConcours[$row->type]) && isset($row->statut) && $row->statut=="publie" && file_exists($dossier_stockage.signature_file))
@@ -395,10 +398,8 @@ function createXMLReportElem($row, DOMDocument $doc, $keep_br = true)
 	appendLeaf("entetegauche", EnteteGauche($row), $doc, $rapportElem);
 	appendLeaf("entetedroit", EnteteDroit($row,$units), $doc, $rapportElem);
 
-
 	//On ajoute le nickname du labo
 	$value = "";
-	
 	if(array_key_exists($row->unite,$units))
 		$value = $units[$row->unite]->nickname." (".$row->unite.")";
 	else
@@ -414,21 +415,13 @@ function createXMLReportElem($row, DOMDocument $doc, $keep_br = true)
 	else
 		appendLeaf("date",  utf8_encode(strftime("%#d %B %Y", time())), $doc, $rapportElem);
 	
-	/*
-	 date_default_timezone_set('Europe/Paris');
-
-	appendLeaf("date", date("j/n/Y",strtotime($row->date)), $doc, $rapportElem);
-	*/
-
 	//On ajoute les cases à choix multiple, si nécessaires
 	if(array_key_exists($row->type,$typesRapportsToCheckboxes))
 	{
 		$checkBoxes = $typesRapportsToCheckboxes[$row->type];
 		$checkBoxesTitle = $typesRapportsToCheckboxesTitles[$row->type];
-
 		$leaf = $doc->createElement("checkboxes");
 		$leaf->setAttribute("titre", $checkBoxesTitle);
-			
 		foreach($checkBoxes as $avis => $intitule)
 		{
 			$subleaf = $doc->createElement("checkbox");
@@ -436,14 +429,12 @@ function createXMLReportElem($row, DOMDocument $doc, $keep_br = true)
 			$subleaf->setAttribute("mark", ($avis == $row->avis) ? "checked" : "unchecked");
 			$leaf->appendChild($subleaf);
 		}
-
 		$rapportElem->appendChild($leaf);
 	}
 
 
 	//On ajoute le nickname de la session
 	appendLeaf("session", $sessions[$row->id_session], $doc, $rapportElem);
-
 
 	//On ajoute le numero de la section
 	appendLeaf("section_nb", currentSection(), $doc, $rapportElem);
