@@ -792,9 +792,9 @@ function previous_report($id)
 
 
 /* Hugo could be optimized in one sql update request?*/
-function change_statuts($new_statut, $filter_values)
+function change_statuts($new_statut)
 {
-	$rows = filterSortReports(getCurrentFiltersList(), $filter_values, getSortingValues());
+	$rows = filterSortReports(getCurrentFiltersList(), getFilterValues(), getSortingValues());
 	foreach($rows as $row)
 		change_statut($row->id, $new_statut);
 }
@@ -823,12 +823,9 @@ function change_statut($id, $newstatut)
 function change_report_property($id_origine, $property_name, $newvalue)
 {
 
-	$data = array($property_name => $newvalue);
-
-	//echo "Changing property " .$property_name." of ". $id_origine." for new value ".$newvalue."<br/>";
-	change_report_properties($id_origine, $data);
-
-	return getIDOrigine($id_origine);
+	$sql = "UPDATE `reports` SET ". real_escape_string($property_name)."=\"".real_escape_string($newvalue)."\" WHERE id=\"".real_escape_string($id_origine)."\"";
+	sql_request($sql);
+	return $id_origine;
 }
 
 function change_report_properties($id_origine, $data)

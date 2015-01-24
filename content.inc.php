@@ -195,11 +195,9 @@ function alertText($text)
 				case 'change_statut':
 					if(isset($_REQUEST["new_statut"]))
 					{
-						$filterValues = getFilterValues();
 						$new_statut =  real_escape_string($_REQUEST["new_statut"]);
-						change_statuts($new_statut, $filterValues);
-						$filterValues['statut']	 = $new_statut;
-						displaySummary(getCurrentFiltersList(), $filterValues, getSortingValues());
+						change_statuts($new_statut);
+						displayReports();
 					}
 					break;
 				case 'view':
