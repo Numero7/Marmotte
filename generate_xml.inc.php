@@ -347,7 +347,7 @@ function createXMLReportElem($row, DOMDocument $doc, $keep_br = true)
 			}
 
 			$candidat = get_or_create_candidate($row);
-			appendLeaf("parcours", $candidat->parcours, $doc, $rapportElem);
+//			appendLeaf("parcours", $candidat->parcours, $doc, $rapportElem);
 			appendLeaf("audition", $candidat->audition, $doc, $rapportElem);
 			appendLeaf("grade_concours", substr($concours_ouverts[$row->concours],0,3), $doc, $rapportElem);
 			
