@@ -131,7 +131,7 @@ if(!isSuperUser())
 </li>						
 <?php 
 		}
-		if(isBureauUser("", false))
+		if(isBureauUser("", false) && !isSuperUser())
 		{
 			?>
 			<li>
