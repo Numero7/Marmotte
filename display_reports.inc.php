@@ -253,7 +253,6 @@ if(isSecretaire())
 				}
 				else
 					echo (isset($rapporteurs[$row->$fieldID]) ? $rapporteurs[$row->$fieldID] : $row->$fieldID);
-					
 			}
 			else if($sec &&  $type=="avis")
 			{

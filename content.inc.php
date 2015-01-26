@@ -148,7 +148,8 @@ function alertText($text)
 					$id_origine = $_REQUEST["id_origine"];
 					$value = $_REQUEST["value"];
 					set_rapporteur($property,$id_origine, $value);
-					displayReports();
+					displayReports($id_origine);
+					
 					break;
 				case 'change_section':
 					displayReports();
