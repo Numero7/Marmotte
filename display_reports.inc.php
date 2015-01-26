@@ -235,10 +235,10 @@ if(isSecretaire())
 			$data = $row->$fieldID;
 			$type = isset($fieldsTypes[$fieldID]) ?  $fieldsTypes[$fieldID] : "";
 
-			if($bur && !$sec && strpos($type,"rapporteur") !==false)
+			if($bur && !$sec && $type=="rapporteur")
 			{
 				?>
-				<select onchange="window.location='index.php?action=update&id_origine=<?php echo $row->id_origine; ?>&field<?php echo $fieldID; ?>=' + this.value;">
+				<select onchange="window.location='index.php?action=set_rapporteur&property=<?php echo $fieldID; ?>&id_origine=<?php echo $row->id_origine; ?>&value=' + this.value;">
 				<?php 
 				foreach($rapporteurs as $rapporteur => $nom)
 				{

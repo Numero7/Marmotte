@@ -143,6 +143,13 @@ function alertText($text)
 
 			switch($action)
 			{
+				case 'set_rapporteur':
+					$property = $_REQUEST["property"];
+					$id_origine = $_REQUEST["id_origine"];
+					$value = $_REQUEST["value"];
+					set_rapporteur($property,$id_origine, $value);
+					displayReports();
+					break;
 				case 'change_section':
 					displayReports();
 					break;
