@@ -235,8 +235,10 @@ if(isSecretaire())
 			$data = $row->$fieldID;
 			$type = isset($fieldsTypes[$fieldID]) ?  $fieldsTypes[$fieldID] : "";
 
-			if($bur && !$sec && $type=="rapporteur")
+			if(!$sec && $type=="rapporteur")
 			{
+				if($bur)
+				{
 				?>
 				<select onchange="window.location='index.php?action=set_rapporteur&property=<?php echo $fieldID; ?>&id_origine=<?php echo $row->id_origine; ?>&value=' + this.value;">
 				<?php 
@@ -248,7 +250,10 @@ if(isSecretaire())
 				?>
 				</select>
 				<?php 
-				//		echo (isset($rapporteurs[$row->$fieldID]) ? $rapporteurs[$row->$fieldID] : $row->$fieldID);
+				}
+				else
+					echo (isset($rapporteurs[$row->$fieldID]) ? $rapporteurs[$row->$fieldID] : $row->$fieldID);
+					
 			}
 			else if($sec &&  $type=="avis")
 			{
