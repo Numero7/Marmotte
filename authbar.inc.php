@@ -138,8 +138,6 @@ if(!isSuperUser())
 			Mode:
 			<select id="session" onchange="window.location='index.php?action=change_role&role=' + this.value;">
 			<?php 
-					if(isSecretaire("", false))
-					{
 						$levels = array(NIVEAU_PERMISSION_SECRETAIRE => "Admin", NIVEAU_PERMISSION_BUREAU => "Bureau", NIVEAU_PERMISSION_BASE => "Normal");
 						foreach($levels as $level => $name)
 						{
@@ -149,7 +147,6 @@ if(!isSuperUser())
 								echo "<option ".$selected." value=\"".$level."\">".$name."</option>\n";
 							}
 						}
-					}
 			?>
 			</select>
 			</li>
