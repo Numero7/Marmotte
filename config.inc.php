@@ -72,6 +72,7 @@ ini_set('xdebug.show_local_vars', 'on');
 			"theme2",
 			"labo1",
 			"labo2",
+			"diploma",
 			"grade_rapport"
 	);
 	
