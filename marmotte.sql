@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Client: localhost
--- Généré le: Sam 17 Janvier 2015 à 22:01
+-- Généré le: Lun 26 Janvier 2015 à 13:13
 -- Version du serveur: 5.5.40-0ubuntu0.14.04.1
 -- Version de PHP: 5.5.9-1ubuntu4.5
 
@@ -26,6 +26,7 @@ SET time_zone = "+00:00";
 -- Structure de la table `concours`
 --
 
+DROP TABLE IF EXISTS `concours`;
 CREATE TABLE IF NOT EXISTS `concours` (
   `section` int(11) NOT NULL COMMENT 'numero section ou cid',
   `session` text NOT NULL COMMENT 'l''année du concours',
@@ -52,6 +53,7 @@ CREATE TABLE IF NOT EXISTS `concours` (
 -- Structure de la table `config`
 --
 
+DROP TABLE IF EXISTS `config`;
 CREATE TABLE IF NOT EXISTS `config` (
   `section` int(11) NOT NULL,
   `key` text NOT NULL,
@@ -64,13 +66,14 @@ CREATE TABLE IF NOT EXISTS `config` (
 -- Structure de la table `people`
 --
 
+DROP TABLE IF EXISTS `people`;
 CREATE TABLE IF NOT EXISTS `people` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `section` int(11) NOT NULL,
   `nom` text NOT NULL,
   `prenom` text NOT NULL,
   `grade` varchar(32) NOT NULL DEFAULT '',
-  `concourspresentes` varchar(64) DEFAULT '',
+  `concourspresentes` varchar(128) DEFAULT NULL,
   `audition` text,
   `labo1` text,
   `labo2` text,
@@ -112,8 +115,10 @@ CREATE TABLE IF NOT EXISTS `people` (
   `Info29` text,
   `Info30` text,
   `conflits` text,
+  `birth` varchar(20) DEFAULT NULL,
+  `diploma` varchar(20) DEFAULT NULL,
   UNIQUE KEY `id` (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=5296 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=6317 ;
 
 -- --------------------------------------------------------
 
@@ -121,6 +126,7 @@ CREATE TABLE IF NOT EXISTS `people` (
 -- Structure de la table `reports`
 --
 
+DROP TABLE IF EXISTS `reports`;
 CREATE TABLE IF NOT EXISTS `reports` (
   `section` int(11) NOT NULL,
   `statut` varchar(32) NOT NULL DEFAULT 'doubleaveugle',
@@ -152,9 +158,40 @@ CREATE TABLE IF NOT EXISTS `reports` (
   `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `avissousjury` text,
   `sousjury` text,
+  `Generic0` text,
+  `Generic1` text,
+  `Generic2` text,
+  `Generic3` text,
+  `Generic4` text,
+  `Generic5` text,
+  `Generic6` text,
+  `Generic7` text,
+  `Generic8` text,
+  `Generic9` text,
+  `Generic10` text,
+  `Generic11` text,
+  `Generic12` text,
+  `Generic13` text,
+  `Generic14` text,
+  `Generic15` text,
+  `Generic16` text,
+  `Generic17` text,
+  `Generic18` text,
+  `Generic19` text,
+  `Generic20` text,
+  `Generic21` text,
+  `Generic22` text,
+  `Generic23` text,
+  `Generic24` text,
+  `Generic25` text,
+  `Generic26` text,
+  `Generic27` text,
+  `Generic28` text,
+  `Generic29` text,
+  `Generic30` text,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=71447 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=76565 ;
 
 -- --------------------------------------------------------
 
@@ -162,6 +199,7 @@ CREATE TABLE IF NOT EXISTS `reports` (
 -- Structure de la table `sessions`
 --
 
+DROP TABLE IF EXISTS `sessions`;
 CREATE TABLE IF NOT EXISTS `sessions` (
   `id` varchar(64) NOT NULL,
   `section` int(11) NOT NULL,
@@ -176,6 +214,7 @@ CREATE TABLE IF NOT EXISTS `sessions` (
 -- Structure de la table `units`
 --
 
+DROP TABLE IF EXISTS `units`;
 CREATE TABLE IF NOT EXISTS `units` (
   `section` int(11) NOT NULL,
   `nickname` text NOT NULL,
@@ -190,6 +229,7 @@ CREATE TABLE IF NOT EXISTS `units` (
 -- Structure de la table `users`
 --
 
+DROP TABLE IF EXISTS `users`;
 CREATE TABLE IF NOT EXISTS `users` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `login` varchar(40) NOT NULL,
@@ -201,7 +241,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `email` text NOT NULL,
   `tel` text NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=6038 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=6135 ;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
