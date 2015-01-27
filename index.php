@@ -30,7 +30,11 @@ try
 	global $dbh;
 	if($dbh)
 	{
-		createAdminPasswordIfNeeded();
+		if(!isset($_SESSION['checked_admin_password']))
+		{
+			createAdminPasswordIfNeeded();
+			$_SESSION['checked_admin_password'] = true;
+		}
 		if(authenticateBase('admin','password'))
 			echo "The 'admin' password is 'password', please change it right after login.";
 		
