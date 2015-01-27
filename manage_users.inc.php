@@ -14,32 +14,32 @@ function createhtpasswd()
 	foreach(array($dossier_temp,$dossier_stockage) as $dir)
 	{
 		create_dir_if_needed2($dir);
-	if( $handle = fopen($dir.".htpasswd" , "w" ) )
-	{
-		foreach($list as $user => $data)
-			fwrite($handle,$user.":".$data->passHash."\n");
-		fclose($handle);
-	}
-	else
-		throw new Exception("Failed to open htpasswd file for writing");
-	
-	$realp = realpath($dir.".htpasswd");
-	if($realp == false)
-		throw new Exception("Warning, security breach, htaccess could not be properly generated");
+		if( $handle = fopen($dir.".htpasswd" , "w" ) )
+		{
+			foreach($list as $user => $data)
+				fwrite($handle,$user.":".$data->passHash."\n");
+			fclose($handle);
+		}
+		else
+			throw new Exception("Failed to open htpasswd file for writing");
 
-	if( $handle = fopen($dir.".htaccess" , "w" ) )
-	{
-		fwrite($handle,
-"AuthUserFile ".$realp."\n
-AuthName \"Veuillez vous identifier avec votre login et votre mot de passe Marmotte\"\n
-AuthType Basic\n
-Require valid-user\n"
-);
-		fclose($handle);
-	}
-	else
-		throw new Exception("Failed to open htaccess file for writing");
-	
+		$realp = realpath($dir.".htpasswd");
+		if($realp == false)
+			throw new Exception("Warning, security breach, htaccess could not be properly generated");
+
+		if( $handle = fopen($dir.".htaccess" , "w" ) )
+		{
+			fwrite($handle,
+					"AuthUserFile ".$realp."\n
+					AuthName \"Veuillez vous identifier avec votre login et votre mot de passe Marmotte\"\n
+					AuthType Basic\n
+					Require valid-user\n"
+			);
+			fclose($handle);
+		}
+		else
+			throw new Exception("Failed to open htaccess file for writing");
+
 	}
 	echo "Regenerated access files.<br/>";
 }
@@ -52,7 +52,7 @@ function belongsToSection($login, $section)
 
 function currentSection()
 {
-	return $_SESSION['filter_section'];	
+	return $_SESSION['filter_section'];
 }
 
 function change_current_section($section)
@@ -78,37 +78,38 @@ function get_bureau_stats()
 	{
 		$sousjurys = getSousJuryMap();
 		$sousjurysStats = array();
-		
-	/* pour chaque niveau, pour chaque rapporteur, nombre de candidats par rapporteurs */
-	$sql = "SELECT * FROM reports WHERE section=\"".currentSection()."\" AND id_session=\"".current_session()."\" AND type=\"Candidature\"";
-	$stats = array();
-	$fields = array("rapporteur","rapporteur2","rapporteur3");
 
-	$result= sql_request($sql);
-	while($row = mysqli_fetch_object($result))
-	{
-		$pref = substr($row->concours,0,2);
-		foreach($fields as $field)
+		/* pour chaque niveau, pour chaque rapporteur, nombre de candidats par rapporteurs */
+		$sql = "SELECT * FROM reports WHERE section=\"".currentSection()."\" AND id_session=\"".current_session()."\" AND type=\"Candidature\" AND id=id_origine AND statut!=\"supprime\"";
+		$stats = array();
+		$fields = array("rapporteur","rapporteur2","rapporteur3");
+
+		$result= sql_request($sql);
+		while($row = mysqli_fetch_object($result))
 		{
-		$iid = $row->nom.$row->prenom;
-		if($row->$field != "" && !isset($stats[$pref][$row->$field][$field][$iid]))
-		{
-			$stats[$pref][$row->$field][$field][$iid] = "ok";
-			if(!isset($stats[$pref][$row->$field][$field]["counter"]))
-				$stats[$pref][$row->$field][$field]["counter"] = 0;
-			$stats[$pref][$row->$field][$field]["counter"]++;
-		}
+			$pref = substr($row->concours,0,2);
+			foreach($fields as $field)
+			{
+				$iid = $row->nom.$row->prenom;
+				if($row->$field != "" && !isset($stats[$pref][$row->$field][$field][$iid]))
+				{
+					$stats[$pref][$row->$field][$field][$iid] = "ok";
+					if(!isset($stats[$pref][$row->$field][$field]["counter"]))
+						$stats[$pref][$row->$field][$field]["counter"] = 0;
+					$stats[$pref][$row->$field][$field]["counter"]++;
+					//echo "add 1 to ".$iid." ".$pref." ".$row->$field." ".$field." tot ".$stats[$pref][$row->$field][$field]["counter"]."<br/>";
+				}
 
 				if($field == "rapporteur" && isset($sousjurys[$row->$field][$row->concours]))
-		{
-			$sj = $sousjurys[$row->$field][$row->concours];
-			if(!isset($sousjurysStats[$sj]))
-				$sousjurysStats[$sj] = 0;
-			$sousjurysStats[$sj]++;
+				{
+					$sj = $sousjurys[$row->$field][$row->concours];
+					if(!isset($sousjurysStats[$sj]))
+						$sousjurysStats[$sj] = 0;
+					$sousjurysStats[$sj]++;
+				}
+			}
+
 		}
-		}
-		
-	}
 	}
 	return array("rapporteurs" => $stats, "sousjurys" => $sousjurysStats);
 }
@@ -167,7 +168,7 @@ function listUsers($forcenew = false)
 		$_SESSION['all_users'] = $listusers;
 	}
 	$all_users = $_SESSION['all_users'];
-	
+
 	return $all_users;
 }
 
@@ -181,9 +182,9 @@ function simpleListUsers()
 }
 
 function getUserPermissionLevel($login = "", $use_mask = true )
-{	
+{
 	$mask = NIVEAU_PERMISSION_INFINI;
-	
+
 	if($use_mask && isset($_SESSION["permission_mask"]))
 		$mask = $_SESSION["permission_mask"];
 
@@ -193,10 +194,10 @@ function getUserPermissionLevel($login = "", $use_mask = true )
 		return min($mask, $result);
 	}
 
-		if(!isset($_SESSION["login"]))
-			throw new Exception("User not logged in !");
-		$login = $_SESSION["login"];
-	
+	if(!isset($_SESSION["login"]))
+		throw new Exception("User not logged in !");
+	$login = $_SESSION["login"];
+
 	$login = strtolower($login);
 	if ($login == "admin")
 		return NIVEAU_PERMISSION_SUPER_UTILISATEUR;
@@ -204,7 +205,7 @@ function getUserPermissionLevel($login = "", $use_mask = true )
 	$users = listUsers();
 	if (isset($users[$login]))
 	{
-		$data = $users[$login];		
+		$data = $users[$login];
 		return min($mask, $data->permissions);
 	}
 	else
@@ -225,7 +226,7 @@ function isSuperUser($login = "")
 {
 	if(isset($_SESSION["lose_secretary_status"]))
 		return false;
-	
+
 	if($login == "")
 		$login = getLogin();
 	return getUserPermissionLevel($login) >= NIVEAU_PERMISSION_SUPER_UTILISATEUR;
@@ -288,10 +289,10 @@ function isSousJury($sousjury, $login = "")
 function isPresidentSousJury($sousjury = "")
 {
 	global $tous_sous_jury;
-	return 
-		(isset($tous_sous_jury[$concours]))
-	 &&  (isset($tous_sous_jury[$concours][$sousjury]))
-	 && (getLogin() === $tous_sous_jury[$concours][$sousjury]["president"]);
+	return
+	(isset($tous_sous_jury[$concours]))
+	&&  (isset($tous_sous_jury[$concours][$sousjury]))
+	&& (getLogin() === $tous_sous_jury[$concours][$sousjury]["president"]);
 }
 
 function changePwd($login,$old,$new1,$new2, $envoiparemail)
@@ -369,7 +370,7 @@ function createUser($login,$pwd,$desc,$email, $sections, $permissions, $envoipar
 
 	if($login == "admin")
 		$sections = "0";
-		
+
 	if (isSecretaire())
 	{
 		if(existsUser($login))
@@ -379,7 +380,7 @@ function createUser($login,$pwd,$desc,$email, $sections, $permissions, $envoipar
 
 		if(!isSuperUser())
 			$sections = currentSection();
-		
+
 		unset($_SESSION['all_users']);
 
 		$passHash = crypt($pwd);
@@ -392,7 +393,7 @@ function createUser($login,$pwd,$desc,$email, $sections, $permissions, $envoipar
 		$sql .= real_escape_string($email)."','');";
 
 		$result = sql_request($sql);
-		
+
 		createhtpasswd();
 
 		if($envoiparemail)
@@ -419,7 +420,7 @@ function createUser($login,$pwd,$desc,$email, $sections, $permissions, $envoipar
 			}
 			email_handler($email,"Votre compte Marmotte",$body,$cc);
 		}
-		
+
 		return "Utilisateur ".$login." créé avec succès.";
 	}
 }
@@ -428,7 +429,7 @@ function deleteUser($login)
 {
 	/* Since a user can be shared by several sections,
 	 * only superuser can definitively delete a user
-	 */
+	*/
 	if (isSuperUser())
 	{
 		unset($_SESSION['all_users']);
@@ -439,7 +440,7 @@ function deleteUser($login)
 	else if(isSecretaire())
 	{
 		unset($_SESSION['all_users']);
-		
+
 		$sections = getSections($login);
 		$newsections ="";
 		foreach($sections as $section)
