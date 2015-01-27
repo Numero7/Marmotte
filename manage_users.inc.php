@@ -88,7 +88,7 @@ function get_bureau_stats()
 		foreach($fields as $field)
 		{
 		$iid = $row->nom.$row->prenom;
-		if(!isset($stats[$pref][$row->$field][$field][$iid]))
+		if($row->$field != "" && !isset($stats[$pref][$row->$field][$field][$iid]))
 		{
 			$stats[$pref][$row->$field][$field][$iid] = "ok";
 			if(!isset($stats[$pref][$row->$field][$field]["counter"]))
