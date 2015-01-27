@@ -59,7 +59,7 @@ function save_config()
 
 }
 
-function get_config($name)
+function get_config($name,$default="")
 {
 	load_config();
 	if(isset($_SESSION['config']))
@@ -68,7 +68,7 @@ function get_config($name)
 		if(isset($config[trim($name,"_")]))
 			return $config[trim($name,"_")];
 		else
-			return "";
+			return $default;
 		//throw new Exception("No config item with name '".$name."'");
 	}
 	else
