@@ -187,7 +187,7 @@ if(isSecretaire())
 $rapporteurs = listNomRapporteurs();
 $bur = isBureauUser();
 
-if(isBureauUser() && !isSecretaire())
+if(isBureauUser() && !isSecretaire() && is_current_session_concours())
 {
 	$stats = get_bureau_stats();
 	$roles = array("rapporteur","rapporteur2","rapporteur3");

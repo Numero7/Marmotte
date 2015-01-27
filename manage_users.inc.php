@@ -84,26 +84,21 @@ function get_bureau_stats()
 	$result= sql_request($sql);
 	while($row = mysqli_fetch_object($result))
 	{
-		if(!isset($stats[substr($row->concours,0,2)]))
-			$stats[substr($row->concours,0,2)] = array();
+		$pref = substr($row->concours,0,2);
 		foreach($fields as $field)
 		{
-		if(!isset($stats[substr($row->concours,0,2)][$row->$field]))
-			$stats[substr($row->concours,0,2)][$row->$field] = array();
-		if(!isset($stats[substr($row->concours,0,2)][$row->$field]["1"]))
-			$stats[substr($row->concours,0,2)][$row->$field][$field] = array();
-		if(!isset($stats[substr($row->concours,0,2)][$row->$field][$field][$row->nom.$row->prenom]))
+		$iid = $row->nom.$row->prenom;
+		if(!isset($stats[$pref][$row->$field][$field][$iid]))
 		{
-			$stats[substr($row->concours,0,2)][$row->$field][$field][$row->nom.$row->prenom] = "";
-			if(!isset($stats[substr($row->concours,0,2)][$row->$field][$field]["counter"]))
-				$stats[substr($row->concours,0,2)][$row->$field][$field]["counter"] = 0;
-			$stats[substr($row->concours,0,2)][$row->$field][$field]["counter"]++;
+			$stats[$pref][$row->$field][$field][$iid] = "ok";
+			if(!isset($stats[$pref][$row->$field][$field]["counter"]))
+				$stats[$pref][$row->$field][$field]["counter"] = 0;
+			$stats[$pref][$row->$field][$field]["counter"]++;
 		}
 		}
 	}
 	}
 	return $stats;
-	
 }
 
 /* Caching users list for performance */
