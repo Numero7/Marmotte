@@ -76,6 +76,9 @@ function get_bureau_stats()
 {
 	if(is_current_session_concours())
 	{
+		$sousjurys = getSousJuryMap();
+		$sousjurysStats = array();
+		
 	/* pour chaque niveau, pour chaque rapporteur, nombre de candidats par rapporteurs */
 	$sql = "SELECT * FROM reports WHERE section=\"".currentSection()."\" AND id_session=\"".current_session()."\" AND type=\"Candidature\"";
 	$stats = array();
@@ -95,10 +98,19 @@ function get_bureau_stats()
 				$stats[$pref][$row->$field][$field]["counter"] = 0;
 			$stats[$pref][$row->$field][$field]["counter"]++;
 		}
+
+				if($field == "rapporteur" && isset($sousjurys[$row->$field][$row->concours]))
+		{
+			$sj = $sousjurys[$row->$field][$row->concours];
+			if(!isset($sousjurysStats[$sj]))
+				$sousjurysStats[$sj] = 0;
+			$sousjurysStats[$sj]++;
 		}
+		}
+		
 	}
 	}
-	return $stats;
+	return array("rapporteurs" => $stats, "sousjurys" => $sousjurysStats);
 }
 
 /* Caching users list for performance */
@@ -155,6 +167,7 @@ function listUsers($forcenew = false)
 		$_SESSION['all_users'] = $listusers;
 	}
 	$all_users = $_SESSION['all_users'];
+	
 	return $all_users;
 }
 
@@ -438,16 +451,5 @@ function deleteUser($login)
 	}
 }
 
-
-function affecte_sous_jurys($login, $sousjurys)
-{
-	$sql = "SELECT * FROM ".concours_db." WHERE section='".currentSection()."' and session='".current_session_id()."';";
-	sql_request($sql);
-	
-	foreach($sousjurys as $concours => $sousjurys)
-	{
-		
-	}
-}
 
 ?>

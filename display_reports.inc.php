@@ -189,11 +189,15 @@ $bur = isBureauUser();
 
 if(isBureauUser() && !isSecretaire() && is_current_session_concours())
 {
-	$stats = get_bureau_stats();
+	
+	$allstats = get_bureau_stats();
+	$stats = $allstats["rapporteurs"];
+	$statssj = $allstats["sousjurys"];
+	
 	$roles = array("rapporteur","rapporteur2","rapporteur3");
 	?>
 	<table>
-	<tr><th>CR</th><th>DR</th></tr>
+	<tr><th>CR</th><th>DR</th><th>Sousjurys</th></tr>
 	<tr>
 	<?php 
 	foreach($stats as $niveau => $data)
@@ -207,7 +211,7 @@ if(isBureauUser() && !isSecretaire() && is_current_session_concours())
 		foreach($data as $login => $data_rapporteur)
 		{
 			$nom= isset($rapporteurs[$login])? $rapporteurs[$login] : $login;
-			echo "<tr><td>".$nom."</td>";
+			echo "<tr ><td>".$nom."</td>";
 			$total = 0;
 			foreach($roles as $role)
 			{
@@ -228,7 +232,15 @@ if(isBureauUser() && !isSecretaire() && is_current_session_concours())
 		</td>
 		<?php 
 	}
+	?>		<td>
+	<?php 
+	
+	foreach($statssj as $sj => $compteur)
+	{
+		echo "Sousjury ".$sj.": ".$compteur."<br/>";
+	}
 	?>
+	</td>
 	</tr>
 	</table>
 	<?php 

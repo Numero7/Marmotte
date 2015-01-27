@@ -9,22 +9,7 @@ function affectersousjurys()
 	global $concours_ouverts;
 	global $tous_sous_jury;
 
-	$user = array();
-	foreach($users as $login => $data)
-	{
-		$user[$login] = array();
-		foreach($tous_sous_jury as $concours => $sj)
-		{
-			foreach($sj as $code => $data)
-			{
-				if($code != "")
-				{
-					if( in_array($login, $data["membres"]) )
-						$user[$login][$concours] = $code;
-				}
-			}
-		}
-	}
+	$user = getSousJuryMap();
 
 	foreach($rows as $row)
 	{
@@ -43,6 +28,31 @@ function affectersousjurys()
 	}
 }
 
+/* map from login * concours to sousjury */
+function getSousJuryMap()
+{
+	$user = array();
+	$users = listUsers();
+	global $tous_sous_jury;
+	
+	foreach($users as $login => $data)
+	{
+		$user[$login] = array();
+		foreach($tous_sous_jury as $concours => $sj)
+		{
+			foreach($sj as $code => $data)
+			{
+				if($code != "")
+				{
+					if( in_array($login, $data["membres"]) )
+						$user[$login][$concours] = $code;
+				}
+			}
+		}
+	}
+	return $user;
+}
+
 function getConcours()
 {
 	$concours = array();
@@ -51,20 +61,20 @@ function getConcours()
 	$result = sql_request($sql);
 	while ($row = mysqli_fetch_object($result))
 		$concours[ $row->code ] = $row;
-	
+
 	return $concours;
 }
 
 function getPresidentSousJury($sousjury)
 {
-	
+
 }
 
 function setConcours($conc)
 {
-	if( strpos($conc->intitule,$conc->niveau) !==0)
+	if( isset($conc->niveau) && strpos($conc->intitule,$conc->niveau) !==0)
 		$conc->intitule = $conc->niveau.$conc->intitule;
-	
+
 	if(!isset($conc->membressj1))
 	{
 		for($i = 1; $i <= 4; $i++)
@@ -74,7 +84,7 @@ function setConcours($conc)
 		}
 
 		$conc->code = preg_replace('/\D/', '', $conc->code);
-		
+
 		$sql = "SELECT * FROM ".concours_db;
 		$sql .=" WHERE section='".real_escape_string(currentSection())."'";
 		$sql .= " and session='".real_escape_string(current_session_id())."'";
@@ -82,7 +92,7 @@ function setConcours($conc)
 		sql_request($sql);
 
 		$result = sql_request($sql);
-		
+
 		while($row = mysqli_fetch_object($result))
 		{
 			for($i = 1; $i <= 4; $i++)
@@ -94,21 +104,21 @@ function setConcours($conc)
 		}
 	}
 
-	
+
 	for($i = 1; $i <= 4; $i++)
 	{
 		$suff = "membressj".$i;
 		while(strpos($conc->$suff,";;")!==false)
-		$conc->$suff = str_replace(";;",";",$conc->$suff);
+			$conc->$suff = str_replace(";;",";",$conc->$suff);
 	}
 
-	
+
 	$sql = "DELETE FROM ".concours_db;
 	$sql .=" WHERE section='".real_escape_string(currentSection())."'";
 	$sql .= " and session='".real_escape_string(current_session_id())."'";
 	$sql .= " and code='".real_escape_string($conc->code)."';";
 	sql_request($sql);
-		
+
 	$sql = "INSERT INTO `concours` (`section`, `session`, `code`, `intitule`, `postes`, `sousjury1`, `sousjury2`, `sousjury3`, `sousjury4`, `president1`, `president2`, `president3`, `president4`,`membressj1`, `membressj2`, `membressj3`, `membressj4`)";
 	$sql .= " VALUES ('".real_escape_string(currentSection())."','".real_escape_string(current_session_id());
 	$sql .= "','".real_escape_string($conc->code)."','".real_escape_string($conc->intitule)."','".real_escape_string($conc->postes);
@@ -119,7 +129,7 @@ function setConcours($conc)
 	$sql .= "')";
 
 	sql_request($sql);
-	
+
 }
 
 function deleteConcours($code)
