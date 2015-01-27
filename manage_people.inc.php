@@ -180,7 +180,6 @@ function get_or_create_candidate_from_nom($nom, $prenom, $section="")
 	
 	try
 	{
-		sql_request("LOCK TABLES ".people_db." WRITE;");
 		$sql = "SELECT * FROM ".people_db.' WHERE nom="'.$nom.'" AND prenom="'.$prenom.'" AND section="'.$section.'" ;';
 		$result = sql_request($sql);
 
@@ -200,12 +199,10 @@ function get_or_create_candidate_from_nom($nom, $prenom, $section="")
 		$cdata->nom = ucwords(strtolower($cdata->nom));
 		$cdata->prenom = ucwords(strtolower($cdata->prenom));
 		
-		sql_request("UNLOCK TABLES");
 		return normalizeCandidat($cdata);
 	}
 	catch(Exception $exc)
 	{
-		sql_request("UNLOCK TABLES;");
 		throw new Exception("Failed to add candidate from report:<br/>".$exc->getMessage());
 	}
 }

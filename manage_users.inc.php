@@ -99,7 +99,6 @@ function get_bureau_stats()
 					$stats[$pref][$row->$field][$field]["counter"]++;
 					//echo "add 1 to ".$iid." ".$pref." ".$row->$field." ".$field." tot ".$stats[$pref][$row->$field][$field]["counter"]."<br/>";
 				}
-
 				if($field == "rapporteur" && isset($sousjurys[$row->$field][$row->concours]))
 				{
 					$sj = $sousjurys[$row->$field][$row->concours];

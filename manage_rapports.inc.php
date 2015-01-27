@@ -598,7 +598,6 @@ function addReportToDatabase($report,$normalize = true)
 		createUnitIfNeeded($report->unite);
 
 	$specialRule = array("date","id","id_origine","auteur");
-	sql_request("LOCK TABLES ".reports_db." WRITE;");
 
 	$id_origine = isset($report->id_origine) ? $report->id_origine : 0;
 	if($id_origine == 0)
@@ -724,16 +723,12 @@ function addReportToDatabase($report,$normalize = true)
 	}
 	catch(Exception $e)
 	{
-		sql_request("UNLOCK TABLES");
 		throw $e;
 	}
 
 	refresh_row_ids();
 
-	sql_request("UNLOCK TABLES");
-
 	return $new_id;
-
 }
 
 function refresh_row_ids()
