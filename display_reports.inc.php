@@ -116,6 +116,7 @@ function displayFiltrage($rows, $fields, $filters, $filter_values)
 <?php
 }
 
+
 function displayRows($rows, $fields, $filters, $filter_values, $sort_fields, $sorting_values)
 {
 	global $fieldsAll;
@@ -181,12 +182,63 @@ if(isSecretaire())
 	</table>
 <hr />
 <p><?php  echo count($rows); ?> rapports</p>
+
+<?php 
+$rapporteurs = listNomRapporteurs();
+$bur = isBureauUser();
+
+if(isBureauUser() && !isSecretaire())
+{
+	$stats = get_bureau_stats();
+	$roles = array("rapporteur","rapporteur2","rapporteur3");
+	?>
+	<table>
+	<tr><th>CR</th><th>DR</th></tr>
+	<tr>
+	<?php 
+	foreach($stats as $niveau => $data)
+	{
+		?>
+		<td>
+		<table class="stats">
+		<tr>
+		<th>login</th><th>rapp</th><th>rapp 2</th><th>rapp 3</th><th>Total</th></tr>
+		<?php 
+		foreach($data as $login => $data_rapporteur)
+		{
+			$nom= isset($rapporteurs[$login])? $rapporteurs[$login] : $login;
+			echo "<tr><td>".$nom."</td>";
+			$total = 0;
+			foreach($roles as $role)
+			{
+				if(isset($data_rapporteur[$role]))
+				{
+					$stat = $data_rapporteur[$role]["counter"];
+				echo "<td>".$stat."</td>";
+				$total += $stat;
+				}
+				else
+					echo "<td></td>";
+			}
+			echo "<td>".$total."</td>";
+			echo "</tr>";
+		}
+		?>
+		</table>
+		</td>
+		<?php 
+	}
+	?>
+	</tr>
+	</table>
+	<?php 
+}
+?>
 <table class="summary">
 <tr>
 		<th class="oddrow"><span class="nomColonne"></span></th>
 		<?php
-		$rapporteurs = listNomRapporteurs();
-		$bur = isBureauUser();
+		
 		$sec = isSecretaire();
 		$concours = getConcours();
 		
@@ -305,9 +357,12 @@ if(isSecretaire())
 		}
 		?>
 </table>
+<br/>
+<br/>
+<br/>
 <p>
-Le site web Marmotte a été développé par Hugo Gimbert et Yann Ponty.<br/>
-Code libre d'utilisation par les sections du Comité national.<br/>
+Marmotte a été développé par Hugo Gimbert et Yann Ponty.<br/>
+Code libre d'utilisation par les sections du Comité National de la Recherche Scientifique.<br/>
 Utilisations commerciales réservées.
 </p>
 <?php

@@ -72,6 +72,40 @@ function change_current_section($section)
 	$_SESSION['filter_id_session'] = get_config("current_session");
 }
 
+function get_bureau_stats()
+{
+	if(is_current_session_concours())
+	{
+	/* pour chaque niveau, pour chaque rapporteur, nombre de candidats par rapporteurs */
+	$sql = "SELECT * FROM reports WHERE section=\"".currentSection()."\" AND id_session=\"".current_session()."\" AND type=\"Candidature\"";
+	$stats = array();
+	$fields = array("rapporteur","rapporteur2","rapporteur3");
+
+	$result= sql_request($sql);
+	while($row = mysqli_fetch_object($result))
+	{
+		if(!isset($stats[substr($row->concours,0,2)]))
+			$stats[substr($row->concours,0,2)] = array();
+		foreach($fields as $field)
+		{
+		if(!isset($stats[substr($row->concours,0,2)][$row->$field]))
+			$stats[substr($row->concours,0,2)][$row->$field] = array();
+		if(!isset($stats[substr($row->concours,0,2)][$row->$field]["1"]))
+			$stats[substr($row->concours,0,2)][$row->$field][$field] = array();
+		if(!isset($stats[substr($row->concours,0,2)][$row->$field][$field][$row->nom.$row->prenom]))
+		{
+			$stats[substr($row->concours,0,2)][$row->$field][$field][$row->nom.$row->prenom] = "";
+			if(!isset($stats[substr($row->concours,0,2)][$row->$field][$field]["counter"]))
+				$stats[substr($row->concours,0,2)][$row->$field][$field]["counter"] = 0;
+			$stats[substr($row->concours,0,2)][$row->$field][$field]["counter"]++;
+		}
+		}
+	}
+	}
+	return $stats;
+	
+}
+
 /* Caching users list for performance */
 
 function listRapporteurs()
