@@ -730,7 +730,7 @@ function addReportToDatabase($report,$normalize = true)
 
 	return $new_id;
 }
-//SELECT id_origi
+
 function refresh_row_ids()
 {
 	if(isset($_SESSION['rows_id']))

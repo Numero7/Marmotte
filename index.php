@@ -35,8 +35,10 @@ try
 			createAdminPasswordIfNeeded();
 			$_SESSION['checked_admin_password'] = true;
 		}
+		/*
 		if(authenticateBase('admin','password'))
 			echo "The 'admin' password is 'password', please change it right after login.";
+			*/
 		
 		$action = isset($_REQUEST["action"]) ? mysqli_real_escape_string($dbh, $_REQUEST["action"]) : "";
 		$errorLogin = 0;
