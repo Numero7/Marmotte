@@ -279,9 +279,11 @@ if(isBureauUser() && !isSecretaire() && is_current_session_concours())
 		foreach($rows as $row)
 		{
 			// is_in_conflict(getLogin(), $candidate)
+			/*
 			$candidate = get_or_create_candidate($row);
 			$conflit = is_in_conflict(getLogin(), $candidate);
-			$style = getStyle("",$odd,$conflit);
+			*/
+			$style = getStyle("",$odd,false);
 			$odd = !$odd;
 			?>
 	
