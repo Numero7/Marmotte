@@ -18,7 +18,8 @@ function db_connect($serverName,$dbname,$login,$password)
 	
 	$databases = array(reports_db, users_db, sessions_db, units_db, people_db, config_db,concours_db);
 	$new_columns = array(people_db => array("conflits" => "text") );
-	
+
+	/*
 	foreach($databases as $database)	
 	{
 		$result = mysqli_query($dbh, "SHOW TABLES LIKE '$database'");
@@ -36,6 +37,7 @@ function db_connect($serverName,$dbname,$login,$password)
 			}
 		}
 	}
+	*/
 		
 	return $dbh;
 } ;
