@@ -573,6 +573,9 @@ function normalizeReport($report)
 		if(!isset($report->$key))
 		$report->$key = $value;
 
+	if(!isset($report->statut))
+		$report->statut = "doubleaveugle";
+		
 	if(isset($report->type))
 		if(isset($report_prototypes[$report->type]))
 		{
@@ -592,7 +595,6 @@ function addReportToDatabase($report,$normalize = true)
 	if($normalize)
 	 $report = normalizeReport($report);
 
-	$report->statut = "doubleaveugle";
 
 	if(isset($report->unite))
 		createUnitIfNeeded($report->unite);
