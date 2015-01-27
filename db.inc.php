@@ -36,7 +36,8 @@ function db_connect($serverName,$dbname,$login,$password)
 				$result = mysqli_query($dbh, $sql);
 			}
 		}
-	}
+	}login='admin
+	
 	*/
 		
 	return $dbh;

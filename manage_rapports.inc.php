@@ -832,8 +832,8 @@ function change_statut($id, $newstatut)
 
 function change_report_property($id_origine, $property_name, $newvalue)
 {
-
-	$sql = "UPDATE `reports` SET ". real_escape_string($property_name)."=\"".real_escape_string($newvalue)."\" WHERE id=\"".real_escape_string($id_origine)."\"";
+	$id = getIDOrigine($id_origine);
+	$sql = "UPDATE `reports` SET ". real_escape_string($property_name)."=\"".real_escape_string($newvalue)."\" WHERE id=\"".$id."\"";
 	sql_request($sql);
 	return $id_origine;
 }
