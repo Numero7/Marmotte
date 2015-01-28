@@ -466,11 +466,6 @@ function newReport($type_rapport)
 
 function addReport($report)
 {
-	/*
-	 if($report->prenom == "Anthonin")
-		rrrr();
-
-	*/
 	if(!isReportCreatable())
 		throw new Exception("Le compte ".$login." n'a pas la permission de créer un rapport, veuillez contacter le secrétaire scientifique.");
 
@@ -510,8 +505,6 @@ function addReportFromRequest($id_origine, $request)
 	$report = createReportFromRequest($id_origine, $request);
 
 	$id_nouveau = addReportToDatabase($report,false);
-
-	//	rr();
 
 	if(isset($report->type) && ( isset($typesRapportsConcours[$report->type]) || isset($typesRapportsChercheurs[$report->type]) ) )
 		updateCandidateFromRequest($request);
@@ -667,12 +660,9 @@ function addReportToDatabase($report,$normalize = true)
 		{
 			if(!isReportCreatable())
 				throw new Exception("Failed to add report to database<br/>".$e->getMessage());
-			//may happen if $id_origine is 0 for example (when reports are creating)
-			//rr();
 			$current_report = $report;
 		}
 
-		//rr();
 		$sqlfields = "";
 		$sqlvalues = "";
 
@@ -994,7 +984,6 @@ function listOfAllVirginReports()
 	}
 	return $result;
 }
-
 
 function is_in_conflict_efficient($row, $login)
 {
