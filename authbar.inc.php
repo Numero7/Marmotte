@@ -7,270 +7,154 @@ require_once("manage_sessions.inc.php");
 global $typesRapportsConcours;
 global $typesRapportsChercheurs;
 
+$login = getLogin();
+$sections = getSections($login);
+if(isset($_REQUEST['filter_section']))
+	$cur_section = $_REQUEST['filter_section'];
+else
+	$cur_section = $_SESSION['filter_section'];
 
 
 ?>
-
-
 <div class="footer">
 	<div id="authbar">
 		<table class="toptable">
 			<tr>
 				<td>
-					<table>
-						<tr>
-							<td><span class='login'><?php echo getLogin(). " - ".current_session();?>
-							</span>
-							</td>
-						</tr>
-						<tr>
-							<td valign="top" style="padding-top: 20px">
-								<form method="get" style="display: inline;" action="index.php">
-									<input type="hidden" name="action" value="logout" /> <input
-										type="submit" name="logout" value="Logout" />
-								</form>
-								<form method="get" style="display: inline;" action="index.php">
-									<input type="hidden" name="action" value="changepwd" /> <input
-										type="submit" value="Mot de Passe" />
-								</form> <?php 
-								if (isSecretaire())
-								{
-									?>
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<form method="get" style="display: inline;" action="index.php">
-									<input type="hidden" name="action" value="admin" /> <input
-										type="submit" value="Admin" />
-								</form> <?php
-								}
-
-								?>
-								<form method="get" style="display: inline;" action="index.php">
-									<input type="hidden" name="action" value="displayunits" /> <input
-										type="submit" value="Unités" />
-								</form>
-
-								<form method="post" style="display: inline;" action="index.php">
-									<input type="hidden" name="action" value="displaystats" /> <input
-										type="submit" value="Stats" />
-								</form>
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<form method="post" style="display: inline;" action="index.php">
-									<input type="hidden" name="action" value="displayimportexport" />
-									<input type="submit" value="Import/Export" />
-								</form>
-
-
-							</td>
-						</tr>
-
-					</table>
-				</td>
-				<td valign="top">
-
-					<table>
-						<tr>
-							<td valign="top">Dossiers
-								<ul>
-
-									<li><a href="index.php?action=view&amp;reset_filter=">Tous</a></li>
-									<li><a href="index.php?action=view">Sélection en cours</a>
-									</li>
-
+				<ul>
+								<li>
+<span class='login'>&nbsp;&nbsp;&nbsp;<?php echo getLogin();?>&nbsp;&nbsp;&nbsp;	</span>
+						</li>
+								<li>&nbsp;</li>	
+<?php 
+if(!isSuperUser())
+{
+?>				
+						<li>
+						Section/CID
+									<select id="session" onchange="window.location='index.php?reset_filter=&action=change_section&filter_section=' + this.value;">
 									<?php
-									if(is_current_session_concours())
+									foreach($sections as $section)
 									{
-										foreach($typesRapportsConcours as $typeEval => $value)
-										{
-
-											echo "<li><a href=\"index.php?action=view&amp;reset_filter=&amp;filter_id_session=".current_session_id()."&amp;filter_type=".urlencode($value)."\">".$value."s</a>";
-											if(isSecretaire())
-												echo " <a href=\"index.php?action=new&amp;type=".$typeEval."\">+</a>";
-											echo "</li>";
-										}
-
+										$sel = "";
+										if ($section == $cur_section)
+											$sel = ' selected="selected"';
+										echo '<option value="'.$section."\" $sel>".$section."</option>\n";
 									}
-									?>
-									</ul>
-									<?php 
-									if(is_current_session_concours())
+											?>
+									</select>
+							</li>
+							<li>
+									<select id="session" onchange="window.location='index.php?reset_filter=&action=view&filter_id_session=' + this.value;">
+									<?php
+									$sessions = sessionArrays();
+									$cur = current_session_id();
+									foreach($sessions as $id => $nom)
 									{
-									?>
-									</td>
-									<td valign="top">
-									<?php 
+										$sel = "";
+										if ($id	 == $cur)
+											$sel = ' selected="selected"';
+										echo '<option value="'.strval($id)."\" $sel>".$nom."</option>\n";
 									}
-									?>
-								Mes rapports
+											?>
+									</select>
+									</li>
+									<?php 
+}?>
+							</ul>
+						</td>
+						<?php 
+						if(!isSuperUser())
+						{
+						?>
+				<td valign="top">
 								<ul>
-
+								<li><a href="index.php?action=view&amp;reset_filter=">Tous les dossiers</a></li>
+								<li><a href="index.php?action=view">Sélection</a></li>
 									<?php
 									echo "<li><a href=\"index.php?action=view&amp;reset_filter=&amp;filter_rapporteur=".getLogin()."&amp;filter_id_session=".current_session_id()."\">Mes rapports</a></li>";
 									echo "<li><a href=\"index.php?action=view&amp;reset_filter=&amp;filter_avancement=todo&amp;filter_rapporteur=".getLogin()."&amp;filter_id_session=".current_session_id()."\">A faire</a></li>";
-									echo "<li><a href=\"index.php?action=view&amp;reset_filter=&amp;filter_avancement=done&amp;filter_rapporteur=".getLogin()."&amp;filter_id_session=".current_session_id()."\">Faits</a></li>";
-
-									if(is_current_session_concours())
-									{
-										foreach($typesRapportsConcours as $typeEval => $value)
-										{
-											echo "<li><a href=\"index.php?action=view&amp;reset_filter=&amp;filter_rapporteur=".getLogin()."&amp;filter_id_session=".current_session_id()."&amp;filter_type=".urlencode($value)."\">Mes ".$value."s</a></li>";
-										}
-										echo "<li><a href=\"index.php?action=view&amp;reset_filter=&amp;filter_rapporteur=".getLogin()."&amp;filter_id_session=".current_session_id()."&amp;filter_type=Candidature&amp;filter_avis=oral\">Mes Auditions</a></li>";
-									}
+//									echo "<li><a href=\"index.php?action=view&amp;reset_filter=&amp;filter_avancement=done&amp;filter_rapporteur=".getLogin()."&amp;filter_id_session=".current_session_id()."\">Faits</a></li>";
 									?>
-
-								</ul>
-
-							</td>
-							<?php 
-							if(is_current_session_concours())
-							{
-								?>
-							<td valign="top">Auditions
-								<ul>
-									<?php
-									echo "<li><a href=\"index.php?action=view&amp;reset_filter=&amp;filter_id_session=".current_session_id()."&amp;filter_type=Candidature &amp;filter_avis=oral\">Auditions</a></li>";
-
-									global $concours_ouverts;
-									foreach($concours_ouverts as $code => $intitule)
-									{
-										echo "<li><a href=\"index.php?action=view&amp;reset_filter=&amp;filter_id_session=".current_session_id()."&amp;filter_type=Candidature&amp;filter_concours=$code&amp;filter_avis=oral\">$intitule</a></li>";
-									}
-									?>
-								</ul>
-							</td>
-							<?php 				
-							}
-							else if(is_current_session_delegation())
-							{
-								?>
-								<td  valign="top">Dossiers
-								<ul>
-																	<li><a
-										href="index.php?action=view&amp;filter_type=Delegation">Délégations
-									</a> <?php 
-									if(isSecretaire())
-										echo " <a href=\"index.php?action=new&amp;type=Delegation\">+</a>";
-									?>
-									</li>
-																</ul>
-																</td>
-							<?php 				
-							}
-							else
-							{
-								?>
-							<td valign="top">Chercheurs
-								<ul>
+									</td>
 									<?php 
-									$i=0;
-									$lim = intval(count($typesRapportsChercheursShort) / 2);
-									foreach($typesRapportsChercheursShort as $typeEval => $value)
-									{
-										?>
-									<li><a
-										href="index.php?action=view&amp;filter_type=<?php echo $typeEval ?>"><?php echo $value?>
-									</a> <?php 
-									if(isSecretaire())
-										echo " <a href=\"index.php?action=new&amp;type=".$typeEval."\">+</a>";
-									?>
-									</li>
-									<?php
-									$i++;
-									if($i == $lim)
-									{
-										echo "</ul></td><td><ul>";
-									}
-									}
-							?>
-								</ul>
-							</td>
-							<td valign="top">Unités
-								<ul>
-									<?php
-									foreach($typesRapportsUnitesShort as $typeEval => $value)
-									{
-										?>
-									<li><a
-										href="index.php?action=view&amp;filter_type=<?php echo $typeEval ?>"><?php echo $value?>
-									</a> <?php 
-									if(isSecretaire())
-										echo " <a href=\"index.php?action=new&amp;type=".$typeEval."\">+</a>";
-									?>
-									</li>
-
-									<?php
-									}
-									?>
-																	</ul>
-							</td>
-																	<?php 
-								
-														}
-									
-									?>
-							<td valign="top">Sessions
-								<ul>
-									<?php
-
-									$sessions = sessionArrays();
-									
-									$i = 0;
-									foreach($sessions as $id => $nom)
-									{
-										$i++;
-										if($i > 7) break;
-										//$typesRapports = getTypesEval($s["id"]);
-										echo "<li><a href=\"index.php?action=view&amp;reset_filter=&amp;filter_id_session=".strval($id)."\">".$nom."</a></li>";
-										/*			?>
-										 <!--
-										<ul>
-										<?php
-										foreach($typesRapports as $typeEval)
-											echo "\t\t<li><a href=\"?action=view&amp;id_session=".$s["id"]."&amp;type_eval=".urlencode($typeEval)."\">$typeEval</a></li>\n";
-										?>
-										</ul>
-										-->
-										<?php
-										*/
-									}
-									?>
-								</ul> <?php 
-								if ( isSecretaire())
+						}?>
+									<td>
+									<ul>
+														<li>
+								<a href="index.php?action=logout">Déconnexion</a></li>
+							<li>
+								<a href="index.php?action=changepwd">Mot de passe</a>
+								</li>
+								<?php 
+								if(!isSuperUser())
 								{
-									global $statutsRapports;
-
-									echo '
-		Statut des rapports sélectionnés
-		<form method="post"  action="index.php">
-		<select name="new_statut">';
-									foreach ($statutsRapports as $val => $nom)
-									{
-										$sel = "";
-										echo "<option value=\"".$val."\" $sel>".$nom."</option>\n";
-									}
-									echo '
-									</select>
-									<input type="hidden" name="action" value="change_statut"/>
-									<input type="submit" value="Changer statut"/>
-									</form>';
-								}
-									
 								?>
-
-							</td>
-
+									<li>
+			<form method="post" action="export.php">
+		<input type="submit" value="Export"/>
+		<input type="hidden" name="action" value="export"/>
+		<select name="type">
+		<?php 
+		global $typeExports;
+		foreach($typeExports as $idexp => $exp)
+		{
+			$expname= $exp["name"];
+			$level = $exp["permissionlevel"];
+			if (getUserPermissionLevel()>=$level)
+				echo '<option value="'.$idexp.'">'.$exp["name"]."</option>\n";
+		}
+		?>
+		</select>
+		</form>
+						</li>
+							</ul>
+													<?php 
+						}
+						?>
+</td>
+<td>
+<ul>
+		<?php 
+		if(isSecretaire() && !isSuperUser())
+		{
+		?>
+						<li>
+						<a href="index.php?action=displayimportexport">Import/Ajout</a>
+						</li>
+						<?php 
+		}
+		if(isSecretaire())
+		{?>
+						<li>
+						<a href="index.php?action=admin">Administration</a>
+</li>						
+<?php 
+		}
+		if(isBureauUser("", false) && !isSuperUser())
+		{
+			?>
+			<li>
+			Mode:
+			<select id="session" onchange="window.location='index.php?action=change_role&role=' + this.value;">
+			<?php 
+						$levels = array(NIVEAU_PERMISSION_SECRETAIRE => "Admin", NIVEAU_PERMISSION_BUREAU => "Bureau", NIVEAU_PERMISSION_BASE => "Normal");
+						foreach($levels as $level => $name)
+						{
+							if(getUserPermissionLevel("",false) >= $level )
+							{
+								$selected = (isset($_SESSION["permission_mask"]) && $_SESSION["permission_mask"] == $level) ? "selected=on" : "";
+								echo "<option ".$selected." value=\"".$level."\">".$name."</option>\n";
+							}
+						}
+			?>
+			</select>
+			</li>
+			<?php
+					}
+				?>
+</ul>
 						</tr>
 					</table>
-				</td>
-			</tr>
-		</table>
-
-
 	</div>
 </div>

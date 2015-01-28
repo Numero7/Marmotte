@@ -13,5 +13,7 @@
 	define("sessions_db","sessions");
 	define("units_db","units");
 	define("people_db","people");
+	define("config_db","config");
+	define("concours_db","concours");
 	
 ?>

@@ -52,32 +52,6 @@ function displayTri($rows, $sortFields, $sorting_values)
 
 }
 
-function displayExportGeneral()
-{
-	global $typeExports;
-
-	
-	?>
-	<table align="left" >
-	<tr>
-	<td><h2>Export</h2></td>
-	<?php 
-	foreach($typeExports as $idexp => $exp)
-	{
-		$expname= $exp["name"];
-		$level = $exp["permissionlevel"];
-		if (getUserPermissionLevel()>=$level)
-		{
-			echo '<td style="padding-left: 20px"><a href="export.php?action=export&amp;type='.$idexp.'">';
-			//echo "<img class=\"icon\" width=\"40\" height=\"40\" src=\"img/$idexp-icon-50px.png\" alt=\"$expname\"/></a>";
-			echo "$expname</a></td>";
-		}
-	}
-	?>
-	</tr></table>
-	<?php 
-}
-
 
 function displayFiltrage($rows, $fields, $filters, $filter_values)
 {
@@ -92,12 +66,9 @@ function displayFiltrage($rows, $fields, $filters, $filter_values)
 <!--  Menu filtrage -->
 <table>
 	<tr>
-		<td style="width: 10em;"><h2>Filtrage</h2>
-		</td>
 		<td>
 			<table class="inputreport">
 				<tr>
-
 					<?php
 					$count = 0;
 					foreach($filters as $filter => $data)
@@ -106,15 +77,21 @@ function displayFiltrage($rows, $fields, $filters, $filter_values)
 							$count++;
 							?>
 					<td><?php echo $data['name'];?></td>
-					<td><select name="filter_<?php echo $filter?>">
+					<td>
+					<select   onchange="window.location='index.php?action=view&amp;filter_<?php echo $filter?>=' + this.value;">
 							<option value="<?php echo $data['default_value']; ?>">
 								<?php echo $data['default_name']; ?>
 							</option>
 							<?php
 							foreach ($data['liste'] as $value => $nomitem)
 							{
+								if(is_numeric($value))
+									$value = strval($value);
+								$cur_val = $filter_values[$filter];
+								if(is_numeric($cur_val))
+									$cur_val = strval($cur_val);
 								$sel = "";
-								if ($value == $filter_values[$filter])
+								if ($value === $cur_val)
 									$sel = " selected=\"selected\"";
 								echo "<option value=\"".$value."\" $sel>".$nomitem."</option>\n";
 							}
@@ -124,16 +101,21 @@ function displayFiltrage($rows, $fields, $filters, $filter_values)
 					if($count %3 == 0)
 						echo '</tr><tr>';
 						}
-						?>
+						?><td></td>
+								<td style="width: 10em;"><h3><a href="index.php?action=view&reset_filter=">Réinitialiser filtres</a></h3>
+		</td>
+						
 				</tr>
 			</table>
 		</td>
 	</tr>
 </table>
+
 <!-- END  Menu filtrage -->
 
 <?php
 }
+
 
 function displayRows($rows, $fields, $filters, $filter_values, $sort_fields, $sorting_values)
 {
@@ -145,48 +127,133 @@ function displayRows($rows, $fields, $filters, $filter_values, $sort_fields, $so
 	global $end_tr_fields;
 
 	?>
-<form method="post" action="index.php">
 	<table>
-	<tr>
-	<td>
-	<?php 
-	displayExportGeneral();
-	?>
-	</td>
-	</tr>
 		<tr>
 			<td>
-				<table>
+			<table>
 					<tr>
 						<td><?php 
-						//displayTri($rows, $sort_fields, $sorting_values);
-						?>
-						</td>
-					</tr>
-					<tr>
-						<td><hr /> <?php 
 						displayFiltrage($rows, $fields, $filters, $filter_values);
 						?>
 						</td>
 					</tr>
-				</table>
-
+			</table>
 			</td>
-		</tr>
-		<tr>
-			<td><hr /> <input type="hidden" name="action" value="view" /> <input
-				type="submit" value="Rafraîchir" /> <?php 	echo "(".count($rows)." rapports)";?>
+<?php 
+if(isSecretaire())
+{
+	?>
+<td>
+<table><tr>
+<td>
+		<form onsubmit="return confirm('Changer les statuts des rapports?');" method="post"  action="index.php">
+		<table><tr><td>
+			<input type="submit" value="Changer statuts"/>
+			</td><td>
+			<select name="new_statut">
+			<?php  
+			global $statutsRapports;
+			foreach ($statutsRapports as $val => $nom)
+			{
+				$sel = "";
+				echo "<option value=\"".$val."\" $sel>".$nom."</option>\n";
+			}
+			?>
+			</select>
+			<input type="hidden" name="action" value="change_statut"/>
 			</td>
+			</tr></table>
+		</form>
+</td>
+</tr>
+<tr>
+<td>
+		<form onsubmit="return confirm('Supprimer ces rapports?');" method="post" action="index.php">
+				<input type="hidden" name="action" value="deleteCurrentSelection" /> <input	type="submit" value="Supprimer rapports" />
+		</form>
+</td>
+</tr>
+</table>
+	</td>
+	<?php 
+}
+?>
 			</tr>
-
 	</table>
-</form>
 <hr />
-<table class="summary">
+<p><?php  echo count($rows); ?> rapports</p>
+
+<?php 
+$rapporteurs = listNomRapporteurs();
+$bur = isBureauUser();
+
+if(isBureauUser() && !isSecretaire() && is_current_session_concours())
+{
+	
+	$allstats = get_bureau_stats();
+	$stats = $allstats["rapporteurs"];
+	$statssj = $allstats["sousjurys"];
+	
+	$roles = array("rapporteur","rapporteur2","rapporteur3");
+	?>
+	<table>
+	<tr><th>CR</th><th>DR</th><th>Sousjurys</th></tr>
 	<tr>
+	<?php 
+	foreach($stats as $niveau => $data)
+	{
+		?>
+		<td>
+		<table class="stats">
+		<tr>
+		<th>login</th><th>rapp</th><th>rapp 2</th><th>rapp 3</th><th>Total</th></tr>
+		<?php 
+		foreach($data as $login => $data_rapporteur)
+		{
+			$nom= isset($rapporteurs[$login])? $rapporteurs[$login] : $login;
+			echo "<tr ><td>".$nom."</td>";
+			$total = 0;
+			foreach($roles as $role)
+			{
+				if(isset($data_rapporteur[$role]))
+				{
+					$stat = $data_rapporteur[$role]["counter"];
+				echo "<td>".$stat."</td>";
+				$total += $stat;
+				}
+				else
+					echo "<td></td>";
+			}
+			echo "<td>".$total."</td>";
+			echo "</tr>";
+		}
+		?>
+		</table>
+		</td>
+		<?php 
+	}
+	?>		<td>
+	<?php 
+	
+	foreach($statssj as $sj => $compteur)
+	{
+		echo "Sousjury ".$sj.": ".$compteur."<br/>";
+	}
+	?>
+	</td>
+	</tr>
+	</table>
+	<?php 
+}
+?>
+<table class="summary">
+<tr>
 		<th class="oddrow"><span class="nomColonne"></span></th>
 		<?php
-		$rapporteurs = listNomRapporteurs();
+		
+		$sec = isSecretaire();
+		$concours = getConcours();
+		
 		global $tous_avis;
 		$prettyunits = unitsList();
 		
@@ -212,12 +279,14 @@ function displayRows($rows, $fields, $filters, $filter_values, $sort_fields, $so
 		foreach($rows as $row)
 		{
 			// is_in_conflict(getLogin(), $candidate)
+			/*
 			$candidate = get_or_create_candidate($row);
 			$conflit = is_in_conflict(getLogin(), $candidate);
+			*/
+			$conflit = is_in_conflict_efficient($row, getLogin());
 			$style = getStyle("",$odd,$conflit);
 			$odd = !$odd;
 			?>
-	
 	
 	<tr id="t<?php echo $row->id;?>" class="<?php echo $style;?>">
 		<?php
@@ -233,23 +302,33 @@ function displayRows($rows, $fields, $filters, $filter_values, $sort_fields, $so
 			$data = $row->$fieldID;
 			$type = isset($fieldsTypes[$fieldID]) ?  $fieldsTypes[$fieldID] : "";
 
-			if($type=="rapporteur")
+			if(!$sec && $type=="rapporteur")
 			{
+				if($bur)
+				{
 				?>
-		<!-- Displaying rapporteur menu -->
-		<?php 
-/*		displayRapporteurMenu($fieldID,$row,$users);*/
-		
-		echo (isset($rapporteurs[$row->$fieldID]) ? $rapporteurs[$row->$fieldID] : $row->$fieldID);
+				<select onchange="window.location='index.php?action=set_rapporteur&property=<?php echo $fieldID; ?>&id_origine=<?php echo $row->id_origine; ?>&value=' + this.value;">
+				<?php 
+				foreach($rapporteurs as $rapporteur => $nom)
+				{
+					$selected = ($rapporteur == $row->$fieldID) ? "selected=on" : "";
+					echo "<option ".$selected." value=\"".$rapporteur."\">".$nom."</option>\n";
+				}
+				?>
+				</select>
+				<?php 
+				}
+				else
+					echo (isset($rapporteurs[$row->$fieldID]) ? $rapporteurs[$row->$fieldID] : $row->$fieldID);
 			}
-			else if(isSecretaire() &&  $type=="avis")
+			else if($sec &&  $type=="avis")
 			{
-				?>
-		<!-- Displaying avis menu -->
-		<?php 
-/*
-		displayAvisMenu($fieldID,$row);*/
-		echo isset($tous_avis[$row->$fieldID]) ? $tous_avis[$row->$fieldID] : $row->$fieldID;
+		//		displayAvisMenu($fieldID,$row);
+				echo isset($tous_avis[$row->$fieldID]) ? $tous_avis[$row->$fieldID] : $row->$fieldID;
+			}
+			else if($fieldID == "concours")
+			{
+				echo isset($concours[$row->$fieldID]) ? $concours[$row->$fieldID]->intitule : "";
 			}
 			else if($fieldID=="sousjury")
 			{
@@ -292,42 +371,13 @@ function displayRows($rows, $fields, $filters, $filter_values, $sort_fields, $so
 	<?php
 		}
 		?>
-<?php 
-			if(isPresidentSousJury() || isSecretaire())
-			{
-			?>
-			<tr>
-			<?php 
-			if(isSecretaire() )
-			{
-			?>
-			<td>
-<form onsubmit="return confirm('Etes vous sur de vouloir supprimer ces rapports?');"
-method="post" action="index.php">
-			<input type="hidden" name="action" value="deleteCurrentSelection" /> <input
-				type="submit" value="Supprimer ces rapports" />
-				</form>
-				</td>
-				<?php 
-			}
-			?>
-			<?php 
-				?>
-			<td>
-<form method="post" action="index.php">
-			<input type="hidden" name="action" value="affectersousjurys" /> <input
-				type="submit" value="Affecter automatiquement les sous-jurys" />
-				</form>
-				</td>
-				</tr>
-				<?php 
-			}
-			?>
-		
 </table>
+<br/>
+<br/>
+<br/>
 <p>
-Le site web Marmotte a été développé par Hugo Gimbert et Yann Ponty.<br/>
-Code libre d'utilisation par les sections du Comité national.<br/>
+Marmotte a été développé par Hugo Gimbert et Yann Ponty.<br/>
+Code libre d'utilisation par les sections du Comité National de la Recherche Scientifique.<br/>
 Utilisations commerciales réservées.
 </p>
 <?php

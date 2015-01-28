@@ -1,6 +1,5 @@
 <?php
 
-
 error_reporting(E_ALL);
 ini_set('display_errors', TRUE);
 ini_set('display_startup_errors', TRUE);
@@ -12,30 +11,45 @@ ini_set('xdebug.show_local_vars', 'on');
 
 	date_default_timezone_set('Europe/Paris');
 
+	
 	require_once("config/configDB.inc.php");
-
+	require_once("config_tools.inc.php");
+		
 	
-	define("config_file","config/config.xml");
+//	define("config_file","config/config.xml");
 	define("signature_file","img/signature.jpg");
-	define("config_file_save","config/config.sauv.xml");
-	
-	require_once("config.php");
-	
-	load_config(true);
-	//save_config();
-	
-	$dossiers_candidats = get_config("people_files_root");
+	define("signature_blanche","img/signature_blanche.jpg");
+	//	define("config_file_save","config/config.sauv.xml");
 
-	//include_once(section_config_file);
+	global $rootdir;
+	$dossier_temp = $rootdir."./tmp/".$_SESSION['filter_section']."/";
+	$dossier_stockage = $rootdir."./storage/".$_SESSION['filter_section']."/";
 	
+
+	$rubriques_supplementaires = array(
+			"individus" => array("rubriques_individus","Info","chercheur"),
+			"candidats" => array("rubriques_candidats", "Info","candidat"),
+			"concours" => array("rubriques_concours", "Generic","rapport concours"),
+			"chercheurs" => array("rubriques_chercheurs", "Generic","rapport chercheur"),
+			"unites" => array("rubriques_unites", "Generic","rapport unite")
+	);
+	
+	$add_rubriques_people = get_rubriques("individus");
+	$add_rubriques_candidats = get_rubriques("candidats");
+	$add_rubriques_concours = get_rubriques("concours");
+	$add_rubriques_chercheurs = get_rubriques("chercheurs");
+	$add_rubriques_unites = get_rubriques("unites");
+		
 	$fieldsSummary = array(
 		"type",
 		"rapporteur",
 		"rapporteur2",
-		"nom",
+		"rapporteur3",
+			"nom",
 		"prenom",
 		"grade_rapport",
 			"avis",
+			"avis1",
 			"theme1",
 			"theme2",
 			"theme3",
@@ -49,15 +63,16 @@ ini_set('xdebug.show_local_vars', 'on');
 			"concours",
 			"sousjury",
 			"avis",
-			"theseAnnee",
-//			"grade_rapport",
+			"avis1",
+			"avis2",
 			"rapporteur",
 			"rapporteur2",
 			"theme1",
 			"theme2",
 			"labo1",
 			"labo2",
-			"labo3"
+			"diploma",
+			"grade_rapport"
 	);
 	
 	$fieldsTriConcours = array(
@@ -68,6 +83,7 @@ ini_set('xdebug.show_local_vars', 'on');
 			"sousjury",
 			"rapporteur",
 			"rapporteur2",
+			"rapporteur3",
 			"theme1",
 			"theme2",
 			"theme3",
@@ -75,21 +91,19 @@ ini_set('xdebug.show_local_vars', 'on');
 			"labo2",
 			"labo3",
 			"avis",
-			"theseAnnee",
 			"date"
 	);
 	
 	$statutsRapports = array(
-			 'vierge' => "Rapport vierge",
-			 'prerapport'=>'Prérapport',
-			 'editable' => "Editable",
+			'doubleaveugle'=>'Double Aveugle',
+			 'prerapport' => "Prerapport",
 			 'rapport'=>"Rapport",
 			 'audition'=>"Audition",
 			 'publie'=>"Rapport publié"
 			);
 
 	$genreCandidat = array(
-			'' => "None",
+			'' => "",
 			'homme'=>'Homme',
 			'femme' => "Femme",
 	);
@@ -99,17 +113,20 @@ ini_set('xdebug.show_local_vars', 'on');
 		"statut" => "Statut rapport",
 		"concours" => "Concours",
 			"sousjury" => "Sous-jury",
+			"section"=> "Section",
 			"ecole" => "Ecole",
 		"nom" => "Nom",
 		"prenom" => "Prénom",
 		"unite" => "Unité",
 		"type" => "Type",
 		"grade_rapport" => "Grade (rapport)",
-		"rapporteur" => "Rapporteur 1",
-		"rapporteur2" => "Rapporteur 2",
+		"rapporteur" => "Rapp. 1",
+		"rapporteur2" => "Rapp. 2",
+		"rapporteur3" => "Rapp. 3",
 			"avis" => "Avis Section",
 			"avis1" => "Avis rapp. 1",
 			"avis2" => "Avis rapp. 2",
+			"avis3" => "Avis rapp. 3",
 			"avissousjury" => "Avis sur l'audition",
 			"DU" => "Au titre de DU",
 			"international" => "Au titre Mobilité internationale",
@@ -118,32 +135,14 @@ ini_set('xdebug.show_local_vars', 'on');
 			"rapport" => "Rapport Section",
 		"prerapport" => "Prérapport 1",
 		"prerapport2" => "Prérapport 2",
-			"anneesequivalence" => "Années d'équivalence",
-		"production" => "Production<br/>scientifique",
-		"avissousjury" => "Avis sur l'audition",
-			"production2" => "Production<br/>scientifique<br/>(rapp. 2)",
-		"transfert" => "Transfert<br/>et valorisation",
-		"transfert2" => "Transfert<br/>et valorisation<br/>(rapp. 2)",
-		"encadrement" => "Encadrement",
-		"encadrement2" => "Encadrement<br/>(rapp. 2)",
-		"responsabilites" => "Responsabilités<br/>collectives",
-		"responsabilites2" => "Responsabilités<br/>collectives<br/>(rapp. 2)",
-		"mobilite" => "Mobilité",
-		"mobilite2" => "Mobilité<br/>(rapp. 2)",
-		"animation" => "Animation<br/>scientifique",
-		"animation2" => "Animation<br/>scientifique<br/>(rapp. 2)",
-		"rayonnement" => "Rayonnement",		
-		"rayonnement2" => "Rayonnement<br/>(rapp. 2)",		
+		"prerapport3" => "Prérapport 3",
 		"auteur" => "Auteur dernière modif",
 		"date" => "Date modification",
 		"id" => "Id",
 			"id_session" => "Id session",
 			"id_origine" => "Id origine",
-	);
+	);	
 	
-	
-	$global_fields_renaming = get_config_array("renommage_champs");
-
 	$type_specific_fields_renaming = 
 	array(
 			"Expertise" => array("ecole" => "Intitulé du rapport"),
@@ -153,11 +152,6 @@ ini_set('xdebug.show_local_vars', 'on');
 	);
 	
 	/*
-	$specialtr_fields = array("parcours","concourspresentes", "nom", "annee_recrutement", "prenom", "genre", "grade", "projetrecherche", "labo1","labo2","labo3","theme1","theme2","theme3", "theseLieu", "HDRAnnee", "theseAnnee","theseloc", "HDRLieu");
-	$start_tr_fields = array("projetrecherche", "grade", "nom", "labo1","theme1", "theseAnnee", "productionResume");
-	$end_tr_fields = array("concourspresentes", "annee_recrutement", "labo3","theme3", "genre", "HDRLieu");
-	*/
-	/*
 	 * Les champs disponibles au secrétaire pour un rapport individuel
 	 */
 	$fieldsIndividual0 = array(
@@ -165,7 +159,9 @@ ini_set('xdebug.show_local_vars', 'on');
 			"statut",
 			array(
 			"rapporteur",
-			"rapporteur2",),
+			"rapporteur2",
+			"rapporteur3",
+			),
 //			"nom",
 //			"prenom",
 	array(
@@ -176,161 +172,99 @@ ini_set('xdebug.show_local_vars', 'on');
 			"rapport",
 	);
 
-	/*
-	 * Les champs disponibles au rapporteur 1
-	*/
-	$fieldsIndividual1 = array(
-			"avis1",
-			"prerapport",
-			"production",
-			"transfert",
-			"encadrement",
-			"responsabilites",
-			"mobilite",
-			"animation",
-			"rayonnement",
-	);
-
-		/*
-	 * Les champs disponibles au rapporteur 2
-	*/
-	$fieldsIndividual2 = array(
-			"avis2",
-			"prerapport2",
-			"production2",
-			"transfert2",
-			"encadrement2",
-			"responsabilites2",
-			"mobilite2",
-			"animation2",
-			"rayonnement2",
-	);
+	$fieldsIndividual1 = array("avis1","prerapport");
+	$fieldsIndividual2 = array("avis2","prerapport2");
+	$fieldsIndividual3 = array("avis3","prerapport3");
+	
+	foreach($add_rubriques_chercheurs as $index => $rubrique)
+	{
+		$fieldsIndividual1[] = "Generic".(3*$index);
+		$fieldsIndividual2[] = "Generic".(3*$index+1);
+		$fieldsIndividual3[] = "Generic".(3*$index+2);
+	}
+	
 	
 	/*
 	 * Tous les champs d'un rapport individuel
 	 */
-	$fieldsIndividual = array_merge($fieldsIndividual0, $fieldsIndividual1, $fieldsIndividual2);
+	$fieldsIndividual = array_merge($fieldsIndividual0, $fieldsIndividual1, $fieldsIndividual2, $fieldsIndividual3);
 	
 	$fieldsChercheursAll = array(
 			"nom",
 			"prenom",
 			"genre",
-			"statut_individu",
 			"grade",
 			"annee_recrutement",
 			"labo1",
 			"theme1",
 			"theme2",
 			"theme3",
-			"theseAnnee",
-			"theseLieu",
-			"theseloc",
-			"HDRAnnee",
-			"HDRLieu",
 			"fichiers",
 			"rapports"
 	);
-	
-	$fieldsRapportsIndividual = array(
-			"nom",
-			"prenom",
-			"genre",
-			"statut_individu",
-			"annee_recrutement",
-			"labo1",
-			"theme1",
-			"theme2",
-			"theme3",
-			"theseAnnee",
-			"theseLieu",
-			"theseloc",
-			"HDRAnnee",
-			"HDRLieu",
-			"fichiers",
-			"rapporteur",
-			"rapporteur2",
-			"statut",
-			"unite",
-			"grade",
-			"grade_rapport",
-			"avis",
-			"rapport",
-			"avis1",
-			"prerapport",
-			"production",
-			"transfert",
-			"encadrement",
-			"responsabilites",
-			"mobilite",
-			"animation",
-			"rayonnement",
-			"avis2",
-			"prerapport2",
-			"production2",
-			"transfert2",
-			"encadrement2",
-			"responsabilites2",
-			"mobilite2",
-			"animation2",
-			"rayonnement2",
-	);
+		
+	foreach($add_rubriques_people as $code => $rubrique)
+		$fieldsChercheursAll[] = "Info".$code;
 	
 	/*
 	* Les champs disponibles aux deux rapporteurs
 	* pour un rapport candidat
 	*/
 	$fieldsRapportsCandidat0 = array(
+			"type",
 			"concours",
 			"sousjury",
 			"rapporteur",
 			"rapporteur2",
+			"rapporteur3",
 			"avis",
 			"avissousjury",
 			"rapport"
 	);
 
+	$fieldsRapportsIE0 = array(
+			"type",
+			"grade_rapport",
+			"rapporteur",
+			"rapporteur2",
+			"rapporteur3",
+			"avis",
+			"rapport"
+	);
+	
 	/*
 	 * Les champs disponibles au rapporteur 1
 	* pour un rapport candidat
 	*/
 	$fieldsRapportsCandidat1 = array(
 			"avis1",
-			"prerapport",
-			"production",
-			"transfert",
-			"encadrement",
-			"responsabilites",
-			"mobilite",
-			"animation",
-			"rayonnement"
+			"prerapport"
 	);
 
-	/*
-	 * Les champs disponibles au rapporteur 2
-	* pour un rapport candidat
-	*/
 	$fieldsRapportsCandidat2 = array(
 			"avis2",
-			"prerapport2",
-			"production2",
-			"transfert2",
-			"encadrement2",
-			"responsabilites2",
-			"mobilite2",
-			"animation2",
-			"rayonnement2"
+			"prerapport2"
 	);
 	
+	$fieldsRapportsCandidat3 = array(
+			"avis3",
+			"prerapport3"
+	);
+		
+	foreach($add_rubriques_concours as $index => $rubrique)
+	{
+		$fieldsRapportsCandidat1[] = "Generic".(3*$index);
+		$fieldsRapportsCandidat2[] = "Generic".(3*$index+1);
+		$fieldsRapportsCandidat3[] = "Generic".(3*$index+2);
+	}
 	
-	$fieldsRapportsCandidat = array_merge($fieldsRapportsCandidat0, $fieldsRapportsCandidat1, $fieldsRapportsCandidat2);
+	$fieldsRapportsCandidat = array_merge($fieldsRapportsCandidat0, $fieldsRapportsCandidat1, $fieldsRapportsCandidat2, $fieldsRapportsCandidat3);
 	
 	
 	$fieldsIndividualAll = array(
-			"anneecandidature" => "Année de candidature",
 			"nom" => "Nom",
 			"prenom" => "Prénom",
 			"genre" => "Genre",
-			"statut_individu" => "Statut",
 			"grade" => "Grade (Individu)",
 			"annee_recrutement" => "Date de recrutement",
 			"labo1" => "Labo 1",
@@ -339,19 +273,18 @@ ini_set('xdebug.show_local_vars', 'on');
 			"theme1" => "Theme 1",
 			"theme2" => "Theme 2",
 			"theme3" => "Theme 3",
-			"theseAnnee" => "Années début et fin de thèse",
-			"theseLieu" => "Lieu thèse",
-			"theseloc" => "Loc thèse",
-			"HDRAnnee" => "Annee HDR",
-			"HDRLieu" => "Lieu HDR",
-			"productionResume" => "Production scientifique (pour rapport d'audition)",
-			"projetrecherche" => "Projet recherche  (pour rapport d'audition)",
-			"parcours" => "Parcours scientifique  (pour rapport d'audition)",
+			"audition" => "Rapport d'audition",
 			"concourspresentes" => "Concours présentés",
-			"fichiers" => "Fichiers associés",
-			"conflits" => "Conflits"
+			"conflits" => "Conflits",
+			"fichiers"=> "Fichiers",
+			"birth" => "Date naissance",
+			"diploma" => "Date diplôme"
 	);
 
+	
+	foreach($add_rubriques_people as $index => $rubrique)
+		$fieldsIndividualAll["Info".$index] = $rubrique;
+	
 
 	$mandatory_edit_fields=
 	array('id','nom','prenom'
@@ -361,31 +294,34 @@ ini_set('xdebug.show_local_vars', 'on');
 	array('id','nom','prenom','genre','type','concours',
 			"grade",
 			"annee_recrutement",
+			"diploma",
 			"labo1",
 			"labo2",
 			"labo3",
 			"theme1",
 			"theme2",
 			"theme3",
-			"theseAnnee",
-			"theseLieu",
-			"theseloc",
-			"HDRAnnee",
-			"HDRLieu",
-			"productionResume",
-			"projetrecherche",
-			"parcours",
+			"audition",
 			"concourspresentes"
 	);
+
+	/* dirty */
+	for($i = 0; $i <= 30; $i++)
+	{
+		$fieldsIndividualAll["Info".$i] = "Info".$i;
+		$fieldsRapportAll["Generic".$i] = "Generic".$i;
+	}
 	
 	$fieldsAll = array_merge($fieldsRapportAll, $fieldsIndividualAll, array("rapports" => "Autres rapports"));
-	
+
 	$fieldsCandidatAvantAudition = array(
 			"nom",
 			"prenom",
 			"genre",
 			"grade",
 			"annee_recrutement",
+			"diploma",
+			"birth",
 			"conflits",
 			"fichiers",
 			"rapports",
@@ -395,44 +331,14 @@ ini_set('xdebug.show_local_vars', 'on');
 			"theme1",
 			"theme2",
 			"theme3",
-			"theseAnnee",
-			"theseLieu",
-			"theseloc",
-			"HDRAnnee",
-			"HDRLieu",
 			"concourspresentes"
 	);
-
-	$fieldsCandidatAuditionne = array_merge($fieldsCandidatAvantAudition, array("parcours","productionResume", "projetrecherche"));
 	
+	foreach($add_rubriques_candidats as $index => $rubrique)
+		$fieldsCandidatAvantAudition[] = "Info".$index;
+	
+	$fieldsCandidatAuditionne = array_merge($fieldsCandidatAvantAudition, array("audition"));
 	$fieldsCandidat = $fieldsCandidatAuditionne;
-	
-	$fieldsEquivalence = array(
-			"statut",
-			"rapporteur",
-			"nom",
-			"prenom",
-			"genre",
-			"grade",
-			"conflits",
-			"avis",
-			"labo1",
-			"labo2",
-			"labo3",
-			"theme1",
-			"theme2",
-			"theme3",
-			"theseAnnee",
-			"theseLieu",
-			"theseloc",
-			"HDRAnnee",
-			"HDRLieu",
-			"rapports",
-			"rapport",
-			"avis1",
-			"prerapport",
-	);
-	
 
 	$fieldsDelegation = array(
 			"statut",
@@ -453,11 +359,6 @@ ini_set('xdebug.show_local_vars', 'on');
 			"theme1",
 			"theme2",
 			"theme3",
-			"theseAnnee",
-			"theseLieu",
-			"theseloc",
-			"HDRAnnee",
-			"HDRLieu",
 			"avis",
 			"rapport",
 	);
@@ -470,33 +371,16 @@ ini_set('xdebug.show_local_vars', 'on');
 			"unite",
 			"avis1",
 			"prerapport",
-			"production",
-			"transfert",
-			"encadrement",
-			"responsabilites",
-			"mobilite",
-			"animation",
-			"rayonnement",
 			"avis2",
 			"prerapport2",
-			"production2",
-			"transfert2",
-			"encadrement2",
-			"responsabilites2",
-			"mobilite2",
-			"animation2",
-			"rayonnement2",
+			"avis3",
+			"prerapport3",
 			"labo1",
 			"labo2",
 			"labo3",
 			"theme1",
 			"theme2",
 			"theme3",
-			"theseAnnee",
-			"theseLieu",
-			"theseloc",
-			"HDRAnnee",
-			"HDRLieu",
 			"avis",
 			"rapport",
 	);
@@ -510,13 +394,34 @@ ini_set('xdebug.show_local_vars', 'on');
 					),
 			array(
 			"rapporteur",
-			"rapporteur2",),
+			"rapporteur2",
+			"rapporteur3",
+			),
 			"unite",
+			"fichiers",
 			"rapports",
 		"avis",
 		"rapport",
 	);
 
+	$fieldsEcoles0 = array(
+			array(
+			"type",
+			"statut"),
+					array("ecole"),
+					array("nom"), array("prenom"),
+			array(
+			"rapporteur",
+			"rapporteur2",
+			"rapporteur3",
+			),
+			"unite",
+			"fichiers",
+			"rapports",
+		"avis",
+		"rapport"
+			);
+	
 	$fieldsUnites1 = array(
 			"avis1",
 			"prerapport"
@@ -526,6 +431,18 @@ ini_set('xdebug.show_local_vars', 'on');
 			"avis2",
 			"prerapport2"
 	);
+
+	$fieldsUnites3 = array(
+			"avis3",
+			"prerapport3"
+	);
+	
+	foreach($add_rubriques_unites as $index => $rubrique)
+	{
+		$fieldsUnites1[] = "Generic".(3*$index);
+		$fieldsUnites2[] = "Generic".(3*$index+1);
+		$fieldsUnites3[] = "Generic".(3*$index+2);
+	}
 	
 	$fieldsUnitesExtra = array(
 			'Expertise' => array('ecole'),
@@ -535,7 +452,8 @@ ini_set('xdebug.show_local_vars', 'on');
 			
 	);
 	
-	$fieldsUnites = array_merge($fieldsUnites0, $fieldsUnites1, $fieldsUnites2);
+	$fieldsUnites = array_merge($fieldsUnites0, $fieldsUnites1, $fieldsUnites2, $fieldsUnites3);
+	$fieldsEcoles = array_merge($fieldsEcoles0, $fieldsUnites1, $fieldsUnites2, $fieldsUnites3);
 	
 	$fieldsUnitsDB = array(
 			"code" => "Code",
@@ -548,6 +466,7 @@ ini_set('xdebug.show_local_vars', 'on');
 			"statut",
 			"rapporteur",
 			"rapporteur2",
+			"rapporteur3",
 			"nom",
 		"prenom",
 		"unite",
@@ -556,66 +475,9 @@ ini_set('xdebug.show_local_vars', 'on');
 		"prerapport"
 	);
 	
-	$fieldsEcoles = array(
-			"statut",
-			"rapporteur",
-			"rapporteur2",
-			"ecole",
-			"nom",
-			"prenom",
-			"unite",
-			"avis",
-			"rapport",
-			"prerapport"
-	);
-	
-	$examples = array(
-		"nom" => "",
-		"prenom" => "",
-		"grade" => "",
-		"unite" => "",
-		"concours" => "06/01",
-		"ecole" => "Ecole de Pythagore",
-		"type" => "Promotion",
-		"rapporteur" => "Anne ONYME",
-		"rapporteur2" => "Anne ONYME",
-			"theseAnnee" => "1979",
-			"theseLieu" => "Université de Turin",
-			"HDRAnnee" => "1985",
-			"HDRLieu" => "Université Bordeaux 1",
-			"anneesequivalence" => "0",
-		"prerapport" => "Candidat au fort potentiel, proche de la retraite ...",
-		"anciennete_grade" => "~4 ans",
-		"annee_recrutement" => "1999",
-		"production" => "A-",
-		"production" => "Nombreuses revues et conférences ...",
-		"transfert" => "A",
-		"transfert" => "Un brevet et quelques logiciels diffusés ...",
-		"encadrement" => "B",
-		"encadrement" => "Un étudiant en thèse, quelques stagiaires de M2 ...",
-		"responsabilites" => "A+",
-		"responsabilites" => "Membre du comité national ...",
-		"mobilite" => "C",
-		"mobilite" => "Peu de visites, en poste dans son labo de thèse ...",
-		"animation" => "A+",
-		"animation" => "Jongle et joue de l'harmonica tout en présidant son GDR ...",
-		"rayonnement" => "B+",		
-		"rayonnement" => "Travaux assez cités relativement aux pratiques de son domaine ...",		
-		"rapport" => "",
-		"avis" => "Réservé",
-		"auteur" => "joe",
-		"date" => "3/02/2013",
-			"labo1" => "labo1",
-			"labo2" => "",
-			"labo3" => "",
-			"theme1" => "theme1",
-			"theme2" => "",
-			"theme3" => "",
-				
-	);
 
 	$empty_report = array(
-			"statut" => "vierge",
+			"statut" => "doubleaveugle",
 			"type" => "Generique",
 			"id_session" => "",
 			"nom" => "",
@@ -625,13 +487,9 @@ ini_set('xdebug.show_local_vars', 'on');
 			"ecole" => "",
 			"concours" => "",
 			"type" => "",
-			"theseAnnee" => "",
-			"theseLieu" => "",
-			"HDRAnnee" => "",
-			"HDRLieu" => "",
-			"anneesequivalence" => "0",
 			"rapporteur" => "",
 			"rapporteur2" => "",
+			"rapporteur3" => "",
 			"prerapport" => "",
 			"prerapport2" => "",
 			"anciennete_grade" => "",
@@ -654,6 +512,7 @@ ini_set('xdebug.show_local_vars', 'on');
 			"avis" => "",
 			"avis1" => "",
 			"avis2" => "",
+			"avis3" => "",
 			"auteur" => "",
 			"date" => date(DATE_RSS),
 			"id_origine" => "0",
@@ -668,34 +527,28 @@ ini_set('xdebug.show_local_vars', 'on');
 	);
 	
 	$empty_individual = array(
-			"statut_individu" => "None",
-			"anneecandidature" => "1970",
 			"nom" => "",
 			"prenom" => "",
 			"genre" => "None",
-			"statut_individu" => "candidat",
 			"grade" => "None",
-			"annee_recrutement" => "1970",
+			"annee_recrutement" => "",
+			"birth" => "",
+			"diploma" => "",
 			"labo1" => "",
 			"labo2" => "",
 			"labo3" => "",
 			"theme1" => "",
 			"theme2" => "",
 			"theme3" => "",
-			"theseAnnee" => "",
-			"theseLieu" => "",
-			"theseloc" => "None",
-			"HDRAnnee" => "",
-			"HDRLieu" => "",
-			"productionResume" => "",
-			"projetrecherche" => "",
-			"parcours" => "",
-			"concourspresentes" => "",
-			"fichiers" => "",
+			"audition" => "1. Présentation générale du candidat: Nom, Prénom, date de la thèse, situation actuelle.<br/>
+2. Parcours scientifique: Intitulé et lieu de thèse et de post-doc.<br/>
+3. Production scientifique: « qualité » des publications.<br/>
+4. Projet de recherche: Intitulé du projet – équipe/laboratoire d’accueil souhaité.<br/>.
+Une phrase de conclusion sur le candidat incluant un commentaire sur l'audition
+			<b>(à préparer par le rapporteur après l'audition, et qui sera validé en jury d’admissibilité)</b>.",
+			"concourspresentes" => ""
 	);
-				
-	$sousjurys = get_config("sousjurys");
-	
+					
 	$virgin_report_equivalence = 
 			"La ".get_config("section_shortname")." réunie en instance d'équivalence considère que la somme des titres et travaux présentés dans le dossier du candidat est équivalente à un doctorat d'une université française.\n\n".
 			"La ".get_config("section_shortname")." réunie en instance d'équivalence considère que la somme des titres et travaux présentés dans le dossier du candidat est équivalente à plus de 4/8/12 années d'exercice des métiers de la recherche.\n\n".
@@ -706,25 +559,88 @@ ini_set('xdebug.show_local_vars', 'on');
 			"Les titres et/ou travaux dont le candidat est titulaire est /sont insuffisants ou/et n'/ne sont/est pas convaincants.";
 
 	$report_prototypes = array(
-			'Equivalence' => array('rapport' => $virgin_report_equivalence),
 			'Expertise' => array('ecole' => "Expertise (projet ou suivi ou intégration équipe ou restructuration)"),
 			'Generique' => array('ecole' => "Rapport sur unité"),
 			'GeneriqueChercheur' => array('ecole' => "Rapport sur chercheur"),
 			"Changement-section" => array('ecole' => "Changement de section, évaluation permanente par une deuxième section")
 	);
 
-	$extra_report_prototypes = get_config_array("reports_prototypes");
+	/**** TYPES DE RAPPORTS **************/
+	$typesRapportsChercheurs = array(
+			'Evaluation-Vague' => 'Evaluation à Vague',
+			'Evaluation-MiVague' => 'Evaluation à Mi-Vague',
+			'Promotion' => 'Promotion',
+			'Titularisation' => 'Titularisation',
+			'Affectation' => 'Confirmation d\'Affectation',
+			'Reconstitution' => 'Reconstitution de Carrière',
+			'Delegation' => 'Demande de Délégation',
+			'Emeritat' => 'Eméritat (1ere demande)',
+			'Emeritat-renouvellement' => 'Eméritat (renouvellement)',
+			'Changement-section' => 'Changement de section',
+			'MedailleBronze' => 'Médaille de Bronze',
+			'MedailleArgent' => 'Médaille d\'Argent',
+			'GeneriqueChercheur' => 'Générique (chercheur)'
+	);
 	
-	foreach($extra_report_prototypes as $type => $champs)
+	$typesRapportsChercheursShort = array(
+			'Evaluation-Vague' => 'Eval à Vague',
+			'Evaluation-MiVague' => 'Eval à Mi-Vague',
+			'Promotion' => 'Promotion',
+			'Titularisation' => 'Titularisation',
+			'Delegation' => 'Délégation',
+			'Affectation' => 'Affectation',
+			'Reconstitution' => 'Reconstitution',
+			'Changement-section' => 'Changt section',
+			'Emeritat' => 'Eméritat',
+			'Emeritat-renouvellement' => 'Eméritat Renouv.',
+			'MedailleBronze' => 'Méd Bronze',
+			'MedailleArgent' => 'Méd Argent',
+			'GeneriqueChercheur' => 'Générique'
+	);
+	
+	$typesRapportsUnites = array(
+			'Changement-Directeur' => 'Changement de Directeur',
+			'Changement-Directeur-Adjoint' => 'Changement de Directeur Adjoint',
+			'Renouvellement' => 'Renouvellement',
+			'Association' => 'Association',
+			'Ecole' => 'Ecole Thematique',
+			'Comite-Evaluation' => 'Comité d\'Evaluation',
+			'Expertise' => 'Expertise',
+			'Colloque' => 'Colloque',
+			'Generique' => 'Générique'
+	);
+	
+	$typesRapportsUnitesShort = array(
+			'Changement-Directeur' => 'Changt Directeur',
+			'Changement-Directeur-Adjoint' => 'Changt Dir. Adj.',
+			'Renouvellement' => 'Renouvellement',
+			'Association' => 'Association',
+			'Ecole' => 'Ecole Thematique',
+			'Comite-Evaluation' => 'Comité d\'Evaluation',
+			'Expertise' => 'Expertise',
+			'Colloque' => 'Colloque',
+			'Generique' => 'Générique'
+	);
+	
+	$typesRapportsConcours = array(
+			'Candidature' => 'Candidature',
+			'Equivalence' => 'IE'
+	);
+	
+	
+	$typesRapports = array_merge($typesRapportsChercheurs, $typesRapportsUnites, $typesRapportsConcours);
+	
+	/*********** PROTOTYPES DE RAPPORT **********************/
+	
+	/*
+	foreach($typesRapports as $type => $intitule)
 	{
-		if(!isset($report_prototypes[$type]))
-			$report_prototypes[$type] = array();
-		foreach($champs as $champ => $contenu)
-			$report_prototypes[$type][$champ] = $contenu;
+		$report_prototypes[$type]["rapport"] = get_config("prototype_".$type."_rapport");
+		$report_prototypes[$type]["prerapport"] = get_config("prototype_".$type."_prerapport");
+		$report_prototypes[$type]["prerapport2"] = get_config("prototype_".$type."_prerapport2");
 	}
-	
-	$candidat_prototypes = get_config_array("candidats_prototypes");
-	
+		
+		*/
 	$mergeableTypes = array("short","treslong","long","short");
 	$crashableTypes = array("auteur");
 	
@@ -742,31 +658,20 @@ ini_set('xdebug.show_local_vars', 'on');
 			 				 );
 	
 	$enumFields = array(
-			"genre" => array(""=>"None", "homme" => "Homme","femme" => "Femme"),
+			"genre" => array(""=>"", "homme" => "Homme","femme" => "Femme"),
 			"theseloc" => $theseslocs,
-			"statut_individu" => array(
-					''=>'',
-					'candidat' => 'Candidat',
-					'auditionne' => 'Auditionné',
-					'nonauditionne' => 'Non-auditionné',
-					'admissible' => 'Admissible',
-					'non-admissible'=> 'Non-admissible',
-					'admis' => 'Admis',
-					'non-admis'=> 'Non-admis',
-					'stagiaire' => 'Stagiaire',
-					'titulaire' => 'Titulaire'),
 			"DU" => array(""=>"","oui" => "Oui","non"=>"Non"),
 			"international" => array(""=>"","oui" => "Oui","non"=>"Non"),
 			"finalisationHDR" => array(""=>"","oui" => "Oui","non"=>"Non"),
 			"national" => array(""=>"","oui" => "Oui","non"=>"Non"),
-			"statut" => array('vierge','editable','prerapport','rapport','publie','supprime','audition')
+			"statut" => array('doubleaveugle','prerapport','rapport','publie','supprime','audition')
 			);
 	
 	$fieldsTypes = array(
 		"ecole" => "ecole",
 		"concours" => "concours",
 		"sousjury" => "sousjury",
-		"concourspresentes" => "long",
+		"concourspresentes" => "short",
 		"nom" => "short",
 		"prenom" => "short",
 		"genre" => "enum",
@@ -782,147 +687,54 @@ ini_set('xdebug.show_local_vars', 'on');
 		"type" => "type",
 		"rapporteur" => "rapporteur",
 		"rapporteur2" => "rapporteur",
+		"rapporteur3" => "rapporteur",
 			"avis" => "avis",
 			"avis1" => "avis",
 			"avis2" => "avis",
-		"rapport" => "treslong",
+			"avis3" => "avis",
+			"rapport" => "treslong",
 		"prerapport" => "treslong",
 		"prerapport2" => "treslong",
+		"prerapport3" => "treslong",
 		"anciennete_grade" => "short",
-		"theseAnnee" => "short",
-		"theseLieu" => "short",
-		"HDRAnnee" => "short",
-		"HDRLieu" => "short",
 		"annee_recrutement" => "short",
-		"production" => "long",
-		"avissousjury" => "long",
-			"transfert" => "long",
-		"encadrement" => "long",
-		"responsabilites" => "long",
-		"mobilite" => "long",
-		"animation" => "long",
-		"rayonnement" => "long",		
-		"production2" => "long",
-		"transfert2" => "long",
-		"encadrement2" => "long",
-		"responsabilites2" => "long",
-		"mobilite2" => "long",
-		"animation2" => "long",
-		"rayonnement2" => "long",		
+		"avissousjury" => "avis",
 			"auteur" => "short",
 		"date" => "short",
 		"conflits" => "short",
+			"birth" => "short",
+			"diploma" => "short",
 			"labo1" => "unit",
 			"labo2" => "unit",
 			"labo3" => "unit",
 			"theme1" => "topic",
 			"theme2" => "topic",
 			"theme3" => "topic",
-			"anneesequivalence" =>"short",
 			"id" =>"short",
-			"anneecandidature" => "short",
-			"productionResume" => "long",
-			"projetrecherche" => "long",
-			"parcours" => "long",
+			"audition" => "treslong",
 			"fichiers" => "files",
 			"rapports" => "rapports",
-			"avissousjury" => "long",
-			"statut" => "statut"
+			"avissousjury" => "avis",
+			"statut" => "statut",
 	);
+	
+	for($i = 0 ; $i < 30; $i++)
+	{
+		$fieldsTypes["Generic".$i] = "long";
+		$fieldsTypes["Info".$i] = "short";
+	}
 	
 	$nonEditableFieldsTypes = array('id','auteur','date');
 	$nonVisibleFieldsTypes = array('id','auteur');
 	$alwaysVisibleFieldsTypes = array('fichiers','rapports');
 	
-	$typesRapportsChercheurs = array(
-		'Evaluation-Vague' => 'Evaluation à Vague',
-		'Evaluation-MiVague' => 'Evaluation à Mi-Vague',
-		'Promotion' => 'Promotion',
-			'Titularisation' => 'Titularisation',
-		'Affectation' => 'Confirmation d\'Affectation',
-		'Reconstitution' => 'Reconstitution de Carrière',
-		'Delegation' => 'Demande de Délégation',
-		'Emeritat' => 'Eméritat (1ere demande)',
-		'Emeritat-renouvellement' => 'Eméritat (renouvellement)',
-		'Changement-section' => 'Changement de section',
-		'MedailleBronze' => 'Médaille de Bronze',
-		'MedailleArgent' => 'Médaille d\'Argent',
-		'GeneriqueChercheur' => 'Générique (chercheur)'
-	);
-
-	$typesRapportsChercheursShort = array(
-			'Evaluation-Vague' => 'Eval à Vague',
-			'Evaluation-MiVague' => 'Eval à Mi-Vague',
-			'Promotion' => 'Promotion',
-			'Titularisation' => 'Titularisation',
-			'Delegation' => 'Délégation',
-			'Affectation' => 'Affectation',
-			'Reconstitution' => 'Reconstitution',
-			'Changement-section' => 'Changt section',
-			'Emeritat' => 'Eméritat',
-			'Emeritat-renouvellement' => 'Eméritat Renouv.',
-			'MedailleBronze' => 'Méd Bronze',
-			'MedailleArgent' => 'Méd Argent',
-		'GeneriqueChercheur' => 'Générique'
-	);
+	$fieldsArrayCandidat = array($fieldsCandidat, $fieldsRapportsCandidat0, $fieldsRapportsCandidat1, $fieldsRapportsCandidat2, $fieldsRapportsCandidat3);
+	$fieldsArrayIE = array($fieldsCandidatAvantAudition, $fieldsRapportsIE0, $fieldsRapportsCandidat1, $fieldsRapportsCandidat2, $fieldsRapportsCandidat3);
+	$fieldsArrayChercheur = array($fieldsChercheursAll, $fieldsIndividual0,$fieldsIndividual1,$fieldsIndividual2,$fieldsIndividual3);
+	$fieldsArrayUnite = array(array(), $fieldsUnites0, $fieldsUnites1, $fieldsUnites2, $fieldsUnites3);
+	$fieldsArrayEcole = array(array(), $fieldsEcoles0, $fieldsUnites1, $fieldsUnites2, $fieldsUnites3);
 	
-	$typesRapportsUnites = array(
-			'Changement-Directeur' => 'Changement de Directeur',
-			'Changement-Directeur-Adjoint' => 'Changement de Directeur Adjoint',
-			'Renouvellement' => 'Renouvellement',
-			'Association' => 'Association',
-			'Ecole' => 'Ecole Thematique',
-			'Comite-Evaluation' => 'Comité d\'Evaluation',
-			'Expertise' => 'Expertise',
-			'Colloque' => 'Colloque',
-			'Generique' => 'Générique'
-	);
-
-	$typesRapportsUnitesShort = array(
-			'Changement-Directeur' => 'Changt Directeur',
-			'Changement-Directeur-Adjoint' => 'Changt Dir. Adj.',
-			'Renouvellement' => 'Renouvellement',
-			'Association' => 'Association',
-			'Ecole' => 'Ecole Thematique',
-			'Comite-Evaluation' => 'Comité d\'Evaluation',
-			'Expertise' => 'Expertise',
-			'Colloque' => 'Colloque',
-			'Generique' => 'Générique'
-	);
-	
-	$typesRapportsConcours = array(
-		'Candidature' => 'Candidature',
-		'Equivalence' => 'Equivalence',
-	);
-	
-	$typesRapports = array_merge($typesRapportsChercheurs, $typesRapportsUnites, $typesRapportsConcours);
-
-	$fieldsArrayCandidat = array($fieldsCandidat, $fieldsRapportsCandidat0, $fieldsRapportsCandidat1, $fieldsRapportsCandidat2);
-	$fieldsArrayChercheur = array($fieldsChercheursAll, $fieldsIndividual0,$fieldsIndividual1,$fieldsIndividual2);
-	$fieldsArrayUnite = array(array(), $fieldsUnites0, $fieldsUnites1, $fieldsUnites2);
-	$fieldsArrayEquivalence =
-	 array(
-	 		array(
-	"nom",
-	"prenom",
-	"genre",
-	"grade",
-	"labo1",
-	"labo2",
-	"labo3",
-	"theme1",
-	"theme2",
-	"theme3",
-	"theseAnnee",
-	"theseLieu",
-	"theseloc",
-	"HDRAnnee",
-	"HDRLieu",
-	),
-	 		array("rapporteur",	"grade_rapport", "avis", "rapport"),
-	 		array("avis1", "prerapport"),
-	 		array()
-	 		);
+	$fieldsPeople = array_merge($fieldsCandidat, $fieldsChercheursAll);
 	
 	$fieldsArrayDelegation =
 	array(
@@ -937,11 +749,6 @@ ini_set('xdebug.show_local_vars', 'on');
 					"theme1",
 					"theme2",
 					"theme3",
-					"theseAnnee",
-					"theseLieu",
-					"theseloc",
-					"HDRAnnee",
-					"HDRLieu"
 			),
 	array("rapporteur",	"avis",	"rapport"),
 			array(
@@ -960,9 +767,9 @@ ini_set('xdebug.show_local_vars', 'on');
 	
 	$typesRapportToFields =
 	array(
-			'Equivalence' => $fieldsArrayEquivalence,
 			'Delegation' => $fieldsArrayDelegation,
 		'Candidature' => 	$fieldsArrayCandidat,
+		'Equivalence' => 	$fieldsArrayIE,
 			'Evaluation-Vague' => $fieldsArrayChercheur,
 			'Evaluation-MiVague' => $fieldsArrayChercheur,
 			'Promotion' => $fieldsArrayChercheur,
@@ -978,12 +785,40 @@ ini_set('xdebug.show_local_vars', 'on');
 			'Changement-Directeur-Adjoint' => $fieldsArrayUnite,
 			'Renouvellement' => $fieldsArrayUnite,
 			'Association' => $fieldsArrayUnite,
-			'Ecole' => $fieldsArrayUnite,
+			'Ecole' => $fieldsArrayEcole,
 			'Comite-Evaluation' => $fieldsArrayUnite,
 			'Generique' => $fieldsArrayUnite,
 			'GeneriqueChercheur' => $fieldsArrayChercheur,
 			'Colloque' => $fieldsArrayUnite,
 			'Expertise' => $fieldsArrayUnite,
+	);
+	
+	$copies = array(
+			"Nom" => "nom",
+			"NOMUSUEL" => "nom",
+			"Prénom" => "prenom",
+			"PRENOM" => "prenom",
+			"GRAD_CONC" => "grade_rapport",
+			"Grade" => "grade",
+			"Directeur" => "directeur",
+			"Affectation #1" => "unite",
+			"Code Unité" => "unite",
+			"Code unité" => "unite",
+			"Code Colloque" => "unite",
+			"Affectation #1" => "unite",
+			"Titre" => "nom",
+			"Responsable principal" => "prenom",
+			"PUBCONC" => "concours",
+			"CONCOURS" => "concours",
+			"Rapporteur1" => "rapporteur",
+			"Rapporteur2" => "rapporteur2",
+			"Rapporteur3" => "rapporteur3",
+			"Rapporteur 1" => "rapporteur",
+			"Rapporteur 2" => "rapporteur2",
+			"Rapporteur 3" => "rapporteur3",
+			"DATNAISS" => "birth",
+			"DATOBTDIP" => "diploma",
+			"DATENOMIN" => "annee_recrutement"
 	);
 	
 	$typesRapportsToXSL = array(
@@ -1010,13 +845,22 @@ ini_set('xdebug.show_local_vars', 'on');
 	
 
 	/* Pour les concours*/
-	$avis_candidature = array(""=>"", "adiscuter"=>"à discuter", 	'desistement' => 'Desistement', "nonauditionne"=>"Non Auditionné", "oral"=>"Auditionné", "nonclasse"=>"Non Classé", "nonconcur"=>"Non Admis à Concourir");
-	$avis_candidature_short = array("tous" => "", "" =>"sans avis", 'desistement' => 'Desistement', "adiscuter"=>"à discuter", "nonauditionne"=>"Non Auditionné", "oral"=>"Auditionné", "nonclasse"=>"Non Classé", "classe"=>"Classé", "nonconcur"=>"Non Admis à Concourir");
+	$avis_candidature_short =
+	 array(
+	 		 "" =>"Sans avis",
+	 		 'desistement' => 'Desistement',
+	 		 "adiscuter"=>"A discuter",
+	 		 "nonauditionne"=>"Non-auditionné",
+	 		 "oral"=>"Auditionné",
+	 		 "nonclasse"=>"Non-classé",
+	 		 "classe"=>"Classé", 
+	 		"nonconcur"=>"Non-admis à concourir"
+	 		);
 	$avis_candidature_necessitant_pas_rapport_sousjury = array("", "adiscuter", "nonauditionne", "desistement");
 	
 	$max_classement = 30;
 	for($i = 1; $i <= $max_classement; $i++)
-		$avis_candidature[strval($i)] = $avis_classement[strval($i)] = "<B>$i</B>";
+		$avis_candidature_short[strval($i)] = $avis_classement[strval($i)] = "<B>$i</B>";
 	
 	/* Pour les SPE par exemple*/
 	$avis_vide = array(""=>"");
@@ -1098,7 +942,7 @@ ini_set('xdebug.show_local_vars', 'on');
 		'Emeritat-renouvellement' => $avis_ternaire,
 		'Promotion' => $avis_classement,
 		'Changement-section' => $avis_chgt,
-		'Candidature' => $avis_candidature,
+		'Candidature' => $avis_candidature_short,
 		'Equivalence' => $avis_ie,
 		'Affectation' => $avis_ternaire,
 		'Reconstitution' => $avis_binaire,
@@ -1119,7 +963,7 @@ ini_set('xdebug.show_local_vars', 'on');
 			
 	);
 	
-	$tous_avis = array_merge($avis_eval,$avis_classement,$avis_candidature,$avis_ie,$avis_pertinence,$avis_ecoles,$avis_binaire);
+	$tous_avis = array_merge($avis_eval,$avis_classement,$avis_candidature_short,$avis_ie,$avis_pertinence,$avis_ecoles,$avis_binaire);
 
 	for($i = 1; $i <= $max_classement; $i++)
 		$tous_avis[$i] = strval($i);
@@ -1181,19 +1025,19 @@ ini_set('xdebug.show_local_vars', 'on');
 	
 
 	$typesRapportsToEnteteGauche = array(
-			'Delegation' => '<B>Objet de l’évaluation :</B><br/><EM>demande de délégation</EM>',
-			'Evaluation-Vague' => '<B>Objet de l’évaluation :</B><br/><EM>évaluation à vague de chercheur</EM>',
-			'Evaluation-MiVague' => '<B>Objet de l’évaluation :</B><br/><EM>évaluation à mi-vague de chercheur</EM>',
+			'Delegation' => '<B>Objet de l’évaluation :</B><br/><I>demande de délégation</I>',
+			'Evaluation-Vague' => '<B>Objet de l’évaluation :</B><br/><I>évaluation à vague de chercheur</I>',
+			'Evaluation-MiVague' => '<B>Objet de l’évaluation :</B><br/><I>évaluation à mi-vague de chercheur</I>',
 			'Promotion' => '<B>Objet de l’évaluation :</B><br/>Avancement de grade<br/><B>Au grade de :</B>',
 			'Changement-section' => '<B>Objet de l’évaluation :</B><br/>',
-			'Candidature' => '<B>Objet de l’évaluation :</B><br/><EM>Candidature au concours</EM>',
+			'Candidature' => '<B>Objet de l’évaluation :</B><br/><I>Candidature au concours</I>',
 			'Affectation' => '<B>Objet de l’évaluation :</B><br/>Affectation',
 			'Titularisation' => '<B>Objet de l’évaluation :</B><br/>Titularisation',
 			'Reconstitution' => '<B>Objet :</B><br/>Reconstitution de carrière',
 			'Changement-Directeur' =>  '<B>Objet de l’évaluation :</B><br/>Changement de directeur',
 			'Changement-Directeur-Adjoint' =>  '<B>Objet de l’évaluation :</B><br/>Changement de directeur adjoint',
-			'Renouvellement' => '<B>Objet de l’examen :</B> <EM>avis de pertinence d’association au CNRS : renouvellement</EM>',
-			'Association' => '<B>Objet de l’examen :</B> <EM>avis de pertinence d’association au CNRS : projet d\'association</EM>',
+			'Renouvellement' => '<B>Objet de l’examen :</B> <I>avis de pertinence d’association au CNRS : renouvellement</I>',
+			'Association' => '<B>Objet de l’examen :</B> <I>avis de pertinence d’association au CNRS : projet d\'association</I>',
 			'Ecole' => '<B>Objet de l’évaluation :</B><br/> Ecole Thématique',
 			'Comite-Evaluation' => '<B>Objet de l’examen :</B> Comité d\'évaluation',
 			'Generique' => '<B>Objet de l’évaluation :</B><br/>',
@@ -1202,9 +1046,8 @@ ini_set('xdebug.show_local_vars', 'on');
 			'MedailleArgent' => '<B>Objet de l’évaluation :</B><br/>Proposition de lauréat pour la médaille d\'argent',
 			'Expertise' =>  '<B>Objet de l’examen :</B><br/>',
 			'Colloque' =>  '<B>Objet de l’examen :</B> Colloque',
-			'Equivalence' => '<B>Objet de l’évaluation :</B><br/><EM>Equivalence titres et travaux</EM>',
-			'Emeritat' => '<B>Objet de l’évaluation :</B><br/><EM>Eméritat (1ere demande)</EM>',
-			'Emeritat-renouvellement' => '<B>Objet de l’évaluation :</B><br/><EM>Eméritat (renouvellement)</EM>',
+			'Emeritat' => '<B>Objet de l’évaluation :</B><br/><I>Eméritat (1ere demande)</I>',
+			'Emeritat-renouvellement' => '<B>Objet de l’évaluation :</B><br/><I>Eméritat (renouvellement)</I>',
 			'' => ''
 	);
 
@@ -1212,7 +1055,6 @@ ini_set('xdebug.show_local_vars', 'on');
 	$enTetesDroit = array(
 			'Individu' => '<B>Nom, prénom et affectation du chercheur :</B><br/>',
 			'Concours' => '<B>Concours, classement, nom et prénom du candidat :</B><br/>',
-			'Equivalence' => '<B>Nom et prénom du candidat :</B><br/>',
 			'Unite' => '<B>Code, intitulé et nom<br/>du directeur de l’unité :</B><br/>',
 			'Ecole' => '<B>Nom de l\'école et du porteur de projet :</B><br/>',
 			'PromotionDR' => '<B>Classement, nom et unité :</B><br/>',
@@ -1230,7 +1072,6 @@ ini_set('xdebug.show_local_vars', 'on');
 			'Promotion' => 'Individu',
 			'Changement-section' => 'Individu',
 			'Candidature' => 'Concours',
-			'Equivalence' => 'Equivalence',
 			'Affectation' => 'Individu',
 			'Titularisation' => 'Individu',
 			'Reconstitution' => 'Individu',
@@ -1250,24 +1091,16 @@ ini_set('xdebug.show_local_vars', 'on');
 	
 /* Definition des formaules standards à la fin de certains rapports*/
 	
-	$promotionFormula = array(
-			'oui'=> 'La section donne un avis favorable à la demande de promotion.',
-			'non'=> 'Le faible nombre de possibilités de promotions ne permet malheureusement pas à la Section 6 du Comité National de proposer ce chercheur à la Direction Générale du CNRS pour une promotion cette année.'
-			);
-
-	$equivalenceFormula = array(
-			'favorable'=> 'La section donne un avis favorable à la demande d\'équivalence.',
-			'defavorable'=> 'La section donne un avis défavorable à la demande d\'équivalence.'
-	);
+	$typesRapportsToFormula = array();
 	
-	$typesRapportsToFormula = array(
-			
-		'Promotion' => $promotionFormula,
-		'Equivalence' =>$equivalenceFormula,
-			'Titularisation' => array('favorable'=> 'La section donne un avis favorable à la titularisation.')
-	);
+	$typesRapportsToFormula['Promotion']['oui'] = 
+		get_config("formule_standard_Promotion_oui", 'La section donne un avis favorable à la demande de promotion.');
 
-	$typesRapportsToFormula = get_config_array("formules_standards");
+	$typesRapportsToFormula['Promotion']['non'] =
+		get_config("formule_standard_Promotion_non", 'Le faible nombre de possibilités de promotions ne permet malheureusement pas à la Section 6 du Comité National de proposer ce chercheur à la Direction Générale du CNRS pour une promotion cette année.');
+	
+	$typesRapportsToFormula['Titularisation']['favorable'] =
+		get_config("formule_standard_Titularisation_favorable", 'La section donne un avis favorable à la titularisation.');
 	
 /* Definition des différents grades*/
 	
@@ -1289,41 +1122,79 @@ ini_set('xdebug.show_local_vars', 'on');
 			'postdoc' => 'Postdoctorant',
 		'CR1_INRIA' => 'CR1 INRIA',
 		'IR_CNRS' => 'IR CNRS',
-			'None' => 'Pas de grade'
 	);
 	
-	define("NIVEAU_PERMISSION_BASE", 0);
-	define("NIVEAU_PERMISSION_BUREAU", 100);
-	define("NIVEAU_PERMISSION_PRESIDENT_SECRETAIRE", 500);
-	define("NIVEAU_PERMISSION_SUPER_UTILISATEUR", 1000);
-	define("NIVEAU_PERMISSION_INFINI", 10000000);
+	/* permissions levels for actions */
+	$actions_level = array(
+			"set_rapporteur" => NIVEAU_PERMISSION_BUREAU,
+			"change_role" => NIVEAU_PERMISSION_BASE,
+			"migrate" => NIVEAU_PERMISSION_SUPER_UTILISATEUR,
+			"removerubrique" => NIVEAU_PERMISSION_SECRETAIRE,
+			"addrubrique" => NIVEAU_PERMISSION_SECRETAIRE,
+			"removetopic" => NIVEAU_PERMISSION_SECRETAIRE,
+			"addtopic" => NIVEAU_PERMISSION_SECRETAIRE,
+			"updateconfig" => NIVEAU_PERMISSION_SECRETAIRE,
+			"delete" => NIVEAU_PERMISSION_SECRETAIRE,
+			"change_statut" => NIVEAU_PERMISSION_SECRETAIRE,
+			"view" => NIVEAU_PERMISSION_BASE,
+			"deleteCurrentSelection" => NIVEAU_PERMISSION_SECRETAIRE,
+			"affectersousjurys" => NIVEAU_PERMISSION_SECRETAIRE,
+			"edit" => NIVEAU_PERMISSION_BASE,
+			"read" => NIVEAU_PERMISSION_BASE,
+			"upload" => NIVEAU_PERMISSION_SECRETAIRE,
+			"update" => NIVEAU_PERMISSION_BASE,
+			"change_current_session" => NIVEAU_PERMISSION_SECRETAIRE,
+			"new" => NIVEAU_PERMISSION_SECRETAIRE,
+			"newpwd" => NIVEAU_PERMISSION_BASE,
+			"adminnewpwd" => NIVEAU_PERMISSION_SECRETAIRE,
+			"admin" => NIVEAU_PERMISSION_SECRETAIRE,
+			"admindeleteaccount" => NIVEAU_PERMISSION_SECRETAIRE,
+			"infosrapporteur" => NIVEAU_PERMISSION_SECRETAIRE,
+			"checkpwd" => NIVEAU_PERMISSION_SECRETAIRE,
+			"adminnewaccount" => NIVEAU_PERMISSION_SECRETAIRE,
+			"admindeletesession" => NIVEAU_PERMISSION_SECRETAIRE,
+			"changepwd" => NIVEAU_PERMISSION_BASE,
+			"add_concours" => NIVEAU_PERMISSION_SECRETAIRE,
+			"delete_concours" => NIVEAU_PERMISSION_SECRETAIRE,
+			"ajoutlabo" => NIVEAU_PERMISSION_SECRETAIRE,
+			"deletelabo" => NIVEAU_PERMISSION_SECRETAIRE,
+			"mailing" => NIVEAU_PERMISSION_SECRETAIRE,
+			"email_rapporteurs" => NIVEAU_PERMISSION_SECRETAIRE,
+			"createhtpasswd" => NIVEAU_PERMISSION_SECRETAIRE,
+			"trouverfichierscandidats" => NIVEAU_PERMISSION_SECRETAIRE,
+			"creercandidats" => NIVEAU_PERMISSION_SECRETAIRE,
+			"creercandidats" => NIVEAU_PERMISSION_SECRETAIRE,
+			"injectercandidats" => NIVEAU_PERMISSION_SECRETAIRE,
+			"displayunits" => NIVEAU_PERMISSION_SECRETAIRE,
+			"displayimportexport" => NIVEAU_PERMISSION_SECRETAIRE
+	);
 	
 	$actions1 = array(
 /*		'details' => array('left' => true, 'title' => "Détails", 'level' => NIVEAU_PERMISSION_BASE, 'page' =>'', 'icon' => 'img/details-icon-24px.png'),*/
 		'edit' => array('left' => true, 'title' => "Modifier", 'level' => NIVEAU_PERMISSION_BASE, 'page' =>'', 'icon' => 'img/details-icon-24px.png'),
-		'download' => array('left' => true, 'title' => "Exporter", 'level' => NIVEAU_PERMISSION_BASE, 'page' =>'export.php', 'icon' => 'img/zip-icon-24px.png')
+		'viewpdf' => array('title' => "Voir en PDF", 'level' => NIVEAU_PERMISSION_BASE, 'page' =>'export.php', 'icon' => 'img/pdf-icon-24px.png'),
+		'export&amp;type=text' => array('left' => true, 'title' => "Exporter", 'level' => NIVEAU_PERMISSION_BASE, 'page' =>'export.php', 'icon' => 'img/zip-icon-24px.png')
 	);
 	$actions2 = array(
-			'history' => array('title' => "Historique", 'level' => NIVEAU_PERMISSION_PRESIDENT_SECRETAIRE, 'page' =>'', 'icon' => 'img/history-icon-24px.png'),
-			'delete' => array('title' => "Supprimer", 'level' => NIVEAU_PERMISSION_PRESIDENT_SECRETAIRE, 'page' =>'', 'icon' => 'img/delete-icon-24px.png'),
-			'viewpdf' => array('title' => "Voir en PDF", 'level' => NIVEAU_PERMISSION_BASE, 'page' =>'export.php', 'icon' => 'img/pdf-icon-24px.png'),
-			'viewhtml' => array('title' => "Voir en HTML", 'level' => NIVEAU_PERMISSION_BASE, 'page' =>'export.php', 'icon' => 'img/html-icon-24px.png'),
+//			'history' => array('title' => "Historique", 'level' => NIVEAU_PERMISSION_SECRETAIRE, 'page' =>'', 'icon' => 'img/history-icon-24px.png'),
+			'delete' => array('title' => "Supprimer", 'level' => NIVEAU_PERMISSION_SECRETAIRE, 'page' =>'', 'icon' => 'img/delete-icon-24px.png'),
+//			'viewhtml' => array('title' => "Voir en HTML", 'level' => NIVEAU_PERMISSION_BASE, 'page' =>'export.php', 'icon' => 'img/html-icon-24px.png'),
 	);
 	$actions = array_merge($actions1, $actions2);
 	
 	$fieldsPermissions = array(
-			"statut" => NIVEAU_PERMISSION_PRESIDENT_SECRETAIRE,
-			"concours" => NIVEAU_PERMISSION_PRESIDENT_SECRETAIRE,
-			"type" => NIVEAU_PERMISSION_PRESIDENT_SECRETAIRE,
+			"statut" => NIVEAU_PERMISSION_SECRETAIRE,
+			"concours" => NIVEAU_PERMISSION_SECRETAIRE,
+			"type" => NIVEAU_PERMISSION_SECRETAIRE,
 			"rapporteur" => NIVEAU_PERMISSION_BUREAU,
 			"rapporteur2" => NIVEAU_PERMISSION_BUREAU,
-			"avis" => NIVEAU_PERMISSION_PRESIDENT_SECRETAIRE,
+			"rapporteur3" => NIVEAU_PERMISSION_BUREAU,
+			"avis" => NIVEAU_PERMISSION_SECRETAIRE,
 			"auteur" => NIVEAU_PERMISSION_INFINI,
 			"date" => NIVEAU_PERMISSION_INFINI,
 			"id" => NIVEAU_PERMISSION_INFINI,
 			"id_session" => NIVEAU_PERMISSION_INFINI,
-			"id_origine" => NIVEAU_PERMISSION_INFINI,
-			"fichiers" => NIVEAU_PERMISSION_PRESIDENT_SECRETAIRE,
+			"id_origine" => NIVEAU_PERMISSION_INFINI
 	);
 	
 
@@ -1336,68 +1207,63 @@ ini_set('xdebug.show_local_vars', 'on');
 					"permissionlevel" => NIVEAU_PERMISSION_BUREAU,
 			),
 			*/
-			"text" => 	array(
-					"mime" => "text/html",
-					"xsl" => "xslt/html2.xsl",
-					"name" => "Texte",
-					"permissionlevel" => NIVEAU_PERMISSION_BASE,
-			),
 			"pdf" => 	array(
 					"mime" => "application/x-zip",
 					"xsl" => "",
-					"name" => "PDF (rapport final)",
-					"permissionlevel" => NIVEAU_PERMISSION_PRESIDENT_SECRETAIRE,
+					"name" => "Rapports (pdf)",
+					"permissionlevel" => NIVEAU_PERMISSION_SECRETAIRE,
 			),
+			"html" => 	array(
+					"mime" => "text/html",
+					"xsl" => "xslt/html2.xsl",
+					"name" => "Rapports (html)",
+					"permissionlevel" => NIVEAU_PERMISSION_BASE,
+			),
+			"text" => 	array(
+					"mime" => "text/html",
+					"xsl" => "xslt/html2.xsl",
+					"name" => "Dossiers (text)",
+					"permissionlevel" => NIVEAU_PERMISSION_BASE,
+			),
+			/*
 			"csv" => 	array(
 					"mime" => "application/x-text",
 					"xsl" => "",
-					"name" => "CSV (un par dossier)",
+					"name" => "un CSV par dossier",
 					"permissionlevel" => NIVEAU_PERMISSION_BASE
 			),
+			*/
 			"csvsingle" => 	array(
 					"mime" => "application/x-text",
 					"xsl" => "",
-					"name" => "CSV (un pour tous les dossiers)",
+					"name" => "Dossiers (csv)",
 					"permissionlevel" => NIVEAU_PERMISSION_BASE
 			),
 			"csvbureau" => 	array(
 					"mime" => "application/x-text",
 					"xsl" => "",
-					"name" => "CSV (attribution rapporteurs)",
+					"name" => "Rapporteurs",
 					"permissionlevel" => NIVEAU_PERMISSION_BUREAU
 			),
 			"releveconclusions" => 	array(
 					"mime" => "application/x-text",
 					"xsl" => "",
-					"name" => "CSV (relevé conclusions)",
+					"name" => "Relevé Conclusions",
 					"permissionlevel" => NIVEAU_PERMISSION_BUREAU
 			),
 				
-			"html" => 	array(
-					"mime" => "text/html",
-					"xsl" => "xslt/html2.xsl",
-					"name" => "Html (prévisualisation des rapports)",
-					"permissionlevel" => NIVEAU_PERMISSION_BASE,
-			),
 			"jad" => 	array(
 					"mime" => "application/x-text",
 					"xsl" => "",
-					"name" => "JAD",
-					"permissionlevel" => NIVEAU_PERMISSION_PRESIDENT_SECRETAIRE
+					"name" => "JAD (pdf)",
+					"permissionlevel" => NIVEAU_PERMISSION_SECRETAIRE
 			),
 			"jadhtml" => 	array(
 					"mime" => "application/x-text",
 					"xsl" => "",
-					"name" => "JAD - html",
-					"permissionlevel" => NIVEAU_PERMISSION_PRESIDENT_SECRETAIRE
-			),
-			"xml" => 	array(
-					"mime" => "text/xml",
-					"xsl" => "xslt/xmlidentity.xsl",
-					"name" => "XML",
-					"permissionlevel" => NIVEAU_PERMISSION_BASE,
-			),
-			
+					"name" => "JAD (html)",
+					"permissionlevel" => NIVEAU_PERMISSION_SECRETAIRE
+			)
 			);
 
 	$report_types_with_multiple_exports = array(
@@ -1425,78 +1291,103 @@ ini_set('xdebug.show_local_vars', 'on');
 					)
 	);
 	
+	global $dbh;
+	$sql = "SELECT * FROM `".concours_db."` WHERE";
+	$sql .= " `section`='". real_escape_string($_SESSION['filter_section'])."'";
+	$sql .= " AND `session`='". real_escape_string( $_SESSION['filter_id_session'] )."'";
+	$query = mysqli_query($dbh, $sql) or die("Failed to execute concours query ".$sql.":".mysqli_error($dbh));
 	
-			$concours_ouverts = get_config_array("concours");
-			$postes_ouverts = get_config_array("postes_ouverts");
-			$presidents_sousjurys = get_config_array("presidents_sousjurys");
-			
-	
-	$sous_jurys = get_config_array("sousjurys");
-	
-	
+	$concours_ouverts = array();
+	$postes_ouverts = array();
 	$tous_sous_jury = array();
-	foreach($sous_jurys as $code => $liste)
-	{
-		$tous_sous_jury = array_merge($tous_sous_jury, $liste);
-		$sous_jurys[$code][""] = "";
-	}
+
 	
+	/* Ugly hack translated from former xml configuration system ... */
+	
+	while($result = mysqli_fetch_object($query))
+	{
+		$code = $result->code;
+		$concours_ouverts[$code] = $result->intitule;
+		$postes_ouverts[$code] = $result->postes;
+		$tous_sous_jury[$code] = array();
+		for($i = 1 ; $i <= 4; $i++)
+		{
+			$suff = "sousjury".$i;
+			$suffp = "president".$i;
+			$suffm = "membressj".$i;
+			if($result->$suff != "")
+			{
+				$tous_sous_jury[$code][$result->$suff] = array("president"=> $result->$suffp, "membres" => explode(";", $result->$suffm));
+			}
+		}
+	}
+
 	$permission_levels = array(
 		NIVEAU_PERMISSION_BASE => "rapporteur",
 		NIVEAU_PERMISSION_BUREAU => "bureau",
-		NIVEAU_PERMISSION_PRESIDENT_SECRETAIRE => "secrétaire/président(e)",
-//		NIVEAU_PERMISSION_SUPER_UTILISATEUR => "super utilisateur",
+		NIVEAU_PERMISSION_SECRETAIRE => "secrétaire",
+		NIVEAU_PERMISSION_PRESIDENT => "président(e)",
+		NIVEAU_PERMISSION_SUPER_UTILISATEUR => "admin"
 	);
-	
-	if(!isset($_SESSION['current_session']))
-		$_SESSION['current_session'] = "Automne 2012";
-		
-	$topics = get_config_array("topics");
-	$topics[""] = "Aucun";
-	
+			
+	/* initializes topics */
+	$topics = get_topics();
+	foreach($topics as $key => $value)
+		$topics[$key] = $key . " - " . $value;
+
+	/** FILTERS **/
 	$filtersReports = array(
 			'type' => array('name'=>"Type d'évaluation" , 'liste' => $typesRapports,'default_value' => "tous", 'default_name' => "Tous les types"),
 			'rapporteur' => array('name'=>"Rapporteur" , 'default_value' =>"tous", 'default_name' => "Tous les rapporteurs"),
 			'rapporteur2' => array('name'=>"Rapporteur2" ,'default_value' =>"tous", 'default_name' => "Tous les rapporteurs"),
 			'grade' => array('name'=>"Grade" , 'liste' => $grades, 'default_value' => "tous", 'default_name' => "Tous les grades"),
+			'labo1' => array('name'=>"Labo1" , 'default_value' => "tous", 'default_name' => ""),
+			'theme1' => array('name'=>"Theme1" , 'liste' => $topics, 'default_value' => "tous", 'default_name' => "tous"),
+			'theme2' => array('name'=>"Theme2" , 'liste' => $topics, 'default_value' => "tous", 'default_name' => "tous"),
 			'avis' => array('name'=>"Avis Section" , 'liste' => $avis_sessions, 'default_value' => "tous", 'default_name' => ""),
 			'avis1' => array('name'=>"Avis Rapp 1" , 'liste' => $avis_sessions, 'default_value' => "tous", 'default_name' => ""),
 			'avis2' => array('name'=>"Avis Rapp 2" , 'liste' => $avis_sessions, 'default_value' => "tous", 'default_name' => ""),
-			'theme1' => array('name'=>"Theme1" , 'liste' => $topics, 'default_value' => "tous", 'default_name' => ""),
-			'theme2' => array('name'=>"Theme2" , 'liste' => $topics, 'default_value' => "tous", 'default_name' => ""),
-			'theme3' => array('name'=>"Theme3" , 'liste' => $topics, 'default_value' => "tous", 'default_name' => ""),
-			'labo1' => array('name'=>"Labo1" , 'default_value' => "tous", 'default_name' => ""),
-			'statut' => array('name'=>"Statut" , 'liste' => $statutsRapports, 'default_value' => "tous", 'default_name' => "Tous les statuts"),
-			'genre' => array('name' =>"Genre", 'liste' => $genreCandidat, 'default_value' => "", 'default_name' => "Tous les genre"),
+			//'avis3' => array('name'=>"Avis Rapp 3" , 'liste' => $avis_sessions, 'default_value' => "tous", 'default_name' => ""),
+			'statut' => array('name'=>"Statut" , 'liste' => $statutsRapports, 'default_value' => "tous", 'default_name' => "Tous"),
+			//'theme3' => array('name'=>"Theme3" , 'liste' => $topics, 'default_value' => "tous", 'default_name' => ""),
+			'genre' => array('name' =>"Genre", 'liste' => $genreCandidat, 'default_value' => "tous", 'default_name' => "Tous"),
 			'id_session' => array('name'=>"Session", 'default_value' =>-1, 'default_name' => "Toutes les sessions"),
 			'avancement' => array('name'=>"Avancement" , 'default_value' => "", 'default_name' => ""),
 			'id_origine' => array('default_value' =>-1),
-			'id' => array('default_value' =>-1),
+			'id' => array('default_value' =>-1)
 	);
 
 	
-	$conc = array("CR"=>"tous CR","DR"=>"tous DR");
+	
+	$liste_sous_jurys = array();
+	foreach($tous_sous_jury as $conc => $sousjurys)
+		foreach($sousjurys as $code => $president)
+			$liste_sous_jurys[$code] = $conc." - ".$code;
+
+	$tous_concours = array("CR"=>"tous CR","DR"=>"tous DR");
 	foreach($concours_ouverts as $code => $data)
-		$conc[strval($code)] = $data;
+		$tous_concours[strval($code)] = $data;
 	
 	$filtersConcours = array(
-			'avis' => array('name'=>"Avis" , 'liste' => $avis_candidature_short, 'default_value' => "tous", 'default_name' => ""),
-			'avis1' => array('name'=>"Avis Rapp 1" , 'liste' => $avis_candidature_short, 'default_value' => "tous", 'default_name' => ""),
-			'avis2' => array('name'=>"Avis Rapp 2" , 'liste' => $avis_candidature_short, 'default_value' => "tous", 'default_name' => ""),
+			'type' => array('name'=>"Type d'évaluation" , 'liste' => $typesRapportsConcours,'default_value' => "tous", 'default_name' => ""),
+			'concours' => array('name'=>"Concours" , 'liste' => $tous_concours, 'default_value' => "tous", 'default_name' => ""),
+			'sousjury' => array('name'=>"Sous-jury" , 'liste' => $liste_sous_jurys, 'default_value' => "tous", 'default_name' => ""),
+			'avis' => array('name'=>"Avis section" , 'liste' => $avis_candidature_short, 'default_value' => "tous", 'default_name' => ""),
+			'avis1' => array('name'=>"Avis rapporteur 1" , 'liste' => $avis_candidature_short, 'default_value' => "tous", 'default_name' => ""),
+			'avis2' => array('name'=>"Avis rapporteur 2" , 'liste' => $avis_candidature_short, 'default_value' => "tous", 'default_name' => ""),
+			'rapporteur' => array('name'=>"Rapporteur 1" , 'default_value' =>"tous", 'default_name' => ""),
+			'rapporteur2' => array('name'=>"Rapporteur 2" , 'default_value' =>"tous", 'default_name' => ""),
+			'genre' => array('name' =>"Genre", 'liste' => $genreCandidat, 'default_value' => "tous", 'default_name' => ""),
+			//'avis3' => array('name'=>"Avis Rapp 3" , 'liste' => $avis_candidature_short, 'default_value' => "tous", 'default_name' => ""),
+			'labo1' => array('name'=>"Labo1" , 'default_value' => "tous", 'default_name' => ""),
 			'theme1' => array('name'=>"Theme1" , 'liste' => $topics, 'default_value' => "tous", 'default_name' => ""),
 			'theme2' => array('name'=>"Theme2" , 'liste' => $topics, 'default_value' => "tous", 'default_name' => ""),
-			'theme3' => array('name'=>"Theme3" , 'liste' => $topics, 'default_value' => "tous", 'default_name' => ""),
-			'labo1' => array('name'=>"Labo1" , 'default_value' => "tous", 'default_name' => ""),
-			'labo2' => array('name'=>"Labo2" , 'default_value' => "tous", 'default_name' => ""),
-			'genre' => array('name' =>"Genre", 'liste' => $genreCandidat, 'default_value' => "", 'default_name' => "Tous les genre"),
-			'concours' => array('name'=>"Concours" , 'liste' => $conc, 'default_value' => "tous", 'default_name' => ""),
-			'sousjury' => array('name'=>"Sous-jury" , 'liste' => $tous_sous_jury, 'default_value' => "tous", 'default_name' => ""),
-			'rapporteur' => array('name'=>"Rapporteur" , 'default_value' =>"tous", 'default_name' => ""),
-			'rapporteur2' => array('name'=>"Rapporteur2" , 'default_value' =>"tous", 'default_name' => ""),
+			'statut' => array('name'=>"Statut" , 'liste' => $statutsRapports, 'default_value' => "tous", 'default_name' => ""),
+			//'theme3' => array('name'=>"Theme3" , 'liste' => $topics, 'default_value' => "tous", 'default_name' => ""),
+			//'labo2' => array('name'=>"Labo2" , 'default_value' => "tous", 'default_name' => ""),
 			'id_session' => array('name'=>"Session", 'default_value' =>-1, 'default_name' => "Toutes les sessions"),
-			'type' => array('name'=>"Type d'évaluation" , 'liste' => $typesRapportsConcours,'default_value' => "tous", 'default_name' => ""),
 			'avancement' => array('name'=>"Avancement" , 'default_value' => "", 'default_name' => ""),
-			'theseloc' => array('name'=>"TheseLoc" , 'liste' => $theseslocs, 'default_value' => "tous", 'default_name' => "Toutes les locs"),
+			//'theseloc' => array('name'=>"TheseLoc" , 'liste' => $theseslocs, 'default_value' => "tous", 'default_name' => "Toutes les locs"),
 			'id_origine' => array('default_value' =>-1),
 			'id' => array('default_value' =>-1),
 	);

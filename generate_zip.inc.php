@@ -13,60 +13,6 @@ function type_from_node(DOMNode $node)
 	return "";
 }
 
-/*
-function xmls_to_zipped_tex($docs)
-{
-	$xsl = new DOMDocument("1.0","UTF-8");
-	$xsl->load("xslt/latex_eval.xsl");
-	$proc_eval = new XSLTProcessor();
-	$proc_eval->importStyleSheet($xsl);
-
-	$proc = $proc_eval;
-	$processors = array(
-			'Evaluation-Vague' => $proc_eval,
-			'Evaluation-MiVague' => $proc_eval,
-			'Promotion' => $proc,
-			'Candidature' => $proc,
-			'Suivi-PostEvaluation' => $proc,
-			'Titularisation' => $proc,
-			'Confirmation-Affectation' => $proc,
-			'Changement-Direction' => $proc,
-			'Renouvellement' => $proc,
-			'Expertise' => $proc,
-			'Ecole' => $proc,
-			'Comité-Evaluation' => $proc,
-			'' => $proc
-	);
-
-	$zip = new ZipArchive();
-	if($zip->open('reports_latex.zip',ZipArchive::OVERWRITE))
-	{
-
-		$zip->addFromString("compile.bat", "for /r %%x in (*.tex) do pdflatex \"%%x\"\r\ndel *.log\r\ndel *.aux");
-		$zip->addFile("latex/CN.png","CN.png");
-		$zip->addFile("latex/CNRSlogo.png","CNRSlogo.png");
-		$zip->addFile("latex/signature.jpg","signature.jpg");
-
-		foreach($docs as $doc)
-		{
-			set_time_limit(0);
-			$nodes =$doc->getElementsByTagName("rapport");
-			if($nodes)
-			{
-				$node = $nodes->item(0);
-				$filename = "reports/".filename_from_node($node).".tex";
-				$type = type_from_node($node);
-				$zip->addFromString($filename,$processors[$type]->transformToXML($node));
-			}
-		}
-
-		$zip->close();
-		return "reports_latex.zip";
-
-	}
-	return "";
-}
-*/
 
 /**
  * Zip files to an archive

@@ -1,3 +1,4 @@
+<!-- 
 <h3>Fichier de config</h3>
 
 <p>Le <a href="<?php echo config_file;?>"> fichier de configuration</a> permet de configurer le numéro de la section,
@@ -27,3 +28,4 @@ sous forme d'un fichier image au format jpeg.
 		value="Uploader signature" />
 </form>
 <p />
+ -->

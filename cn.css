@@ -36,6 +36,12 @@ table.emploidutemps
 	border-collapse : collapse;
 }
 
+table.rapporteurs
+{
+	border: 1px solid black;
+	border-collapse : collapse;
+}
+
 table.calendrier
 {
 	border: 1px solid black;

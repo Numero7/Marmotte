@@ -1,14 +1,19 @@
 <?php
 
 
+function setFilterValue($filter_name, $value)
+{
+	$_SESSION["filter_".$filter_name] = $value;
+}
+
 function getFilterValue($filter_name)
 {
 	global $filtersAll;
 	$filters = $filtersAll;
 	$answer = $filters[$filter_name]['default_value'];
+
 	if(isset($_REQUEST["filter_".$filter_name]))
-		$answer = mysql_real_escape_string($_REQUEST["filter_".$filter_name]);
-		//$answer = $_REQUEST["filter_".$filter_name] != "" ? $_REQUEST["filter_".$filter_name] : $filters[$filter_name]['default_value'];
+		$answer = real_escape_string($_REQUEST["filter_".$filter_name]);
 	else if(isset($_SESSION["filter_".$filter_name]))
 		$answer =   $_SESSION["filter_".$filter_name];
 	$_SESSION["filter_".$filter_name] = $answer;
@@ -29,9 +34,9 @@ function getSortingValue($filter_name)
 	$filters = $filtersAll;
 	$answer = "";
 	if(isset($_REQUEST["tri_".$filter_name]))
-		$answer = mysql_real_escape_string($_REQUEST["tri_".$filter_name]);
+		$answer = real_escape_string($_REQUEST["tri_".$filter_name]);
 	else if(isset($_SESSION["tri_".$filter_name]))
-		$answer =   mysql_real_escape_string($_SESSION["tri_".$filter_name]);
+		$answer =   real_escape_string($_SESSION["tri_".$filter_name]);
 
 	$last = substr($answer,strlen($answer) -1,1);
 	if( $last != "+" && $last != "-")
@@ -104,14 +109,7 @@ function getCurrentFiltersList()
 		if($type=='unit' && isset($filters[$field]))
 		$filters[$field]['liste'] = $units;
 	
-	if(isSecretaire())
-	{
-		global $statutsRapports;
-		$filters['statut'] =  array('name'=>"Statut" , 'liste' => $statutsRapports, 'default_value' => "tous", 'default_name' => "");
-	}
-	
 	return $filters;
-	
 }
 
 function getCurrentSortingList()

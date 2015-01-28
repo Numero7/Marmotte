@@ -8,10 +8,13 @@ require_once('manage_rapports.inc.php');
 
 function display_sousjury($row, $fieldId, $readonly)
 {
-	global $sous_jurys;
-	$sousjurys = (isset($row->concours) && isset($sous_jurys[substr($row->concours,-4,4)])) ? $sous_jurys[$row->concours] : array();
+	global $tous_sous_jury;
+	$souj = array();
+	if( isset($row->concours) && isset($tous_sous_jury[$row->concours] ) )
+		foreach($tous_sous_jury[$row->concours] as $code => $president)
+			$souj[$code] = $code;
 
-	display_select($row, $fieldId, $sousjurys,$readonly);
+	display_select($row, $fieldId, $souj,$readonly);
 }
 
 function display_type($row, $fieldID, $readonly)
@@ -120,12 +123,23 @@ function display_select($row, $fieldID, $liste,$readonly)
 		?>
 <select  name="field<?php echo $fieldID;?>">
 	<?php
+	$first = true;
 	foreach($liste as $value => $text)
 	{
+		if(is_numeric($value))
+			$value = strval($value);
+		if(is_numeric($current_value))
+			$current_value = strval($current_value);		
+		if($first && $value != "")
+			echo  "<option value=\"\"></option>\n";
 		if($text == "") $text="   ";
-		$sel = ($value == $current_value) ? "selected=\"selected\"" : "";
+		$sel = ($value === $current_value) ? "selected=\"selected\"" : "";
 		echo  "\t\t\t\t\t<option value=\"".($value)."\" ".$sel.">".substr($text, 0,150)."</option>\n";
+		$first = false;
 	}
+	
+/*	if($fieldID == "genre")
+		rr();*/
 	?>
 </select>
 <?php
@@ -178,7 +192,6 @@ function display_ecole($row, $fieldID, $readonly)
 function display_rapports($row, $fieldId)
 {
 	global $typesRapportsUnites;
-
 	$is_unit= isset($typesRapportsUnites[$row->type]);
 
 	if($is_unit)
@@ -186,15 +199,11 @@ function display_rapports($row, $fieldId)
 	else
 		$reports = (isset($row->nom) && isset($row->prenom)) ? find_people_reports($row->nom, $row->prenom) : array();
 
-
-
 	global $typesRapports;
-
 	echo "<td>";
 	if(count($reports) > 1)
 	{
 		echo "<table>";
-
 		foreach($reports as $report)
 		{
 			if((!isset($row->id) || $report->id != $row->id) && (!$is_unit || isset($typesRapportsUnites[$report->type])))
@@ -202,42 +211,45 @@ function display_rapports($row, $fieldId)
 				if(isset($typesRapports[$report->type]))
 					$type = $typesRapports[$report->type];
 				else
-				{
 					$type = "Unknown";
-				}
-				
 				if($type == "Candidature" && isset($report->concours) )
 					echo '<tr><td><a href="index.php?action=edit&amp;id='.$report->id.'">'.$report->id_session. " - " .$type." - " . $report->concours ."</a></td></tr>";
-				else if($type == "Equivalence" && isset($report->grade_rapport) )
+				else if($type == "Equivalence")
 					echo '<tr><td><a href="index.php?action=edit&amp;id='.$report->id.'">'.$report->id_session. " - " .$type." - " . $report->grade_rapport ."</a></td></tr>";
 				else 
 					echo '<tr><td><a href="index.php?action=edit&amp;id='.$report->id.'">'.$report->id_session. " - " .$type."</a></td></tr>";
-					
 			}
 		}
-
 		echo "</table>";
 	}
-
 	echo "</td>";
-
 }
 
 
 function display_fichiers($row, $fieldID, $session, $readonly)
 {
-	global $dossiers_candidats;
-
-	$files = find_people_files($row,true, $session, true);
-
-	$dir = get_people_directory($row, $session, false);
+	global $typesRapportsUnites;
+	if(!isset($row->type))
+		return;
+	
+	if(  isset($typesRapportsUnites[$row->type]))
+	{
+		$files = find_unit_files($row,true, $session, true);
+		$dir = get_unit_directory($row, $session, false);
+	}
+	else
+	{
+		if(isset($row->unite) && $row->unite == "") return;
+//		rr();
+		$files = find_people_files($row,true, $session, true);
+		$dir = get_people_directory($row, $session, false);
+	}
 	
 	echo "<td><table><tr>\n";
 	
 	if(count($files) > 0)
 	{
 		ksort($files);
-
 		$i = -1;
 //	echo "<td><table><tr>";
 		echo "<td><table>\n";
@@ -257,7 +269,7 @@ function display_fichiers($row, $fieldID, $session, $readonly)
 				$arr2 = array("","");
 				$prettyfile = str_replace($arr, $arr2, $prettyfile);
 			}
-			echo '<a href="'.$dir."/".$file.'">'.$prettyfile."</a><br/>\n";
+			echo '<a  target="_blank" href="'.$dir."/".$file.'">'.$prettyfile."</a><br/>\n";
 			$i++;
 		}
 		echo '</td></tr>';
@@ -352,10 +364,7 @@ echo "</td></tr>";
 echo "</td></tr>";
 
 			}
-
 		}
 		echo "</table></td>\n";
-		
-
 }
 ?>

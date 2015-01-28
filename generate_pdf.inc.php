@@ -43,27 +43,17 @@ function viewReportAsHtml($id_rapport)
 
 function viewReportAsPdf($id_rapport,$option = "")
 {
-	
 	$doc = getReportAsDOMDoc($id_rapport, $option);
-
 	$report = getReport($id_rapport);
 	
-	if($option != "")
-		$type = $option;
-	else
-		$type = $report->type;
+	$type = ($option != "") ? $option : $report->type;
 
-	
 	global $typesRapportsConcours;
 	if(isset($typesRapportsConcours[$type]) && $type != "Audition")
 		$type = "Classement";
 	
-	
 	$xsl = type_to_xsl( $type);
-	
 	$html = XMLToHTML( $doc , $xsl );	
-	
-	
 	$pdf = HTMLToPDF($html);
 
 	$nodes =$doc->getElementsByTagName("rapport");
@@ -81,11 +71,12 @@ function HTMLToPDF($html)
 	$pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
 	// set document information
-	$pdf->SetCreator(get_config("secretaire"));
-	$pdf->SetAuthor(get_config("section_fullname"));
-	$pdf->SetTitle('Rapport de la '.get_config("section_fullname"));
-	$pdf->SetSubject('Rapport de la '.get_config("section_fullname"));
-	$pdf->SetKeywords('Rapport de la '.get_config("section_fullname"));
+	$pdf->SetCreator(get_config("webmaster_nom"));
+	$section = "Section ".currentSection();
+	$pdf->SetAuthor($section);
+	$pdf->SetTitle('Rapport de la '.$section);
+	$pdf->SetSubject('Rapport de la '.$section);
+	$pdf->SetKeywords('Rapport de la '.$section);
 
 	// set default monospaced font
 	$pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);

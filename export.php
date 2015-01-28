@@ -10,30 +10,28 @@ ini_set('xdebug.dump.SERVER', 'REQUEST_URI');
 ini_set('xdebug.show_local_vars', 'on');
 
 require_once("db.inc.php");
-
-require_once("export.inc.php");
+require_once('authenticate_tools.inc.php');
 
 
 session_start();
 
-$dbh = db_connect($servername,$dbname,$serverlogin,$serverpassword);
+global $dbh;
 
-if($dbh!=0)
-{
-	if (authenticate())
+
+db_connect($servername,$dbname,$serverlogin,$serverpassword);
+
+if (authenticate())
 	{
+		require_once("export.inc.php");
+		
 		try {
-			$action = isset($_REQUEST["action"]) ? mysql_real_escape_string($_REQUEST["action"]) : "single";
-			$id= isset($_REQUEST["id"]) ? mysql_real_escape_string($_REQUEST["id"]) : "-1";
-
-			
-			
-			
+			$action = isset($_REQUEST["action"]) ? real_escape_string($_REQUEST["action"]) : "single";
+			$id= isset($_REQUEST["id"]) ? real_escape_string($_REQUEST["id"]) : "-1";
 			
 			switch($action)
 			{//Processing
 				case 'viewpdf':
-					$option = isset($_REQUEST["option"]) ? mysql_real_escape_string($_REQUEST["option"]) : "";
+					$option = isset($_REQUEST["option"]) ? real_escape_string($_REQUEST["option"]) : "";
 					viewReportAsPdf($id,$option); break;
 				case 'viewhtml':
 					viewReportAsHtml($id);	break;
@@ -44,9 +42,9 @@ if($dbh!=0)
 					{
 						if (isset($_REQUEST["save"]) and isset($_REQUEST["avis"]) and isset($_REQUEST["rapport"]))
 						{
-							$idtosave = intval(mysql_real_escape_string($_REQUEST["save"]));
-							$avis = mysql_real_escape_string($_REQUEST["avis"]);
-							$rapport = mysql_real_escape_string($_REQUEST["rapport"]);
+							$idtosave = intval(real_escape_string($_REQUEST["save"]));
+							$avis = real_escape_string($_REQUEST["avis"]);
+							$rapport = real_escape_string($_REQUEST["rapport"]);
 							if (!isset($_REQUEST["cancel"]))
 								try
 								{
@@ -60,13 +58,8 @@ if($dbh!=0)
 
 						if(!isset($_REQUEST["type"]))
 							throw new Exception("No type specified for exportation");
-						$type = mysql_real_escape_string($_REQUEST["type"]);
-
-
-						$id_edit = isset($_REQUEST["id_edit"]) ? mysql_real_escape_string($_REQUEST["id_edit"]) : -1;
-
-						$login = getLogin();
-
+						$type = real_escape_string($_REQUEST["type"]);
+						$id_edit = isset($_REQUEST["id_edit"]) ? real_escape_string($_REQUEST["id_edit"]) : -1;
 
 						switch($type)
 						{
@@ -79,21 +72,19 @@ if($dbh!=0)
 								$filename = "";
 								$xml_reports->formatOutput = true;
 
-								$files = glob('reports/*'); // get all file names
-								foreach($files as $file){ // iterate files
+								$dir = dossier_temp();
+								$files = glob($dir."/*");
+								foreach($files as $file)
 									if(is_file($file))
-										unlink($file); // delete file
-								}
+										unlink($file);
 
-								create_dir_if_needed("reports");
-								$result = $xml_reports->save('reports/reports.xml');
+								$result = $xml_reports->save($dir."/reports.xml");
 
 								if($result === false)
 									throw new Exception("Failed to save file reports/reports.xml");
 
 								if($type =="pdf")
 									echo "<script>window.location = 'create_reports.php'</script>";
-
 								if($type=="zip")
 									echo "<script>window.location = 'create_reports.php?zip_files=oui'</script>";
 								break;
@@ -124,13 +115,9 @@ if($dbh!=0)
 								if(isset($_POST['fields']))
 								{
 									if(!isset($_POST['types']))
-									{
 										throw new Exception("Sélectionnez au moins un type de rapport");
-									}
 									else	
-									{
 										generate_exemple_csv($_POST['types'], $_POST['fields']);
-									}
 								}
 								else
 									throw new Exception("No fields provided,, cannot genrate exemple csv");
@@ -174,6 +161,5 @@ if($dbh!=0)
 			echo $e->getMessage();
 		}
 	}
-}
-/* activit */
+
 ?>

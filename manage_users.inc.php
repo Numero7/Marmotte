@@ -3,44 +3,115 @@
 require_once('config.inc.php');
 require_once('manage_sessions.inc.php');
 require_once('generate_xml.inc.php');
-
-function init_session()
-{
-	set_current_session_id(get_config("current_session"));
-
-	ini_set("session.gc_maxlifetime", 3600);
-	//echo "Timeout: ". (ini_get("session.gc_maxlifetime")/60)." minutes<br/>";
-
-}
+require_once('authenticate_tools.inc.php');
+require_once('manage_files.php');
 
 function createhtpasswd()
 {
 	$list = listUsers(true);
-	if($handle=fopen(".htpasswd","w"))
+	global $dossier_temp;
+	global $dossier_stockage;
+	foreach(array($dossier_temp,$dossier_stockage) as $dir)
 	{
-		foreach($list as $user => $data)
-			fwrite($handle,$user.":".$data->passHash."\n");
-		fclose($handle);
-		echo "Generated htpasswd.<br/>";
-	}
-	else
-	{
-		throw new Exception("Failed to open htpasswd file for writing");
-	}
+		create_dir_if_needed2($dir);
+		if( $handle = fopen($dir.".htpasswd" , "w" ) )
+		{
+			foreach($list as $user => $data)
+				fwrite($handle,$user.":".$data->passHash."\n");
+			fclose($handle);
+		}
+		else
+			throw new Exception("Failed to open htpasswd file for writing");
 
+		$realp = realpath($dir.".htpasswd");
+		if($realp == false)
+			throw new Exception("Warning, security breach, htaccess could not be properly generated");
+
+		if( $handle = fopen($dir.".htaccess" , "w" ) )
+		{
+			fwrite($handle,
+					"AuthUserFile ".$realp."\n
+					AuthName \"Veuillez vous identifier avec votre login et votre mot de passe Marmotte\"\n
+					AuthType Basic\n
+					Require valid-user\n"
+			);
+			fclose($handle);
+		}
+		else
+			throw new Exception("Failed to open htaccess file for writing");
+
+	}
+	echo "Regenerated access files.<br/>";
 }
 
-function getDescription($login)
+function belongsToSection($login, $section)
 {
-	$sql = "SELECT * FROM ".users_db." WHERE login='$login';";
-	$result=mysql_query($sql);
-	if ($row = mysql_fetch_object($result))
-	{
-		return $row->description;
-	}
-	return NULL;
-} ;
+	$all_sections = getSections($login);
+	return in_array($section, $all_sections);
+};
 
+function currentSection()
+{
+	return $_SESSION['filter_section'];
+}
+
+function change_current_section($section)
+{
+	if(!belongsToSection(getLogin(), $section))
+		throw new Exception("Cannot change current section, user ".$login." does not belong to section ".$section);
+
+	$sql = "UPDATE ".users_db." SET last_section_selected='";
+	$sql .= real_escape_string($section);
+	$sql .= "'WHERE login='".real_escape_string(getLogin())."';";
+	sql_request($sql);
+	$_SESSION['filter_section'] = $section;
+	unset($_SESSION["config"]);
+	unset($_SESSION['all_units']);
+	unset($_SESSION["all_users"]);
+	unset($_SESSION["rows_id"]);
+	$_SESSION['filter_id_session'] = get_config("current_session");
+}
+
+function get_bureau_stats()
+{
+	if(is_current_session_concours())
+	{
+		$sousjurys = getSousJuryMap();
+		$sousjurysStats = array();
+
+		/* pour chaque niveau, pour chaque rapporteur, nombre de candidats par rapporteurs */
+		$sql = "SELECT * FROM reports WHERE section=\"".currentSection()."\" AND id_session=\"".current_session()."\" AND type=\"Candidature\" AND id=id_origine AND statut!=\"supprime\"";
+		$stats = array();
+		$fields = array("rapporteur","rapporteur2","rapporteur3");
+
+		$result= sql_request($sql);
+		while($row = mysqli_fetch_object($result))
+		{
+			$pref = substr($row->concours,0,2);
+			foreach($fields as $field)
+			{
+				$iid = $row->nom.$row->prenom;
+				if($row->$field != "" && !isset($stats[$pref][$row->$field][$field][$iid]))
+				{
+					$stats[$pref][$row->$field][$field][$iid] = "ok";
+					if(!isset($stats[$pref][$row->$field][$field]["counter"]))
+						$stats[$pref][$row->$field][$field]["counter"] = 0;
+					$stats[$pref][$row->$field][$field]["counter"]++;
+					//echo "add 1 to ".$iid." ".$pref." ".$row->$field." ".$field." tot ".$stats[$pref][$row->$field][$field]["counter"]."<br/>";
+				}
+				if($field == "rapporteur" && isset($sousjurys[$row->$field][$row->concours]))
+				{
+					$sj = $sousjurys[$row->$field][$row->concours];
+					if(!isset($sousjurysStats[$sj]))
+						$sousjurysStats[$sj] = 0;
+					$sousjurysStats[$sj]++;
+				}
+			}
+
+		}
+	}
+	return array("rapporteurs" => $stats, "sousjurys" => $sousjurysStats);
+}
 
 /* Caching users list for performance */
 
@@ -81,30 +152,23 @@ function listUsers($forcenew = false)
 	if(!isset($_SESSION['all_users']))
 	{
 		$listusers = array();
+		//$sql = "SELECT * FROM ".users_db." WHERE `section`='". real_escape_string($_SESSION['filter_section'])."' ORDER BY description ASC;";
 		$sql = "SELECT * FROM ".users_db." ORDER BY description ASC;";
-		$result=mysql_query($sql);
+		$result= sql_request($sql);
 		if($result ==  false)
-			throw new Exception("Failed to process query sql ".$sql);
-
-		while ($row = mysql_fetch_object($result))
-			$listusers[$row->login] = $row;
-
-			
+			throw new Exception("Failed to process sql query ".$sql.": ".mysql_error());
+		$section = currentSection();
+		while ($row = mysqli_fetch_object($result))
+		{
+			$sections = explode(";", $row->sections);
+			if(isSuperUser() or in_array($section,$sections) )
+				$listusers[$row->login] = $row;
+		}
 		$_SESSION['all_users'] = $listusers;
 	}
-	return $_SESSION['all_users'];
-}
+	$all_users = $_SESSION['all_users'];
 
-function createAdminPasswordIfNeeded()
-{
-
-	$users = listUsers(true);
-	if(!isset($users['admin']))
-		createUser('admin','password','admin','admin@admin.org',false,false);
-
-	if(authenticateBase('admin','password'))
-		echo "The 'admin' password is 'password', please change it right after login.";
-
+	return $all_users;
 }
 
 function simpleListUsers()
@@ -116,25 +180,37 @@ function simpleListUsers()
 	return $result;
 }
 
-function getUserPermissionLevel($login = "")
+function getUserPermissionLevel($login = "", $use_mask = true )
 {
-	if ($login=="" && isset($_SESSION["login"]))
-		$login = $_SESSION["login"];
+	$mask = NIVEAU_PERMISSION_INFINI;
+
+	if($use_mask && isset($_SESSION["permission_mask"]))
+		$mask = $_SESSION["permission_mask"];
+
+	if ($login=="" || $login == getLogin())
+	{
+		$result = isset($_SESSION['permission']) ? $_SESSION['permission'] : 0;
+		return min($mask, $result);
+	}
+
+	if(!isset($_SESSION["login"]))
+		throw new Exception("User not logged in !");
+	$login = $_SESSION["login"];
 
 	$login = strtolower($login);
-
 	if ($login == "admin")
 		return NIVEAU_PERMISSION_SUPER_UTILISATEUR;
+
 	$users = listUsers();
 	if (isset($users[$login]))
 	{
 		$data = $users[$login];
-		return $data->permissions;
+		return min($mask, $data->permissions);
 	}
 	else
 	{
 		removeCredentials();
-		throw new Exception("Unknown user");
+		throw new Exception("Unknown user '" + $login + "'");
 	}
 }
 
@@ -147,16 +223,19 @@ function genere_motdepasse($len=10)
 
 function isSuperUser($login = "")
 {
+	if(isset($_SESSION["lose_secretary_status"]))
+		return false;
+
 	if($login == "")
 		$login = getLogin();
 	return getUserPermissionLevel($login) >= NIVEAU_PERMISSION_SUPER_UTILISATEUR;
 };
 
-function isSecretaire($login = "")
+function isSecretaire($login = "", $use_mask = true)
 {
 	if($login == "")
 		$login = getLogin();
-	return getUserPermissionLevel($login) >= NIVEAU_PERMISSION_PRESIDENT_SECRETAIRE;
+	return getUserPermissionLevel($login, $use_mask) >= NIVEAU_PERMISSION_SECRETAIRE;
 };
 
 function getLogin()
@@ -167,19 +246,27 @@ function getLogin()
 		return "";
 }
 
-function isBureauPresidencyUser($login = "")
+function getSecretaire()
 {
-	return getUserPermissionLevel($login) >= NIVEAU_PERMISSION_PRESIDENT_SECRETAIRE;
-};
+	$users = listUsers();
+	foreach($users as $user)
+		if($user->permissions == NIVEAU_PERMISSION_SECRETAIRE)
+		return $user;
+	return null;
+}
 
-function isBureauUser($login = "")
+function getPresident()
 {
-	return getUserPermissionLevel($login) >= NIVEAU_PERMISSION_BUREAU;
-};
+	$users = listUsers();
+	foreach($users as $user)
+		if($user->permissions == NIVEAU_PERMISSION_PRESIDENT)
+		return $user;
+	return null;
+}
 
-function isRapporteurUser($login = "")
+function isBureauUser($login = "", $use_mask = true)
 {
-	return getUserPermissionLevel($login) >= NIVEAU_PERMISSION_BASE;
+	return getUserPermissionLevel($login, $use_mask) >= NIVEAU_PERMISSION_BUREAU;
 };
 
 function isSousJury($sousjury, $login = "")
@@ -200,80 +287,12 @@ function isSousJury($sousjury, $login = "")
 
 function isPresidentSousJury($sousjury = "")
 {
-	global $presidents_sousjurys;
-	if($sousjury != "")
-		return (isset($presidents_sousjurys[$sousjury]['login']) && getLogin() == $presidents_sousjurys[$sousjury]['login']);
-	else
-	{
-		foreach($presidents_sousjurys as $pres => $data)
-			if(isset($data['login']) && $data['login'] == getLogin())
-			return true;
-	}
-	return false;
+	global $tous_sous_jury;
+	return
+	(isset($tous_sous_jury[$concours]))
+	&&  (isset($tous_sous_jury[$concours][$sousjury]))
+	&& (getLogin() === $tous_sous_jury[$concours][$sousjury]["president"]);
 }
-
-
-
-function addCredentials($login,$pwd)
-{
-	$_SESSION = array();
-	$_SESSION['login'] = $login;
-	$_SESSION['pass'] = $pwd;
-} ;
-
-function removeCredentials()
-{
-	$_SESSION = array();
-} ;
-
-function authenticateBase($login,$pwd)
-{
-	$realPassHash = getPassHash($login);
-	if ($realPassHash != NULL)
-	{
-		if (crypt($pwd, $realPassHash) == $realPassHash)
-		{
-			return true;
-		}
-	}
-	return false;
-}
-
-function checkPasswords($password)
-{
-	$users = listUsers();
-	foreach($users as $login => $data)
-	{
-		if(authenticateBase($login, $password))
-			echo $login." a le mot de passe '". $password."'<br/>";
-		else
-			echo "Checked ".$login."<br/>";
-	}
-}
-
-function authenticate()
-{
-	if (isset($_SESSION['login']) and isset($_SESSION['pass']))
-	{
-		$login  = $_SESSION['login'];
-		$pwd = $_SESSION['pass'];
-		return authenticateBase($login,$pwd);
-	}
-	return false;
-} ;
-
-function getPassHash($login)
-{
-	$sql = "SELECT * FROM ".users_db." WHERE login='".mysql_real_escape_string($login)."';";
-	$result=mysql_query($sql);
-	if ($row = mysql_fetch_object($result))
-	{
-		//There is no upper/lower case filter in sql requests
-		if($row->login == $login)
-			return $row->passHash;
-	}
-	return NULL;
-} ;
 
 function changePwd($login,$old,$new1,$new2, $envoiparemail)
 {
@@ -285,7 +304,7 @@ function changePwd($login,$old,$new1,$new2, $envoiparemail)
 		if ($oldPassHash != NULL)
 		{
 			$newPassHash = crypt($new1, $oldPassHash);
-			$sql = "UPDATE ".users_db." SET passHash='$newPassHash' WHERE login='".mysql_real_escape_string($login)."';";
+			$sql = "UPDATE ".users_db." SET passHash='$newPassHash' WHERE login='".real_escape_string($login)."';";
 			sql_request($sql);
 
 			try
@@ -302,10 +321,10 @@ function changePwd($login,$old,$new1,$new2, $envoiparemail)
 
 			if($envoiparemail)
 			{
-				$body = "Votre mot de passe pour le site \r\n".curPageURL()."\r\n a été mis à jour:\r\n";
+				$body = "Votre mot de passe pour le site \r\n".adresse_du_site."\r\n a été mis à jour:\r\n";
 				$body .= "\t\t\t login: '".$login."'\r\n";
 				$body .= "\t\t\t motdepasse: '".$new1."'\r\n";
-				$body .= "\r\n\r\n\t Amicalement, ".get_config("secretaire").".";
+				$body .= "\r\n\r\n\t Amicalement, ".get_config("webmaster_nom").".";
 				$cc = "";
 				foreach($users as $user)
 				{
@@ -325,23 +344,17 @@ function changePwd($login,$old,$new1,$new2, $envoiparemail)
 		throw new Exception("La saisie du mot de passe courant est incorrecte, veuillez réessayer.");
 }
 
-
-
-function changeUserInfos($login,$permissions, $sousjury)
+function changeUserInfos($login,$permissions, $sections)
 {
-	if (isSecretaire())
-	{
-		$sql = "UPDATE ".users_db." SET permissions=$permissions, sousjury=\"$sousjury\" WHERE login='".mysql_real_escape_string($login)."';";
-	}
-	else
-	{
-		$sql = "UPDATE ".users_db." SET sousjury=\"$soujury\" WHERE login='$login';";
-	}
+	if($permissions >= NIVEAU_PERMISSION_SUPER_UTILISATEUR)
+		$sections = "";
+	if(isSuperUser())
+		$sql = "UPDATE `".users_db."` SET `sections`='".real_escape_string($sections)."', `permissions`='".real_escape_string($permissions)."' WHERE `login`='".real_escape_string($login)."';";
+	else if (isSecretaire())
+		$sql = "UPDATE `".users_db."` SET `permissions`=\"".real_escape_string($permissions)."\" WHERE `login`='".real_escape_string($login)."';";
 	sql_request($sql);
 	unset($_SESSION['all_users']);
-
 }
-
 
 function existsUser($login)
 {
@@ -349,41 +362,49 @@ function existsUser($login)
 	return array_key_exists($login, $users);
 }
 
-function createUser($login,$pwd,$desc,$email, $envoiparemail = false, $check_secretary = true)
+
+function createUser($login,$pwd,$desc,$email, $sections, $permissions, $envoiparemail = false)
 {
 	$login = strtolower($login);
 
-	if (!$check_secretary || isSecretaire())
+	if($login == "admin")
+		$sections = "0";
+
+	if (isSecretaire())
 	{
 		if(existsUser($login))
 			throw new Exception("Failed to create user: le login '".$login."' est déja utilisé.");
 		if($desc == "")
 			throw new Exception("Failed to create user: empty description.");
 
+		if(!isSuperUser())
+			$sections = currentSection();
+
 		unset($_SESSION['all_users']);
 
 		$passHash = crypt($pwd);
-		$sql = "INSERT INTO ".users_db." (login,passHash,description,email,tel,sousjury) VALUES ('".mysql_real_escape_string($login)."','".mysql_real_escape_string($passHash)."','".mysql_real_escape_string($desc)."','".mysql_real_escape_string($email)."','','');";
+		$sql = "INSERT INTO ".users_db." (login,sections,permissions,passHash,description,email,tel) VALUES ('";
+		$sql .= real_escape_string($login)."','";
+		$sql .= real_escape_string($sections)."','";
+		$sql .= real_escape_string($permissions)."','";
+		$sql .= real_escape_string($passHash)."','";
+		$sql .= real_escape_string($desc)."','";
+		$sql .= real_escape_string($email)."','');";
 
-		$result = mysql_query($sql);
+		$result = sql_request($sql);
 
-		if($result == false)
-			throw new Exception("Failed to process sql query: <br/>\t".mysql_error()."<br/>".$sql);
-		
 		createhtpasswd();
 
 		if($envoiparemail)
 		{
 			$body = "Marmotte est un site web destiné à faciliter la répartition, le dépôt, l'édition et la production\r\n";
 			$body .= "des rapports par les sections du comité national.\r\n";
-			$body .= "\r\nLe site est accessible à l'adresse \r\n\t\t\t".curPageURL()."\r\n";
-			$body .= "\r\nCe site a été développé par Hugo Gimbert et Yann Ponty.\r\n";
-			$body .= "\r\nL'accès au site est restreint aux membres de la section ".get_config("section_nb")." qui doivent s'authentifier pour y accéder et déposer, éditer ou consulter des rapports.\r\n";
+			$body .= "\r\nLe site est accessible à l'adresse \r\n\t\t\t".adresse_du_site."\r\n";
 			$body .= "\r\nUn compte Marmotte vient d'être créé pour vous:\r\n\r\n";
 			$body .= "\t\t\t login: '".$login."'\r\n";
 			$body .= "\t\t\t motdepasse: '".$pwd."'\r\n";
 			$body .= "\r\nLors de votre première connexion vous pourrez changer votre mot de passe.\r\n";
-			$body .= "\r\n\r\n\t Amicalement, ".get_config("secretaire").".";
+			$body .= "\r\n\r\n\t Amicalement, ".get_config("webmaster_nom").".";
 
 			$cc = "";
 			$currLogin = getLogin();
@@ -398,20 +419,37 @@ function createUser($login,$pwd,$desc,$email, $envoiparemail = false, $check_sec
 			}
 			email_handler($email,"Votre compte Marmotte",$body,$cc);
 		}
-		
+
 		return "Utilisateur ".$login." créé avec succès.";
 	}
 }
 
 function deleteUser($login)
 {
-	if (isSecretaire())
+	/* Since a user can be shared by several sections,
+	 * only superuser can definitively delete a user
+	*/
+	if (isSuperUser())
 	{
 		unset($_SESSION['all_users']);
-		$sql = "DELETE FROM ".users_db." WHERE login='".mysql_real_escape_string($login)."';";
-		mysql_query($sql);
+		$sql = "DELETE FROM ".users_db." WHERE login='".real_escape_string($login)."';";
+		sql_request($sql);
+		createhtpasswd();
+	}
+	else if(isSecretaire())
+	{
+		unset($_SESSION['all_users']);
+
+		$sections = getSections($login);
+		$newsections ="";
+		foreach($sections as $section)
+			if($section != currentSection())
+			$newsections .= $section.";";
+		$sql = "UPDATE `".users_db."` SET `sections`=\"$newsections\" WHERE `login`=\"".real_escape_string($login)."\";";
+		sql_request($sql);
 		createhtpasswd();
 	}
 }
+
 
 ?>

@@ -4,16 +4,35 @@ require_once('manage_unites.inc.php');
 
 global $fieldsUnitsDB;
 
+if(isSecretaire())
+{
 	?>
-	<table>
-	<tr><td>
-	<table>
-	<tr>
-	<td>
+
 	
+	<h2>Ajout et mise à jour de toutes les unités de la section</h2>
+<p>
+	Le formulaire ci-dessous permet d'injecter des unités dans la base de
+	donnée.<br /> Les rapports sont envoyés sous forme de fichier csv fournis par votre ACN.<br />
+	Si votre ACN ne connaît pas la procédure, dites-lui de se rapprocher de Florence Colombo.<br/>
+	Les données des labos déjà renseignés dans Marmotte seront remplacées.
+	
+</p>
+<form enctype="multipart/form-data" action="index.php" method="post"
+	onsubmit="return confirm('Etes vous sur de vouloir uploader ce fichier labos?');">
+	<p>
+	<input type="hidden" name="admin_unites">
+		<input type="hidden" name="type" value="unites" /> <input
+			type="hidden" name="action" value="upload" /> <input type="hidden"
+			name="MAX_FILE_SIZE" value="100000" /> Fichier csv: <input
+			name="uploadedfile" type="file" /> <br /> <input type="submit"
+			value="Ajouter unités" />
+	</p>
+</form>
+	<hr/>
 	<h2>Ajout ou mise-à-jour d'une unité</h2>
 	<p>Si une unité avec le même code existe déjà, ses données seront mises à jour sans que l'unité ne soit dupliquée.</p>
 			<form enctype="multipart/form-data" action="index.php" method="post">
+								<input type="hidden" name="admin_unites"></input>
 				<table class="inputreport">
 					<tr>
 						<td style="width: 20em;">Acronyme</td>
@@ -50,43 +69,27 @@ global $fieldsUnitsDB;
 					type="submit" value="Ajouter unité" />
 			</form>
 	
-		</td>
-		<td>
-		<?php 
-		if(isSecretaire())
-{
-		?>
+
+		<br/>
+		<hr/>
 			<h2>Suppression d'une unité</h2>
 				<form method="post" action="index.php">
-				<table class="inputreport">
-				<tr>
-				<td><select name="unite">
+												<input type="hidden" name="admin_unites"></input>
+<select name="unite">
 				<?php
 				$units = unitsList();
 	foreach($units as $unit => $data)
 		echo "<option value=\"$unit\">".$data->prettyname."</option>";
 				?>
 							</select>
-							</td>
-						</tr>
-						<tr>
-							<td><input type="hidden" name="action" value="deletelabo" /> <input
+<input type="hidden" name="action" value="deletelabo" /> <input
 								type="submit" value="Supprimer unité" />
-							</td>
-						</tr>
-					</table>
 				</form>
-			</td>
-	
-			</td>
-		</tr>
-	</table>
 	<?php 
 }?>
+<br/>
 	<hr />
-	</td>
-	</tr>
-	<tr><td><table>
+<table>
 		<?php 
 
 
@@ -105,7 +108,4 @@ foreach($units as $unit => $data)
 	echo "</tr>";
 }
 ?>
-</table>
-</td>
-</tr>
 </table>

@@ -1,5 +1,5 @@
 <?php 
-require_once('config.php');
+require_once('config_tools.inc.php');
 require_once('generate_csv.inc.php');
 require_once('manage_unites.inc.php');
 require_once('manage_sessions.inc.php');
@@ -32,54 +32,16 @@ function displaySecretaryImport()
 	if(isSecretaire())
 {
 	?>
-		<h2>Création de rapports (pour Secrétaires)</h2>
+		<h2>Import d'une liste de rapports</h2>
 		<p>Le formulaire ci-dessous permet d'importer la liste des rapports fournis par le SGCN avant un bureau.<br/>
-		Demandez à votre ACN une extraction au format csv.<br/>
-		Si votre ACN ne connaît pas la procédure, dites-lui de se rapprocher de Florence Colombo.
+		Demandez à votre ACN une extraction au format csv.
 		</p>
-<!-- 	csvbureau
-	<p>
-	Le formulaire ci-dessous permet d'importer plusieurs rapports vierges dans Marmotte, en partant d'un fichier
-	excel fourni par le SGCN.<br /> Ces rapports pourront ensuite être édités en ligne par les rapporteurs.<br />
-	
-	La procédure est la suivante.
-		</p>
-	
-	<form enctype="multipart/form-data" action="export.php" method="post">
-		<ul>
-	<li>Choisissez les types de rapports vierges à importer dans la base</br>
-	global $typesRapports;
-	foreach($typesRapports as $type => $name)
-		echo '<input type="checkbox" name="types[]" value="'.$type.'">'.$name.'</input><br/>'."\n";
-	</li>
-	<li>Choisissez les champs à importer</br>
-	<input type="checkbox" name="fields[]" value="nomprenom" checked>Nom et prénom (dans le même champ)</input><br/>
-	<input type="checkbox" name="fields[]" value="nom">Nom</input><br/>
-	<input type="checkbox" name="fields[]" value="prenom">Prénom</input><br/>
-	<input type="checkbox" name="fields[]" value="unite" checked>Code unité</input><br/>
-	<input type="checkbox" name="fields[]" value="directeur" checked>DU</input><br/>
-	<input type="checkbox" name="fields[]" value="grade_rapport" checked>Grade (rapport)</input><br/>
-	<input type="checkbox" name="fields[]" value="rapporteur" checked>Rapporteur</input><br/>
-	<input type="checkbox" name="fields[]" value="rapporteur2" checked>Rapporteur2</input><br/>
-	</li>
-	</ul>
-	<p>
-	<input type="submit" name="bouton" value="Télécharger trame" />
-	<input type="hidden" name="type" value="exempleimportcsv"/> 
-	<input type="hidden" name="action" value="export"/> 
-	</p>
-	</form>
-	<p>Pour chaque type de rapport, copiez les données depuis le fichier du SGCN dans la trame téléchargée.<br/>
-	Si vous utilisez les champs "rapporteur" ou "rapporteur2", renseignez les avec les logins des rapporteurs.<br/>
-	Importez dans Marmotte la liste de rapports ainsi obtenue en utilisant le menu suivant.
-	</p>
-	Enfin utiliser de préférence l'encodage utf-8 pour les caractères accentués.<br/>
-	 -->
 <form enctype="multipart/form-data" action="index.php" method="post">
 <table>
 <tr><td>
 	<input type="hidden" name="type" value="evaluations"></input>
 	<input	type="hidden" name="action" value="upload" />
+	<input	type="hidden" name="create" value="true" />
 	<input type="hidden" name="MAX_FILE_SIZE" value="10000000" />
 		</td></tr>
 		<tr><td>Fichier</td><td> <input name="uploadedfile"
@@ -110,22 +72,63 @@ echo '<option value='.$type.'>'.$name.'</option><br/>'."\n";
 ?> 
 </select>
 		</td></tr>
-				<tr><td><input type="submit" value="Créer rapports" /></td></tr>
+				<tr><td><input type="submit" value="Importer rapports" /></td></tr>
 		
 	</table>
 	
 </form>
-<!--  
-	<p>
-	Vous pouvez supprimer les colonnes inutiles mais il est indispensable de
-	laisser les intitulés des colonnes restantes tels quels.<br />
-	</p>
-	-->
+
 <hr />
 
-		<?php 
+<h2>Ajout manuel d'un rapport</h2>
+<p>Le formulaire ci-dessous permet de créer un nouveau rapport.
+</p>
+<form enctype="multipart/form-data" action="index.php" method="post">
+<table>
+<tr><td>
+<input	type="hidden" name="id_origine" value="0" />
+<input	type="hidden" name="action" value="new" />
+</td></tr>
+<tr><td>Choix du type de rapport</td><td>
+<select name="type" type="hidden" >
+<?php
+$types = array();
+if(is_current_session_concours())
+{
+global $typesRapportsConcours;
+$types = $typesRapportsConcours;
 }
-		
+else if(is_current_session_delegation())
+{
+$types = array('Delegation'=>'Délégation');
+}
+else
+{
+global $typesRapportsChercheurs;
+global $typesRapportsUnites;
+$types = array_merge($typesRapportsChercheurs, $typesRapportsUnites);
+}
+foreach($types as $type => $name)
+echo '<option value='.$type.'>'.$name.'</option><br/>'."\n";
+?>
+</select>
+</td></tr>
+<tr><td><input type="submit" value="Créer rapport" /></td></tr>
+
+</table>
+
+</form>
+<!--
+<p>
+Vous pouvez supprimer les colonnes inutiles mais il est indispensable de
+laisser les intitulés des colonnes restantes tels quels.<br />
+</p>
+-->
+<hr />
+
+<?php
+}
+
 }
 
 function displayExport()
@@ -147,6 +150,9 @@ function displayExport()
 	}
 	echo "</ul>";
 }
+
+if(false)
+{
 ?>
 
 
@@ -157,7 +163,6 @@ function displayExport()
 
 <?php displayExport();?>
 	<hr/>
-	
 <h2>Mise à jour d'un ou plusieurs rapports</h2>
 <p>
 Le formulaire suivant vous permet d'importer un ou plusieurs rapports édités offline.<br/>
@@ -165,11 +170,10 @@ Le fichier à importer doit avoir été récupéré au préalable via la fonctio
 </p>
 <?php 
 	displayImport();
-	?>
 
+}
 	
-<?php 
-if(isSecretaire())
+	if(isSecretaire())
 {
 	?>
 	<hr/>
@@ -204,32 +208,11 @@ catch(Exception $e)
 }
 */
 
-?>
-	
-	<?php 
 	displaySecretaryImport();
+
 	?>
 
-
-<h2>Ajout et mise à jour des unités  (pour Secrétaires)</h2>
-<p>
-<p>
-	Le formulaire ci-dessous permet d'injecter des unités dans la base de
-	donnée.<br /> Les rapports sont envoyés sous forme de fichier csv fournis par votre ACN.<br />
-	Si votre ACN ne connaît pas la procédure, dites-lui de se rapprocher de Florence Colombo.<br/>
-	Les données des labos déjà renseignés dans Marmotte seront remplacées.
 	
-</p>
-<form enctype="multipart/form-data" action="index.php" method="post"
-	onsubmit="return confirm('Etes vous sur de vouloir uploader ce fichier labos?');">
-	<p>
-		<input type="hidden" name="type" value="unites" /> <input
-			type="hidden" name="action" value="upload" /> <input type="hidden"
-			name="MAX_FILE_SIZE" value="100000" /> Fichier csv: <input
-			name="uploadedfile" type="file" /> <br /> <input type="submit"
-			value="Ajouter unités" />
-	</p>
-</form>
 
 <?php 
 }

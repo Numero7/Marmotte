@@ -12,8 +12,6 @@ require_once('generate_zip.inc.php');
 
 function send_file($local_filename, $remote_filename)
 {
-
-
 	if(!is_file($local_filename))
 		throw new Exception("Cannot find file .$local_filename");
 
@@ -36,23 +34,19 @@ function send_file($local_filename, $remote_filename)
 
 	if(readfile($local_filename) === false)
 		throw new Exception("Failed to read file .$local_filename");
-
-
 }
 
 
 function create_dir_if_needed($dir)
 {
 	if(!is_dir($dir))
-		$result = mkdir($dir,0700, true);
+		$result = mkdir($dir,0770, true);
 }
 
 function export_reports_as_txt($reports, $dir, $prefix = "reports")
 {
 	if(count($reports) == 0)
-	{
 		throw new Exception("No reports to export");
-	}
 	
 	create_dir_if_needed($dir);
 
@@ -72,12 +66,8 @@ function export_reports_as_txt($reports, $dir, $prefix = "reports")
 function export_reports_as_csv($reports, $dir, $type = "")
 {
 	create_dir_if_needed($dir);
-	
 	if(count($reports) == 0)
-	{
 		throw new Exception("No reports to export");
-	}
-
 
 	$file = "reports.csv";
 
@@ -85,7 +75,7 @@ function export_reports_as_csv($reports, $dir, $type = "")
 	if($type == "attribution_rapporteurs")
 	{
 		$activefields =
-		array('type','nom','prenom','rapporteur','rapporteur2',
+		array('type','nom','prenom','rapporteur','rapporteur2','rapporteur3',
 				"grade_rapport",
 				"unite",
 				"theme1",
@@ -112,7 +102,10 @@ function export_reports_as_csv($reports, $dir, $type = "")
 	global $mandatory_export_fields;
 		$activefields =
 	array_unique(
-			array_merge($mandatory_export_fields, get_editable_fields($reports[0]))
+			array_merge(
+					$mandatory_export_fields,
+					 get_editable_fields($reports[0])
+					)
 	);
 	}
 
@@ -132,7 +125,7 @@ function export_reports_as_csv($reports, $dir, $type = "")
 		$texte[] = array("Pour attribuer les rapporteurs");
 		$texte[] = array("copier-coller les login correspondants");
 		$texte[] = array("(liste ci-dessous) dans les colonnes");
-		$texte[]= array("'rapporteur' et 'rapporteur2'");
+		$texte[]= array("'rapporteur' et 'rapporteur2' et 'rapporteur3'");
 		$texte[]=array("");
 		$users = listUsers();		
 		foreach($users as $login => $value)
@@ -199,15 +192,10 @@ function downloadReport($id_rapport)
 		$login = getLogin();
 		
 		$prefix = filename_from_doc($report);
+		$dir = dossier_temp();
 		
-		$dir = "download/".$login;
-		if(!is_dir($dir) && !mkdir($dir,null,true))
-			throw new Exception("Failed to create directory ".$dir);
-
 		$file = export_reports_as_txt(array($report), $dir, $prefix);
-		
 		$filenames[$file] = $prefix.".txt";
-		
 		
 		if( isset($report->type) && ($report->type == "Candidature" || $report->type == "Equivalence") )
 		{
@@ -238,8 +226,6 @@ function downloadReport($id_rapport)
 
 function export_current_selection_as_single_csv($type = "")
 {
-
-
 	$size = 0;
 
 	$login = getLogin();
@@ -266,35 +252,21 @@ function export_current_selection_as_single_csv($type = "")
 	
 	if(count($reports) > 0)
 	{
-		$dir = "csv/".$login;
-		if(!is_dir($dir) && !mkdir($dir))
-			throw new Exception("Failed to create directory ".$dir);
-
+		$dir = dossier_temp();
 		$file = export_reports_as_csv($reports, $dir, $type);
 		$filenames[$file] = substr($file,strlen($dir."/"));
-
 		$remote_filename = 'marmotte_reports_'.$login.'.zip';
 		$filename = zip_files($filenames,$dir.'/'.$remote_filename);
-
-
 		if($filename == false)
 			throw new Exception("Failed to zip files");
-
 		send_file($filename, $remote_filename);
-
 	}
-
-
 }
 
 function export_current_selection_as_single_txt()
 {
-
-
 	$size = 0;
-
 	$login = getLogin();
-
 	$filter = getFilterValues();
 
 	$filenames = array();
@@ -306,42 +278,26 @@ function export_current_selection_as_single_txt()
 
 	if(count($reports) > 0)
 	{
-		$dir = "csv/".$login;
-		if(!is_dir($dir) && !mkdir($dir))
-			throw new Exception("Failed to create directory ".$dir);
-
+		$dir = dossier_temp();
 		$file = export_reports_as_txt($reports, $dir);
-
 		send_file($file, "rapports_marmotte.txt");
-
 	}
-
-
 }
 
 function export_current_selection($export_format)
 {
-
 	$size = 0;
-
 	$login = getLogin();
-
 	$filter = getFilterValues();
-
 	$filenames = array();
 	$items = array();
 
-
 	$filenames = array();
-
 	$reports = filterSortReports(getCurrentFiltersList(),  $filter, getSortingValues(),false);
 
 	if(count($reports) > 0)
 	{
-		$dir = "csv/".$login;
-		if(!is_dir($dir) && !mkdir($dir))
-			throw new Exception("Failed to create directory ".$dir);
-			
+		$dir = dossier_temp();
 		foreach($reports as $report)
 		{
 			$file = export_report($report, $export_format, $dir);
@@ -351,13 +307,11 @@ function export_current_selection($export_format)
 		$remote_filename = 'marmotte_reports_'.$login.'.zip';
 		$filename = zip_files($filenames,$dir.'/'.$remote_filename);
 
-
 		if($filename == false)
 			throw new Exception("Failed to zip files");
 
 		send_file($filename, $remote_filename);
 	}
-
 }
 
 function generate_jad_reports()
@@ -365,16 +319,10 @@ function generate_jad_reports()
 	global $concours_ouverts;
 	$docs = array();
 	foreach($concours_ouverts as $concours => $code)
-	{
 			$docs[$code] = generate_jad_report($concours);
-	}
 
 	$login = getLogin();
-
-	$dir = "csv/".$login;
-	if(!is_dir($dir) && !mkdir($dir))
-		throw new Exception("Failed to create directory ".$dir);
-
+	$dir = dossier_temp();
 	$filenames = array();
 	foreach($docs as $code => $doc)
 	{
@@ -404,17 +352,11 @@ function display_jad_reports()
 	foreach($concours_ouverts as $concours => $code)
 		$docs[$code] = generate_jad_report($concours);
 
-	$login = getLogin();
-
-	$dir = "csv/".$login;
-	if(!is_dir($dir) && !mkdir($dir))
-		throw new Exception("Failed to create directory ".$dir);
-
+	$dir = dossier_temp();
 	$filenames = array();
 	foreach($docs as $code => $doc)
 	{
 		$doc->formatOutput = true;
-
 		echo XMLToHTML($doc,'xslt/jad.xsl');
 	}
 }
@@ -425,27 +367,34 @@ function generate_jad_report($code)
 	$root = $doc->createElement("jad");
 	$doc->appendChild($root);
 
-
 	$filters = array();
 
 	$filters["concours"] = $code;
 	$filters["type"] = "Candidature";
+	$filters["section"] = currentSection();
+	$filters["id_session"] = current_session_id();
 	$candidats = filterSortReports(getCurrentFiltersList(), $filters, array("nom" => "1+"));
 
 	$filters["avis"] = "oral";
+	
 	$admissibles = filterSortReports(getCurrentFiltersList(), $filters, array("nom" => "1+"));
 
-	rrr();
 	global $concours_ouverts;
 	$nom_concours = $concours_ouverts[$code];
 
 	$grade_concours = substr($nom_concours, 0,3);
 	appendLeaf("grade_concours", $grade_concours, $doc, $root);
 
-	$n = strlen($nom_concours);
-	$num_concours = substr($nom_concours, $n - 4, 2) ."/" .substr($nom_concours, $n - 2, 2);
-	appendLeaf("code_concours", $num_concours, $doc, $root);
+	$session = current_session_id();
+	$annee_concours = substr($session,strlen($session) -4,4);
+	appendLeaf("annee_concours", $annee_concours, $doc, $root);
 
+	if(strlen($code) >= 4)
+		$num_concours = substr($code,0,2) ."/".substr($code,2,2);
+	else
+		$num_concours = $strlen($code); // peut etre renseigné à la main par le président
+	appendLeaf("code_concours", $num_concours, $doc, $root);
+	
 	global $postes_ouverts;
 	appendLeaf("postes_ouverts", $postes_ouverts[$code], $doc, $root);
 
@@ -456,7 +405,7 @@ function generate_jad_report($code)
 		appendLeaf("avis_jad", "", $doc, $root);
 	appendLeaf("date_jad", get_config("date_jad"), $doc, $root);
 	
-	appendLeaf("examines", strval(count($candidats)), $doc, $root);
+	appendLeaf("examines", "<b>".strval(count($candidats))."</b>", $doc, $root);
 	$leaf = $doc->createElement("candidats");
 	$root->appendChild($leaf);
 	foreach($candidats as $key => $candidat)
@@ -467,7 +416,10 @@ function generate_jad_report($code)
 		$leaf->appendChild($subleaf);
 	}
 
-	appendLeaf("auditionnes", strval(count($admissibles)), $doc, $root);
+	$n = count($admissibles);
+	$sn = "<b>".strval($n)."</b>";
+	appendLeaf("auditionnes", $sn, $doc, $root);
+	
 	$leaf = $doc->createElement("admissibles");
 	$root->appendChild($leaf);
 	foreach($admissibles as $key => $candidat)
@@ -486,10 +438,11 @@ function generate_jad_report($code)
 	appendLeaf("signataire", get_config("president"), $doc, $root);
 	appendLeaf("signataire_titre", get_config("president_titre"), $doc, $root);
 
+	global $dossier_stockage;
 	if(isSecretaire())
-		appendLeaf("signature_source", "img/signature.jpg", $doc, $root);
+		appendLeaf("signature_source", $dossier_stockage.signature_file, $doc, $root);
 	else
-		appendLeaf("signature_source", "img/signatureX.jpg", $doc, $root);
+		appendLeaf("signature_source", $dossier_stockage.signature_blanche, $doc, $root);
 
 	return $doc;
 }
@@ -498,20 +451,6 @@ function generate_exemple_csv($types,$fields)
 {
 	try
 	{
-		/*
-		if( !in_array('nomprenom', $fields) && ( !in_array('nom', $fields) || !in_array('prenom', $fields) ))
-			throw new Exception("Check either the 'nomprenom' checkbox or both the 'nom' and the 'prenom' checkbox");
-*/
-		/*
-		$sql = "SELECT * FROM ".reports_db." LIMIT 0,5";
-		$result = sql_request($sql);
-
-		$rows = array();
-		while ($row = mysql_fetch_object($result))
-			$rows[] = $row;
-
-*/
-
 		$rows = array();
 
 		foreach($types as $type)
@@ -547,8 +486,11 @@ function generate_exemple_csv($types,$fields)
 		
 		$fields =  array_merge(array("type"), $fields);
 		
+
 		$csv_reports = compileReportsAsCSV($rows,$fields);
-		$filename = "csv/trame_rapport_vierges.csv";
+		
+		$dir = dossier_temp();
+		$filename = $dir."trame_rapport_vierges.csv";
 		if($handle = fopen($filename, 'w'))
 		{
 			fwrite ($handle, $csv_reports);

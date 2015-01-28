@@ -2,16 +2,22 @@
 
 require_once('config.inc.php');
 require_once('manage_filters_and_sort.inc.php');
+require_once('utils.inc.php');
+
 
 function sessionArrays($force = false)
 {
+	global $dbh;
 	if($force || !isset($_SESSION['all_sessions']))
 	{
 		$sessions = array();
-		$sql = "SELECT * FROM ".sessions_db." ORDER BY date DESC;";
+		$ok = $_SESSION['filter_section'];
+		$sql = "SELECT * FROM ".sessions_db." WHERE `section`='". real_escape_string($ok)."' ORDER BY date DESC;";
 		$result = sql_request($sql);
+		if($result == false)
+			throw new Exception("Failed to process sql query: <br/>\t".mysqli_error($dbh)."<br/>".$sql);		
 		date_default_timezone_set("Europe/Paris");
-		while ($row = mysql_fetch_object($result))
+		while ($row = mysqli_fetch_object($result))
 			$sessions[$row->id] = $row->id;
 		$sessions[-1] = "Toutes les sessions";
 		$_SESSION['all_sessions'] = $sessions;
@@ -22,11 +28,12 @@ function sessionArrays($force = false)
 
 function sessionShortArray()
 {
+		global $dbh;
 		$sessions = array();
 		$sql = "SELECT * FROM ".sessions_db." ORDER BY date DESC;";
 		$result = sql_request($sql);
 		date_default_timezone_set("Europe/Paris");
-		while ($row = mysql_fetch_object($result))
+		while ($row = mysqli_fetch_object($result))
 			$sessions[$row->id] = $id;
 		$_SESSION['all_sessions'] = $sessions;
 		
@@ -54,16 +61,8 @@ function set_current_session_id($id)
 
 function check_current_session_exists()
 {
-	try
-	{
-	$sessions = sessionArrays(true);
-	current_session();
-	return true;
-	}catch(Exception $e)
-	{
-		return false;
-	}
-	
+		$sessions = sessionArrays(true);
+		return current_session() != "Hors Session";
 }
 
 function get_session($id)
@@ -83,7 +82,7 @@ function current_session()
 	if(isset($sessions[$id]))
 		return $sessions[$id];
 	else
-		throw new Exception("Pas de session avec l'id " . $id."\nVeuillez éditer le fichier de config ou ajouter une session avec l'id 2.");
+		return "Hors Session";
 }
 
 function is_current_session_concours()
@@ -106,26 +105,21 @@ function showSessions()
 {
 	$finalResult = array();
 	date_default_timezone_set('Europe/Paris');
-	
-	$sql = "SELECT * FROM ".sessions_db." ORDER BY date DESC;";
-	if($result=mysql_query($sql))
-	{
-		while ($row = mysql_fetch_object($result))
-		{
+	$sql = "SELECT * FROM ".sessions_db." WHERE `section`='". real_escape_string($_SESSION['filter_section'])."' ORDER BY date DESC;";
+	if($result= sql_request($sql))
+		while ($row = mysqli_fetch_object($result))
 			$finalResult[$row->id] = array( "id" => $row->id, "nom" => $row->nom, "date" => $row->date, "prettyprint" => $row->nom.' '.date("Y",strtotime($row->date)));
-		}
-	}
 	return	$finalResult;
 } ;
 
 
 
-function createSession($name,$annee)
+function createSession($name,$annee, $section ="")
 {
+	if($section == "") $section = $_SESSION['filter_section'];
 	if (isSecretaire())
 	{
 		date_default_timezone_set('Europe/Paris');
-		
 		switch($name)
 		{
 			case "Concours":
@@ -139,12 +133,9 @@ function createSession($name,$annee)
 			case "PES":
 				$date = "01/05/".$annee; break;
 			default:
-				throw new Exception("Unknown session name: $name");
+				$date = "01/07/".$annee; break;
 		}
-		echo $date."<br>";
-		echo strtotime($date)."<br>";
-		echo date("Y-m-d h:m:s",strtotime($date));
-		$sql = "INSERT INTO ".sessions_db."(id,nom,date) VALUES ('".mysql_real_escape_string($name).mysql_real_escape_string($annee)."','".mysql_real_escape_string($name)."','".date("Y-m-d h:m:s",strtotime($date))."');";
+		$sql = "INSERT INTO ".sessions_db."(id,section,nom,date) VALUES ('".real_escape_string($name.$annee)."','".$section."','".real_escape_string($name)."','".date("Y-m-d h:m:s",strtotime($date))."');";
 		sql_request($sql);
 		sessionArrays(true);
 		return true;

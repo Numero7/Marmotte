@@ -10,13 +10,44 @@ require_once('manage_filters_and_sort.inc.php');
 function compute_title($row, $fieldId)
 {
 	global $fieldsAll;
-	global $global_fields_renaming;
 	global $type_specific_fields_renaming;
 
-	$title = $fieldsAll[$fieldId];
+	$title = "";
+	if( substr($fieldId, 0, 4) == "Info" )
+	{
 
-	if(key_exists($fieldId, $global_fields_renaming))
-		$title = $global_fields_renaming[$fieldId];
+		global $typesRapportsChercheurs;
+		global $typesRapportsConcours;
+		global $add_rubriques_people;
+		global $add_rubriques_candidats;
+
+		$suff = intval(substr($fieldId,4));
+
+		if( isset($typesRapportsChercheurs[$row->type]) )
+			$title = $add_rubriques_people[$suff];
+		else if( isset($typesRapportsConcours[$row->type]) )
+			$title = $add_rubriques_candidats[$suff];
+	}
+	else if( substr($fieldId, 0, 7) == "Generic" )
+	{
+		global $typesRapportsChercheurs;
+		global $typesRapportsUnites;
+		global $typesRapportsConcours;
+		global $add_rubriques_concours;
+		global $add_rubriques_chercheurs;
+		global $add_rubriques_unites;
+
+		$suff = intval(substr($fieldId,7))/3;
+
+		if( isset($typesRapportsChercheurs[$row->type]) )
+			$title = $add_rubriques_chercheurs[$suff];
+		else if( isset($typesRapportsConcours[$row->type]) )
+			$title = $add_rubriques_concours[$suff];
+		else if( isset($typesRapportsUnites[$row->type]) )
+			$title = $add_rubriques_unites[$suff];
+	}
+	else if(isset($fieldsAll[$fieldId]))
+		$title = $fieldsAll[$fieldId];
 
 	if(isset($row->type) && key_exists($row->type, $type_specific_fields_renaming) && key_exists($fieldId, $type_specific_fields_renaming[$row->type]))
 		$title = $type_specific_fields_renaming[$row->type][$fieldId];
@@ -28,10 +59,10 @@ function getIDOrigine($id_rapport)
 {
 	if($id_rapport <= 0)
 		return 0;
-	
+
 	$sql = "SELECT id_origine FROM ".reports_db." WHERE id=$id_rapport";
 	$result=sql_request($sql);
-	$report = mysql_fetch_object($result);
+	$report = mysqli_fetch_object($result);
 	if($report == false)
 	{
 		throw new Exception("No report with id ".$id_rapport);
@@ -54,12 +85,12 @@ function deleteCurrentSelection()
 		}
 		catch(Exception $e)
 		{
-			$errors .= "Failed to delete report with id ".str($rows_id[$i]).": ".$e."\n<br/>";
+			$errors .= "Failed to delete report with id ".$rows_id[$i].": ".$e."\n<br/>";
 		}
 		if($errors != "")
 			throw new Exception($errors);
 	}
-	
+
 }
 /*
  * returns an object
@@ -71,7 +102,7 @@ function getReport($id_rapport, $most_recent = true)
 		$id_rapport = getIDOrigine($id_rapport);
 	$sql = "SELECT * FROM ".reports_db." WHERE id=$id_rapport";
 	$result=sql_request($sql);
-	$report = mysql_fetch_object($result);
+	$report = mysqli_fetch_object($result);
 
 	if($report == false)
 	{
@@ -124,7 +155,10 @@ function getAllReportsOfType($type,$id_session=-1)
 
 function filterSortReports($filters, $filter_values = array(), $sorting_values = array(), $rapporteur_or = true)
 {
-	$sql = "SELECT *, ".people_db.".nom AS people_nom, ".people_db.".prenom AS people_prenom, ".reports_db.".nom AS nom, ".reports_db.".prenom AS prenom FROM ".reports_db." left join ".people_db." on ".reports_db.".nom=".people_db.".nom AND ".reports_db.".prenom=".people_db.".prenom WHERE ".reports_db.".id=".reports_db.".id_origine AND ".reports_db.".statut!=\"supprime\"";
+	$section = $_SESSION['filter_section'];
+	$sql = "SELECT *, ".reports_db.".id AS report_id, ".people_db.".id AS people_id, ".people_db.".nom AS people_nom, ".people_db.".prenom AS people_prenom, ".people_db.".conflits AS people_conflits, ".reports_db.".nom AS nom, ".reports_db.".prenom AS prenom FROM ".reports_db;
+	$sql .=" left join ".people_db." on ".reports_db.".nom=".people_db.".nom AND ".reports_db.".prenom=".people_db.".prenom AND ".reports_db.".section=".people_db.".section WHERE ";
+	$sql .= reports_db.".id=".reports_db.".id_origine AND ".reports_db.".statut!=\"supprime\" AND ".reports_db.".section=\"".$section."\"";
 	//$sql = "SELECT * FROM ".reports_db." WHERE id = id_origine AND statut!=\"supprime\"";
 	//$sql = "SELECT * FROM ".reports_db." WHERE date = (SELECT MAX(date) FROM evaluations AS mostrecent WHERE mostrecent.id_origine = evaluations.id_origine AND statut!=\"supprime\")";
 	//$sql = "SELECT * FROM ( SELECT id, MAX(date) AS date FROM evaluations GROUP BY id_origine) mostrecent ON tt.date = mostrecent.date";
@@ -136,6 +170,7 @@ function filterSortReports($filters, $filter_values = array(), $sorting_values =
 	$sql .= filtersCriteriaToSQL($filters,$filter_values, $rapporteur_or);
 	$sql .= sortCriteriaToSQL($sorting_values);
 	$sql .= ";";
+
 	//echo $sql;
 	$result=sql_request($sql);
 
@@ -143,23 +178,13 @@ function filterSortReports($filters, $filter_values = array(), $sorting_values =
 		throw new Exception("Echec de l'execution de la requete <br/>".$sql."<br/>");
 
 	$rows = array();
-	//echo $sql."<br/>".count($rows)." rows ".mysql_num_rows($result)." sqlrows<br/>";
+	//echo $sql."<br/>".count($rows)." rows ".mysqli_num_rows($result)." sqlrows<br/>";
 
-	while ($row = mysql_fetch_object($result))
+	while ($row = mysqli_fetch_object($result))
+	{
+		$row->id = $row->report_id;
 		$rows[] = $row;
-
-	
-	/*
-	 * TODO: merge avc candidats
-	*/
-	/*
-	 foreach($rows as $row)
-	 {
-	$candidat = get_or_create_candidate($row);
-	foreach($candidat as $key => $value)
-		$row->$key = $value;
-
-	}*/
+	}
 
 	return $rows;
 }
@@ -212,9 +237,13 @@ function filtersCriteriaToSQL($filters, $filter_values, $rapporteur_or = true)
 			{
 				//dirty hack to have an OR clause on rapporteurs...
 				$val = $filter_values[$filter];
-				$sql .= " AND (".reports_db.".rapporteur=\"".$val."\" OR ".reports_db.".rapporteur2=\"".$val."\") ";
+				$sql .= " AND (".reports_db.".rapporteur=\"".$val."\" OR ".reports_db.".rapporteur2=\"".$val."\" OR ".reports_db.".rapporteur3=\"".$val."\") ";
 			}
 			else if($rapporteur_or && $filter =="rapporteur2")
+			{
+				continue;
+			}
+			else if($rapporteur_or && $filter =="rapporteur3")
 			{
 				continue;
 			}
@@ -228,9 +257,9 @@ function filtersCriteriaToSQL($filters, $filter_values, $rapporteur_or = true)
 				$val = $filter_values[$filter];
 
 				if($login != "")
-					$basesql = "( (".reports_db.".rapporteur=\"$login\" AND ".reports_db.".avis1 != \"\") OR (".reports_db.".rapporteur2=\"$login\" AND ".reports_db.".avis2 != \"\") OR  (".reports_db.".rapporteur!=\"$login\" AND ".reports_db.".rapporteur2!=\"$login\")) ";
+					$basesql = "( (".reports_db.".rapporteur=\"$login\" AND ".reports_db.".avis1 != \"\") OR (".reports_db.".rapporteur2=\"$login\" AND ".reports_db.".avis2 != \"\") OR  (".reports_db.".rapporteur3!=\"$login\" AND ".reports_db.".avis3 != \"\")) ";
 				else
-					$basesql = "( (".reports_db.".rapporteur=\"\" OR ".reports_db.".avis1 != \"\") AND (".reports_db.".rapporteur2=\"\" OR ".reports_db.".avis2 != \"\")) ";
+					$basesql = "( (".reports_db.".rapporteur=\"\" OR ".reports_db.".avis1 != \"\") AND (".reports_db.".rapporteur2=\"\" OR ".reports_db.".avis2 != \"\") AND (".reports_db.".rapporteur3=\"\" OR ".reports_db.".avis3 != \"\")) ";
 
 				if($val == "todo")
 					$sql .= " AND NOT ".$basesql;
@@ -328,28 +357,22 @@ function checkReportIsEditable($rapport)
 	{
 		return true;
 	}
-	else if($rapport->statut != "prerapport" && $rapport->statut != "editable")
+	else if($rapport->statut != "doubleaveugle" && $rapport->statut != "prerapport")
 	{
 		throw new Exception("Ce rapport n'a plus le statut de prerapport et n'est donc plus éditable par ses rapporteurs. Si nécessaire veuillez demander un changement de statut au secrétaire.");
 	}
 	else if($rapport->type == "Candidature")
 	{
+		$concours = $rapport->concours;
 		$sousjury = $rapport->sousjury;
-		global $presidents_sousjurys;
-		if(isset($presidents_sousjurys[$sousjury]['login']) && $login == $presidents_sousjurys[$sousjury]['login'])
+		global $tous_sous_jury;
+		if(isset($tous_sous_jury[$concours]) &&  isset($tous_sous_jury[$concours][$sousjury]) && $login == $tous_sous_jury[$concours][$sousjury]["president"])
 			return true;
 	}
-	else if( ($rapport->rapporteur != "") && ($rapport->rapporteur != $login) && ($rapport->rapporteur2 != $login))
-	{
-		if($rapport->rapporteur2 != "")
-			throw new Exception("Les rapporteurs de ce rapport sont '".$rapport->rapporteur."' et '".$rapport->rapporteur2."' mais vous êtes loggés sous l'identité '".$login."'.<br/> Si nécessaire veuillez demander un changement de rapporteur au bureau.");
-		else
-			throw new Exception("Le rapporteur de ce rapport est '".$rapport->rapporteur."' mais vous êtes loggés sous l'identité '".$login."'.<br/> Si nécessaire veuillez demander un changement de rapporteur au bureau.");
-	}
+	else if( ($rapport->rapporteur != "") && ($rapport->rapporteur != $login) && ($rapport->rapporteur2 != $login)&& ($rapport->rapporteur3 != $login))
+		throw new Exception("Vous n'êtes pas rapporteur<br/>. Si nécessaire veuillez demander un changement de rapporteur au bureau.");
 	else
-	{
 		return true;
-	}
 }
 
 function checkReportDeletable($rapport)
@@ -360,7 +383,7 @@ function checkReportDeletable($rapport)
 		return true;
 	else if( $rapport->rapporteur != getLogin())
 		throw new Exception("Le rapporteur de ce rapport est ".$rapport->rapporteur." mais vous êtes loggés sous l'identité ".getLogin());
-	else if ($rapport->statut != 'prerapport')
+	else if ($rapport->statut != 'doubleaveugle')
 		throw new Exception("Ce rapport a le statut ".$rapport->statut." et n'est donc pas supprimable, seuls les prérapports sont supprimables par un rapporteur.");
 	else
 		return true;
@@ -369,17 +392,7 @@ function checkReportDeletable($rapport)
 function isReportCreatable()
 {
 	return isSecretaire();
-	/*
-	 if(!isSecretaire())
-		throw new Exception("Vous n'avez pas les permissions nécessaires pour créer un rapport<br/>");
-	else return true;
-	*/
 }
-
-//to migrate from previous system
-//UPDATE evaluations SET statut="supprime" WHERE id<0
-//UPDATE evaluations SET id_origine=-id_origine WHERE id_origine<0
-//UPDATE evaluations SET id=-id WHERE id<0
 
 function deleteReport($id_rapport, $all_versions = false)
 {
@@ -393,7 +406,7 @@ function deleteReport($id_rapport, $all_versions = false)
 	$sql = "SELECT * FROM ".reports_db." WHERE date = (SELECT MAX(date) FROM ".reports_db." AS mostrecent WHERE mostrecent.id_origine=$id_rapport AND mostrecent.id != $id_rapport AND mostrecent.statut!=\"supprime\")";
 	$result= sql_request($sql);
 
-	$before = mysql_fetch_object($result);
+	$before = mysqli_fetch_object($result);
 	if($before != false && !$all_versions)
 	{
 		$previous_id = $before->id;
@@ -436,18 +449,17 @@ function deleteReport($id_rapport, $all_versions = false)
 		sql_request($sql);
 	}
 	else
-	 {
+	{
 		$sql = "UPDATE ".reports_db." SET statut=\"supprime\"WHERE id_origine=".intval($id_rapport)." ;";
 		sql_request($sql);
 		$sql = "UPDATE ".reports_db." SET date=NOW() WHERE id_origine=".intval($id_rapport)." ;";
 		sql_request($sql);
 	}
 
-	
+
 
 	return ($before !=false) ? $before->id : -1;
 };
-
 
 function newReport($type_rapport)
 {
@@ -456,12 +468,18 @@ function newReport($type_rapport)
 
 	$row = array();
 	$row['type'] = $type_rapport;
+	$row['section'] = $_SESSION['filter_section'];
 
 	return normalizeReport($row);
 } ;
 
 function addReport($report)
 {
+	/*
+	 if($report->prenom == "Anthonin")
+		rrrr();
+
+	*/
 	if(!isReportCreatable())
 		throw new Exception("Le compte ".$login." n'a pas la permission de créer un rapport, veuillez contacter le secrétaire scientifique.");
 
@@ -471,9 +489,10 @@ function addReport($report)
 		if(!isset($report->$key))
 		$report->$key = $value;
 
+	$report->section = $_SESSION['filter_section'];
+
 	return addReportToDatabase($report);
 };
-
 
 function addReportFromRequest($id_origine, $request)
 {
@@ -489,22 +508,21 @@ function addReportFromRequest($id_origine, $request)
 		catch (Exception $e)
 		{
 			$id_origine = 0;
-
 		}
-		/*		if(!checkReportIsEditable($report))
-			throw new Exception("Le compte ".getLogin()." n'a pas la permission de mettre à jour le rapport, veuillez contacter le bureau");*/
 	}
-	else if(!isReportCreatable())
-		throw new Exception("Le compte ".getLogin()." n'a pas la permission de créer un rapport, veuillez contacter le bureau");
-
-
+	else
+	{
+		if(!isReportCreatable())
+			throw new Exception("Le compte ".getLogin()." n'a pas la permission de créer un rapport, veuillez contacter le bureau");
+	}
 
 	$report = createReportFromRequest($id_origine, $request);
-	
+
 	$id_nouveau = addReportToDatabase($report,false);
 
-	
-	if(isset($report->type) && (in_array($report->type, $typesRapportsConcours) || isset($typesRapportsChercheurs[$report->type]) ) )
+	//	rr();
+
+	if(isset($report->type) && ( isset($typesRapportsConcours[$report->type]) || isset($typesRapportsChercheurs[$report->type]) ) )
 		updateCandidateFromRequest($request);
 
 	return getReport($id_nouveau);
@@ -514,7 +532,6 @@ function createReportFromRequest($id_origine, $request)
 {
 	global $fieldsRapportAll;
 	global $fieldsTypes;
-
 
 	$row = (object) array();
 
@@ -529,50 +546,37 @@ function createReportFromRequest($id_origine, $request)
 	$row->auteur = getLogin();
 
 	return $row;
-
 }
 
 function normalizeReport($report)
 {
 	global $report_prototypes;
-
 	$report = (object) $report;
+	$default = array(
+			"id_session" => current_session_id(),
+			"auteur" => getLogin(),
+			"id_origine" => "",
+			"id" => "",
+			"nom" => "",
+			"prenom" => "",
+			"avis" => "",
+			"rapport" => "",
+			"prerapport" => "",
+			"concours" => "",
+			"statut" => "doubleaveugle",
+			"rapporteur" => "",
+			"rapporteur2" => "",
+			"rapporteur3" => ""
+	);
 
-	if(!isset($report->id_session))
-		$report->id_session = current_session_id();
-
-	if(!isset($report->auteur))
-		$report->auteur = getLogin();
-
-	if(!isset($report->id_origine))
-		$report->id_origine = 0;
-
-	if(!isset($report->id))
-		$report->id = 0;
-
+	foreach($default as $key => $value)
+		if(!isset($report->$key))
+		$report->$key = $value;
 
 	if(!isset($report->statut))
-		$report->statut = 'vierge';
-
-
-	// Could be hacky...
-	if(!isset($report->avis))
-		$report->avis = '';
-	if(!isset($report->rapport))
-		$report->rapport = '';
-	if(!isset($report->prerapport))
-		$report->prerapport = '';
-	if(!isset($report->concours))
-		$report->concours = '';
-	if(!isset($report->rapporteur))
-		$report->rapporteur = '';
-	if(!isset($report->rapporteur2))
-		$report->rapporteur2 = '';
-	if(!isset($report->sousjury))
-		$report->sousjury = '';
-
+		$report->statut = "doubleaveugle";
+		
 	if(isset($report->type))
-	{
 		if(isset($report_prototypes[$report->type]))
 		{
 			$prototype = $report_prototypes[$report->type];
@@ -580,16 +584,7 @@ function normalizeReport($report)
 				if(isset($report->$field) && $report->$field=="")
 				$report->$field = $value;
 		}
-		if($report->type == "Equivalence" && $report->prerapport=="" && isset($report->anneesequivalence))
-		{
-			//$report->prerapport = "Raison de la demande: ". $raison."\n";
-			$report->prerapport .= "Annees d'équivalence annoncées par le candidat: ". $report->anneesequivalence;
-		}
-	}
-
-
-
-	return $report;
+		return $report;
 }
 
 function addReportToDatabase($report,$normalize = true)
@@ -597,24 +592,16 @@ function addReportToDatabase($report,$normalize = true)
 	global $fieldsRapportAll;
 	global $fieldsPermissions;
 
-
 	if($normalize)
 	 $report = normalizeReport($report);
 
-
-	if(isset($report->statut) && $report->statut == "vierge" && $report->id_origine != 0)
-		$report->statut = "prerapport";
 
 	if(isset($report->unite))
 		createUnitIfNeeded($report->unite);
 
 	$specialRule = array("date","id","id_origine","auteur");
 
-
-	mysql_query("LOCK TABLES evaluations WRITE;");
-
 	$id_origine = isset($report->id_origine) ? $report->id_origine : 0;
-
 	if($id_origine == 0)
 	{
 		global $empty_report;
@@ -626,8 +613,6 @@ function addReportToDatabase($report,$normalize = true)
 	$level = getUserPermissionLevel();
 	try
 	{
-
-
 		$current_report = array();
 		try
 		{
@@ -637,51 +622,52 @@ function addReportToDatabase($report,$normalize = true)
 			//echo "id_origine $id_origine current_id ".$current_report->id."<br/>";
 			foreach($fieldsRapportAll as $field => $comment)
 			{
+
 				if (!in_array($field,$specialRule))
 				{
-					if(isset($report->$field) && isset($previous_report->$field) &&($previous_report->$field != $report->$field) && isset($fieldsPermissions[$field]) &&  $fieldsPermissions[$field] > $level)
+					if(isset($report->$field) && isset($previous_report->$field) &&($previous_report->$field !== $report->$field) && isset($fieldsPermissions[$field]) &&  $fieldsPermissions[$field] > $level)
 						throw new Exception("Vous n'avez pas les autorisations nécessaires (".$level."<".$fieldsPermissions[$field].") pour modifier le champ ".$field);
-
-					/*
-					 if( isset($current_report->$field) && isset($previous_report->$field) && $previous_report->$field != $current_report->$field)
-					 {
-					echo "Parallel edition of field '".$field."' by '".$current_report->auteur."' changed from '".$previous_report->$field."' to '".$current_report->$field."'<br/>";
-					}
-					*/
-					if( isset($report->$field) && isset($previous_report->$field) && $previous_report->$field != $report->$field)
+					if(isset($report->$field))
 					{
-						if(! is_field_editable($previous_report, $field))
-							throw new Exception("Le compte ".getLogin()." n'a pas la permission de mettre à jour le champ ".$field." du rapport ".$id_origine.". Si nécessaire, veuillez contacter le bureau pour demander un changement de rapporteur.");
-
-						if( isset($current_report->$field) && ($previous_report->$field != $current_report->$field)  && ($current_report->$field != $report->$field))
+						if(!isset($previous_report->$field) || $previous_report->$field !== $report->$field)
 						{
-							global $mergeableTypes;
-							global $crashableTypes;
+							if(! is_field_editable($previous_report, $field))
+								throw new Exception("Le compte ".getLogin()." n'a pas la permission de mettre à jour le champ ".$field." du rapport ".$id_origine.". Si nécessaire, veuillez contacter le bureau pour demander un changement de rapporteur.");
 
-							global $fieldsTypes;
-							$type = isset($fieldsTypes[$field]) ? $fieldsTypes[$field] : "";
-							if(in_array($type, $mergeableTypes))
+							if(
+									isset($current_report->$field)
+									&& isset($report->$field)
+									&& isset($previous_report->$field)
+									&& ($previous_report->$field !== $current_report->$field)
+									&& ($current_report->$field !== $report->$field)
+							)
 							{
-								echo "<h2>Merge with parallel edition of field $field by '".$current_report->auteur."':</h2>'".$current_report->$field."'";
-								echo "<h2>Your edition:</h2> '".$report->$field."'";
-								$current_report->$field ="!!!MERGE!!!\n* FROM '".$current_report->auteur."':\n".$current_report->$field;
-								$current_report->$field .= "\n* FROM '".getLogin()."':\n".$report->$field;
+								global $mergeableTypes;
+								global $crashableTypes;
+
+								global $fieldsTypes;
+								$type = isset($fieldsTypes[$field]) ? $fieldsTypes[$field] : "";
+								if(in_array($type, $mergeableTypes))
+								{
+									echo "<h2>Merge with parallel edition of field $field by '".$current_report->auteur."':</h2>'".$current_report->$field."'";
+									echo "<h2>Your edition:</h2> '".$report->$field."'";
+									$current_report->$field ="!!!MERGE!!!\n* FROM '".$current_report->auteur."':\n".$current_report->$field;
+									$current_report->$field .= "\n* FROM '".getLogin()."':\n".$report->$field;
+								}
+								else if(!in_array($type, $crashableTypes))
+								{
+									echo "<h2>Cannot merge with parallel edition of field '$field' by '".$current_report->auteur."':</h2>";
+									echo "<h2>Parallel edition:</h2>".$current_report->$field;
+									echo "<h2>Your edition:</h2>".$report->$field;
+									echo "<h2>Erasing parallel edition...</h2>";
+									$current_report->$field = $report->$field;
+								}
 							}
-							else if(!in_array($type, $crashableTypes))
+							else
 							{
-								echo "<h2>Cannot merge with parallel edition of field '$field' by '".$current_report->auteur."':</h2>";
-								echo "<h2>Parallel edition:</h2>".$current_report->$field;
-								echo "<h2>Your edition:</h2>".$report->$field;
-								echo "<h2>Erasing parallel edition...</h2>";
 								$current_report->$field = $report->$field;
 							}
 						}
-						else
-						{
-							//echo "Updating field ".$field." was '".$previous_report->$field."' now '".$report->$field."'<br/>";
-							$current_report->$field = $report->$field;
-						}
-
 					}
 				}
 			}
@@ -695,13 +681,14 @@ function addReportToDatabase($report,$normalize = true)
 			$current_report = $report;
 		}
 
-
+		//rr();
 		$sqlfields = "";
 		$sqlvalues = "";
 
 		$specialRule = array("date","id");
 
 		$current_report->auteur = getLogin();
+		$current_report->section = $_SESSION['filter_section'];
 
 		$first = true;
 
@@ -710,15 +697,17 @@ function addReportToDatabase($report,$normalize = true)
 			if (key_exists($field, $fieldsRapportAll) && !in_array($field,$specialRule))
 			{
 				$sqlfields.= ($first ? "" : ",").$field;
-				$sqlvalues.=($first ? "" : ",")."\"".mysql_real_escape_string($value)."\"";
+				$sqlvalues.=($first ? "" : ",")."\"".real_escape_string($value)."\"";
 				$first = false;
 			}
 		}
 
 		$sql = "INSERT INTO ".reports_db." ($sqlfields) VALUES ($sqlvalues);";
+		//echo $sql;
 		sql_request($sql);
 
-		$new_id = mysql_insert_id();
+		global $dbh;
+		$new_id = mysqli_insert_id($dbh);
 
 		if($id_origine != 0 && isset($current_report->id))
 		{
@@ -736,16 +725,12 @@ function addReportToDatabase($report,$normalize = true)
 	}
 	catch(Exception $e)
 	{
-		mysql_query("UNLOCK TABLES");
 		throw $e;
 	}
 
 	refresh_row_ids();
 
-	sql_request("UNLOCK TABLES");
-
 	return $new_id;
-
 }
 
 function refresh_row_ids()
@@ -761,13 +746,14 @@ function refresh_row_ids()
 
 function next_report($id)
 {
+	$orig = getIDOrigine($id);
 	if(isset($_SESSION['rows_id']))
 	{
 		$rows_id = $_SESSION['rows_id'];
 		$n = count($rows_id);
 		for($i = 0; $i < $n; $i++)
 		{
-			if(getIDOrigine($rows_id[$i]) == getIDOrigine($id))
+			if($rows_id[$i] == $orig)
 			{
 				if($i < $n - 1)
 					return $rows_id[$i+1];
@@ -775,6 +761,8 @@ function next_report($id)
 					return $rows_id[0];
 			}
 		}
+		if($n >0)
+			return $_SESSION['rows_id'][0];
 	}
 	return -1;
 }
@@ -795,17 +783,30 @@ function previous_report($id)
 					return $rows_id[$n-1];
 			}
 		}
+		if($n >0)
+			return $_SESSION['rows_id'][0];
 	}
 	return -1;
 }
 
+function set_rapporteur($property,$id_origine, $value)
+{
+	change_report_property($id_origine, $property, $value);
+	$report = getReport($id_origine);
+	if($report->nom != "" && $report->prenom != "")
+	{
+		$sql = "UPDATE reports SET `".real_escape_string($property)."`=\"".real_escape_string($value)."\" ";
+		$sql .= " WHERE `".real_escape_string($property)."`=\"\" AND nom=\"".$report->nom."\" and prenom=\"".$report->prenom."\"";
+		$sql .= " AND id_session=\"".current_session()."\" AND section=\"".$report->section."\" AND type=\"".$report->type."\"";
+		sql_request($sql);
+	}
+}
+
 
 /* Hugo could be optimized in one sql update request?*/
-function change_statuts($new_statut, $filter_values)
+function change_statuts($new_statut)
 {
-	//echo "Changing status to " .$new_statut." <br/>";
-	$rows = filterSortReports(getCurrentFiltersList(), $filter_values, getSortingValues());
-
+	$rows = filterSortReports(getCurrentFiltersList(), getFilterValues(), getSortingValues());
 	foreach($rows as $row)
 		change_statut($row->id, $new_statut);
 }
@@ -833,27 +834,20 @@ function change_statut($id, $newstatut)
 
 function change_report_property($id_origine, $property_name, $newvalue)
 {
-
-	$data = array($property_name => $newvalue);
-
-	//echo "Changing property " .$property_name." of ". $id_origine." for new value ".$newvalue."<br/>";
-	change_report_properties($id_origine, $data);
-
-	return getIDOrigine($id_origine);
+	$id = getIDOrigine($id_origine);
+	$sql = "UPDATE `reports` SET ". real_escape_string($property_name)."=\"".real_escape_string($newvalue)."\" WHERE id=\"".$id."\"";
+	sql_request($sql);
+	return $id_origine;
 }
 
 function change_report_properties($id_origine, $data)
 {
-	global $fieldsAll;
-
 	$row = NULL;
-
 	$request = array();
-
 	try
 	{
 		$report = getReport($id_origine);
-//		echo "Found report with id ". $id_origine."<br/>";
+		//		echo "Found report with id ". $id_origine."<br/>";
 	}
 	catch (Exception $e)
 	{
@@ -876,11 +870,7 @@ function change_report_properties($id_origine, $data)
 			$request["field".$key] = $data[$key];
 		}
 	}
-
-
 	$result = addReportFromRequest($id_origine,$request);
-	//echo "report added new id ".$result->id."<br/>";
-	
 	return $result;
 }
 
@@ -891,13 +881,16 @@ function get_current_selection()
 
 function getVirginReports($rapporteur)
 {
-	$filter_values = array('rapporteur' => $rapporteur->login, 'statut' => 'vierge');
+	$filter_values = array('rapporteur' => $rapporteur->login, 'avis1' => '');
 	$liste1 =  filterSortReports(getCurrentFiltersList(), $filter_values,getSortingValues());
 
-	$filter_values = array('rapporteur2' => $rapporteur->login, 'statut' => 'vierge');
-	$liste12 =  filterSortReports(getCurrentFiltersList(), $filter_values,getSortingValues());
+	$filter_values = array('rapporteur2' => $rapporteur->login, 'avis2' => '');
+	$liste2 =  filterSortReports(getCurrentFiltersList(), $filter_values,getSortingValues());
 
-	return array_merge($liste1,$liste2);
+	$filter_values = array('rapporteur3' => $rapporteur->login, 'avis3' => '');
+	$liste3 =  filterSortReports(getCurrentFiltersList(), $filter_values,getSortingValues());
+
+	return array_merge($liste1,$liste2, $liste3);
 }
 
 function getRapporteurReports($login)
@@ -909,7 +902,6 @@ function getTodoReports($login)
 {
 	return filterSortReports(getCurrentFiltersList(), array("avancement" => "todo", rapporteur => $login, "id_session=" => current_session_id()) ,getSortingValues() );
 }
-
 
 function find_somebody_reports($candidate,$eval_type = "")
 {
@@ -923,39 +915,39 @@ function find_unit_reports($code)
 {
 	if($code == "")
 		return array();
-	
+
 	$sql = "SELECT * from ".reports_db. " WHERE id=id_origine AND statut!=\"supprime\"";
 	$sql .= ' AND unite="'.$code.'" ORDER BY id ASC';
 
 	$result=sql_request($sql);
-	
+
 	if($result == false)
 		throw new Exception("Echec de l'execution de la requete <br/>".$sql."<br/>");
-	
+
 	$rows = array();
-	while ($row = mysql_fetch_object($result))
+	while ($row = mysqli_fetch_object($result))
 		$rows[] = $row;
-	
+
 	return $rows;
-	}
+}
 
 function find_people_reports($nom, $prenom)
 {
 	if($nom == "" && $prenom == "")
 		return array();
-		
+
 	$sql = "SELECT * from ".reports_db. " WHERE id=id_origine AND statut!=\"supprime\"";
-	$sql .= ' AND nom="'.$nom.'" AND prenom="'.$prenom.'" ORDER BY id ASC';
+	$sql .= ' AND nom="'.$nom.'" AND prenom="'.$prenom.'" AND section="'.currentSection().'" ORDER BY id ASC';
 
 	$result=sql_request($sql);
-	
+
 	if($result == false)
 		throw new Exception("Echec de l'execution de la requete <br/>".$sql."<br/>");
-	
+
 	$rows = array();
-	while ($row = mysql_fetch_object($result))
+	while ($row = mysqli_fetch_object($result))
 		$rows[] = $row;
-	
+
 	return $rows;
 }
 
@@ -1012,17 +1004,20 @@ function listOfAllVirginReports()
 	return $result;
 }
 
+
+function is_in_conflict_efficient($row, $login)
+{
+	return (strpos($row->people_conflits,$login)!== false);
+}
+
 function is_field_editable($row, $fieldId)
 {
 	$eval_type = isset($row->type) ? $row->type : "";
 
 	global $typesRapportToFields;
-	$extra = true;
-	/*	if(isset($typesRapportToFields[$eval_type]))
-	 {
-	$extra = in_array($fieldId,$typesRapportToFields[$row->type]);
-	}
-	*/
+
+	global $fieldsPeople;
+
 	global $nonEditableFieldsTypes;
 	if(in_array($fieldId, $nonEditableFieldsTypes))
 		return false;
@@ -1031,58 +1026,51 @@ function is_field_editable($row, $fieldId)
 	if($fieldId == "statut")
 		return isSecretaire();
 
+
 	if(isset($row->statut) && ($row->statut == "publie"))
 		return false;
-	
+
 	if($fieldId == "type" || $fieldId == "conflits")
 		return isSecretaire();
 
-	if($fieldId == 'rapporteur' || $fieldId == 'rapporteur2')
+	if($fieldId == 'rapporteur' || $fieldId == 'rapporteur2' || $fieldId == 'rapporteur3')
 		return isBureauUser();
-	
 
 	if(isSecretaire())
-			return true;
-		
+		return true;
+
+	if(isBureauUser() && in_array($fieldId, $fieldsPeople) )
+		return true;
 
 	$login = getLogin();
 
-
 	$is_rapp1 = isset($row->rapporteur) && ($login == $row->rapporteur);
 	$is_rapp2 = isset($row->rapporteur2) && ($login == $row->rapporteur2);
+	$is_rapp3 = isset($row->rapporteur3) && ($login == $row->rapporteur3);
 
 	//echo $fieldId." ".$login." ".$row->rapporteur." ".$row->rapporteur2;
 
-	if($is_rapp1 && $fieldId == "rapport" && isset($row->statut) && ($row->statut != "prerapport"))
-	{
+	if($is_rapp1 && $fieldId == "rapport" && isset($row->statut) && ($row->statut != "doubleaveugle"))
 		return true;
-	}
-	
-	
+
 	if(isset($row->statut) && ($row->statut == "audition"))
 	{
 		if(isset($row->sousjury) && isBureauUser() )
-		{
-			return $extra;
-		}
-		
+			return true;
+
 		if($fieldId == "fichiers")
-			return $extra;
+			return true;
 
-
-		if( $is_rapp1  && ($fieldId == "prerapport" || $fieldId == "avissousjury" || $fieldId=="productionResume" || $fieldId == "parcours" || $fieldId=="projetrecherche"))
-			return $extra;
+		if( $is_rapp1  && ($fieldId == "prerapport" || $fieldId == "avissousjury" || $fieldId=="audition"))
+			return true;
 
 		if( $is_rapp2  && ($fieldId == "prerapport2"))
-			return $extra;
-
-		if(isset($row->type) && $row->type == "Candidature" && isset($row->avis) && is_numeric($row->avis) && $fieldId =="rapport" && ($is_rapp1 || $is_rapp2))
-		{
 			return true;
-		}
+
+		if(isset($row->type) && $row->type == "Candidature" && isset($row->avis) && is_numeric($row->avis) && $fieldId =="rapport" && ($is_rapp1 || $is_rapp2 || $is_rapp3))
+			return true;
 
 		return false;
-
 	}
 
 
@@ -1091,7 +1079,7 @@ function is_field_editable($row, $fieldId)
 
 	if($is_rapp1 && ($fieldId == "rapport"))
 		return true;
-	
+
 	if(!$is_rapp1 && !$is_rapp2 && !isSecretaire())
 		return false;
 
@@ -1101,7 +1089,8 @@ function is_field_editable($row, $fieldId)
 
 	//individual fields are always editable
 	if(isset($fieldsIndividualAll[$fieldId]))
-		return $extra && (isSecretaire() || $is_rapp1 || $is_rapp2);
+		return (isSecretaire() || $is_rapp1 || $is_rapp2 || $is_rapp3);
+
 
 	global $typesRapportsConcours;
 	global $typesRapportsChercheurs;
@@ -1111,49 +1100,51 @@ function is_field_editable($row, $fieldId)
 	$fieldsIndividual0 = $typesRapportToFields[$eval_type][1];
 	$fieldsIndividual1 = $typesRapportToFields[$eval_type][2];
 	$fieldsIndividual2 = $typesRapportToFields[$eval_type][3];
+	$fieldsIndividual3 = $typesRapportToFields[$eval_type][4];
 	$f0 = in_array($fieldId,$fieldsIndividual0);
 	$f1 = in_array($fieldId,$fieldsIndividual1);
 	$f2 = in_array($fieldId,$fieldsIndividual2);
+	$f3 = in_array($fieldId,$fieldsIndividual3);
 
 	if(isset($typesRapportsConcours[$eval_type]))
 	{
 		global $fieldsCandidat;
 		$f = in_array($fieldId,$fieldsCandidat);
-		return $extra && (isSecretaire() && ($f || $f0 || $f1 || $f2)) || ( $is_rapp1 && ($f1 || $f) )  || ($is_rapp2 && ($f2 || $f));
+		return (isSecretaire() && ($f || $f0 || $f1 || $f2 || f3)) || ( $is_rapp1 && ($f1 || $f) )  || ($is_rapp2 && ($f2 || $f)) || ($is_rapp3 && ($f3 || $f) );
 	}
 
 	if(isset($typesRapportsUnites[$eval_type]))
 	{
 		global $fieldsUnites;
-		return $extra && in_array($fieldId,$fieldsUnites) && (isSecretaire() || ($fieldId == "prerapport" && $is_rapp1) || ($fieldId == "prerapport2" && $is_rapp2));
+		return in_array($fieldId,$fieldsUnites) &&
+		(isSecretaire()
+				|| ($fieldId == "prerapport" && $is_rapp1)
+				|| ($fieldId == "prerapport2" && $is_rapp2)
+				|| ($fieldId == "prerapport2" && $is_rapp3)
+		);
 	}
 
 	if(isset($typesRapportsChercheurs[$eval_type]))
 	{
 		global $fieldsChercheursAll;
 		$f = in_array($fieldId,$fieldsChercheursAll);
-		return $extra && (isSecretaire() && ($f || $f0 || $f1 || $f2)) || ( $is_rapp1 && ($f1 || $f) )  || ($is_rapp2 && ($f2 || $f));
+		return
+		(isSecretaire() &&
+				($f || $f0 || $f1 || $f2 || $f3))
+				|| ( $is_rapp1 && ($f1 || $f) )
+		  || ($is_rapp2 && ($f2 || $f) )
+		  || ($is_rapp3 && ($f3 || $f) )
+		  ;
 	}
 
-
 	global $fieldsGeneric;
-	return $extra && in_array($fieldId,$fieldsGeneric);
-
-
+	return in_array($fieldId,$fieldsGeneric);
 }
 
 function is_field_visible($row, $fieldId)
 {
-	//echo $fieldId."<br/>";
-
 	global $typesRapportToFields;
 	global $alwaysVisibleFieldsTypes;
-	$extra = true;
-	/*
-	 if(isset($row->type) && isset($typesRapportToFields[$row->type]))
-	 {
-	$extra = in_array($fieldId,$typesRapportToFields[$row->type]);
-	}*/
 
 	global $nonVisibleFieldsTypes;
 	if(in_array($fieldId, $nonVisibleFieldsTypes))
@@ -1161,10 +1152,13 @@ function is_field_visible($row, $fieldId)
 
 	if(in_array($fieldId, $alwaysVisibleFieldsTypes))
 		return true;
-	
+
+	if($fieldId == "type" && !isSecretaire())
+		return false;
+
 	//editable info is always visible
 	if(is_field_editable($row, $fieldId))
-		return $extra;
+		return true;
 
 	//when non editable non existing fields are not visible
 	if(!isset($row->$fieldId))
@@ -1174,49 +1168,43 @@ function is_field_visible($row, $fieldId)
 	if($row->$fieldId == '')
 		return false;
 
-	
-	if(isset($row->statut) && $row->statut == "editable")
+
+	if(isset($row->statut) && $row->statut == "prerapport")
 		return true;
 
 	if($fieldId == "rapport" || $fieldId == "avis")
 		return true;
-	
+
 	//during prerapport edition we do not want rapporteurs to see each other reports
 	//only editable info is visible
 	$login = getLogin();
 	$is_rapp1 = isset($row->rapporteur) && ($login == $row->rapporteur);
 	$is_rapp2 = isset($row->rapporteur2) && ($login == $row->rapporteur2);
+	$is_rapp3 = isset($row->rapporteur3) && ($login == $row->rapporteur3);
 
-
-	if(isset($row->statut) && ($row->statut == "prerapport" || $row->statut == "vierge") && ($is_rapp1 || $is_rapp2))
+	if(isset($row->statut) && ($row->statut == "doubleaveugle") && ($is_rapp1 || $is_rapp2 || $is_rapp3))
 		return false;
 
-	return $extra;
+	return true;
 }
 
 function get_editable_fields($row)
 {
 	global $fieldsAll;
-
 	$result = array();
-
 	foreach($fieldsAll as $field => $data)
 		if(is_field_editable($row,$field))
 		$result[] = $field;
-
 	return $result;
 }
 
 function get_readable_fields($row)
 {
 	global $fieldsAll;
-
 	$result = array();
-
 	foreach($fieldsAll as $field => $data)
 		if(is_field_visible($row,$field))
 		$result[] = $field;
-
 	return $result;
 }
 
