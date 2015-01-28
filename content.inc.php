@@ -80,7 +80,7 @@ function alertText($text)
 			resetFilterValuesExceptSession();
 
 		if(isset($_REQUEST["reset_tri"]))
-			resetOrder();
+			resetOrder($_REQUEST["reset_tri"]);
 
 		function scrollToId($id)
 		{
@@ -93,7 +93,7 @@ function alertText($text)
 
 			if(isSuperUser())
 				return ;
-			
+			//reset_tri
 			displaySummary(getCurrentFiltersList(), getFilterValues(), getSortingValues());
 
 			if($centralid != 0 && $centralid != -1)

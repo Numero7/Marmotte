@@ -373,7 +373,9 @@ function createUser($login,$pwd,$desc,$email, $sections, $permissions, $envoipar
 	if (isSecretaire())
 	{
 		if(existsUser($login))
+		{
 			throw new Exception("Failed to create user: le login '".$login."' est déja utilisé.");
+		}
 		if($desc == "")
 			throw new Exception("Failed to create user: empty description.");
 

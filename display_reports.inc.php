@@ -2,56 +2,6 @@
 require_once('utils.inc.php');
 require_once('manage_filters_and_sort.inc.php');
 
-function displayTri($rows, $sortFields, $sorting_values)
-{
-	global $fieldsAll;
-
-	$tritypes = getTriTypes($sorting_values);
-
-	?>
-<table>
-	<tr>
-		<td style="width: 10em;"><h2>Tri</h2>
-		</td>
-		<td>
-			<table class="inputreport">
-				<tr>
-
-					<?php
-					$count = 0;
-					foreach($sortFields as $criterion)
-					{
-						if(isset($sorting_values[$criterion]))
-						{
-							$count++;
-							?>
-					<td><?php echo $fieldsAll[$criterion];?></td>
-					<td><select name="tri_<?php echo $criterion;?>" style="width: 4em;">
-							<?php
-							foreach ($tritypes as $value => $nomitem)
-							{
-								$sel = "";
-								if ($value == $sorting_values[$criterion])
-									$sel = " selected=\"selected\"";
-								echo "<option value=\"".$value."\" $sel>".$nomitem."</option>\n";
-							}
-							?>
-					</select></td>
-					<?php 
-					if($count %6 == 0)
-						echo '</tr><tr>';
-						}
-					}
-					?>
-				</tr>
-			</table>
-		</td>
-	</tr>
-</table>
-<?php
-
-}
-
 
 function displayFiltrage($rows, $fields, $filters, $filter_values)
 {
@@ -117,7 +67,7 @@ function displayFiltrage($rows, $fields, $filters, $filter_values)
 }
 
 
-function displayRows($rows, $fields, $filters, $filter_values, $sort_fields, $sorting_values)
+function displayRows($rows, $fields, $filters, $filter_values)
 {
 	global $fieldsAll;
 	global $actions;
@@ -263,7 +213,7 @@ if(isBureauUser() && !isSecretaire() && is_current_session_concours())
 			$style = getStyle("",true);
 			?>
 		<th class="<?php echo $style;?>"><span class="nomColonne"> <?php 
-		echo '<a href="?action=view&amp;reset_tri=&amp;tri_'.$fieldID."=1\">".$title.'</a>';
+		echo '<a href="?action=view&amp;reset_tri='.$fieldID."\">".$title.'</a>';
 		?>
 		</span>
 		</th>

@@ -153,7 +153,7 @@ function getAllReportsOfType($type,$id_session=-1)
 	return filterSortReports(getCurrentFiltersList(), $filter_values);
 }
 
-function filterSortReports($filters, $filter_values = array(), $sorting_values = array(), $rapporteur_or = true)
+function filterSortReports($filters, $filter_values = array(), $sorting_value = "", $rapporteur_or = true)
 {
 	$section = $_SESSION['filter_section'];
 	$sql = "SELECT *, ".reports_db.".id AS report_id, ".people_db.".id AS people_id, ".people_db.".nom AS people_nom, ".people_db.".prenom AS people_prenom, ".people_db.".conflits AS people_conflits, ".reports_db.".nom AS nom, ".reports_db.".prenom AS prenom FROM ".reports_db;
@@ -168,7 +168,7 @@ function filterSortReports($filters, $filter_values = array(), $sorting_values =
 
 
 	$sql .= filtersCriteriaToSQL($filters,$filter_values, $rapporteur_or);
-	$sql .= sortCriteriaToSQL($sorting_values);
+	$sql .= sortCriteriaToSQL($sorting_value);
 	$sql .= ";";
 
 	//echo $sql;
@@ -196,25 +196,22 @@ function sortCriteriaToSQL($sorting_values)
 	global $fieldsRapportAll;
 
 	$sql = "";
-
+	
 	foreach($sorting_values as $crit => $value)
 	{
-		if ($sql == "")
-			$sql = "ORDER BY ";
-		else
-			$sql .= ", ";
+		$sql .= ($sql == "") ? "ORDER BY " : ", ";
 
 		if(isset($fieldsRapportAll[$crit]))
 			$pref = reports_db.".";
 		else if(isset($fieldsIndividualAll[$crit]))
 			$pref = people_db.".";
 		else
+		{
 			throw new Exception("Sort criterion ".$crit." is neither in the list of rapport fields nor in the list of individual fields");
+		}
 
 		$sql .= $pref.$crit." ".( ( substr($sorting_values[$crit],strlen($sorting_values[$crit]) -1) == "+" ) ? "ASC" : "DESC");
 	}
-	if ($sql =="")
-		$sql = "ORDER BY ".reports_db.".nom ";
 
 	return $sql;
 }
@@ -443,20 +440,14 @@ function deleteReport($id_rapport, $all_versions = false)
 
 	if(!$all_versions)
 	{
-		$sql = "UPDATE ".reports_db." SET statut=\"supprime\"WHERE id=".intval($id_rapport)." ;";
-		sql_request($sql);
-		$sql = "UPDATE ".reports_db." SET date=NOW() WHERE id=".intval($id_rapport)." ;";
+		$sql = "DELETE FROM ".reports_db." WHERE id=".intval($id_rapport)." ;";
 		sql_request($sql);
 	}
 	else
 	{
-		$sql = "UPDATE ".reports_db." SET statut=\"supprime\"WHERE id_origine=".intval($id_rapport)." ;";
-		sql_request($sql);
-		$sql = "UPDATE ".reports_db." SET date=NOW() WHERE id_origine=".intval($id_rapport)." ;";
+		$sql = "DELETE FROM ".reports_db." WHERE id_origine=".intval($id_rapport)." ;";
 		sql_request($sql);
 	}
-
-
 
 	return ($before !=false) ? $before->id : -1;
 };
