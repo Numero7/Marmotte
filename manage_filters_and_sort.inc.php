@@ -21,54 +21,19 @@ function getFilterValue($filter_name)
 }
 
 
-function setSortingValue($filter_name, $value)
+function resetOrder($field = "")
 {
-
-	$_REQUEST["tri_".$filter_name] = $value;
-	$_SESSION["tri_".$filter_name] = $value;
-}
-
-function getSortingValue($filter_name)
-{
-	global $filtersAll;
-	$filters = $filtersAll;
-	$answer = "";
-	if(isset($_REQUEST["tri_".$filter_name]))
-		$answer = real_escape_string($_REQUEST["tri_".$filter_name]);
-	else if(isset($_SESSION["tri_".$filter_name]))
-		$answer =   real_escape_string($_SESSION["tri_".$filter_name]);
-
-	$last = substr($answer,strlen($answer) -1,1);
-	if( $last != "+" && $last != "-")
+	if($field == "")
+		unset($_SESSION["tri"]);
+	else
 	{
-		if(isset($_SESSION["tri_".$filter_name]))
-		{
-			$current = $_SESSION["tri_".$filter_name];
-			if(strlen($current) > 0 && substr($current,strlen($current)-1,1) == "+")
-				$answer .= "-";
-			else if(strlen($current) > 0 && substr($current,strlen($current)-1,1) == "-")
-				$answer .= "+";
-			else
-				$answer .= "+";
-		}
-		else
-		{
-			$answer .= "+";
-		}
+	$crit = isset($_SESSION["tri"]) ? $_SESSION["tri"]["crit"] : "";
+	if($crit == $field)
+		$ord = ($_SESSION["tri"]["ord"] =="+") ? "-" : "+";
+	else 
+		$ord = "+";
+	$_SESSION["tri"] = array("crit" => $field, "ord" => $ord);
 	}
-
-	$_SESSION["tri_".$filter_name] = $answer;
-
-
-	return $answer;
-}
-
-function resetOrder()
-{
-	$filters = getCurrentSortingList();
-	foreach($filters as $filter)
-		if(!isset($_REQUEST["tri_".$filter]))
-		$_REQUEST["tri_".$filter] = strval(count($filters) + 10)."+";
 }
 
 function resetFilterValues()
@@ -112,16 +77,6 @@ function getCurrentFiltersList()
 	return $filters;
 }
 
-function getCurrentSortingList()
-{
-	global $fieldsSummary;
-	global $fieldsTriConcours;
-	if(is_current_session_concours())
-		return $fieldsTriConcours;
-	else
-		return $fieldsSummary;
-}
-
 function getFilterValues()
 {
 	$filters = getCurrentFiltersList();
@@ -133,39 +88,17 @@ function getFilterValues()
 
 function getSortingValues()
 {
-	$filters = getCurrentSortingList();
-	$filter_values = array();
-	foreach($filters as $filter)
-		$filter_values[$filter] =  getSortingValue($filter);
+	$sortc = array();
+	if(isset($_SESSION["tri"]))
+		$sortc[ $_SESSION["tri"]["crit"]] =  $_SESSION["tri"]["ord"];
 
-	$sorted = array();
-	$max = 0;
-	foreach($filter_values as $field => $value)
-	{
-		$index = intval(substr($value,0,strlen($value) -1));
-		$max = max( $max, $index);
-		while(key_exists($index, $sorted))
-			$index++;
-		$sorted[$index] = $field;
-	}
-
-	ksort($sorted);
-
-	$result = array();
-	$index = 1;
-	foreach($sorted as $key => $field)
-	{
-		$value = $filter_values[$field];
-		if($key < $max)
-			$result[$field] = $index.substr($value,strlen($value) -1,1);
-		else
-			$result[$field] = $max."+";
-		setSortingValue($field, $result[$field]);
-		$index++;
-	}
-	return $result;
+	if(!isset($sortc["nom"]))
+		$sortc["nom"] = "+";
+	if(!isset($sortc["labo1"]))
+		$sortc["labo1"] = "+";
+	
+	return $sortc;
 }
-
 
 
 function showCriteria($sortCrit, $crit)
@@ -190,49 +123,6 @@ function showCriteria($sortCrit, $crit)
 	}
 }
 
-function dumpEditedCriteria($sortCrit, $edit_crit)
-{
-	$result = "";
-	$order = "";
-	if (isset($sortCrit[$edit_crit]))
-	{
-		$order = $sortCrit[$edit_crit];
-	}
-	if ($order=="ASC")
-	{
-		$sortCrit[$edit_crit] = "DESC";
-	}
-	else if ($order=="")
-	{
-		$sortCrit[$edit_crit] = "ASC";
-	}
-	else if ($order=="DESC")
-	{
-		//We want at least one sort criterion
-		//also removes bug
-		//if(count($sortCrit) > 1)
-		unset($sortCrit[$edit_crit]);
-		//else
-		//$sortCrit[$edit_crit] = "ASC";
-	}
-	foreach($sortCrit as $crit => $order)
-	{
-		if ($order=="ASC")
-		{
-			$order = "*";
-		}
-		else if ($order=="DESC")
-		{
-			$order = "-";
-		}
-		if ($result != "")
-		{
-			$result .= ";";
-		}
-		$result .=  $order.$crit;
-	}
-	return urlencode($result);
-}
 
 
 ?>

@@ -646,7 +646,7 @@ function displaySummary($filters, $filter_values, $sorting_values)
 	{
 		$filters["avis"]["liste"] = $avis_classement;
 		$filters["avis1"]["liste"] = $avis_classement;
-		//		$filters["avis2"]["liste"] = $avis_classement;
+		//	reset_tri	$filters["avis2"]["liste"] = $avis_classement;
 	}
 
 	if(isSecretaire())
@@ -661,7 +661,7 @@ function displaySummary($filters, $filter_values, $sorting_values)
 		$fields = $new_field;
 	}
 
-	displayRows($rows,$fields, $filters, $filter_values, getCurrentSortingList(), $sorting_values);
+	displayRows($rows,$fields, $filters, $filter_values);
 }
 
 
