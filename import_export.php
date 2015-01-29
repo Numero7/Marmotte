@@ -49,8 +49,12 @@ function displaySecretaryImport()
 		</td></tr>
 		<tr><td>Choix du type de rapport</td><td>
 		<select name="subtype">
+		<?php  if (!is_current_session_concours())
+		{
+		?>
 		<option value ="">Autodétection</option>
 <?php   
+		}
 $types = array();
 if(is_current_session_concours())
 {
