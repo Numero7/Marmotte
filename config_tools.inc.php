@@ -5,7 +5,7 @@ $configs = array(
 		"section_intitule"=> array("intitulé long de la section","Sciences de l\'information : fondements de l\'informatique, calculs, algorithmes, représentations, exploitations"),
 		"president_titre" => array("titre du président, utilisé pour signer les rapports", "Président de la Section 6"),
 		"president" => array("nom du président, utilisé pour signer les rapports", "Alan Türing"),
-		"webmaster" => array("expéditeur des emails", "alan.turing@cnrs.fr"),
+		"webmaster" => array("adresse email de l'expéditeur des emails", "alan.turing@cnrs.fr"),
 		"webmaster_nom" => array("signataire des emails et pdfs", "Alan Türing"),
 		"welcome_message" => array("message d'accueil", "Bienvenue sur le site de la section 6")
 );
