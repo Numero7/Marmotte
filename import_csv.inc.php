@@ -63,7 +63,9 @@ function import_csv($type,$filename, $subtype = "", $create = false, $sep="?", $
 			$max --;
 		}
 		if($max <=2)
+		{
 			throw new Exception("Trop de lignes blanches au début du csv");
+		}
 		
 		if($is_utf8)
 			foreach($rawfields as $field)

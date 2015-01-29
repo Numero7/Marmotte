@@ -143,6 +143,10 @@ function alertText($text)
 
 			switch($action)
 			{
+				case 'delete_units':
+					delete_all_units();
+					include "unites.php";
+					break;
 				case 'set_rapporteur':
 					$property = $_REQUEST["property"];
 					$id_origine = $_REQUEST["id_origine"];

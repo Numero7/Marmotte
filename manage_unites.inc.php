@@ -128,6 +128,14 @@ function deleteUnit($code)
 	sql_request($sql);
 }
 
+function delete_all_units()
+{
+	unset($_SESSION['all_units']);
+	$sql = "DELETE FROM ".units_db." WHERE section=\"".currentSection()."\";";
+	sql_request($sql);
+}
+
+
 
 /*
  * Unit can be code or nickname

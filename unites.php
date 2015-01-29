@@ -28,6 +28,16 @@ if(isSecretaire())
 			value="Ajouter unités" />
 	</p>
 </form>
+<hr/>
+<form enctype="multipart/form-data" action="index.php" method="post"
+	onsubmit="return confirm('Etes vous sur de vouloir supprimer toutes les unites?');">
+	<p>
+ <input
+			type="hidden" name="action" value="delete_units" />
+			<input type="submit"
+			value="Supprimer toutes les unités" />
+	</p>
+</form>
 	<hr/>
 	<h2>Ajout ou mise-à-jour d'une unité</h2>
 	<p>Si une unité avec le même code existe déjà, ses données seront mises à jour sans que l'unité ne soit dupliquée.</p>
