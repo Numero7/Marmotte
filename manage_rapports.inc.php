@@ -153,7 +153,7 @@ function getAllReportsOfType($type,$id_session=-1)
 	return filterSortReports(getCurrentFiltersList(), $filter_values);
 }
 
-function filterSortReports($filters, $filter_values = array(), $sorting_value = "", $rapporteur_or = true)
+function filterSortReports($filters, $filter_values = array(), $sorting_value = array(), $rapporteur_or = true)
 {
 	$section = $_SESSION['filter_section'];
 	$sql = "SELECT *, ".reports_db.".id AS report_id, ".people_db.".id AS people_id, ".people_db.".nom AS people_nom, ".people_db.".prenom AS people_prenom, ".people_db.".conflits AS people_conflits, ".reports_db.".nom AS nom, ".reports_db.".prenom AS prenom FROM ".reports_db;
@@ -887,9 +887,9 @@ function getTodoReports($login)
 function find_somebody_reports($candidate,$eval_type = "")
 {
 	if($eval_type == "")
-		return  filterSortReports(array("nom"=>"","prenom" => ""), array("nom"=>$candidate->nom,"prenom" => $candidate->prenom));
+		return  filterSortReports(array("nom"=>"","prenom" => ""), array("nom"=>$candidate->nom,"prenom" => $candidate->prenom), array("id_session"=>"+", "type"=>"+"));
 	else
-		return  filterSortReports(array("nom"=>"","prenom" => "","type"=>""), array("nom"=>$candidate->nom,"prenom" => $candidate->prenom,"type"=>""));
+		return  filterSortReports(array("nom"=>"","prenom" => "","type"=>""), array("nom"=>$candidate->nom,"prenom" => $candidate->prenom,"type"=>""), array("id_session"=>"+", "type"=>"+"));
 }
 
 function find_unit_reports($code)
