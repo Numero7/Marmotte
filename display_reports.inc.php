@@ -271,9 +271,10 @@ if(isBureauUser() && !isSecretaire() && is_current_session_concours())
 				else
 					echo (isset($rapporteurs[$row->$fieldID]) ? $rapporteurs[$row->$fieldID] : $row->$fieldID);
 			}
-			else if($sec &&  $type=="avis")
+			else if($type=="avis")
 			{
 		//		displayAvisMenu($fieldID,$row);
+		if($bur || !isset($row->statut) || $row->statut != "doubleaveugle")
 				echo isset($tous_avis[$row->$fieldID]) ? $tous_avis[$row->$fieldID] : $row->$fieldID;
 			}
 			else if($fieldID == "concours")
