@@ -150,13 +150,13 @@ function deleteSession($id, $supprimerdossiers)
 {
 	if (isSecretaire())
 	{
-		$sql = "DELETE FROM ".sessions_db." WHERE id='$id';";
+		$sql = "DELETE FROM ".sessions_db." WHERE id='$id' AND section='".$_SESSION['filter_section']."';";
 		sql_request($sql);
 		unset($_SESSION['all_sessions']);
 		
 		if($supprimerdossiers)
 		{
-			$sql = "DELETE FROM ".reports_db." WHERE id_session='$id';";
+			$sql = "DELETE FROM ".reports_db." WHERE id_session='$id' AND section='".$_SESSION['filter_section']."';";
 			sql_request($sql);
 		}
 	}
