@@ -106,9 +106,13 @@ function showSessions()
 	$finalResult = array();
 	date_default_timezone_set('Europe/Paris');
 	$sql = "SELECT * FROM ".sessions_db." WHERE `section`='". real_escape_string($_SESSION['filter_section'])."' ORDER BY date DESC;";
+	echo $sql."<br/>";
 	if($result= sql_request($sql))
 		while ($row = mysqli_fetch_object($result))
+{
 			$finalResult[$row->id] = array( "id" => $row->id, "nom" => $row->nom, "date" => $row->date, "prettyprint" => $row->nom.' '.date("Y",strtotime($row->date)));
+echo $row->id."<br/>";
+}
 	return	$finalResult;
 } ;
 

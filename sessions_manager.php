@@ -1,5 +1,11 @@
 <?php 
 require_once('config_tools.inc.php');
+
+					$curid = current_session_id();
+					$sessions =  showSessions();						
+echo "Current session:'" . $curid."'<br/>";
+echo "#".count($sessions)."<br/>";
+
 require_once('manage_sessions.inc.php');
 ?>
 
@@ -11,8 +17,6 @@ require_once('manage_sessions.inc.php');
 <B>Session courante</B>
 						<select	name="sessionname">
 					<?php
-					$curid = current_session_id();
-					$sessions =  showSessions();						
 					foreach($sessions as $session)
 					{
 						$id = $session["id"];
