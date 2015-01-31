@@ -373,55 +373,66 @@ function createUser($login,$pwd,$desc,$email, $sections, $permissions, $envoipar
 	if (isSecretaire())
 	{
 		if(existsUser($login))
-		{
 			throw new Exception("Failed to create user: le login '".$login."' est déja utilisé.");
-		}
+
 		if($desc == "")
 			throw new Exception("Failed to create user: empty description.");
 
-		if(!isSuperUser())
-			$sections = currentSection();
+		$section = currentSection();
 
-		unset($_SESSION['all_users']);
-
-		$passHash = crypt($pwd);
-		$sql = "INSERT INTO ".users_db." (login,sections,permissions,passHash,description,email,tel) VALUES ('";
-		$sql .= real_escape_string($login)."','";
-		$sql .= real_escape_string($sections)."','";
-		$sql .= real_escape_string($permissions)."','";
-		$sql .= real_escape_string($passHash)."','";
-		$sql .= real_escape_string($desc)."','";
-		$sql .= real_escape_string($email)."','');";
-
-		$result = sql_request($sql);
-
-		createhtpasswd();
-
-		if($envoiparemail)
+		$sql = "SELECT * FROM ".users_db." WHERE login='".$login."';";
+		$result= sql_request($sql);
+		if($result !=  false && !isSuperUser())
 		{
-			$body = "Marmotte est un site web destiné à faciliter la répartition, le dépôt, l'édition et la production\r\n";
-			$body .= "des rapports par les sections du comité national.\r\n";
-			$body .= "\r\nLe site est accessible à l'adresse \r\n\t\t\t".adresse_du_site."\r\n";
-			$body .= "\r\nUn compte Marmotte vient d'être créé pour vous:\r\n\r\n";
-			$body .= "\t\t\t login: '".$login."'\r\n";
-			$body .= "\t\t\t motdepasse: '".$pwd."'\r\n";
-			$body .= "\r\nLors de votre première connexion vous pourrez changer votre mot de passe.\r\n";
-			$body .= "\r\n\r\n\t Amicalement, ".get_config("webmaster_nom").".";
-
-			$cc = "";
-			$currLogin = getLogin();
-			$users = listUsers();
-			foreach($users as $user)
-			{
-				if($user->login == $currLogin && $currLogin != $login)
-				{
-					$cc = $user->email;
-					break;
-				}
-			}
-			email_handler($email,"Votre compte Marmotte",$body,$cc);
+			$user = mysqli_fetch_object($result);
+			$sql = "UPDATE ".users_db." SET sections='".($user->sections.";".$section)."' WHERE login='".$login."';";
+			sql_request($sql);
+			unset($_SESSION['all_users']);
 		}
+		else
+		{
+			if(!isSuperUser())
+				$sections = currentSection();
 
+			unset($_SESSION['all_users']);
+			$passHash = crypt($pwd);
+			$sql = "INSERT INTO ".users_db." (login,sections,permissions,passHash,description,email,tel) VALUES ('";
+			$sql .= real_escape_string($login)."','";
+			$sql .= real_escape_string($sections)."','";
+			$sql .= real_escape_string($permissions)."','";
+			$sql .= real_escape_string($passHash)."','";
+			$sql .= real_escape_string($desc)."','";
+			$sql .= real_escape_string($email)."','');";
+
+			$result = sql_request($sql);
+
+			createhtpasswd();
+
+			if($envoiparemail)
+			{
+				$body = "Marmotte est un site web destiné à faciliter la répartition, le dépôt, l'édition et la production\r\n";
+				$body .= "des rapports par les sections du comité national.\r\n";
+				$body .= "\r\nLe site est accessible à l'adresse \r\n\t\t\t".adresse_du_site."\r\n";
+				$body .= "\r\nUn compte Marmotte vient d'être créé pour vous:\r\n\r\n";
+				$body .= "\t\t\t login: '".$login."'\r\n";
+				$body .= "\t\t\t motdepasse: '".$pwd."'\r\n";
+				$body .= "\r\nLors de votre première connexion vous pourrez changer votre mot de passe.\r\n";
+				$body .= "\r\n\r\n\t Amicalement, ".get_config("webmaster_nom").".";
+
+				$cc = "";
+				$currLogin = getLogin();
+				$users = listUsers();
+				foreach($users as $user)
+				{
+					if($user->login == $currLogin && $currLogin != $login)
+					{
+						$cc = $user->email;
+						break;
+					}
+				}
+				email_handler($email,"Votre compte Marmotte",$body,$cc);
+			}
+		}
 		return "Utilisateur ".$login." créé avec succès.";
 	}
 }
@@ -436,7 +447,6 @@ function deleteUser($login)
 		unset($_SESSION['all_users']);
 		$sql = "DELETE FROM ".users_db." WHERE login='".real_escape_string($login)."';";
 		sql_request($sql);
-		createhtpasswd();
 	}
 	else if(isSecretaire())
 	{
@@ -449,8 +459,9 @@ function deleteUser($login)
 			$newsections .= $section.";";
 		$sql = "UPDATE `".users_db."` SET `sections`=\"$newsections\" WHERE `login`=\"".real_escape_string($login)."\";";
 		sql_request($sql);
-		createhtpasswd();
 	}
+	createhtpasswd();
+
 }
 
 
