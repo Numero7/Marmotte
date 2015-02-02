@@ -150,7 +150,7 @@ if(isBureauUser() && is_current_session_concours())
 			echo "<th>".$niveau."</th>";
 	?>
 	</tr>
-	<tr>
+	<tr valign="top">
 	<?php 
 	foreach($stats as $niveau => $data)
 	{

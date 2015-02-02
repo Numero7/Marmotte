@@ -93,7 +93,6 @@ function get_bureau_stats()
 				$pref = substr($concours[$row->concours]->intitule,0,2);
 			else
 				$pref = $row->concours;
-// /			rr();
 			foreach($fields as $field)
 			{
 				$iid = $row->nom.$row->prenom;
