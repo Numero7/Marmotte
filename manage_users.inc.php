@@ -77,40 +77,53 @@ function get_bureau_stats()
 	if(is_current_session_concours())
 	{
 		$sousjurys = getSousJuryMap();
-		$sousjurysStats = array();
 
+		$concours = getConcours();
+		
 		/* pour chaque niveau, pour chaque rapporteur, nombre de candidats par rapporteurs */
-		$sql = "SELECT * FROM reports WHERE section=\"".currentSection()."\" AND id_session=\"".current_session()."\" AND type=\"Candidature\" AND id=id_origine AND statut!=\"supprime\"";
-		$stats = array();
+		$sql = "SELECT * FROM reports WHERE section=\"".currentSection()."\" AND id_session=\"".current_session();
+		$sql .="\" AND type=\"Candidature\" AND id=id_origine AND statut!=\"supprime\"";
+		$stats = array("Candidats CR"=>array(), "Candidats DR"=>array());
 		$fields = array("rapporteur","rapporteur2","rapporteur3");
 
 		$result= sql_request($sql);
 		while($row = mysqli_fetch_object($result))
 		{
-			$pref = substr($row->concours,0,2);
+			if(isset($concours[$row->concours]))
+				$pref = substr($concours[$row->concours]->intitule,0,2);
+			else
+				$pref = $row->concours;
+// /			rr();
 			foreach($fields as $field)
 			{
 				$iid = $row->nom.$row->prenom;
 				if($row->$field != "" && !isset($stats[$pref][$row->$field][$field][$iid]))
 				{
-					$stats[$pref][$row->$field][$field][$iid] = "ok";
-					if(!isset($stats[$pref][$row->$field][$field]["counter"]))
-						$stats[$pref][$row->$field][$field]["counter"] = 0;
-					$stats[$pref][$row->$field][$field]["counter"]++;
+					$key = "Candidats ".$pref;
+					if(!isset($stats[$key]["Total"][$field]["counter"]))
+						$stats[$key]["Total"][$field]["counter"] = 0;
+					$stats[$key]["Total"][$field]["counter"]++;
+					$stats[$key][$row->$field][$field][$iid] = "ok";
+					if(!isset($stats[$key][$row->$field][$field]["counter"]))
+						$stats[$key][$row->$field][$field]["counter"] = 0;
+					$stats[$key][$row->$field][$field]["counter"]++;
 					//echo "add 1 to ".$iid." ".$pref." ".$row->$field." ".$field." tot ".$stats[$pref][$row->$field][$field]["counter"]."<br/>";
 				}
-				if($field == "rapporteur" && isset($sousjurys[$row->$field][$row->concours]))
-				{
-					$sj = $sousjurys[$row->$field][$row->concours];
-					if(!isset($sousjurysStats[$sj]))
-						$sousjurysStats[$sj] = 0;
-					$sousjurysStats[$sj]++;
-				}
 			}
-
+			if( isset($sousjurys[$row->rapporteur][$row->concours]) )
+			{
+				$sj = $sousjurys[$row->rapporteur][$row->concours];
+				$key = "Sousjury ".$sj;
+				if(!isset($stats[$key]["Total"]["rapporteur"]["counter"]))
+						$stats[$key]["Total"]["rapporteur"]["counter"] = 0;
+				$stats[$key]["Total"]["rapporteur"]["counter"]++;
+				if( !isset( $stats[$key][$row->rapporteur]["rapporteur"]["counter"] ) )
+					$stats[$key][$row->rapporteur]["rapporteur"]["counter"] = 0;
+				$stats[$key][$row->rapporteur]["rapporteur"]["counter"]++;
+			}
 		}
 	}
-	return array("rapporteurs" => $stats, "sousjurys" => $sousjurysStats);
+	return $stats;
 }
 
 /* Caching users list for performance */
