@@ -223,6 +223,10 @@ function alertText($text)
 					affectersousjurys();
 					include 'admin.inc.php';
 					break;
+				case 'affectersousjurys2':
+					affectersousjurys();
+					displayReports();
+					break;
 				case 'edit':
 					editReport($id_rapport);
 					break;
