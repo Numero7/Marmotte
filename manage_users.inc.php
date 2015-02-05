@@ -101,11 +101,14 @@ function get_bureau_stats()
 					$key = "Candidats ".$pref;
 					if(!isset($stats[$key]["Total"][$field]["counter"]))
 						$stats[$key]["Total"][$field]["counter"] = 0;
+					if(!isset($stats[$key][$row->$field][$field][$iid]))
+					{
 					$stats[$key]["Total"][$field]["counter"]++;
 					$stats[$key][$row->$field][$field][$iid] = "ok";
 					if(!isset($stats[$key][$row->$field][$field]["counter"]))
 						$stats[$key][$row->$field][$field]["counter"] = 0;
 					$stats[$key][$row->$field][$field]["counter"]++;
+					}
 					//echo "add 1 to ".$iid." ".$pref." ".$row->$field." ".$field." tot ".$stats[$pref][$row->$field][$field]["counter"]."<br/>";
 				}
 			}
