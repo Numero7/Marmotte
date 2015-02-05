@@ -48,8 +48,24 @@ require_once("authbar.inc.php");
 
 			if(isset($_REQUEST['zip_file']))
 			{
+				$c = 0;
+			foreach($reports as $report)
+			{
+
+				if(!$report->hasAttributes())
+					continue;
+				$is_done = $report->hasAttribute('done');
+				if($is_done) $c++;
+			}
+				if($c == 0)
+				{
+					echo '<p>Aucun rapport généré </p>';
+				}
+				else
+				{
 				$filename = $_REQUEST['zip_file'];
-				echo '<p>Le fichier zip contenant tous les pdf:<br/> <a href="'.$filename.'">'.$filename.'</a>.</p>'."\n";
+					echo '<p>Le fichier zip contenant tous les pdf:<br/> <a href="'.$filename.'">'.$filename.'</a>.</p>'."\n";
+				}
 			}
 
 			echo "<table>";
