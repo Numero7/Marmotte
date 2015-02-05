@@ -9,6 +9,7 @@ ini_set('xdebug.dump_globals', 'on');
 ini_set('xdebug.dump.SERVER', 'REQUEST_URI');
 ini_set('xdebug.show_local_vars', 'on');
 
+ini_set("session.gc_maxlifetime", 3600);
 session_start();
 
 require_once("db.inc.php");
@@ -57,7 +58,6 @@ try
 				{
 					require_once("config_tools.inc.php");
 					$_SESSION['filter_id_session'] = get_config("current_session");
-					ini_set("session.gc_maxlifetime", 3600);
 				}
 			}
 		}

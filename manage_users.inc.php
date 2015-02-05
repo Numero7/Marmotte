@@ -41,7 +41,7 @@ function createhtpasswd()
 			throw new Exception("Failed to open htaccess file for writing");
 
 	}
-	echo "Regenerated access files.<br/>";
+//	echo "Regenerated access files.<br/>";
 }
 
 function belongsToSection($login, $section)
