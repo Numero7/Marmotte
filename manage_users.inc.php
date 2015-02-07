@@ -397,12 +397,10 @@ function createUser($login,$pwd,$desc,$email, $sections, $permissions, $envoipar
 
 		$sql = "SELECT * FROM ".users_db." WHERE login='".$login."';";
 		$result= sql_request($sql);
-		if($result !=  false && !isSuperUser())
+		if($user = mysqli_fetch_object($result) && !isSuperUser())
 		{
-			$user = mysqli_fetch_object($result);
-			$sql = "UPDATE ".users_db." SET sections='".($user->sections.";".$section)."' WHERE login='".$login."';";
-			sql_request($sql);
-			unset($_SESSION['all_users']);
+				$sql = "UPDATE ".users_db." SET sections='".($user->sections.";".$section)."' WHERE login='".$login."';";
+				sql_request($sql);
 		}
 		else
 		{
@@ -448,6 +446,7 @@ function createUser($login,$pwd,$desc,$email, $sections, $permissions, $envoipar
 				email_handler($email,"Votre compte Marmotte",$body,$cc);
 			}
 		}
+		unset($_SESSION['all_users']);
 		return "Utilisateur ".$login." créé avec succès.";
 	}
 }
