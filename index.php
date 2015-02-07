@@ -117,10 +117,9 @@ try
 			
 			$id = current_session_id();
 			
-			if($id == "")
+			if($id == "" && !isSuperUser())
 			{
 				echo "<p>Aucune session courante n'est configurée, veuillez créer une session via le menu Admin/Sessions<br/>";
-				
 			}
 			else
 			{

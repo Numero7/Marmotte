@@ -76,10 +76,10 @@ if($admin_users)
 							<h3 id="infosrapporteur">Statut des membres</h3>
 							<p>Droits des différents statuts:</p>
 								<ul>
-	<li><b>Rapporteur</b>: peut voir tous les rapports et éditer les rapports et candidats ceux dont on est rapporteur.</li>
+	<li><b>Rapporteur</b>: peut voir tous les rapports et éditer les rapports et candidats dont il/elle est rapporteur.</li>
 <li><b>Bureau</b>: peut changer les rapporteurs et éditer les infos candidats.</li>
 <li><b>Secrétaire et président</b>: tous les droits sur tout dans la section.</li>
-<li><b>Admin</b>: tous les droits sur tout dans toutes les sections.</b>
+<li><b>Admin</b>: tous les droits sur la configuration des membres et des unités de toutes les sections, ne peut voir aucun rapport.</b>
 </ul>	
 							
 	<table>
