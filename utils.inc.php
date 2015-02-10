@@ -64,6 +64,10 @@ function remove_br($str)
 {
 	return str_replace("<br />","",$str);
 }
+function insert_br($str)
+{
+	return str_replace("\n","<br />",$str);
+}
 
 
 function array_remove_by_value($array, $value)

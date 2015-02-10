@@ -65,7 +65,7 @@ function display_long($row, $fieldID, $readonly)
 function display_treslong($row, $fieldID, $readonly)
 {
 	if($readonly)
-		echo '<td colspan="3">'.$row->$fieldID.'</td>';
+		echo '<td colspan="3">'.insert_br($row->$fieldID).'</td>';
 	else
 		echo '
 		<td colspan="3">
