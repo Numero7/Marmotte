@@ -66,7 +66,7 @@ function import_csv($type,$filename, $subtype = "", $create = false, $sep="?", $
 		{
 			throw new Exception("Trop de lignes blanches au début du csv");
 		}
-		
+//		rr();
 		if($is_utf8)
 			foreach($rawfields as $field)
 		 $is_utf8 = $is_utf8 && mb_check_encoding($field,"UTF-8");
@@ -355,11 +355,9 @@ function addCsvReport($subtype, $properties)
 		$properties["code"] = $properties["unite"];
 
 	if(isset($properties["SIGLE"]))
-	{
 		$properties["genre"] =  (strpos($properties["SIGLE"],"Mr") !== false) ? "homme" : ( (strpos($properties["SIGLE"],"Mme") !== false) ? "femme" : "");
-//		rr();
-	}
-	
+
+		
 	if(isset($properties["grade"]) && !isset($properties["grade_rapport"]))
 		$properties["grade_rapport"] = $properties["grade"];
 	

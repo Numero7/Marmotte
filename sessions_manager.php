@@ -3,8 +3,6 @@ require_once('config_tools.inc.php');
 
 					$curid = current_session_id();
 					$sessions =  showSessions();						
-echo "Current session:'" . $curid."'<br/>";
-echo "#".count($sessions)."<br/>";
 
 require_once('manage_sessions.inc.php');
 ?>

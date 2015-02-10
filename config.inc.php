@@ -778,6 +778,7 @@ Une phrase de conclusion sur le candidat incluant un commentaire sur l'audition
 	
 	$copies = array(
 			"Nom" => "nom",
+			"Nom d\'usage" => "nom",
 			"NOMUSUEL" => "nom",
 			"Prénom" => "prenom",
 			"PRENOM" => "prenom",
