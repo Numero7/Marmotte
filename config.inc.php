@@ -128,10 +128,10 @@ ini_set('xdebug.show_local_vars', 'on');
 			"avis2" => "Avis rapp. 2",
 			"avis3" => "Avis rapp. 3",
 			"avissousjury" => "Avis sur l'audition",
-			"DU" => "Au titre de DU",
+/*			"DU" => "Au titre de DU",
 			"international" => "Au titre Mobilité internationale",
 			"finalisationHDR" => "Au titre  finalisation HDR",
-			"national" => "Au titre d'une mobilité nationale",
+			"national" => "Au titre d'une mobilité nationale",*/
 			"rapport" => "Rapport Section",
 		"prerapport" => "Prérapport 1",
 		"prerapport2" => "Prérapport 2",
@@ -343,16 +343,21 @@ ini_set('xdebug.show_local_vars', 'on');
 	$fieldsDelegation = array(
 			"statut",
 			"rapporteur",
+			"rapporteur2",
+			"rapporteur3",
 			"nom",
 			"prenom",
-			"DU",
+/*			"DU",
 			"international",
 			"finalisationHDR",
 			"national",
+			*/
 			"unite",
 			"rapports",
 			"avis1",
 			"prerapport",
+			"prerapport2",
+			"prerapport3",
 			"labo1",
 			"labo2",
 			"labo3",
@@ -660,10 +665,12 @@ Une phrase de conclusion sur le candidat incluant un commentaire sur l'audition
 	$enumFields = array(
 			"genre" => array(""=>"", "homme" => "Homme","femme" => "Femme"),
 			"theseloc" => $theseslocs,
+			/*
 			"DU" => array(""=>"","oui" => "Oui","non"=>"Non"),
 			"international" => array(""=>"","oui" => "Oui","non"=>"Non"),
 			"finalisationHDR" => array(""=>"","oui" => "Oui","non"=>"Non"),
 			"national" => array(""=>"","oui" => "Oui","non"=>"Non"),
+			*/
 			"statut" => array('doubleaveugle','prerapport','rapport','publie','supprime','audition')
 			);
 	
@@ -675,10 +682,11 @@ Une phrase de conclusion sur le candidat incluant un commentaire sur l'audition
 		"nom" => "short",
 		"prenom" => "short",
 		"genre" => "enum",
-			"DU" => "enum",
+		/*	"DU" => "enum",
 			"international" => "enum",
 			"finalisationHDR" => "enum",
 			"national" => "enum",
+			*/
 			"statut_individu"=> "enum",
 		"grade" => "grade",
 		"grade_rapport" => "grade",
@@ -736,32 +744,7 @@ Une phrase de conclusion sur le candidat incluant un commentaire sur l'audition
 	
 	$fieldsPeople = array_merge($fieldsCandidat, $fieldsChercheursAll);
 	
-	$fieldsArrayDelegation =
-	array(
-			array(
-					"nom",
-					"prenom",
-					"genre",
-					"grade",
-					"labo1",
-					"labo2",
-					"labo3",
-					"theme1",
-					"theme2",
-					"theme3",
-			),
-	array("rapporteur",	"avis",	"rapport"),
-			array(
-	"DU",
-	"international",
-	"finalisationHDR",
-	"national",
-	"unite",
-	"avis1",
-//	"prerapport"
-					),
-			array()
-);
+	$fieldsArrayDelegation = $fieldsArrayChercheur;
 	
 	
 	
