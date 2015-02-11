@@ -192,6 +192,7 @@ ini_set('xdebug.show_local_vars', 'on');
 	$fieldsChercheursAll = array(
 			"nom",
 			"prenom",
+			"conflits",
 			"genre",
 			"grade",
 			"annee_recrutement",

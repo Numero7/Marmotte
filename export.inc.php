@@ -439,10 +439,11 @@ function generate_jad_report($code)
 	appendLeaf("signataire_titre", get_config("president_titre"), $doc, $root);
 
 	global $dossier_stockage;
-	if(isSecretaire())
+	global $rootdir;
+	if(isSecretaire() && file_exists($dossier_stockage.signature_file))
 		appendLeaf("signature_source", $dossier_stockage.signature_file, $doc, $root);
 	else
-		appendLeaf("signature_source", $dossier_stockage.signature_blanche, $doc, $root);
+		appendLeaf("signature_source", $rootdir.signature_blanche, $doc, $root);
 
 	return $doc;
 }
