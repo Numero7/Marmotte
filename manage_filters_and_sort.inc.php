@@ -58,10 +58,13 @@ function getCurrentFiltersList()
 {
 	global $filtersConcours;
 	global $filtersReports;
+	global $filtersDelegation;
 	global $fieldsTypes;
 	
 	if(is_current_session_concours())
 		$filters = $filtersConcours;
+	else if(is_current_session_delegation())
+		$filters = $filtersDelegation;
 	else
 		$filters = $filtersReports;
 	
