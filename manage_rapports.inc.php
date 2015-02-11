@@ -485,6 +485,7 @@ function addReportFromRequest($id_origine, $request)
 	global $typesRapportsConcours;
 	global $typesRapportsChercheurs;
 
+	
 	if($id_origine != 0)
 	{
 		try

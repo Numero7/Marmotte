@@ -155,8 +155,7 @@ ini_set('xdebug.show_local_vars', 'on');
 	 * Les champs disponibles au secrétaire pour un rapport individuel
 	 */
 	$fieldsIndividual0 = array(
-			"type",
-			"statut",
+			array("type", "statut"),
 			array(
 			"rapporteur",
 			"rapporteur2",
@@ -164,10 +163,7 @@ ini_set('xdebug.show_local_vars', 'on');
 			),
 //			"nom",
 //			"prenom",
-	array(
-		"grade_rapport",
-			"statut",),
-			"unite",
+		array("grade_rapport","unite"),
 			"avis",
 			"rapport",
 	);
