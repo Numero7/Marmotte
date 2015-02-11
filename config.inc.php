@@ -199,7 +199,20 @@ ini_set('xdebug.show_local_vars', 'on');
 			"fichiers",
 			"rapports"
 	);
-		
+
+	$fieldsChercheursDelegationsAll = array(
+			"nom",
+			"prenom",
+			"conflits",
+			"genre",
+			"grade",
+			"theme1",
+			"theme2",
+			"theme3",
+			"fichiers",
+			"rapports"
+	);
+	
 	foreach($add_rubriques_people as $code => $rubrique)
 		$fieldsChercheursAll[] = "Info".$code;
 	
@@ -741,7 +754,8 @@ Une phrase de conclusion sur le candidat incluant un commentaire sur l'audition
 	
 	$fieldsPeople = array_merge($fieldsCandidat, $fieldsChercheursAll);
 	
-	$fieldsArrayDelegation = $fieldsArrayChercheur;
+	$fieldsArrayDelegation = array($fieldsChercheursDelegationsAll, $fieldsIndividual0,$fieldsIndividual1,$fieldsIndividual2,$fieldsIndividual3);
+	
 	
 	
 	

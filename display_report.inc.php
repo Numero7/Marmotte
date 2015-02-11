@@ -52,6 +52,7 @@ function displayEditableChercheur($chercheur,$report = NULL, $canedit = true)
 {
 
 	global $fieldsChercheursAll;
+	global $fieldsChercheursDelegationsAll;
 	$hidden = array("action" => "update");
 
 
@@ -102,7 +103,10 @@ function displayEditableChercheur($chercheur,$report = NULL, $canedit = true)
 
 	displayEditionFrameStart("",$hidden,array());
 
-	displayEditableObject("", $chercheur, $fieldsChercheursAll, $canedit, $session);
+	if(is_current_session_delegation())
+		displayEditableObject("", $chercheur, $fieldsChercheursDelegationsAll, $canedit, $session);
+	else
+		displayEditableObject("", $chercheur, $fieldsChercheursAll, $canedit, $session);
 
 	displayEditionFrameEnd("Données chercheur");
 
