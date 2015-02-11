@@ -465,11 +465,16 @@ foreach($configs as $key => $data)
 </table>	
 </form>
 <hr/>
-<h3>Signature président</h3>
+<h2>Signature président</h2>
 <p>
 Le formulaire ci-dessous permet d'uploader la signature du président
 sous forme d'un fichier image au format jpeg.
 </p>
+<p>
+La signature du président est automatiquement incorporée dans un pdf si le statut du rapport
+est "rapport publié" et si le rapport n'est pas un rapport de concours (contraintes légales).
+</p>
+
 <form enctype="multipart/form-data" action="index.php" method="post">
 	<input type="hidden" name="type" value="signature" /> <input
 		type="hidden" name="action" value="upload" /> <input type="hidden"
