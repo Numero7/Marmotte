@@ -57,8 +57,9 @@ function process_upload($create = false, $directory = null)
 					case "signature":
 						{
 							global $dossier_stockage;
-							create_dir_if_needed($dossier_stockage."img");
-							if(move_uploaded_file($tmpname,$dir.signature_file))
+							$dir = $dossier_stockage."img";
+							create_dir_if_needed($dir);
+							if(move_uploaded_file($tmpname,$dossier_stockage.signature_file))
 								echo "<p>New signature saved<br/>";
 							else
 								throw new Exception("Failed to store siganture as file ".signature_file);

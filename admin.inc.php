@@ -465,6 +465,19 @@ foreach($configs as $key => $data)
 </table>	
 </form>
 <hr/>
+<h3>Signature président</h3>
+<p>
+Le formulaire ci-dessous permet d'uploader la signature du président
+sous forme d'un fichier image au format jpeg.
+</p>
+<form enctype="multipart/form-data" action="index.php" method="post">
+	<input type="hidden" name="type" value="signature" /> <input
+		type="hidden" name="action" value="upload" /> <input type="hidden"
+		name="MAX_FILE_SIZE" value="100000" /> Fichier de signature: <input
+		name="uploadedfile" type="file" /> <input type="submit"
+		value="Uploader signature" />
+</form>
+<hr/>
 <?php 
 }
 if($admin_keywords)
