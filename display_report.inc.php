@@ -265,11 +265,12 @@ function voir_rapport_pdf($row)
 			echo "</a>\n";
 		}
 	}
-	else if(! $eval_type  == "Equivalence")
+	else if($eval_type  != "Equivalence")
 	{
 		echo "<a href=\"export.php?action=viewpdf&amp;id=".$row->id_origine."&amp;id_origine=".$row->id_origine."\">\n";
 		echo "Voir le rapport final\n";
 		echo "</a>\n";
+		
 	}
 
 	echo "<br/>";

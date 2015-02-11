@@ -370,10 +370,17 @@ function createXMLReportElem($row, DOMDocument $doc, $keep_br = true)
 		appendLeaf("signataire", get_config("president"), $doc, $rapportElem);
 		global $typesRapportsConcours;
 		global $dossier_stockage;
+		global $rootdir;
 		if(!isset($typesRapportsConcours[$row->type]) && isset($row->statut) && $row->statut=="publie" && file_exists($dossier_stockage.signature_file))
+		{
 			appendLeaf("signature", $dossier_stockage.signature_file, $doc, $rapportElem);
+			appendLeaf("signature_source", $dossier_stockage.signature_file, $doc, $rapportElem);
+		}
 		else
-			appendLeaf("signature", $dossier_stockage.signature_blanche, $doc, $rapportElem);
+		{
+			appendLeaf("signature", $rootdir.signature_blanche, $doc, $rapportElem);
+			appendLeaf("signature_source", $rootdir.signature_blanche, $doc, $rapportElem);
+		}
 	}
 
 	if($row->type == "Classement")
@@ -444,12 +451,6 @@ function createXMLReportElem($row, DOMDocument $doc, $keep_br = true)
 
 	//On ajoute le nom et le tire du signataire
 	appendLeaf("signataire_titre", get_config("president_titre"), $doc, $rapportElem);
-
-	global $dossier_stockage;
-	if(isSecretaire())
-		appendLeaf("signature_source", $dossier_stockage.signature_file, $doc, $rapportElem);
-	else
-		appendLeaf("signature_source", $dossier_stockage.signature_blanche, $doc, $rapportElem);
 
 	$row->session = $sessions[$row->id_session];
 

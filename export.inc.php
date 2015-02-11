@@ -441,9 +441,13 @@ function generate_jad_report($code)
 	global $dossier_stockage;
 	global $rootdir;
 	if(isSecretaire() && file_exists($dossier_stockage.signature_file))
+	{
 		appendLeaf("signature_source", $dossier_stockage.signature_file, $doc, $root);
+	}
 	else
+	{
 		appendLeaf("signature_source", $rootdir.signature_blanche, $doc, $root);
+	}
 
 	return $doc;
 }
