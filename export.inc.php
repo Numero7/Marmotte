@@ -377,6 +377,8 @@ function generate_jad_report($code,$preambule="")
 	$filters["type"] = "Candidature";
 	$filters["section"] = currentSection();
 	$filters["id_session"] = current_session_id();
+	$filters["avis"] = "admisaconcourir";
+	
 	$candidats = filterSortReports(getCurrentFiltersList(), $filters, array("nom" => "1+"));
 
 	$filters["avis"] = "oral";
