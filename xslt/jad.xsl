@@ -80,9 +80,8 @@ Le jury a examiné les candidatures de :
 <table>
 <xsl:for-each select="candidats/candidat">
 <tr><td>
-<B>
 	<xsl:value-of disable-output-escaping="yes" select="./nom"/>
-	</B></td>
+</td>
 	
 	<td>
 	<xsl:value-of disable-output-escaping="yes" select="./prenom"/>
