@@ -314,12 +314,16 @@ function export_current_selection($export_format)
 	}
 }
 
-function generate_jad_reports()
+function generate_jad_reports($preambules = array())
 {
 	global $concours_ouverts;
 	$docs = array();
-	foreach($concours_ouverts as $concours => $code)
-			$docs[$code] = generate_jad_report($concours);
+	foreach($concours_ouverts as $concours => $niveau)
+	{
+		$preambule = isset($preambules[$concours]) ? $preambules[$concours] : "";
+		if($preambule != "")
+			$docs[$concours] = generate_jad_report($concours, $preambule);
+	}
 
 	$login = getLogin();
 	$dir = dossier_temp();
@@ -361,7 +365,7 @@ function display_jad_reports()
 	}
 }
 
-function generate_jad_report($code)
+function generate_jad_report($code,$preambule="")
 {
 	$doc = new DOMDocument("1.0","UTF-8");
 	$root = $doc->createElement("jad");
@@ -389,6 +393,7 @@ function generate_jad_report($code)
 	$annee_concours = substr($session,strlen($session) -4,4);
 	appendLeaf("annee_concours", $annee_concours, $doc, $root);
 
+	
 	if(strlen($code) >= 4)
 		$num_concours = substr($code,0,2) ."/".substr($code,2,2);
 	else
@@ -398,13 +403,13 @@ function generate_jad_report($code)
 	global $postes_ouverts;
 	appendLeaf("postes_ouverts", $postes_ouverts[$code], $doc, $root);
 
-	$avis = get_config("avis_jad");
-	if(isset($avis[$code]))
-		appendLeaf("avis_jad", $avis[$code], $doc, $root);
-	else
-		appendLeaf("avis_jad", "", $doc, $root);
-	appendLeaf("date_jad", get_config("date_jad"), $doc, $root);
-	
+	appendLeaf("avis_jad", $preambule, $doc, $root);
+		
+	date_default_timezone_set('Europe/Paris');
+	setlocale (LC_TIME, 'fr_FR.utf8','fra');
+	//date("j/F/Y")
+	appendLeaf("date_jad", utf8_encode(strftime("%#d %B %Y")), $doc, $root);
+		
 	appendLeaf("examines", "<b>".strval(count($candidats))."</b>", $doc, $root);
 	$leaf = $doc->createElement("candidats");
 	$root->appendChild($leaf);

@@ -434,6 +434,29 @@ if($admin_concours)
 				</form>
 				</br>
 		<hr/>
+				<h3>Rapports JAD</h3>
+				<form method="post" action="export.php">
+				<input type="submit" value="Générer les rapports de JAD"/>
+		<input type="hidden" name="action" value="export"/>
+		<input type="hidden" name="type" value="jad">
+		<table>
+		<tr><th>Concours</th><th>Preambule JAD</th></tr>
+		<?php 
+		foreach($concours as $conc)
+		{
+			?>
+			<tr><td> <?php  echo "<b>".$conc->code."</b>"; ?>
+			</td>
+			<td>
+			<textarea  rows="25" cols="60" name= <?php echo "\"preambule".$conc->code."\""; ?>>Renseigner ici le preambule du rapport de JAD pour le concours <?php echo $conc->code; ?>. Laisser vide si un rapport de JAD n'est pas nécessaire.
+			 </textarea>
+			</td>
+			<?php 
+		}
+		?>
+		</table>
+				</form>
+		
 				<?php 
 	}
 }

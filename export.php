@@ -105,7 +105,17 @@ if (authenticate())
 								export_current_selection($type);
 								break;
 							case "jad":
-								generate_jad_reports();
+								$preambules = array();
+								foreach($_REQUEST as $key => $value)
+								{
+									$res = strpos($key,"preambule");
+									if( $res !== false )
+									{
+										$code = substr($key,strlen("premabule"));
+										$preambules[$code] = $value; 
+									}
+								}
+								generate_jad_reports($preambules);
 								break;
 							case "jadhtml":
 								display_jad_reports();

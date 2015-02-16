@@ -1247,7 +1247,7 @@ Une phrase de conclusion sur le candidat incluant un commentaire sur l'audition
 					"name" => "Relevé Conclusions",
 					"permissionlevel" => NIVEAU_PERMISSION_BUREAU
 			),
-				
+				/*
 			"jad" => 	array(
 					"mime" => "application/x-text",
 					"xsl" => "",
@@ -1259,7 +1259,7 @@ Une phrase de conclusion sur le candidat incluant un commentaire sur l'audition
 					"xsl" => "",
 					"name" => "JAD (html)",
 					"permissionlevel" => NIVEAU_PERMISSION_SECRETAIRE
-			)
+			)*/
 			);
 
 	$report_types_with_multiple_exports = array(
