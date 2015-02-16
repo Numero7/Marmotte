@@ -53,7 +53,7 @@ function set_config($key,$value)
 	if(!$result)
 		throw new exception("Failed to add default_value to config key '".$key." for section '".$section."':<br/>".mysqli_error($dbh));
 
-	$_SESSION["config"][mysqli_real_escape_string($dbh,$key)] = mysqli_real_escape_string($dbh,$value);
+	$_SESSION["config"][mysqli_real_escape_string($dbh,$key)] = $value;
 }
 
 function save_config_from_request()

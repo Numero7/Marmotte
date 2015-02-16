@@ -448,8 +448,14 @@ if($admin_concours)
 			<tr><td> <?php  echo "<b>".$conc->code."</b>"; ?>
 			</td>
 			<td>
-			<textarea  rows="25" cols="60" name= <?php echo "\"preambule".$conc->code."\""; ?>>Renseigner ici le preambule du rapport de JAD pour le concours <?php echo $conc->code; ?>. Laisser vide si un rapport de JAD n'est pas nécessaire.
-			 </textarea>
+			<?php 
+			$key = "preambule_jad_".$conc->code;
+			$text = remove_br(get_config($key));
+			if($text == "")
+				$text = "Renseigner ici le preambule du rapport de JAD pour le concours ".$conc->code.". Laisser vide si un rapport de JAD n'est pas nécessaire.";
+//			rr();
+			echo '<textarea  rows="25" cols="60" name="'.$key.'">'.$text ."</textarea>";
+			?>
 			</td>
 			<?php 
 		}

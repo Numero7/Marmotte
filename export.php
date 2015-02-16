@@ -108,12 +108,14 @@ if (authenticate())
 								$preambules = array();
 								foreach($_REQUEST as $key => $value)
 								{
-									$res = strpos($key,"preambule");
+									$res = strpos($key,"preambule_jad_");
 									if( $res !== false )
 									{
-										$code = substr($key,strlen("premabule"));
-										$preambules[$code] = $value; 
-									}
+										$code = substr($key,strlen("preambule_jad_"));
+										$text = nl2br(trim($value));
+										$preambules[$code] = $text; 
+										set_config($key, $text);
+									}									
 								}
 								generate_jad_reports($preambules);
 								break;
