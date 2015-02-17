@@ -294,7 +294,7 @@ function filtersCriteriaToSQL($filters, $filter_values, $rapporteur_or = true)
 				else if($filter_values[$filter] == "oral")
 					$sql .= " AND (".reports_db.".$filter=\"oral\" OR ".reports_db.".$filter=\"nonclasse\" OR ".reports_db.".$filter REGEXP \"^[0-9]\" )";
 				else if($filter_values[$filter] == "admisaconcourir")
-					$sql .= " AND ".reports_db.".$filter!=\"nonconcur\" ";
+					$sql .= " AND ".reports_db.".$filter!=\"nonconcur\" AND ".reports_db.".$filter!=\"desistement\" ";
 				else
 					$sql .= " AND ".reports_db.".$filter=\"$filter_values[$filter]\" ";
 			}
