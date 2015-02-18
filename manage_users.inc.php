@@ -88,6 +88,9 @@ function get_bureau_stats()
 		$sql = "SELECT * FROM reports WHERE section=\"".currentSection()."\" AND id_session=\"".current_session();
 		$sql .="\" AND type=\"Candidature\" AND id=id_origine AND statut!=\"supprime\"";
 		$result= sql_request($sql);
+		
+		$iid_seen = array();
+		
 		while( $row = mysqli_fetch_object($result))
 		{
 			if(isset($concours[$row->concours]))
@@ -95,11 +98,11 @@ function get_bureau_stats()
 			else
 				$pref = $row->concours;
 			$iid = $row->nom.$row->prenom;
-			$already_seen = false;
+			
+			
 			foreach($fields as $field)
 			{
-				$already_seen = isset($stats[$pref][$row->$field][$field][$iid]);
-				if($row->$field != "" && !$already_seen)
+				if($row->$field != "" && !isset($stats[$pref][$row->$field][$field][$iid]))
 				{
 					$key = "Candidats ".$pref;
 					if(!isset($stats[$key]["Total"][$field]["counter"]))
@@ -115,6 +118,10 @@ function get_bureau_stats()
 					//echo "add 1 to ".$iid." ".$pref." ".$row->$field." ".$field." tot ".$stats[$pref][$row->$field][$field]["counter"]."<br/>";
 				}
 			}
+			
+			$already_seen = isset($iid_seen[$iid]);
+			$iid_seen[$iid] = true;
+			
 			if(!$already_seen && isset($sousjurys[$row->rapporteur][$row->concours]) && ($row->avis == "oral" ||  $row->avis == "nonclasse" || is_numeric($row->avis)))
 			{
 				$sj = $sousjurys[$row->rapporteur][$row->concours];
