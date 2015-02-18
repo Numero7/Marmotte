@@ -81,13 +81,14 @@ function get_bureau_stats()
 		$concours = getConcours();
 		
 		/* pour chaque niveau, pour chaque rapporteur, nombre de candidats par rapporteurs */
-		$sql = "SELECT * FROM reports WHERE section=\"".currentSection()."\" AND id_session=\"".current_session();
-		$sql .="\" AND type=\"Candidature\" AND id=id_origine AND statut!=\"supprime\"";
+		
 		$stats = array("Candidats CR"=>array(), "Candidats DR"=>array());
 		$fields = array("rapporteur","rapporteur2","rapporteur3");
 
+		$sql = "SELECT * FROM reports WHERE section=\"".currentSection()."\" AND id_session=\"".current_session();
+		$sql .="\" AND type=\"Candidature\" AND id=id_origine AND statut!=\"supprime\"";
 		$result= sql_request($sql);
-		while($row = mysqli_fetch_object($result))
+		while( $row = mysqli_fetch_object($result))
 		{
 			if(isset($concours[$row->concours]))
 				$pref = substr($concours[$row->concours]->intitule,0,2);
@@ -112,7 +113,7 @@ function get_bureau_stats()
 					//echo "add 1 to ".$iid." ".$pref." ".$row->$field." ".$field." tot ".$stats[$pref][$row->$field][$field]["counter"]."<br/>";
 				}
 			}
-			if( isset($sousjurys[$row->rapporteur][$row->concours]) )
+			if( isset($sousjurys[$row->rapporteur][$row->concours]) && ($row->avis == "oral" ||  $row->avis == "nonclasse" || is_numeric($row->avis)))
 			{
 				$sj = $sousjurys[$row->rapporteur][$row->concours];
 				$key = "Sousjury ".$sj;
