@@ -94,10 +94,12 @@ function get_bureau_stats()
 				$pref = substr($concours[$row->concours]->intitule,0,2);
 			else
 				$pref = $row->concours;
+			$iid = $row->nom.$row->prenom;
+			$already_seen = false;
 			foreach($fields as $field)
 			{
-				$iid = $row->nom.$row->prenom;
-				if($row->$field != "" && !isset($stats[$pref][$row->$field][$field][$iid]))
+				$already_seen = isset($stats[$pref][$row->$field][$field][$iid]);
+				if($row->$field != "" && !$already_seen)
 				{
 					$key = "Candidats ".$pref;
 					if(!isset($stats[$key]["Total"][$field]["counter"]))
@@ -113,7 +115,7 @@ function get_bureau_stats()
 					//echo "add 1 to ".$iid." ".$pref." ".$row->$field." ".$field." tot ".$stats[$pref][$row->$field][$field]["counter"]."<br/>";
 				}
 			}
-			if( isset($sousjurys[$row->rapporteur][$row->concours]) && ($row->avis == "oral" ||  $row->avis == "nonclasse" || is_numeric($row->avis)))
+			if(!$already_seen && isset($sousjurys[$row->rapporteur][$row->concours]) && ($row->avis == "oral" ||  $row->avis == "nonclasse" || is_numeric($row->avis)))
 			{
 				$sj = $sousjurys[$row->rapporteur][$row->concours];
 				$key = "Sousjury ".$sj;
