@@ -41,10 +41,17 @@ function displayEditableCandidate($candidate,$report = NULL,$canedit = true)
 		if(isset($report->id_session))
 			$session = $report->id_session;
 	}
-	$submit = array("conflit" => "Se déclarer en conflit");
+	$submit = array();
+	//"conflit" => "Se déclarer en conflit");
 
 	displayEditionFrameStart("",$hidden,$submit);
-	displayEditableObject("", $candidate, $fields,$canedit,$session);
+	displayEditableObject("",
+			 $candidate,
+			 $fields,
+			$canedit,
+			$session,
+			 array("conflits"=>'<input type="submit" name="conflit" value="Se déclarer en conflit" />')
+			);
 	displayEditionFrameEnd("Données candidat");
 }
 
@@ -129,7 +136,7 @@ function displayEditionFrameEnd($titlle)
 {
 }
 
-function displayEditableField($row, $fieldId, $canedit, $session)
+function displayEditableField($row, $fieldId, $canedit, $session, $extra_object = "")
 {
 	global $fieldsAll;
 	global $fieldsTypes;
@@ -210,7 +217,7 @@ function displayEditableField($row, $fieldId, $canedit, $session)
 	}
 }
 
-function displayEditableObject($titlle, $row, $fields, $canedit, $session)
+function displayEditableObject($titlle, $row, $fields, $canedit, $session, $extra_objects = array())
 {
 	if($titlle != "")
 		echo '<table><tr><td><h2><span  style="font-weight:bold;" >'.$titlle.'</span></h2></td></tr>';
@@ -243,6 +250,12 @@ function displayEditableObject($titlle, $row, $fields, $canedit, $session)
 			echo '<td style="100%"><table><tr class="'.$style.'">'."\n";
 			displayEditableField($row, $fieldId,$canedit,$session);
 			echo "\n".'</tr></table></td>'."\n";
+		}
+		if(isset($extra_objects[$fieldId]))
+		{
+			echo '<tr class="'.$style.'">';
+			echo '<td>'.$extra_objects[$fieldId].'</td>';
+			echo '</tr>';
 		}
 		echo '</tr></table></td></tr>';
 	}
@@ -292,8 +305,6 @@ function displayEditableReport($row, $canedit = true)
 	global $typesRapportsChercheurs;
 	global $typesRapportsConcours;
 	global $typesRapportsUnites;
-
-
 
 	//phpinfo();
 	if(!isset($row->id_origine))
@@ -392,8 +403,6 @@ function displayEditableReport($row, $canedit = true)
 						&& !(isset($row->statut) && ( $row->statut="rapport" || $row->statut="publie") ) );
 
 		echo $titre;
-
-
 		if(true)
 		{
 			displayEditableCandidate($candidate,$row,$canedit);
@@ -472,7 +481,6 @@ function displayEditableReport($row, $canedit = true)
 
 		if(!$conflit)
 		{
-
 			displayEditionFrameStart("",$hidden,array());
 
 			echo'<table><tr>';

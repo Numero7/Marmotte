@@ -744,7 +744,7 @@ Une phrase de conclusion sur le candidat incluant un commentaire sur l'audition
 	
 	$nonEditableFieldsTypes = array('id','auteur','date');
 	$nonVisibleFieldsTypes = array('id','auteur');
-	$alwaysVisibleFieldsTypes = array('fichiers','rapports');
+	$alwaysVisibleFieldsTypes = array('fichiers','rapports','conflits');
 	
 	$fieldsArrayCandidat = array($fieldsCandidat, $fieldsRapportsCandidat0, $fieldsRapportsCandidat1, $fieldsRapportsCandidat2, $fieldsRapportsCandidat3);
 	$fieldsArrayIE = array($fieldsCandidatAvantAudition, $fieldsRapportsIE0, $fieldsRapportsCandidat1, $fieldsRapportsCandidat2, $fieldsRapportsCandidat3);
