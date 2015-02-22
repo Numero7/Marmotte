@@ -353,10 +353,11 @@ function displayEditableReport($row, $canedit = true)
 		$submits["viewnext"] = ">>";
 
 	$eval_type = $row->type;
-
+    echo "<div id=\"toolbar\">";
 	displayEditionFrameStart("",$hidden,$submits);
 
 	voir_rapport_pdf($row);
+    echo "</div>";
 
 	$is_unite = array_key_exists($eval_type,$typesRapportsUnites);
 	$statut = $row->statut;

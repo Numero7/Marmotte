@@ -349,3 +349,11 @@ dd{
   padding-left:15px;
   font-weight: normal;
 }
+
+#toolbar{
+  height:30px;
+  width:100%;
+  background-color:#FFFFFF;
+  padding:5px;
+  border: 3px solid #63C3DC;
+}
