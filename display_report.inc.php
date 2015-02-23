@@ -433,19 +433,19 @@ function displayEditableReport($row, $canedit = true)
 				echo'<table><tr>';
 				if($has_rapp)
 				{
-					echo '<td VALIGN="top" style="width: ".(100 / $nb_rapporteurs)."%">';
+					echo '<td VALIGN="top" style="width: '.(100 / $nb_rapporteurs).'%">';
 					displayEditableObject("Prérapport 1".(isset($rapporteurs[$row->rapporteur]) ? (" - ".$rapporteurs[$row->rapporteur]) : (" - ".$row->rapporteur) ),$row,$fieldsRapportsCandidat1,$canedit, $session);
 					echo'</td>';
 				}
 				if($has_rapp2)
 				{
-					echo '<td VALIGN="top" style="width: ".(100 / $nb_rapporteurs)."%">';
+					echo '<td VALIGN="top" style="width: '.(100 / $nb_rapporteurs).'%">';
 					displayEditableObject("Prérapport 2".(isset($rapporteurs[$row->rapporteur2]) ? (" - ".$rapporteurs[$row->rapporteur2]) : (" - ".$row->rapporteur2) ),$row,$fieldsRapportsCandidat2,$canedit, $session);
 					echo'</td>';
 				}
 				if($has_rapp3)
 				{
-					echo '<td VALIGN="top" style="width: ".(100 / $nb_rapporteurs)."%">';
+					echo '<td VALIGN="top" style="width: '.(100 / $nb_rapporteurs).'%">';
 					displayEditableObject("Prérapport 3".(isset($rapporteurs[$row->rapporteur3]) ? (" - ".$rapporteurs[$row->rapporteur3]) : (" - ".$row->rapporteur3) ),$row,$fieldsRapportsCandidat3,$canedit, $session);
 					echo'</td>';
 				}
@@ -487,19 +487,19 @@ function displayEditableReport($row, $canedit = true)
 			echo'<table><tr>';
 			if($has_rapp)
 			{
-				echo '<td VALIGN="top" style="width: ".(100 / $nb_rapporteurs)."%">';
+				echo '<td VALIGN="top" style="width: '.(100 / $nb_rapporteurs).'%">';
 				displayEditableObject("Prérapport 1".(isset($rapporteurs[$row->rapporteur]) ? (" - ".$rapporteurs[$row->rapporteur]) : (" - ".$row->rapporteur) ),$row,$fieldsIndividual1,$canedit, $session);
 				echo'</td>';
 			}
 			if($has_rapp2)
 			{
-				echo '<td VALIGN="top" style="width: ".(100 / $nb_rapporteurs)."%">';
+				echo '<td VALIGN="top" style="width: '.(100 / $nb_rapporteurs).'%">';
 				displayEditableObject("Prérapport 2".(isset($rapporteurs[$row->rapporteur2]) ? (" - ".$rapporteurs[$row->rapporteur2]) : (" - ".$row->rapporteur2) ),$row,$fieldsIndividual2,$canedit, $session);
 				echo'</td>';
 			}
 			if($has_rapp3)
 			{
-				echo '<td VALIGN="top" style="width: ".(100 / $nb_rapporteurs)."%">';
+				echo '<td VALIGN="top" style="width: '.(100 / $nb_rapporteurs).'%">';
 				displayEditableObject("Prérapport 3".(isset($rapporteurs[$row->rapporteur3]) ? (" - ".$rapporteurs[$row->rapporteur3]) : (" - ".$row->rapporteur3) ),$row,$fieldsIndividual3,$canedit, $session);
 				echo'</td>';
 			}
