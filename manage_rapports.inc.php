@@ -709,6 +709,7 @@ function previous_report($id)
 	{
 		$c = $_SESSION['current_id'];
 		$cc =  count($_SESSION['rows_id']);
+		if($c <= 0) $c += $cc;
 		$n = ($c - 1) % $cc;
 		return $_SESSION['rows_id'][$n];
 	}
