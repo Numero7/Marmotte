@@ -730,7 +730,8 @@ function refresh_row_ids()
 
 function next_report($id)
 {
-	$orig = getIDOrigine($id);
+//	$orig = getIDOrigine($id);
+	$orig = $id;//
 	if(isset($_SESSION['rows_id']))
 	{
 		$rows_id = $_SESSION['rows_id'];
