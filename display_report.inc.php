@@ -251,13 +251,12 @@ function displayEditableObject($titlle, $row, $fields, $canedit, $session, $extr
 			displayEditableField($row, $fieldId,$canedit,$session);
 			echo "\n".'</tr></table></td>'."\n";
 		}
-/*		if(isset($extra_objects[$fieldId]))
+		if(isset($extra_objects) && is_array($extra_objects) &&  isset($extra_objects[$fieldId]))
 		{
 			echo '<tr class="'.$style.'">';
 			echo '<td>'.$extra_objects[$fieldId].'</td>';
 			echo '</tr>';
 		}
-		*/
 		echo '</tr></table></td></tr>';
 	}
 	echo "</table>\n";
