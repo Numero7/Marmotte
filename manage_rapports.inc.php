@@ -411,33 +411,6 @@ function deleteReport($id_rapport, $all_versions = false)
 		$previous_id = $before->id;
 		$sql = "UPDATE ".reports_db." SET id_origine=".intval($previous_id)." WHERE id_origine=".intval($id_rapport)." ;";
 		sql_request($sql);
-		if(isset($_SESSION['rows_id']))
-		{
-			$rows_id = $_SESSION['rows_id'];
-			for($i = 0; $i < count($rows_id); $i++)
-			{
-				if($rows_id[$i] == $id_rapport)
-				{
-					$_SESSION['rows_id'][$i] = $before->id;
-					break;
-				}
-			}
-		}
-	}
-	else
-	{
-		if(isset($_SESSION['rows_id']))
-		{
-			$rows_id = $_SESSION['rows_id'];
-			for($i = 0; $i < count($rows_id); $i++)
-			{
-				if($rows_id[$i] == $id_rapport)
-				{
-					array_splice($_SESSION['rows_id'],$i,1);
-					break;
-				}
-			}
-		}
 	}
 
 	if(!$all_versions)
@@ -712,67 +685,35 @@ function addReportToDatabase($report,$normalize = true)
 		throw $e;
 	}
 
-	refresh_row_ids();
-
 	return $new_id;
-}
-
-function refresh_row_ids()
-{
-	if(isset($_SESSION['rows_id']))
-	{
-		$rows_id = $_SESSION['rows_id'];
-		$n = count($rows_id) -1;
-		for($i = 0; $i < $n; $i++)
-			$_SESSION['rows_id'][$i] = 	getIDOrigine($_SESSION['rows_id'][$i]);
-	}
 }
 
 function next_report($id)
 {
-//	$orig = getIDOrigine($id);
-	$orig = $id;//
-	if(isset($_SESSION['rows_id']))
+	if(!isset($_SESSION['current_id']) || !isset($_SESSION['rows_id'])  || (count($_SESSION['rows_id']) == 0))
+		return -1;
+	else
 	{
-		$rows_id = $_SESSION['rows_id'];
-		$n = count($rows_id);
-		for($i = 0; $i < $n; $i++)
-		{
-			if($rows_id[$i] == $orig)
-			{
-				if($i < $n - 1)
-					return $rows_id[$i+1];
-				else
-					return $rows_id[0];
-			}
-		}
-		if($n >0)
-			return $_SESSION['rows_id'][0];
+		$c = $_SESSION['current_id'];
+		$cc =  count($_SESSION['rows_id']);
+		$n = ($c+ 1) % $cc; 
+		return $_SESSION['rows_id'][$n];
 	}
-	return -1;
 }
 
 function previous_report($id)
 {
-	if(isset($_SESSION['rows_id']))
+	if(!isset($_SESSION['current_id']) || !isset($_SESSION['rows_id'])  || (count($_SESSION['rows_id']) == 0))
+		return -1;
+	else
 	{
-		$rows_id = $_SESSION['rows_id'];
-		$n = count($rows_id) ;
-		for($i = 0; $i < $n; $i++)
-		{
-			if($rows_id[$i] == $id)
-			{
-				if($i > 0)
-					return $rows_id[$i-1];
-				else
-					return $rows_id[$n-1];
-			}
-		}
-		if($n >0)
-			return $_SESSION['rows_id'][0];
+		$c = $_SESSION['current_id'];
+		$cc =  count($_SESSION['rows_id']);
+		$n = ($c - 1) % $cc;
+		return $_SESSION['rows_id'][$n];
 	}
-	return -1;
 }
+
 
 function set_rapporteur($property,$id_origine, $value)
 {

@@ -267,6 +267,8 @@ function alertText($text)
 					break;
 				case 'update':
 					$next = next_report($id_origine);
+					$rows_id = $_SESSION['rows_id'];
+					$current_id = $_SESSION['current_id'];
 					$previous = previous_report($id_origine);
 					if(isset($_REQUEST["read"]))
 						viewWithRedirect($id_origine);

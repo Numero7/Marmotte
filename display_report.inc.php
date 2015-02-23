@@ -572,7 +572,11 @@ function editReport($id_rapport)
 	try
 	{
 		$report = getReport($id_rapport);
-
+		
+		for($i = 0 ; $i < count($_SESSION['rows_id']); $i++)
+			if($_SESSION['rows_id'][$i] == $id_rapport)
+			$_SESSION['current_id'] = $i;
+		
 		if($report->section != currentSection())
 			throw new Exception("Bas les pattes, ce rapport est un rapport de la section/CID ".$report->section);
 
@@ -593,6 +597,11 @@ function viewReport($id_rapport)
 	try
 	{
 		$report = getReport($id_rapport);
+		
+		for($i = 0 ; $i < count($_SESSION['rows_id']); $i++)
+			if($_SESSION['rows_id'][$i] == $id_rapport)
+			$_SESSION['current_id'] = $i;
+		
 		if($report->section != currentSection())
 			throw new Exception("Bas les pattes, ce rapport est un rapport de la section/CID ".$report->section);
 
@@ -649,7 +658,8 @@ function displaySummary($filters, $filter_values, $sorting_values)
 	foreach($rows as $row)
 		$rows_id[] = $row->id;
 	$_SESSION['rows_id'] = $rows_id;
-
+	
+	$_SESSION['current_id'] = 0;
 
 	if(is_current_session_concours())
 		$fields = $fieldsSummaryConcours;
