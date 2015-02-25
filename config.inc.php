@@ -959,7 +959,7 @@ Une phrase de conclusion sur le candidat incluant un commentaire sur l'audition
 			
 	);
 	
-	$tous_avis = array_merge($avis_eval,$avis_classement,$avis_candidature_short,$avis_ie,$avis_pertinence,$avis_ecoles,$avis_binaire);
+	$tous_avis = array_merge($avis_eval,$avis_classement,$avis_candidature_short,$avis_ie,$avis_pertinence,$avis_ecoles,$avis_binaire, $avis_lettre);
 
 	for($i = 1; $i <= $max_classement; $i++)
 		$tous_avis[$i] = strval($i);
