@@ -42,14 +42,14 @@ ini_set('xdebug.show_local_vars', 'on');
 		
 	$fieldsSummary = array(
 		"type",
-		"rapporteur",
-		"rapporteur2",
-		"rapporteur3",
 			"nom",
 		"prenom",
-		"grade_rapport",
 			"avis",
+			"rapporteur",
 			"avis1",
+		"rapporteur2",
+		"rapporteur3",
+		"grade_rapport",
 			"theme1",
 			"theme2",
 			"theme3",
