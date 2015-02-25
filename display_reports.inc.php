@@ -1,7 +1,7 @@
 <?php
 require_once('utils.inc.php');
 require_once('manage_filters_and_sort.inc.php');
-
+require_once('manage_sessions.inc.php');
 
 function displayFiltrage($rows, $fields, $filters, $filter_values)
 {
@@ -207,9 +207,19 @@ if(isBureauUser() && is_current_session_concours())
 		$concours = getConcours();
 		
 
-		global $tous_avis;
-		$listeavis = array();;
-		foreach($tous_avis as $key => $value)
+		$baseavis = array();
+		if( is_current_session_concours() )
+		{
+			global $avis_candidature_short;
+			$baseavis = $avis_candidature_short;
+		}
+		else
+		{
+			global $tous_avis;
+			$baseavis = $tous_avis;
+		}
+		$listeavis = array();
+		foreach($baseavis as $key => $value)
 			if(!is_numeric($key))
 			$listeavis[$key] = $value;
 		if(isset($filters['avis']) && isset($data['avis']['liste']))
