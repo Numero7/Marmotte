@@ -138,8 +138,6 @@ function display_select($row, $fieldID, $liste,$readonly)
 		$first = false;
 	}
 	
-/*	if($fieldID == "genre")
-		rr();*/
 	?>
 </select>
 <?php
@@ -240,7 +238,6 @@ function display_fichiers($row, $fieldID, $session, $readonly)
 	else
 	{
 		if(isset($row->unite) && $row->unite == "") return;
-//		rr();
 		$files = find_people_files($row,true, $session, true);
 		$dir = get_people_directory($row, $session, false);
 	}

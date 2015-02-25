@@ -144,9 +144,6 @@ function displayEditableField($row, $fieldId, $canedit, $session, $extra_object 
 
 	$title = compute_title($row, $fieldId);
 
-	//	if($fieldId == "type")
-	//	rr();
-
 	if($title != "" && is_field_visible($row, $fieldId))
 	{
 		if(isset($fieldsTypes[$fieldId]))
@@ -637,7 +634,6 @@ function displayActionsMenu($row, $excludedaction = "", $actions)
 			}
 		}
 	}
-	//	rrr();
 	echo "</tr></table>";
 }
 

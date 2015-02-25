@@ -173,13 +173,12 @@ function alertText($text)
 					delete_all_units();
 					include "unites.php";
 					break;
-				case 'set_rapporteur':
+				case 'set_property':
 					$property = $_REQUEST["property"];
 					$id_origine = $_REQUEST["id_origine"];
 					$value = $_REQUEST["value"];
-					set_rapporteur($property,$id_origine, $value);
+					set_property($property,$id_origine, $value);
 					displayReports($id_origine);
-					
 					break;
 				case 'change_section':
 					displayReports();

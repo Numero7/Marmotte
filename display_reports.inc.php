@@ -206,7 +206,15 @@ if(isBureauUser() && is_current_session_concours())
 		$sec = isSecretaire();
 		$concours = getConcours();
 		
+
 		global $tous_avis;
+		$listeavis = array();;
+		foreach($tous_avis as $key => $value)
+			if(!is_numeric($key))
+			$listeavis[$key] = $value;
+		if(isset($filters['avis']) && isset($data['avis']['liste']))
+			$avis = $data['avis']['liste'];		
+		
 		$prettyunits = unitsList();
 		
 		foreach($fields as $fieldID)
@@ -254,12 +262,12 @@ if(isBureauUser() && is_current_session_concours())
 			$data = $row->$fieldID;
 			$type = isset($fieldsTypes[$fieldID]) ?  $fieldsTypes[$fieldID] : "";
 
-			if(!$sec && $type=="rapporteur")
+			if($type=="rapporteur")
 			{
 				if($bur)
 				{
 				?>
-				<select onchange="window.location='index.php?action=set_rapporteur&property=<?php echo $fieldID; ?>&id_origine=<?php echo $row->id_origine; ?>&value=' + this.value;">
+				<select onchange="window.location='index.php?action=set_property&property=<?php echo $fieldID; ?>&id_origine=<?php echo $row->id_origine; ?>&value=' + this.value;">
 				<?php 
 				foreach($rapporteurs as $rapporteur => $nom)
 				{
@@ -273,10 +281,26 @@ if(isBureauUser() && is_current_session_concours())
 				else
 					echo (isset($rapporteurs[$row->$fieldID]) ? $rapporteurs[$row->$fieldID] : $row->$fieldID);
 			}
-			else if($type=="avis")
+			else if($fieldID=="avis")
 			{
 		//		displayAvisMenu($fieldID,$row);
-		if($bur || !isset($row->statut) || $row->statut != "doubleaveugle")
+		if($sec)
+		{
+			?>
+			<select onchange="window.location='index.php?action=set_property&property=<?php echo $fieldID; ?>&id_origine=<?php echo $row->id_origine; ?>&value=' + this.value;">
+			<?php
+//			rr();
+			foreach($listeavis as $key => $value)
+			{
+			$selected = ($key == $row->$fieldID) ? "selected=on" : "";
+			echo "<option ".$selected." value=\"".$key."\">".$value."</option>\n";
+			}
+			?>
+			</select>
+			<?php
+			
+		}
+		else if($bur || !isset($row->statut) || $row->statut != "doubleaveugle")
 				echo isset($tous_avis[$row->$fieldID]) ? $tous_avis[$row->$fieldID] : $row->$fieldID;
 			}
 			else if($fieldID == "concours")

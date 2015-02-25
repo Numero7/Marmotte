@@ -453,7 +453,6 @@ if($admin_concours)
 			$text = remove_br(get_config($key));
 			if($text == "")
 				$text = "Renseigner ici le preambule du rapport de JAD pour le concours ".$conc->code.". Laisser vide si un rapport de JAD n'est pas nécessaire.";
-//			rr();
 			echo '<textarea  rows="25" cols="60" name="'.$key.'">'.$text ."</textarea>";
 			?>
 			</td>

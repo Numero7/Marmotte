@@ -205,7 +205,6 @@ function migrate( $section, $serverName, $dbname, $login, $password, $type)
 				catch(Exception $e)
 				{
 					echo "Failed: ".$e->getMessage()."<br/>";
-					rr();
 				}
 			}
 			break;

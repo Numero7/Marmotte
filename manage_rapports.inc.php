@@ -716,7 +716,7 @@ function previous_report($id)
 }
 
 
-function set_rapporteur($property,$id_origine, $value)
+function set_property($property,$id_origine, $value)
 {
 	change_report_property($id_origine, $property, $value);
 	$report = getReport($id_origine);
