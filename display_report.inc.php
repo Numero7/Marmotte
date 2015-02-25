@@ -357,7 +357,6 @@ function displayEditableReport($row, $canedit = true)
 	displayEditionFrameStart("",$hidden,$submits);
 
 	voir_rapport_pdf($row);
-    echo "</div>";
 
 	$is_unite = array_key_exists($eval_type,$typesRapportsUnites);
 	$statut = $row->statut;
@@ -404,6 +403,7 @@ function displayEditableReport($row, $canedit = true)
 						&& !(isset($row->statut) && ( $row->statut="rapport" || $row->statut="publie") ) );
 
 		echo $titre;
+		echo "</div>";
 		if(true)
 		{
 			displayEditableCandidate($candidate,$row,$canedit);

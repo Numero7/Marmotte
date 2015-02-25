@@ -49,14 +49,18 @@ $(function() {
                 position: 'fixed',
                 top: 0,
                 left: nav.offset().left,
-                width: nav.width()
+                width: nav.width(),
+				"border-width" : '3px',
+				"border-color" : '#63C3DC',
+				"border-style" : 'solid'
             });
             isFixed = true;
         }
         else if (!shouldBeFixed && isFixed)
         {
             nav.css({
-                position: 'static'
+                "position" : 'static',
+				"border-width": 0
             });
             isFixed = false;
         }

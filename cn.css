@@ -351,9 +351,10 @@ dd{
 }
 
 #toolbar{
-  height:30px;
+  height:50px;
   width:100%;
   background-color:#FFFFFF;
   padding:5px;
+  margin-bottom:10px;
   border: 3px solid #63C3DC;
 }
