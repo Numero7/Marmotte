@@ -177,7 +177,7 @@ function alertText($text)
 					$property = $_REQUEST["property"];
 					$id_origine = $_REQUEST["id_origine"];
 					$value = $_REQUEST["value"];
-					set_property($property,$id_origine, $value);
+					set_property($property,$id_origine, $value, isset($_REQUEST['all_reports']));
 					displayReports($id_origine);
 					break;
 				case 'change_section':

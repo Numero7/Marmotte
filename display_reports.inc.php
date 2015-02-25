@@ -267,7 +267,7 @@ if(isBureauUser() && is_current_session_concours())
 				if($bur)
 				{
 				?>
-				<select onchange="window.location='index.php?action=set_property&property=<?php echo $fieldID; ?>&id_origine=<?php echo $row->id_origine; ?>&value=' + this.value;">
+				<select onchange="window.location='index.php?action=set_property&property=<?php echo $fieldID; ?>&all_reports=&id_origine=<?php echo $row->id_origine; ?>&value=' + this.value;">
 				<?php 
 				foreach($rapporteurs as $rapporteur => $nom)
 				{
