@@ -28,8 +28,6 @@ function unitsList()
 		}
 		
 		uasort($units, 'cmpunits');
-//		rr();
-		
 		$_SESSION['all_units'] = $units;
 	}
 	return $_SESSION['all_units'];

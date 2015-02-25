@@ -144,9 +144,6 @@ function displayEditableField($row, $fieldId, $canedit, $session, $extra_object 
 
 	$title = compute_title($row, $fieldId);
 
-	//	if($fieldId == "type")
-	//	rr();
-
 	if($title != "" && is_field_visible($row, $fieldId))
 	{
 		if(isset($fieldsTypes[$fieldId]))
@@ -251,7 +248,7 @@ function displayEditableObject($titlle, $row, $fields, $canedit, $session, $extr
 			displayEditableField($row, $fieldId,$canedit,$session);
 			echo "\n".'</tr></table></td>'."\n";
 		}
-		if(isset($extra_objects[$fieldId]))
+		if(isset($extra_objects) && is_array($extra_objects) &&  isset($extra_objects[$fieldId]))
 		{
 			echo '<tr class="'.$style.'">';
 			echo '<td>'.$extra_objects[$fieldId].'</td>';
@@ -433,19 +430,19 @@ function displayEditableReport($row, $canedit = true)
 				echo'<table><tr>';
 				if($has_rapp)
 				{
-					echo '<td VALIGN="top" style="width: ".(100 / $nb_rapporteurs)."%">';
+					echo '<td VALIGN="top" style="width: '.(100 / $nb_rapporteurs).'%">';
 					displayEditableObject("Prérapport 1".(isset($rapporteurs[$row->rapporteur]) ? (" - ".$rapporteurs[$row->rapporteur]) : (" - ".$row->rapporteur) ),$row,$fieldsRapportsCandidat1,$canedit, $session);
 					echo'</td>';
 				}
 				if($has_rapp2)
 				{
-					echo '<td VALIGN="top" style="width: ".(100 / $nb_rapporteurs)."%">';
+					echo '<td VALIGN="top" style="width: '.(100 / $nb_rapporteurs).'%">';
 					displayEditableObject("Prérapport 2".(isset($rapporteurs[$row->rapporteur2]) ? (" - ".$rapporteurs[$row->rapporteur2]) : (" - ".$row->rapporteur2) ),$row,$fieldsRapportsCandidat2,$canedit, $session);
 					echo'</td>';
 				}
 				if($has_rapp3)
 				{
-					echo '<td VALIGN="top" style="width: ".(100 / $nb_rapporteurs)."%">';
+					echo '<td VALIGN="top" style="width: '.(100 / $nb_rapporteurs).'%">';
 					displayEditableObject("Prérapport 3".(isset($rapporteurs[$row->rapporteur3]) ? (" - ".$rapporteurs[$row->rapporteur3]) : (" - ".$row->rapporteur3) ),$row,$fieldsRapportsCandidat3,$canedit, $session);
 					echo'</td>';
 				}
@@ -487,19 +484,19 @@ function displayEditableReport($row, $canedit = true)
 			echo'<table><tr>';
 			if($has_rapp)
 			{
-				echo '<td VALIGN="top" style="width: ".(100 / $nb_rapporteurs)."%">';
+				echo '<td VALIGN="top" style="width: '.(100 / $nb_rapporteurs).'%">';
 				displayEditableObject("Prérapport 1".(isset($rapporteurs[$row->rapporteur]) ? (" - ".$rapporteurs[$row->rapporteur]) : (" - ".$row->rapporteur) ),$row,$fieldsIndividual1,$canedit, $session);
 				echo'</td>';
 			}
 			if($has_rapp2)
 			{
-				echo '<td VALIGN="top" style="width: ".(100 / $nb_rapporteurs)."%">';
+				echo '<td VALIGN="top" style="width: '.(100 / $nb_rapporteurs).'%">';
 				displayEditableObject("Prérapport 2".(isset($rapporteurs[$row->rapporteur2]) ? (" - ".$rapporteurs[$row->rapporteur2]) : (" - ".$row->rapporteur2) ),$row,$fieldsIndividual2,$canedit, $session);
 				echo'</td>';
 			}
 			if($has_rapp3)
 			{
-				echo '<td VALIGN="top" style="width: ".(100 / $nb_rapporteurs)."%">';
+				echo '<td VALIGN="top" style="width: '.(100 / $nb_rapporteurs).'%">';
 				displayEditableObject("Prérapport 3".(isset($rapporteurs[$row->rapporteur3]) ? (" - ".$rapporteurs[$row->rapporteur3]) : (" - ".$row->rapporteur3) ),$row,$fieldsIndividual3,$canedit, $session);
 				echo'</td>';
 			}
@@ -572,7 +569,11 @@ function editReport($id_rapport)
 	try
 	{
 		$report = getReport($id_rapport);
-
+		
+		for($i = 0 ; $i < count($_SESSION['rows_id']); $i++)
+			if($_SESSION['rows_id'][$i] == $id_rapport)
+			$_SESSION['current_id'] = $i;
+		
 		if($report->section != currentSection())
 			throw new Exception("Bas les pattes, ce rapport est un rapport de la section/CID ".$report->section);
 
@@ -593,6 +594,11 @@ function viewReport($id_rapport)
 	try
 	{
 		$report = getReport($id_rapport);
+		
+		for($i = 0 ; $i < count($_SESSION['rows_id']); $i++)
+			if($_SESSION['rows_id'][$i] == $id_rapport)
+			$_SESSION['current_id'] = $i;
+		
 		if($report->section != currentSection())
 			throw new Exception("Bas les pattes, ce rapport est un rapport de la section/CID ".$report->section);
 
@@ -628,7 +634,6 @@ function displayActionsMenu($row, $excludedaction = "", $actions)
 			}
 		}
 	}
-	//	rrr();
 	echo "</tr></table>";
 }
 
@@ -649,7 +654,8 @@ function displaySummary($filters, $filter_values, $sorting_values)
 	foreach($rows as $row)
 		$rows_id[] = $row->id;
 	$_SESSION['rows_id'] = $rows_id;
-
+	
+	$_SESSION['current_id'] = 0;
 
 	if(is_current_session_concours())
 		$fields = $fieldsSummaryConcours;

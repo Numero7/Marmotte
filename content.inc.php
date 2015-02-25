@@ -177,13 +177,12 @@ function alertText($text)
 					delete_all_units();
 					include "unites.php";
 					break;
-				case 'set_rapporteur':
+				case 'set_property':
 					$property = $_REQUEST["property"];
 					$id_origine = $_REQUEST["id_origine"];
 					$value = $_REQUEST["value"];
-					set_rapporteur($property,$id_origine, $value);
+					set_property($property,$id_origine, $value, isset($_REQUEST['all_reports']));
 					displayReports($id_origine);
-					
 					break;
 				case 'change_section':
 					displayReports();
@@ -271,6 +270,8 @@ function alertText($text)
 					break;
 				case 'update':
 					$next = next_report($id_origine);
+					$rows_id = $_SESSION['rows_id'];
+					$current_id = $_SESSION['current_id'];
 					$previous = previous_report($id_origine);
 					if(isset($_REQUEST["read"]))
 						viewWithRedirect($id_origine);

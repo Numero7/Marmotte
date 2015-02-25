@@ -97,9 +97,6 @@ function get_array_config($key,$delimiter ="|")
 	for($i = 0; $i < count($to_parse) -1; $i+=2)
 		$result[$to_parse[$i]] = $to_parse[$i+1];
 	
-/*	if($key=="topics")
-		rr();
-		*/
 	return $result;
 }
 

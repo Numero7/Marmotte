@@ -48,7 +48,6 @@ function computeArrays($filters, $columnFilters, $rowFilter)
 	{
 		$finresult[] = $truc;
 	}
-//	rrr();
 	return $finresult;
 }
 
