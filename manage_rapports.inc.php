@@ -983,8 +983,8 @@ function is_field_editable($row, $fieldId)
 	$is_rapp3 = isset($row->rapporteur3) && ($login == $row->rapporteur3);
 
 	//echo $fieldId." ".$login." ".$row->rapporteur." ".$row->rapporteur2;
-
-	if($is_rapp1 && $fieldId == "rapport" && isset($row->statut) && ($row->statut != "doubleaveugle"))
+	
+	if($is_rapp1 && $fieldId == "rapport" && isset($row->statut))
 		return true;
 
 	if(isset($row->statut) && ($row->statut == "audition"))
@@ -1014,7 +1014,7 @@ function is_field_editable($row, $fieldId)
 	if($is_rapp1 && ($fieldId == "rapport"))
 		return true;
 
-	if(!$is_rapp1 && !$is_rapp2 && !isSecretaire())
+	if(!$is_rapp1 && !$is_rapp2 && !$is_rapp3 && !isSecretaire())
 		return false;
 
 
@@ -1040,6 +1040,7 @@ function is_field_editable($row, $fieldId)
 	$f2 = in_array($fieldId,$fieldsIndividual2);
 	$f3 = in_array($fieldId,$fieldsIndividual3);
 
+	
 	if(isset($typesRapportsConcours[$eval_type]))
 	{
 		global $fieldsCandidat;
@@ -1093,15 +1094,14 @@ function is_field_visible($row, $fieldId)
 	//editable info is always visible
 	if(is_field_editable($row, $fieldId))
 		return true;
-
+	
 	//when non editable non existing fields are not visible
 	if(!isset($row->$fieldId))
 		return false;
-
+	
 	//nothing to display -> nothing displayed
 	if($row->$fieldId == '')
-		return false;
-
+		return false;	
 
 	if(isset($row->statut) && $row->statut == "prerapport")
 		return true;
@@ -1116,6 +1116,7 @@ function is_field_visible($row, $fieldId)
 	$is_rapp2 = isset($row->rapporteur2) && ($login == $row->rapporteur2);
 	$is_rapp3 = isset($row->rapporteur3) && ($login == $row->rapporteur3);
 
+	
 	if(isset($row->statut) && ($row->statut == "doubleaveugle") && ($is_rapp1 || $is_rapp2 || $is_rapp3))
 		return false;
 
