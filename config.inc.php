@@ -930,6 +930,33 @@ Une phrase de conclusion sur le candidat incluant un commentaire sur l'audition
 	
 	$avis_sessions = array_merge($avis_eval,$avis_pertinence);
 	
+	$icones_avis = array(
+			"tresfavorable" => "img/Icon-Yes.png",
+			"A+" => "img/Icon-Yes.png",
+			"favorable" => "img/Icon-Yes.png",
+			"A" => "img/Icon-Yes.png",
+			"A-" => "img/Icon-Yes.png",
+			"admisaconcourir" => "img/Icon-Yes.png",
+	 		"oral"=>"img/Icon-Yes.png",
+	 		"classe"=>"img/Icon-Yes.png", 
+
+			"reserve" => "img/Icon-NoComment.png",
+			"B+" => "img/Icon-NoComment.png",
+			"B" => "img/Icon-NoComment.png",
+			"B-" => "img/Icon-NoComment.png",
+
+			"defavorable" => "img/Icon-No.png",
+			"C" => "img/Icon-No.png",
+	 		'desistement' => 'img/Icon-No.png',
+	 		"nonauditionne"=>"img/Icon-No.png",
+	 		"nonclasse"=>"img/Icon-No.png",			 
+	 		"nonconcur"=>"img/Icon-No.png",
+
+			"sansavis" => "img/Icon-Maybe.png",
+			"adiscuter" => "img/Icon-Maybe.png",			
+	 		"" =>"img/Icon-Maybe.png", 
+	);
+	
 	/* Types d'avis disponibles dans l'interface pour chaque type de rapport*/
 	$typesRapportToAvis = array(
 		'Evaluation-Vague' => $avis_eval,

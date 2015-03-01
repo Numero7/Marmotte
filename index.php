@@ -68,6 +68,10 @@ try
 			include("header.inc.php");
 			include("authenticate.inc.php");
 		}
+		else  if($action=='ping')
+		{
+			echo "Pong!";
+		}
 		else
 		{			
 			require_once("utils.inc.php");

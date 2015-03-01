@@ -308,7 +308,7 @@ function displayEditableReport($row, $canedit = true)
 		$row->id_origine = 0;
 
 	echo '<div id="debut"></div>';
-	echo '<form enctype="multipart/form-data" method="post" action="index.php" style="width: 100%">'."\n";
+	echo '<form enctype="multipart/form-data" method="post" action="index.php" style="width: 100%" id="editReport">'."\n";
 
 	$next = next_report($row->id_origine);
 	$previous = previous_report($row->id_origine);

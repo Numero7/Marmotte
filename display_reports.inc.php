@@ -283,25 +283,33 @@ if(isBureauUser() && is_current_session_concours())
 			}
 			else if($fieldID=="avis")
 			{
-		//		displayAvisMenu($fieldID,$row);
-		if($sec)
-		{
-			?>
-			<select onchange="window.location='index.php?action=set_property&property=<?php echo $fieldID; ?>&id_origine=<?php echo $row->id_origine; ?>&value=' + this.value;">
-			<?php
-//			rr();
-			foreach($listeavis as $key => $value)
-			{
-			$selected = ($key == $row->$fieldID) ? "selected=on" : "";
-			echo "<option ".$selected." value=\"".$key."\">".$value."</option>\n";
-			}
-			?>
-			</select>
-			<?php
-			
-		}
-		else if($bur || !isset($row->statut) || $row->statut != "doubleaveugle")
-				echo isset($tous_avis[$row->$fieldID]) ? $tous_avis[$row->$fieldID] : $row->$fieldID;
+				//		displayAvisMenu($fieldID,$row);
+				if($sec)
+				{
+					?>
+					<select onchange="window.location='index.php?action=set_property&property=<?php echo $fieldID; ?>&id_origine=<?php echo $row->id_origine; ?>&value=' + this.value;">
+					<?php
+		//			rr();
+					foreach($listeavis as $key => $value)
+					{
+						$selected = ($key == $row->$fieldID) ? "selected=on" : "";
+						echo "<option ".$selected." value=\"".$key."\">".$value."</option>\n";
+					}
+					?>
+					</select>
+					<?php
+				}
+				else if($bur || !isset($row->statut) || $row->statut != "doubleaveugle")
+				{
+					global $icones_avis;
+					$content = isset($tous_avis[$row->$fieldID]) ? $tous_avis[$row->$fieldID] : $row->$fieldID;
+					if (isset($icones_avis[$row->$fieldID]))
+					{
+						$url = $icones_avis[$row->$fieldID];
+						echo "<img class=\"iconeAvis\" src=\"".$icones_avis[$row->$fieldID]."\">&nbsp;";
+					}
+					echo $content;
+				}
 			}
 			else if($fieldID == "concours")
 			{
@@ -310,42 +318,42 @@ if(isBureauUser() && is_current_session_concours())
 			else if($fieldID=="sousjury")
 			{
 				?>
-		<!-- Displaying sous jury menu -->
-		<?php 
-		/***
-		displaySousJuryMenu($fieldID,$row);***/
-		echo $row->$fieldID;
+				<!-- Displaying sous jury menu -->
+				<?php 
+				/***
+				displaySousJuryMenu($fieldID,$row);***/
+				echo $row->$fieldID;
 			}
 			else if($data != "")
 			{
 				?>
-		<!-- Displaying field <?php echo $fieldID; ?>menu -->
-		<?php 
+				<!-- Displaying field <?php echo $fieldID; ?>menu -->
+				<?php 
 
-		if($fieldID=="nom")
-		{
-			echo "<a href=\"?action=edit&amp;id=".($row->id)."\">";
-			echo '<span class="valeur">'.$data.'</span>';
-			echo '</a>';
-		}
-		else
-		{
-			if( ($type == "unit") && isset($prettyunits[$row->$fieldID]))
-				$data = $prettyunits[$row->$fieldID]->nickname;
-			echo '<span class="valeur">'.$data.'</span>';
-		}
-			}
-			echo '</td>';
-		}
-		?>
-		<!-- Displaying action menu -->
-		<?php 
-		echo '<td>';
-		displayActionsMenu($row,"", $actions2);
-		echo '</td>';
-		?>
-	</tr>
-	<?php
+				if($fieldID=="nom")
+				{
+					echo "<a href=\"?action=edit&amp;id=".($row->id)."\">";
+					echo '<span class="valeur">'.$data.'</span>';
+					echo '</a>';
+				}
+				else
+				{
+					if( ($type == "unit") && isset($prettyunits[$row->$fieldID]))
+						$data = $prettyunits[$row->$fieldID]->nickname;
+					echo '<span class="valeur">'.$data.'</span>';
+				}
+					}
+					echo '</td>';
+				}
+				?>
+				<!-- Displaying action menu -->
+				<?php 
+				echo '<td>';
+				displayActionsMenu($row,"", $actions2);
+				echo '</td>';
+				?>
+			</tr>
+			<?php
 		}
 		?>
 </table>

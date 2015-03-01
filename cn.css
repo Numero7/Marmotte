@@ -182,6 +182,17 @@ font-weight:bold;
   width:100%;
     font-size:10pt;
 }
+
+.summary td{
+    vertical-align: middle;
+	white-space:nowrap;
+}
+
+.iconeAvis{
+  height:16px;
+  vertical-align: middle;
+}
+
 .tools{
   float:right;
   border: 1px solid #002A4C;
@@ -356,5 +367,13 @@ dd{
   background-color:#FFFFFF;
   padding:5px;
   margin-bottom:10px;
-  border: 3px solid #63C3DC;
 }
+
+.modifiedField{
+	background-color: #F7F7FF;
+	background-image: url("img/corner-modified.png");
+	background-position: right top; /*Positioning*/
+	background-repeat: no-repeat; /*Prevent showing multiple background images*/
+
+}
+
