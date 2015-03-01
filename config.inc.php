@@ -42,14 +42,14 @@ ini_set('xdebug.show_local_vars', 'on');
 		
 	$fieldsSummary = array(
 		"type",
-		"rapporteur",
-		"rapporteur2",
-		"rapporteur3",
 			"nom",
 		"prenom",
-		"grade_rapport",
 			"avis",
+			"rapporteur",
 			"avis1",
+		"rapporteur2",
+		"rapporteur3",
+		"grade_rapport",
 			"theme1",
 			"theme2",
 			"theme3",
@@ -986,7 +986,7 @@ Une phrase de conclusion sur le candidat incluant un commentaire sur l'audition
 			
 	);
 	
-	$tous_avis = array_merge($avis_eval,$avis_classement,$avis_candidature_short,$avis_ie,$avis_pertinence,$avis_ecoles,$avis_binaire);
+	$tous_avis = array_merge($avis_eval,$avis_classement,$avis_candidature_short,$avis_ie,$avis_pertinence,$avis_ecoles,$avis_binaire, $avis_lettre);
 
 	for($i = 1; $i <= $max_classement; $i++)
 		$tous_avis[$i] = strval($i);

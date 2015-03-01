@@ -144,8 +144,10 @@ function displayEditableField($row, $fieldId, $canedit, $session, $extra_object 
 
 	$title = compute_title($row, $fieldId);
 
+	
 	if($title != "" && is_field_visible($row, $fieldId))
 	{
+		
 		if(isset($fieldsTypes[$fieldId]))
 		{
 			$editable = $canedit && is_field_editable($row, $fieldId);
@@ -248,7 +250,8 @@ function displayEditableObject($titlle, $row, $fields, $canedit, $session, $extr
 			displayEditableField($row, $fieldId,$canedit,$session);
 			echo "\n".'</tr></table></td>'."\n";
 		}
-		if(isset($extra_objects) && is_array($extra_objects) &&  isset($extra_objects[$fieldId]))
+		
+		if( !is_array($fieldId) && isset( $extra_objects[$fieldId]) )
 		{
 			echo '<tr class="'.$style.'">';
 			echo '<td>'.$extra_objects[$fieldId].'</td>';
