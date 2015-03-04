@@ -103,11 +103,6 @@ function displayEditableChercheur($chercheur,$report = NULL, $canedit = true)
 
 	}
 
-	if(isset($chercheur->genre) && $chercheur->genre == "femme")
-		echo '<h1>Chercheuse : '.$chercheur->nom." ".$chercheur->prenom." ".'</h1>';
-	else
-		echo '<h1>Chercheur : '.$chercheur->nom." ".$chercheur->prenom." ".'</h1>';
-
 	displayEditionFrameStart("",$hidden,array());
 
 	if(is_current_session_delegation())
@@ -353,10 +348,6 @@ function displayEditableReport($row, $canedit = true)
 		$submits["viewnext"] = ">>";
 
 	$eval_type = $row->type;
-    echo "<div id=\"toolbar\">";
-	displayEditionFrameStart("",$hidden,$submits);
-
-	voir_rapport_pdf($row);
 
 	$is_unite = array_key_exists($eval_type,$typesRapportsUnites);
 	$statut = $row->statut;
@@ -402,6 +393,9 @@ function displayEditableReport($row, $canedit = true)
 				&& !( isset($row->avis) && ($row->avis == "nonauditionne" )
 						&& !(isset($row->statut) && ( $row->statut="rapport" || $row->statut="publie") ) );
 
+		echo "<div id=\"toolbar\">";
+		displayEditionFrameStart("",$hidden,$submits);
+		voir_rapport_pdf($row);
 		echo $titre;
 		echo "</div>";
 		if(true)
@@ -459,7 +453,16 @@ function displayEditableReport($row, $canedit = true)
 	{
 		$chercheur = get_or_create_candidate($row);
 		$conflit = ( is_in_conflict(getLogin(), $chercheur)) && !isSecretaire()  ;
-
+		
+		echo "<div id=\"toolbar\">";
+		displayEditionFrameStart("",$hidden,$submits);
+		voir_rapport_pdf($row);
+		if(isset($chercheur->genre) && $chercheur->genre == "femme")
+			echo '<h1>Chercheuse : '.$chercheur->nom." ".$chercheur->prenom." ".'</h1>';
+		else
+			echo '<h1>Chercheur : '.$chercheur->nom." ".$chercheur->prenom." ".'</h1>';
+		echo "</div>";
+		
 		displayEditableChercheur($chercheur,$row,$canedit);
 
 		//$other_reports = find_somebody_reports($chercheur,$eval_type);
@@ -520,7 +523,11 @@ function displayEditableReport($row, $canedit = true)
 		if(key_exists($eval_type,$fieldsUnitesExtra))
 			$fieldsUnites0 = array_merge($fieldsUnitesExtra[$eval_type],$fieldsUnites0);
 			
+		echo "<div id=\"toolbar\">";
+		displayEditionFrameStart("",$hidden,$submits);
+		voir_rapport_pdf($row);
 		echo "<h1>".$eval_name. ": ". (isset($row->unite) ? $row->unite : "")." (#".(isset($row->id) && $row->id != 0 ? $row->id : "New").")</h1>";
+		echo "</div>"; 
 
 		displayEditionFrameStart("",$hidden,array());
 
@@ -548,6 +555,12 @@ function displayEditableReport($row, $canedit = true)
 		echo'</tr></table>';
 		displayEditableObject("Rapport section", $row,$fieldsUnites0, $canedit, $session);
 
+	}
+	else{
+		echo "<div id=\"toolbar\">";
+		displayEditionFrameStart("",$hidden,$submits);
+		voir_rapport_pdf($row);
+		echo "</div>";
 	}
 	echo "</form>\n";
 
