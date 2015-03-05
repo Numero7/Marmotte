@@ -299,10 +299,10 @@ if(isBureauUser() && is_current_session_concours())
 					else
 						echo (isset($rapporteurs[$row->$fieldID]) ? $rapporteurs[$row->$fieldID] : $row->$fieldID);
 				}
-				else if($fieldID=="avis")
+				else if($type=="avis")
 				{
 					//		displayAvisMenu($fieldID,$row);
-					if($sec)
+					if($sec && $fieldID == "avis")
 					{
 						?>
 						<select onchange="window.location='index.php?action=set_property&property=<?php echo $fieldID; ?>&id_origine=<?php echo $row->id_origine; ?>&value=' + this.value;">
@@ -317,8 +317,9 @@ if(isBureauUser() && is_current_session_concours())
 						</select>
 						<?php
 					}
-					else if($bur || !isset($row->statut) || $row->statut != "doubleaveugle")
+					else if($fieldID == "avis" || $bur || !isset($row->statut) || $row->statut != "doubleaveugle")
 					{
+						//les avis de la section sont toujours visibales et les avis des rapporteurs seuelemtn si on n'est pas en double aveugle
 						$content = isset($tous_avis[$row->$fieldID]) ? $tous_avis[$row->$fieldID] : $row->$fieldID;
 						showIconAvis($fieldID,$data);
 						echo $content;
