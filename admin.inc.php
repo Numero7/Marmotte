@@ -118,7 +118,7 @@ if($admin_users)
 					{
 						if($concours->sousjury1 != "")
 						{
-						echo "<td>$concours->intitule <select name=\"sousjury".$code."\">\n";
+						echo "$concours->intitule <select name=\"sousjury".$code."\">\n";
 						echo "<option value=\"\"$sel></option>\n";
 							$sel = strcontains($concours->membressj1,$user) ? " selected=\"selected\"" : ""; 
 							echo "<option value=\"1\" 	$sel>".$concours->sousjury1."</option>\n";
@@ -145,7 +145,7 @@ if($admin_users)
 				echo "<input type=\"hidden\" name=\"login\" value=\"$user\"/>\n";
 				echo "<input type=\"hidden\" name=\"action\" value=\"infosrapporteur\"/>\n";
 				echo " <input type=\"submit\" value=\"Valider\"/>\n";
-				echo "</td></tr></form>\n";
+				echo "</form></td></tr>\n";
 			}
 		}
 		?>
