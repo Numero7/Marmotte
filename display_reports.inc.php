@@ -212,7 +212,7 @@ if(isBureauUser() && is_current_session_concours())
 		<th class="oddrow"><span class="nomColonne"></span></th>
 		<?php
 		
-		$sec = isSecretaire();
+		$sec = isSecretaire() || (isBureauUser() && isSecretaire(getLogin() , false));
 		$concours = getConcours();
 		
 
