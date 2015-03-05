@@ -1,7 +1,7 @@
 <?php
 require_once('utils.inc.php');
 require_once('manage_filters_and_sort.inc.php');
-
+require_once('manage_sessions.inc.php');
 
 function displayFiltrage($rows, $fields, $filters, $filter_values)
 {
@@ -66,6 +66,15 @@ function displayFiltrage($rows, $fields, $filters, $filter_values)
 <?php
 }
 
+function showIconAvis($fieldID,$data)
+{
+	global $icones_avis;
+	if ((substr( $fieldID,0,4)==="avis") and isset($icones_avis[$data]))
+	{
+		$url = $icones_avis[$data];
+		echo "<img class=\"iconeAvis\" src=\"".$url."\">&nbsp;";
+	}
+}
 
 function displayRows($rows, $fields, $filters, $filter_values)
 {
@@ -207,9 +216,19 @@ if(isBureauUser() && is_current_session_concours())
 		$concours = getConcours();
 		
 
-		global $tous_avis;
-		$listeavis = array();;
-		foreach($tous_avis as $key => $value)
+		$baseavis = array();
+		if( is_current_session_concours() )
+		{
+			global $avis_candidature_short;
+			$baseavis = $avis_candidature_short;
+		}
+		else
+		{
+			global $tous_avis;
+			$baseavis = $tous_avis;
+		}
+		$listeavis = array();
+		foreach($baseavis as $key => $value)
 			if(!is_numeric($key))
 			$listeavis[$key] = $value;
 		if(isset($filters['avis']) && isset($data['avis']['liste']))
@@ -247,105 +266,108 @@ if(isBureauUser() && is_current_session_concours())
 			$style = getStyle("",$odd,$conflit);
 			$odd = !$odd;
 			?>
-	
-	<tr id="t<?php echo $row->id;?>" class="<?php echo $style;?>">
-		<?php
-			
-		echo '<td>';
-		displayActionsMenu($row,"", $actions1,$row->rapporteur, $row->rapporteur);
-		echo '</td>';
-
-		foreach($fields as $fieldID)
-		{
-			$title = $fieldsAll[$fieldID];
+			<tr id="t<?php echo $row->id;?>" class="<?php echo $style;?>">
+			<?php
+				
 			echo '<td>';
-			$data = $row->$fieldID;
-			$type = isset($fieldsTypes[$fieldID]) ?  $fieldsTypes[$fieldID] : "";
-
-			if($type=="rapporteur")
-			{
-				if($bur)
-				{
-				?>
-				<select onchange="window.location='index.php?action=set_property&property=<?php echo $fieldID; ?>&all_reports=&id_origine=<?php echo $row->id_origine; ?>&value=' + this.value;">
-				<?php 
-				foreach($rapporteurs as $rapporteur => $nom)
-				{
-					$selected = ($rapporteur == $row->$fieldID) ? "selected=on" : "";
-					echo "<option ".$selected." value=\"".$rapporteur."\">".$nom."</option>\n";
-				}
-				?>
-				</select>
-				<?php 
-				}
-				else
-					echo (isset($rapporteurs[$row->$fieldID]) ? $rapporteurs[$row->$fieldID] : $row->$fieldID);
-			}
-			else if($fieldID=="avis")
-			{
-		//		displayAvisMenu($fieldID,$row);
-		if($sec)
-		{
-			?>
-			<select onchange="window.location='index.php?action=set_property&property=<?php echo $fieldID; ?>&id_origine=<?php echo $row->id_origine; ?>&value=' + this.value;">
-			<?php
-//			rr();
-			foreach($listeavis as $key => $value)
-			{
-			$selected = ($key == $row->$fieldID) ? "selected=on" : "";
-			echo "<option ".$selected." value=\"".$key."\">".$value."</option>\n";
-			}
-			?>
-			</select>
-			<?php
-			
-		}
-		else if($bur || !isset($row->statut) || $row->statut != "doubleaveugle")
-				echo isset($tous_avis[$row->$fieldID]) ? $tous_avis[$row->$fieldID] : $row->$fieldID;
-			}
-			else if($fieldID == "concours")
-			{
-				echo isset($concours[$row->$fieldID]) ? $concours[$row->$fieldID]->intitule : "";
-			}
-			else if($fieldID=="sousjury")
-			{
-				?>
-		<!-- Displaying sous jury menu -->
-		<?php 
-		/***
-		displaySousJuryMenu($fieldID,$row);***/
-		echo $row->$fieldID;
-			}
-			else if($data != "")
-			{
-				?>
-		<!-- Displaying field <?php echo $fieldID; ?>menu -->
-		<?php 
-
-		if($fieldID=="nom")
-		{
-			echo "<a href=\"?action=edit&amp;id=".($row->id)."\">";
-			echo '<span class="valeur">'.$data.'</span>';
-			echo '</a>';
-		}
-		else
-		{
-			if( ($type == "unit") && isset($prettyunits[$row->$fieldID]))
-				$data = $prettyunits[$row->$fieldID]->nickname;
-			echo '<span class="valeur">'.$data.'</span>';
-		}
-			}
+			displayActionsMenu($row,"", $actions1,$row->rapporteur, $row->rapporteur);
 			echo '</td>';
-		}
-		?>
-		<!-- Displaying action menu -->
-		<?php 
-		echo '<td>';
-		displayActionsMenu($row,"", $actions2);
-		echo '</td>';
-		?>
-	</tr>
-	<?php
+
+			foreach($fields as $fieldID)
+			{
+				$title = $fieldsAll[$fieldID];
+				echo '<td>';
+				$data = $row->$fieldID;
+				$type = isset($fieldsTypes[$fieldID]) ?  $fieldsTypes[$fieldID] : "";
+
+				if($type=="rapporteur")
+				{
+					if($bur)
+					{
+					?>
+					<select onchange="window.location='index.php?action=set_property&property=<?php echo $fieldID; ?>&all_reports=&id_origine=<?php echo $row->id_origine; ?>&value=' + this.value;">
+					<?php 
+					foreach($rapporteurs as $rapporteur => $nom)
+					{
+						$selected = ($rapporteur == $row->$fieldID) ? "selected=on" : "";
+						echo "<option ".$selected." value=\"".$rapporteur."\">".$nom."</option>\n";
+					}
+					?>
+					</select>
+					<?php 
+					}
+					else
+						echo (isset($rapporteurs[$row->$fieldID]) ? $rapporteurs[$row->$fieldID] : $row->$fieldID);
+				}
+				else if($fieldID=="avis")
+				{
+					//		displayAvisMenu($fieldID,$row);
+					if($sec)
+					{
+						?>
+						<select onchange="window.location='index.php?action=set_property&property=<?php echo $fieldID; ?>&id_origine=<?php echo $row->id_origine; ?>&value=' + this.value;">
+						<?php
+			//			rr();
+						foreach($listeavis as $key => $value)
+						{
+							$selected = ($key == $row->$fieldID) ? "selected=on" : "";
+							echo "<option ".$selected." value=\"".$key."\">".$value."</option>\n";
+						}
+						?>
+						</select>
+						<?php
+					}
+					else if($bur || !isset($row->statut) || $row->statut != "doubleaveugle")
+					{
+						$content = isset($tous_avis[$row->$fieldID]) ? $tous_avis[$row->$fieldID] : $row->$fieldID;
+						showIconAvis($fieldID,$data);
+						echo $content;
+					}
+				}
+				else if($fieldID == "concours")
+				{
+					echo isset($concours[$row->$fieldID]) ? $concours[$row->$fieldID]->intitule : "";
+				}
+				else if($fieldID=="sousjury")
+				{
+					?>
+					<!-- Displaying sous jury menu -->
+					<?php 
+					/***
+					displaySousJuryMenu($fieldID,$row);***/
+					echo $row->$fieldID;
+				}
+				else if($data != "")
+				{
+					?>
+					<!-- Displaying field <?php echo $fieldID; ?>menu -->
+					<?php 
+
+					if($fieldID=="nom")
+					{
+						echo "<a href=\"?action=edit&amp;id=".($row->id)."\">";
+						echo '<span class="valeur">'.$data.'</span>';
+						echo '</a>';
+					}
+					else
+					{
+						showIconAvis($fieldID,$data);
+						if( ($type == "unit") && isset($prettyunits[$row->$fieldID]))
+							$data = $prettyunits[$row->$fieldID]->nickname;
+						echo '<span class="valeur">'.$data.'</span>';
+					}
+				}
+				echo '</td>';
+			}
+			?>
+			<!-- Displaying action menu -->
+			<?php 
+			echo '<td>';
+			displayActionsMenu($row,"", $actions2);
+			echo '</td>';
+			?>
+			</tr>
+		<?php
 		}
 		?>
 </table>

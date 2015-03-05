@@ -35,9 +35,49 @@ function getScrollXY() {
 	window.alert( 'Horizontal scrolling = ' + scrOfX + '\nVertical scrolling = ' + scrOfY );
 }
 
+
+function keepAlive(){
+	$.ajax({
+    url: 'index.php?action=ping', 
+    complete: function() {
+		// Rappel au bout de 5 minutes
+		setTimeout(keepAlive, 5*60000);
+    }
+  });
+}
+
+
+var dirty = false;
+
+
+ 
 $(function() {
-    // Stick the #nav to the top of the window
-    var nav = $('#toolbar');
+	// Intialisation du timer pour contourner les fermetures de session
+	keepAlive();
+	
+	// Ajout d'un style spécifique + 'dirty bit' à 'true' en cas de modifs d'un champs
+	$( "#editReport" ).find(":input").change(
+		function() {
+			dirty = true;
+			$(this).addClass("modifiedField");
+		}
+	);
+	
+	// Réinitialisation du 'dirty bit' en cas de sauvegarde
+	// TODO : Proposer authentification (eg via popup) si la session est fermée
+	$('[name="submitandkeepediting"]').click(function(e) {
+		dirty = false;
+	});	
+	
+	// Demande de confirmation de fermeture de page en présence de données modifiées/non sauvegardées
+	window.onbeforeunload = function() {
+		 if(dirty) {
+			 return "You have made unsaved changes. Would you still like to leave this page?";
+		 }
+	 }
+
+	// Barre d'action/titre "flottante"
+	var nav = $('#toolbar');
     var navHomeY = nav.offset().top;
     var isFixed = false;
     var $w = $(window);
@@ -49,14 +89,18 @@ $(function() {
                 position: 'fixed',
                 top: 0,
                 left: nav.offset().left,
-                width: nav.width()
+                width: nav.width(),
+				"border-width" : '3px',
+				"border-color" : '#63C3DC',
+				"border-style" : 'solid'
             });
             isFixed = true;
         }
         else if (!shouldBeFixed && isFixed)
         {
             nav.css({
-                position: 'static'
+                "position" : 'static',
+				"border-width": 0
             });
             isFixed = false;
         }

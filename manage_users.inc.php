@@ -99,6 +99,8 @@ function get_bureau_stats()
 				$pref = $row->concours;
 			$iid = $row->nom.$row->prenom;
 			
+			if($row->avis == "nonauditionne")
+				continue;
 			
 			foreach($fields as $field)
 			{

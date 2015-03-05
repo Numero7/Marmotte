@@ -42,14 +42,14 @@ ini_set('xdebug.show_local_vars', 'on');
 		
 	$fieldsSummary = array(
 		"type",
-		"rapporteur",
-		"rapporteur2",
-		"rapporteur3",
 			"nom",
 		"prenom",
-		"grade_rapport",
 			"avis",
+			"rapporteur",
 			"avis1",
+		"rapporteur2",
+		"rapporteur3",
+		"grade_rapport",
 			"theme1",
 			"theme2",
 			"theme3",
@@ -930,6 +930,33 @@ Une phrase de conclusion sur le candidat incluant un commentaire sur l'audition
 	
 	$avis_sessions = array_merge($avis_eval,$avis_pertinence);
 	
+	$icones_avis = array(
+			"tresfavorable" => "img/Icon-Yes.png",
+			"A+" => "img/Icon-Yes.png",
+			"favorable" => "img/Icon-Yes.png",
+			"A" => "img/Icon-Yes.png",
+			"A-" => "img/Icon-Yes.png",
+			"admisaconcourir" => "img/Icon-Yes.png",
+	 		"oral"=>"img/Icon-Yes.png",
+	 		"classe"=>"img/Icon-Yes.png", 
+
+			"reserve" => "img/Icon-NoComment.png",
+			"B+" => "img/Icon-NoComment.png",
+			"B" => "img/Icon-NoComment.png",
+			"B-" => "img/Icon-NoComment.png",
+
+			"defavorable" => "img/Icon-No.png",
+			"C" => "img/Icon-No.png",
+	 		'desistement' => 'img/Icon-No.png',
+	 		"nonauditionne"=>"img/Icon-No.png",
+	 		"nonclasse"=>"img/Icon-No.png",			 
+	 		"nonconcur"=>"img/Icon-No.png",
+
+			"sansavis" => "img/Icon-Maybe.png",
+			"adiscuter" => "img/Icon-Maybe.png",			
+	 		"" =>"img/Icon-Maybe.png", 
+	);
+	
 	/* Types d'avis disponibles dans l'interface pour chaque type de rapport*/
 	$typesRapportToAvis = array(
 		'Evaluation-Vague' => $avis_eval,
@@ -959,7 +986,7 @@ Une phrase de conclusion sur le candidat incluant un commentaire sur l'audition
 			
 	);
 	
-	$tous_avis = array_merge($avis_eval,$avis_classement,$avis_candidature_short,$avis_ie,$avis_pertinence,$avis_ecoles,$avis_binaire);
+	$tous_avis = array_merge($avis_eval,$avis_classement,$avis_candidature_short,$avis_ie,$avis_pertinence,$avis_ecoles,$avis_binaire, $avis_lettre);
 
 	for($i = 1; $i <= $max_classement; $i++)
 		$tous_avis[$i] = strval($i);
