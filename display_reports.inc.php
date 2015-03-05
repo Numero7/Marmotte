@@ -305,7 +305,7 @@ if(isBureauUser() && is_current_session_concours())
 					if($sec && $fieldID == "avis")
 					{
 						?>
-						<select onchange="window.location='index.php?action=set_property&property=<?php echo $fieldID; ?>&id_origine=<?php echo $row->id_origine; ?>&value=' + this.value;">
+						<select onchange="window.location='index.php?action=set_property&property=<?php echo $fieldID; ?>&id_origine=<?php echo $row->id_origine; ?>&value=' + encodeURIComponent(this.value);">
 						<?php
 			//			rr();
 						foreach($listeavis as $key => $value)
