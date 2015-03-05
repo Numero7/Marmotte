@@ -41,7 +41,7 @@ function keepAlive(){
     url: 'index.php?action=ping', 
     complete: function() {
 		// Rappel au bout de 5 minutes
-		setTimeout(keepAlive, 5*60000);
+		setTimeout(keepAlive, 30*60000);
     }
   });
 }
