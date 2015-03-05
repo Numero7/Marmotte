@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Client: localhost
--- Généré le: Mer 28 Janvier 2015 à 18:21
+-- Généré le: Jeu 05 Mars 2015 à 14:58
 -- Version du serveur: 5.5.41-0ubuntu0.14.04.1-log
 -- Version de PHP: 5.5.9-1ubuntu4.5
 
@@ -26,7 +26,6 @@ SET time_zone = "+00:00";
 -- Structure de la table `concours`
 --
 
-DROP TABLE IF EXISTS `concours`;
 CREATE TABLE IF NOT EXISTS `concours` (
   `section` tinyint(4) NOT NULL COMMENT 'numero section ou cid',
   `session` text NOT NULL COMMENT 'l''année du concours',
@@ -53,7 +52,6 @@ CREATE TABLE IF NOT EXISTS `concours` (
 -- Structure de la table `config`
 --
 
-DROP TABLE IF EXISTS `config`;
 CREATE TABLE IF NOT EXISTS `config` (
   `section` tinyint(4) NOT NULL,
   `key` text NOT NULL,
@@ -66,7 +64,6 @@ CREATE TABLE IF NOT EXISTS `config` (
 -- Structure de la table `people`
 --
 
-DROP TABLE IF EXISTS `people`;
 CREATE TABLE IF NOT EXISTS `people` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `section` tinyint(4) NOT NULL,
@@ -119,7 +116,7 @@ CREATE TABLE IF NOT EXISTS `people` (
   `diploma` varchar(20) DEFAULT NULL,
   PRIMARY KEY (`section`,`nom`,`prenom`),
   UNIQUE KEY `id` (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=6317 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=6982 ;
 
 -- --------------------------------------------------------
 
@@ -127,7 +124,6 @@ CREATE TABLE IF NOT EXISTS `people` (
 -- Structure de la table `reports`
 --
 
-DROP TABLE IF EXISTS `reports`;
 CREATE TABLE IF NOT EXISTS `reports` (
   `section` tinyint(4) NOT NULL,
   `statut` varchar(32) NOT NULL DEFAULT 'doubleaveugle',
@@ -192,7 +188,7 @@ CREATE TABLE IF NOT EXISTS `reports` (
   `Generic30` text,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=77233 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=88518 ;
 
 -- --------------------------------------------------------
 
@@ -200,7 +196,6 @@ CREATE TABLE IF NOT EXISTS `reports` (
 -- Structure de la table `sessions`
 --
 
-DROP TABLE IF EXISTS `sessions`;
 CREATE TABLE IF NOT EXISTS `sessions` (
   `id` varchar(16) NOT NULL,
   `section` int(11) NOT NULL,
@@ -216,7 +211,6 @@ CREATE TABLE IF NOT EXISTS `sessions` (
 -- Structure de la table `units`
 --
 
-DROP TABLE IF EXISTS `units`;
 CREATE TABLE IF NOT EXISTS `units` (
   `section` tinyint(11) NOT NULL,
   `nickname` varchar(30) NOT NULL DEFAULT '',
@@ -232,7 +226,6 @@ CREATE TABLE IF NOT EXISTS `units` (
 -- Structure de la table `users`
 --
 
-DROP TABLE IF EXISTS `users`;
 CREATE TABLE IF NOT EXISTS `users` (
   `id` int(10) unsigned NOT NULL DEFAULT '0',
   `login` varchar(40) NOT NULL,

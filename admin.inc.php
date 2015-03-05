@@ -145,7 +145,7 @@ if($admin_users)
 				echo "<input type=\"hidden\" name=\"login\" value=\"$user\"/>\n";
 				echo "<input type=\"hidden\" name=\"action\" value=\"infosrapporteur\"/>\n";
 				echo " <input type=\"submit\" value=\"Valider\"/>\n";
-				echo "</form></td></tr>\n";
+				echo "</td></tr></form>\n";
 			}
 		}
 		?>
