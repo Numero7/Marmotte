@@ -23,11 +23,28 @@ function displayEditableCandidate($candidate,$report = NULL,$canedit = true)
 
 	$session = current_session();
 
+	global $tous_sous_jury;
+	$concours = getConcours();
+	
 	if($report != NULL)
 	{
 		$hidden["id_origine"] = $report->id_origine;
 		$hidden["type"] = $report->type;
-		if(($report->avis == "Equivalence") || (isset($report->avis) && in_array($report->avis, $avis_candidature_necessitant_pas_rapport_sousjury)))
+		$rap_audition = false;
+		if( isset($report->concours) && isset($concours[$report->concours]) && $report->type == "Candidature")
+		{
+			$intitule = $concours[$report->concours]->intitule;
+			if(strpos($intitule, "DR") === false)
+			{
+				if(isset($tous_sous_jury[$report->concours]))
+				{
+					$nb_sous_jurys = count($tous_sous_jury[$report->concours]);
+					if($nb_sous_jurys >= 2)
+						$rap_audition = true;
+				}
+			}
+		}
+		if(!$rap_audition)
 			$fields = $fieldsCandidatAvantAudition;
 		else
 			$fields = $fieldsCandidatAuditionne;
