@@ -216,21 +216,18 @@ if(isBureauUser() && is_current_session_concours())
 		$concours = getConcours();
 		
 
-		$baseavis = array();
+		$listeavis = array();
 		if( is_current_session_concours() )
 		{
 			global $avis_candidature_short;
-			$baseavis = $avis_candidature_short;
+			$listeavis = $avis_candidature_short;
 		}
 		else
 		{
 			global $tous_avis;
-			$baseavis = $tous_avis;
+			$listeavis = $tous_avis;
 		}
-		$listeavis = array();
-		foreach($baseavis as $key => $value)
-			if(!is_numeric($key))
-			$listeavis[$key] = $value;
+
 		if(isset($filters['avis']) && isset($data['avis']['liste']))
 			$avis = $data['avis']['liste'];		
 		
