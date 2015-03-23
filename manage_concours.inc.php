@@ -132,6 +132,12 @@ function setConcours($conc)
 
 }
 
+function setConcoursStatut($code, $statut)
+{
+	$sql = "UPDATE ".concours_db." SET statut=\"".real_escape_string($statut)."\" WHERE code=\"".real_escape_string($code)."\"";
+	sql_request($sql);
+}
+
 function deleteConcours($code)
 {
 	$sql = "DELETE FROM ".concours_db;

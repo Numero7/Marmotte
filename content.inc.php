@@ -514,7 +514,14 @@ function alertText($text)
 					include "admin.inc.php";
 					scrollToId('concours');
 					break;
-					case 'ajoutlabo':
+				case "statutconcours":
+					$code = isset($_REQUEST["code"]) ? $_REQUEST["code"] : "";
+					$statut = isset($_REQUEST["statut"]) ? $_REQUEST["statut"] : "";
+					setConcoursStatut($code, $statut);
+					include "admin.inc.php";
+					scrollToId('concours');
+					break;
+				case 'ajoutlabo':
 					if(isset($_REQUEST["nickname"]) and isset($_REQUEST["code"]) and isset($_REQUEST["fullname"]) and isset($_REQUEST["directeur"]))
 					{
 						addUnit(

@@ -1475,4 +1475,8 @@ Une phrase de conclusion sur le candidat incluant un commentaire sur l'audition
 	
 	$possible_type_labels = array("Type évaluation", "Type d\'évaluation", "type");
 	
-?>
+	$statuts_concours = 
+	array("IE"=>"IE","JAD"=>"JAD", "auditions"=>"auditions","admissibilite"=>"admissibilité","rapports"=>"rapports", "transmis"=>"transmis");
+	
+	
+	?>
