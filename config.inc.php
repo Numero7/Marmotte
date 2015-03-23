@@ -852,6 +852,7 @@ Une phrase de conclusion sur le candidat incluant un commentaire sur l'audition
 	 		"admisaconcourir" => "Admis a concourir",
 	 		"nonconcur"=>"Non-admis à concourir"
 	 		);
+		
 	$avis_candidature_necessitant_pas_rapport_sousjury = array("", "adiscuter", "nonauditionne", "desistement");
 	
 	$max_classement = 30;
