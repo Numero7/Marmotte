@@ -58,8 +58,11 @@ $(function() {
 	// Ajout d'un style spécifique + 'dirty bit' à 'true' en cas de modifs d'un champs
 	$( "#editReport" ).find(":input").change(
 		function() {
-			dirty = true;
 			$(this).addClass("modifiedField");
+			if ($(this).attr("type")!="file")
+			{
+				dirty = true;
+			}
 		}
 	);
 	
