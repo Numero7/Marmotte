@@ -168,7 +168,7 @@ function displayEditableField($row, $fieldId, $canedit, $session, $extra_object 
 				$editable = true;
 
 			echo '<td style="width:10%"><span>'.$title.'</span>';
-			echo '</td>';
+			echo '</td></tr><tr>';
 
 			if(!isset($row->$fieldId))
 				$row->$fieldId = '';
