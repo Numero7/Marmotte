@@ -167,7 +167,7 @@ function displayEditableField($row, $fieldId, $canedit, $session, $extra_object 
 				if(isset($row->statut) && $row->statut == "audition")
 				$editable = true;
 
-			echo '<td style="width:10%"><span>'.$title.'</span>';
+			echo '<td style="width:10%"><span><B>'.$title.'</B></span>';
 			echo '</td></tr><tr>';
 
 			if(!isset($row->$fieldId))
