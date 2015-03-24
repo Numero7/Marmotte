@@ -989,24 +989,19 @@ function is_field_editable($row, $fieldId)
 
 	if(isset($row->statut) && ($row->statut == "audition"))
 	{
-		if(isset($row->sousjury) && isBureauUser() )
+		if(isset($row->sousjury) && isPresidentSousJury($row->sousjury))
 			return true;
 
 		if($fieldId == "fichiers")
 			return true;
 
-		if( $is_rapp1  && ($fieldId == "prerapport" || $fieldId == "avissousjury" || $fieldId=="audition"))
+		if( $is_rapp1  && ($fieldId == "avissousjury" || $fieldId=="audition"))
 			return true;
-
-		if( $is_rapp2  && ($fieldId == "prerapport2"))
-			return true;
-
-		if(isset($row->type) && $row->type == "Candidature" && isset($row->avis) && is_numeric($row->avis) && $fieldId =="rapport" && ($is_rapp1 || $is_rapp2 || $is_rapp3))
-			return true;
-
-		return false;
 	}
 
+	if(isset($row->type) && $row->type == "Candidature" && isset($row->avis) && is_numeric($row->avis) && $fieldId =="rapport" && ($is_rapp1 || $is_rapp2 || $is_rapp3))
+		return true;
+	
 
 	if(isset($row->statut) && ($row->statut == "rapport" || $row->statut == "publie"))
 		return isSecretaire();
