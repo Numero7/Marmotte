@@ -369,7 +369,8 @@ if($admin_concours)
 		<td>
 		intitule <input name="intitule" value="DR2"></input>
 		</td><td>
-		postes <select  name="postes"><?php for($i = 0 ; $i < 100; $i++) echo "<option value=\"".$i."\">".$i."</option>"; ?></select>
+		postes <select  name="postes">
+		<?php for($i = 0 ; $i < 100; $i++) echo "<option value=\"".$i."\">".$i."</option>"; ?></select>
 				</td></tr><tr>
 				<?php 
 				
@@ -405,7 +406,41 @@ if($admin_concours)
 				</form>
 		<br/>
 				<hr/>
-				
+<h3>Changer le statut du concours</h3>
+<p>Cette fonction permet de changer le statut du concours au fur et à mesure de son avancement.</p>
+<ul>
+<li>IE: avant et pendant l'IE</li>
+<li>JAD: avant et pendant le JAD</li>
+<li>audition: avant et pendant les auditions</li>
+<li>admissibilité: avant et pendant le jury d'admissibilité</li>
+<li>rapports: préparation des rapports sur les candidats classés et auditionnés</li>
+<li>transmis: rapports transmis au jury d'admission</li>
+</ul>
+<?php
+$concours = getConcours();
+foreach($concours as $conc)
+{
+	echo "<B>".$conc->intitule."</B>";
+	?>
+	<form method="post" action="index.php">
+	<input type="hidden" name="admin_concours" value="" />
+	<input type="hidden" name="action" value="statutconcours" />
+	<input type="hidden" name="code" value="<?php echo $conc->code; ?>" />
+	<select name="statut">
+	<?php 
+	global $statuts_concours;
+	foreach($statuts_concours as $code => $intitule)
+	{
+		$visible = ($conc->statut == $code) ? " selected=\"selected\" " : "";
+		echo "<option value=\"".$code."\" ".$visible." >".$intitule."</option>";
+	}
+	?>
+	</select>
+	 <input 	type="submit" value="Changer statut" />
+	</form>
+	<?php 
+}
+?>
 <h3>Affecter les sous-jurys</h3>
 <p>Cette fonction affecte automatiquement chaque candidat au sous-jury auquel appartient son premier rapporteur.</p>				
 
@@ -432,7 +467,7 @@ if($admin_concours)
 				<input type="hidden" name="action" value="delete_concours" />
 				<input type="submit" value="Supprimer" />
 				</form>
-				</br>
+				<br/>
 		<hr/>
 				<h3>Rapports JAD</h3>
 				<form method="post" action="export.php">

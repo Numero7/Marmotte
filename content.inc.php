@@ -220,6 +220,7 @@ function alertText($text)
 			if(isset($actions_level[$action]) && getUserPermissionLevel() < $actions_level[$action])
 				throw new Exception("Vous n'avez pas le niveau de permission suffisant pour exécuter l'action '".$action."'");
 
+			//name="action"rr();
 			switch($action)
 			{
 				case 'delete_units':
@@ -392,7 +393,9 @@ function alertText($text)
 							else if(isset($_REQUEST["submitandviewnext"]))
 								viewWithRedirect($next);
 							else if(isset($_REQUEST["submitandkeepediting"]))
+							{
 								editWithRedirect($report->id);
+							}
 							else if(isset($_REQUEST["submitandkeepviewing"]))
 								viewWithRedirect($report->id);
 							else
@@ -523,7 +526,14 @@ function alertText($text)
 					include "admin.inc.php";
 					scrollToId('concours');
 					break;
-					case 'ajoutlabo':
+				case "statutconcours":
+					$code = isset($_REQUEST["code"]) ? $_REQUEST["code"] : "";
+					$statut = isset($_REQUEST["statut"]) ? $_REQUEST["statut"] : "";
+					setConcoursStatut($code, $statut);
+					include "admin.inc.php";
+					scrollToId('concours');
+					break;
+				case 'ajoutlabo':
 					if(isset($_REQUEST["nickname"]) and isset($_REQUEST["code"]) and isset($_REQUEST["fullname"]) and isset($_REQUEST["directeur"]))
 					{
 						addUnit(

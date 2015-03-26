@@ -42,8 +42,10 @@ ini_set('xdebug.show_local_vars', 'on');
 		
 	$fieldsSummary = array(
 		"type",
+			"unite",
 			"nom",
 		"prenom",
+			"ecole",
 			"avis",
 			"rapporteur",
 			"avis1",
@@ -52,8 +54,7 @@ ini_set('xdebug.show_local_vars', 'on');
 		"grade_rapport",
 			"theme1",
 			"theme2",
-			"theme3",
-			"unite"
+			"theme3"
 	);
 	
 	$fieldsSummaryConcours = array(
@@ -114,7 +115,7 @@ ini_set('xdebug.show_local_vars', 'on');
 		"concours" => "Concours",
 			"sousjury" => "Sous-jury",
 			"section"=> "Section",
-			"ecole" => "Ecole",
+			"ecole" => "Intitulé",
 		"nom" => "Nom",
 		"prenom" => "Prénom",
 		"unite" => "Unité",
@@ -147,8 +148,8 @@ ini_set('xdebug.show_local_vars', 'on');
 	array(
 			"Expertise" => array("ecole" => "Intitulé du rapport"),
 			"Generique" => array("ecole" => "Intitulé du rapport"),
-				"GeneriqueChercheur" => array("ecole" => "Intitulé du  rapport"),
-			"Changement-section" => array("ecole" => "Intitulé du  rapport")
+				"DEChercheur" => array("ecole" => "Intitulé du  rapport"),
+			"ChgtSection" => array("ecole" => "Intitulé du  rapport")
 	);
 	
 	/*
@@ -462,8 +463,8 @@ ini_set('xdebug.show_local_vars', 'on');
 	$fieldsUnitesExtra = array(
 			'Expertise' => array('ecole'),
 			'Generique' => array('ecole'),
-				'GeneriqueChercheur' => array('ecole'),
-			'Changement-section' => array('ecole')
+				'DEChercheur' => array('ecole'),
+			'ChgtSection' => array('ecole')
 			
 	);
 	
@@ -576,62 +577,62 @@ Une phrase de conclusion sur le candidat incluant un commentaire sur l'audition
 	$report_prototypes = array(
 			'Expertise' => array('ecole' => "Expertise (projet ou suivi ou intégration équipe ou restructuration)"),
 			'Generique' => array('ecole' => "Rapport sur unité"),
-			'GeneriqueChercheur' => array('ecole' => "Rapport sur chercheur"),
-			"Changement-section" => array('ecole' => "Changement de section, évaluation permanente par une deuxième section")
+			'DEChercheur' => array('ecole' => "Rapport sur chercheur"),
+			"ChgtSection" => array('ecole' => "Changement de section, évaluation permanente par une deuxième section")
 	);
 
 	/**** TYPES DE RAPPORTS **************/
 	$typesRapportsChercheurs = array(
-			'Evaluation-Vague' => 'Evaluation à Vague',
-			'Evaluation-MiVague' => 'Evaluation à Mi-Vague',
+			'EvalVague' => 'Evaluation à Vague',
+			'EvalMiVague' => 'Evaluation à Mi-Vague',
 			'Promotion' => 'Promotion',
 			'Titularisation' => 'Titularisation',
 			'Affectation' => 'Confirmation d\'Affectation',
 			'Reconstitution' => 'Reconstitution de Carrière',
 			'Delegation' => 'Demande de Délégation',
 			'Emeritat' => 'Eméritat (1ere demande)',
-			'Emeritat-renouvellement' => 'Eméritat (renouvellement)',
-			'Changement-section' => 'Changement de section',
-			'MedailleBronze' => 'Médaille de Bronze',
-			'MedailleArgent' => 'Médaille d\'Argent',
-			'GeneriqueChercheur' => 'Générique (chercheur)'
+			'EmeritatRen' => 'Eméritat (renouvellement)',
+			'ChgtSection' => 'Changement de section',
+			'MedBronze' => 'Médaille de Bronze',
+			'MedArgent' => 'Médaille d\'Argent',
+			'DEChercheur' => 'Générique (chercheur)'
 	);
 	
 	$typesRapportsChercheursShort = array(
-			'Evaluation-Vague' => 'Eval à Vague',
-			'Evaluation-MiVague' => 'Eval à Mi-Vague',
+			'EvalVague' => 'Eval à Vague',
+			'EvalMiVague' => 'Eval à Mi-Vague',
 			'Promotion' => 'Promotion',
 			'Titularisation' => 'Titularisation',
 			'Delegation' => 'Délégation',
 			'Affectation' => 'Affectation',
 			'Reconstitution' => 'Reconstitution',
-			'Changement-section' => 'Changt section',
+			'ChgtSection' => 'Changt section',
 			'Emeritat' => 'Eméritat',
-			'Emeritat-renouvellement' => 'Eméritat Renouv.',
-			'MedailleBronze' => 'Méd Bronze',
-			'MedailleArgent' => 'Méd Argent',
-			'GeneriqueChercheur' => 'Générique'
+			'EmeritatRen' => 'Eméritat Renouv.',
+			'MedBronze' => 'Méd Bronze',
+			'MedArgent' => 'Méd Argent',
+			'DEChercheur' => 'Générique'
 	);
 	
 	$typesRapportsUnites = array(
-			'Changement-Directeur' => 'Changement de Directeur',
-			'Changement-Directeur-Adjoint' => 'Changement de Directeur Adjoint',
+			'ChgtDir' => 'Changement de Directeur',
+			'ChgtDir-Adjoint' => 'Changement de Directeur Adjoint',
 			'Renouvellement' => 'Renouvellement',
 			'Association' => 'Association',
 			'Ecole' => 'Ecole Thematique',
-			'Comite-Evaluation' => 'Comité d\'Evaluation',
+			'EvalLabo' => 'Comité d\'Evaluation',
 			'Expertise' => 'Expertise',
 			'Colloque' => 'Colloque',
 			'Generique' => 'Générique'
 	);
 	
 	$typesRapportsUnitesShort = array(
-			'Changement-Directeur' => 'Changt Directeur',
-			'Changement-Directeur-Adjoint' => 'Changt Dir. Adj.',
+			'ChgtDir' => 'Changt Directeur',
+			'ChgtDir-Adjoint' => 'Changt Dir. Adj.',
 			'Renouvellement' => 'Renouvellement',
 			'Association' => 'Association',
 			'Ecole' => 'Ecole Thematique',
-			'Comite-Evaluation' => 'Comité d\'Evaluation',
+			'EvalLabo' => 'Comité d\'Evaluation',
 			'Expertise' => 'Expertise',
 			'Colloque' => 'Colloque',
 			'Generique' => 'Générique'
@@ -764,25 +765,25 @@ Une phrase de conclusion sur le candidat incluant un commentaire sur l'audition
 			'Delegation' => $fieldsArrayDelegation,
 		'Candidature' => 	$fieldsArrayCandidat,
 		'Equivalence' => 	$fieldsArrayIE,
-			'Evaluation-Vague' => $fieldsArrayChercheur,
-			'Evaluation-MiVague' => $fieldsArrayChercheur,
+			'EvalVague' => $fieldsArrayChercheur,
+			'EvalMiVague' => $fieldsArrayChercheur,
 			'Promotion' => $fieldsArrayChercheur,
-			'Changement-section' => $fieldsArrayChercheur,
-			'MedailleBronze' => $fieldsArrayChercheur,
-			'MedailleArgent' => $fieldsArrayChercheur,
+			'ChgtSection' => $fieldsArrayChercheur,
+			'MedBronze' => $fieldsArrayChercheur,
+			'MedArgent' => $fieldsArrayChercheur,
 			'Titularisation' => $fieldsArrayChercheur,
 			'Affectation' => $fieldsArrayChercheur,
 			'Reconstitution' => $fieldsArrayChercheur,
 			'Emeritat' => $fieldsArrayChercheur,
-			'Emeritat-renouvellement' => $fieldsArrayChercheur,
-			'Changement-Directeur' => $fieldsArrayUnite,
-			'Changement-Directeur-Adjoint' => $fieldsArrayUnite,
+			'EmeritatRen' => $fieldsArrayChercheur,
+			'ChgtDir' => $fieldsArrayUnite,
+			'ChgtDir-Adjoint' => $fieldsArrayUnite,
 			'Renouvellement' => $fieldsArrayUnite,
 			'Association' => $fieldsArrayUnite,
 			'Ecole' => $fieldsArrayEcole,
-			'Comite-Evaluation' => $fieldsArrayUnite,
+			'EvalLabo' => $fieldsArrayUnite,
 			'Generique' => $fieldsArrayUnite,
-			'GeneriqueChercheur' => $fieldsArrayChercheur,
+			'DEChercheur' => $fieldsArrayChercheur,
 			'Colloque' => $fieldsArrayUnite,
 			'Expertise' => $fieldsArrayUnite,
 	);
@@ -857,7 +858,10 @@ Une phrase de conclusion sur le candidat incluant un commentaire sur l'audition
 	
 	$max_classement = 30;
 	for($i = 1; $i <= $max_classement; $i++)
-		$avis_candidature_short[strval($i)] = $avis_classement[strval($i)] = "<B>$i</B>";
+	{
+		$avis_candidature_short[strval($i)] = "<B>$i</B>";
+		$avis_classement[strval($i)] = "<B>$i</B>";
+	}
 	
 	/* Pour les SPE par exemple*/
 	$avis_vide = array(""=>"");
@@ -960,38 +964,47 @@ Une phrase de conclusion sur le candidat incluant un commentaire sur l'audition
 	
 	/* Types d'avis disponibles dans l'interface pour chaque type de rapport*/
 	$typesRapportToAvis = array(
-		'Evaluation-Vague' => $avis_eval,
-		'Evaluation-MiVague' => $avis_eval,
+		'EvalVague' => $avis_eval,
+		'EvalMiVague' => $avis_eval,
 		'Emeritat' => $avis_ternaire,
-		'Emeritat-renouvellement' => $avis_ternaire,
+		'EmeritatRen' => $avis_ternaire,
 		'Promotion' => $avis_classement,
-		'Changement-section' => $avis_chgt,
+		'ChgtSection' => $avis_chgt,
 		'Candidature' => $avis_candidature_short,
 		'Equivalence' => $avis_ie,
 		'Affectation' => $avis_ternaire,
 		'Reconstitution' => $avis_binaire,
 		'Titularisation' => $avis_ternaire,
 		'Delegation' => $avis_deleg,
-		'Changement-Directeur' => $avis_pertinence,
-		'Changement-Directeur-Adjoint' => $avis_pertinence,
+		'ChgtDir' => $avis_pertinence,
+		'ChgtDir-Adjoint' => $avis_pertinence,
 		'Renouvellement' => $avis_pertinence,
 		'Association' => $avis_pertinence,
 		'Ecole' => $avis_ecoles,
-		'Comite-Evaluation' => $avis_binaire,
+		'EvalLabo' => $avis_binaire,
 		'Generique' => $avis_pertinence,
-		'GeneriqueChercheur' => $avis_pertinence,
+		'DEChercheur' => $avis_pertinence,
 		'Expertise' => $avis_ternaire,
 		'Colloque' => $avis_ternaire,
-			'MedailleBronze' => $avis_classement,
-			'MedailleArgent' => $avis_classement,
+			'MedBronze' => $avis_classement,
+			'MedArgent' => $avis_classement,
 			
 	);
 	
-	$tous_avis = array_merge($avis_eval,$avis_classement,$avis_candidature_short,$avis_ie,$avis_pertinence,$avis_ecoles,$avis_binaire, $avis_lettre);
+	$tous_avis = array_merge(
+			$avis_eval,
+			$avis_candidature_short,
+			$avis_ie,
+			$avis_pertinence,
+			$avis_ecoles,
+			$avis_binaire, 
+			$avis_lettre
+			);
 
 	for($i = 1; $i <= $max_classement; $i++)
-		$tous_avis[$i] = strval($i);
-	
+			$tous_avis[$i] = strval($i);
+	unset($tous_avis[0]);
+		
 /* Definition des checkboxes à la fin de certains rapports*/
 	
 	/*Pour les evals à vague et mi vague*/
@@ -1030,8 +1043,8 @@ Une phrase de conclusion sur le candidat incluant un commentaire sur l'audition
 	);
 	
 	$typesRapportsToCheckboxes = array(
-	'Evaluation-Vague' => $evalCheckboxes,
-	'Evaluation-MiVague' => $evalCheckboxes,
+	'EvalVague' => $evalCheckboxes,
+	'EvalMiVague' => $evalCheckboxes,
 	'Renouvellement' => $pertinenceCheckboxes,
 	'Association' => $pertinenceCheckboxes,
 	'Ecole' => $ecoleCheckboxes,
@@ -1039,8 +1052,8 @@ Une phrase de conclusion sur le candidat incluant un commentaire sur l'audition
 	);
 
 	$typesRapportsToCheckboxesTitles = array(
-			'Evaluation-Vague' => '<B>EVALUATION A VAGUE DE CHERCHEUR<br/>Avis de la section sur l’activité du chercheur</B>',
-			'Evaluation-MiVague' => '<B>EVALUATION A MI-VAGUE DE CHERCHEUR<br/>Avis de la section sur l’activité du chercheur</B>',
+			'EvalVague' => '<B>EVALUATION A VAGUE DE CHERCHEUR<br/>Avis de la section sur l’activité du chercheur</B>',
+			'EvalMiVague' => '<B>EVALUATION A MI-VAGUE DE CHERCHEUR<br/>Avis de la section sur l’activité du chercheur</B>',
 			'Renouvellement' => '<B>AVIS DE PERTINENCE DU SOUTIEN DU CNRS AUX UNITES</B>',
 			'Association' => '<B>AVIS DE PERTINENCE DU SOUTIEN DU CNRS AUX UNITES</B>',
 			'Delegation' => '<B>AVIS DE LA SECTION</B>',
@@ -1050,28 +1063,28 @@ Une phrase de conclusion sur le candidat incluant un commentaire sur l'audition
 
 	$typesRapportsToEnteteGauche = array(
 			'Delegation' => '<B>Objet de l’évaluation :</B><br/><I>demande de délégation</I>',
-			'Evaluation-Vague' => '<B>Objet de l’évaluation :</B><br/><I>évaluation à vague de chercheur</I>',
-			'Evaluation-MiVague' => '<B>Objet de l’évaluation :</B><br/><I>évaluation à mi-vague de chercheur</I>',
+			'EvalVague' => '<B>Objet de l’évaluation :</B><br/><I>évaluation à vague de chercheur</I>',
+			'EvalMiVague' => '<B>Objet de l’évaluation :</B><br/><I>évaluation à mi-vague de chercheur</I>',
 			'Promotion' => '<B>Objet de l’évaluation :</B><br/>Avancement de grade<br/><B>Au grade de :</B>',
-			'Changement-section' => '<B>Objet de l’évaluation :</B><br/>',
+			'ChgtSection' => '<B>Objet de l’évaluation :</B><br/>',
 			'Candidature' => '<B>Objet de l’évaluation :</B><br/><I>Candidature au concours</I>',
 			'Affectation' => '<B>Objet de l’évaluation :</B><br/>Affectation',
 			'Titularisation' => '<B>Objet de l’évaluation :</B><br/>Titularisation',
 			'Reconstitution' => '<B>Objet :</B><br/>Reconstitution de carrière',
-			'Changement-Directeur' =>  '<B>Objet de l’évaluation :</B><br/>Changement de directeur',
-			'Changement-Directeur-Adjoint' =>  '<B>Objet de l’évaluation :</B><br/>Changement de directeur adjoint',
+			'ChgtDir' =>  '<B>Objet de l’évaluation :</B><br/>Changement de directeur',
+			'ChgtDir-Adjoint' =>  '<B>Objet de l’évaluation :</B><br/>Changement de directeur adjoint',
 			'Renouvellement' => '<B>Objet de l’examen :</B> <I>avis de pertinence d’association au CNRS : renouvellement</I>',
 			'Association' => '<B>Objet de l’examen :</B> <I>avis de pertinence d’association au CNRS : projet d\'association</I>',
 			'Ecole' => '<B>Objet de l’évaluation :</B><br/> Ecole Thématique',
-			'Comite-Evaluation' => '<B>Objet de l’examen :</B> Comité d\'évaluation',
+			'EvalLabo' => '<B>Objet de l’examen :</B> Comité d\'évaluation',
 			'Generique' => '<B>Objet de l’évaluation :</B><br/>',
-			'GeneriqueChercheur' => '<B>Objet de l’évaluation :</B><br/>',
-			'MedailleBronze' => '<B>Objet de l’évaluation :</B><br/>Proposition de lauréat pour la médaille de bronze',
-			'MedailleArgent' => '<B>Objet de l’évaluation :</B><br/>Proposition de lauréat pour la médaille d\'argent',
+			'DEChercheur' => '<B>Objet de l’évaluation :</B><br/>',
+			'MedBronze' => '<B>Objet de l’évaluation :</B><br/>Proposition de lauréat pour la médaille de bronze',
+			'MedArgent' => '<B>Objet de l’évaluation :</B><br/>Proposition de lauréat pour la médaille d\'argent',
 			'Expertise' =>  '<B>Objet de l’examen :</B><br/>',
 			'Colloque' =>  '<B>Objet de l’examen :</B> Colloque',
 			'Emeritat' => '<B>Objet de l’évaluation :</B><br/><I>Eméritat (1ere demande)</I>',
-			'Emeritat-renouvellement' => '<B>Objet de l’évaluation :</B><br/><I>Eméritat (renouvellement)</I>',
+			'EmeritatRen' => '<B>Objet de l’évaluation :</B><br/><I>Eméritat (renouvellement)</I>',
 			'' => ''
 	);
 
@@ -1087,26 +1100,26 @@ Une phrase de conclusion sur le candidat incluant un commentaire sur l'audition
 	
 	$typesRapportsToEnteteDroit = array(
 			'Delegation' => 'Individu',
-			'Evaluation-Vague' => 'Individu',
-			'Evaluation-MiVague' => 'Individu',
-			'MedailleBronze' => 'Individu',
-			'MedailleArgent' => 'Individu',
+			'EvalVague' => 'Individu',
+			'EvalMiVague' => 'Individu',
+			'MedBronze' => 'Individu',
+			'MedArgent' => 'Individu',
 			'Emeritat' => 'Individu',
-			'Emeritat-renouvellement' => 'Individu',
+			'EmeritatRen' => 'Individu',
 			'Promotion' => 'Individu',
-			'Changement-section' => 'Individu',
+			'ChgtSection' => 'Individu',
 			'Candidature' => 'Concours',
 			'Affectation' => 'Individu',
 			'Titularisation' => 'Individu',
 			'Reconstitution' => 'Individu',
-			'Changement-Directeur' =>  'Unite',
-			'Changement-Directeur-Adjoint' =>  'Unite',
+			'ChgtDir' =>  'Unite',
+			'ChgtDir-Adjoint' =>  'Unite',
 			'Renouvellement' => 'Unite',
 			'Association' => 'Unite',
 			'Ecole' => 'Ecole',
-			'Comite-Evaluation' => 'Unite',
+			'EvalLabo' => 'Unite',
 			'Generique' => 'Unite',
-			'GeneriqueChercheur' => 'Individu',
+			'DEChercheur' => 'Individu',
 			'Expertise' => 'Unite',
 			'Colloque' => 'Unite',
 			'' => ''
@@ -1449,30 +1462,34 @@ Une phrase de conclusion sur le candidat incluant un commentaire sur l'audition
 	
 	$sgcn_keywords_to_eval_types = array(
 			"cole th" => "Ecole",
-			"Evaluation" => 'Evaluation-Vague',
+			"Evaluation" => 'EvalVague',
 			'Reconstitution' => 'Reconstitution',
 			'Titularisation' => 'Titularisation',
 			'promotion' => 'Promotion',
-			'Changement de direction' => 'Changement-Directeur',
-			'Changement de section' => 'Changement-section',
+			'Changement de direction' => 'ChgtDir',
+			'Changement de section' => 'ChgtSection',
 			'Expertise' => 'Expertise',
 			"Renouvellement de GDR" =>  'Renouvellement',
 			"Evaluation" => "",
 			"Avis de pertinence sur un projet d'association au CNRS" =>'Association',
 			"Avis de pertinence sur un renouvellement d'association au CNRS" => "Renouvellement",
-			"Changement de direction d'unité" => "Changement-Directeur",
+			"Changement de direction d'unité" => "ChgtDir",
 			"Renouvellement de GDR" => "Renouvellement",
 			"Expertise" => "Expertise",
-			"Rattachement" => "GeneriqueChercheur",
-			"Suivi" => "GeneriqueChercheur",
-			"Emeritat (renouvellement)" => "Emeritat-renouvellement",
+			"Rattachement" => "DEChercheur",
+			"Suivi" => "DEChercheur",
+			"Emeritat (renouvellement)" => "EmeritatRen",
 			"Emeritat (1" => "Emeritat",
-			"Renouvellement de mise" => "GeneriqueChercheur",
-			"Accueil" => "GeneriqueChercheur"
+			"Renouvellement de mise" => "DEChercheur",
+			"Accueil" => "DEChercheur"
 	);
 	
 	$users_not_rapporteur = array('admin','yawn');
 	
 	$possible_type_labels = array("Type évaluation", "Type d\'évaluation", "type");
 	
-?>
+	$statuts_concours = 
+	array("IE"=>"IE","JAD"=>"JAD", "auditions"=>"auditions","admissibilite"=>"admissibilité","rapports"=>"rapports", "transmis"=>"transmis");
+	
+	
+	?>

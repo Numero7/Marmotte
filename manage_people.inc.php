@@ -76,7 +76,7 @@ function updateCandidateFromRequest($request, $oldannee="")
 		$ppnom = $request['previousnom'];
 		$ppprenom = $request['previousprenom'];
 
-		if( (isset($data->nom) && $data->nom != $ppnom) || (isset($data->nom) && $data->nom != $ppnom) )
+		if( (isset($data->nom) && $ppnom != "" && $data->nom != $ppnom) || (isset($data->prenom) && $ppprenom != "" && $data->prenom != $ppprenom) )
 		{
 			$sql = "UPDATE ".reports_db." SET nom=\"".$data->nom."\", prenom=\"".$data->prenom."\" WHERE nom =\"".$ppnom."\" AND prenom=\"".$ppprenom."\"  AND section=\"".currentSection()."\"";
 			sql_request($sql);

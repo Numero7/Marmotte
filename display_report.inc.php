@@ -167,8 +167,9 @@ function displayEditableField($row, $fieldId, $canedit, $session, $extra_object 
 				if(isset($row->statut) && $row->statut == "audition")
 				$editable = true;
 
-			echo '<td style="width:10%"><span>'.$title.'</span>';
-			echo '</td>';
+				echo '<td style="width:10%"><span><B>'.$title.'</B></span>';
+			if($fieldsTypes[$fieldId] == "long" || $fieldsTypes[$fieldId] == "treslong")
+			echo '</tr><tr>';
 
 			if(!isset($row->$fieldId))
 				$row->$fieldId = '';
@@ -373,7 +374,10 @@ function displayEditableReport($row, $canedit = true)
 	if(array_key_exists($eval_type, $typesRapports))
 		$eval_name = $typesRapports[$eval_type];
 
-	$hidden = array("fieldtype" => $eval_type);
+	$hidden = array(
+			"fieldtype" => $eval_type,
+			"action" => "update"
+			);
 
 	$rapporteurs  = listNomRapporteurs();
 
@@ -542,6 +546,12 @@ function displayEditableReport($row, $canedit = true)
 			$fieldsUnites0 = array_merge($fieldsUnitesExtra[$eval_type],$fieldsUnites0);
 			
 		echo "<div id=\"toolbar\">";
+
+		$hidden["action"] = "update";
+		$hidden["create_new"] = true;
+		$hidden["id_origine"] = $row->id_origine;
+		
+		
 		displayEditionFrameStart("",$hidden,$submits);
 		voir_rapport_pdf($row);
 		echo "<h1>".$eval_name. ": ". (isset($row->unite) ? $row->unite : "")." (#".(isset($row->id) && $row->id != 0 ? $row->id : "New").")</h1>";

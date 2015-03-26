@@ -318,9 +318,9 @@ function addCsvReport($subtype, $properties)
 			else if($key == "Evaluation")
 			{
 				if(isset($properties["Phase évaluation"]) && ($properties["Phase évaluation"] =="mi-vague"))
-					$properties["type"] = 'Evaluation-MiVague';
+					$properties["type"] = 'EvalMiVague';
 				else
-					$properties["type"] = 'Evaluation-Vague';
+					$properties["type"] = 'EvalVague';
 			}
 			else $properties["type"] = $value;
 		}		
@@ -334,7 +334,7 @@ function addCsvReport($subtype, $properties)
 		foreach($properties as $key => $value)
 			if($key == "Chercheur" || $key == "Nom" || $key == "Prenom")
 			{
-				$properties["type"] = 'GeneriqueChercheur';
+				$properties["type"] = 'DEChercheur';
 				break;
 			}
 		$properties["type"] = 'Generique';

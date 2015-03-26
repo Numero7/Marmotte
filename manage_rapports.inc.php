@@ -670,13 +670,13 @@ function addReportToDatabase($report,$normalize = true)
 		{
 			$current_id = $current_report->id;
 			$sql = "UPDATE ".reports_db." SET id_origine=".intval($new_id)." WHERE id_origine=".intval($id_origine)." OR id=".intval($new_id)." OR id=".intval($current_id)." OR id_origine=".intval($current_id).";";
-			//echo $sql;
+//			echo $sql;
 			sql_request($sql);
 		}
 		else
 		{
 			$sql = "UPDATE ".reports_db." SET id_origine=".intval($new_id)." WHERE id=".intval($new_id).";";
-			//echo $sql;
+//			echo $sql;
 			sql_request($sql);
 		}
 	}
@@ -726,7 +726,7 @@ function set_property($property,$id_origine, $value, $all_reports = false)
 		{
 		$sql = "UPDATE reports SET `".real_escape_string($property)."`=\"".real_escape_string($value)."\" ";
 		$sql .= " WHERE `".real_escape_string($property)."`=\"\" AND nom=\"".$report->nom."\" and prenom=\"".$report->prenom."\"";
-		$sql .= " AND id_session=\"".current_session()."\" AND section=\"".$report->section."\" AND type=\"".$report->type."\"";
+		$sql .= " AND id_session=\"".current_session()."\" AND unite=\"".$unite."\" AND section=\"".$report->section."\" AND type=\"".$report->type."\"";
 		}
 		else
 		{
@@ -989,24 +989,19 @@ function is_field_editable($row, $fieldId)
 
 	if(isset($row->statut) && ($row->statut == "audition"))
 	{
-		if(isset($row->sousjury) && isBureauUser() )
+		if(isset($row->sousjury) && isPresidentSousJury($row->sousjury))
 			return true;
 
 		if($fieldId == "fichiers")
 			return true;
 
-		if( $is_rapp1  && ($fieldId == "prerapport" || $fieldId == "avissousjury" || $fieldId=="audition"))
+		if( $is_rapp1  && ($fieldId == "avissousjury" || $fieldId=="audition"))
 			return true;
-
-		if( $is_rapp2  && ($fieldId == "prerapport2"))
-			return true;
-
-		if(isset($row->type) && $row->type == "Candidature" && isset($row->avis) && is_numeric($row->avis) && $fieldId =="rapport" && ($is_rapp1 || $is_rapp2 || $is_rapp3))
-			return true;
-
-		return false;
 	}
 
+	if(isset($row->type) && $row->type == "Candidature" && isset($row->avis) && is_numeric($row->avis) && $fieldId =="rapport" && ($is_rapp1 || $is_rapp2 || $is_rapp3))
+		return true;
+	
 
 	if(isset($row->statut) && ($row->statut == "rapport" || $row->statut == "publie"))
 		return isSecretaire();

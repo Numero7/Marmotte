@@ -312,12 +312,13 @@ function isSousJury($sousjury, $login = "")
 		return false;
 }
 
-function isPresidentSousJury($sousjury = "")
+function isPresidentSousJury($concours = "", $sousjury = "")
 {
 	global $tous_sous_jury;
 	return
 	(isset($tous_sous_jury[$concours]))
 	&&  (isset($tous_sous_jury[$concours][$sousjury]))
+	&& isset($tous_sous_jury[$concours][$sousjury]["president"])
 	&& (getLogin() === $tous_sous_jury[$concours][$sousjury]["president"]);
 }
 
