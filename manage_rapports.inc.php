@@ -670,13 +670,13 @@ function addReportToDatabase($report,$normalize = true)
 		{
 			$current_id = $current_report->id;
 			$sql = "UPDATE ".reports_db." SET id_origine=".intval($new_id)." WHERE id_origine=".intval($id_origine)." OR id=".intval($new_id)." OR id=".intval($current_id)." OR id_origine=".intval($current_id).";";
-			//echo $sql;
+//			echo $sql;
 			sql_request($sql);
 		}
 		else
 		{
 			$sql = "UPDATE ".reports_db." SET id_origine=".intval($new_id)." WHERE id=".intval($new_id).";";
-			//echo $sql;
+//			echo $sql;
 			sql_request($sql);
 		}
 	}

@@ -547,6 +547,9 @@ function displayEditableReport($row, $canedit = true)
 		echo "<div id=\"toolbar\">";
 
 		$hidden["action"] = "update";
+		$hidden["create_new"] = true;
+		$hidden["id_origine"] = $row->id_origine;
+		
 		
 		displayEditionFrameStart("",$hidden,$submits);
 		voir_rapport_pdf($row);
