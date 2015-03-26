@@ -857,7 +857,10 @@ Une phrase de conclusion sur le candidat incluant un commentaire sur l'audition
 	
 	$max_classement = 30;
 	for($i = 1; $i <= $max_classement; $i++)
-		$avis_candidature_short[strval($i)] = $avis_classement[strval($i)] = "<B>$i</B>";
+	{
+		$avis_candidature_short[strval($i)] = "<B>$i</B>";
+		$avis_classement[strval($i)] = "<B>$i</B>";
+	}
 	
 	/* Pour les SPE par exemple*/
 	$avis_vide = array(""=>"");
@@ -987,11 +990,20 @@ Une phrase de conclusion sur le candidat incluant un commentaire sur l'audition
 			
 	);
 	
-	$tous_avis = array_merge($avis_eval,$avis_classement,$avis_candidature_short,$avis_ie,$avis_pertinence,$avis_ecoles,$avis_binaire, $avis_lettre);
+	$tous_avis = array_merge(
+			$avis_eval,
+			$avis_candidature_short,
+			$avis_ie,
+			$avis_pertinence,
+			$avis_ecoles,
+			$avis_binaire, 
+			$avis_lettre
+			);
 
 	for($i = 1; $i <= $max_classement; $i++)
-		$tous_avis[$i] = strval($i);
-	
+			$tous_avis[$i] = strval($i);
+	unset($tous_avis[0]);
+		
 /* Definition des checkboxes à la fin de certains rapports*/
 	
 	/*Pour les evals à vague et mi vague*/

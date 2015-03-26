@@ -307,7 +307,7 @@ if(isBureauUser() && is_current_session_concours())
 			//			rr();
 						foreach($listeavis as $key => $value)
 						{
-							$selected = ($key == $row->$fieldID) ? "selected=on" : "";
+							$selected = ($key === $row->$fieldID) ? "selected=on" : "";
 							echo "<option ".$selected." value=\"".$key."\">".$value."</option>\n";
 						}
 						?>
