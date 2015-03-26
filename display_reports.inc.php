@@ -304,10 +304,9 @@ if(isBureauUser() && is_current_session_concours())
 						?>
 						<select onchange="window.location='index.php?action=set_property&property=<?php echo $fieldID; ?>&id_origine=<?php echo $row->id_origine; ?>&value=' + encodeURIComponent(this.value);">
 						<?php
-			//			rr();
 						foreach($listeavis as $key => $value)
 						{
-							$selected = ($key === $row->$fieldID) ? "selected=on" : "";
+							$selected = (strval($key) === $row->$fieldID) ? "selected=on" : "";
 							echo "<option ".$selected." value=\"".$key."\">".$value."</option>\n";
 						}
 						?>
