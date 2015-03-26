@@ -726,7 +726,7 @@ function set_property($property,$id_origine, $value, $all_reports = false)
 		{
 		$sql = "UPDATE reports SET `".real_escape_string($property)."`=\"".real_escape_string($value)."\" ";
 		$sql .= " WHERE `".real_escape_string($property)."`=\"\" AND nom=\"".$report->nom."\" and prenom=\"".$report->prenom."\"";
-		$sql .= " AND id_session=\"".current_session()."\" AND section=\"".$report->section."\" AND type=\"".$report->type."\"";
+		$sql .= " AND id_session=\"".current_session()."\" AND unite=\"".$unite."\" AND section=\"".$report->section."\" AND type=\"".$report->type."\"";
 		}
 		else
 		{
