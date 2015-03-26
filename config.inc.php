@@ -584,18 +584,18 @@ Une phrase de conclusion sur le candidat incluant un commentaire sur l'audition
 	/**** TYPES DE RAPPORTS **************/
 	$typesRapportsChercheurs = array(
 			'Evaluation-Vague' => 'Evaluation à Vague',
-			'Evaluation-MiVague' => 'Evaluation à Mi-Vague',
+			'Evaluation-MiVag' => 'Evaluation à Mi-Vague',
 			'Promotion' => 'Promotion',
 			'Titularisation' => 'Titularisation',
 			'Affectation' => 'Confirmation d\'Affectation',
 			'Reconstitution' => 'Reconstitution de Carrière',
 			'Delegation' => 'Demande de Délégation',
 			'Emeritat' => 'Eméritat (1ere demande)',
-			'Emeritat-renouvellement' => 'Eméritat (renouvellement)',
-			'Changement-section' => 'Changement de section',
+			'Emeritat-renouve' => 'Eméritat (renouvellement)',
+			'Changement-secti' => 'Changement de section',
 			'MedailleBronze' => 'Médaille de Bronze',
 			'MedailleArgent' => 'Médaille d\'Argent',
-			'GeneriqueChercheur' => 'Générique (chercheur)'
+			'GeneriqueCherche' => 'Générique (chercheur)'
 	);
 	
 	$typesRapportsChercheursShort = array(
