@@ -42,8 +42,10 @@ ini_set('xdebug.show_local_vars', 'on');
 		
 	$fieldsSummary = array(
 		"type",
+			"unite",
 			"nom",
 		"prenom",
+			"ecole",
 			"avis",
 			"rapporteur",
 			"avis1",
@@ -52,8 +54,7 @@ ini_set('xdebug.show_local_vars', 'on');
 		"grade_rapport",
 			"theme1",
 			"theme2",
-			"theme3",
-			"unite"
+			"theme3"
 	);
 	
 	$fieldsSummaryConcours = array(
@@ -114,7 +115,7 @@ ini_set('xdebug.show_local_vars', 'on');
 		"concours" => "Concours",
 			"sousjury" => "Sous-jury",
 			"section"=> "Section",
-			"ecole" => "Ecole",
+			"ecole" => "Intitulé",
 		"nom" => "Nom",
 		"prenom" => "Prénom",
 		"unite" => "Unité",
