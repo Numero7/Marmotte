@@ -190,7 +190,7 @@ function filename_from_params($nom, $prenom, $grade, $unite, $type, $session, $a
 	if($type == "Promotion")
 		$grade .= " - ".$avis;
 
-	if($type == "Evaluation-Vague" || $type == "Evaluation-MiVague")
+	if($type == "EvalVague" || $type == "EvalMiVague")
 		$type .=  " - ".mb_convert_case($avis,MB_CASE_TITLE);
 
 	if(array_key_exists($type,$typesRapportsUnites))

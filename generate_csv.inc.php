@@ -105,7 +105,7 @@ function compileReportsAsCSV($rows, $fields = null)
 		$fakerow = (object) array();
 		foreach($fields as $field)
 			$fakerow->$field = "à remplacer par ".$field;
-		$fakerow->type = "Evaluation-Vague";
+		$fakerow->type = "EvalVague";
 		$rows[] = $fakerow;
 	}
 	return compileObjectsAsCSV($activefields, $rows);
