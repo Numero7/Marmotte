@@ -414,6 +414,7 @@ function displayEditableReport($row, $canedit = true)
 		displayEditionFrameStart("",$hidden,$submits);
 		voir_rapport_pdf($row);
 		echo $titre;
+        echo "<div id=\"border-bottom\"></div>";
 		echo "</div>";
 		if(true)
 		{
