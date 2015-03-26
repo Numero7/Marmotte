@@ -374,7 +374,10 @@ function displayEditableReport($row, $canedit = true)
 	if(array_key_exists($eval_type, $typesRapports))
 		$eval_name = $typesRapports[$eval_type];
 
-	$hidden = array("fieldtype" => $eval_type);
+	$hidden = array(
+			"fieldtype" => $eval_type,
+			"action" => "update"
+			);
 
 	$rapporteurs  = listNomRapporteurs();
 
@@ -542,6 +545,9 @@ function displayEditableReport($row, $canedit = true)
 			$fieldsUnites0 = array_merge($fieldsUnitesExtra[$eval_type],$fieldsUnites0);
 			
 		echo "<div id=\"toolbar\">";
+
+		$hidden["action"] = "update";
+		
 		displayEditionFrameStart("",$hidden,$submits);
 		voir_rapport_pdf($row);
 		echo "<h1>".$eval_name. ": ". (isset($row->unite) ? $row->unite : "")." (#".(isset($row->id) && $row->id != 0 ? $row->id : "New").")</h1>";

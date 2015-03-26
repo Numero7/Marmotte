@@ -214,6 +214,7 @@ function alertText($text)
 			if(isset($actions_level[$action]) && getUserPermissionLevel() < $actions_level[$action])
 				throw new Exception("Vous n'avez pas le niveau de permission suffisant pour exécuter l'action '".$action."'");
 
+			//name="action"rr();
 			switch($action)
 			{
 				case 'delete_units':
@@ -386,7 +387,9 @@ function alertText($text)
 							else if(isset($_REQUEST["submitandviewnext"]))
 								viewWithRedirect($next);
 							else if(isset($_REQUEST["submitandkeepediting"]))
+							{
 								editWithRedirect($report->id);
+							}
 							else if(isset($_REQUEST["submitandkeepviewing"]))
 								viewWithRedirect($report->id);
 							else
