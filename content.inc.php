@@ -447,6 +447,10 @@ function alertText($text)
 							scrollToId("membres");
 						}
 					break;
+				case 'mergeUsers':
+					mergeUsers($_REQUEST["old_login"], $_REQUEST["new_login"]);
+					include "admin/admin.inc.php";
+					scrollToId("membres");
 				case 'admindeleteallaccounts':
 					deleteAllUsers();
 					include "admin/admin.inc.php";

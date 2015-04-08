@@ -491,10 +491,10 @@ function createUser(
 				$sections = "";
 			else
 			{
-			if(isCurrentSectionACID())
-				$CID_code = currentSection();
-			else
-				$section_code = currentSection();
+				if(isCurrentSectionACID())
+					$CID_code = currentSection();
+				else
+					$section_code = currentSection();
 			}
 
 			unset($_SESSION['all_users']);
@@ -646,9 +646,26 @@ function importAllUsersFromJanus()
 	}
 	unset($_SESSION['all_users']);
 	dsi_disconnect();
-	
+
 	if($errors != "")
 		throw new Exception($errors);
+}
+
+function mergeUsers($old_login, $new_login)
+{
+	$old_login = real_escape_string($old_login);
+	$new_login = real_escape_string($new_login);
+	$fields = array("rapporteur","rapporteur2","rapporteur3");
+	foreach($fields as $field)
+	{
+		$sql = "UPDATE ".reports_db." SET `rapporteur`='".$new_login."' WHERE `".$field."`='".$old_login."'";
+		if(!isSuperUser())
+			$sql .= " AND `section`='".currentSection()."'";
+		$sql.=";";
+		sql_request($sql);
+	}
+	deleteUser($old_login);
+	unset($_SESSION['all_users']);
 }
 
 ?>
