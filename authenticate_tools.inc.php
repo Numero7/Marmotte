@@ -8,12 +8,16 @@ define("NIVEAU_PERMISSION_PRESIDENT", 700);
 define("NIVEAU_PERMISSION_SUPER_UTILISATEUR", 1000);
 define("NIVEAU_PERMISSION_INFINI", 10000000);
 
+function get_user_object($login)
+{
+	$sql = "SELECT * FROM `".users_db."`  WHERE `login`=\"".real_escape_string($login)."\";";
+	return sql_request($sql);
+}
 
 function createAdminPasswordIfNeeded()
 {
 	global $dbh;
-		$sql = "SELECT * FROM `". mysqli_real_escape_string($dbh, users_db)."`  WHERE `login`=\"admin\";";
-		$result= mysqli_query($dbh, $sql);
+	$result = get_user_object("admin");
 		if( mysqli_num_rows($result) == 0)
 		{
 			$sql = "INSERT INTO `".mysqli_real_escape_string($dbh, users_db);
@@ -41,8 +45,7 @@ function checkPasswords($password)
 function getPassHash($login)
 {
 	global $dbh;
-	$sql = "SELECT * FROM ".users_db." WHERE login='".mysqli_real_escape_string($dbh, $login)."';";
-	$result=mysqli_query($dbh, $sql);
+	$result = get_user_object($login);
 	if ($row = mysqli_fetch_object($result))
 	{
 		//There is no upper/lower case filter in sql requests
@@ -55,13 +58,18 @@ function getPassHash($login)
 function getSections($login)
 {
 	global $dbh;
-	$sql = "SELECT * FROM ".users_db." WHERE login='$login';";
-	$result=mysqli_query($dbh,$sql);
+	$result = get_user_object($login);
 	if ($row = mysqli_fetch_object($result))
-		$sections = $row->sections;
+	{
+		$sections = explode(";", $row->sections);
+		if($row->section_code != "")
+			$sections[] = $row->section_code;
+		if($row->CID_code != "")
+			$sections[] = $row->CID_code;
+		return $sections;
+	}
 	else
 		throw new Exception("Failed to query the list of all sections for user '" + $login+"'");
-	return explode(";", $sections);
 }
 
 function addCredentials($login,$pwd)

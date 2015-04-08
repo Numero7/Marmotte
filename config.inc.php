@@ -1484,8 +1484,6 @@ Une phrase de conclusion sur le candidat incluant un commentaire sur l'audition
 			"Accueil" => "DEChercheur"
 	);
 	
-	$users_not_rapporteur = array('admin','yawn');
-	
 	$possible_type_labels = array("Type évaluation", "Type d\'évaluation", "type");
 	
 	$statuts_concours = 

@@ -8,6 +8,26 @@ function db_from_scratch()
 }
 
 $dbh = NULL;
+$dsi_dbh = NULL;
+
+function dsi_connect()
+{
+	global $servername;
+	global $dsidbname;
+	global $serverlogin;
+	global $serverpassword;
+	global $dsi_dbh;
+	
+	$dsi_dbh = mysqli_connect($servername, $serverlogin, $serverpassword, $dsidbname) or die("Could not connect to the server '".$servername."<br/>".mysqli_error($dsi_dbh));
+	mysqli_query($dsi_dbh, "SET NAMES utf8;");
+}
+
+function dsi_disconnect()
+{
+	global $dsi_dbh;
+	mysqli_close($dsi_dbh);
+	$dsi_dbh = NULL;
+}
 
 function db_connect($serverName,$dbname,$login,$password)
 {
@@ -15,30 +35,6 @@ function db_connect($serverName,$dbname,$login,$password)
 	$dbh = mysqli_connect($serverName, $login, $password, $dbname) or die("Could not connect to the server '".$serverName."<br/>".mysqli_error($dbh));
 	
 	mysqli_query($dbh, "SET NAMES utf8;");
-	
-	$databases = array(reports_db, users_db, sessions_db, units_db, people_db, config_db,concours_db);
-	$new_columns = array(people_db => array("conflits" => "text") );
-
-	/*
-	foreach($databases as $database)	
-	{
-		$result = mysqli_query($dbh, "SHOW TABLES LIKE '$database'");
-		if($result == false)
-			throw new Exception("Cannot count the number of databases with name ".$database."<br/>".mysql_error());
-		if(mysqli_fetch_array($result) === false)
-			throw new Exception("No database with name ".$database);
-
-		if(key_exists($database, $new_columns))
-		{
-			foreach($new_columns[$database] as $name => $type)
-			{
-				$sql="alter table ".$database." add ".$name." ".$type." NOT NULL";
-				$result = mysqli_query($dbh, $sql);
-			}
-		}
-	}login='admin
-	
-	*/
 		
 	return $dbh;
 } ;
@@ -274,5 +270,34 @@ function migrate( $section, $serverName, $dbname, $login, $password, $type)
 	}
 	mysqli_close($remote_dbh);
 }
+
+function sql_request($sql)
+{
+	global $dbh;
+	//	echo $sql."<br/>";
+	$result = mysqli_query($dbh, $sql);
+	if($result == false)
+		throw new Exception("Failed to process sql query: <br/>\t".mysqli_error($dbh)."<br/>".$sql);
+	else
+		return $result;
+}
+
+function dsi_sql_request($sql)
+{
+	global $dsi_dbh;
+	//	echo $sql."<br/>";
+	$result = mysqli_query($dsi_dbh, $sql);
+	if($result == false)
+		throw new Exception("Failed to process sql query: <br/>\t".mysqli_error($dsi_dbh)."<br/>".$sql);
+	else
+		return $result;
+}
+
+function real_escape_string($string)
+{
+	global $dbh;
+	return mysqli_real_escape_string($dbh,$string);
+}
+
 
 ?>

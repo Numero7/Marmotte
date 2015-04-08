@@ -239,29 +239,29 @@ function alertText($text)
 					break;
 				case 'addrubrique':
 					add_rubrique($_REQUEST["index"], $_REQUEST["rubrique"], $_REQUEST["type"]);
-					include 'admin.inc.php';
+					include 'admin/admin.inc.php';
 					scrollToId('rubriques');					
 					break;
 				case 'removerubrique':
 					remove_rubrique($_REQUEST["index"], $_REQUEST["type"]);
-					include 'admin.inc.php';
+					include 'admin/admin.inc.php';
 					scrollToId('rubriques');					
 					break;
 				case 'addtopic':
 					add_topic($_REQUEST["index"], $_REQUEST["motcle"]);
 					global $topics;
-					include 'admin.inc.php';
+					include 'admin/admin.inc.php';
 					scrollToId('config');					
 					break;
 				case 'removetopic':
 					remove_topic($_REQUEST["index"]);
 					global $topics;
-					include 'admin.inc.php';
+					include 'admin/admin.inc.php';
 					scrollToId('config');					
 					break;
 				case 'updateconfig':
 					save_config_from_request();
-					include 'admin.inc.php';
+					include 'admin/admin.inc.php';
 					scrollToId('config');					
 					break;
 				case 'delete':
@@ -294,7 +294,7 @@ function alertText($text)
 					break;
 				case 'affectersousjurys':
 					affectersousjurys();
-					include 'admin.inc.php';
+					include 'admin/admin.inc.php';
 					break;
 				case 'affectersousjurys2':
 					affectersousjurys();
@@ -432,33 +432,45 @@ function alertText($text)
 						else
 							throw new Exception("Erreur :</strong> Les deux saisies du nouveau mot de passe  diffèrent, veuillez réessayer.</p>");
 					}
-					include 'admin.inc.php';
+					include 'admin/admin.inc.php';
 					scrollToId("membres");
 					break;
 				case 'admin':
-					include "admin.inc.php";
+					include "admin/admin.inc.php";
 					break;
 				case 'admindeleteaccount':
 						if (isset($_REQUEST["login"]))
 						{
 							$login = $_REQUEST["login"];
 							deleteUser($login);
-							include "admin.inc.php";
+							include "admin/admin.inc.php";
 							scrollToId("membres");
 						}
 					break;
+				case 'admindeleteallaccounts':
+					deleteAllUsers();
+					include "admin/admin.inc.php";
+					scrollToId("membres");
+				case 'importaccountsfromJanus':
+					importAllUsersFromJanus();
+					include "admin/admin.inc.php";
+					scrollToId("membres");
 				case 'infosrapporteur':
 						if (isset($_REQUEST["login"]) and isset($_REQUEST["permissions"]))
 						{
 							global  $concours_ouverts;
 							$login = $_REQUEST["login"];
 							$permissions = $_REQUEST["permissions"];
-							$sections = $_REQUEST["sections"];
+							$sections = isset($_REQUEST["sections"]) ? $_REQUEST["sections"] : "";
+							$section_code = isset($_REQUEST["section_code"]) ? $_REQUEST["section_code"] : "";
+							$CID_code = isset($_REQUEST["CID_code"]) ? $_REQUEST["CID_code"] : "";
+							$section_role = isset($_REQUEST["section_role"]) ? $_REQUEST["section_role"] : "";
+							$CID_role = isset($_REQUEST["CID_role"]) ? $_REQUEST["CID_role"] : "";
 							foreach($concours_ouverts as $concours => $nom)
 								if(isset($_REQUEST["sousjury".$concours]))
 								addSousJury($concours, $_REQUEST["sousjury".$concours], $login);
-							changeUserInfos($login,$permissions,$sections);
-						include "admin.inc.php";
+							changeUserInfos($login,$permissions,$sections,$section_code, $section_role, $CID_code, $CID_role);
+						include "admin/admin.inc.php";
 						scrollToId('infosrapporteur');
 					}
 					break;
@@ -468,7 +480,7 @@ function alertText($text)
 						$password = $_REQUEST["password"];
 						checkPasswords($password);
 					}
-					include "admin.inc.php";
+					include "admin/admin.inc.php";
 					scrollToId("membres");
 					break;
 				case 'adminnewaccount':
@@ -485,18 +497,24 @@ function alertText($text)
 								$sections = $_REQUEST["sections"];
 							$envoiparemail = isset($_REQUEST["envoiparemail"]) && ($_REQUEST["envoiparemail"] === 'on');
 							if (($pwd1==$pwd2))
-								echo "<p><strong>".createUser($login,$pwd2,$desc, $email, $sections,$permissions, $envoiparemail)."</p></strong>";
+								echo "<p><strong>".createUser(
+										$login,
+										$pwd2,
+										$desc, 
+										$email,
+										"","0",
+										$envoiparemail)."</p></strong>";
 							else
-								echo "<p><strong>Erreur :</strong> Les deux saisies du nouveau mot de passe  diffèrent, veuillez réessayer.</p>";
+								echo "<p><strong>Erreur :</strong> Les deux saisies du nouveau mot de passe diffèrent, veuillez réessayer.</p>";
 						}
-						include "admin.inc.php";
+						include "admin/admin.inc.php";
 						scrollToId("membres");
 					break;
 				case 'admindeletesession':
 					if (isset($_REQUEST["sessionid"]))
 					{
 						deleteSession(real_escape_string($_REQUEST["sessionid"]), isset($_REQUEST["supprimerdossiers"]));
-						include "admin.inc.php";
+						include "admin/admin.inc.php";
 						scrollToId("sessions");
 					}
 					break;
@@ -512,19 +530,19 @@ function alertText($text)
 					foreach($fields as $field)
 						$concours->$field = isset($_REQUEST[$field]) ? $_REQUEST[$field] : "";
 					setConcours($concours);
-					include "admin.inc.php";
+					include "admin/admin.inc.php";
 					scrollToId('concours');
 					break;
 				case 'delete_concours':
 					deleteConcours($_REQUEST["code"]);
-					include "admin.inc.php";
+					include "admin/admin.inc.php";
 					scrollToId('concours');
 					break;
 				case "statutconcours":
 					$code = isset($_REQUEST["code"]) ? $_REQUEST["code"] : "";
 					$statut = isset($_REQUEST["statut"]) ? $_REQUEST["statut"] : "";
 					setConcoursStatut($code, $statut);
-					include "admin.inc.php";
+					include "admin/admin.inc.php";
 					scrollToId('concours');
 					break;
 				case 'ajoutlabo':
@@ -555,19 +573,19 @@ function alertText($text)
 				case 'createhtpasswd':
 					createhtpasswd();
 					displayWithRedirects();
-					include "admin.inc.php";
+					include "admin/admin.inc.php";
 					break;
 				case 'trouverfichierscandidats':
 					link_files_to_candidates();
-					include "admin.inc.php";
+					include "admin/admin.inc.php";
 					break;
 				case 'creercandidats':
 					creercandidats();
-					include "admin.inc.php";
+					include "admin/admin.inc.php";
 					break;
 				case 'injectercandidats':
 					injectercandidats();
-					include "admin.inc.php";
+					include "admin/admin.inc.php";
 					break;
 				case "displayimportexport":
 					include "import_export.php";
@@ -585,7 +603,7 @@ function alertText($text)
 					{
 						if(isSuperUser())
 						{
-							include "admin.inc.php";
+							include "admin/admin.inc.php";
 						}
 							else
 							{

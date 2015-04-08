@@ -118,22 +118,6 @@ function normalizeName($name)
 	return str_replace('\' ', '\'', ucwords(strtolower($name)));
 }
 
-function real_escape_string($string)
-{
-	global $dbh;
-	return mysqli_real_escape_string($dbh,$string);
-}
-
-function sql_request($sql)
-{
-	global $dbh;
-//	echo $sql."<br/>";	
-	$result = mysqli_query($dbh, $sql);
-	if($result == false)
-		throw new Exception("Failed to process sql query: <br/>\t".mysqli_error($dbh)."<br/>".$sql);
-	else
-		return $result;
-}
 
 function stripAccents($string){
 	return strtr($string,"'àáâãäçèéêëìíîïñòóôõöùúûüýÿÀÁÂÃÄÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝ",
