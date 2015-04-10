@@ -538,6 +538,7 @@ function displayEditableReport($row, $canedit = true)
 		$fieldsUnites0 = $typesRapportToFields[$eval_type][1];
 		$fieldsUnites1 = $typesRapportToFields[$eval_type][2];
 		$fieldsUnites2 = $typesRapportToFields[$eval_type][3];
+		$fieldsUnites2 = $typesRapportToFields[$eval_type][4];
 
 		global $fieldsUnitesExtra;
 
