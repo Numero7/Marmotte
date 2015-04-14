@@ -341,8 +341,8 @@ function createXMLReportElem($row, DOMDocument $doc, $keep_br = true)
 			{
 				
 				$users = listUsers();
-				$login = isset($tous_sous_jury[$concours][$sousjury]["president"]);
-				$description = isset($users["login"]) ? $users["login"]->description : "";
+				$login = isset($tous_sous_jury[$concours][$sousjury]["president"]) ? $tous_sous_jury[$concours][$sousjury]["president"] : "";
+				$description = isset($users[$login]) ? $users[$login]->description : "";
 	//			$description = ""; 
 				appendLeaf("signataire",$description, $doc, $rapportElem);
 				appendLeaf("signature", "", $doc, $rapportElem);

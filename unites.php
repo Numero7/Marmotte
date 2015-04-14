@@ -13,7 +13,7 @@ if(isSecretaire())
 <p>
 	Le formulaire ci-dessous permet d'injecter des unités dans la base de
 	donnée.<br /> Les rapports sont envoyés sous forme de fichier csv fournis par votre ACN.<br />
-	Si votre ACN ne connaît pas la procédure, dites-lui de se rapprocher de Florence Colombo.<br/>
+	Si votre ACN ne connaît pas la procédure, dites-lui de se rapprocher de Flchele Desumeur <br/>
 	Les données des labos déjà renseignés dans Marmotte seront remplacées.
 	
 </p>
@@ -23,7 +23,7 @@ if(isSecretaire())
 	<input type="hidden" name="admin_unites">
 		<input type="hidden" name="type" value="unites" /> <input
 			type="hidden" name="action" value="upload" /> <input type="hidden"
-			name="MAX_FILE_SIZE" value="100000" /> Fichier csv: <input
+			name="MAX_FILE_SIZE" value="1000000" /> Fichier csv: <input
 			name="uploadedfile" type="file" /> <br /> <input type="submit"
 			value="Ajouter unités" />
 	</p>

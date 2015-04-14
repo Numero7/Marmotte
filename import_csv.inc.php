@@ -431,8 +431,13 @@ function addCsvUnite($properties)
 
 	if(isset($properties["Sigle unité"]))
 		$nickname = " " . $properties["Sigle unité"];
-	
+try
+{	
 	addUnit($nickname, $code, $fullname, $directeur);
+}
+catch(Exception $e)
+{
+}
 }
 
 
