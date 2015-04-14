@@ -13,7 +13,7 @@ if(isSecretaire())
 <p>
 	Le formulaire ci-dessous permet d'injecter des unités dans la base de
 	donnée.<br /> Les rapports sont envoyés sous forme de fichier csv fournis par votre ACN.<br />
-	Si votre ACN ne connaît pas la procédure, dites-lui de se rapprocher de Florence Colombo.<br/>
+	Si votre ACN ne connaît pas la procédure, dites-lui de se rapprocher de Flchele Desumeur <br/>
 	Les données des labos déjà renseignés dans Marmotte seront remplacées.
 	
 </p>

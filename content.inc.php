@@ -81,6 +81,7 @@ $(function() {
 
 	// Barre d'action/titre "flottante"
 	var nav = $('#toolbar');
+	var bd = $('#toolbar #border-bottom');
     var navHomeY = nav.offset().top;
     var isFixed = false;
     var $w = $(window);
@@ -91,11 +92,16 @@ $(function() {
             nav.css({
                 position: 'fixed',
                 top: 0,
-                left: nav.offset().left,
+				left: nav.offset().left-5,
                 width: nav.width(),
-				"border-width" : '3px',
-				"border-color" : '#63C3DC',
-				"border-style" : 'solid'
+				"border-bottom-width" : '3px',
+				"border-bottom-color" : '#FFFFFF',
+				"border-bottom-style" : 'solid'
+            });
+			bd.css({
+               width: nav.width(),
+			   height: 15,
+				"background" : "url('img/ruletrans.png')",
             });
             isFixed = true;
         }
