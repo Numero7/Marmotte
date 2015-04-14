@@ -16,7 +16,10 @@ function init_config()
 	global $configs;
 	
 	if(!isset($_SESSION['filter_section']))
+	{
+		removeCredentials();
 		throw new Exception("Cannot init config, unknown section");
+	}
 	$section = $_SESSION['filter_section'];
 
 	$sql = "SELECT * FROM ".config_db." WHERE `section`='".$section."';";

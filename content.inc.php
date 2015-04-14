@@ -117,8 +117,8 @@ function alertText($text)
 	echo $text."\n";
 	echo
 	"<script>
-		alert(\"".str_replace(array("\"","<br/>","<p>","</p>"),array("'","\\n","\\n","\\n"), $text)."\")
-			</script>";
+	alert(\"".str_replace(array("\"","<br/>","<p>","</p>"),array("'","\\n","\\n","\\n"), $text)."\")
+	</script>";
 }
 ?>
 
@@ -180,33 +180,33 @@ function alertText($text)
 		function editWithRedirect($id)
 		{
 			?>
-			<script type="text/javascript">
+		<script type="text/javascript">
 			window.location = "index.php?action=edit&id=<?php echo $id;?>"
 			</script>
-			<?php 
+		<?php 
 		}
 
 		function viewWithRedirect($id)
 		{
 			?>
-					<script type="text/javascript">
+		<script type="text/javascript">
 					window.location = "index.php?action=read&id=<?php echo $id;?>"
 					</script>
-					<?php 
+		<?php 
 		}
-				
+
 
 		function displayWithRedirects($id = 0)
 		{
 			?>
-							<script type="text/javascript">
+		<script type="text/javascript">
 							window.location = "index.php?action=view&id=<?php echo $id;?>"
 							</script>
-							here
-							<?php
-				}
-				
-		
+		here
+		<?php
+		}
+
+
 		try
 		{
 			/* checking permissions */
@@ -240,29 +240,29 @@ function alertText($text)
 				case 'addrubrique':
 					add_rubrique($_REQUEST["index"], $_REQUEST["rubrique"], $_REQUEST["type"]);
 					include 'admin/admin.inc.php';
-					scrollToId('rubriques');					
+					scrollToId('rubriques');
 					break;
 				case 'removerubrique':
 					remove_rubrique($_REQUEST["index"], $_REQUEST["type"]);
 					include 'admin/admin.inc.php';
-					scrollToId('rubriques');					
+					scrollToId('rubriques');
 					break;
 				case 'addtopic':
 					add_topic($_REQUEST["index"], $_REQUEST["motcle"]);
 					global $topics;
 					include 'admin/admin.inc.php';
-					scrollToId('config');					
+					scrollToId('config');
 					break;
 				case 'removetopic':
 					remove_topic($_REQUEST["index"]);
 					global $topics;
 					include 'admin/admin.inc.php';
-					scrollToId('config');					
+					scrollToId('config');
 					break;
 				case 'updateconfig':
 					save_config_from_request();
 					include 'admin/admin.inc.php';
-					scrollToId('config');					
+					scrollToId('config');
 					break;
 				case 'delete':
 					$next = next_report($id_rapport);
@@ -270,7 +270,7 @@ function alertText($text)
 					echo "<p>Deleted report ".$id_rapport."</p>\n";
 					unset($_REQUEST['id']);
 					unset($_REQUEST['id_origine']);
-//					displayWithRedirects( ($before != -1) ? $before : $next);
+					//					displayWithRedirects( ($before != -1) ? $before : $next);
 					if($next != -1)
 						displayWithRedirects($next);
 					else
@@ -379,25 +379,25 @@ function alertText($text)
 								break;
 							}
 
-						if(!$done)
-						{
-							$report = addReportFromRequest($id_origine,$_REQUEST);
-							if(isset($_REQUEST["submitandeditnext"]))
-								editWithRedirectReport($next);
-							else if(isset($_REQUEST["submitandviewnext"]))
-								viewWithRedirect($next);
-							else if(isset($_REQUEST["submitandkeepediting"]))
+							if(!$done)
 							{
-								editWithRedirect($report->id);
+								$report = addReportFromRequest($id_origine,$_REQUEST);
+								if(isset($_REQUEST["submitandeditnext"]))
+									editWithRedirectReport($next);
+								else if(isset($_REQUEST["submitandviewnext"]))
+									viewWithRedirect($next);
+								else if(isset($_REQUEST["submitandkeepediting"]))
+								{
+									editWithRedirect($report->id);
+								}
+								else if(isset($_REQUEST["submitandkeepviewing"]))
+									viewWithRedirect($report->id);
+								else
+								{
+									displayWithRedirects($report->id);
+								}
+									
 							}
-							else if(isset($_REQUEST["submitandkeepviewing"]))
-								viewWithRedirect($report->id);
-							else
-							{
-								displayWithRedirects($report->id);
-							}
-							
-						}
 					}
 					break;
 				case 'change_current_session':
@@ -439,41 +439,44 @@ function alertText($text)
 					include "admin/admin.inc.php";
 					break;
 				case 'admindeleteaccount':
-						if (isset($_REQUEST["login"]))
-						{
-							$login = $_REQUEST["login"];
-							deleteUser($login);
-							include "admin/admin.inc.php";
-							scrollToId("membres");
-						}
+					if (isset($_REQUEST["login"]))
+					{
+						$login = $_REQUEST["login"];
+						deleteUser($login);
+						include "admin/admin.inc.php";
+						scrollToId("membres");
+					}
 					break;
 				case 'mergeUsers':
 					mergeUsers($_REQUEST["old_login"], $_REQUEST["new_login"]);
 					include "admin/admin.inc.php";
 					scrollToId("membres");
+					break;
 				case 'admindeleteallaccounts':
 					deleteAllUsers();
 					include "admin/admin.inc.php";
 					scrollToId("membres");
-				case 'importaccountsfromJanus':
+					break;
+					case 'importaccountsfromJanus':
 					importAllUsersFromJanus();
 					include "admin/admin.inc.php";
 					scrollToId("membres");
+					break;
 				case 'infosrapporteur':
-						if (isset($_REQUEST["login"]) and isset($_REQUEST["permissions"]))
-						{
-							global  $concours_ouverts;
-							$login = $_REQUEST["login"];
-							$permissions = $_REQUEST["permissions"];
-							$sections = isset($_REQUEST["sections"]) ? $_REQUEST["sections"] : "";
-							$section_code = isset($_REQUEST["section_code"]) ? $_REQUEST["section_code"] : "";
-							$CID_code = isset($_REQUEST["CID_code"]) ? $_REQUEST["CID_code"] : "";
-							$section_role = isset($_REQUEST["section_role"]) ? $_REQUEST["section_role"] : "";
-							$CID_role = isset($_REQUEST["CID_role"]) ? $_REQUEST["CID_role"] : "";
-							foreach($concours_ouverts as $concours => $nom)
-								if(isset($_REQUEST["sousjury".$concours]))
-								addSousJury($concours, $_REQUEST["sousjury".$concours], $login);
-							changeUserInfos($login,$permissions,$sections,$section_code, $section_role, $CID_code, $CID_role);
+					if (isset($_REQUEST["login"]) and isset($_REQUEST["permissions"]))
+					{
+						global  $concours_ouverts;
+						$login = $_REQUEST["login"];
+						$permissions = $_REQUEST["permissions"];
+						$sections = isset($_REQUEST["sections"]) ? $_REQUEST["sections"] : "";
+						$section_code = isset($_REQUEST["section_code"]) ? $_REQUEST["section_code"] : "";
+						$CID_code = isset($_REQUEST["CID_code"]) ? $_REQUEST["CID_code"] : "";
+						$section_role = isset($_REQUEST["section_role"]) ? $_REQUEST["section_role"] : "";
+						$CID_role = isset($_REQUEST["CID_role"]) ? $_REQUEST["CID_role"] : "";
+						foreach($concours_ouverts as $concours => $nom)
+							if(isset($_REQUEST["sousjury".$concours]))
+							addSousJury($concours, $_REQUEST["sousjury".$concours], $login);
+						changeUserInfos($login,$permissions,$sections,$section_code, $section_role, $CID_code, $CID_role);
 						include "admin/admin.inc.php";
 						scrollToId('infosrapporteur');
 					}
@@ -488,31 +491,29 @@ function alertText($text)
 					scrollToId("membres");
 					break;
 				case 'adminnewaccount':
-						if (isset($_REQUEST["email"]) and isset($_REQUEST["description"]) and isset($_REQUEST["newpwd1"]) and isset($_REQUEST["newpwd2"]))
-						{
-							$desc = $_REQUEST["description"];
-							$pwd1 = $_REQUEST["newpwd1"];
-							$pwd2 = $_REQUEST["newpwd2"];
-							$login = $_REQUEST["email"];
-							$email = $_REQUEST["email"];
-							$permissions = $_REQUEST["permissions"];
-							$sections = "";
-							if(isSuperUser())
-								$sections = $_REQUEST["sections"];
-							$envoiparemail = isset($_REQUEST["envoiparemail"]) && ($_REQUEST["envoiparemail"] === 'on');
-							if (($pwd1==$pwd2))
-								echo "<p><strong>".createUser(
-										$login,
-										$pwd2,
-										$desc, 
-										$email,
-										"","0",
-										$envoiparemail)."</p></strong>";
-							else
-								echo "<p><strong>Erreur :</strong> Les deux saisies du nouveau mot de passe diffèrent, veuillez réessayer.</p>";
-						}
-						include "admin/admin.inc.php";
-						scrollToId("membres");
+					if (isset($_REQUEST["email"]) and isset($_REQUEST["description"]) and isset($_REQUEST["newpwd1"]) and isset($_REQUEST["newpwd2"]))
+					{
+						$desc = $_REQUEST["description"];
+						$pwd1 = $_REQUEST["newpwd1"];
+						$pwd2 = $_REQUEST["newpwd2"];
+						$login = $_REQUEST["email"];
+						$email = $_REQUEST["email"];
+						$permissions = $_REQUEST["permissions"];
+						$envoiparemail = isset($_REQUEST["envoiparemail"]) && ($_REQUEST["envoiparemail"] === 'on');
+						if (($pwd1!=$pwd2))
+							throw new Exception("Les deux saisies du nouveau mot de passe diffèrent, veuillez réessayer");
+						echo "<p><strong>".createUser(
+								$login,
+								$pwd2,
+								$desc,
+								$email,
+								"","0",
+								"","",
+								"","",
+								$envoiparemail)."</p></strong>";
+					}
+					include "admin/admin.inc.php";
+					scrollToId("membres");
 					break;
 				case 'admindeletesession':
 					if (isset($_REQUEST["sessionid"]))
@@ -528,9 +529,9 @@ function alertText($text)
 				case 'add_concours':
 					$concours = (object) array();
 					$fields = array("code", "niveau", "intitule","postes",
-							 "sousjury1","sousjury2", "sousjury3", "sousjury4",
-							 "president1", "president2", "president3", "president4"
-							);
+							"sousjury1","sousjury2", "sousjury3", "sousjury4",
+							"president1", "president2", "president3", "president4"
+					);
 					foreach($fields as $field)
 						$concours->$field = isset($_REQUEST[$field]) ? $_REQUEST[$field] : "";
 					setConcours($concours);
@@ -553,11 +554,11 @@ function alertText($text)
 					if(isset($_REQUEST["nickname"]) and isset($_REQUEST["code"]) and isset($_REQUEST["fullname"]) and isset($_REQUEST["directeur"]))
 					{
 						addUnit(
-						real_escape_string($_REQUEST["nickname"]),
-						 real_escape_string($_REQUEST["code"]),
-						 real_escape_string($_REQUEST["fullname"]),
-						 real_escape_string($_REQUEST["directeur"])
-						 );
+								real_escape_string($_REQUEST["nickname"]),
+								real_escape_string($_REQUEST["code"]),
+								real_escape_string($_REQUEST["fullname"]),
+								real_escape_string($_REQUEST["directeur"])
+						);
 						echo "Added unit \"".real_escape_string($_REQUEST["nickname"])."\"<br/>";
 					}
 					include "unites.php";
@@ -609,18 +610,18 @@ function alertText($text)
 						{
 							include "admin/admin.inc.php";
 						}
-							else
-							{
-						echo get_config("welcome_message");
-						displayWithRedirects();
-							}
+						else
+						{
+							echo get_config("welcome_message");
+							displayWithRedirects();
+						}
 					}
 					break;
 			}
 		}
 		catch(Exception $exc)
 		{
-			$text = 'Impossible d\'exécuter l\'action "'.$action.'"<br/>Exception: '.$exc->getMessage();
+			$text = 'Erreur: '.$exc->getMessage();
 			alertText($text);
 		}
 		?>

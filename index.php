@@ -14,7 +14,11 @@ session_start();
 
 require_once("db.inc.php");
 require_once('authenticate_tools.inc.php');
-
+/*
+echo "REMOTE USER: '".(isset($_SERVER['REMOTE_USER']) ? $_SERVER['REMOTE_USER'] : "")."'<br/>";
+echo "LOGIN: '".(isset($_SESSION['login']) ? $_SESSION['login'] : "")."'<br/>";
+echo "PASS: '".(isset($_SESSION['pass']) ? $_SESSION['pass'] : "")."'<br/>";
+*/
 try
 {
 	try
@@ -43,7 +47,7 @@ try
 		
 		$action = isset($_REQUEST["action"]) ? mysqli_real_escape_string($dbh, $_REQUEST["action"]) : "";
 		$errorLogin = 0;
-		if($action == "auth")
+		if($action == "auth_marmotte")
 		{
 			if(isset($_REQUEST["login"]) and isset($_REQUEST["password"]))
 			{
@@ -60,6 +64,36 @@ try
 					$_SESSION['filter_id_session'] = get_config("current_session");
 				}
 			}
+		}
+
+		if($action == "auth_janus" && ( !isset($_SERVER['REMOTE_USER'])  || $_SERVER['REMOTE_USER'] =="" ) )
+		{			
+			
+			require_once("PMSP/Pmsp.php");
+			try {
+				# Fabrique un objet PMSP
+				$pmsp = new Pmsp(
+						"https://vigny.dr15.cnrs.fr/secure/pmsp-server.php",
+						"/etc/pmsp/pmsp.pub",
+						"Marmotte",
+						"http://127.0.0.1",//"https://marmotte.cnrs.fr",
+						false);
+			# Effectue l'authentification
+			$pmsp->authentify('mail,cn,ou,givenname,displayname');			
+			rr();
+			} catch (Exception $e) {
+				removeCredentials();
+				Header("Content-type: text/plain");
+				echo $e->getMessage();
+				echo "\n";
+				echo $e->getTraceAsString();
+				exit (0);
+			}
+		}
+				
+		if(isset($_SERVER['REMOTE_USER']) && ($_SERVER['REMOTE_USER'] != ''))
+		{
+				addCredentials($_SERVER['REMOTE_USER'], "",true);
 		}
 		
 		if(!authenticate() || $action == 'logout' || ($errorLogin == 1))
@@ -145,8 +179,10 @@ try
 }
 catch(Exception $e)
 {
+	removeCredentials();
 	include("header.inc.php");
 	echo $e->getMessage();
+	include("index.php");
 }
 ?>
 </body>

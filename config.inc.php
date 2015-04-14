@@ -16,12 +16,17 @@ ini_set('xdebug.show_local_vars', 'on');
 	require_once("config_tools.inc.php");
 		
 	
-//	define("config_file","config/config.xml");
+//	define("config_file","config/config.xml"); 
 	define("signature_file","img/signature.jpg");
 	define("signature_blanche","img/signature_blanche.jpg");
 	//	define("config_file_save","config/config.sauv.xml");
 
 	global $rootdir;
+	if(!isset($_SESSION['filter_section']))
+	{
+		removeCredentials();
+		throw new Exception("Unexpected error");
+	}
 	$dossier_temp = $rootdir."./tmp/".$_SESSION['filter_section']."/";
 	$dossier_stockage = $rootdir."./storage/".$_SESSION['filter_section']."/";
 	
@@ -1339,7 +1344,7 @@ Une phrase de conclusion sur le candidat incluant un commentaire sur l'audition
 	$postes_ouverts = array();
 	$tous_sous_jury = array();
 
-	
+
 	/* Ugly hack translated from former xml configuration system ... */
 	
 	while($result = mysqli_fetch_object($query))

@@ -165,18 +165,6 @@ function get_bureau_stats()
 
 /* Caching users list for performance */
 
-function roleToPermission($role)
-{
-	switch($role)
-	{
-		case "ADM": return NIVEAU_PERMISSION_SUPER_UTILISATEUR;
-		case "PRE": return NIVEAU_PERMISSION_PRESIDENT;
-		case "SSC": return NIVEAU_PERMISSION_SECRETAIRE;
-		case "BUR": return NIVEAU_PERMISSION_BUREAU;
-		case "INV": return NIVEAU_PERMISSION_BUREAU;
-		default: return NIVEAU_PERMISSION_BASE;
-	}
-}
 
 function permissionToRole($perm)
 {
@@ -262,7 +250,9 @@ function getUserPermissionLevel($login = "", $use_mask = true )
 
 	if ($login=="" || $login == getLogin())
 	{
-		$result = isset($_SESSION['permission']) ? $_SESSION['permission'] : 0;
+		$result = 0;
+		if(isset($_SESSION['permission']))
+			$result = $_SESSION['permission'];
 		return min($mask, $result);
 	}
 
@@ -308,7 +298,8 @@ function isSecretaire($login = "", $use_mask = true)
 {
 	if($login == "")
 		$login = getLogin();
-	return getUserPermissionLevel($login, $use_mask) >= NIVEAU_PERMISSION_SECRETAIRE;
+	$level = getUserPermissionLevel($login, $use_mask);
+	return ($level >= NIVEAU_PERMISSION_SECRETAIRE);
 };
 
 function getLogin()
@@ -339,7 +330,8 @@ function getPresident()
 
 function isBureauUser($login = "", $use_mask = true)
 {
-	return getUserPermissionLevel($login, $use_mask) >= NIVEAU_PERMISSION_BUREAU;
+	$level = getUserPermissionLevel($login, $use_mask);
+	return ($level >= NIVEAU_PERMISSION_BUREAU);
 };
 
 function isSousJury($sousjury, $login = "")
@@ -585,7 +577,7 @@ function deleteAllUsers()
 	if (isSuperUser())
 	{
 		unset($_SESSION['all_users']);
-		$sql = "DELETE FROM ".users_db." WHERE NOT login='".real_escape_string(getLogin())."';";
+		$sql = "DELETE FROM ".users_db." WHERE NOT `login`='".real_escape_string(getLogin())."';";
 		sql_request($sql);
 	}
 	else if(isSecretaire())

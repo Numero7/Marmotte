@@ -18,16 +18,17 @@ $firstlogin = authenticateBase('admin','password');
 		</div>
 
 	<div class="content"> 
- <p>
-   Veuillez vous authentifier.
- </p>
- <form method="POST">
+	<!-- 
+	<h3><a href="index.php?action=auth_janus">Authentification Janus</a></h3>
+	 -->
+	<h3>Authentification Marmotte</h3>
+	<form method="POST">
 	<table>
 		<tr>
 			<td><span class="label">Login</span></td>
 			<td><input name="login" type="text" value="<?php if($firstlogin) echo 'admin';?>"></input></td>
 			<td rowspan="2"><input type="submit" value="Valider">
-			<input type="hidden" name="action" value="auth"></td>
+			<input type="hidden" name="action" value="auth_marmotte"></td>
 		</tr>
 		<tr>
 			<td><span class="label">Mot de passe</span></td>

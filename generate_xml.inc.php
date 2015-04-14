@@ -341,8 +341,8 @@ function createXMLReportElem($row, DOMDocument $doc, $keep_br = true)
 			{
 				
 				$users = listUsers();
-				$login = isset($tous_sous_jury[$concours][$sousjury]["president"]);
-				$description = isset($users["login"]) ? $users["login"]->description : "";
+				$login = isset($tous_sous_jury[$concours][$sousjury]["president"]) ? $tous_sous_jury[$concours][$sousjury]["president"] : "";
+				$description = isset($users[$login]) ? $users[$login]->description : "";
 	//			$description = ""; 
 				appendLeaf("signataire",$description, $doc, $rapportElem);
 				appendLeaf("signature", "", $doc, $rapportElem);
@@ -352,7 +352,7 @@ function createXMLReportElem($row, DOMDocument $doc, $keep_br = true)
 				appendLeaf("signataire","", $doc, $rapportElem);
 				appendLeaf("signature", "", $doc, $rapportElem);
 			}
-
+			
 			$candidat = get_or_create_candidate($row);
 			appendLeaf("audition", $candidat->audition, $doc, $rapportElem);
 			appendLeaf("grade_concours", substr($concours_ouverts[$row->concours],0,3), $doc, $rapportElem);
