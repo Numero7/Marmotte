@@ -67,13 +67,7 @@ try
 						false);
 			# Effectue l'authentification
 			$pmsp->authentify('mail,cn,ou,givenname,displayname');		
-
-			if(isset($_SERVER['REMOTE_USER']) && ($_SERVER['REMOTE_USER'] != ''))
-			{
-				echo "Adding credentials for user " + $_SERVER['REMOTE_USER'];
-				addCredentials($_SERVER['REMOTE_USER'], "",true);
-			}
-			
+			$_SESSION['REMOTE_USER'] = $_SERVER['REMOTE_USER'];
 			} catch (Exception $e) {
 				removeCredentials();
 				Header("Content-type: text/plain");
@@ -82,7 +76,11 @@ try
 				echo $e->getTraceAsString();
 				exit (0);
 			}
-			
+		}
+				
+		if(isset($_SESSION['REMOTE_USER']) && ($_SESSION['REMOTE_USER'] != ''))
+		{
+				addCredentials($_SESSION['REMOTE_USER'], "",true);
 		}
 		
 		if(!authenticate() || $action == 'logout' || ($errorLogin == 1))
@@ -93,9 +91,8 @@ try
 		}
 		else
 		{			
-			require_once("config_tools.inc.php");
-			$_SESSION['filter_id_session'] = get_config("current_session");
-			
+					require_once("config_tools.inc.php");
+					$_SESSION['filter_id_session'] = get_config("current_session");
 			require_once("utils.inc.php");
 			require_once("manage_users.inc.php");
 			if(isSecretaire() && !isset($_SESSION["htpasswd"]))
@@ -168,9 +165,13 @@ try
 catch(Exception $e)
 {
 	removeCredentials();
-	include("header.inc.php");
-	echo $e->getMessage();
-	include("index.php");
+//Header("Content-type: text/plain");
+echo "<html><head><script>alert(\"".$e->getMessage()."\");";
+echo "window.location = \"index.php\";";
+echo "</script></head></body></html>";
+
+//	Header("Content-type: text/plain");
+//	include("index.php");
 }
 ?>
 </body>

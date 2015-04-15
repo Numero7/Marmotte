@@ -35,12 +35,8 @@ $firstlogin = authenticateBase('admin','password');
 			<td><input name="password" type="password" value="<?php if($firstlogin) echo 'password';?>"></input></td>
 		</tr>
 	</table>
-	<?php 
-		if ($errorLogin)
-		{
-			echo "<b>Couple login/mot de passe invalide ! </b>";
-		}
-	?>
+<h3><a href="index.php?action=auth_janus">Authentification Janus</a></h3>
+
  </form>
  	</div>
 </div>

@@ -95,6 +95,7 @@ function removeCredentials()
 	unset($_SESSION["rows_id"]);
 	unset($_SESSION["lose_secretary_status"]);
 	unset($_SESSION["permission_mask"]);
+	unset($_SESSION['REMOTE_USER']);
 	$_SERVER['REMOTE_USER'] = "";
 }
 
@@ -133,7 +134,7 @@ function authenticate()
 		$login  = $_SESSION['login'];
 		$pwd = $_SESSION['pass'];
 		
-		if( !isset($_SERVER['REMOTE_USER']) || $_SERVER['REMOTE_USER']=='')
+		if( !isset($_SESSION['REMOTE_USER']) || $_SESSION['REMOTE_USER']=='')
 		{
 			$result = authenticateBase($login,$pwd);
 			if(!$result)
@@ -162,7 +163,7 @@ function authenticate()
 				if((count($sections)  === 0)&& $row->permissions < NIVEAU_PERMISSION_SUPER_UTILISATEUR )
 				{
 					removeCredentials();
-					throw new Exception("Only superuser can log in without being registered in any seciton or CID");
+					throw new Exception("Votre authentification est correcte mais le login '".$login."' n'est associe a aucune section ou CID.");
 					return false;
 				}
 				if( ($row->permissions < NIVEAU_PERMISSION_SUPER_UTILISATEUR) && array_search($last,$sections) === false)
