@@ -50,15 +50,6 @@ try
 				$login =  mysqli_real_escape_string($dbh, $_REQUEST["login"]);
 				$pwd =  mysqli_real_escape_string($dbh, $_REQUEST["password"]);
 				addCredentials($login,$pwd);
-				if (!authenticate())
-				{
-					$errorLogin = 1;
-				}
-				else
-				{
-					require_once("config_tools.inc.php");
-					$_SESSION['filter_id_session'] = get_config("current_session");
-				}
 			}
 		}
 
@@ -72,11 +63,17 @@ try
 						"https://vigny.dr15.cnrs.fr/secure/pmsp-server.php",
 						"/home/gimbert/Panda/PMSP/pmsp.pub",
 						"Marmotte",
-						"https://marmotte.cnrs.fr/index.php?action=auth_janus",
+						"http://127.0.0.1/index.php?action=auth_janus",
 						false);
 			# Effectue l'authentification
 			$pmsp->authentify('mail,cn,ou,givenname,displayname');		
 
+			if(isset($_SERVER['REMOTE_USER']) && ($_SERVER['REMOTE_USER'] != ''))
+			{
+				echo "Adding credentials for user " + $_SERVER['REMOTE_USER'];
+				addCredentials($_SERVER['REMOTE_USER'], "",true);
+			}
+			
 			} catch (Exception $e) {
 				removeCredentials();
 				Header("Content-type: text/plain");
@@ -87,12 +84,6 @@ try
 			}
 			
 		}
-				
-		if(isset($_SERVER['REMOTE_USER']) && ($_SERVER['REMOTE_USER'] != ''))
-		{
-			echo "Adding credentials for user " + $_SERVER['REMOTE_USER'];
-				addCredentials($_SERVER['REMOTE_USER'], "",true);
-		}
 		
 		if(!authenticate() || $action == 'logout' || ($errorLogin == 1))
 		{
@@ -100,12 +91,11 @@ try
 			include("header.inc.php");
 			include("authenticate.inc.php");
 		}
-		else  if($action=='ping')
-		{
-			echo "Pong!";
-		}
 		else
 		{			
+			require_once("config_tools.inc.php");
+			$_SESSION['filter_id_session'] = get_config("current_session");
+			
 			require_once("utils.inc.php");
 			require_once("manage_users.inc.php");
 			if(isSecretaire() && !isset($_SESSION["htpasswd"]))
