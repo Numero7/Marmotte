@@ -35,6 +35,8 @@ $firstlogin = authenticateBase('admin','password');
 			<td><input name="password" type="password" value="<?php if($firstlogin) echo 'password';?>"></input></td>
 		</tr>
 	</table>
+	<br/>
+	<br/>
 <h3><a href="index.php?action=auth_janus">Authentification Janus</a></h3>
 
  </form>
