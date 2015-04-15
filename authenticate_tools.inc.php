@@ -163,7 +163,7 @@ function authenticate()
 				if((count($sections)  === 0)&& $row->permissions < NIVEAU_PERMISSION_SUPER_UTILISATEUR )
 				{
 					removeCredentials();
-					throw new Exception("Votre authentification est correcte mais le login '".$login."' n'est associé à aucune section ou CID.");
+					throw new Exception("Votre authentification est correcte mais le login '".$login."' n'est actuellement associ\351 \340 aucune section ou CID dans Marmotte.");
 					return false;
 				}
 				if( ($row->permissions < NIVEAU_PERMISSION_SUPER_UTILISATEUR) && array_search($last,$sections) === false)
