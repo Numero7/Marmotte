@@ -16,7 +16,7 @@ require 'Pmsp.php';
 # Indiquez ci-dessous l'URL de ce script sur votre site WWW ou null
 # si vous voulez laisser PMSP déterminer cet URL (nécessite le
 # mod_rewrite et RewriteEngine=on)
-$client = null;
+$client = "https://marmotte.cnrs.fr/PMSP/client.php";
 
 # Indiquez ci-dessous l'URL du service de découverte (WAYF
 # ou DS) de l'IdP de l'utilisateur ou null si vous ne souhaitez pas
@@ -26,22 +26,23 @@ $wayf = null;
 
 # Indiquez ci-dessous le fichier contenant la clé publique du
 # serveur PMSP
-$pubkey = "/etc/pmsp/pmsp.pub";
+$pubkey = "/home/gimbert/Panda/PMSP/pmsp.pub";
 
 # Indiquez ci-dessous l'URL du serveur PMSP
-$server = "https://monsp.mon-domaine.fr/secure/pmsp-server.php";
+$server = "https://vigny.dr15.cnrs.fr/secure/pmsp-server.php";
 
 # Indiquez ci-dessous l'identifiant de l'application
-$appid = "Exemple d'utilisation de PMSP"
+$appid = "PMSP Marmotte"
 
 # Indiquez ci-dessous la liste des attributs demandés au
 # serveur PMSP
 $attributs = 'mail,ou,cn,sn,givenName,displayname';
 
-if (/* l'utilisateur n'est pas encore authentifié */) {
+if ((!isset($_SERVER['REMOTE_USER']) || ($_SERVER['REMOTE_USER'] == "")) {
+echo "rr";
   try {
     # Fabrique un objet PMSP
-    $pmsp = new Pmsp($server, $pubkey, $appid, $client);
+    $pmsp = new Pmsp($server, $pubkey, $appid, $client, true);
 
     # Indique si nécessaire le service de découverte
     if ($wayf) {

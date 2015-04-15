@@ -14,11 +14,7 @@ session_start();
 
 require_once("db.inc.php");
 require_once('authenticate_tools.inc.php');
-/*
-echo "REMOTE USER: '".(isset($_SERVER['REMOTE_USER']) ? $_SERVER['REMOTE_USER'] : "")."'<br/>";
-echo "LOGIN: '".(isset($_SESSION['login']) ? $_SESSION['login'] : "")."'<br/>";
-echo "PASS: '".(isset($_SESSION['pass']) ? $_SESSION['pass'] : "")."'<br/>";
-*/
+
 try
 {
 	try
@@ -74,13 +70,13 @@ try
 				# Fabrique un objet PMSP
 				$pmsp = new Pmsp(
 						"https://vigny.dr15.cnrs.fr/secure/pmsp-server.php",
-						"/etc/pmsp/pmsp.pub",
+						"/home/gimbert/Panda/PMSP/pmsp.pub",
 						"Marmotte",
-						"http://127.0.0.1",//"https://marmotte.cnrs.fr",
+						"https://marmotte.cnrs.fr/index.php?action=auth_janus",
 						false);
 			# Effectue l'authentification
-			$pmsp->authentify('mail,cn,ou,givenname,displayname');			
-			rr();
+			$pmsp->authentify('mail,cn,ou,givenname,displayname');		
+
 			} catch (Exception $e) {
 				removeCredentials();
 				Header("Content-type: text/plain");
@@ -89,10 +85,12 @@ try
 				echo $e->getTraceAsString();
 				exit (0);
 			}
+			
 		}
 				
 		if(isset($_SERVER['REMOTE_USER']) && ($_SERVER['REMOTE_USER'] != ''))
 		{
+			echo "Adding credentials for user " + $_SERVER['REMOTE_USER'];
 				addCredentials($_SERVER['REMOTE_USER'], "",true);
 		}
 		
