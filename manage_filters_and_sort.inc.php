@@ -1,10 +1,6 @@
 <?php
 
 
-function setFilterValue($filter_name, $value)
-{
-	$_SESSION["filter_".$filter_name] = $value;
-}
 
 function getFilterValue($filter_name)
 {
@@ -13,9 +9,15 @@ function getFilterValue($filter_name)
 	$answer = $filters[$filter_name]['default_value'];
 
 	if(isset($_REQUEST["filter_".$filter_name]))
-		$answer = real_escape_string($_REQUEST["filter_".$filter_name]);
+	{
+		$answer = $_REQUEST["filter_".$filter_name];
+//	echo "Setting filter_value from request ".$filter_name." ".$answer."<br/>";
+	}
 	else if(isset($_SESSION["filter_".$filter_name]))
+	{
 		$answer =   $_SESSION["filter_".$filter_name];
+	//	echo "Setting filter_value from session ".$filter_name." ".$answer."<br/>";
+	}
 	$_SESSION["filter_".$filter_name] = $answer;
 	return $answer;
 }
@@ -77,6 +79,7 @@ function getCurrentFiltersList()
 		if($type=='unit' && isset($filters[$field]))
 		$filters[$field]['liste'] = $units;
 	
+	$filters["id_session"] = current_session_id();
 	return $filters;
 }
 

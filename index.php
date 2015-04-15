@@ -92,7 +92,8 @@ try
 		else
 		{			
 					require_once("config_tools.inc.php");
-					$_SESSION['filter_id_session'] = get_config("current_session");
+					if(!isset($_SESSION['filter_id_session']))
+						$_SESSION['filter_id_session'] = get_config("current_session");
 			require_once("utils.inc.php");
 			require_once("manage_users.inc.php");
 			if(isSecretaire() && !isset($_SESSION["htpasswd"]))

@@ -614,7 +614,7 @@ function importAllUsersFromJanus()
 	$result = dsi_sql_request($sql);
 	while ($row = mysqli_fetch_object($result))
 	{
-		$login = real_escape_string($row->mailpro);
+		$login = $row->mailpro;
 		try
 		{
 			if(isset($users[$login]))
@@ -627,7 +627,7 @@ function importAllUsersFromJanus()
 			{
 				$sql = "INSERT INTO ".users_db." (login,sections,permissions,section_code,CID_code,passHash,description,email,tel) ";
 				$sql .= "VALUES ('";
-				$sql .= $login."','','0','".$row->section_code."','".$row->CID_code."','','".real_escape_string($row->nom." ".$row->prenom)."','".$login."','');";
+				$sql .= real_escape_string($login)."','','0','".$row->section_code."','".$row->CID_code."','','".real_escape_string($row->nom." ".$row->prenom)."','".$login."','');";
 				sql_request($sql);
 			}
 		}
