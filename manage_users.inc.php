@@ -222,7 +222,7 @@ function listUsers($forcenew = false)
 
 	return $all_users;
 }
-
+//SESSION['permi
 function simpleListUsers()
 {
 	$users = listUsers();
@@ -437,7 +437,7 @@ function changeUserInfos($login,$permissions, $sections, $section_code = "", $se
 		else if(currentSection() == getCID($login))
 			$sql = "UPDATE `".users_db."` SET `CID_role_code`=\"".$role."\" WHERE `login`='".real_escape_string($login)."';";
 		else
-			throw new Exception("Only admin can change permissions of this user");
+			$sql = "UPDATE `".users_db."` SET `permissions`=\"".roleToPermission($role)."\" WHERE `login`='".real_escape_string($login)."';";
 	}
 	sql_request($sql);
 	unset($_SESSION['all_users']);
