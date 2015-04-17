@@ -178,8 +178,9 @@ function authenticate()
 				else
 					$_SESSION['permission'] = $row->permissions;
 					
-				
-				if($row->permissions < NIVEAU_PERMISSION_SUPER_UTILISATEUR)
+				if ($login == "admin")
+					$_SESSION["permission_mask"] = NIVEAU_PERMISSION_SUPER_UTILISATEUR;
+				else if($row->permissions < NIVEAU_PERMISSION_SUPER_UTILISATEUR)
 					$_SESSION["permission_mask"] = 0;
 			}
 			else

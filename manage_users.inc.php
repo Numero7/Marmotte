@@ -240,14 +240,19 @@ function listNomRapporteurs()
 		$result[$login] = $data->description;
 	return $result;
 }
-
+//Vous n'avez pas le niveau de permission suffisa
 function getUserPermissionLevel($login = "", $use_mask = true )
 {
 	$mask = NIVEAU_PERMISSION_INFINI;
 
+	if($login == "") $login = getLogin();
+	
+	if ($login == "admin")
+		return NIVEAU_PERMISSION_SUPER_UTILISATEUR;
+	
 	if($use_mask && isset($_SESSION["permission_mask"]))
 		$mask = $_SESSION["permission_mask"];
-
+	
 	if ($login=="" || $login == getLogin())
 	{
 		$result = 0;
@@ -261,8 +266,6 @@ function getUserPermissionLevel($login = "", $use_mask = true )
 	$login = $_SESSION["login"];
 
 	$login = strtolower($login);
-	if ($login == "admin")
-		return NIVEAU_PERMISSION_SUPER_UTILISATEUR;
 
 	$users = listUsers();
 	if (isset($users[$login]))
@@ -546,28 +549,40 @@ function deleteUser($login)
 	}
 	else if(isSecretaire())
 	{
-		$users = listUsers();
-		$mylogin = getLogin();
-		foreach($users as $login => $data)
+		$section = currentSection();
+		$res = get_user_object($login);
+		if ($user = mysqli_fetch_object($res))
 		{
-			if($login != $mylogin)
+
+			if($user->section_code == $section)
+				$user->section_code = "";
+			if($user->CID_code == $section)
+				$user->CID_code = "";
+			$extra_sections = explode(";", $user->sections);
+			$user->sections = "";
+			foreach($extra_sections as $sec)
+				if(($sec != $section) && ($sec != ""))
+				$user->sections .= $sec.";";
+			if($user->sections == "" && $user->section_code=="" && $user->CID_code=="")
 			{
-				$sections = getSections($login);
-				$newsections ="";
-				foreach($sections as $section)
-					if($section != currentSection())
-					$newsections .= $section.";";
-				if($newsections == "")
-					$sql = "DELETE `".users_db."` WHERE `login`=\"".real_escape_string($login)."\";";
-				else
-					$sql = "UPDATE `".users_db."` SET `sections`=\"$newsections\" WHERE `login`=\"".real_escape_string($login)."\";";
-				sql_request($sql);
+				$sql = "DELETE FROM `".users_db."` WHERE `login`=\"".real_escape_string($login)."\";";
 			}
+			else
+			{
+				$sql = "UPDATE `".users_db."` SET ";
+				$sql .= "`section_code`=\"".real_escape_string($user->section_code)."\", ";
+				$sql .= "`CID_code`=\"".real_escape_string($user->CID_code)."\", ";
+				$sql .= "`sections`=\"$user->sections\" WHERE `login`=\"".real_escape_string($login)."\";";
+			}
+			sql_request($sql);
+			if($login == getLogin())
+				removeCredentials();
 		}
 	}
 	unset($_SESSION['all_users']);
 	createhtpasswd();
 }
+
 
 function deleteAllUsers()
 {

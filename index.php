@@ -92,10 +92,7 @@ try
 			include("header.inc.php");
 			include("authenticate.inc.php");
 			if($errorLogin)
-			{
-				alertText($errorMsg);
-				echo "</br>";
-			}
+				echo "<p><alert>".$errorMsg."</alert></p></br>";
 		}
 		else
 		{			

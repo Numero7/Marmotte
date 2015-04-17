@@ -217,8 +217,12 @@ function alertText($text)
 		{
 			/* checking permissions */
 			global $actions_level;
-			if(isset($actions_level[$action]) && getUserPermissionLevel() < $actions_level[$action])
+			$level = getUserPermissionLevel();
+			if(isset($actions_level[$action]) && $level < $actions_level[$action])
+			{
+				rr();
 				throw new Exception("Vous n'avez pas le niveau de permission suffisant pour exécuter l'action '".$action."'");
+			}
 
 			//name="action"rr();
 			switch($action)
