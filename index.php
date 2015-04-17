@@ -62,7 +62,8 @@ try
 
 		if($action == "auth_janus")
 		{			
-			
+			if(empty($_SESSION['pmsp_client_random']) && !empty($_POST['pmsp_server_signature']))
+				unset($_POST['pmsp_server_signature']);
 			require_once("PMSP/Pmsp.php");
 			try {
 				# Fabrique un objet PMSP
