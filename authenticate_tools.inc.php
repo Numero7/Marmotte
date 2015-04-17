@@ -96,6 +96,7 @@ function removeCredentials()
 	unset($_SESSION["lose_secretary_status"]);
 	unset($_SESSION["permission_mask"]);
 	unset($_SESSION['REMOTE_USER']);
+	unset($_SESSION['pmsp_client_random']);
 	$_SERVER['REMOTE_USER'] = "";
 }
 
