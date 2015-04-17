@@ -196,7 +196,6 @@ class Pmsp {
   <head>
     <title>PMSP Client</title>
     <script language="JavaScript">
-      var debug = $this->debug;
 
       function submit() {
 	if (debug > 0) {
