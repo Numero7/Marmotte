@@ -38,11 +38,13 @@ try
 		}
 		/*
 		if(authenticateBase('admin','password'))
+		no pmsp_client_random in current session
 			echo "The 'admin' password is 'password', please change it right after login.";
 			*/
 		
 		$action = isset($_REQUEST["action"]) ? mysqli_real_escape_string($dbh, $_REQUEST["action"]) : "";
 		$errorLogin = 0;
+		$errorMsg = "";
 		if($action == "auth_marmotte")
 		{
 			if(isset($_REQUEST["login"]) and isset($_REQUEST["password"]))
@@ -50,10 +52,15 @@ try
 				$login =  mysqli_real_escape_string($dbh, $_REQUEST["login"]);
 				$pwd =  mysqli_real_escape_string($dbh, $_REQUEST["password"]);
 				addCredentials($login,$pwd);
+				if(!authenticate())
+				{
+					$errorLogin = 1;
+					$errorMsg = "Mauvaise paire login/mot de passe"; 
+				}
 			}
 		}
 
-		if($action == "auth_janus" && ( !isset($_SERVER['REMOTE_USER'])  || $_SERVER['REMOTE_USER'] =="" ) )
+		if($action == "auth_janus")
 		{			
 			
 			require_once("PMSP/Pmsp.php");
@@ -70,24 +77,24 @@ try
 			$_SESSION['REMOTE_USER'] = $_SERVER['REMOTE_USER'];
 			} catch (Exception $e) {
 				removeCredentials();
-				Header("Content-type: text/plain");
-				echo $e->getMessage();
-				echo "\n";
-				echo $e->getTraceAsString();
-				exit (0);
+				$errorLogin = 1;
+				$errorMsg  = $e->getMessage();
 			}
 		}
 				
 		if(isset($_SESSION['REMOTE_USER']) && ($_SESSION['REMOTE_USER'] != ''))
-		{
 				addCredentials($_SESSION['REMOTE_USER'], "",true);
-		}
 		
 		if(!authenticate() || $action == 'logout' || ($errorLogin == 1))
 		{
 			removeCredentials();
 			include("header.inc.php");
 			include("authenticate.inc.php");
+			if($errorLogin)
+			{
+				alertText($errorMsg);
+				echo "</br>";
+			}
 		}
 		else
 		{			
