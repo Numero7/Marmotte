@@ -173,7 +173,7 @@ function authenticate()
 				
 				if ($last == $row->section_code)
 					$_SESSION['permission'] = roleToPermission($row->section_role_code);
-				else if ($section == $row->CID_code)
+				else if ($last == $row->CID_code)
 					$_SESSION['permission'] = roleToPermission($row->CID_role_code);
 				else
 					$_SESSION['permission'] = $row->permissions;
