@@ -196,13 +196,7 @@ class Pmsp {
   <head>
     <title>PMSP Client</title>
     <script language="JavaScript">
-
       function submit() {
-	if (debug > 0) {
-	  var content = window.document.getElementById("pmsp_client_content");
-	  content.style.display = 'inline';
-          return;
-	}
         var form = window.document.getElementById("pmsp_client_form");
         form.submit();
       }
