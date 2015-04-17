@@ -21,6 +21,10 @@ $firstlogin = authenticateBase('admin','password');
 	<!-- 
 	<h3><a href="index.php?action=auth_janus">Authentification Janus</a></h3>
 	 -->
+	 <h2><a href="index.php?action=auth_janus">Authentification Janus</a></h3>
+	<br/>
+	<br/>
+	 
 	<h3>Authentification Marmotte</h3>
 	<form method="POST">
 	<table>
@@ -37,8 +41,6 @@ $firstlogin = authenticateBase('admin','password');
 	</table>
 	<br/>
 	<br/>
-<h3><a href="index.php?action=auth_janus">Authentification Janus</a></h3>
-
  </form>
  	</div>
 </div>
