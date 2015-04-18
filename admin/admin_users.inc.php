@@ -146,7 +146,7 @@
 <hr />
 <h3 id="importaccounts">Import des membres</h3>
 <p>Importer automatiquement les comptes des membres de la section, et
-	les ajouter à la liste des comptes existant.</p>
+	les ajouter à la liste des comptes existant et/ou mettre à jour les comptes correspondants.</p>
 <form method="post" action="index.php">
 	<input type="hidden" name="admin_users"></input> <input type="hidden"
 		name="action" value="importaccountsfromJanus" /> <input type="submit"

@@ -1384,7 +1384,7 @@ Une phrase de conclusion sur le candidat incluant un commentaire sur l'audition
 			'rapporteur' => array('name'=>"Rapporteur" , 'default_value' =>"tous", 'default_name' => "Tous les rapporteurs"),
 			'rapporteur2' => array('name'=>"Rapporteur2" ,'default_value' =>"tous", 'default_name' => "Tous les rapporteurs"),
 			'grade' => array('name'=>"Grade" , 'liste' => $grades, 'default_value' => "tous", 'default_name' => "Tous les grades"),
-			'labo1' => array('name'=>"Labo1" , 'default_value' => "tous", 'default_name' => ""),
+			'unite' => array('name'=>"Unite" , 'default_value' => "tous", 'default_name' => ""),
 			'theme1' => array('name'=>"Theme1" , 'liste' => $topics, 'default_value' => "tous", 'default_name' => "tous"),
 			'theme2' => array('name'=>"Theme2" , 'liste' => $topics, 'default_value' => "tous", 'default_name' => "tous"),
 			'avis' => array('name'=>"Avis Section" , 'liste' => $avis_sessions, 'default_value' => "tous", 'default_name' => ""),
