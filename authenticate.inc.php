@@ -11,12 +11,17 @@ $firstlogin = authenticateBase('admin','password');
 		<br/>
 		<br/>
 		<br/>
+		<br/>
+		<br/>
 		<!-- 
 		<br/>
 		<br/>
 		<h3>"We can only see a short distance ahead, but we can see plenty there that needs to be done." Alan Turing.
 		</h3>
 		 -->
+		 <h3>
+<b>Ned:</b> So what are you doing for dinner?<br/>
+<b>Phil:</b> Umm... something else. </h3>
 		</div>
 
 	<div class="content"> 
