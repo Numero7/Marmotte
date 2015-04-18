@@ -21,7 +21,11 @@ $firstlogin = authenticateBase('admin','password');
 		 -->
 		 <h3>
 <b>Ned:</b> So what are you doing for dinner?<br/>
-<b>Phil:</b> Umm... something else. </h3>
+<b>Phil:</b> Umm... something else. <br/>
+ --<I>Groundhog Day</I>.
+ 		<br/>
+		<br/>
+</h3>
 		</div>
 
 	<div class="content"> 
