@@ -11,20 +11,19 @@ $firstlogin = authenticateBase('admin','password');
 		<br/>
 		<br/>
 		<br/>
+		<!-- 
 		<br/>
 		<br/>
 		<h3>"We can only see a short distance ahead, but we can see plenty there that needs to be done." Alan Turing.
 		</h3>
+		 -->
 		</div>
 
 	<div class="content"> 
-	<!-- 
-	<h3><a href="index.php?action=auth_janus">Authentification Janus</a></h3>
-	 -->
-	 <h2><a href="index.php?action=auth_janus">Authentification Janus</a></h3>
-	<br/>
-	<br/>
-	 
+	 <?php 
+	 if(isset($_REQUEST["action"]) && ($_REQUEST["action"] == "auth_marmotte"))
+	 {
+	 ?>
 	<h3>Authentification Marmotte</h3>
 	<form method="POST">
 	<table>
@@ -39,8 +38,18 @@ $firstlogin = authenticateBase('admin','password');
 			<td><input name="password" type="password" value="<?php if($firstlogin) echo 'password';?>"></input></td>
 		</tr>
 	</table>
+	 <?php 
+	 }
+	 else
+	 {
+	 ?>
+	 <h2><a href="index.php?action=auth_janus">Authentification Janus (login e-valuation)</a></h2>
+	 <h2><a href="index.php?action=auth_marmotte">Authentification Marmotte (anciens logins)</a></h2>
+	 <?php 
+	 }
+	 ?>
 	<br/>
 	<br/>
- </form>
  	</div>
 </div>
+<!-- <iframe width="90%" height="20%" src="https://lejournal.cnrs.fr/"></iframe>  -->
