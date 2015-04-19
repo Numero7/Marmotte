@@ -666,7 +666,7 @@ function mergeUsers($old_login, $new_login)
 	$fields = array("rapporteur","rapporteur2","rapporteur3");
 	foreach($fields as $field)
 	{
-		$sql = "UPDATE ".reports_db." SET `rapporteur`='".$new_login."' WHERE `".$field."`='".$old_login."'";
+		$sql = "UPDATE ".reports_db." SET `".$field."`='".$new_login."' WHERE `".$field."`='".$old_login."'";
 		if(!isSuperUser())
 			$sql .= " AND `section`='".currentSection()."'";
 		$sql.=";";
