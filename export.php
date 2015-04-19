@@ -39,7 +39,7 @@ if (authenticate())
 					downloadReport($id);
 					break;
 				case 'get_file':
-					if(isset($_REQUEST["filename"]) && isset($_REQUEST["path"])  && !strcontains($_REQUEST["path"],".."))
+					if(isset($_REQUEST["filename"]) && isset($_REQUEST["path"])  && (strpos($_REQUEST["path"],"..")===FALSE))
 					{
 						$pref = "./storage/".getSection($login)."/";
 						$path = $_REQUEST["path"];
