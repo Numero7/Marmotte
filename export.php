@@ -38,6 +38,14 @@ if (authenticate())
 				case 'download':
 					downloadReport($id);
 					break;
+				case 'get_file':
+					if(isset($_REQUEST["localpath"]) && isset($_REQUEST["remotepath"]))
+					{
+						$localpath = urldecode(($_REQUEST["localpath"]));
+						$remotepath = urldecode(($_REQUEST["remotepath"]));
+						send_file($localpath,$remotepath);
+					}
+					break;
 				case 'export':
 					{
 						if (isset($_REQUEST["save"]) and isset($_REQUEST["avis"]) and isset($_REQUEST["rapport"]))

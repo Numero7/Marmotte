@@ -467,7 +467,7 @@ function alertText($text)
 					include "admin/admin.inc.php";
 					scrollToId("membres");
 					break;
-					case 'importaccountsfromJanus':
+				case 'importaccountsfromJanus':
 					importAllUsersFromJanus();
 					include "admin/admin.inc.php";
 					scrollToId("membres");
