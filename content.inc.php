@@ -585,11 +585,6 @@ function alertText($text)
 				case 'email_rapporteurs':
 					include 'mailing.inc.php';
 					break;
-				case 'createhtpasswd':
-					createhtpasswd();
-					displayWithRedirects();
-					include "admin/admin.inc.php";
-					break;
 				case 'trouverfichierscandidats':
 					link_files_to_candidates();
 					include "admin/admin.inc.php";

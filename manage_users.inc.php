@@ -340,15 +340,6 @@ function changePwd($login,$old,$new1,$new2, $envoiparemail)
 			$sql = "UPDATE ".users_db." SET passHash='$newPassHash' WHERE login='".real_escape_string($login)."';";
 			sql_request($sql);
 
-			try
-			{
-				createhtpasswd();
-			}
-			catch(Exception $e)
-			{
-				echo $e->getMessage();
-			}
-
 			if(getLogin() == $login)
 				addCredentials($login,$new1);
 
@@ -470,7 +461,6 @@ function createUser(
 
 			$result = sql_request($sql);
 
-			createhtpasswd();
 			if($envoiparemail)
 			{
 				$body = "Marmotte est un site web destiné à faciliter la répartition, le dépôt, l'édition et la production\r\n";
@@ -544,7 +534,6 @@ function deleteUser($login)
 		}
 	}
 	unset($_SESSION['all_users']);
-	createhtpasswd();
 }
 
 
@@ -571,7 +560,6 @@ function deleteAllUsers()
 		$sql = "UPDATE `".users_db."` SET `sections`=\"$newsections\" WHERE `login`=\"".real_escape_string($login)."\";";
 		sql_request($sql);
 	}
-	createhtpasswd();
 
 }
 

@@ -1203,7 +1203,6 @@ Une phrase de conclusion sur le candidat incluant un commentaire sur l'audition
 			"deletelabo" => NIVEAU_PERMISSION_SECRETAIRE,
 			"mailing" => NIVEAU_PERMISSION_SECRETAIRE,
 			"email_rapporteurs" => NIVEAU_PERMISSION_SECRETAIRE,
-			"createhtpasswd" => NIVEAU_PERMISSION_SECRETAIRE,
 			"trouverfichierscandidats" => NIVEAU_PERMISSION_SECRETAIRE,
 			"creercandidats" => NIVEAU_PERMISSION_SECRETAIRE,
 			"creercandidats" => NIVEAU_PERMISSION_SECRETAIRE,
