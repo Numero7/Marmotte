@@ -180,6 +180,24 @@
 		?>
 	</select>
 </form>
+<form method="post" action="index.php">
+	<input type="hidden" name="admin_users"></input> <input type="hidden"
+		name="action" value="mergeUsers" /> <input type="submit"
+		value="Fusionner les comptes" />
+		Ancien login
+		<input name="old_login"/>
+	Nouveau login
+	 <select name="new_login">
+		<?php
+		$users = listUsers();
+		foreach($users as $user => $data)
+		{
+			if ($data->permissions <= getUserPermissionLevel() || (isSecretaire() && $data->permissions == NIVEAU_PERMISSION_PRESIDENT))
+				echo "<option value=\"$user\">".$user."</option>";
+		}
+		?>
+	</select>
+</form>
 <br />
 
 
