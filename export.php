@@ -50,14 +50,6 @@ if (authenticate())
 						$remotepath = urldecode(($_REQUEST["filename"]));
 						send_file($localpath,$remotepath);
 						}
-						else
-						{
-							echo $sub ." " .$pref . "<br/>";
-						}
-					}
-					else
-					{
-						echo "Forbidden<br/>";
 					}
 					break;
 				case 'export':

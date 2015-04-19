@@ -15,6 +15,16 @@ function send_file($local_filename, $remote_filename)
 	if(!is_file($local_filename))
 		throw new Exception("Cannot find file .$local_filename");
 
+	if(strpos($local_filename,"..") !== FALSE)
+		throw new Exception("Forbidden file name".$local_filename);
+	
+	$pref = "./storage/".currentSection()."/";
+	$sub  = substr($local_filename,0, strlen($pref) );
+	if( $sub != $pref )
+		throw new Exception("Forbidden access to file".$local_filename);
+	
+		
+	
 	$size = filesize($local_filename);
 	if($size === false)
 		throw new Exception("Cannot get size of file .$local_filename");
