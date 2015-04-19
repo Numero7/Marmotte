@@ -39,11 +39,16 @@ if (authenticate())
 					downloadReport($id);
 					break;
 				case 'get_file':
-					if(isset($_REQUEST["filename"]) && isset($_REQUEST["path"]))
+					if(isset($_REQUEST["filename"]) && isset($_REQUEST["path"])  && !strcontains($_REQUEST["path"],".."))
 					{
+						$pref = "./storage/".getSection($login)."/";
+						$path = $_REQUEST["path"];
+						if( substr($path, strlen($pref) ) == $pref )
+						{
 						$localpath = urldecode(($_REQUEST["path"]));
 						$remotepath = urldecode(($_REQUEST["filename"]));
 						send_file($localpath,$remotepath);
+						}
 					}
 					break;
 				case 'export':
