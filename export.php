@@ -41,7 +41,7 @@ if (authenticate())
 				case 'get_file':
 					if(isset($_REQUEST["filename"]) && isset($_REQUEST["path"])  && (strpos($_REQUEST["path"],"..")===FALSE))
 					{
-						$pref = "./storage/".getSection($login)."/";
+						$pref = "./storage/".currentSection()."/";
 						$path = $_REQUEST["path"];
 						if( substr($path, strlen($pref) ) == $pref )
 						{
