@@ -460,7 +460,7 @@ function alertText($text)
 				case 'mergeUsers':
 					mergeUsers($_REQUEST["old_login"], $_REQUEST["new_login"]);
 					include "admin/admin.inc.php";
-					scrollToId("membres");
+					scrollToId("importaccounts");
 					break;
 				case 'admindeleteallaccounts':
 					deleteAllUsers();
