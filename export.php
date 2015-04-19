@@ -43,7 +43,7 @@ if (authenticate())
 					{
 						$pref = "./storage/".currentSection()."/";
 						$path = $_REQUEST["path"];
-						$sub  = substr($path, strlen($pref) );
+						$sub  = substr($path,0, strlen($pref) );
 						if( $sub == $pref )
 						{
 						$localpath = urldecode(($_REQUEST["path"]));
