@@ -39,10 +39,10 @@ if (authenticate())
 					downloadReport($id);
 					break;
 				case 'get_file':
-					if(isset($_REQUEST["localpath"]) && isset($_REQUEST["remotepath"]))
+					if(isset($_REQUEST["filename"]) && isset($_REQUEST["path"]))
 					{
-						$localpath = urldecode(($_REQUEST["localpath"]));
-						$remotepath = urldecode(($_REQUEST["remotepath"]));
+						$localpath = urldecode(($_REQUEST["path"]));
+						$remotepath = urldecode(($_REQUEST["filename"]));
 						send_file($localpath,$remotepath);
 					}
 					break;

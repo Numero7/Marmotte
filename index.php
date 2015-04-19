@@ -101,11 +101,6 @@ try
 						$_SESSION['filter_id_session'] = get_config("current_session");
 			require_once("utils.inc.php");
 			require_once("manage_users.inc.php");
-			if(isSecretaire() && !isset($_SESSION["htpasswd"]))
-			{
-				createhtpasswd();
-				$_SESSION["htpasswd"] = "done";
-			}
 				
 			switch($action)
 			{

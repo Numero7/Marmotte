@@ -49,22 +49,23 @@ require_once("authbar.inc.php");
 			if(isset($_REQUEST['zip_file']))
 			{
 				$c = 0;
-			foreach($reports as $report)
-			{
+				foreach($reports as $report)
+				{
 
-				if(!$report->hasAttributes())
-					continue;
-				$is_done = $report->hasAttribute('done');
-				if($is_done) $c++;
-			}
+					if(!$report->hasAttributes())
+						continue;
+					$is_done = $report->hasAttribute('done');
+					if($is_done) $c++;
+				}
 				if($c == 0)
 				{
 					echo '<p>Aucun rapport généré </p>';
 				}
 				else
 				{
-				$filename = $_REQUEST['zip_file'];
-					echo '<p>Le fichier zip contenant tous les pdf:<br/> <a href="'.$filename.'">'.$filename.'</a>.</p>'."\n";
+					$filename = $_REQUEST['zip_file'];
+					echo '<p>Le fichier zip contenant tous les pdf:<br/>';
+					echo '<a href="export.php?action=get_file&amp;path='.urlencode($filename).'&amp;filename=reports.zip">'.$filename.'</a>.</p>'."\n";
 				}
 			}
 
@@ -101,7 +102,7 @@ require_once("authbar.inc.php");
 				if($report->hasAttribute('done'))
 				{
 					$filename = $report->getAttribute('filename').".pdf";
-					echo '<tr><td><a href="'.$dir.'/'.$filename.'">'.$filename.'</a></td>'."\n";
+					echo '<tr><td><a href="export.php?action=get_file&amp;path='.urlencode($dir.'/'.$filename).'&amp;filename='.urlencode($filename).'">'.$filename.'</a></td>'."\n";
 					echo '<td><font>Done</font></td></tr>'."\n";
 				}
 			}
@@ -111,31 +112,31 @@ require_once("authbar.inc.php");
 
 			if($next_report != NULL)
 			{
-					$xsl = new DOMDocument("1.0","UTF-8");
-					$type = $next_report->getAttribute('type');
-					$xsl_path = type_to_xsl($type);
-					$xsl->load($xsl_path);
+				$xsl = new DOMDocument("1.0","UTF-8");
+				$type = $next_report->getAttribute('type');
+				$xsl_path = type_to_xsl($type);
+				$xsl->load($xsl_path);
 
-					$proc = new XSLTProcessor();
-					$proc->importStyleSheet($xsl);
+				$proc = new XSLTProcessor();
+				$proc->importStyleSheet($xsl);
 
-					if($type=="Classement")
-						echo $xsl_path;
+				if($type=="Classement")
+					echo $xsl_path;
 					
-					$filename = $dir.$next_report->getAttribute('filename').".pdf";
+				$filename = $dir.$next_report->getAttribute('filename').".pdf";
 
-					$subreport = new DOMDocument("1.0","UTF-8");
-					$node = $subreport->importNode($next_report,true);
-					$subreport->appendChild($node);
-					$html = $proc->transformToXML($subreport);
+				$subreport = new DOMDocument("1.0","UTF-8");
+				$node = $subreport->importNode($next_report,true);
+				$subreport->appendChild($node);
+				$html = $proc->transformToXML($subreport);
 
-					$pdf = HTMLToPDF($html);
-					$pdf->Output($filename,"F");
+				$pdf = HTMLToPDF($html);
+				$pdf->Output($filename,"F");
 
-					$next_report->setAttribute('done','');
+				$next_report->setAttribute('done','');
 
-					$doc->save($dir.'reports.xml');
-					?>
+				$doc->save($dir.'reports.xml');
+				?>
 		<script>window.location = 'create_reports.php'</script>
 		<?php
 			}
@@ -159,16 +160,16 @@ require_once("authbar.inc.php");
 		<?php
 					}
 					catch(Exception $exc)
-			{
-				echo "Failed to generate zip file: ".$exc->getMessage();
+					{
+						echo "Failed to generate zip file: ".$exc->getMessage();
+					}
 			}
-	}
-}
-catch(Exception $e)
-{
-	echo "Failed to generate pdfs:  <br/>\n".$e;
-}
-?>
+		}
+		catch(Exception $e)
+		{
+			echo "Failed to generate pdfs:  <br/>\n".$e;
+		}
+		?>
 	</div>
 </div>
 </body>

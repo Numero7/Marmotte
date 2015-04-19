@@ -6,43 +6,6 @@ require_once('generate_xml.inc.php');
 require_once('authenticate_tools.inc.php');
 require_once('manage_files.php');
 
-function createhtpasswd()
-{
-	$list = listUsers(true);
-	global $dossier_temp;
-	global $dossier_stockage;
-	foreach(array($dossier_temp,$dossier_stockage) as $dir)
-	{
-		create_dir_if_needed2($dir);
-		if( $handle = fopen($dir.".htpasswd" , "w" ) )
-		{
-			foreach($list as $user => $data)
-				fwrite($handle,$user.":".$data->passHash."\n");
-			fclose($handle);
-		}
-		else
-			throw new Exception("Failed to open htpasswd file for writing");
-
-		$realp = realpath($dir.".htpasswd");
-		if($realp == false)
-			throw new Exception("Warning, security breach, htaccess could not be properly generated");
-
-		if( $handle = fopen($dir.".htaccess" , "w" ) )
-		{
-			fwrite($handle,
-					"AuthUserFile ".$realp."\n
-					AuthName \"Veuillez vous identifier avec votre login et votre mot de passe Marmotte\"\n
-					AuthType Basic\n
-					Require valid-user\n"
-			);
-			fclose($handle);
-		}
-		else
-			throw new Exception("Failed to open htaccess file for writing");
-
-	}
-	//	echo "Regenerated access files.<br/>";
-}
 
 function belongsToSection($login, $section)
 {

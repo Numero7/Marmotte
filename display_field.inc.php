@@ -266,7 +266,7 @@ function display_fichiers($row, $fieldID, $session, $readonly)
 				$arr2 = array("","");
 				$prettyfile = str_replace($arr, $arr2, $prettyfile);
 			}
-			echo '<a  target="_blank" href="export.php?action=get_file&amp;remotepath='.urlencode($file).'&amp;localpath='.urlencode($dir."/".$file).'">'.$prettyfile."</a><br/>\n";
+			echo '<a  target="_blank" href="export.php?action=get_file&amp;filename='.urlencode($file).'&amp;path='.urlencode($dir."/".$file).'">'.$prettyfile."</a><br/>\n";
 			$i++;
 		}
 		echo '</td></tr>';
