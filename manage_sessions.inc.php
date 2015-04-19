@@ -120,6 +120,8 @@ echo $row->id."<br/>";
 function createSession($name,$annee, $section ="")
 {
 	if($section == "") $section = $_SESSION['filter_section'];
+	if(!ctype_alnum($name))
+		throw new Exception("Session names can be only alphanumeric");
 	if (isSecretaire())
 	{
 		date_default_timezone_set('Europe/Paris');

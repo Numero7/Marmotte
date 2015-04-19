@@ -27,8 +27,8 @@ ini_set('xdebug.show_local_vars', 'on');
 		removeCredentials();
 		throw new Exception("Unexpected error");
 	}
-	$dossier_temp = $rootdir."./tmp/".$_SESSION['filter_section']."/";
-	$dossier_stockage = $rootdir."./storage/".$_SESSION['filter_section']."/";
+	$dossier_temp = realpath($rootdir."./tmp/".$_SESSION['filter_section']."/");
+	$dossier_stockage = realpath($rootdir."./storage/".$_SESSION['filter_section']."/");
 	
 
 	$rubriques_supplementaires = array(
