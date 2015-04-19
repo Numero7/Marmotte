@@ -43,12 +43,21 @@ if (authenticate())
 					{
 						$pref = "./storage/".currentSection()."/";
 						$path = $_REQUEST["path"];
-						if( substr($path, strlen($pref) ) == $pref )
+						$sub  = substr($path, strlen($pref) );
+						if( $sub == $pref )
 						{
 						$localpath = urldecode(($_REQUEST["path"]));
 						$remotepath = urldecode(($_REQUEST["filename"]));
 						send_file($localpath,$remotepath);
 						}
+						else
+						{
+							echo $sub ." " .$pref . "<br/>";
+						}
+					}
+					else
+					{
+						echo "Forbidden<br/>";
 					}
 					break;
 				case 'export':
