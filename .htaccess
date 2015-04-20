@@ -1,0 +1,9 @@
+<Files *.php>
+    Order Deny,Allow
+    Deny from all
+</Files>
+
+<Files ~ "create_reports.php|index.php|export.php">
+   order deny,allow
+   allow from all
+</Files>
