@@ -91,17 +91,16 @@ function create_dir_if_needed2($basedir)
 }
 function get_dir($session,$nom,$prenom)
 {
-	global $dossier_stockage;
+	global $dossier_stockage_short;
 	$session = str_replace( "..", "" ,$session);
 	$nom = str_replace("..", "",$nom);
 	$prenom = str_replace("..", "",$prenom);
-	return  $dossier_stockage."/".$session."/".$nom."_".$prenom."/";
+	return  $dossier_stockage_short."/".$session."/".$nom."_".$prenom."/";
 }
 
 function get_people_directory($candidate, $session, $create_directory_if_nexists = false)
 {
 	$basedir = get_dir($session, $candidate->nom, $candidate->prenom);
-	// $dossier_stockage."/".$session."/".$candidate->nom."_".$candidate->prenom."/";
 	if($create_directory_if_nexists)
 		create_dir_if_needed2($basedir);
 	return $basedir;
@@ -116,8 +115,8 @@ function rename_people_directory($session, $nom,$prenom,  $pnom,$pprenom)
 
 function get_unit_directory($unit, $session, $create_directory_if_nexists = false)
 {
-	global $dossier_stockage;
-	$basedir = $dossier_stockage."/".$session."/".$unit->unite."/";
+	global $dossier_stockage_short;
+	$basedir = $dossier_stockage_short."/".$session."/".$unit->unite."/";
 	if($create_directory_if_nexists)
 		create_dir_if_needed2($basedir);
 	return $basedir;
