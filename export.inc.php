@@ -11,11 +11,7 @@ require_once('generate_pdf.inc.php');
 require_once('generate_zip.inc.php');
 
 function send_file($local_filename, $remote_filename)
-{
-	global $dossier_stockage;
-	if(!is_file($local_filename))
-		throw new Exception("Cannot find file .$local_filename");
-	
+{	
 	$sub  = substr(realpath($local_filename),0, strlen($dossier_stockage) );
 	if( $sub != $dossier_stockage )
 		throw new Exception("Forbidden access to file".$local_filename);		
@@ -24,6 +20,10 @@ function send_file($local_filename, $remote_filename)
 	if($size === false)
 		throw new Exception("Cannot get size of file .$local_filename");
 
+	global $dossier_stockage;
+	if(!is_file($local_filename))
+		throw new Exception("Cannot find file .$local_filename");
+	
 	header("Pragma: public");
 	header("Expires: 0");
 	header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
