@@ -210,13 +210,13 @@ function getUserPermissionLevel($login = "", $use_mask = true )
 	$mask = NIVEAU_PERMISSION_INFINI;
 
 	if($login == "") $login = getLogin();
-	
+
 	if ($login == "admin")
 		return NIVEAU_PERMISSION_SUPER_UTILISATEUR;
-	
+
 	if($use_mask && isset($_SESSION["permission_mask"]))
 		$mask = $_SESSION["permission_mask"];
-	
+
 	if ($login=="" || $login == getLogin())
 	{
 		$result = 0;
@@ -334,35 +334,34 @@ function changePwd($login,$old,$new1,$new2, $envoiparemail)
 	if (authenticateBase($login,$old) or isSecretaire())
 	{
 		$oldPassHash = getPassHash($login);
-		if ($oldPassHash != NULL)
+		if ($oldPassHash == NULL)
+			$oldPassHash = "";
+		$newPassHash = crypt($new1, $oldPassHash);
+		$sql = "UPDATE ".users_db." SET passHash='$newPassHash' WHERE login='".real_escape_string($login)."';";
+		echo $sql.<br/>;
+		sql_request($sql);
+
+		if(getLogin() == $login)
+			addCredentials($login,$new1);
+
+		if($envoiparemail)
 		{
-			$newPassHash = crypt($new1, $oldPassHash);
-			$sql = "UPDATE ".users_db." SET passHash='$newPassHash' WHERE login='".real_escape_string($login)."';";
-			sql_request($sql);
-
-			if(getLogin() == $login)
-				addCredentials($login,$new1);
-
-			if($envoiparemail)
+			$body = "Votre mot de passe pour le site \r\n".adresse_du_site."\r\n a été mis à jour:\r\n";
+			$body .= "\t\t\t login: '".$login."'\r\n";
+			$body .= "\t\t\t motdepasse: '".$new1."'\r\n";
+			$body .= "\r\n\r\n\t Amicalement, ".get_config("webmaster_nom").".";
+			$cc = "";
+			foreach($users as $user)
 			{
-				$body = "Votre mot de passe pour le site \r\n".adresse_du_site."\r\n a été mis à jour:\r\n";
-				$body .= "\t\t\t login: '".$login."'\r\n";
-				$body .= "\t\t\t motdepasse: '".$new1."'\r\n";
-				$body .= "\r\n\r\n\t Amicalement, ".get_config("webmaster_nom").".";
-				$cc = "";
-				foreach($users as $user)
+				if($user->login == $currLogin && $currLogin != $login)
 				{
-					if($user->login == $currLogin && $currLogin != $login)
-					{
-						$cc = $user->email;
-						break;
-					}
+					$cc = $user->email;
+					break;
 				}
-				email_handler($users[$login]->email,"Votre compte Marmotte",$body,$cc);
 			}
-
-			return true;
+			email_handler($users[$login]->email,"Votre compte Marmotte",$body,$cc);
 		}
+		return true;
 	}
 	else
 		throw new Exception("La saisie du mot de passe courant est incorrecte, veuillez réessayer.");
