@@ -338,7 +338,6 @@ function changePwd($login,$old,$new1,$new2, $envoiparemail)
 			$oldPassHash = "";
 		$newPassHash = crypt($new1, $oldPassHash);
 		$sql = "UPDATE ".users_db." SET passHash='$newPassHash' WHERE login='".real_escape_string($login)."';";
-		echo $sql."<br/>";
 		sql_request($sql);
 
 		if(getLogin() == $login)
