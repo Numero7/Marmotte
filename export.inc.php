@@ -13,17 +13,22 @@ require_once('generate_zip.inc.php');
 function send_file($local_filename, $remote_filename)
 {	
 	global $dossier_stockage;
+	global $dossier_temp;
+	
+	$dossier_stockage = realpath($dossier_stockage);
+	$dossier_temp = realpath($dossier_temp);
 	
 	$sub  = substr(realpath($local_filename),0, strlen($dossier_stockage) );
-	if( $sub != $dossier_stockage )
+	$sub2 = substr(realpath($local_filename),0, strlen($dossier_temp) );
+	if( ($sub != $dossier_stockage) &&  ($sub2 != $dossier_temp))
 		throw new Exception("Forbidden access to file".$local_filename);		
+	
+	if(!is_file($local_filename))
+		throw new Exception("Cannot find file .$local_filename");
 	
 	$size = filesize($local_filename);
 	if($size === false)
 		throw new Exception("Cannot get size of file .$local_filename");
-
-	if(!is_file($local_filename))
-		throw new Exception("Cannot find file .$local_filename");
 	
 	header("Pragma: public");
 	header("Expires: 0");
