@@ -580,7 +580,8 @@ function alertText($text)
 						deleteUnit(real_escape_string($_REQUEST["unite"]));
 						echo "Deleted unit \"".real_escape_string($_REQUEST["unite"])."\"<br/>";
 					}
-					include "unites.php";
+					include "admin/admin.inc.php";
+					scrollToId('ajout');
 					break;
 				case 'mailing':
 				case 'email_rapporteurs':
