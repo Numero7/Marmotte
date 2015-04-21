@@ -726,7 +726,7 @@ function set_property($property,$id_origine, $value, $all_reports = false)
 		{
 		$sql = "UPDATE reports SET `".real_escape_string($property)."`=\"".real_escape_string($value)."\" ";
 		$sql .= " WHERE `".real_escape_string($property)."`=\"\" AND nom=\"".$report->nom."\" and prenom=\"".$report->prenom."\"";
-		$sql .= " AND id_session=\"".current_session()."\" AND unite=\"".$unite."\" AND section=\"".$report->section."\" AND type=\"".$report->type."\"";
+		$sql .= " AND id_session=\"".current_session()."\" AND unite=\"".$report->unite."\" AND section=\"".$report->section."\" AND type=\"".$report->type."\"";
 		}
 		else
 		{
@@ -956,10 +956,8 @@ function is_field_editable($row, $fieldId)
 	if(in_array($fieldId, $nonEditableFieldsTypes))
 		return false;
 
-
 	if($fieldId == "statut")
 		return isSecretaire();
-
 
 	if(isset($row->statut) && ($row->statut == "publie"))
 		return false;
@@ -1009,9 +1007,9 @@ function is_field_editable($row, $fieldId)
 	if($is_rapp1 && ($fieldId == "rapport"))
 		return true;
 
+	
 	if(!$is_rapp1 && !$is_rapp2 && !$is_rapp3 && !isSecretaire())
 		return false;
-
 
 	global $fieldsIndividual;
 	global $fieldsIndividualAll;
@@ -1020,11 +1018,9 @@ function is_field_editable($row, $fieldId)
 	if(isset($fieldsIndividualAll[$fieldId]))
 		return (isSecretaire() || $is_rapp1 || $is_rapp2 || $is_rapp3);
 
-
 	global $typesRapportsConcours;
 	global $typesRapportsChercheurs;
 	global $typesRapportsUnites;
-
 
 	$fieldsIndividual0 = $typesRapportToFields[$eval_type][1];
 	$fieldsIndividual1 = $typesRapportToFields[$eval_type][2];
@@ -1034,7 +1030,6 @@ function is_field_editable($row, $fieldId)
 	$f1 = in_array($fieldId,$fieldsIndividual1);
 	$f2 = in_array($fieldId,$fieldsIndividual2);
 	$f3 = in_array($fieldId,$fieldsIndividual3);
-
 	
 	if(isset($typesRapportsConcours[$eval_type]))
 	{
@@ -1046,12 +1041,16 @@ function is_field_editable($row, $fieldId)
 	if(isset($typesRapportsUnites[$eval_type]))
 	{
 		global $fieldsUnites;
-		return in_array($fieldId,$fieldsUnites) &&
+		$result = in_array($fieldId,$fieldsUnites) &&
 		(isSecretaire()
 				|| ($fieldId == "prerapport" && $is_rapp1)
 				|| ($fieldId == "prerapport2" && $is_rapp2)
-				|| ($fieldId == "prerapport2" && $is_rapp3)
+				|| ($fieldId == "prerapport3" && $is_rapp3)
+				|| ($fieldId == "avis1" && $is_rapp1)
+				|| ($fieldId == "avis2" && $is_rapp2)
+				|| ($fieldId == "avis3" && $is_rapp3)
 		);
+		return $result;
 	}
 
 	if(isset($typesRapportsChercheurs[$eval_type]))

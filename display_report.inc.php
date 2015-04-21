@@ -159,7 +159,6 @@ function displayEditableField($row, $fieldId, $canedit, $session, $extra_object 
 	
 	if($title != "" && is_field_visible($row, $fieldId))
 	{
-		
 		if(isset($fieldsTypes[$fieldId]))
 		{
 			$editable = $canedit && is_field_editable($row, $fieldId);
@@ -539,7 +538,7 @@ function displayEditableReport($row, $canedit = true)
 		$fieldsUnites0 = $typesRapportToFields[$eval_type][1];
 		$fieldsUnites1 = $typesRapportToFields[$eval_type][2];
 		$fieldsUnites2 = $typesRapportToFields[$eval_type][3];
-		$fieldsUnites2 = $typesRapportToFields[$eval_type][4];
+		$fieldsUnites3 = $typesRapportToFields[$eval_type][4];
 
 		global $fieldsUnitesExtra;
 
@@ -562,6 +561,7 @@ function displayEditableReport($row, $canedit = true)
 
 		echo'<table><tr>';
 
+		
 		if(isset($row->rapporteur) && $row->rapporteur != "")
 		{
 			echo'<td>';
