@@ -564,14 +564,15 @@ function alertText($text)
 					if(isset($_REQUEST["nickname"]) and isset($_REQUEST["code"]) and isset($_REQUEST["fullname"]) and isset($_REQUEST["directeur"]))
 					{
 						addUnit(
-								real_escape_string($_REQUEST["nickname"]),
-								real_escape_string($_REQUEST["code"]),
-								real_escape_string($_REQUEST["fullname"]),
-								real_escape_string($_REQUEST["directeur"])
+								$_REQUEST["nickname"],
+								$_REQUEST["code"],
+								$_REQUEST["fullname"],
+								$_REQUEST["directeur"]
 						);
 						echo "Added unit \"".real_escape_string($_REQUEST["nickname"])."\"<br/>";
 					}
-					include "unites.php";
+					include "admin/admin.inc.php";
+					scrollToId('ajout');
 					break;
 				case 'deletelabo':
 					if(isset($_REQUEST["unite"]))
