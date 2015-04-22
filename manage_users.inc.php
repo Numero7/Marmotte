@@ -426,7 +426,7 @@ function createUser(
 		$section = currentSection();
 
 		$result = get_user_object($login);
-		if($user = mysqli_fetch_object($result) && !isSuperUser())
+		if(($user = mysqli_fetch_object($result)) && !isSuperUser())
 		{
 			$sql = "UPDATE ".users_db." SET sections='".($user->sections.";".$section)."' WHERE login='".$login."';";
 			sql_request($sql);
@@ -437,13 +437,10 @@ function createUser(
 			$CID_code = "";
 			if(!isSuperUser())
 				$sections = "";
-			else
-			{
 				if(isCurrentSectionACID())
 					$CID_code = currentSection();
 				else
 					$section_code = currentSection();
-			}
 
 			unset($_SESSION['all_users']);
 			$passHash = crypt($pwd);
