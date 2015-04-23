@@ -139,6 +139,14 @@ function remove_topic($index)
 	unset($topics[$index]);
 	set_topics($topics);
 	}
+	else
+	{
+		echo "Failed to delete keyword with index '" + $index + "'<br/>"; 
+		foreach($topics as $index => $mot)
+		{
+			echo "Index '".$index."' keyword '".$mot."'<br/>";
+		}
+	}
 }
 
 function set_topics($topics)
