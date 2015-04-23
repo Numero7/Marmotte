@@ -588,7 +588,7 @@ function importAllUsersFromJanus()
 			if(existsUser($login, true))
 			{
 				$sql = "UPDATE ".users_db." SET `section_code`='".$row->section_code.",`section_role_code`='".$row->section_role_code."',`CID_code`='".$row->CID_code.";";
-				$sql .= ",`CID_role_code`='".$row->CID_role_code."', `description=`'".real_escape_string($row->nom." ".$row->prenom)."' WHERE `login`='".$login."';";
+				$sql .= ",`CID_role_code`='".$row->CID_role_code."', `description`='".real_escape_string($row->nom." ".$row->prenom)."' WHERE `login`='".$login."';";
 				sql_request($sql);
 			}
 			else
