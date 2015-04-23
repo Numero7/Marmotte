@@ -395,10 +395,21 @@ function changeUserInfos($login,$permissions, $sections, $section_code = "", $se
 	unset($_SESSION['all_users']);
 }
 
-function existsUser($login)
+function existsUser($login, $all_sections = false)
 {
+	if(!$all_sections)
+	{
 	$users = listUsers();
 	return array_key_exists($login, $users);
+	}
+	else
+	{
+		$sql = "SELECT * FROM ".users_db." WHERE `login`='".real_escape_string($login)."';";
+		$result= sql_request($sql);
+		if($result ==  false)
+			throw new Exception("Failed to process sql query ".$sql.": ".mysql_error());
+		return (mysqli_num_rows($result) > 0);
+	}
 }
 
 
@@ -574,12 +585,12 @@ function importAllUsersFromJanus()
 		$login = $row->mailpro;
 		try
 		{
-			if(isset($users[$login]))
-				changeUserInfos(
-						$login,$users[$login]->permissions,$users[$login]->sections,
-						$row->section_code,$row->section_role_code,
-						$row->CID_code, (isset($row->CID_role_code) ? $row->CID_role_code : "")
-				);
+			if(existsUser($login, true))
+			{
+				$sql = "UPDATE ".users_db." SET `section_code`='".$row->section_code.",`section_role_code`='".$row->section_role_code."',`CID_code`='".$row->CID_code.";";
+				$sql .= ",`CID_role_code`='".$row->CID_role_code."', `description='`".real_escape_string($row->nom." ".$row->prenom)."' WHERE `login`='".$login."';";
+				sql_request($sql);
+			}
 			else
 			{
 				$sql = "INSERT INTO ".users_db." (login,sections,permissions,section_code,section_role_code,CID_code,CID_role_code,passHash,description,email,tel) ";
