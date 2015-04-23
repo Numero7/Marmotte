@@ -360,7 +360,7 @@ if($admin_keywords)
 					{
 						if(strlen($value)> 30)
 							$value = substr($value,0,30);
-						echo '<option value='.$key.'>'.$key.' '.$value.'</option>';
+						echo '<option value="'.$key.'">'.$key.' '.$value.'</option>';
 					}
 					?>
 			</select>
