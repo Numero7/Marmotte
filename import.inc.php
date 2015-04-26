@@ -7,10 +7,12 @@ function process_import($type,$suffix, $filename, $subtype = "",$create = false)
 	$suffix = substr( $filename , strlen($filename)-3 , 3 );
 	switch($suffix)
 	{
+		/* deprecated 
 		case "xml": 
 		case "txt":
 			return import_xml($type, $filename, $subtype);
 			break;
+			*/
 		case "csv": 
 			return import_csv($type, $filename, $subtype, $create);
 			break;

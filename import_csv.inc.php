@@ -21,12 +21,15 @@ function fixEncoding($in_str)
 
 function import_csv($type,$filename, $subtype = "", $create = false, $sep="?", $del="\n",$enc='"', $esc='\\')
 {
+	if(!isSecretaire())
+		throw new Exception("Vous n'avez pas les permissions nécessaires pour importer des données.");
+
 	ini_set('auto_detect_line_endings',TRUE);
 	global $csv_composite_fields;
 	global $fieldsUnitsDB;
 
 	$output = "";
-	
+
 	if($sep == "?")
 	{
 		/* auto detecte if data are separataed by ; or \t */
@@ -46,10 +49,8 @@ function import_csv($type,$filename, $subtype = "", $create = false, $sep="?", $
 				$sep = ";";
 			fclose($file);
 		}
-			else
-			{
-				throw new Exception("Failed to open file ".$filename." for reading");
-			}
+		else
+			throw new Exception("Failed to open file ".$filename." for reading");
 	}
 	if($file = fopen ( $filename , 'r') )
 	{
@@ -69,13 +70,13 @@ function import_csv($type,$filename, $subtype = "", $create = false, $sep="?", $
 		if($is_utf8)
 			foreach($rawfields as $field)
 		 $is_utf8 = $is_utf8 && mb_check_encoding($field,"UTF-8");
-		
+
 		if(!$is_utf8)
 		{
 			for($i = 0 ; $i < count($rawfields); $i++)
 				$rawfields[$i] = utf8_encode($rawfields[$i]);
 		}
-		
+
 		$fields = array();
 		foreach($rawfields as $field)
 		{
@@ -87,13 +88,6 @@ function import_csv($type,$filename, $subtype = "", $create = false, $sep="?", $
 		$with_id = in_array("id",$fields);
 		$id_rank = array_search("id",$fields);
 
-		if(!isSecretaire())
-		{
-			if(!$with_id)
-				throw new Exception("Vous n'avez pas les permissions nécessaires pour importer des rapports au format csv sans fournir un champ préciser l'id du rapport original.");
-			if($type != 'evaluations')
-				throw new Exception("Vous n'avez pas les permissions nécessaires pour importer des données autres que des évaluations.");
-		}
 
 		$nbfields = count($fields);
 		$nb = 0;
@@ -132,12 +126,12 @@ function import_csv($type,$filename, $subtype = "", $create = false, $sep="?", $
 						}
 					}
 					else
-					{			
-					/* Second case we create report */
+					{
+						/* Second case we create report */
 						$properties = array();
 						for($i = 0; $i < $nbfields && $i < count($data); $i++)
 							if($fields[$i] != "id")
-								$properties[$fields[$i]] =  $data[$i];
+							$properties[$fields[$i]] =  $data[$i];
 						$oldsubtype = $subtype;
 						$subtype = checkTypeIsSpecified($properties);
 						if($subtype == "" && $oldsubtype != "")
@@ -151,6 +145,7 @@ function import_csv($type,$filename, $subtype = "", $create = false, $sep="?", $
 					for($i = 0; $i < $nbfields && $i < count($data); $i++)
 						$properties[$fields[$i]] =  $data[$i];
 					addCsvUnite($properties);
+					unset($_SESSION['all_units']);
 				}
 				else
 					throw new Exception("Unknown generic csv report type \'".$type."\'");
@@ -242,7 +237,7 @@ function getDocFromCsv($data, $fields)
 
 function strcontains($haystack, $needle)
 {
-	return (strpos($haystack,$needle) !== false);	
+	return (strpos($haystack,$needle) !== false);
 }
 
 /*
@@ -255,13 +250,13 @@ function checkTypeIsSpecified($properties)
 	global $possible_type_labels;
 
 	foreach($possible_type_labels as $label)
-	if( isset( $properties[$label] ) &&  $properties[$label] != "" )
-	{
-		return $properties[$label];
-	}
-	
-	return "";
-	
+		if( isset( $properties[$label] ) &&  $properties[$label] != "" )
+		{
+			return $properties[$label];
+		}
+
+		return "";
+
 }
 
 function addCsvReport($subtype, $properties)
@@ -271,10 +266,10 @@ function addCsvReport($subtype, $properties)
 	foreach($properties as $key => $value)
 		if($value != "")
 		$non_empty = true;
-	
+
 	if(!$non_empty)
 		return;
-	
+
 	//first we try to get the type of the evaluation
 	$grade = "";
 
@@ -292,154 +287,180 @@ function addCsvReport($subtype, $properties)
 				break;
 			}
 		}
-	
-	if($subtype == "")
-		throw new Exception("Cannot add csv report, no type specified, please specify a type in the importation menu");
-	else
-		$properties["type"] = $subtype;
 
-	global $sgcn_keywords_to_eval_types;
-	
-	foreach($sgcn_keywords_to_eval_types as $key => $value)
-		if(strcontains($properties["type"],$key))
-		{
-			if($key == "promotion")
+		if($subtype == "")
+			throw new Exception("Cannot add csv report, no type specified, please specify a type in the importation menu");
+		else
+			$properties["type"] = $subtype;
+
+		global $sgcn_keywords_to_eval_types;
+
+		foreach($sgcn_keywords_to_eval_types as $key => $value)
+			if(strcontains($properties["type"],$key))
 			{
-				if(strcontains($properties["type"],"CR1"))
-					$properties["grade_rapport"] = "CR1";
-				if(strcontains($properties["type"],"DR1"))
-					$properties["grade_rapport"] = "DR1";
-				if(strcontains($properties["type"],"DRCE1"))
-					$properties["grade_rapport"] = "DRCE1";
-				if(strcontains($properties["type"],"DRCE2"))
-					$properties["grade_rapport"] = "DRCE2";
-				$properties["type"] = "Promotion";
+				if($key == "promotion")
+				{
+					if(strcontains($properties["type"],"CR1"))
+						$properties["grade_rapport"] = "CR1";
+					if(strcontains($properties["type"],"DR1"))
+						$properties["grade_rapport"] = "DR1";
+					if(strcontains($properties["type"],"DRCE1"))
+						$properties["grade_rapport"] = "DRCE1";
+					if(strcontains($properties["type"],"DRCE2"))
+						$properties["grade_rapport"] = "DRCE2";
+					$properties["type"] = "Promotion";
+				}
+				else if($key == "Evaluation")
+				{
+					if(isset($properties["Phase évaluation"]) && ($properties["Phase évaluation"] =="mi-vague"))
+						$properties["type"] = 'EvalMiVague';
+					else
+						$properties["type"] = 'EvalVague';
+				}
+				else $properties["type"] = $value;
 			}
-			else if($key == "Evaluation")
+
+			if(!isset($properties["type"]) || $properties["type"] =="")
+				throw new Exception("Unimplemented report type '" . $type."'");
+
+			global $typesRapports;
+			if(!isset($typesRapports[$properties["type"]]))
 			{
-				if(isset($properties["Phase évaluation"]) && ($properties["Phase évaluation"] =="mi-vague"))
-					$properties["type"] = 'EvalMiVague';
+				foreach($properties as $key => $value)
+					if($key == "Chercheur" || $key == "Nom" || $key == "Prenom")
+					{
+						$properties["type"] = 'DEChercheur';
+						break;
+					}
+					$properties["type"] = 'Generique';
+			}
+
+			global $copies;
+			foreach($copies as $old => $new)
+				if(isset($properties[$old]) )
+				{
+					$properties[$new] = $properties[$old];
+					if($old == "PUBCONC" || $old =="CONCOURS")
+						$properties[$new] = str_replace(" ","",str_replace("/","",$properties[$old]));
+					unset($properties[$old]);
+				}
+
+				if(isset($properties["unite"]))
+					$properties["code"] = $properties["unite"];
+
+				if(isset($properties["SIGLE"]))
+					$properties["genre"] =  (strpos($properties["SIGLE"],"Mr") !== false) ? "homme" : ( (strpos($properties["SIGLE"],"Mme") !== false) ? "femme" : "");
+
+
+				if(isset($properties["grade"]) && !isset($properties["grade_rapport"]))
+					$properties["grade_rapport"] = $properties["grade"];
+
+				$properties["rapport"] = "";
+				foreach($properties as $key => $value)
+					if($value != "")
+					$properties["rapport"] .= $key . " : " . $value."\n\n";
+
+				$report = (object) array();
+
+				foreach($properties as $key => $value)
+					addToReport($report,$key, replace_accents($value));
+
+				$report->statut = 'doubleaveugle';
+				$report->id_session = current_session_id();
+
+				global $typesRapportsChercheurs;
+				global $typesRapportsConcours;
+
+				if( in_array($report->type, $typesRapportsChercheurs) || in_array($report->type, $typesRapportsConcours) )
+				{
+					if(isset($report->nom) && isset($report->prenom) && $report->nom != "")
+					{
+						updateCandidateFromData((object) $properties);
+						addReport($report,false);
+						if(isset($report->unite))
+							updateUnitData($report->unite, (object) $report);
+					}
+				}
 				else
-					$properties["type"] = 'EvalVague';
-			}
-			else $properties["type"] = $value;
-		}		
-	
-	if(!isset($properties["type"]) || $properties["type"] =="")	
-		throw new Exception("Unimplemented report type '" . $type."'");
-
-	global $typesRapports;
-	if(!isset($typesRapports[$properties["type"]]))
-	{
-		foreach($properties as $key => $value)
-			if($key == "Chercheur" || $key == "Nom" || $key == "Prenom")
-			{
-				$properties["type"] = 'DEChercheur';
-				break;
-			}
-		$properties["type"] = 'Generique';
-	}
-
-	global $copies;
-	foreach($copies as $old => $new)
-		if(isset($properties[$old]) )
-	{
-		$properties[$new] = $properties[$old];
-		if($old == "PUBCONC" || $old =="CONCOURS")
-			$properties[$new] = str_replace(" ","",str_replace("/","",$properties[$old]));
-		unset($properties[$old]);
-	}
-	
-	if(isset($properties["unite"]))
-		$properties["code"] = $properties["unite"];
-
-	if(isset($properties["SIGLE"]))
-		$properties["genre"] =  (strpos($properties["SIGLE"],"Mr") !== false) ? "homme" : ( (strpos($properties["SIGLE"],"Mme") !== false) ? "femme" : "");
-
-		
-	if(isset($properties["grade"]) && !isset($properties["grade_rapport"]))
-		$properties["grade_rapport"] = $properties["grade"];
-	
-	$properties["rapport"] = "";
-	foreach($properties as $key => $value)
-		if($value != "")
-		$properties["rapport"] .= $key . " : " . $value."\n\n";
-	
-	$report = (object) array();
-	
-	foreach($properties as $key => $value)
-		addToReport($report,$key, replace_accents($value));
-
-	$report->statut = 'doubleaveugle';
-	$report->id_session = current_session_id();
-	
-	global $typesRapportsChercheurs;
-	global $typesRapportsConcours;
-	
-	if( in_array($report->type, $typesRapportsChercheurs) || in_array($report->type, $typesRapportsConcours) )
-	{
-		if(isset($report->nom) && isset($report->prenom) && $report->nom != "")
-		{
-		updateCandidateFromData((object) $properties);
-		addReport($report,false);
-		if(isset($report->unite))
-			updateUnitData($report->unite, (object) $report);
-		}
-	}
-	else
-	{
-		addReport($report,false);
-		if(isset($report->unite))
-			updateUnitData($report->unite, (object) $report);
-	}
-	}
+				{
+					addReport($report,false);
+					if(isset($report->unite))
+						updateUnitData($report->unite, (object) $report);
+				}
+}
 
 
 
 function addCsvUnite($properties)
 {
+	//no need to process units with empty code list
+	if(isSuperUser() && empty($properties["Liste section(s)"]))
+		return;
+
 	$code = "";
 	$directeur = "";
 	$fullname = "";
 	$nickname = "";
-	
+
 	$labels = array("Code unité", "code", "Code Unité","Code");
-	
+
 	foreach($properties as $key => $value)
-		if(strpos($key,"Code") == 0 || strpos($key,"code") == 0)
+		if(strpos($key,"Code un") == 0 || strpos($key,"code") == 0)
 		$code = $value;
-	
+
 	foreach($labels as $label)
-	{		
 		if(isset($properties[$label]) && $properties[$label] != "")
-		{
-			$code = $properties[$label];
-		}
-	}
-	
+		$code = $properties[$label];
+
+	$code = trim($code);
 	if($code =="")
 		throw new Exception("Cannot add unit with empty code");
-	
+
 	if(isset($properties["Intitulé unité"]))
-		$fullname = $properties["Intitulé unité"];
-	
+		$fullname = trim($properties["Intitulé unité"]);
+
 	if(isset($properties["Responsable prénom"]))
-		$directeur .= $properties["Responsable prénom"];
-	
+		$directeur .= trim($properties["Responsable prénom"]);
+
 	if(isset($properties["Responsable nom"]))
-		$directeur.= " " . $properties["Responsable nom"];
+		$directeur.= " " . trim($properties["Responsable nom"]);
 
 	if(isset($properties["Sigle unité"]))
-		$nickname = " " . $properties["Sigle unité"];
-try
-{	
-	addUnit($nickname, $code, $fullname, $directeur);
-}
-catch(Exception $e)
-{
-}
-}
+		$nickname = trim($properties["Sigle unité"]);
 
+	if($nickname == "")
+		$nickname = $code;
+
+	//Super user makes global imports
+	if(isSuperUser())
+	{
+		$sql = "DELETE FROM ".units_db." WHERE `code` = \"".real_escape_string($code)."\";";
+		sql_request($sql);
+		/*	$sections = explode(",", trim($properties["Liste section(s)"]));
+		 $sections[] = "6";
+		foreach($sections as $section)
+		{
+		$section = trim($section);
+		echo $code." ".$section."<br/>";
+		if(is_numeric($section))
+		{
+		*/
+		$values = "\"".real_escape_string($nickname)."\",";
+		$values .= "\"".real_escape_string($code)."\",";
+		$values .= "\"".real_escape_string($fullname)."\",";
+		$values .= "\"".real_escape_string($directeur)."\",";
+		$values .= "\"0\"";
+		$sql = "INSERT INTO ".units_db." (nickname, code, fullname, directeur, section) VALUES ($values);";
+		sql_request($sql);
+		/*
+			}
+		}
+		*/
+	}
+	//Secretary makes section imports
+	else if(isSecretaire())
+		addUnit($nickname, $code, $fullname, $directeur);
+}
 
 
 ?>

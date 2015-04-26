@@ -1,6 +1,6 @@
 <?php
 function cmpunits($a, $b) {
-	return strnatcmp($a->nickname, $b->nickname);
+	return strnatcmp( strtolower(trim($a->nickname)), strtolower(trim($b->nickname)));
 }
 
 function unitsList()
@@ -11,8 +11,9 @@ function unitsList()
 		if(isSuperUser())
 			$sql = "SELECT * FROM ".units_db." ORDER BY nickname ASC;";
 		else
-			$sql = "SELECT * FROM ".units_db." WHERE `section`='". real_escape_string(currentSection())."' ORDER BY nickname ASC;";
-			
+		//	$sql = "SELECT * FROM ".units_db." WHERE `section`='". real_escape_string(currentSection())."' OR `section`=\"0\" ORDER BY nickname ASC;";
+			$sql = "SELECT * FROM ".units_db." WHERE `section`=\"0\" ORDER BY LOWER(nickname) ASC;";
+		
 		if($result= sql_request($sql))
 			while ($row = mysqli_fetch_object($result))
 			$units[$row->code] = $row;
@@ -28,6 +29,7 @@ function unitsList()
 		}
 		
 		uasort($units, 'cmpunits');
+		
 		$_SESSION['all_units'] = $units;
 	}
 	return $_SESSION['all_units'];
@@ -129,11 +131,12 @@ function deleteUnit($code)
 function delete_all_units()
 {
 	unset($_SESSION['all_units']);
-	$sql = "DELETE FROM ".units_db." WHERE section=\"".currentSection()."\";";
+	if(isSuperUser())
+		$sql = "DELETE FROM ".units_db." WHERE 1;";
+	else if(isSecretaire())
+		$sql = "DELETE FROM ".units_db." WHERE section=\"".currentSection()."\";";
 	sql_request($sql);
 }
-
-
 
 /*
  * Unit can be code or nickname

@@ -229,7 +229,7 @@ function alertText($text)
 			{
 				case 'delete_units':
 					delete_all_units();
-					include "unites.php";
+					include "admin/admin_units.php";
 					break;
 				case 'set_property':
 					$property = $_REQUEST["property"];
@@ -320,7 +320,7 @@ function alertText($text)
 					$create = isset($_REQUEST["create"]);
 					$result= process_upload($create);
 					alertText($result);
-					displayReports();
+					include 'admin/admin.inc.php';
 					break;
 				case 'update':
 					$next = next_report($id_origine);
