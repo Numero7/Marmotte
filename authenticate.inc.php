@@ -52,6 +52,13 @@ $firstlogin = authenticateBase('admin','password');
 	 else
 	 {
 	 ?>
+<!--
+<p><font color="red">
+[21/04/2015 11:29] Le service d'authentification Janus fourni par la DSI n'est actuellement pas fonctionnel.
+En cas de besoin, merci de contacter hugo.gimbert@labri.fr afin d'obtenir un mot de passe provisoire.
+</font>
+</p>
+-->
 	 <h2><a href="index.php?action=auth_janus">Authentification Janus (login e-valuation)</a></h2>
 	 <h2><a href="index.php?action=auth_marmotte">Authentification Marmotte (anciens logins)</a></h2>
 	 <?php 
