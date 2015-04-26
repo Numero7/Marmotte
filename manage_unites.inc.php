@@ -11,8 +11,9 @@ function unitsList($all_sections = false)
 		if(isSuperUser())
 			$sql = "SELECT * FROM ".units_db." ORDER BY LOWER(nickname) ASC;";
 		else
-			//	$sql = "SELECT * FROM ".units_db." WHERE `section`='". real_escape_string(currentSection())."' OR `section`=\"0\" ORDER BY nickname ASC;";
-			$sql = "SELECT * FROM ".units_db." WHERE `section`=\"0\" ORDER BY LOWER(nickname) ASC;";
+			$sql = "SELECT * FROM ".units_db." WHERE `section`='". real_escape_string(currentSection())."' ORDER BY nickname ASC;";
+//			$sql = "SELECT * FROM ".units_db." WHERE `section`='". real_escape_string(currentSection())."' OR `section`=\"0\" ORDER BY nickname ASC;";
+		//	$sql = "SELECT * FROM ".units_db." WHERE `section`=\"0\" ORDER BY LOWER(nickname) ASC;";
 
 		if($result= sql_request($sql))
 			while ($row = mysqli_fetch_object($result))

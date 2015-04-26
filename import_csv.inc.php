@@ -436,26 +436,23 @@ function addCsvUnite($properties)
 	{
 		$sql = "DELETE FROM ".units_db." WHERE `code` = \"".real_escape_string($code)."\";";
 		sql_request($sql);
-		/*	$sections = explode(",", trim($properties["Liste section(s)"]));
+		$sections = explode(",", trim($properties["Liste section(s)"]));
 		 $sections[] = "6";
 		foreach($sections as $section)
 		{
-		$section = trim($section);
-		echo $code." ".$section."<br/>";
-		if(is_numeric($section))
-		{
-		*/
-		$values = "\"".real_escape_string($nickname)."\",";
-		$values .= "\"".real_escape_string($code)."\",";
-		$values .= "\"".real_escape_string($fullname)."\",";
-		$values .= "\"".real_escape_string($directeur)."\",";
-		$values .= "\"0\"";
-		$sql = "INSERT INTO ".units_db." (nickname, code, fullname, directeur, section) VALUES ($values);";
-		sql_request($sql);
-		/*
-			}
+				$section = trim($section);
+				//echo $code." ".$section."<br/>";
+				if(is_numeric($section))
+				{
+					$values = "\"".real_escape_string($nickname)."\",";
+					$values .= "\"".real_escape_string($code)."\",";
+					$values .= "\"".real_escape_string($fullname)."\",";
+					$values .= "\"".real_escape_string($directeur)."\",";
+					$values .= "\"".$section."\"";
+					$sql = "INSERT INTO ".units_db." (nickname, code, fullname, directeur, section) VALUES ($values);";
+					sql_request($sql);
+				}
 		}
-		*/
 	}
 	//Secretary makes section imports
 	else if(isSecretaire())
