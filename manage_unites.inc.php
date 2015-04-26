@@ -3,17 +3,17 @@ function cmpunits($a, $b) {
 	return strnatcmp( strtolower(trim($a->nickname)), strtolower(trim($b->nickname)));
 }
 
-function unitsList()
+function unitsList($all_sections = false)
 {
 	if(!isset($_SESSION['all_units']))
 	{
 		$units = array();
 		if(isSuperUser())
-			$sql = "SELECT * FROM ".units_db." ORDER BY nickname ASC;";
+			$sql = "SELECT * FROM ".units_db." ORDER BY LOWER(nickname) ASC;";
 		else
-		//	$sql = "SELECT * FROM ".units_db." WHERE `section`='". real_escape_string(currentSection())."' OR `section`=\"0\" ORDER BY nickname ASC;";
+			//	$sql = "SELECT * FROM ".units_db." WHERE `section`='". real_escape_string(currentSection())."' OR `section`=\"0\" ORDER BY nickname ASC;";
 			$sql = "SELECT * FROM ".units_db." WHERE `section`=\"0\" ORDER BY LOWER(nickname) ASC;";
-		
+
 		if($result= sql_request($sql))
 			while ($row = mysqli_fetch_object($result))
 			$units[$row->code] = $row;
@@ -27,9 +27,9 @@ function unitsList()
 			$unit->prettyname = str_replace(" ","&nbsp;", $unit->nickname);
 			$unit->prettyname .= str_pad("", $maxsize +10 - $l , " ")."- ".$unit->code;
 		}
-		
+
 		uasort($units, 'cmpunits');
-		
+
 		$_SESSION['all_units'] = $units;
 	}
 	return $_SESSION['all_units'];
@@ -67,7 +67,7 @@ function updateUnitData($unite, $data)
 				$sql .=  " WHERE code='$unite' AND `section`='". real_escape_string($data->section).";";
 			else
 				$sql .=  " WHERE code='$unite' AND `section`='". real_escape_string($_SESSION['filter_section']).";";
-				
+
 			mysqli_query($sql);
 		}
 	}
@@ -94,17 +94,27 @@ function simpleUnitsList($short = false)
 
 function addUnit($nickname, $code, $fullname, $directeur)
 {
-	$liste = unitsList();
-
-	/* if nickname has been set we dont delete it */
-	if($nickname == "")
+	$sql = "SELECT * FROM ".units_db." WHERE `code`=\"".real_escape_string($code)."\";";
+	$result = sql_request($sql);
+	if($row = mysqli_fetch_object($result))
 	{
-		if(isset($liste[$code]) && $liste[$code]->nickname !="")
-			$nickname = $liste[$code]->nickname;
-		else if($fullname != "")
-			$nickname = $fullname;
-		else
-			$nickname = $code;
+		$nickname = $row->nickname;
+		$fullname = $row->fulname;
+		$directeur = $row->directeur;
+	}
+	else
+	{
+		$liste = unitsList();
+		/* if nickname has been set we dont delete it */
+		if($nickname == "")
+		{
+			if(isset($liste[$code]) && $liste[$code]->nickname !="")
+				$nickname = $liste[$code]->nickname;
+			else if($fullname != "")
+				$nickname = $fullname;
+			else
+				$nickname = $code;
+		}
 	}
 
 	unset($_SESSION['all_units']);
@@ -116,7 +126,7 @@ function addUnit($nickname, $code, $fullname, $directeur)
 	$values .= "\"".real_escape_string($fullname)."\",";
 	$values .= "\"".real_escape_string($directeur)."\",";
 	$values .= "\"".real_escape_string(currentSection())."\"";
-	
+
 	$sql = "INSERT INTO ".units_db." (nickname, code, fullname, directeur, section) VALUES ($values);";
 	sql_request($sql);
 }
