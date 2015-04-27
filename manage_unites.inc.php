@@ -100,7 +100,7 @@ function addUnit($nickname, $code, $fullname, $directeur)
 	if($row = mysqli_fetch_object($result))
 	{
 		$nickname = $row->nickname;
-		$fullname = $row->fulname;
+		$fullname = $row->fullname;
 		$directeur = $row->directeur;
 	}
 	else
