@@ -226,6 +226,8 @@ function displayEditableField($row, $fieldId, $canedit, $session, $extra_object 
 			}
 		}
 	}
+	else
+		echo "<td></td>\n";
 }
 
 function displayEditableObject($titlle, $row, $fields, $canedit, $session, $extra_objects = array())
@@ -508,22 +510,22 @@ function displayEditableReport($row, $canedit = true)
 		{
 			displayEditionFrameStart("",$hidden,array());
 
-			echo'<table><tr>';
+			echo'<table  style="width:100%"><tr>';
 			if($has_rapp)
 			{
-				echo '<td VALIGN="top" style="width: '.(100 / $nb_rapporteurs).'%">';
+				echo '<td style="width: '.(100 / $nb_rapporteurs).'%">';
 				displayEditableObject("Prérapport 1".(isset($rapporteurs[$row->rapporteur]) ? (" - ".$rapporteurs[$row->rapporteur]) : (" - ".$row->rapporteur) ),$row,$fieldsIndividual1,$canedit, $session);
 				echo'</td>';
 			}
 			if($has_rapp2)
 			{
-				echo '<td VALIGN="top" style="width: '.(100 / $nb_rapporteurs).'%">';
+				echo '<td style="width: '.(100 / $nb_rapporteurs).'%">';
 				displayEditableObject("Prérapport 2".(isset($rapporteurs[$row->rapporteur2]) ? (" - ".$rapporteurs[$row->rapporteur2]) : (" - ".$row->rapporteur2) ),$row,$fieldsIndividual2,$canedit, $session);
 				echo'</td>';
 			}
 			if($has_rapp3)
 			{
-				echo '<td VALIGN="top" style="width: '.(100 / $nb_rapporteurs).'%">';
+				echo '<td style="width: '.(100 / $nb_rapporteurs).'%">';
 				displayEditableObject("Prérapport 3".(isset($rapporteurs[$row->rapporteur3]) ? (" - ".$rapporteurs[$row->rapporteur3]) : (" - ".$row->rapporteur3) ),$row,$fieldsIndividual3,$canedit, $session);
 				echo'</td>';
 			}
@@ -564,19 +566,19 @@ function displayEditableReport($row, $canedit = true)
 		
 		if(isset($row->rapporteur) && $row->rapporteur != "")
 		{
-			echo'<td>';
+		  echo'<td style="width: '.(100 / $nb_rapporteurs).'%">';
 			displayEditableObject("Prérapport 1", $row,$fieldsUnites1, $canedit, $session);
 			echo'</td>';
 		}
 		if(isset($row->rapporteur2) && $row->rapporteur2 != "")
 		{
-			echo'<td>';
+		  echo'<td style="width: '.(100 / $nb_rapporteurs).'%">';
 			displayEditableObject("Prérapport 2",$row,$fieldsUnites2, $canedit, $session);
 			echo'</td>';
 		}
 		if(isset($row->rapporteur3) && $row->rapporteur3 != "")
 		{
-			echo'<td>';
+		  echo'<td style="width: '.(100 / $nb_rapporteurs).'%">';
 			displayEditableObject("Prérapport 3",$row,$fieldsUnites3, $canedit, $session);
 			echo'</td>';
 		}

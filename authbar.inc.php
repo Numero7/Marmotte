@@ -32,7 +32,7 @@ if(!isSuperUser())
 ?>				
 						<li>
 						Section/CID
-									<select id="session" onchange="window.location='index.php?reset_filter=&action=change_section&filter_section=' + this.value;">
+									<select onchange="window.location='index.php?reset_filter=&amp;action=change_section&amp;filter_section=' + this.value;">
 									<?php
 									foreach($sections as $section)
 									{
@@ -45,7 +45,7 @@ if(!isSuperUser())
 									</select>
 							</li>
 							<li>
-									<select id="session" onchange="window.location='index.php?reset_filter=&action=view&filter_id_session=' + this.value;">
+									<select onchange="window.location='index.php?reset_filter=&amp;action=view&amp;filter_id_session=' + this.value;">
 									<?php
 									$sessions = sessionArrays();
 									$cur = current_session_id();
@@ -76,6 +76,7 @@ if(!isSuperUser())
 									echo "<li><a href=\"index.php?action=view&amp;reset_filter=&amp;filter_avancement=todo&amp;filter_rapporteur=".getLogin()."&amp;filter_id_session=".current_session_id()."\">A faire</a></li>";
 //									echo "<li><a href=\"index.php?action=view&amp;reset_filter=&amp;filter_avancement=done&amp;filter_rapporteur=".getLogin()."&amp;filter_id_session=".current_session_id()."\">Faits</a></li>";
 									?>
+</ul>
 									</td>
 									<?php 
 						}?>
@@ -136,14 +137,14 @@ if(!isSuperUser())
 			?>
 			<li>
 			Mode:
-			<select id="session" onchange="window.location='index.php?action=change_role&role=' + this.value;">
+			<select onchange="window.location='index.php?action=change_role&amp;role=' + this.value;">
 			<?php 
 						$levels = array(NIVEAU_PERMISSION_SECRETAIRE => "Admin", NIVEAU_PERMISSION_BUREAU => "Bureau", NIVEAU_PERMISSION_BASE => "Normal");
 						foreach($levels as $level => $name)
 						{
 							if(getUserPermissionLevel("",false) >= $level )
 							{
-								$selected = (isset($_SESSION["permission_mask"]) && $_SESSION["permission_mask"] == $level) ? "selected=on" : "";
+								$selected = (isset($_SESSION["permission_mask"]) && $_SESSION["permission_mask"] == $level) ? "selected=\"selected\"" : "";
 								echo "<option ".$selected." value=\"".$level."\">".$name."</option>\n";
 							}
 						}

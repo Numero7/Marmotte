@@ -56,6 +56,7 @@ ini_set('xdebug.show_local_vars', 'on');
 			"rapporteur",
 			"avis1",
 		"rapporteur2",
+			"avis2",
 		"rapporteur3",
 		"grade_rapport",
 			"theme1",
