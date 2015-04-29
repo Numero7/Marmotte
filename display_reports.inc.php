@@ -27,8 +27,8 @@ function displayFiltrage($rows, $fields, $filters, $filter_values)
 							$count++;
 							?>
 					<td><?php echo $data['name'];?></td>
-					<td>
-					<select   onchange="window.location='index.php?action=view&amp;filter_<?php echo $filter?>=' + this.value;">
+					<td><select
+						onchange="window.location='index.php?action=view&amp;filter_<?php echo $filter?>=' + this.value;">
 							<option value="<?php echo $data['default_value']; ?>">
 								<?php echo $data['default_name']; ?>
 							</option>
@@ -51,10 +51,14 @@ function displayFiltrage($rows, $fields, $filters, $filter_values)
 					if($count %3 == 0)
 						echo '</tr><tr>';
 						}
-						?><td></td>
-								<td style="width: 10em;"><h3><a href="index.php?action=view&reset_filter=">Réinitialiser filtres</a></h3>
-		</td>
-						
+						?>
+					<td></td>
+					<td style="width: 10em;"><h3>
+							<a href="index.php?action=view&reset_filter=">Réinitialiser
+								filtres</a>
+						</h3>
+					</td>
+
 				</tr>
 			</table>
 		</td>
@@ -84,71 +88,84 @@ function displayRows($rows, $fields, $filters, $filter_values)
 	global $specialtr_fields;
 	global $start_tr_fields;
 	global $end_tr_fields;
+	global $id_rapport_to_label;
 
 	?>
-	<table>
-		<tr>
-			<td>
+<table>
+	<tr>
+		<td>
 			<table>
-					<tr>
-						<td><?php 
-						displayFiltrage($rows, $fields, $filters, $filter_values);
-						?>
-						</td>
-					</tr>
+				<tr>
+					<td><?php 
+					displayFiltrage($rows, $fields, $filters, $filter_values);
+					?>
+					</td>
+				</tr>
 			</table>
-			</td>
-<?php 
-if(isSecretaire())
-{
-	?>
-<td>
-<table><tr>
-<td>
-		<form onsubmit="return confirm('Changer les statuts des rapports?');" method="post"  action="index.php">
-		<table><tr><td>
-			<input type="submit" value="Changer statuts"/>
-			</td><td>
-			<select name="new_statut">
-			<?php  
-			global $statutsRapports;
-			foreach ($statutsRapports as $val => $nom)
-			{
-				$sel = "";
-				echo "<option value=\"".$val."\" $sel>".$nom."</option>\n";
-			}
+		</td>
+		<?php 
+		if(isSecretaire())
+		{
 			?>
-			</select>
-			<input type="hidden" name="action" value="change_statut"/>
-			</td>
-			</tr></table>
-		</form>
-</td>
-</tr>
-<tr>
-<td>
-		<form onsubmit="return confirm('Supprimer ces rapports?');" method="post" action="index.php">
-				<input type="hidden" name="action" value="deleteCurrentSelection" /> <input	type="submit" value="Supprimer rapports" />
-		</form>
-</td>
-</tr>
-	<tr><td>
-		<form method="post" action="index.php" onsubmit="return confirm('Affecter les sous-jurys?');">
-			<input type="hidden" name="action" value="affectersousjurys2" />
-			 <input 	type="submit" value="Affecter sous-jurys" />
-							<input type="hidden" name="admin_concours"></input>
-			 </form>	
-</td>	</tr>
+		<td>
+			<table>
+				<tr>
+					<td>
+						<form
+							onsubmit="return confirm('Changer les statuts des rapports?');"
+							method="post" action="index.php">
+							<table>
+								<tr>
+									<td><input type="submit" value="Changer statuts" />
+									</td>
+									<td><select name="new_statut">
+											<?php  
+											global $statutsRapports;
+											foreach ($statutsRapports as $val => $nom)
+											{
+												$sel = "";
+												echo "<option value=\"".$val."\" $sel>".$nom."</option>\n";
+											}
+											?>
+									</select> <input type="hidden" name="action"
+										value="change_statut" />
+									</td>
+								</tr>
+							</table>
+						</form>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<form onsubmit="return confirm('Supprimer ces rapports?');"
+							method="post" action="index.php">
+							<input type="hidden" name="action" value="deleteCurrentSelection" />
+							<input type="submit" value="Supprimer rapports" />
+						</form>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<form method="post" action="index.php"
+							onsubmit="return confirm('Affecter les sous-jurys?');">
+							<input type="hidden" name="action" value="affectersousjurys2" />
+							<input type="submit" value="Affecter sous-jurys" /> <input
+								type="hidden" name="admin_concours"></input>
+						</form>
+					</td>
+				</tr>
 
+			</table>
+		</td>
+		<?php 
+		}
+		?>
+	</tr>
 </table>
-	</td>
-	<?php 
-}
-?>
-			</tr>
-	</table>
 <hr />
-<p><?php  echo count($rows); ?> rapports</p>
+<p>
+	<?php  echo count($rows); ?> rapports
+</p>
 
 <?php 
 $rapporteurs = listNomRapporteurs();
@@ -156,225 +173,228 @@ $bur = isBureauUser();
 
 if(isBureauUser() && is_current_session_concours())
 {
-	
+
 	$stats = get_bureau_stats();
-	
+
 	$roles = array("rapporteur","rapporteur2","rapporteur3");
 	?>
-	<table>
-	<tr><?php 
+<table>
+	<tr>
+		<?php 
 		foreach($stats as $niveau => $data)
 			echo "<th>".$niveau."</th>";
-	?>
+		?>
 	</tr>
 	<tr valign="top">
-	<?php 
-	foreach($stats as $niveau => $data)
-	{
-		?>
-		<td>
-		<table class="stats">
-		<tr>
-		<th>login</th><th>rapp</th><th>rapp 2</th><th>rapp 3</th><th>Total</th></tr>
 		<?php 
-		foreach($data as $login => $data_rapporteur)
+		foreach($stats as $niveau => $data)
 		{
-			$nom= isset($rapporteurs[$login])? $rapporteurs[$login] : $login;
-			echo "<tr ><td>".$nom."</td>";
-			$total = 0;
-			foreach($roles as $role)
-			{
-				if(isset($data_rapporteur[$role]))
+			?>
+		<td>
+			<table class="stats">
+				<tr>
+					<th>login</th>
+					<th>rapp</th>
+					<th>rapp 2</th>
+					<th>rapp 3</th>
+					<th>Total</th>
+				</tr>
+				<?php 
+				foreach($data as $login => $data_rapporteur)
 				{
-					$stat = $data_rapporteur[$role]["counter"];
-				echo "<td>".$stat."</td>";
-				$total += $stat;
+					$nom= isset($rapporteurs[$login])? $rapporteurs[$login] : $login;
+					echo "<tr ><td>".$nom."</td>";
+					$total = 0;
+					foreach($roles as $role)
+					{
+						if(isset($data_rapporteur[$role]))
+						{
+							$stat = $data_rapporteur[$role]["counter"];
+							echo "<td>".$stat."</td>";
+							$total += $stat;
+						}
+						else
+							echo "<td></td>";
+					}
+					echo "<td>".$total."</td>";
+					echo "</tr>";
 				}
-				else
-					echo "<td></td>";
-			}
-			echo "<td>".$total."</td>";
-			echo "</tr>";
-		}
-		?>
-		</table>
+				?>
+			</table>
 		</td>
 		<?php 
-	}
-	?>
+		}
+		?>
 	</tr>
-	</table>
-	<?php 
+</table>
+<?php 
 }
 ?>
 <table class="summary">
-<tr>
+	<tr>
 		<th class="oddrow"><span class="nomColonne"></span></th>
 		<?php
-		
+
 		$sec = isSecretaire() || (isBureauUser() && isSecretaire(getLogin() , false));
 		$concours = getConcours();
-		
 
-		$listeavis = array();
-		if( is_current_session_concours() )
-		{
-			global $avis_candidature_short;
-			$listeavis = $avis_candidature_short;
-		}
-		else
-		{
-			global $tous_avis;
-			$listeavis = $tous_avis;
-		}
+
+		global $typesRapportToAvis;
 
 		if(isset($filters['avis']) && isset($data['avis']['liste']))
-			$avis = $data['avis']['liste'];		
-		
+			$avis = $data['avis']['liste'];
+
 		$prettyunits = unitsList();
-		
+
 		foreach($fields as $fieldID)
-		{
-			$title = $fieldsAll[$fieldID];
-			$style = getStyle("",true);
-			?>
+			if(isset($fieldsAll[$fieldID]))
+			{
+				$title = $fieldsAll[$fieldID];
+				$style = getStyle("",true);
+				?>
 		<th class="<?php echo $style;?>"><span class="nomColonne"> <?php 
 		echo '<a href="?action=view&amp;reset_tri='.$fieldID."\">".$title.'</a>';
 		?>
 		</span>
 		</th>
 		<?php
-		}
-		echo '</tr>';
+			}
+			echo '</tr>';
 
 
-		global $actions1;
-		global $actions2;
+			global $actions1;
+			global $actions2;
 
-		$odd = false;
-		foreach($rows as $row)
-		{
-			// is_in_conflict(getLogin(), $candidate)
-			/*
-			$candidate = get_or_create_candidate($row);
-			$conflit = is_in_conflict(getLogin(), $candidate);
-			*/
-			$conflit = is_in_conflict_efficient($row, getLogin());
-			$style = getStyle("",$odd,$conflit);
-			$odd = !$odd;
-			?>
-			<tr id="t<?php echo $row->id;?>" class="<?php echo $style;?>">
-			<?php
-				
-			echo '<td>';
-			displayActionsMenu($row,"", $actions1,$row->rapporteur, $row->rapporteur);
-			echo '</td>';
-
-			foreach($fields as $fieldID)
+			$odd = false;
+			foreach($rows as $row)
 			{
-				$title = $fieldsAll[$fieldID];
-				echo '<td>';
-				$data = $row->$fieldID;
-				$type = isset($fieldsTypes[$fieldID]) ?  $fieldsTypes[$fieldID] : "";
+				$listeavis = isset($typesRapportToAvis[$row->type]) ? $typesRapportToAvis[$row->type] : array();
+				
+				$conflit = is_in_conflict_efficient($row, getLogin());
+				$style = getStyle("",$odd,$conflit);
+				$odd = !$odd;
+				?>
+	
+	
+	<tr id="t<?php echo $row->id;?>" class="<?php echo $style;?>">
+		<?php
 
-				if($type=="rapporteur")
-				{
-					if($bur)
-					{
-					?>
-					<select onchange="window.location='index.php?action=set_property&property=<?php echo $fieldID; ?>&all_reports=&id_origine=<?php echo $row->id_origine; ?>&value=' + this.value;">
-					<?php 
-					foreach($rapporteurs as $rapporteur => $nom)
-					{
-						$selected = ($rapporteur == $row->$fieldID) ? "selected=on" : "";
-						echo "<option ".$selected." value=\"".$rapporteur."\">".$nom."</option>\n";
-					}
-					?>
-					</select>
-					<?php 
-					}
-					else
-						echo (isset($rapporteurs[$row->$fieldID]) ? $rapporteurs[$row->$fieldID] : $row->$fieldID);
-				}
-				else if($type=="avis")
-				{
-					//		displayAvisMenu($fieldID,$row);
-					if($sec && $fieldID == "avis")
-					{
-						?>
-						<select onchange="window.location='index.php?action=set_property&property=<?php echo $fieldID; ?>&id_origine=<?php echo $row->id_origine; ?>&value=' + encodeURIComponent(this.value);">
-						<?php
-						foreach($listeavis as $key => $value)
-						{
-							$selected = (strval($key) === $row->$fieldID) ? "selected=on" : "";
-							echo "<option ".$selected." value=\"".$key."\">".$value."</option>\n";
-						}
-						?>
-						</select>
-						<?php
-					}
-					else if($fieldID == "avis" || $bur || !isset($row->statut) || $row->statut != "doubleaveugle")
-					{
-						//les avis de la section sont toujours visibales et les avis des rapporteurs seuelemtn si on n'est pas en double aveugle
-						$content = isset($tous_avis[$row->$fieldID]) ? $tous_avis[$row->$fieldID] : $row->$fieldID;
-						showIconAvis($fieldID,$data);
-						echo $content;
-					}
-				}
-				else if($fieldID == "concours")
-				{
-					echo isset($concours[$row->$fieldID]) ? $concours[$row->$fieldID]->intitule : "";
-				}
-				else if($fieldID=="sousjury")
-				{
-					?>
-					<!-- Displaying sous jury menu -->
-					<?php 
-					/***
-					displaySousJuryMenu($fieldID,$row);***/
-					echo $row->$fieldID;
-				}
-				else if($data != "")
-				{
-					?>
-					<!-- Displaying field <?php echo $fieldID; ?>menu -->
-					<?php 
+		echo '<td>';
+		displayActionsMenu($row,"", $actions1,$row->rapporteur, $row->rapporteur);
+		echo '</td>';
 
-					if($fieldID=="nom")
-					{
-						echo "<a href=\"?action=edit&amp;id=".($row->id)."\">";
-						echo '<span class="valeur">'.$data.'</span>';
-						echo '</a>';
-					}
-					else
-					{
-						showIconAvis($fieldID,$data);
-						if( ($type == "unit") && isset($prettyunits[$row->$fieldID]))
-							$data = $prettyunits[$row->$fieldID]->nickname;
-						echo '<span class="valeur">'.$data.'</span>';
-					}
-				}
-				echo '</td>';
+		foreach($fields as $fieldID)
+		{
+			$title = $fieldsAll[$fieldID];
+			echo '<td>';
+			$data = $row->$fieldID;
+			$type = isset($fieldsTypes[$fieldID]) ?  $fieldsTypes[$fieldID] : "";
+
+			if($type=="rapporteur")
+			{
+				if($bur)
+				{
+					?>
+		<select
+			onchange="window.location='index.php?action=set_property&property=<?php echo $fieldID; ?>&all_reports=&id_origine=<?php echo $row->id_origine; ?>&value=' + this.value;">
+			<?php 
+			foreach($rapporteurs as $rapporteur => $nom)
+			{
+				$selected = ($rapporteur == $row->$fieldID) ? "selected=on" : "";
+				echo "<option ".$selected." value=\"".$rapporteur."\">".$nom."</option>\n";
 			}
 			?>
-			<!-- Displaying action menu -->
-			<?php 
-			echo '<td>';
-			displayActionsMenu($row,"", $actions2);
-			echo '</td>';
+		</select>
+		<?php 
+				}
+				else
+					echo (isset($rapporteurs[$row->$fieldID]) ? $rapporteurs[$row->$fieldID] : $row->$fieldID);
+			}
+			else if($type == "type")
+			{
+				echo isset($id_rapport_to_label[$row->$fieldID]) ? $id_rapport_to_label[$row->$fieldID] : $row->$fieldID;
+//				rr();
+			}
+			else if($type=="avis")
+			{
+				//		displayAvisMenu($fieldID,$row);
+				if($sec && $fieldID == "avis")
+				{
+					?>
+		<select
+			onchange="window.location='index.php?action=set_property&property=<?php echo $fieldID; ?>&id_origine=<?php echo $row->id_origine; ?>&value=' + encodeURIComponent(this.value);">
+			<?php
+			foreach($listeavis as $key => $value)
+			{
+				$selected = (strval($key) === $row->$fieldID) ? "selected=on" : "";
+				echo "<option ".$selected." value=\"".$key."\">".$value."</option>\n";
+			}
 			?>
-			</tr>
+		</select>
 		<?php
+				}
+				else if($fieldID == "avis" || $bur || !isset($row->statut) || $row->statut != "doubleaveugle")
+				{
+					//les avis de la section sont toujours visibales et les avis des rapporteurs seuelemtn si on n'est pas en double aveugle
+					$content = isset($tous_avis[$row->$fieldID]) ? $tous_avis[$row->$fieldID] : $row->$fieldID;
+					showIconAvis($fieldID,$data);
+					echo $content;
+				}
+			}
+			else if($fieldID == "concours")
+			{
+				echo isset($concours[$row->$fieldID]) ? $concours[$row->$fieldID]->intitule : "";
+			}
+			else if($fieldID=="sousjury")
+			{
+				?>
+		<!-- Displaying sous jury menu -->
+		<?php 
+		/***
+		 displaySousJuryMenu($fieldID,$row);***/
+		echo $row->$fieldID;
+			}
+			else if($data != "")
+			{
+				?>
+		<!-- Displaying field <?php echo $fieldID; ?>menu -->
+		<?php 
+
+		if($fieldID=="nom")
+		{
+			echo "<a href=\"?action=edit&amp;id=".($row->id)."\">";
+			echo '<span class="valeur">'.$data.'</span>';
+			echo '</a>';
+		}
+		else
+		{
+			showIconAvis($fieldID,$data);
+			if( ($type == "unit") && isset($prettyunits[$row->$fieldID]))
+				$data = $prettyunits[$row->$fieldID]->nickname;
+			echo '<span class="valeur">'.$data.'</span>';
+		}
+			}
+			echo '</td>';
 		}
 		?>
+		<!-- Displaying action menu -->
+		<?php 
+		echo '<td>';
+		displayActionsMenu($row,"", $actions2);
+		echo '</td>';
+		?>
+	</tr>
+	<?php
+			}
+			?>
 </table>
-<br/>
-<br/>
-<br/>
+<br />
+<br />
+<br />
 <p>
-Marmotte a été développé par Hugo Gimbert et Yann Ponty.<br/>
-Code libre d'utilisation par les sections du Comité National de la Recherche Scientifique.<br/>
-Utilisations commerciales réservées.
+	Marmotte a été développé par Hugo Gimbert et Yann Ponty.<br /> Code
+	libre d'utilisation par les sections du Comité National de la Recherche
+	Scientifique.<br /> Utilisations commerciales réservées.
 </p>
 <?php
 } ;

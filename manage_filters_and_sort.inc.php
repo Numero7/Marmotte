@@ -4,9 +4,11 @@
 
 function getFilterValue($filter_name)
 {
-	global $filtersAll;
-	$filters = $filtersAll;
-	$answer = $filters[$filter_name]['default_value'];
+	global $filtersConcours;
+	global $filtersReports;
+	$filtersAll = array_merge($filtersConcours, $filtersReports);
+
+	$answer = $filtersAll[$filter_name]['default_value'];
 
 	if(isset($_REQUEST["filter_".$filter_name]))
 	{

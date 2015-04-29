@@ -437,11 +437,9 @@ function addCsvUnite($properties)
 		$sql = "DELETE FROM ".units_db." WHERE `code` = \"".real_escape_string($code)."\";";
 		sql_request($sql);
 		$sections = explode(",", trim($properties["Liste section(s)"]));
-		 $sections[] = "6";
 		foreach($sections as $section)
 		{
 				$section = trim($section);
-				//echo $code." ".$section."<br/>";
 				if(is_numeric($section))
 				{
 					$values = "\"".real_escape_string($nickname)."\",";

@@ -11,7 +11,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr">
 <head>
-<meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8"></meta>
 </head>
 
 			<body>
@@ -57,8 +57,6 @@
 
 <table>
 <tr>
-<xsl:text> </xsl:text>
-<br/>
 <td  height="400">
 <p><B>Appréciations générales et recommandations de la section :</B><br/>
 <small>

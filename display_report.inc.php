@@ -31,7 +31,7 @@ function displayEditableCandidate($candidate,$report = NULL,$canedit = true)
 		$hidden["id_origine"] = $report->id_origine;
 		$hidden["type"] = $report->type;
 		$rap_audition = false;
-		if( isset($report->concours) && isset($concours[$report->concours]) && $report->type == "Candidature")
+		if( isset($report->concours) && isset($concours[$report->concours]) && $report->type == 7777)
 		{
 			$intitule = $concours[$report->concours]->intitule;
 			if(strpos($intitule, "DR") === false)
@@ -155,7 +155,6 @@ function displayEditableField($row, $fieldId, $canedit, $session, $extra_object 
 	global $mandatory_edit_fields;
 
 	$title = compute_title($row, $fieldId);
-
 	
 	if($title != "" && is_field_visible($row, $fieldId))
 	{
@@ -208,9 +207,11 @@ function displayEditableField($row, $fieldId, $canedit, $session, $extra_object 
 				case "concours":
 					display_concours($row, $fieldId, !$editable);
 					break;
+					/*
 				case "ecole":
 					display_ecole($row, $fieldId, !$editable);
 					break;
+					*/
 				case "files":
 					display_fichiers($row, $fieldId, $session, !$editable);
 					break;
@@ -258,7 +259,7 @@ function displayEditableObject($titlle, $row, $fields, $canedit, $session, $extr
 		}
 		else
 		{
-			echo '<td style="100%"><table><tr class="'.$style.'">'."\n";
+			echo '<td style="100%"><table><tr class="'.$style.'">'."\n";			
 			displayEditableField($row, $fieldId,$canedit,$session);
 			echo "\n".'</tr></table></td>'."\n";
 		}
@@ -278,7 +279,7 @@ function voir_rapport_pdf($row)
 {
 	$eval_type = $row->type;
 
-	if($eval_type  == "Candidature" && is_auditionne($row))
+	if($eval_type  == REPORT_CANDIDATURE && is_auditionne($row))
 	{
 		echo "<B>Rapports:</B>";
 		if(is_auditionneCR($row))
@@ -294,7 +295,7 @@ function voir_rapport_pdf($row)
 			echo "</a>\n";
 		}
 	}
-	else if($eval_type  != "Equivalence")
+	else if(!is_equivalence_type($eval_type))
 	{
 		echo "<a href=\"export.php?action=viewpdf&amp;id=".$row->id_origine."&amp;id_origine=".$row->id_origine."\">\n";
 		echo "Voir le rapport final\n";
@@ -311,12 +312,12 @@ function displayEditableReport($row, $canedit = true)
 	global $actions;
 	global $avis_eval;
 
-	global $typesRapports;
 	global $statutsRapports;
 
-	global $typesRapportsChercheurs;
-	global $typesRapportsConcours;
-	global $typesRapportsUnites;
+	global $report_class_to_types;
+	global $report_types_to_class;
+	
+	global $id_rapport_to_label;
 
 	//phpinfo();
 	if(!isset($row->id_origine))
@@ -365,13 +366,14 @@ function displayEditableReport($row, $canedit = true)
 		$submits["viewnext"] = ">>";
 
 	$eval_type = $row->type;
-
-	$is_unite = array_key_exists($eval_type,$typesRapportsUnites);
-	$statut = $row->statut;
+	
+	$is_unite = is_rapport_unite($row);
+		$statut = $row->statut;
 
 	$eval_name = $eval_type;
-	if(array_key_exists($eval_type, $typesRapports))
-		$eval_name = $typesRapports[$eval_type];
+	global $id_rapport_to_label;
+	if(array_key_exists($eval_type, $id_rapport_to_label))
+		$eval_name = $id_rapport_to_label[$eval_type];
 
 	$hidden = array(
 			"fieldtype" => $eval_type,
@@ -398,10 +400,10 @@ function displayEditableReport($row, $canedit = true)
 	if($has_rapp2) $nb_rapporteurs++;
 	if($has_rapp3) $nb_rapporteurs++;
 
-	if(array_key_exists($eval_type, $typesRapportsConcours))
+	if(is_rapport_concours($row))
 	{
 		$titre = "";
-		if($eval_name == "Equivalence")
+		if(is_equivalence_type($eval_type))
 			$titre= "<h1>".$year." / Equivalence: ". $row->nom." ".$row->prenom. ( (isset($row->grade_rapport) &&  $row->grade_rapport != "") ? (" (grade  " .$row->grade_rapport) .")" : "") . "</h1>";
 		else
 			$titre= "<h1>".$year." / ".$eval_name. ": ". $row->nom." ".$row->prenom.( isset($row->concours)  ? (" / concours ".$row->concours) : ""). ( (isset($row->sousjury) && $row->sousjury != "")  ? (" sousjury ".$row->sousjury) : ""). "</h1>";
@@ -470,7 +472,7 @@ function displayEditableReport($row, $canedit = true)
 			displayEditableObject("Rapport section", $row, array_merge(array("statut"),$fieldsRapportsCandidat0),$canedit, $session);
 		}
 	}
-	else if(array_key_exists($eval_type, $typesRapportsChercheurs))
+	else if( is_rapport_chercheur($row) )
 	{
 		$chercheur = get_or_create_candidate($row);
 		$conflit = ( is_in_conflict(getLogin(), $chercheur)) && !isSecretaire()  ;
@@ -494,11 +496,12 @@ function displayEditableReport($row, $canedit = true)
 		$fieldsIndividual2 = $typesRapportToFields[$eval_type][3];
 		$fieldsIndividual3 = $typesRapportToFields[$eval_type][4];
 
+		/*
 		global $fieldsUnitesExtra;
 
 		if(key_exists($eval_type,$fieldsUnitesExtra))
-			$fieldsIndividual0 = array_merge($fieldsUnitesExtra[$eval_type], $fieldsIndividual0);
-
+			$fieldsIndividual0 = array_merge($fieldsUnitesExtra[$eval_type], $fieldsIndividual0);dsi.db
+*/
 			
 		echo "<h1>".$eval_name. ": ". (isset($row->nom) ? $row->nom : "")." ".(isset($row->prenom) ? $row->prenom : "");
 		echo " (".(isset($row->id) && $row->id != 0 ? "#".$row->id : "New").")</h1>";
@@ -531,7 +534,7 @@ function displayEditableReport($row, $canedit = true)
 		}
 		displayEditableObject("Rapport section", $row,$fieldsIndividual0, $canedit, $session);
 	}
-	else if(array_key_exists($eval_type, $typesRapportsUnites))
+	else if( is_rapport_unite($row) )
 	{
 		$units = unitsList();
 
@@ -540,11 +543,12 @@ function displayEditableReport($row, $canedit = true)
 		$fieldsUnites2 = $typesRapportToFields[$eval_type][3];
 		$fieldsUnites3 = $typesRapportToFields[$eval_type][4];
 
+		/*
 		global $fieldsUnitesExtra;
 
 		if(key_exists($eval_type,$fieldsUnitesExtra))
 			$fieldsUnites0 = array_merge($fieldsUnitesExtra[$eval_type],$fieldsUnites0);
-			
+			*/
 		echo "<div id=\"toolbar\">";
 
 		$hidden["action"] = "update";
@@ -686,7 +690,6 @@ function displaySummary($filters, $filter_values, $sorting_values)
 {
 	global $fieldsSummary;
 	global $fieldsSummaryConcours;
-	global $typesRapports;
 	global $statutsRapports;
 	global $filtersReports;
 	global $fieldsTypes;

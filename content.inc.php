@@ -173,7 +173,11 @@ function alertText($text)
 			if(isSuperUser())
 				return ;
 			//reset_tri
-			displaySummary(getCurrentFiltersList(), getFilterValues(), getSortingValues());
+			displaySummary(
+					getCurrentFiltersList(), 
+					getFilterValues(), 
+					getSortingValues()
+					);
 
 			if($centralid != 0 && $centralid != -1)
 			{
@@ -220,13 +224,15 @@ function alertText($text)
 			$level = getUserPermissionLevel();
 			if(isset($actions_level[$action]) && $level < $actions_level[$action])
 			{
-				rr();
 				throw new Exception("Vous n'avez pas le niveau de permission suffisant pour exécuter l'action '".$action."'");
 			}
 
 			//name="action"rr();
 			switch($action)
 			{
+				case 'migrate_to_eval_codes':
+					migrate_to_eval_codes();
+					break;
 				case 'delete_units':
 					delete_all_units();
 					include "admin/admin_units.php";

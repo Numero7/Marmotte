@@ -3,8 +3,6 @@
 
 function compileObjectsAsTXT($rows)
 {
-	global $typesRapportsChercheurs;
-	global $typesRapportsConcours;
 	$result = "";
 
 	$first = true;
@@ -20,26 +18,17 @@ function compileObjectsAsTXT($rows)
 		$result .= "******************************************************************************\n";
 
 		$first = true;
-		if(isset($row->type) && (in_array($row->type, $typesRapportsChercheurs) || in_array($row->type, $typesRapportsConcours) ))
+		if(is_rapport_chercheur($row) || is_rapport_concours($row))
 		{
 			$candidat = get_or_create_candidate($row);
 			foreach($candidat as $field => $value)
-			{
 				if(is_field_visible($row, $field))
-				{
 					$result.= $field.":\n\t". str_replace(array('"',"<br />"), array('#',''), $value)."\n";
-				}
-			}
 		}
 
 		foreach($row as $field => $value)
-		{
-
 			if(is_field_visible($row, $field) && $value != "")
-			{
 				$result.= $field.":\n\t". str_replace(array('"',"<br />"), array('#',''), $value)."\n";
-			}
-		}
 
 		$result.="\n\n";
 	}

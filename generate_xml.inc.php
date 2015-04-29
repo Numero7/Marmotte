@@ -122,7 +122,7 @@ function getReportsAsXML($filter_values, $sort_criteria = array(), $keep_br = tr
 	$doc = new DOMDocument("1.0","UTF-8");
 	$root = $doc->createElement("rapports");
 	$rows = filterSortReports(getCurrentFiltersList(), $filter_values, $sort_criteria);;
-	
+
 	if(isset($filter_values['id_edit']))
 		$root->setAttribute('id_edit',$filter_values['id_edit']);
 
@@ -132,7 +132,7 @@ function getReportsAsXML($filter_values, $sort_criteria = array(), $keep_br = tr
 		if(isset($report_types_with_multiple_exports[$row->type]))
 		{
 			$types = array();
-			if($row->type == "Candidature")
+			if($row->type == REPORT_CANDIDATURE)
 			{
 				global $concours_ouverts;
 				if(is_auditionneCR($row))
@@ -160,19 +160,19 @@ function appendLeaf($fieldname, $fieldvalue, DOMDocument $doc, DOMElement $node)
 	//$leaf->appendChild($doc->createCDATASection ( stripInvalidXml($fieldvalue)));
 	$stripped = stripInvalidXml($fieldvalue);
 	//echo $stripped;
-	
+
 	$stripped = str_replace(
 			array("<b>","</b>", "<B>", "</B>", "<br/>", "<br />","<i>", "</i>", "<b>", "</b>", "<I>", "</I>", "<B>", "</B>"),
 			array("#b#","#/b#", "#B#", "#/B#", "#br/#", "#br/#", "#i#", "#/i#", "#b#", "#/b#", "#I#", "#/I#", "#B#", "#/B#"),
 			$stripped);
-//	echo $stripped;
+	//	echo $stripped;
 
 	$stripped = str_replace(
 			array("<", ">", "#b#","#/b#", "#B#", "#/B#", "#br/#", "#i#", "#/i#", "#b#", "#/b#", "#I#", "#/I#", "#B#", "#/B#"),
 			array("&lt;", "&gt;", "<b>","</b>", "<B>", "</B>", "<br/>", "<i>", "</i>", "<b>", "</b>", "<I>", "</I>", "<B>", "</B>"),
 			$stripped);
-//	echo $stripped;
-	
+	//	echo $stripped;
+
 	$leaf->appendChild($doc->createCDATASection($stripped));
 	$node->appendChild($leaf);
 }
@@ -180,7 +180,6 @@ function appendLeaf($fieldname, $fieldvalue, DOMDocument $doc, DOMElement $node)
 function EnteteDroit($row, $units)
 {
 	global $enTetesDroit;
-	global $typesRapportsToEnteteDroit;
 	global $avis_classement;
 	global $avis_candidature_short;
 
@@ -200,80 +199,71 @@ function EnteteDroit($row, $units)
 	{
 		$bloc_unite .= " ".$row->unite;
 	}
-	
-	if( ($row->type == "Promotion") && ($row->grade_rapport != "CR1") && ($row->grade_rapport != "CR2"))
-	{
-		$result = $enTetesDroit['PromotionDR'];
-		$result .= $avis_classement[$row->avis].'<br/>';
-		$result .= $row->nom." ".$row->prenom.'<br/>';
-		$result .= $bloc_unite;
-				return $result;
-	}
 
-	if(array_key_exists($row->type, $typesRapportsToEnteteDroit))
-	{
-		$type = $typesRapportsToEnteteDroit[$row->type];
-		if(array_key_exists($type, $enTetesDroit))
-		{
-			$result = $enTetesDroit[$type];
-			if($type == 'Individu')
-			{
-				$result .= $row->nom." ".$row->prenom."<br/>";
-				$result .= $bloc_unite;
-			}
-			else if($type == 'Equivalence')
-			{
-				$result .= $row->nom." ".$row->prenom."<br/>";
-			}
-			else if($type == 'Concours')
-			{
-				$result .= $avis_candidature_short[$row->avis];
-				$result .= "<br/>";
-				$result .= $row->nom." ".$row->prenom;
-			}
-			else if($type == 'Unite')
-			{
-				$result .= $bloc_unite;
-			}
-			else if($type == 'Ecole')
-			{
-				$unit = $row->unite;
-				if(array_key_exists($row->unite,$units) && $units[$row->unite]->nickname != "")
-					$unit = $units[$row->unite]->nickname;
-				if($row->ecole != "")
-					$result .= $row->ecole." "."<br/>".$row->prenom." ".$row->nom." (".$unit.") ";
-				else
-					$result .= $row->nom." "."<br/>".$row->prenom." (".$unit.") ";
-			}
-			return $result;
-		}
+	/*
+	 if( ($row->type == "Promotion") && ($row->grade_rapport != "CR1") && ($row->grade_rapport != "CR2"))
+	 {
+	$result = $enTetesDroit['PromotionDR'];
+	$result .= $avis_classement[$row->avis].'<br/>';
+	$result .= $row->nom." ".$row->prenom.'<br/>';
+	$result .= $bloc_unite;
+	return $result;
 	}
-	return "";
+	*/
+	if(is_promotion_DR($row->type))
+	{
+		$result .= '<B>Classement, nom et unité :</B><br/>';
+	}
+	if(is_equivalence_type($row->type))
+	{
+		$result .= $row->nom." ".$row->prenom."<br/>";
+	}
+	else if(is_rapport_chercheur($row))
+	{
+		$result = '<B>Nom, prénom et affectation du chercheur :</B><br/>';
+		$result .= $row->nom." ".$row->prenom."<br/>";
+		$result .= $bloc_unite;
+	}
+	else if(is_rapport_concours($row))
+	{
+		$result .= $avis_candidature_short[$row->avis];
+		$result .= "<br/>";
+		$result .= $row->nom." ".$row->prenom;
+	}
+	else if($row->type == REPORT_ECOLE)
+	{
+		$unit = $row->unite;
+		if(array_key_exists($row->unite,$units) && $units[$row->unite]->nickname != "")
+			$unit = $units[$row->unite]->nickname;
+		if($row->intitule != "")
+			$result .= $row->intitule." "."<br/>";
+		$result .= $row->nom." "."<br/>".$row->prenom." (".$unit.") ";
+	}
+	else if(is_rapport_unite($row))
+	{
+		$result .= $bloc_unite;
+	}
+	else
+	{
+		$result = "Avis";
+	}
+	return $result;
 }
 
 function EnteteGauche($row)
 {
-	global $typesRapportsToEnteteGauche;
-	$result = isset($typesRapportsToEnteteGauche[$row->type]) ? $typesRapportsToEnteteGauche[$row->type] : "";
-	if($row->type == "Promotion")
-	{
-		$result .= "<br/>".$row->grade_rapport;
-	}
-	else if($row->type == "Candidature")
-	{
-		$result .= "<br/>".$row->concours;
-	}
-	else if($row->type == "Equivalence")
-	{
-		$result .= "<br/>pour les concours ".(isset($row->grade) ? $row->grade : "");
-	}
+	global $type_avis_classement;
+	$result = '<B>Objet de l’évaluation :</B><br/><I>'.$row->intitule.'</I>';
 
-	global $type_specific_fields_renaming;
-	if(isset($row->type) && isset($row->ecole) && isset($type_specific_fields_renaming[$row->type]) && isset($type_specific_fields_renaming[$row->type]['ecole']))
-	{
-		$result .= $row->ecole;
-	}
-	
+	if(in_array($row->type, $type_avis_classement))
+		$result .= "<br/>".$row->grade_rapport;
+	else if($row->type == REPORT_CANDIDATURE)
+		$result .= "<br/>".$row->concours;
+	/*
+	 else if( is_equivalence_type($row->type) )
+		$result .= "<br/>pour les concours ".(isset($row->grade) ? $row->grade : "");
+	$result .= $row->intitule;
+	*/
 
 	return $result;
 }
@@ -292,10 +282,7 @@ function type_to_xsl($type)
 
 function createXMLReportElem($row, DOMDocument $doc, $keep_br = true)
 {
-	global $typesRapports;
-	global $typesRapportsToEnteteGauche;
 	global $enTetesDroit;
-	global $typesRapportsToEnteteDroit;
 	global $typesRapportsToCheckboxes;
 	global $typesRapportsToCheckboxesTitles;
 	global $typesRapportsToFormula;
@@ -309,7 +296,7 @@ function createXMLReportElem($row, DOMDocument $doc, $keep_br = true)
 
 	$fieldsspecial = array('unite','date','type');
 
-	
+
 	//On ajoute une formule à la fin du rapport si nécessaire
 	if(array_key_exists($row->type,$typesRapportsToFormula))
 	{
@@ -318,7 +305,7 @@ function createXMLReportElem($row, DOMDocument $doc, $keep_br = true)
 		{
 			$formula = $formulas[$row->avis];
 			$row->rapport .= "<br/><br/>".stripInvalidXml($formula);
-		}		
+		}
 	}
 
 	global $fieldsRapportAll;
@@ -327,52 +314,51 @@ function createXMLReportElem($row, DOMDocument $doc, $keep_br = true)
 		if(isset($row->$fieldID) && !in_array($fieldID,$fieldsspecial))
 		appendLeaf($fieldID,   $keep_br ? $row->$fieldID : remove_br($row->$fieldID) , $doc, $rapportElem);
 
-	
-	
+
+
 	if($row->type == "Audition")
 	{
-			global $concours_ouverts;
-			global $liste_sous_jurys;
+		global $concours_ouverts;
+		global $liste_sous_jurys;
 			
-			global $tous_sous_jury;
-			$concours = $row->concours;
-			$sousjury = $row->sousjury;
-			if(isset($tous_sous_jury[$concours]) &&  isset($tous_sous_jury[$concours][$sousjury]))
-			{
-				
-				$users = listUsers();
-				$login = isset($tous_sous_jury[$concours][$sousjury]["president"]) ? $tous_sous_jury[$concours][$sousjury]["president"] : "";
-				$description = isset($users[$login]) ? $users[$login]->description : "";
-	//			$description = ""; 
-				appendLeaf("signataire",$description, $doc, $rapportElem);
-				appendLeaf("signature", "", $doc, $rapportElem);
-			}
-			else
-			{
-				appendLeaf("signataire","", $doc, $rapportElem);
-				appendLeaf("signature", "", $doc, $rapportElem);
-			}
+		global $tous_sous_jury;
+		$concours = $row->concours;
+		$sousjury = $row->sousjury;
+		if(isset($tous_sous_jury[$concours]) &&  isset($tous_sous_jury[$concours][$sousjury]))
+		{
+
+			$users = listUsers();
+			$login = isset($tous_sous_jury[$concours][$sousjury]["president"]) ? $tous_sous_jury[$concours][$sousjury]["president"] : "";
+			$description = isset($users[$login]) ? $users[$login]->description : "";
+			//			$description = "";
+			appendLeaf("signataire",$description, $doc, $rapportElem);
+			appendLeaf("signature", "", $doc, $rapportElem);
+		}
+		else
+		{
+			appendLeaf("signataire","", $doc, $rapportElem);
+			appendLeaf("signature", "", $doc, $rapportElem);
+		}
 			
-			$candidat = get_or_create_candidate($row);
-			appendLeaf("audition", $candidat->audition, $doc, $rapportElem);
-			appendLeaf("grade_concours", substr($concours_ouverts[$row->concours],0,3), $doc, $rapportElem);
+		$candidat = get_or_create_candidate($row);
+		appendLeaf("audition", $candidat->audition, $doc, $rapportElem);
+		appendLeaf("grade_concours", substr($concours_ouverts[$row->concours],0,3), $doc, $rapportElem);
 			
-			$conc = $sessions[$row->id_session];
-			appendLeaf("annee_concours", substr($conc,strlen($conc)-4,4), $doc, $rapportElem);
+		$conc = $sessions[$row->id_session];
+		appendLeaf("annee_concours", substr($conc,strlen($conc)-4,4), $doc, $rapportElem);
 			
-			$conc = $row->concours;
-			if(strlen($conc) == 4)
-				appendLeaf("nom_concours", (substr($conc,0,2)."/".substr($conc,2,4)), $doc, $rapportElem);
-			else
-				appendLeaf("nom_concours", $conc, $doc, $rapportElem);
+		$conc = $row->concours;
+		if(strlen($conc) == 4)
+			appendLeaf("nom_concours", (substr($conc,0,2)."/".substr($conc,2,4)), $doc, $rapportElem);
+		else
+			appendLeaf("nom_concours", $conc, $doc, $rapportElem);
 	}
 	else
 	{
 		appendLeaf("signataire", get_config("president"), $doc, $rapportElem);
-		global $typesRapportsConcours;
 		global $dossier_stockage;
 		global $rootdir;
-		if(!isset($typesRapportsConcours[$row->type]) && isset($row->statut) && $row->statut=="publie" && file_exists($dossier_stockage.signature_file))
+		if(!is_rapport_concours($row) && isset($row->statut) && $row->statut=="publie" && file_exists($dossier_stockage.signature_file))
 		{
 			appendLeaf("signature", $dossier_stockage.signature_file, $doc, $rapportElem);
 			appendLeaf("signature_source", $dossier_stockage.signature_file, $doc, $rapportElem);
@@ -384,7 +370,7 @@ function createXMLReportElem($row, DOMDocument $doc, $keep_br = true)
 		}
 	}
 
-	if($row->type == "Classement")
+	if( is_classement($row->type))
 	{
 		global $concours_ouverts;
 		if(isset($concours_ouverts[$row->concours]))
@@ -392,14 +378,14 @@ function createXMLReportElem($row, DOMDocument $doc, $keep_br = true)
 		else
 			appendLeaf("grade_concours", "CR", $doc, $rapportElem);
 
-			$conc = $sessions[$row->id_session];
-			appendLeaf("annee_concours", substr($conc,strlen($conc)-4,4), $doc, $rapportElem);
+		$conc = $sessions[$row->id_session];
+		appendLeaf("annee_concours", substr($conc,strlen($conc)-4,4), $doc, $rapportElem);
 			
-			$conc = $row->concours;
-			if(strlen($conc) == 4)
-				appendLeaf("nom_concours", (substr($conc,0,2)."/".substr($conc,2,4)), $doc, $rapportElem);
-			else
-				appendLeaf("nom_concours", $conc, $doc, $rapportElem);
+		$conc = $row->concours;
+		if(strlen($conc) == 4)
+			appendLeaf("nom_concours", (substr($conc,0,2)."/".substr($conc,2,4)), $doc, $rapportElem);
+		else
+			appendLeaf("nom_concours", $conc, $doc, $rapportElem);
 	}
 
 	//On ajoute les entete gauche et droit
@@ -422,13 +408,27 @@ function createXMLReportElem($row, DOMDocument $doc, $keep_br = true)
 		appendLeaf("date", strftime("%#d %B %Y",  time()), $doc, $rapportElem);
 	else
 		appendLeaf("date",  utf8_encode(strftime("%#d %B %Y", time())), $doc, $rapportElem);
-	
+
 	//On ajoute les cases à choix multiple, si nécessaires
-	if(array_key_exists($row->type,$typesRapportsToCheckboxes))
+	global $labelCheckboxes;
+	global $typesRapportToAvis;
+	if(isset($typesRapportToAvis[$row->type]))
 	{
-		$checkBoxes = $typesRapportsToCheckboxes[$row->type];
-		$checkBoxesTitle = $typesRapportsToCheckboxesTitles[$row->type];
+		$boxes = $typesRapportToAvis[$row->type];
+		foreach($boxes as $avis => $label)
+		{
+			if(isset($labelCheckboxes[$avis]))
+			{
+				if(isset($labelCheckboxes[$avis]))
+					$checkBoxes[$avis] = $labelCheckboxes[$avis];
+			}
+		}
+	}
+
+	if(count($checkBoxes) > 0)
+	{
 		$leaf = $doc->createElement("checkboxes");
+		$checkBoxesTitle = isset($typesRapportsToCheckboxesTitles[$row->type]) ? $typesRapportsToCheckboxesTitles[$row->type] : "<B>Avis de la section</B>";
 		$leaf->setAttribute("titre", $checkBoxesTitle);
 		foreach($checkBoxes as $avis => $intitule)
 		{
@@ -455,13 +455,14 @@ function createXMLReportElem($row, DOMDocument $doc, $keep_br = true)
 
 	$row->session = $sessions[$row->id_session];
 
+	$ltype = isset($id_rapport_to_label[$row->type]) ? $id_rapport_to_label[$row->type] :"";
 	//On ajoute le type du rapport et le nom de fichier
-	appendLeaf("type", $row->type, $doc, $rapportElem);
+	appendLeaf("type", $ltype, $doc, $rapportElem);
 	/*$filename = filename_from_node($nodes->item(0)).".pdf";*/
-	
+
 	$rapportElem->setAttribute('filename', filename_from_doc($row));
 	$rapportElem->setAttribute('type', $row->type);
-	
+
 	return $rapportElem;
 }
 
@@ -488,9 +489,6 @@ function XMLToHTML(DOMDocument $doc,$xsl_file)
 //Returns the name of the file
 function filename_from_node(DOMNode $node)
 {
-	global $typesRapportsUnites;
-	
-
 	$nom = "";
 	$prenom = "";
 	$grade = "";
@@ -499,7 +497,8 @@ function filename_from_node(DOMNode $node)
 	$session = "Session";
 	$avis = "";
 	$concours = "";
-	$ecole = "";
+	//	$ecole = "";
+	$intitule = "";
 
 	foreach($node->childNodes as $child)
 	{
@@ -513,7 +512,8 @@ function filename_from_node(DOMNode $node)
 			case "session": $session = $child->nodeValue; break;
 			case "avis": $avis = $child->nodeValue; break;
 			case "concours": $concours = $child->nodeValue; break;
-			case "ecole": $ecole = $child->nodeValue; break;
+			//		case "ecole": $ecole = $child->nodeValue; break;
+			case "intitule": $intitule = $child->nodeValue; break;
 		}
 	}
 

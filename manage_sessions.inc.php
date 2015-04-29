@@ -1,13 +1,11 @@
 <?php
 
-require_once('config.inc.php');
 require_once('manage_filters_and_sort.inc.php');
 require_once('utils.inc.php');
 
 
 function sessionArrays($force = false)
 {
-	global $dbh;
 	if($force || !isset($_SESSION['all_sessions']))
 	{
 		$sessions = array();

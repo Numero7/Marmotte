@@ -4,9 +4,6 @@ require_once('manage_sessions.inc.php');
 require_once("manage_users.inc.php");
 require_once("manage_sessions.inc.php");
 
-global $typesRapportsConcours;
-global $typesRapportsChercheurs;
-
 $login = getLogin();
 $sections = getSections($login);
 if(isset($_REQUEST['filter_section']))

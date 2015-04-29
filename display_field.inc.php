@@ -19,24 +19,35 @@ function display_sousjury($row, $fieldId, $readonly)
 
 function display_type($row, $fieldID, $readonly)
 {
-	global $typesRapports;
 	if(isset($row->type))
 	{
 		$type = $row->type;
 
 		if( !$readonly )
 		{
+			global $report_types_to_class;
+
 			global $typesRapportsChercheurs;
 			global $typesRapportsUnites;
 			global $typesRapportsConcours ;
-
-			if(isset($typesRapportsChercheurs[$type]))
-				display_select($row, $fieldID, $typesRapportsChercheurs,$readonly);
-			else if(isset($typesRapportsUnites[$type]))
-				display_select($row, $fieldID, $typesRapportsUnites,$readonly);
-			else if(isset($typesRapportsConcours[$type]))
-				display_select($row, $fieldID, $typesRapportsConcours,$readonly);
-
+			
+			if(isset($report_types_to_class[$type]))
+			{
+				switch($report_types_to_class[$type])
+				{
+					case REPORT_CLASS_CHERCHEUR:
+						display_select($row, $fieldID, $typesRapportsChercheurs,$readonly);
+						break;
+					case REPORT_CLASS_UNIT:
+						display_select($row, $fieldID, $typesRapportsUnites,$readonly);
+					 	break;
+					case REPORT_CLASS_CONCOURS:
+						display_select($row, $fieldID, $typesRapportsConcours,$readonly);
+						break;
+					case REPORT_CLASS_DELEGATION:
+						break;
+					}
+			}
 		}
 	}
 }
@@ -182,37 +193,38 @@ function display_concours($row, $fieldID, $readonly)
 	display_select($row, $fieldID,$conc,$readonly);
 }
 
+/*
 function display_ecole($row, $fieldID, $readonly)
 {
-	echo '<td colspan="3"><input name="fieldecole" value="'.$row->ecole.'" style="width: 100%;"/> </td>';
+	echo '<td colspan="3"><input name="fieldintitule" value="'.$row->intitule.'" style="width: 100%;"/> </td>';
 }
+*/
 
 function display_rapports($row, $fieldId)
 {
-	global $typesRapportsUnites;
-	$is_unit= isset($typesRapportsUnites[$row->type]);
-
+	$is_unit= is_rapport_unite($row);
+	
 	if($is_unit)
 		$reports = isset($row->unite) ? find_unit_reports($row->unite) : array();
 	else
 		$reports = (isset($row->nom) && isset($row->prenom)) ? find_people_reports($row->nom, $row->prenom) : array();
 
-	global $typesRapports;
+	global $id_rapport_to_label;
 	echo "<td>";
 	if(count($reports) > 1)
 	{
 		echo "<table>";
 		foreach($reports as $report)
 		{
-			if((!isset($row->id) || $report->id != $row->id) && (!$is_unit || isset($typesRapportsUnites[$report->type])))
+			if( ( !isset($row->id) || $report->id != $row->id ) )
 			{
-				if(isset($typesRapports[$report->type]))
-					$type = $typesRapports[$report->type];
+				if(isset($id_rapport_to_label[$report->type]))
+					$type = $id_rapport_to_label[$report->type];
 				else
 					$type = "Unknown";
-				if($type == "Candidature" && isset($report->concours) )
+				if($type == REPORT_CANDIDATURE && isset($report->concours) )
 					echo '<tr><td><a href="index.php?action=edit&amp;id='.$report->id.'">'.$report->id_session. " - " .$type." - " . $report->concours ."</a></td></tr>";
-				else if($type == "Equivalence")
+				else if( is_equivalence_type($type) )
 					echo '<tr><td><a href="index.php?action=edit&amp;id='.$report->id.'">'.$report->id_session. " - " .$type." - " . $report->grade_rapport ."</a></td></tr>";
 				else 
 					echo '<tr><td><a href="index.php?action=edit&amp;id='.$report->id.'">'.$report->id_session. " - " .$type."</a></td></tr>";
@@ -226,11 +238,10 @@ function display_rapports($row, $fieldId)
 
 function display_fichiers($row, $fieldID, $session, $readonly)
 {
-	global $typesRapportsUnites;
 	if(!isset($row->type))
 		return;
 	
-	if(  isset($typesRapportsUnites[$row->type]))
+	if(  is_rapport_unite($row) )
 	{
 		$files = find_unit_files($row,true, $session, true);
 		$dir = get_unit_directory($row, $session, false);

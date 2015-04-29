@@ -208,7 +208,7 @@ function downloadReport($id_rapport)
 		$file = export_reports_as_txt(array($report), $dir, $prefix);
 		$filenames[$file] = $prefix.".txt";
 		
-		if( isset($report->type) && ($report->type == "Candidature" || $report->type == "Equivalence") )
+		if( isset($report->type) && ($report->type == REPORT_CANDIDATURE || is_equivalence_type($report->type) ) )
 		{
 			$candidate = get_or_create_candidate($report);
 			$basedir = get_people_directory($candidate, $report->id_session, false);

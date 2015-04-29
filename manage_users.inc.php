@@ -572,12 +572,11 @@ function importAllUsersFromJanus()
 	$users = listUsers();
 
 	$errors = "";
-
-	dsi_connect();
+//dsidbname
 	if (isSuperUser())
-		$sql = "SELECT * FROM ".dsi_users_db." WHERE 1;";
+		$sql = "SELECT * FROM ".dsidbname.".".dsi_users_db." WHERE 1;";
 	else
-		$sql = "SELECT * FROM ".dsi_users_db." WHERE section_code=\"".currentSection()."\";";
+		$sql = "SELECT * FROM ".dsidbname.".".dsi_users_db." WHERE section_code=\"".currentSection()."\";";
 
 	$result = dsi_sql_request($sql);
 	while ($row = mysqli_fetch_object($result))
@@ -605,7 +604,6 @@ function importAllUsersFromJanus()
 		}
 	}
 	unset($_SESSION['all_users']);
-	dsi_disconnect();
 
 	if($errors != "")
 		throw new Exception($errors);

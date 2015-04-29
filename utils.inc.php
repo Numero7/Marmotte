@@ -161,10 +161,10 @@ function filename_from_doc($doc)
 
 	$sessions = sessionArrays();
 	$session = $sessions[$doc->id_session];
-	return filename_from_params($nom, $prenom, $doc->grade_rapport, $doc->unite, $doc->type, $session, $doc->avis, $doc->concours, $doc->sousjury, $doc->ecole);
+	return filename_from_params($nom, $prenom, $doc->grade_rapport, $doc->unite, $doc->type, $session, $doc->avis, $doc->concours, $doc->sousjury, $doc->intitule);
 }
 
-function filename_from_params($nom, $prenom, $grade, $unite, $type, $session, $avis, $concours = "", $sousjury="", $ecole = "")
+function filename_from_params($nom, $prenom, $grade, $unite, $type, $session, $avis, $concours = "", $sousjury="", $intitule = "")
 {
 	global $typesRapportsUnites;
 	global $typesRapportsConcours;
@@ -185,7 +185,7 @@ function filename_from_params($nom, $prenom, $grade, $unite, $type, $session, $a
 		if($type == 'Generique')
 			return $section." - ".$session." - ".$nom." ".$prenom." - ".$unite;
 		else if($type == 'Ecole')
-			return $section." - ".$session." - ".$type." - ".$ecole."-".$nom." - ".$unite;
+			return $section." - ".$session." - ".$type." - ".$intitule."-".$nom." - ".$unite;
 		else
 			return $section." - ".$session." - ".$type." - ".$unite;
 	}

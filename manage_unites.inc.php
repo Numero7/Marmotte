@@ -5,13 +5,13 @@ function cmpunits($a, $b) {
 
 function unitsList($all_sections = false)
 {
-	if(!isset($_SESSION['all_units']))
+	if($all_sections || !isset($_SESSION['all_units']))
 	{
 		$units = array();
-		if(isSuperUser())
+		if($all_sections || isSuperUser())
 			$sql = "SELECT * FROM ".units_db." ORDER BY LOWER(nickname) ASC;";
 		else
-			$sql = "SELECT * FROM ".units_db." WHERE `section`='". real_escape_string(currentSection())."' ORDER BY nickname ASC;";
+			$sql = "SELECT * FROM ".units_db." WHERE `section`='". real_escape_string(currentSection())."' ORDER BY LOWER(nickname) ASC;";
 //			$sql = "SELECT * FROM ".units_db." WHERE `section`='". real_escape_string(currentSection())."' OR `section`=\"0\" ORDER BY nickname ASC;";
 		//	$sql = "SELECT * FROM ".units_db." WHERE `section`=\"0\" ORDER BY LOWER(nickname) ASC;";
 

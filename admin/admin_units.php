@@ -65,6 +65,28 @@ if(isSecretaire() && !isSuperUser())
 	</p>
 </form>
 <hr />
+<h2 id="ajout">Ajout ou mise-à-jour d'une unité existante</h2>
+<p>Permet d'importer une unité depuis la liste de toutes les unités.</p>
+<form enctype="multipart/form-data" action="index.php" method="post">
+	<input type="hidden" name="admin_unites"></input>
+		<input type="hidden" name="admin_unites"></input>
+		<select name="code">
+		<?php
+		$units = unitsList(true);
+		foreach($units as $unit => $data)
+			echo "<option value=\"$unit\">".$data->prettyname."</option>";
+		?>
+	</select>
+	<input type="hidden" name="nickname" value="" />
+	<input type="hidden" name="fullname" value="" />
+	<input type="hidden" name="directeur" value="" />
+	<input type="hidden" name="type" value="labo" />
+	<input type="hidden" name="action" value="ajoutlabo" />
+	<input type="submit" value="Ajouter unité" />
+		
+	
+</form>
+<hr />
 <h2 id="ajout">Ajout ou mise-à-jour d'une unité</h2>
 <p>Si une unité avec le même code existe déjà, ses données seront mises
 	à jour sans que l'unité ne soit dupliquée.</p>
@@ -101,9 +123,9 @@ if(isSecretaire() && !isSuperUser())
 			</td>
 		</tr>
 	</table>
-	<input type="hidden" name="type" value="labo" /> <input type="hidden"
-		name="action" value="ajoutlabo" /> <input type="submit"
-		value="Ajouter unité" />
+	<input type="hidden" name="type" value="labo" />
+	<input type="hidden" name="action" value="ajoutlabo" />
+	<input type="submit" value="Ajouter unité" />
 </form>
 
 
@@ -125,6 +147,7 @@ if(isSecretaire() && !isSuperUser())
 <br />
 <hr />
 <table>
+<tr>
 	<?php 
 
 
@@ -132,7 +155,10 @@ if(isSecretaire() && !isSuperUser())
 	foreach($fieldsUnitsDB as $field => $intitule)
 		echo "<th>".$intitule."</th>";
 
-	echo "\n";
+	?>
+	</tr>
+	<tr>
+	<?php 
 
 	$units = unitsList();
 	foreach($units as $unit => $data)

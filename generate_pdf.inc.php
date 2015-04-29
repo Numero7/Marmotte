@@ -48,12 +48,12 @@ function viewReportAsPdf($id_rapport,$option = "")
 	
 	$type = ($option != "") ? $option : $report->type;
 
-	global $typesRapportsConcours;
-	if(isset($typesRapportsConcours[$type]) && $type != "Audition")
+	if(is_rapport_concours($report) && $type != "Audition")
 		$type = "Classement";
 	
 	$xsl = type_to_xsl( $type);
 	$html = XMLToHTML( $doc , $xsl );	
+	
 	$pdf = HTMLToPDF($html);
 
 	$nodes =$doc->getElementsByTagName("rapport");

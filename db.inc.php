@@ -10,24 +10,6 @@ function db_from_scratch()
 $dbh = NULL;
 $dsi_dbh = NULL;
 
-function dsi_connect()
-{
-	global $servername;
-	global $dsidbname;
-	global $serverlogin;
-	global $serverpassword;
-	global $dsi_dbh;
-	
-	$dsi_dbh = mysqli_connect($servername, $serverlogin, $serverpassword, $dsidbname) or die("Could not connect to the server '".$servername."<br/>".mysqli_error($dsi_dbh));
-	mysqli_query($dsi_dbh, "SET NAMES utf8;");
-}
-
-function dsi_disconnect()
-{
-	global $dsi_dbh;
-	mysqli_close($dsi_dbh);
-	$dsi_dbh = NULL;
-}
 
 function db_connect($serverName,$dbname,$login,$password)
 {
@@ -278,17 +260,6 @@ function sql_request($sql)
 	$result = mysqli_query($dbh, $sql);
 	if($result == false)
 		throw new Exception("Failed to process sql query: <br/>\t".mysqli_error($dbh)."<br/>".$sql);
-	else
-		return $result;
-}
-
-function dsi_sql_request($sql)
-{
-	global $dsi_dbh;
-	//	echo $sql."<br/>";
-	$result = mysqli_query($dsi_dbh, $sql);
-	if($result == false)
-		throw new Exception("Failed to process sql query: <br/>\t".mysqli_error($dsi_dbh)."<br/>".$sql);
 	else
 		return $result;
 }

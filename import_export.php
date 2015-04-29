@@ -55,22 +55,7 @@ function displaySecretaryImport()
 		<option value ="">Autodétection</option>
 <?php   
 		}
-$types = array();
-if(is_current_session_concours())
-{
-	global $typesRapportsConcours;  
-	$types = $typesRapportsConcours;
-}
-else if(is_current_session_delegation())
-{
-	$types = array('Delegation'=>'Délégation');
-}
-else
-{
-	global $typesRapportsChercheurs;
-	global $typesRapportsUnites;
-	$types = array_merge($typesRapportsChercheurs, $typesRapportsUnites);
-}
+$types = get_current_report_types();
 foreach($types as $type => $name)  
 echo '<option value='.$type.'>'.$name.'</option><br/>'."\n";  
 ?> 
@@ -96,22 +81,7 @@ echo '<option value='.$type.'>'.$name.'</option><br/>'."\n";
 <tr><td>Choix du type de rapport</td><td>
 <select name="type" type="hidden" >
 <?php
-$types = array();
-if(is_current_session_concours())
-{
-global $typesRapportsConcours;
-$types = $typesRapportsConcours;
-}
-else if(is_current_session_delegation())
-{
-$types = array('Delegation'=>'Délégation');
-}
-else
-{
-global $typesRapportsChercheurs;
-global $typesRapportsUnites;
-$types = array_merge($typesRapportsChercheurs, $typesRapportsUnites);
-}
+$types = get_current_report_types();
 foreach($types as $type => $name)
 echo '<option value='.$type.'>'.$name.'</option><br/>'."\n";
 ?>
