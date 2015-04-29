@@ -444,6 +444,14 @@ function addCsvUnite($properties)
 				//echo $code." ".$section."<br/>";
 				if(is_numeric($section))
 				{
+				  /* We keep nicknames and fullname already set */
+				  $sql = "SELECT * FROM ".units_db." WHERE `code`= \"".real_escape_string($code)."\" AND `section`= \"".$section."\";";
+				  $result = sql_request($sql);
+				  if($row = mysqli_fetch_object($result))
+				    {
+				    $nickname = $row->nickname; 
+				    $fullname = $row->fullname; 
+				    }
 					$values = "\"".real_escape_string($nickname)."\",";
 					$values .= "\"".real_escape_string($code)."\",";
 					$values .= "\"".real_escape_string($fullname)."\",";
