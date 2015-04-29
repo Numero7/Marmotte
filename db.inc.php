@@ -8,7 +8,6 @@ function db_from_scratch()
 }
 
 $dbh = NULL;
-$dsi_dbh = NULL;
 
 
 function db_connect($serverName,$dbname,$login,$password)
@@ -263,6 +262,7 @@ function sql_request($sql)
 	else
 		return $result;
 }
+
 
 function real_escape_string($string)
 {

@@ -71,7 +71,7 @@ try
 						"https://vigny.dr15.cnrs.fr/secure/pmsp-server.php",
 						"/home/gimbert/Panda/PMSP/pmsp.pub",
 						"Marmotte",
-						"https://marmotte.cnrs.fr/index.php?action=auth_janus",
+						adresse_du_site."/index.php?action=auth_janus",
 						false);
 			# Effectue l'authentification
 			$pmsp->authentify('mail,cn,ou,givenname,displayname');		

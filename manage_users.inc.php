@@ -572,13 +572,14 @@ function importAllUsersFromJanus()
 	$users = listUsers();
 
 	$errors = "";
-//dsidbname
+
 	if (isSuperUser())
 		$sql = "SELECT * FROM ".dsidbname.".".dsi_users_db." WHERE 1;";
 	else
-		$sql = "SELECT * FROM ".dsidbname.".".dsi_users_db." WHERE section_code=\"".currentSection()."\";";
+	  $sql = "SELECT * FROM ".dsidbname.".".dsi_users_db." WHERE CID_code=\"".currentSection()."\" OR section_code=\"".currentSection()."\";";
 
-	$result = dsi_sql_request($sql);
+
+	$result = sql_request($sql);
 	while ($row = mysqli_fetch_object($result))
 	{
 		$login = $row->mailpro;

@@ -64,10 +64,10 @@ function displaySessionField($row, $fieldID, $readonly)
 function display_long($row, $fieldID, $readonly)
 {
 	if($readonly)
-		echo '<td colspan="3">'.$row->$fieldID.'</td>';
+		echo '<td>'.$row->$fieldID.'</td>';
 	else
 		echo '
-		<td colspan="3">
+		<td>
 		<textarea  rows="5" cols="60" name="field'.$fieldID.'" >'.remove_br($row->$fieldID).'</textarea>
 		</td>
 		';
@@ -76,10 +76,10 @@ function display_long($row, $fieldID, $readonly)
 function display_treslong($row, $fieldID, $readonly)
 {
 	if($readonly)
-		echo '<td colspan="3">'.insert_br($row->$fieldID).'</td>';
+		echo '<td>'.insert_br($row->$fieldID).'</td>';
 	else
 		echo '
-		<td colspan="3">
+		<td>
 		<textarea  rows="25" cols="60" name="field'.$fieldID.'" >'.remove_br($row->$fieldID).'</textarea>
 		</td>
 		';
@@ -196,7 +196,7 @@ function display_concours($row, $fieldID, $readonly)
 /*
 function display_ecole($row, $fieldID, $readonly)
 {
-	echo '<td colspan="3"><input name="fieldintitule" value="'.$row->intitule.'" style="width: 100%;"/> </td>';
+	echo '<td><input name="fieldecole" value="'.$row->ecole.'" style="width: 100%;"/> </td>';
 }
 */
 
@@ -255,7 +255,9 @@ function display_fichiers($row, $fieldID, $session, $readonly)
 	
 	echo "<td><table><tr>\n";
 	
-	if(count($files) > 0)
+	if(count($files) == 0)
+	  echo "<td></td>\n";
+	else
 	{
 		ksort($files);
 		$i = -1;

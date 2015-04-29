@@ -15,6 +15,83 @@ date_default_timezone_set('Europe/Paris');
 require_once("config/configDB.inc.php");
 require_once("config_tools.inc.php");
 
+	$rubriques_supplementaires = array(
+			"individus" => array("rubriques_individus","Info","chercheur"),
+			"candidats" => array("rubriques_candidats", "Info","candidat"),
+			"concours" => array("rubriques_concours", "Generic","rapport concours"),
+			"chercheurs" => array("rubriques_chercheurs", "Generic","rapport chercheur"),
+			"unites" => array("rubriques_unites", "Generic","rapport unite")
+	);
+	
+	$add_rubriques_people = get_rubriques("individus");
+	$add_rubriques_candidats = get_rubriques("candidats");
+	$add_rubriques_concours = get_rubriques("concours");
+	$add_rubriques_chercheurs = get_rubriques("chercheurs");
+	$add_rubriques_unites = get_rubriques("unites");
+		
+	$fieldsSummary = array(
+		"type",
+			"unite",
+			"nom",
+		"prenom",
+			"ecole",
+			"avis",
+			"rapporteur",
+			"avis1",
+		"rapporteur2",
+			"avis2",
+		"rapporteur3",
+		"grade_rapport",
+			"theme1",
+			"theme2",
+			"theme3"
+	);
+	
+	$fieldsSummaryConcours = array(
+			"type",
+			"nom",
+			"prenom",
+			"concours",
+			"sousjury",
+			"avis",
+			"rapporteur",
+			"avis1",
+			"rapporteur2",
+			"avis2",
+			"theme1",
+			"theme2",
+			"labo1",
+			"labo2",
+			"diploma",
+			"grade_rapport"
+	);
+	
+	$fieldsTriConcours = array(
+			"nom",
+			"prenom",
+			"grade_rapport",
+			"concours",
+			"sousjury",
+			"rapporteur",
+			"rapporteur2",
+			"rapporteur3",
+			"theme1",
+			"theme2",
+			"theme3",
+			"labo1",
+			"labo2",
+			"labo3",
+			"avis",
+			"date"
+	);
+	
+	$statutsRapports = array(
+			'doubleaveugle'=>'Double Aveugle',
+			 'prerapport' => "Prerapport",
+			 'rapport'=>"Rapport",
+			 'audition'=>"Audition",
+			 'publie'=>"Rapport publié"
+			);
 
 //	define("config_file","config/config.xml");
 define("signature_file","img/signature.jpg");

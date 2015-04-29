@@ -95,27 +95,23 @@ function simpleUnitsList($short = false)
 
 function addUnit($nickname, $code, $fullname, $directeur)
 {
+  if($code == "")
+    throw new Exception("Cannot create unit with empty code");
 	$sql = "SELECT * FROM ".units_db." WHERE `code`=\"".real_escape_string($code)."\";";
 	$result = sql_request($sql);
 	if($row = mysqli_fetch_object($result))
 	{
-		$nickname = $row->nickname;
-		$fullname = $row->fullname;
-		$directeur = $row->directeur;
+	  if($nickname == "") $nickname = $row->nickname;
+	  if($fullname == "") $fullname = $row->fullname;
+	  if($directeur =="" ) $directeur = $row->directeur;
 	}
 	else
 	{
-		$liste = unitsList();
 		/* if nickname has been set we dont delete it */
-		if($nickname == "")
-		{
-			if(isset($liste[$code]) && $liste[$code]->nickname !="")
-				$nickname = $liste[$code]->nickname;
-			else if($fullname != "")
-				$nickname = $fullname;
-			else
-				$nickname = $code;
-		}
+	  if($nickname == "")
+		$nickname = $code;
+	  if($fullname == "")
+	    $fullname = $nickname;
 	}
 
 	unset($_SESSION['all_units']);
