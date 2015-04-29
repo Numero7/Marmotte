@@ -19,9 +19,15 @@ $firstlogin = authenticateBase('admin','password');
 		<h3>"We can only see a short distance ahead, but we can see plenty there that needs to be done." Alan Turing.
 		</h3>
 		 -->
+<h3>
+  Phil: To the groundhog.<br/>
+  Rita: I always drink to world peace
+</h3>
+<!--
 		 <h3>
 <b>Ned:</b> So what are you doing for dinner?<br/>
 <b>Phil:</b> Umm... something else. <br/>
+-->
  --<I>Groundhog Day</I>.
  		<br/>
 		<br/>

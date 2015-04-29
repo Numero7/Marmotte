@@ -7,30 +7,32 @@ function compileObjectsAsTXT($rows)
 
 	$first = true;
 
-	$result .= "******************************************************************************\n";
-	$result .= "**** Pour un bon affichage des accents, sélectionner l'encodage 'UTF-8' ******\n";
-	$result .= "******************************************************************************\n";
+	$result .= "****************************************************\n";
+	$result .= "Pour un bon affichage des accents:  sélectionner 'UTF-8' n";
+	$result .= "****************************************************\n";
 	
+	global $id_rapport_to_label;
+	global $dont_export_fields;
 	foreach($rows as $row)
 	{
-		$result .= "******************************************************************************\n";
-		$result .= "****************$row->type ****************************************************\n";
-		$result .= "******************************************************************************\n";
+		$result .= "*****************************************************\n";
+		$result .= "".$id_rapport_to_label[$row->type]."\n";
+		$result .= "*****************************************************\n";
 
 		$first = true;
 		if(is_rapport_chercheur($row) || is_rapport_concours($row))
 		{
 			$candidat = get_or_create_candidate($row);
 			foreach($candidat as $field => $value)
-				if(is_field_visible($row, $field))
+			  if(is_field_visible($row, $field) && !in_array($field, $dont_export_fields))
 					$result.= $field.":\n\t". str_replace(array('"',"<br />"), array('#',''), $value)."\n";
 		}
 
 		foreach($row as $field => $value)
-			if(is_field_visible($row, $field) && $value != "")
+		  if(is_field_visible($row, $field) && $value != "" && !in_array($field, $dont_export_fields))
 				$result.= $field.":\n\t". str_replace(array('"',"<br />"), array('#',''), $value)."\n";
 
-		$result.="\n\n";
+		$result.="\n\n\f";
 	}
 	return $result;
 

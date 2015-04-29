@@ -9,6 +9,7 @@ require_once('manage_filters_and_sort.inc.php');
 
 function compute_title($row, $fieldId)
 {
+  global $id_rapport_to_label;
 	global $fieldsAll;
 
 	$title = "";
@@ -1186,7 +1187,7 @@ function migrate_to_eval_codes()
 		foreach($id_rapport_to_label as $id => $data)
 		{
 			if($id != 9999)
-				$sql = "UPDATE `".reports_db."` SET `intitule`=\"".$data["label"]."\" WHERE `type`=\"".$id."\";";
+				$sql = "UPDATE `".reports_db."` SET `intitule`=\"".$data."\" WHERE `type`=\"".$id."\";";
 			else 
 				$sql = "UPDATE `".reports_db."` SET `intitule`=`ecole` WHERE `type`=\"9999\";";
 			sql_request($sql);	

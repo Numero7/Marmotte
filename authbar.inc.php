@@ -77,22 +77,13 @@ if(!isSuperUser())
 									</td>
 									<?php 
 						}?>
-									<td>
+									<td valign="top">
 									<ul>
-														<li>
-								<a href="index.php?action=logout">Déconnexion</a></li>
-							<li>
-								<a href="index.php?action=changepwd">Mot de passe</a>
-								</li>
 								<?php 
 								if(!isSuperUser())
 								{
 								?>
 									<li>
-			<form method="post" action="export.php">
-		<input type="submit" value="Export"/>
-		<input type="hidden" name="action" value="export"/>
-		<select name="type">
 		<?php 
 		global $typeExports;
 		foreach($typeExports as $idexp => $exp)
@@ -100,18 +91,15 @@ if(!isSuperUser())
 			$expname= $exp["name"];
 			$level = $exp["permissionlevel"];
 			if (getUserPermissionLevel()>=$level)
-				echo '<option value="'.$idexp.'">'.$exp["name"]."</option>\n";
+			  echo "<li><a href=\"export.php?action=export&amp;type=".$idexp."\">Export ".$exp["name"]."</a></li>\n";
 		}
-		?>
-		</select>
-		</form>
-						</li>
+?>
 							</ul>
 													<?php 
 						}
 						?>
 </td>
-<td>
+<td valign="top">
 <ul>
 		<?php 
 		if(isSecretaire() && !isSuperUser())
@@ -152,7 +140,14 @@ if(!isSuperUser())
 					}
 				?>
 </ul>
-						</tr>
+<td valign="top">
+<ul>
+<li><a href="index.php?action=logout">
+Déconnexion
+</a>
+</li></ul>
+</td>
+</tr>
 					</table>
 	</div>
 </div>

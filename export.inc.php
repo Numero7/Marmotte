@@ -291,9 +291,10 @@ function export_current_selection_as_single_txt()
 	{
 		$dir = dossier_temp();
 		$file = export_reports_as_txt($reports, $dir);
-		send_file($file, "rapports_marmotte.txt");
+		send_file($file, "rapports.doc");
 	}
 }
+
 
 function export_current_selection($export_format)
 {

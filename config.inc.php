@@ -1085,19 +1085,19 @@ $typeExports = array(
 		"pdf" => 	array(
 				"mime" => "application/x-zip",
 				"xsl" => "",
-				"name" => "Rapports (pdf)",
+				"name" => "pdf",
 				"permissionlevel" => NIVEAU_PERMISSION_SECRETAIRE,
 		),
 		"html" => 	array(
 				"mime" => "text/html",
 				"xsl" => "xslt/html2.xsl",
-				"name" => "Rapports (html)",
+				"name" => "html",
 				"permissionlevel" => NIVEAU_PERMISSION_SECRETAIRE,
 		),
 		"text" => 	array(
 				"mime" => "text/html",
 				"xsl" => "xslt/html2.xsl",
-				"name" => "Dossiers (text)",
+				"name" => "doc",
 				"permissionlevel" => NIVEAU_PERMISSION_BASE,
 		),
 		/*
@@ -1111,7 +1111,7 @@ $typeExports = array(
 		"csvsingle" => 	array(
 				"mime" => "application/x-text",
 				"xsl" => "",
-				"name" => "Dossiers (csv)",
+				"name" => "csv",
 				"permissionlevel" => NIVEAU_PERMISSION_BASE
 		),
 		"csvbureau" => 	array(
@@ -1140,6 +1140,8 @@ $typeExports = array(
 		"permissionlevel" => NIVEAU_PERMISSION_SECRETAIRE
 )*/
 );
+
+$dont_export_fields = array("id_origine","id_unite","id_people","statut","genre","report_id","people_id","date","auteur","type");
 
 $report_types_with_multiple_exports = array(
 		'Candidature' => array('Audition', 'Classement')
@@ -1212,7 +1214,7 @@ foreach($topics as $key => $value)
 
 /** FILTERS **/
 $filtersReports = array(
-		'type' => array('name'=>"Type d'évaluation" , 'liste' => array_merge($typesRapportsUnites, array(""=>""), $typesRapportsChercheurs),'default_value' => "tous", 'default_name' => "Tous les types"),
+			'type' => array('name'=>"Type d'évaluation" , 'liste' =>  $typesRapportsAll , 'default_value' => "tous", 'default_name' => "Tous les types"),
 		'rapporteur' => array('name'=>"Rapporteur" , 'default_value' =>"tous", 'default_name' => "Tous les rapporteurs"),
 		'rapporteur2' => array('name'=>"Rapporteur2" ,'default_value' =>"tous", 'default_name' => "Tous les rapporteurs"),
 		'grade' => array('name'=>"Grade" , 'liste' => $grades, 'default_value' => "tous", 'default_name' => "Tous les grades"),
