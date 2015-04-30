@@ -849,8 +849,8 @@ array(
 $max_classement = 30;
 for($i = 1; $i <= $max_classement; $i++)
 {
-	$avis_classement[strval($i)] = "$i";
-	$avis_candidature_short[strval($i)] = "$i";
+	$avis_classement["c".strval($i)] = "$i";
+	$avis_candidature_short["c".strval($i)] = "$i";
 }
 
 $avis_lettre = array(
