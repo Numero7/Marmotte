@@ -613,6 +613,8 @@ define("REPORT_DELEGATION", 7778);
 define("REPORT_ECOLE", 8515);
 define("REPORT_EVAL", 6005);
 define("REPORT_EVAL_RE", 6008);
+define("REPORT_EMERITAT", 7017);
+define("REPORT_EMERITAT_RE", 7018);
 
 //reltypevalavis
 $sql = "SELECT * FROM ".dsidbname.".reftypeval  WHERE 1 ORDER BY label ASC;";
@@ -766,7 +768,7 @@ function is_promotion_DR($type)
 
 function is_classement($type)
 {
-	return ($type == REPORT_CANDIDATURE) || is_promotion_DR($type);
+	return ($type == REPORT_CANDIDATURE) || is_promotion_DR($type) || ($type == REPORT_EMERITAT) || ($type == REPORT_EMERITAT_RE);
 }
 
 foreach($report_class_to_types as $class => $ids)
