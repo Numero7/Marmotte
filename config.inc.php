@@ -827,7 +827,7 @@ $typesRapportsToXSL = array(
 /******************************************************************** Définition des avis possibles pour chaque type de rapport *********************************************/
 
 /* Pour les promos*/
-$avis_classement = array(""=>"", "adiscuter"=>"à discuter", "non"=>"non-classé", "oui"=>"Oui");
+$avis_classement = array(""=>"", "adiscuter"=>"à discuter", "non"=>"Non", "oui"=>"Oui");
 
 /* Pour les concours*/
 $avis_candidature_short =
@@ -902,7 +902,8 @@ $typesRapportToAvis = array(
 
 $type_avis_classement = array();
 foreach($id_rapport_to_label as $type => $data)
-{
+ {
+   $typesRapportToAvis[$type][] = "";
 	$sql = "select idavis from dsi.reltypevalavis where ideval = '$type'";
 	$result = sql_request($sql);
 	while($row = mysqli_fetch_object($result))
