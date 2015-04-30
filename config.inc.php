@@ -771,6 +771,21 @@ function is_classement($type)
 	return ($type == REPORT_CANDIDATURE) || is_promotion_DR($type) || ($type == REPORT_EMERITAT) || ($type == REPORT_EMERITAT_RE);
 }
 
+function is_concours($type)
+{
+	return ($type == REPORT_CANDIDATURE);
+}
+
+function is_avis_classement($avis)
+{
+	return (count($avis) > 0) && ($avis[0] == "c") && is_numeric($avis[1]);
+}
+
+function classement_from_avis($avis)
+{
+	return substr($avis,1);
+}
+
 foreach($report_class_to_types as $class => $ids)
 {
 	foreach($ids as $id)

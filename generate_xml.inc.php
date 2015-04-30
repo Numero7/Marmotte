@@ -210,11 +210,20 @@ function EnteteDroit($row, $units)
 	return $result;
 	}
 	*/
-	if(is_promotion_DR($row->type))
+	if(is_rapport_concours($row))
+	{
+		$result .= $avis_candidature_short[$row->avis];
+		$result .= "<br/>";
+		$result .= $row->nom." ".$row->prenom;
+	}
+	else if(is_avis_classement($row->avis))
 	{
 		$result .= '<B>Classement, nom et unité :</B><br/>';
+		$result .= '<B>'.classement_from_avis($row->avis)."</B><br/>";
+		$result .= $row->nom." ".$row->prenom."<br/>";
+		$result .= $bloc_unite;
 	}
-	if(is_equivalence_type($row->type))
+	else if(is_equivalence_type($row->type))
 	{
 		$result .= $row->nom." ".$row->prenom."<br/>";
 	}
@@ -223,12 +232,6 @@ function EnteteDroit($row, $units)
 		$result = '<B>Nom, prénom et affectation du chercheur :</B><br/>';
 		$result .= $row->nom." ".$row->prenom."<br/>";
 		$result .= $bloc_unite;
-	}
-	else if(is_rapport_concours($row))
-	{
-		$result .= $avis_candidature_short[$row->avis];
-		$result .= "<br/>";
-		$result .= $row->nom." ".$row->prenom;
 	}
 	else if($row->type == REPORT_ECOLE)
 	{
@@ -370,7 +373,7 @@ function createXMLReportElem($row, DOMDocument $doc, $keep_br = true)
 		}
 	}
 
-	if( is_classement($row->type))
+	if( is_concours($row->type))
 	{
 		global $concours_ouverts;
 		if(isset($concours_ouverts[$row->concours]))
