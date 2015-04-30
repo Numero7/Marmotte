@@ -446,7 +446,17 @@ function createXMLReportElem($row, DOMDocument $doc, $keep_br = true)
 
 
 	//On ajoute le nickname de la session
-	appendLeaf("session", $sessions[$row->id_session], $doc, $rapportElem);
+	if(isset($row->id_session))
+	{
+		appendLeaf("session", $sessions[$row->id_session], $doc, $rapportElem);
+		$row->session = $sessions[$row->id_session];
+	}
+	else
+	{
+		appendLeaf("session", "Session non spécifiée", $doc, $rapportElem);
+		$row->session = "Session non spécifiée";
+	}
+		
 
 	//On ajoute le numero de la section
 	appendLeaf("section_nb", currentSection(), $doc, $rapportElem);
@@ -457,7 +467,6 @@ function createXMLReportElem($row, DOMDocument $doc, $keep_br = true)
 	//On ajoute le nom et le tire du signataire
 	appendLeaf("signataire_titre", get_config("president_titre"), $doc, $rapportElem);
 
-	$row->session = $sessions[$row->id_session];
 
 	$ltype = isset($id_rapport_to_label[$row->type]) ? $id_rapport_to_label[$row->type] :"";
 	//On ajoute le type du rapport et le nom de fichier
