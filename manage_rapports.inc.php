@@ -444,7 +444,8 @@ function addReport($report)
 		if(!isset($report->$key))
 		$report->$key = $value;
 
-	$report->section = $_SESSION['filter_section'];
+	if(!isSuperUser())
+		$report->section = $_SESSION['filter_section'];
 
 	return addReportToDatabase($report);
 };
@@ -1239,6 +1240,39 @@ function get_current_report_types()
 	{
 		global $typesRapportsSession;
 		return $typesRapportsSession;
+	}
+}
+
+function inject_new_reports_from_dsi()
+{
+	$sql = "SELECT * FROM dsi.evaluationdoc WHERE numsirhus NOT IN SELECT numsirhus FROM dsi.evaluationdoc;";
+
+	$result = sql_request($sql);
+	$sessions = get_all_sessions();
+	
+	$added = array();
+	while($row = mysqli_fetch_object($result))
+	{
+		if(!in_array($row->numsirhus,$added))
+		{
+		$added[] = $row->numsirhus;
+			$session = $row->lib_session.$row->annee;
+		$section = $row->code_section;
+		if( !isset($sessions[$section]) || !in_array($session, $sessions[$section]))
+		{
+			createSession($row->lib_session, $row->annee, $section);
+			$sessions[$section][] = $session;
+		}
+		$report = array(
+				"section" => $section,
+				"nom" => $nom,
+				"prenom" => $prenom,
+				"rapporteur" => $row->rap1,
+				"rapporteur2" => $row->rap2,
+				"rapporteur3" => $row->rap3,
+				"type" => $type_eval
+				);
+//		addReport($report);
 	}
 }
 

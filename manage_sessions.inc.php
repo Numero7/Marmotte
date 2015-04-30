@@ -113,8 +113,6 @@ echo $row->id."<br/>";
 	return	$finalResult;
 } ;
 
-
-
 function createSession($name,$annee, $section ="")
 {
 	if($section == "") $section = $_SESSION['filter_section'];
@@ -169,4 +167,13 @@ function deleteSession($id, $supprimerdossiers)
 	}
 }
 
+function get_all_sessions()
+{
+	$sql = "SELECT * FROM sessions WHERE 1;";
+	$result = sql_request($sql);
+	$sessions = array();
+	while($row = mysqli_fetch_object($result))
+		$sessions[$row->section][] = $id;
+	return $sessions;
+}
 ?>
