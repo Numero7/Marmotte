@@ -410,38 +410,42 @@ function createXMLReportElem($row, DOMDocument $doc, $keep_br = true)
 		appendLeaf("date",  utf8_encode(strftime("%#d %B %Y", time())), $doc, $rapportElem);
 
 	//On ajoute les cases à choix multiple, si nécessaires
-	global $labelCheckboxes;
-	global $evalCheckboxes;
-	
-	$boxes = is_eval_type($row->type) ? $evalCheckboxes : $labelCheckboxes;
-	global $typesRapportToAvis;
-	$checkBoxes = array();
-	if(isset($typesRapportToAvis[$row->type]))
+	//pour les classements, le classement figure dans l'en tête
+	if(!is_classement($row->type))
 	{
-		$aviss = $typesRapportToAvis[$row->type];
-		foreach($aviss as $avis => $label)
-		{
-			if(isset($boxes[$avis]))
-					$checkBoxes[$avis] = $boxes[$avis];
-		}
-	}
+		global $labelCheckboxes;
+		global $evalCheckboxes;
 
-	if(count($checkBoxes) > 0)
-	{
-		$leaf = $doc->createElement("checkboxes");
-		$checkBoxesTitle = isset($typesRapportsToCheckboxesTitles[$row->type]) ? $typesRapportsToCheckboxesTitles[$row->type] : "<B>Avis de la section</B>";
-		$leaf->setAttribute("titre", $checkBoxesTitle);
-		foreach($checkBoxes as $avis => $intitule)
+		$boxes = is_eval_type($row->type) ? $evalCheckboxes : $labelCheckboxes;
+		global $typesRapportToAvis;
+		$checkBoxes = array();
+		if(isset($typesRapportToAvis[$row->type]))
 		{
-			$subleaf = $doc->createElement("checkbox");
-			$subleaf->appendChild($doc->createCDATASection ($intitule));
-			if($avis == $row->avis)
-				$subleaf->setAttribute("mark", "checked");
-			else
-				$subleaf->setAttribute("mark", "unchecked");
-			$leaf->appendChild($subleaf);
+			$aviss = $typesRapportToAvis[$row->type];
+			foreach($aviss as $avis => $label)
+			{
+				if(isset($boxes[$avis]))
+					$checkBoxes[$avis] = $boxes[$avis];
+			}
 		}
-		$rapportElem->appendChild($leaf);
+
+		if(count($checkBoxes) > 0)
+		{
+			$leaf = $doc->createElement("checkboxes");
+			$checkBoxesTitle = isset($typesRapportsToCheckboxesTitles[$row->type]) ? $typesRapportsToCheckboxesTitles[$row->type] : "<B>Avis de la section</B>";
+			$leaf->setAttribute("titre", $checkBoxesTitle);
+			foreach($checkBoxes as $avis => $intitule)
+			{
+				$subleaf = $doc->createElement("checkbox");
+				$subleaf->appendChild($doc->createCDATASection ($intitule));
+				if($avis == $row->avis)
+					$subleaf->setAttribute("mark", "checked");
+				else
+					$subleaf->setAttribute("mark", "unchecked");
+				$leaf->appendChild($subleaf);
+			}
+			$rapportElem->appendChild($leaf);
+		}
 	}
 
 
@@ -456,7 +460,7 @@ function createXMLReportElem($row, DOMDocument $doc, $keep_br = true)
 		appendLeaf("session", "Session inconnue (".$row->id_session.")", $doc, $rapportElem);
 		$row->session = "Session inconnue (".$row->id_session.")";
 	}
-		
+
 
 	//On ajoute le numero de la section
 	appendLeaf("section_nb", currentSection(), $doc, $rapportElem);

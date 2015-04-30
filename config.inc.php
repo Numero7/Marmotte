@@ -969,7 +969,7 @@ $labelCheckboxes = array(
 		"A+" => "<B>A+</B>",
 		"A" => "<B>A</B>",
 		"B" => "<B>B</B>",
-		"C" => "<B>C</B>",
+		"C" => "<B>C</B>"
 );
 
 
