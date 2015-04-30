@@ -285,7 +285,7 @@ function filtersCriteriaToSQL($filters, $filter_values, $rapporteur_or = true)
 			else if(isset($fieldsTypes[$filter]) && $fieldsTypes[$filter] == "avis")
 			{
 				if($filter_values[$filter] == "classe")
-					$sql .= " AND (".reports_db.".$filter REGEXP \"^[0-9]\" OR ".reports_db.".$filter=\"classe\") ";
+					$sql .= " AND (".reports_db.".$filter REGEXP \"c^[0-9]\" OR ".reports_db.".$filter=\"classe\") ";
 				else if($filter_values[$filter] == "oral")
 					$sql .= " AND (".reports_db.".$filter=\"oral\" OR ".reports_db.".$filter=\"nonclasse\" OR ".reports_db.".$filter REGEXP \"^[0-9]\" )";
 				else if($filter_values[$filter] == "admisaconcourir")

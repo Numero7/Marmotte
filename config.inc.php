@@ -829,8 +829,6 @@ $typesRapportsToXSL = array(
 
 /******************************************************************** Définition des avis possibles pour chaque type de rapport *********************************************/
 
-/* Pour les promos*/
-$avis_classement = array(""=>"", "adiscuter"=>"à discuter", "non"=>"Non", "oui"=>"Oui");
 
 /* Pour les concours*/
 $avis_candidature_short =
@@ -846,12 +844,6 @@ array(
 		"nonconcur"=>"Non-admis à concourir"
 );
 
-$max_classement = 30;
-for($i = 1; $i <= $max_classement; $i++)
-{
-	$avis_classement["c".strval($i)] = "$i";
-	$avis_candidature_short["c".strval($i)] = "$i";
-}
 
 $avis_lettre = array(
 		""=>"",
@@ -875,6 +867,26 @@ define("avis_classe", 8);
 define("avis_ouinon", 9);
 define("avis_proposition", 10);
 define("avis_aucunadonner", 11);
+define("avis_oui", 72);
+define("avis_non", 73);
+define("avis_non_classe", 74);
+define("avis_adiscuter", 75);
+
+/* Pour les promos*/
+$avis_classement = array(""=>"", avis_adiscuter=>"à discuter", avis_non=>"Non", avis_oui=>"Oui");
+
+$max_classement = 30;
+for($i = 1; $i <= $max_classement; $i++)
+{
+	$avis_classement["c".strval($i)] = "Classé $i";
+	$avis_candidature_short["c".strval($i)] = "Classé $i";
+}
+foreach($avis_lettre as $avis => $lettre)
+{
+	$avis_classement[$avis] = $lettre;
+	$avis_candidature_short[$avis] = $lettre;
+}
+
 
 $tous_avis = array();
 	$sql = "SELECT * FROM dsi.reftypeavis WHERE 1;";
@@ -884,15 +896,15 @@ $tous_avis = array();
 		if($row->id == avis_classe)
 			$tous_avis[$row->id] = $avis_classement;
 		else if($row->id == avis_ouinon)
-			$tous_avis[$row->id] = array("oui" => "oui", "non" => "non");
+			$tous_avis[$row->id] = array(avis_oui => "oui", avis_non => "non");
 		else
 			$tous_avis[$row->id] = $row->label;
 	}
 foreach($avis_lettre as $avi => $label)
 	if(!isset($tous_avis[$avi])) $tous_avis[$avi] = $label;
-foreach($avis_candidature_short as $avis => $label)
+foreach($avis_candidature_short as $avi => $label)
 	if(!isset($tous_avis[$avi])) $tous_avis[$avi] = $label;
-foreach($avis_classement as $avis => $label)
+foreach($avis_classement as $avi => $label)
 	if(!isset($tous_avis[$avi])) $tous_avis[$avi] = $label;
 
 	
@@ -1340,7 +1352,9 @@ $icones_avis = array(
 		"A-" => "img/Icon-Yes.png",
 		"admisaconcourir" => "img/Icon-Yes.png",
 		"oral"=>"img/Icon-Yes.png",
-		"classe"=>"img/Icon-Yes.png",
+		avis_classe=>"img/Icon-Yes.png",
+		avis_oui=>"img/Icon-Yes.png",
+		
 
 		avis_reserve => "img/Icon-NoComment.png",
 		"B+" => "img/Icon-NoComment.png",
@@ -1353,11 +1367,15 @@ $icones_avis = array(
 		"nonauditionne"=>"img/Icon-No.png",
 		"nonclasse"=>"img/Icon-No.png",
 		"nonconcur"=>"img/Icon-No.png",
-
+		avis_alerte=>"img/Icon-No.png",
+		avis_non =>"img/Icon-No.png",
+		
 		avis_pas_davis => "img/Icon-Maybe.png",
 		"adiscuter" => "img/Icon-Maybe.png",
 		"" =>"img/Icon-Maybe.png",
 );
 
+for($i = 1; $i <= $max_classement; $i++)
+	$icones_avis["c".$i] = "img/Icon-Yes.png";
 
 ?>
