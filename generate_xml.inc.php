@@ -449,7 +449,7 @@ function createXMLReportElem($row, DOMDocument $doc, $keep_br = true)
 	if(isset($row->id_session))
 	{
 		appendLeaf("session", $sessions[$row->id_session], $doc, $rapportElem);
-		$row->session = $sessions[$row->id_session];
+		$row->session = isset($sessions[$row->id_session]) ? $sessions[$row->id_session] : "Session inconnue";
 	}
 	else
 	{
