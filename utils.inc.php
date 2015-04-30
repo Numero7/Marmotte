@@ -156,12 +156,13 @@ if (isset($_SERVER["SERVER_PORT"]) && $_SERVER["SERVER_PORT"] != "80") {
 //Returns the name of the file
 function filename_from_doc($doc)
 {
+  global $id_rapport_to_label;
 	$nom = str_replace( array("'"," "), array("","_") , mb_convert_case(replace_accents($doc->nom), MB_CASE_TITLE));
 	$prenom = mb_convert_case(replace_accents($doc->prenom), MB_CASE_TITLE);
-
+	$type = substr($id_rapport_to_label[$doc->type], 0, 10);
 	$sessions = sessionArrays();
 	$session = $sessions[$doc->id_session];
-	return filename_from_params($nom, $prenom, $doc->grade_rapport, $doc->unite, $doc->type, $session, $doc->avis, $doc->concours, $doc->sousjury, $doc->intitule);
+	return filename_from_params($nom, $prenom, $doc->grade_rapport, $doc->unite, $type, $session, $doc->avis, $doc->concours, $doc->sousjury, $doc->intitule);
 }
 
 function filename_from_params($nom, $prenom, $grade, $unite, $type, $session, $avis, $concours = "", $sousjury="", $intitule = "")

@@ -412,6 +412,7 @@ function createXMLReportElem($row, DOMDocument $doc, $keep_br = true)
 	//On ajoute les cases à choix multiple, si nécessaires
 	global $labelCheckboxes;
 	global $typesRapportToAvis;
+	$checkBoxes = array();
 	if(isset($typesRapportToAvis[$row->type]))
 	{
 		$boxes = $typesRapportToAvis[$row->type];

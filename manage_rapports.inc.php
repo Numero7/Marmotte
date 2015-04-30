@@ -9,6 +9,7 @@ require_once('manage_filters_and_sort.inc.php');
 
 function compute_title($row, $fieldId)
 {
+  global $id_rapport_to_label;
 	global $fieldsAll;
 
 	$title = "";
@@ -1138,6 +1139,22 @@ function migrate_to_eval_codes()
 {
 	if(isSuperUser())
 	{
+	  $mig = array(
+		       "Suivi-PostEvalua" => 6009,
+		       "Renouvellement-G"=> 8025,
+		       "Reexamen"=>6008,"EvalMiVague"=>6005,
+		       "Delegation"=>7778, "DEChercheur"=>7779,
+		       "Creation-GDR"=>8015,"Changement d'aff"=>7012,
+		       "Ch-section"=>"6515","Candidature"=>7777
+		       );
+
+	  foreach($mig as $pref => $id)
+	    {
+		$sql = "UPDATE `".reports_db."` SET `type`=\"".$id."\" WHERE `type`=\"".$pref."\";";
+		sql_request($sql);
+	    }
+
+
 		echo "Migrating to eval codes <br/>";
 		$sql = "UPDATE `".reports_db."` SET `type`=\"6515\" WHERE `type`=\"Changement-section\";";
 		sql_request($sql);
@@ -1182,12 +1199,12 @@ function migrate_to_eval_codes()
 			$sql = "UPDATE `".reports_db."` SET `type`=\"".$row->id."\" WHERE `type`=\"".$row->code_marmotte."\";";
 			sql_request($sql);
 		}
-				
+
 		global $id_rapport_to_label;
 		foreach($id_rapport_to_label as $id => $data)
 		{
 			if($id != 9999)
-				$sql = "UPDATE `".reports_db."` SET `intitule`=\"".$data["label"]."\" WHERE `type`=\"".$id."\";";
+				$sql = "UPDATE `".reports_db."` SET `intitule`=\"".$data."\" WHERE `type`=\"".$id."\";";
 			else 
 				$sql = "UPDATE `".reports_db."` SET `intitule`=`ecole` WHERE `type`=\"9999\";";
 			sql_request($sql);	
