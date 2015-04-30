@@ -446,15 +446,15 @@ function createXMLReportElem($row, DOMDocument $doc, $keep_br = true)
 
 
 	//On ajoute le nickname de la session
-	if(isset($row->id_session))
+	if(isset($sessions[$row->id_session]))
 	{
 		appendLeaf("session", $sessions[$row->id_session], $doc, $rapportElem);
-		$row->session = isset($sessions[$row->id_session]) ? $sessions[$row->id_session] : "Session inconnue";
+		$row->session = $sessions[$row->id_session];
 	}
 	else
 	{
-		appendLeaf("session", "Session non spécifiée", $doc, $rapportElem);
-		$row->session = "Session non spécifiée";
+		appendLeaf("session", "Session inconnue (".$row->id_session.")", $doc, $rapportElem);
+		$row->session = "Session inconnue (".$row->id_session.")";
 	}
 		
 

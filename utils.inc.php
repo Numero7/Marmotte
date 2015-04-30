@@ -161,7 +161,7 @@ function filename_from_doc($doc)
 	$prenom = mb_convert_case(replace_accents($doc->prenom), MB_CASE_TITLE);
 	$type = substr($id_rapport_to_label[$doc->type], 0, 10);
 	$sessions = sessionArrays();
-	$session = isset($sessions[$doc->id_session]) ? $sessions[$doc->id_session] : "Session non spécifiée";
+	$session = isset($sessions[$doc->id_session]) ? $sessions[$doc->id_session] : ("Session inconnue (".$doc->id_session.")");
 	return filename_from_params($nom, $prenom, $doc->grade_rapport, $doc->unite, $type, $session, $doc->avis, $doc->concours, $doc->sousjury, $doc->intitule);
 }
 
