@@ -411,18 +411,18 @@ function createXMLReportElem($row, DOMDocument $doc, $keep_br = true)
 
 	//On ajoute les cases à choix multiple, si nécessaires
 	global $labelCheckboxes;
+	global $evalCheckboxes;
+	
+	$boxes = is_eval_type($row->type) ? $evalCheckboxes : $labelCheckboxes;
 	global $typesRapportToAvis;
 	$checkBoxes = array();
 	if(isset($typesRapportToAvis[$row->type]))
 	{
-		$boxes = $typesRapportToAvis[$row->type];
-		foreach($boxes as $avis => $label)
+		$aviss = $typesRapportToAvis[$row->type];
+		foreach($aviss as $avis => $label)
 		{
-			if(isset($labelCheckboxes[$avis]))
-			{
-				if(isset($labelCheckboxes[$avis]))
-					$checkBoxes[$avis] = $labelCheckboxes[$avis];
-			}
+			if(isset($boxes[$avis]))
+					$checkBoxes[$avis] = $boxes[$avis];
 		}
 	}
 
@@ -435,7 +435,10 @@ function createXMLReportElem($row, DOMDocument $doc, $keep_br = true)
 		{
 			$subleaf = $doc->createElement("checkbox");
 			$subleaf->appendChild($doc->createCDATASection ($intitule));
-			$subleaf->setAttribute("mark", ($avis == $row->avis) ? "checked" : "unchecked");
+			if($avis == $row->avis)
+				$subleaf->setAttribute("mark", "checked");
+			else
+				$subleaf->setAttribute("mark", "unchecked");
 			$leaf->appendChild($subleaf);
 		}
 		$rapportElem->appendChild($leaf);

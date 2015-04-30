@@ -611,6 +611,9 @@ define("REPORT_CLASS_DELEGATION", "d");
 define("REPORT_CANDIDATURE", 7777);
 define("REPORT_DELEGATION", 7778);
 define("REPORT_ECOLE", 8515);
+define("REPORT_EVAL", 6005);
+define("REPORT_EVAL_RE", 6008);
+
 //reltypevalavis
 $sql = "SELECT * FROM ".dsidbname.".reftypeval  WHERE 1 ORDER BY label ASC;";
 $result = sql_request($sql);
@@ -903,20 +906,22 @@ $typesRapportToAvis = array(
 $type_avis_classement = array();
 foreach($id_rapport_to_label as $type => $data)
  {
-   $typesRapportToAvis[$type][] = "";
+   $typesRapportToAvis[$type][0] = "";
 	$sql = "select idavis from dsi.reltypevalavis where ideval = '$type'";
 	$result = sql_request($sql);
 	while($row = mysqli_fetch_object($result))
 	{
 		if(is_array($tous_avis[$row->idavis]))
-			$typesRapportToAvis[$type]= $tous_avis[$row->idavis];
+		{
+			foreach($tous_avis[$row->idavis] as $id => $avis)
+			$typesRapportToAvis[$type][$id] = $avis;
+		}
 		else
-			$typesRapportToAvis[$type][]= $tous_avis[$row->idavis];
+			$typesRapportToAvis[$type][$row->idavis]= $tous_avis[$row->idavis];
 		if($row->idavis == avis_classe)
 			$type_avis_classement[] = $type;
 	}
 }
-
 
 /************************* Mise en page *******************************/
 
@@ -940,7 +945,7 @@ $evalCheckboxes = array(
 		avis_reserve => "<B>Avis réservé</B>
 		<small> (la section a identifié dans l’activité du chercheur un ou plusieurs éléments qui nécessitent un suivi spécifique)</small>",
 		avis_alerte => "<B>Avis d'alerte</B>
-		<small> (la section exprime des inquiétudes sur l’évolution de l’activité du chercheur))</small>");
+		<small> (la section exprime des inquiétudes sur l’évolution de l’activité du chercheur)</small>");
 
 /* Pour les renouvellements de gdr ou création d'unités*/
 $labelCheckboxes = array(
@@ -957,12 +962,12 @@ $labelCheckboxes = array(
 
 
 $typesRapportsToCheckboxesTitles = array(
-		6005 => '<B>EVALUATION A VAGUE DE CHERCHEUR<br/>Avis de la section sur l’activité du chercheur</B>',
-		6008 => '<B>EVALUATION A MI-VAGUE DE CHERCHEUR<br/>Avis de la section sur l’activité du chercheur</B>',
+		REPORT_EVAL => '<B>EVALUATION A VAGUE OU MI-VAGUE DE CHERCHEUR<br/>Avis de la section sur l’activité du chercheur</B>',
+		REPORT_EVAL_RE => '<B>EVALUATION DE CHERCHEUR SUITE A REEXAMEN<br/>Avis de la section sur l’activité du chercheur</B>',
 		8020 => '<B>AVIS DE PERTINENCE DU SOUTIEN DU CNRS AUX UNITES</B>',
 		8021 => '<B>AVIS DE PERTINENCE DU SOUTIEN DU CNRS AUX UNITES</B>',
 		REPORT_DELEGATION => '<B>AVIS DE LA SECTION</B>',
-		8515 => '<B>AVIS SUR L\'ECOLE</B>'
+		REPORT_ECOLE => '<B>AVIS SUR L\'ECOLE</B>'
 );
 
 /* Definition des formaules standards à la fin de certains rapports*/

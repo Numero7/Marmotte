@@ -9,7 +9,7 @@ require_once('manage_filters_and_sort.inc.php');
 
 function compute_title($row, $fieldId)
 {
-  global $id_rapport_to_label;
+	global $id_rapport_to_label;
 	global $fieldsAll;
 
 	$title = "";
@@ -458,13 +458,13 @@ function addReportFromRequest($id_origine, $request)
 		try
 		{
 			$report = getReport($id_origine);
-			global $typesRapportsAll;	
+			global $typesRapportsAll;
 			if(
 					isset($report->type)
-					 && isset($request["fieldtype"])
+					&& isset($request["fieldtype"])
 					&& isset($typesRapportsAll[$request["fieldtype"]])
-					 && ($report->type != $request["fieldtype"])
-					)
+					&& ($report->type != $request["fieldtype"])
+			)
 				$request["fieldintitule"] = $typesRapportsAll[$request["fieldtype"]];
 		}
 		catch (Exception $e)
@@ -477,10 +477,10 @@ function addReportFromRequest($id_origine, $request)
 		if(!isReportCreatable())
 			throw new Exception("Le compte ".getLogin()." n'a pas la permission de créer un rapport, veuillez contacter le bureau");
 	}
-	
+
 	$report = createReportFromRequest($id_origine, $request);
 
-	
+
 	$id_nouveau = addReportToDatabase($report,false);
 
 	if(is_rapport_chercheur($report) || is_rapport_concours($report))
@@ -536,11 +536,11 @@ function normalizeReport($report)
 	if(!isset($report->statut))
 		$report->statut = "doubleaveugle";
 
-	
+
 	if(isset($report->type))
 	{
 		if(!isset($report->intitule))
-		$report->intitule = (isset($id_rapport_to_label[$report->type])) ? $id_rapport_to_label[$report->type] : $report->type;
+			$report->intitule = (isset($id_rapport_to_label[$report->type])) ? $id_rapport_to_label[$report->type] : $report->type;
 
 		if(isset($report_prototypes[$report->type]))
 		{
@@ -622,7 +622,7 @@ function addReportToDatabase($report,$normalize = true)
 								else
 								{
 									/*
-									echo "<h2>Cannot merge with parallel edition of field</h2>";
+									 echo "<h2>Cannot merge with parallel edition of field</h2>";
 									echo "<h2>Parallel edition:</h2>".$current_report->$field;
 									echo "<h2>Your edition:</h2>".$report->$field;
 									echo "<h2>Erasing parallel edition...</h2>";
@@ -1139,20 +1139,20 @@ function migrate_to_eval_codes()
 {
 	if(isSuperUser())
 	{
-	  $mig = array(
-		       "Suivi-PostEvalua" => 6009,
-		       "Renouvellement-G"=> 8025,
-		       "Reexamen"=>6008,"EvalMiVague"=>6005,
-		       "Delegation"=>7778, "DEChercheur"=>7779,
-		       "Creation-GDR"=>8015,"Changement d'aff"=>7012,
-		       "Ch-section"=>"6515","Candidature"=>7777
-		       );
+		$mig = array(
+				"Suivi-PostEvalua" => 6009,
+				"Renouvellement-G"=> 8025,
+				"Reexamen"=>6008,"EvalMiVague"=>6005,
+				"Delegation"=>7778, "DEChercheur"=>7779,
+				"Creation-GDR"=>8015,"Changement d'aff"=>7012,
+				"Ch-section"=>"6515","Candidature"=>7777
+		);
 
-	  foreach($mig as $pref => $id)
-	    {
-		$sql = "UPDATE `".reports_db."` SET `type`=\"".$id."\" WHERE `type`=\"".$pref."\";";
-		sql_request($sql);
-	    }
+		foreach($mig as $pref => $id)
+		{
+			$sql = "UPDATE `".reports_db."` SET `type`=\"".$id."\" WHERE `type`=\"".$pref."\";";
+			sql_request($sql);
+		}
 
 
 		echo "Migrating to eval codes <br/>";
@@ -1189,9 +1189,9 @@ function migrate_to_eval_codes()
 		$sql = "UPDATE `".reports_db."` SET `type`= \"7006\" WHERE `type`=\"MedailleArgent\";";
 		sql_request($sql);
 		$sql = "UPDATE `".reports_db."` SET `type`= \"7005\" WHERE `type`=\"MedailleBronze\";";
-		sql_request($sql);		
+		sql_request($sql);
 
-		
+
 		$sql = "SELECT * FROM report_types WHERE 1;";
 		$result = sql_request($sql);
 		while ($row = mysqli_fetch_object($result))
@@ -1205,11 +1205,11 @@ function migrate_to_eval_codes()
 		{
 			if($id != 9999)
 				$sql = "UPDATE `".reports_db."` SET `intitule`=\"".$data."\" WHERE `type`=\"".$id."\";";
-			else 
+			else
 				$sql = "UPDATE `".reports_db."` SET `intitule`=`ecole` WHERE `type`=\"9999\";";
-			sql_request($sql);	
+			sql_request($sql);
 		}
-		
+
 	}
 
 
@@ -1221,12 +1221,12 @@ function is_rapport_chercheur($row)
 	global $report_types_to_class;
 	return (
 			isset($row->type)
-			 && isset($report_types_to_class[$row->type])
-			 && (
-			 		$report_types_to_class[$row->type] == REPORT_CLASS_CHERCHEUR
-			 		|| $report_types_to_class[$row->type] == REPORT_CLASS_DELEGATION
-			 		)
-			);
+			&& isset($report_types_to_class[$row->type])
+			&& (
+					$report_types_to_class[$row->type] == REPORT_CLASS_CHERCHEUR
+					|| $report_types_to_class[$row->type] == REPORT_CLASS_DELEGATION
+			)
+	);
 }
 
 function is_rapport_concours($row)
@@ -1239,6 +1239,11 @@ function is_rapport_unite($row)
 {
 	global $report_types_to_class;
 	return (isset($row->type) && isset($report_types_to_class[$row->type]) && ($report_types_to_class[$row->type] == REPORT_CLASS_UNIT));
+}
+
+function is_eval_type($type)
+{
+	return ($type == REPORT_EVAL) || ($type == REPORT_EVAL_RE);
 }
 
 function get_current_report_types()
@@ -1266,31 +1271,31 @@ function inject_new_reports_from_dsi()
 
 	$result = sql_request($sql);
 	$sessions = get_all_sessions();
-	
+
 	$added = array();
 	while($row = mysqli_fetch_object($result))
 	{
 		if(!in_array($row->numsirhus,$added))
 		{
-		$added[] = $row->numsirhus;
+			$added[] = $row->numsirhus;
 			$session = $row->lib_session.$row->annee;
-		$section = $row->code_section;
-		if( !isset($sessions[$section]) || !in_array($session, $sessions[$section]))
-		{
-			createSession($row->lib_session, $row->annee, $section);
-			$sessions[$section][] = $session;
+			$section = $row->code_section;
+			if( !isset($sessions[$section]) || !in_array($session, $sessions[$section]))
+			{
+				createSession($row->lib_session, $row->annee, $section);
+				$sessions[$section][] = $session;
+			}
+			$report = array(
+					"section" => $section,
+					"nom" => $nom,
+					"prenom" => $prenom,
+					"rapporteur" => $row->rap1,
+					"rapporteur2" => $row->rap2,
+					"rapporteur3" => $row->rap3,
+					"type" => $type_eval
+			);
+			//		addReport($report);
 		}
-		$report = array(
-				"section" => $section,
-				"nom" => $nom,
-				"prenom" => $prenom,
-				"rapporteur" => $row->rap1,
-				"rapporteur2" => $row->rap2,
-				"rapporteur3" => $row->rap3,
-				"type" => $type_eval
-				);
-//		addReport($report);
 	}
 }
-
 ?>
