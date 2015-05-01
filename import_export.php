@@ -32,9 +32,47 @@ function displaySecretaryImport()
 	if(isSecretaire())
 {
 	?>
-		<h2>Import d'une liste de rapports</h2>
-		<p>Le formulaire ci-dessous permet d'importer la liste des rapports fournis par le SGCN avant un bureau.<br/>
-		Demandez à votre ACN une extraction au format csv.
+
+<h2>Ajout d'un nouveau rapport</h2>
+<form enctype="multipart/form-data" action="index.php" method="post">
+<table>
+<tr><td>
+<input	type="hidden" name="id_origine" value="0" />
+<input	type="hidden" name="action" value="new" />
+</td></tr>
+<tr><td>Choix du type de rapport</td><td>
+<select name="type" type="hidden" >
+<?php
+$types = array();
+if(is_current_session_concours())
+{
+global $typesRapportsConcours;
+$types = $typesRapportsConcours;
+}
+else if(is_current_session_delegation())
+{
+$types = array('Delegation'=>'Délégation');
+}
+else
+{
+global $typesRapportsChercheurs;
+global $typesRapportsUnites;
+$types = array_merge($typesRapportsChercheurs, $typesRapportsUnites);
+}
+foreach($types as $type => $name)
+echo '<option value='.$type.'>'.$name.'</option><br/>'."\n";
+?>
+</select>
+</td></tr>
+<tr><td><input type="submit" value="Créer rapport" /></td></tr>
+
+</table>
+
+</form>
+<hr />
+
+		<h2>[Réservé SGCN] Import d'une liste de rapports</h2>
+		<p>Cette fonction maintenant réservée au SGCN disparaîtra prochainement de Marmotte.
 		</p>
 <form enctype="multipart/form-data" action="index.php" method="post">
 <table>
@@ -82,53 +120,6 @@ echo '<option value='.$type.'>'.$name.'</option><br/>'."\n";
 	
 </form>
 
-<hr />
-
-<h2>Ajout manuel d'un rapport</h2>
-<p>Le formulaire ci-dessous permet de créer un nouveau rapport.
-</p>
-<form enctype="multipart/form-data" action="index.php" method="post">
-<table>
-<tr><td>
-<input	type="hidden" name="id_origine" value="0" />
-<input	type="hidden" name="action" value="new" />
-</td></tr>
-<tr><td>Choix du type de rapport</td><td>
-<select name="type" type="hidden" >
-<?php
-$types = array();
-if(is_current_session_concours())
-{
-global $typesRapportsConcours;
-$types = $typesRapportsConcours;
-}
-else if(is_current_session_delegation())
-{
-$types = array('Delegation'=>'Délégation');
-}
-else
-{
-global $typesRapportsChercheurs;
-global $typesRapportsUnites;
-$types = array_merge($typesRapportsChercheurs, $typesRapportsUnites);
-}
-foreach($types as $type => $name)
-echo '<option value='.$type.'>'.$name.'</option><br/>'."\n";
-?>
-</select>
-</td></tr>
-<tr><td><input type="submit" value="Créer rapport" /></td></tr>
-
-</table>
-
-</form>
-<!--
-<p>
-Vous pouvez supprimer les colonnes inutiles mais il est indispensable de
-laisser les intitulés des colonnes restantes tels quels.<br />
-</p>
--->
-<hr />
 
 <?php
 }
