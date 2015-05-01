@@ -55,7 +55,12 @@ function change_current_section($section)
 	unset($_SESSION['all_units']);
 	unset($_SESSION["all_users"]);
 	unset($_SESSION["rows_id"]);
+	unset($_SESSION['all_sessions']);
+	
+	update_permissions(getLogin(), $section);
+
 	$_SESSION['filter_id_session'] = get_config("current_session");
+	$_SESSION['current_session'] = get_config("current_session");
 }
 
 function get_bureau_stats()
@@ -127,8 +132,6 @@ function get_bureau_stats()
 }
 
 /* Caching users list for performance */
-
-
 function permissionToRole($perm)
 {
 	switch($perm)
@@ -140,7 +143,6 @@ function permissionToRole($perm)
 		default: return "";
 	}
 }
-
 
 function listUsers($forcenew = false)
 {
@@ -253,9 +255,6 @@ function genere_motdepasse($len=10)
 
 function isSuperUser($login = "")
 {
-	if(isset($_SESSION["lose_secretary_status"]))
-		return false;
-
 	if($login == "")
 		$login = getLogin();
 	return getUserPermissionLevel($login) >= NIVEAU_PERMISSION_SUPER_UTILISATEUR;
@@ -412,7 +411,6 @@ function existsUser($login, $all_sections = false)
 	}
 }
 
-
 function createUser(
 		$login,$pwd,$desc,
 		$email,
@@ -541,7 +539,6 @@ function deleteUser($login)
 	}
 	unset($_SESSION['all_users']);
 }
-
 
 function deleteAllUsers()
 {

@@ -139,21 +139,7 @@ try
 			if(isset($_REQUEST['filter_section']))
 				change_current_section($_REQUEST['filter_section']);
 			
-			$id = current_session_id();
-			
-			if($id == "" && !isSuperUser())
-			{
-				echo "<p>Aucune session courante n'est configurée, veuillez créer une session via le menu Admin/Sessions<br/>";
-			}
-			else
-			{
-				if(!check_current_session_exists() && !isSuperUser() && isSecretaire())
-				{
-					echo "<p>La session courante intitulée '".$id."' n'existe pas dans la base de données<br/>";
-					echo "<p>Veuillez créer une session intitulée '".$id."' ou changer de session courante</p>";
-				}
-			}
-					include("content.inc.php");
+				include("content.inc.php");
 			}
 			catch(Exception $exc)
 			{

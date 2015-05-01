@@ -9,6 +9,19 @@ require_once('manage_filters_and_sort.inc.php');
 require_once('manage_concours.inc.php');
 require_once('export.inc.php');
 
+$id = current_session_id();
+if($id == "" && !isSuperUser())
+{
+	echo "<p>Aucune session courante n'est configurée, veuillez demander au secrétaire de créer une session via le menu Admin/Sessions<br/>";
+	die(0);
+}
+if(!check_current_session_exists() && !isSuperUser())
+{
+	echo "<p>La session courante intitulée '".$id."' n'existe pas dans la base de données<br/>";
+	echo "<p>Veuillez créer une session intitulée '".$id."' ou changer de session courante</p>";
+	die(0);
+}
+
 ?>
 
 <script type="text/javascript">
@@ -129,13 +142,6 @@ function alertText($text)
 ?>
 
 <div class="large">
-
-	<!-- 
-	<div class="header">
-		<h2><span>Comité National de la Recherche Scientifique</span></h2>
-		<h1>Interface de saisie des prérapports</h1>
-	</div>
- -->
 	<div class="content">
 
 

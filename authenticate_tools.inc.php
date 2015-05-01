@@ -93,7 +93,6 @@ function removeCredentials()
 	unset($_SESSION["config"]);
 	unset($_SESSION["all_users"]);
 	unset($_SESSION["rows_id"]);
-	unset($_SESSION["lose_secretary_status"]);
 	unset($_SESSION["permission_mask"]);
 	unset($_SESSION['REMOTE_USER']);
 	unset($_SESSION['pmsp_client_random']);
@@ -127,9 +126,55 @@ function roleToPermission($role)
 	}
 }
 
+function update_permissions($login, $section, $user = NULL)
+{
+	if($user == NULL)
+	{
+		$result  = get_user_object($login);
+		$user = mysqli_fetch_object($result);
+		if(!$user) throw new Exception("Unknown user");
+	}
+	$row = $user;
+	$last = $section;
+	if ($last == $row->section_code)
+		$_SESSION['permission'] = roleToPermission($row->section_role_code);
+	else if ($last == $row->CID_code)
+		$_SESSION['permission'] = roleToPermission($row->CID_role_code);
+	else
+		$_SESSION['permission'] = $row->permissions;
+	
+	if ($login == "admin")
+		$_SESSION["permission_mask"] = NIVEAU_PERMISSION_SUPER_UTILISATEUR;
+	else if($row->permissions < NIVEAU_PERMISSION_SUPER_UTILISATEUR)
+		$_SESSION["permission_mask"] = NIVEAU_PERMISSION_BASE;
+}
+
+function get_last_user_section($user)
+{
+	$row = $user;
+	$last  = $row->last_section_selected;
+	$sections1 = explode(";", $row->sections);
+	if($row->section_code != "")
+		$sections1[] = $row->section_code;
+	if($row->CID_code != "")
+		$sections1[] = $row->CID_code;
+	
+	$sections = array();
+	foreach ($sections1 as $section)
+		if(is_numeric($section))
+		$sections[] = $section;
+	
+	if(count($sections)  === 0)
+		throw new Exception("No section");
+	
+	if( ($row->permissions < NIVEAU_PERMISSION_SUPER_UTILISATEUR) && array_search($last,$sections) === false)
+		$last = $sections[0];
+	$_SESSION['filter_section'] = $last;
+	return $last;
+}
+
 function authenticate()
 {
-
 	if (isset($_SESSION['login']) and isset($_SESSION['pass']))
 	{
 		$login  = $_SESSION['login'];
@@ -141,6 +186,7 @@ function authenticate()
 			if(!$result)
 				return false;
 		}
+		//Whether we should update permissions
 		if(!isset($_SESSION['permission']))
 		{
 			global $dbh;
@@ -148,40 +194,19 @@ function authenticate()
 			$result = mysqli_query($dbh, $sql);
 			if ($row = mysqli_fetch_object($result))
 			{
-				
 				$last  = $row->last_section_selected;
-				$sections1 = explode(";",$row->sections);
-				if($row->section_code != "")
-					$sections1[] = $row->section_code;
-				if($row->CID_code != "")
-					$sections1[] = $row->CID_code;
-				
-				$sections = array();
-				foreach ($sections1 as $section)
-					if(is_numeric($section))
-					$sections[] = $section;
-
-				if((count($sections)  === 0)&& $row->permissions < NIVEAU_PERMISSION_SUPER_UTILISATEUR )
+				try
 				{
-					removeCredentials();
-					throw new Exception("Votre authentification est correcte mais le login '".$login."' n'est actuellement associ\351 \340 aucune section ou CID dans Marmotte.");
-					return false;
+					$last = get_last_user_section($row);
 				}
-				if( ($row->permissions < NIVEAU_PERMISSION_SUPER_UTILISATEUR) && array_search($last,$sections) === false)
-					$last = $sections[0];
-				$_SESSION['filter_section'] = $last;
-				
-				if ($last == $row->section_code)
-					$_SESSION['permission'] = roleToPermission($row->section_role_code);
-				else if ($last == $row->CID_code)
-					$_SESSION['permission'] = roleToPermission($row->CID_role_code);
-				else
-					$_SESSION['permission'] = $row->permissions;
-					
-				if ($login == "admin")
-					$_SESSION["permission_mask"] = NIVEAU_PERMISSION_SUPER_UTILISATEUR;
-				else if($row->permissions < NIVEAU_PERMISSION_SUPER_UTILISATEUR)
-					$_SESSION["permission_mask"] = 0;
+				catch(Exception $e)
+				{
+						removeCredentials();
+						throw new Exception("Votre authentification est correcte mais le login '".$login."' n'est actuellement associé à aucune section ou CID dans Marmotte.");
+						return false;
+				}
+				update_permissions($login, $last, $row);
+				return true;
 			}
 			else
 				return false;

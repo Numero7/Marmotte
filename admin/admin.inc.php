@@ -76,9 +76,7 @@ include 'sessions_manager.php';
 <hr />
 <?php 
 }
-?>
 
-<?php 
 if($admin_users)
 	include "admin_users.inc.php";
 
