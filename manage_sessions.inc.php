@@ -35,9 +35,9 @@ function init_filter_session()
 					set_config("current_session", $row->id);
 					$id = get_config("current_session");
 				}
-				else
-					rr();
 			}
+			$row = mysqli_fetch_object($result);
+			$result = sql_request($sql);
 			$id = $row->id;
 		}
 		$_SESSION['filter_id_session'] = $id;
