@@ -13,13 +13,11 @@ $id = current_session_id();
 if($id == "" && !isSuperUser())
 {
 	echo "<p>Aucune session courante n'est configurée, veuillez demander au secrétaire de créer une session via le menu Admin/Sessions<br/>";
-	die(0);
 }
 if(!check_current_session_exists() && !isSuperUser())
 {
 	echo "<p>La session courante intitulée '".$id."' n'existe pas dans la base de données<br/>";
 	echo "<p>Veuillez créer une session intitulée '".$id."' ou changer de session courante</p>";
-	die(0);
 }
 
 ?>
