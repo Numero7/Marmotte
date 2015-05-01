@@ -38,8 +38,14 @@ if(isSecretaire())
 	}
 	if(isSecretaire() && !isSuperUser())
 	{
+ if( is_current_session_concours() )
+{
 		?>
 	<li><a href="index.php?action=admin&amp;admin_concours=">Concours</a></li>
+<?php
+}
+?>
+
 	<li><a href="index.php?action=admin&amp;admin_rubriques=">Rubriques</a>
 	</li>
 	<li><a href="index.php?action=admin&amp;admin_keywords=">Mots-clés</a>
