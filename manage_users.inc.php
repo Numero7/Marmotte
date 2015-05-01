@@ -56,11 +56,9 @@ function change_current_section($section)
 	unset($_SESSION["all_users"]);
 	unset($_SESSION["rows_id"]);
 	unset($_SESSION['all_sessions']);
+	unset($_SESSION['filter_id_session']);
 	
 	update_permissions(getLogin(), $section);
-
-	$_SESSION['filter_id_session'] = get_config("current_session");
-	$_SESSION['current_session'] = get_config("current_session");
 }
 
 function get_bureau_stats()

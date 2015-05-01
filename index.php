@@ -92,42 +92,6 @@ try
 		}
 		else
 		{
-			require_once("config_tools.inc.php");
-			if(!isset($_SESSION['filter_id_session']))
-			{
-				$ok = $_SESSION['filter_section'];
-				$id = get_config("current_session");
-				$sql = "SELECT * FROM ".sessions_db." WHERE `id`='".$id."' AND `section`='". real_escape_string($ok)."' ORDER BY date DESC;";
-				$result = sql_request($sql);
-				if(mysqli_num_rows($result) == 0)
-				{
-					$sql = "SELECT * FROM ".sessions_db." WHERE `section`='". real_escape_string($ok)."' ORDER BY date DESC;";
-					$result = sql_request($sql);
-					if(mysqli_num_rows($result) == 0)
-					{
-						$sql = "SELECT * FROM ".sessions_db." WHERE `section`='0' ORDER BY date DESC;";
-						$result = sql_request($sql);
-						if(mysqli_num_rows($result) == 0)
-						{
-							createSession("Printemps", "2015", 0);
-							$result = sql_request($sql);
-						}
-						if(	$row = mysqli_fetch_object($result))
-						{
-							createSession($row->nom, date('Y', strtotime($row->date)), $ok);
-							$sql = "SELECT * FROM ".sessions_db." WHERE `section`='". real_escape_string($ok)."' ORDER BY date DESC;";
-							$result = sql_request($sql);
-							$row = mysqli_fetch_object($result);
-							set_config("current_session", $row->id);
-							$id = get_config("current_session");
-						}
-						else
-							rr();
-					}
-					$id = $row->id;
-				}
-				$_SESSION['filter_id_session'] = $id;
-			}
 				
 				
 			require_once("utils.inc.php");
@@ -169,7 +133,9 @@ try
 				/* should not be here but ... */
 				if(isset($_REQUEST['filter_section']))
 					change_current_section($_REQUEST['filter_section']);
-					
+				
+				init_filter_session();
+				
 				include("content.inc.php");
 			}
 			catch(Exception $exc)
