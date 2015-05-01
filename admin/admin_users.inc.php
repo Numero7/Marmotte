@@ -274,33 +274,5 @@
 		</tr>
 	</table>
 </form>
-<!--
-<h3>Vérifier un mot de passe</h3>
-<form method="post" action="index.php">
-<table class="inputreport">
-<tr>
-<td>Mot de passe</td>
-<td><input name="password" />
-</td>
-</tr>
-<tr>
-<td><input type="hidden" name="action" value="checkpwd" />
-
-<input type="submit" value="Vérifier" />
-</td>
-</tr>
-</table>
-</form>
--->
 <hr />
-<!--
-<h3>Perte temporaire des droits desecrétaire</h3>
-<p>Pour perdre vos droits de secrétaire et voir marmotte depuis le point de vue d'un rapporteur,
-cliquer sur le bouton.</p>
-<form>
-<input
-type="hidden" name="action" value="lose_secretary_status" />
-<input type="submit" value="Perdre son statut de secrétaire" />
-</form>
--->
 <?php

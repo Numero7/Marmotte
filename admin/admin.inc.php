@@ -38,8 +38,14 @@ if(isSecretaire())
 	}
 	if(isSecretaire() && !isSuperUser())
 	{
+ if( is_current_session_concours() )
+{
 		?>
 	<li><a href="index.php?action=admin&amp;admin_concours=">Concours</a></li>
+<?php
+}
+?>
+
 	<li><a href="index.php?action=admin&amp;admin_rubriques=">Rubriques</a>
 	</li>
 	<li><a href="index.php?action=admin&amp;admin_keywords=">Mots-clés</a>
@@ -70,9 +76,7 @@ include 'sessions_manager.php';
 <hr />
 <?php 
 }
-?>
 
-<?php 
 if($admin_users)
 	include "admin_users.inc.php";
 
