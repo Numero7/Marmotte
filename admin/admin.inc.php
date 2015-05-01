@@ -4,7 +4,7 @@ require_once('config_tools.inc.php');
 require_once('generate_csv.inc.php');
 require_once('manage_unites.inc.php');
 
-$admin_sessions = isset($_REQUEST["admin_sessions"]) && isSecretaire() && !isSuperUser();
+$admin_sessions = isset($_REQUEST["admin_sessions"]) && isSecretaire();
 $admin_users = isset($_REQUEST["admin_users"]) && isSecretaire();
 $admin_concours = isset($_REQUEST["admin_concours"]) && isSecretaire() && !isSuperUser();
 $admin_config = isset($_REQUEST["admin_config"]) && isSecretaire();
@@ -71,7 +71,7 @@ if($admin_sessions)
 	?>
 <h2 id="sessions">Sessions</h2>
 <?php 
-include 'sessions_manager.php';
+include 'admin/admin_sessions.php';
 ?>
 <hr />
 <?php 

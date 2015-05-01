@@ -10,6 +10,7 @@ require_once('manage_concours.inc.php');
 require_once('export.inc.php');
 
 $id = current_session_id();
+
 if($id == "" && !isSuperUser())
 {
 	echo "<p>Aucune session courante n'est configurée, veuillez demander au secrétaire de créer une session via le menu Admin/Sessions<br/>";
@@ -209,10 +210,7 @@ function alertText($text)
 		function displayWithRedirects($id = 0)
 		{
 			?>
-		<script type="text/javascript">
-							window.location = "index.php?action=view&id=<?php echo $id;?>"
-							</script>
-		here
+		<script type="text/javascript">	window.location = "index.php?action=view&id=<?php echo $id;?>"	</script>
 		<?php
 		}
 
@@ -223,12 +221,8 @@ function alertText($text)
 			global $actions_level;
 			$level = getUserPermissionLevel();
 			if(isset($actions_level[$action]) && $level < $actions_level[$action])
-			{
-				rr();
 				throw new Exception("Vous n'avez pas le niveau de permission suffisant pour exécuter l'action '".$action."'");
-			}
 
-			//name="action"rr();
 			switch($action)
 			{
 				case 'delete_units':
