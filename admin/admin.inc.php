@@ -352,7 +352,22 @@ if($admin_keywords)
 	<input type="hidden" name="admin_keywords"></input>
 	<table>
 		<tr>
-			<td>Index <input name="index"></input>
+			<td>Index primaire
+			<select name="index_primaire">
+			<?php 
+			for($i = 1; $i < 50; $i++)
+				echo '<option value="'.$i.'">'.$i.'</option>';
+				?>
+			</select>
+			</td>
+			<td>Index secondaire
+			<select name="index_secondaire">
+			<?php 
+				echo '<option value=""></option>';
+			foreach(range('a', 'z') as $i)
+				echo '<option value="'.$i.'">'.$i.'</option>';
+				?>
+			</select>
 			</td>
 			<td>Mot-clé <input name="motcle"></input>
 			</td>

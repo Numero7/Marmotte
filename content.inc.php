@@ -258,7 +258,7 @@ function alertText($text)
 					scrollToId('rubriques');
 					break;
 				case 'addtopic':
-					add_topic($_REQUEST["index"], $_REQUEST["motcle"]);
+					add_topic($_REQUEST["index_primaire"].$_REQUEST["index_secondaire"], $_REQUEST["motcle"]);
 					global $topics;
 					include 'admin/admin.inc.php';
 					scrollToId('config');
