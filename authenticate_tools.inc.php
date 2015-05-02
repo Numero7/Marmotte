@@ -8,6 +8,47 @@ define("NIVEAU_PERMISSION_PRESIDENT", 700);
 define("NIVEAU_PERMISSION_SUPER_UTILISATEUR", 1000);
 define("NIVEAU_PERMISSION_INFINI", 10000000);
 
+function init_filter_session()
+{
+	require_once("config_tools.inc.php");
+
+	if(!isset($_SESSION['filter_id_session']))
+	{
+		$ok = $_SESSION['filter_section'];
+		$id = get_config("current_session");
+		$sql = "SELECT * FROM ".sessions_db." WHERE `id`='".$id."' AND `section`='". real_escape_string($ok)."' ORDER BY date DESC;";
+		$result = sql_request($sql);
+		if(mysqli_num_rows($result) == 0)
+		{
+			$sql = "SELECT * FROM ".sessions_db." WHERE `section`='". real_escape_string($ok)."' ORDER BY date DESC;";
+			$result = sql_request($sql);
+			if(mysqli_num_rows($result) == 0)
+			{
+				$sql = "SELECT * FROM ".sessions_db." WHERE `section`='0' ORDER BY date DESC;";
+				$result = sql_request($sql);
+				if(mysqli_num_rows($result) == 0)
+				{
+					createSession("Printemps", "2015", 0);
+					$result = sql_request($sql);
+				}
+				if(	$row = mysqli_fetch_object($result))
+				{
+					createSession($row->nom, date('Y', strtotime($row->date)), $ok);
+					$sql = "SELECT * FROM ".sessions_db." WHERE `section`='". real_escape_string($ok)."' ORDER BY date DESC;";
+					$result = sql_request($sql);
+					$row = mysqli_fetch_object($result);
+					set_config("current_session", $row->id);
+					$id = get_config("current_session");
+				}
+			}
+			$row = mysqli_fetch_object($result);
+			$result = sql_request($sql);
+			$id = $row->id;
+		}
+		$_SESSION['filter_id_session'] = $id;
+	}
+}
+
 function get_user_object($login)
 {
 	$sql = "SELECT * FROM `".users_db."`  WHERE `login`=\"".real_escape_string($login)."\";";
@@ -82,26 +123,20 @@ function addCredentials($login,$pwd,$janus = false)
 
 function removeCredentials()
 {
-	unset($_SESSION['login']);
-	unset($_SESSION['permission']);
-	unset($_SESSION['pass']);
-	unset($_SESSION['all_units']);
-	unset($_SESSION['filter_id_session']);
-	unset($_SESSION['filter_section']);
-	unset($_SESSION['all_sessions']);
-	unset($_SESSION['current_session']);
-	unset($_SESSION["config"]);
-	unset($_SESSION["all_users"]);
-	unset($_SESSION["rows_id"]);
-	unset($_SESSION["permission_mask"]);
-	unset($_SESSION['REMOTE_USER']);
-	unset($_SESSION['pmsp_client_random']);
-	$_SERVER['REMOTE_USER'] = "";
+	$_SESSION = array();
+	if (ini_get("session.use_cookies")) {
+		$params = session_get_cookie_params();
+		setcookie(session_name(), '', time() - 42000,
+				$params["path"], $params["domain"],
+				$params["secure"], $params["httponly"]
+		);
+	}
+	session_destroy();
 }
 
 function authenticateBase($login,$pwd)
 {
-	
+
 	$realPassHash = getPassHash($login);
 	if ($realPassHash != NULL)
 	{
@@ -133,7 +168,7 @@ function update_permissions($login, $section, $user = NULL)
 		$result  = get_user_object($login);
 		$user = mysqli_fetch_object($result);
 		if(!$user) throw new Exception("Unknown user");
-	}
+	}//veuillez créer une session
 	$row = $user;
 	$last = $section;
 	if ($last == $row->section_code)
@@ -142,7 +177,7 @@ function update_permissions($login, $section, $user = NULL)
 		$_SESSION['permission'] = roleToPermission($row->CID_role_code);
 	else
 		$_SESSION['permission'] = $row->permissions;
-	
+
 	if ($login == "admin")
 		$_SESSION["permission_mask"] = NIVEAU_PERMISSION_SUPER_UTILISATEUR;
 	else if($row->permissions < NIVEAU_PERMISSION_SUPER_UTILISATEUR)
@@ -158,19 +193,24 @@ function get_last_user_section($user)
 		$sections1[] = $row->section_code;
 	if($row->CID_code != "")
 		$sections1[] = $row->CID_code;
-	
+
 	$sections = array();
 	foreach ($sections1 as $section)
 		if(is_numeric($section))
 		$sections[] = $section;
-	
+
 	if(count($sections)  === 0)
 		throw new Exception("No section");
-	
+
 	if( ($row->permissions < NIVEAU_PERMISSION_SUPER_UTILISATEUR) && array_search($last,$sections) === false)
 		$last = $sections[0];
 	$_SESSION['filter_section'] = $last;
 	return $last;
+}
+
+function is_authenticated_with_JANUS()
+{
+	return isset($_SESSION['REMOTE_USER']);
 }
 
 function authenticate()
@@ -179,7 +219,7 @@ function authenticate()
 	{
 		$login  = $_SESSION['login'];
 		$pwd = $_SESSION['pass'];
-		
+
 		if( !isset($_SESSION['REMOTE_USER']) || $_SESSION['REMOTE_USER']=='')
 		{
 			$result = authenticateBase($login,$pwd);
@@ -201,9 +241,9 @@ function authenticate()
 				}
 				catch(Exception $e)
 				{
-						removeCredentials();
-						throw new Exception("Votre authentification est correcte mais le login '".$login."' n'est actuellement associé à aucune section ou CID dans Marmotte.");
-						return false;
+					removeCredentials();
+					throw new Exception("Votre authentification est correcte mais le login '".$login."' n'est actuellement associé à aucune section ou CID dans Marmotte.");
+					return false;
 				}
 				update_permissions($login, $last, $row);
 				return true;
@@ -215,5 +255,35 @@ function authenticate()
 	}
 	return false;
 };
+
+function createSession($name,$annee, $section ="")
+{
+	if($section === "") $section = $_SESSION['filter_section'];
+	if(!ctype_alnum($name))
+		throw new Exception("Session names can be only alphanumeric");
+	date_default_timezone_set('Europe/Paris');
+	switch($name)
+	{
+		case "IE":
+			$date = "01/01/".$annee; break;
+		case "Concours":
+			$date = "10/01/".$annee; break;
+		case "Delegations":
+			$date = "01/04/".$annee; break;
+		case "Printemps":
+			$date = "01/03/".$annee; break;
+		case "Automne":
+			$date = "01/10/".$annee; break;
+		case "PES":
+			$date = "01/05/".$annee; break;
+		default:
+			$date = "01/07/".$annee; break;
+	}
+	$sql = "INSERT INTO ".sessions_db."(id,section,nom,date) VALUES ('".real_escape_string($name.$annee)."','".$section."','".real_escape_string($name)."','".date("Y-m-d h:m:s",strtotime($date))."');";
+	sql_request($sql);
+	unset($_SESSION['all_sessions']);
+	return true;
+}
+
 
 ?>

@@ -5,12 +5,28 @@ require_once('config_tools.inc.php');
 					$sessions =  showSessions();						
 
 require_once('manage_sessions.inc.php');
+
 ?>
 
 
 <h3>Session courante</h3>
+<?php 
+if(isSecretaire())
+{
+
+?>
 <p> Ce menu permet de sélectionner la session courante, c'est à dire la session qui sera automatiquement sélectionnée quand les membres de votre section se connectent à Marmotte. 
 </p>
+<?php 
+}
+else
+{
+?>
+<p> Ce menu permet de sélectionner la session courante, c'est à dire la session qui sera automatiquement créée si nécessaire.
+</p>
+<?php 
+}
+?>
 <form method="post" action="index.php">
 <B>Session courante</B>
 						<select	name="sessionname">

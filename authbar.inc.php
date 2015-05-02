@@ -124,7 +124,7 @@ if(!isSuperUser())
 			Mode:
 			<select onchange="window.location='index.php?action=change_role&amp;role=' + this.value;">
 			<?php 
-						$levels = array(NIVEAU_PERMISSION_SECRETAIRE => "Admin", NIVEAU_PERMISSION_BUREAU => "Bureau", NIVEAU_PERMISSION_BASE => "Normal");
+						$levels = array(NIVEAU_PERMISSION_SECRETAIRE => "Secrétaire", NIVEAU_PERMISSION_BUREAU => "Bureau", NIVEAU_PERMISSION_BASE => "Normal");
 						foreach($levels as $level => $name)
 						{
 							if(getUserPermissionLevel("",false) >= $level )
@@ -142,6 +142,15 @@ if(!isSuperUser())
 </ul>
 <td valign="top">
 <ul>
+<?php
+if(!is_authenticated_with_JANUS())
+{
+?>
+							<li>
+ 								<a href="index.php?action=changepwd">Mot de passe</a>
+								</li>
+								<?php 
+}?>
 <li><a href="index.php?action=logout">
 Déconnexion
 </a>

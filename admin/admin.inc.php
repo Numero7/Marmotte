@@ -4,7 +4,7 @@ require_once('config_tools.inc.php');
 require_once('generate_csv.inc.php');
 require_once('manage_unites.inc.php');
 
-$admin_sessions = isset($_REQUEST["admin_sessions"]) && isSecretaire() && !isSuperUser();
+$admin_sessions = isset($_REQUEST["admin_sessions"]) && isSecretaire();
 $admin_users = isset($_REQUEST["admin_users"]) && isSecretaire();
 $admin_concours = isset($_REQUEST["admin_concours"]) && isSecretaire() && !isSuperUser();
 $admin_config = isset($_REQUEST["admin_config"]) && isSecretaire();
@@ -71,7 +71,7 @@ if($admin_sessions)
 	?>
 <h2 id="sessions">Sessions</h2>
 <?php 
-include 'sessions_manager.php';
+include 'admin/admin_sessions.php';
 ?>
 <hr />
 <?php 
@@ -292,7 +292,15 @@ if($admin_config)
 
 			<?php 
 			echo "<tr><th>Clé</th><th>Valeur</th><th>Description</th></tr>\n";
-			global $configs;
+			$configs = array(
+					"section_shortname"=> array("intitulé court de la section ou CID","Section 6"),
+					"section_intitule"=> array("intitulé long de la section","Sciences de l\'information : fondements de l\'informatique, calculs, algorithmes, représentations, exploitations"),
+					"president_titre" => array("titre du président, utilisé pour signer les rapports", "Président de la Section 6"),
+					"president" => array("nom du président, utilisé pour signer les rapports", "Alan Türing"),
+					"webmaster" => array("adresse email de l'expéditeur des emails", "alan.turing@cnrs.fr"),
+					"webmaster_nom" => array("signataire des emails et pdfs", "Alan Türing"),
+					"welcome_message" => array("message d'accueil", "Bienvenue sur le site de la section 6")
+			);
 			foreach($configs as $key => $data)
 			{
 				$value = $data[1];
@@ -344,7 +352,22 @@ if($admin_keywords)
 	<input type="hidden" name="admin_keywords"></input>
 	<table>
 		<tr>
-			<td>Index <input name="index"></input>
+			<td>Index primaire
+			<select name="index_primaire">
+			<?php 
+			for($i = 1; $i < 50; $i++)
+				echo '<option value="'.$i.'">'.$i.'</option>';
+				?>
+			</select>
+			</td>
+			<td>Index secondaire
+			<select name="index_secondaire">
+			<?php 
+				echo '<option value=""></option>';
+			foreach(range('a', 'z') as $i)
+				echo '<option value="'.$i.'">'.$i.'</option>';
+				?>
+			</select>
 			</td>
 			<td>Mot-clé <input name="motcle"></input>
 			</td>
