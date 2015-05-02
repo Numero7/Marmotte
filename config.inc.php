@@ -1,7 +1,7 @@
 <?php
 
 	date_default_timezone_set('Europe/Paris');
-	require_once("config/configDB.inc.php");
+	require_once("config/configDB.inc.php");	
 	require_once("config_tools.inc.php");
 		
 	
@@ -21,6 +21,7 @@
 	$dossier_stockage = realpath($dossier_stockage_short);
 	
 
+	
 	$rubriques_supplementaires = array(
 			"individus" => array("rubriques_individus","Info","chercheur"),
 			"candidats" => array("rubriques_candidats", "Info","candidat"),

@@ -4,8 +4,8 @@
 function init_config()
 {
 	global $dbh;
-	
-	$configs = array(
+
+	$configus = array(
 		"section_shortname"=> array("intitulé court de la section ou CID","Section 6"),
 		"section_intitule"=> array("intitulé long de la section","Sciences de l\'information : fondements de l\'informatique, calculs, algorithmes, représentations, exploitations"),
 		"president_titre" => array("titre du président, utilisé pour signer les rapports", "Président de la Section 6"),
@@ -13,7 +13,7 @@ function init_config()
 		"webmaster" => array("adresse email de l'expéditeur des emails", "alan.turing@cnrs.fr"),
 		"webmaster_nom" => array("signataire des emails et pdfs", "Alan Türing"),
 		"welcome_message" => array("message d'accueil", "Bienvenue sur le site de la section 6")
-	);
+);
 		
 	if(!isset($_SESSION['filter_section']))
 	{
@@ -31,7 +31,7 @@ function init_config()
 		$_SESSION["config"][$result->key] = $result->value;
 	
 	/* default config */
-	foreach($configs as $key => $config)
+	foreach($configus as $key => $config)
 		if(!isset($_SESSION["config"][$key]))
 		set_config($key, $config[1]);
 }

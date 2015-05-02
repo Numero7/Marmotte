@@ -208,6 +208,11 @@ function get_last_user_section($user)
 	return $last;
 }
 
+function is_authenticated_with_JANUS()
+{
+	return isset($_SESSION['REMOTE_USER']);
+}
+
 function authenticate()
 {
 	if (isset($_SESSION['login']) and isset($_SESSION['pass']))

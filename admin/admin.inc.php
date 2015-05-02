@@ -292,7 +292,15 @@ if($admin_config)
 
 			<?php 
 			echo "<tr><th>Clé</th><th>Valeur</th><th>Description</th></tr>\n";
-			$configs = $_SESSION["config"];
+			$configs = array(
+					"section_shortname"=> array("intitulé court de la section ou CID","Section 6"),
+					"section_intitule"=> array("intitulé long de la section","Sciences de l\'information : fondements de l\'informatique, calculs, algorithmes, représentations, exploitations"),
+					"president_titre" => array("titre du président, utilisé pour signer les rapports", "Président de la Section 6"),
+					"president" => array("nom du président, utilisé pour signer les rapports", "Alan Türing"),
+					"webmaster" => array("adresse email de l'expéditeur des emails", "alan.turing@cnrs.fr"),
+					"webmaster_nom" => array("signataire des emails et pdfs", "Alan Türing"),
+					"welcome_message" => array("message d'accueil", "Bienvenue sur le site de la section 6")
+			);
 			foreach($configs as $key => $data)
 			{
 				$value = $data[1];

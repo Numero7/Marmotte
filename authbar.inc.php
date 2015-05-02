@@ -84,9 +84,16 @@ if(!isSuperUser())
 									<ul>
 														<li>
 								<a href="index.php?action=logout">Déconnexion</a></li>
+<?php
+if(!is_authenticated_with_JANUS())
+{
+?>
 							<li>
-								<a href="index.php?action=changepwd">Mot de passe</a>
+ 								<a href="index.php?action=changepwd">Mot de passe</a>
 								</li>
+<?php
+} 
+								?>
 								<?php 
 								if(!isSuperUser())
 								{
