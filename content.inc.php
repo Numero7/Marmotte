@@ -217,12 +217,24 @@ function alertText($text)
 
 		try
 		{
+			/* should not be here but ... */
+			if(isset($_REQUEST['filter_section']))
+			{
+				change_current_section($_REQUEST['filter_section']);
+			?>
+			<script type="text/javascript">	window.location = "index.php"</script>
+			<?php
+			die(0);
+			}
+			
 			/* checking permissions */
 			global $actions_level;
 			$level = getUserPermissionLevel();
 			if(isset($actions_level[$action]) && $level < $actions_level[$action])
 				throw new Exception("Vous n'avez pas le niveau de permission suffisant pour exécuter l'action '".$action."'");
 
+			
+			
 			switch($action)
 			{
 				case 'delete_units':

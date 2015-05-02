@@ -292,7 +292,7 @@ if($admin_config)
 
 			<?php 
 			echo "<tr><th>Clé</th><th>Valeur</th><th>Description</th></tr>\n";
-			global $configs;
+			$configs = $_SESSION["config"];
 			foreach($configs as $key => $data)
 			{
 				$value = $data[1];

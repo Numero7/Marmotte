@@ -92,11 +92,11 @@ try
 		}
 		else
 		{
-				
-				
+			init_filter_session();
+			
 			require_once("utils.inc.php");
 			require_once("manage_users.inc.php");
-
+			
 			switch($action)
 			{
 				case 'adminnewsession':
@@ -129,13 +129,7 @@ try
 
 			}
 
-			try{
-				/* should not be here but ... */
-				if(isset($_REQUEST['filter_section']))
-					change_current_section($_REQUEST['filter_section']);
-				
-				init_filter_session();
-				
+			try{								
 				include("content.inc.php");
 			}
 			catch(Exception $exc)

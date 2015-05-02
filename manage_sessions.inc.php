@@ -3,47 +3,6 @@ require_once('config.inc.php');
 require_once('manage_filters_and_sort.inc.php');
 require_once('utils.inc.php');
 
-function init_filter_session()
-{
-	require_once("config_tools.inc.php");
-	
-	if(!isset($_SESSION['filter_id_session']))
-	{
-		$ok = $_SESSION['filter_section'];
-		$id = get_config("current_session");
-		$sql = "SELECT * FROM ".sessions_db." WHERE `id`='".$id."' AND `section`='". real_escape_string($ok)."' ORDER BY date DESC;";
-		$result = sql_request($sql);
-		if(mysqli_num_rows($result) == 0)
-		{
-			$sql = "SELECT * FROM ".sessions_db." WHERE `section`='". real_escape_string($ok)."' ORDER BY date DESC;";
-			$result = sql_request($sql);
-			if(mysqli_num_rows($result) == 0)
-			{
-				$sql = "SELECT * FROM ".sessions_db." WHERE `section`='0' ORDER BY date DESC;";
-				$result = sql_request($sql);
-				if(mysqli_num_rows($result) == 0)
-				{
-					createSession("Printemps", "2015", 0);
-					$result = sql_request($sql);
-				}
-				if(	$row = mysqli_fetch_object($result))
-				{
-					createSession($row->nom, date('Y', strtotime($row->date)), $ok);
-					$sql = "SELECT * FROM ".sessions_db." WHERE `section`='". real_escape_string($ok)."' ORDER BY date DESC;";
-					$result = sql_request($sql);
-					$row = mysqli_fetch_object($result);
-					set_config("current_session", $row->id);
-					$id = get_config("current_session");
-				}
-			}
-			$row = mysqli_fetch_object($result);
-			$result = sql_request($sql);
-			$id = $row->id;
-		}
-		$_SESSION['filter_id_session'] = $id;
-	}
-
-}
 
 function sessionArrays($force = false)
 {
