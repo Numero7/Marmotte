@@ -15,6 +15,13 @@ session_start();
 require_once("db.inc.php");
 require_once('authenticate_tools.inc.php');
 
+function reload($adress = "")
+{
+	?>
+	<script type="text/javascript">	window.location = "<?php echo $adress;?>"</script>
+	<?php
+	die(0);
+}
 
 try
 {
@@ -97,6 +104,7 @@ try
 			require_once("utils.inc.php");
 			require_once("manage_users.inc.php");
 			
+			/* several actions and condition require reloading of the whole page they ar eput here */
 			switch($action)
 			{
 				case 'adminnewsession':
@@ -106,10 +114,8 @@ try
 						$annee = real_escape_string($_REQUEST["sessionannee"]);
 						require_once('manage_sessions.inc.php');
 						createSession($name,$annee);
-						$_REQUEST["action"] = 'admin';
 					}
-					else
-						echo "<p><strong>Erreur :</strong> Vous n'avez fourni toutes les informations nécessaires pour créer une session, veuillez nous contacter (Yann ou Hugo) en cas de difficultés.</p>";
+					reload("?action=admin");
 					break;
 				case 'sessioncourante':
 					if(isset($_REQUEST["sessionname"]))
@@ -118,17 +124,24 @@ try
 						$id = $_REQUEST["sessionname"];
 						set_config('current_session',$id);
 						set_current_session_id($id);
-						$_REQUEST["action"] = 'admin';
 					}
+					reload("?action=admin");
 					break;
 				case 'change_role':
 					$role = isset($_REQUEST["role"]) ? $_REQUEST["role"] : 0;
 					$role = min( $role, getUserPermissionLevel("",false));
 					$_SESSION["permission_mask"] = $role;
+					reload("?action=");
 					break;
-
 			}
 
+			/* should not be here but ... */
+			if(isset($_REQUEST['filter_section']))
+			{
+				change_current_section($_REQUEST['filter_section']);
+				reload("?action=");
+			}
+			
 			try{								
 				include("content.inc.php");
 			}

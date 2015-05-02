@@ -216,17 +216,7 @@ function alertText($text)
 
 
 		try
-		{
-			/* should not be here but ... */
-			if(isset($_REQUEST['filter_section']))
-			{
-				change_current_section($_REQUEST['filter_section']);
-			?>
-			<script type="text/javascript">	window.location = "index.php"</script>
-			<?php
-			die(0);
-			}
-			
+		{			
 			/* checking permissions */
 			global $actions_level;
 			$level = getUserPermissionLevel();

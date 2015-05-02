@@ -16,7 +16,6 @@ function sessionArrays($force = false)
 		date_default_timezone_set("Europe/Paris");
 		while ($row = mysqli_fetch_object($result))
 			$sessions[$row->id] = $row->id;
-		$sessions[-1] = "Toutes les sessions";
 		$_SESSION['all_sessions'] = $sessions;
 	}
 	return $_SESSION['all_sessions'];

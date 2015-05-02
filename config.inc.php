@@ -1384,7 +1384,7 @@ Une phrase de conclusion sur le candidat incluant un commentaire sur l'audition
 			'statut' => array('name'=>"Statut" , 'liste' => $statutsRapports, 'default_value' => "tous", 'default_name' => "Tous"),
 			//'theme3' => array('name'=>"Theme3" , 'liste' => $topics, 'default_value' => "tous", 'default_name' => ""),
 			'genre' => array('name' =>"Genre", 'liste' => $genreCandidat, 'default_value' => "tous", 'default_name' => "Tous"),
-			'id_session' => array('name'=>"Session", 'default_value' =>-1, 'default_name' => "Toutes les sessions"),
+			'id_session' => array('name'=>"Session", 'default_value' =>-1, 'default_name' => "Hors session"),
 			'avancement' => array('name'=>"Avancement" , 'default_value' => "", 'default_name' => ""),
 			'id_origine' => array('default_value' =>-1),
 			'id' => array('default_value' =>-1)
@@ -1405,7 +1405,7 @@ Une phrase de conclusion sur le candidat incluant un commentaire sur l'audition
 			'statut' => array('name'=>"Statut" , 'liste' => $statutsRapports, 'default_value' => "tous", 'default_name' => "Tous"),
 			//'theme3' => array('name'=>"Theme3" , 'liste' => $topics, 'default_value' => "tous", 'default_name' => ""),
 			'genre' => array('name' =>"Genre", 'liste' => $genreCandidat, 'default_value' => "tous", 'default_name' => "Tous"),
-			'id_session' => array('name'=>"Session", 'default_value' =>-1, 'default_name' => "Toutes les sessions"),
+			'id_session' => array('name'=>"Session", 'default_value' =>-1, 'default_name' => "Hors session"),
 			'avancement' => array('name'=>"Avancement" , 'default_value' => "", 'default_name' => ""),
 			'id_origine' => array('default_value' =>-1),
 			'id' => array('default_value' =>-1)
@@ -1439,7 +1439,7 @@ Une phrase de conclusion sur le candidat incluant un commentaire sur l'audition
 			'statut' => array('name'=>"Statut" , 'liste' => $statutsRapports, 'default_value' => "tous", 'default_name' => ""),
 			//'theme3' => array('name'=>"Theme3" , 'liste' => $topics, 'default_value' => "tous", 'default_name' => ""),
 			//'labo2' => array('name'=>"Labo2" , 'default_value' => "tous", 'default_name' => ""),
-			'id_session' => array('name'=>"Session", 'default_value' =>-1, 'default_name' => "Toutes les sessions"),
+			'id_session' => array('name'=>"Session", 'default_value' =>-1, 'default_name' => "Hors session"),
 			'avancement' => array('name'=>"Avancement" , 'default_value' => "", 'default_name' => ""),
 			//'theseloc' => array('name'=>"TheseLoc" , 'liste' => $theseslocs, 'default_value' => "tous", 'default_name' => "Toutes les locs"),
 			'id_origine' => array('default_value' =>-1),
