@@ -20,63 +20,7 @@ require_once("config_tools.inc.php");
 	$add_rubriques_concours = get_rubriques("concours");
 	$add_rubriques_chercheurs = get_rubriques("chercheurs");
 	$add_rubriques_unites = get_rubriques("unites");
-		
-	$fieldsSummary = array(
-		"type",
-			"unite",
-			"nom",
-		"prenom",
-			"ecole",
-			"avis",
-			"rapporteur",
-			"avis1",
-		"rapporteur2",
-			"avis2",
-		"rapporteur3",
-		"grade_rapport",
-			"theme1",
-			"theme2",
-			"theme3"
-	);
-	
-	$fieldsSummaryConcours = array(
-			"type",
-			"nom",
-			"prenom",
-			"concours",
-			"sousjury",
-			"avis",
-			"rapporteur",
-			"avis1",
-			"rapporteur2",
-			"avis2",
-			"theme1",
-			"theme2",
-			"labo1",
-			"labo2",
-			"diploma",
-			"grade_rapport"
-	);
-	
-	$fieldsTriConcours = array(
-			"nom",
-			"prenom",
-			"grade_rapport",
-			"concours",
-			"sousjury",
-			"rapporteur",
-			"rapporteur2",
-			"rapporteur3",
-			"theme1",
-			"theme2",
-			"theme3",
-			"labo1",
-			"labo2",
-			"labo3",
-			"avis",
-			"date"
-	);
-	
+				
 	$statutsRapports = array(
 			'doubleaveugle'=>'Double Aveugle',
 			 'prerapport' => "Prerapport",
@@ -116,7 +60,7 @@ $add_rubriques_chercheurs = get_rubriques("chercheurs");
 $add_rubriques_unites = get_rubriques("unites");
 
 /* champs apparaissant sur l'écran principal */
-$fieldsSummary = array("type","unite","nom","prenom",/*"ecole",*/"avis","rapporteur","avis1","rapporteur2","rapporteur3","grade_rapport","theme1","theme2",	"theme3");
+$fieldsSummary = array("type","unite","nom","prenom",/*"ecole",*/"avis","rapporteur","avis1","rapporteur2","avis2", "rapporteur3","grade_rapport","theme1","theme2",	"theme3");
 $fieldsSummaryConcours = array("type","nom","prenom","concours","sousjury","avis","rapporteur","avis1",
 		"rapporteur2","avis2","theme1","theme2","labo1","labo2","diploma","grade_rapport"
 );
@@ -307,9 +251,9 @@ $fieldsIndividualAll = array(
 		"labo1" => "Labo 1",
 		"labo2" => "Labo 2",
 		"labo3" => "Labo 3",
-		"theme1" => "Theme 1",
-		"theme2" => "Theme 2",
-		"theme3" => "Theme 3",
+		"theme1" => "Mot-clé 1",
+		"theme2" => "Mot-clé 2",
+		"theme3" => "Mot-clé 3",
 		"audition" => "Rapport d'audition",
 		"concourspresentes" => "Concours présentés",
 		"conflits" => "Conflits",

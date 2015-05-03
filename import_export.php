@@ -11,15 +11,19 @@ function displayImport()
 
 	?>
 <form enctype="multipart/form-data" action="index.php" method="post">
-<table>
+	<table>
 
-<tr><td>
-	<input type="hidden" name="type" value="evaluations"></input>
-	<input	type="hidden" name="action" value="upload" />
-	<input type="hidden" name="MAX_FILE_SIZE" value="10000000" />
-		</td></tr><tr><td> <input name="uploadedfile"
-		type="file" /> <br /> <input type="submit" value="Mettre à jour le ou les rapports" />
-		</td></tr>
+		<tr>
+			<td><input type="hidden" name="type" value="evaluations"></input> <input
+				type="hidden" name="action" value="upload" /> <input type="hidden"
+				name="MAX_FILE_SIZE" value="10000000" />
+			</td>
+		</tr>
+		<tr>
+			<td><input name="uploadedfile" type="file" /> <br /> <input
+				type="submit" value="Mettre à jour le ou les rapports" />
+			</td>
+		</tr>
 	</table>
 </form>
 
@@ -30,91 +34,94 @@ function displayImport()
 function displaySecretaryImport()
 {
 	if(isSecretaire())
-{
-	?>
+	{
+		?>
 
 <h2>Ajout d'un nouveau rapport</h2>
 <form enctype="multipart/form-data" action="index.php" method="post">
-<table>
-<tr><td>
-<input	type="hidden" name="id_origine" value="0" />
-<input	type="hidden" name="action" value="new" />
-</td></tr>
-<tr><td>Choix du type de rapport</td><td>
-<select name="type" type="hidden" >
-<?php
-$types = array();
-if(is_current_session_concours())
-{
-global $typesRapportsConcours;
-$types = $typesRapportsConcours;
-}
-else if(is_current_session_delegation())
-{
-$types = array('Delegation'=>'Délégation');
-}
-else
-{
-global $typesRapportsChercheurs;
-global $typesRapportsUnites;
-$types = array_merge($typesRapportsChercheurs, $typesRapportsUnites);
-}
-foreach($types as $type => $name)
-echo '<option value='.$type.'>'.$name.'</option><br/>'."\n";
-?>
-</select>
-</td></tr>
-<tr><td><input type="submit" value="Créer rapport" /></td></tr>
+	<table>
+		<tr>
+			<td><input type="hidden" name="id_origine" value="0" /> <input
+				type="hidden" name="action" value="new" />
+			</td>
+		</tr>
+		<tr>
+			<td>Choix du type de rapport</td>
+			<td><select name="type" type="hidden">
+					<?php
+					$types = array();
+					if(is_current_session_concours())
+					{
+						global $typesRapportsConcours;
+						$types = $typesRapportsConcours;
+					}
+					else if(is_current_session_delegation())
+					{
+						$types = array('Delegation'=>'Délégation');
+					}
+					else
+					{
+						global $typesRapportsChercheurs;
+						global $typesRapportsUnites;
+						$types = array_merge($typesRapportsChercheurs, $typesRapportsUnites);
+					}
+					foreach($types as $type => $name)
+						echo '<option value='.$type.'>'.$name.'</option><br/>'."\n";
+					?>
+			</select>
+			</td>
+		</tr>
+		<tr>
+			<td><input type="submit" value="Créer rapport" /></td>
+		</tr>
 
-</table>
+	</table>
 
 </form>
 <hr />
 
-		<h2>[Réservé SGCN] Import d'une liste de rapports</h2>
-		<p>Cette fonction maintenant réservée au SGCN disparaîtra prochainement de Marmotte.
-		</p>
+<h2>[Réservé SGCN] Import d'une liste de rapports</h2>
+<p>Cette fonction maintenant réservée au SGCN disparaîtra prochainement
+	de Marmotte.</p>
 <form enctype="multipart/form-data" action="index.php" method="post">
-<table>
-<tr><td>
-	<input type="hidden" name="type" value="evaluations"></input>
-	<input	type="hidden" name="action" value="upload" />
-	<input	type="hidden" name="create" value="true" />
-	<input type="hidden" name="MAX_FILE_SIZE" value="10000000" />
-		</td></tr>
-		<tr><td>Fichier</td><td> <input name="uploadedfile"
-		type="file" />
-		</td></tr>
-		<tr><td>Choix du type de rapport</td><td>
-		<select name="subtype">
-		<?php  if (!is_current_session_concours())
-		{
-		?>
-		<option value ="">Autodétection</option>
-<?php   
-		}
-$types = get_current_report_types();
-foreach($types as $type => $name)  
-echo '<option value='.$type.'>'.$name.'</option><br/>'."\n";  
-?> 
-</select>
-		</td></tr>
-				<tr><td><input type="submit" value="Importer rapports" /></td></tr>
-		
+	<table>
+		<tr>
+			<td><input type="hidden" name="type" value="evaluations"></input> <input
+				type="hidden" name="action" value="upload" /> <input type="hidden"
+				name="create" value="true" /> <input type="hidden"
+				name="MAX_FILE_SIZE" value="10000000" />
+			</td>
+		</tr>
+		<tr>
+			<td>Fichier</td>
+			<td><input name="uploadedfile" type="file" />
+			</td>
+		</tr>
+		<tr>
+			<td>Choix du type de rapport</td>
+			<td><select name="subtype">
+					<?php  if (!is_current_session_concours())
+					{
+						?>
+					<option value="">Autodétection</option>
+					<?php   
+					}
+					$types = get_current_report_types();
+					foreach($types as $type => $name)
+						echo '<option value='.$type.'>'.$name.'</option><br/>'."\n";
+					?>
+			</select>
+			</td>
+		</tr>
+		<tr>
+			<td><input type="submit" value="Importer rapports" /></td>
+		</tr>
+
 	</table>
-	
+
 </form>
-
-
-<?php
-$types = get_current_report_types();
-foreach($types as $type => $name)
-echo '<option value='.$type.'>'.$name.'</option><br/>'."\n";
-?>
-</select>
-</td></tr>
-<tr><td><input type="submit" value="Créer rapport" /></td></tr>
-
+<?php 
+	}
 }
 
 function displayExport()
@@ -139,7 +146,7 @@ function displayExport()
 
 if(false)
 {
-?>
+	?>
 
 
 <h2>Export</h2>
@@ -148,59 +155,60 @@ if(false)
 	hors-ligne, choisir le format "csv".</p>
 
 <?php displayExport();?>
-	<hr/>
+<hr />
 <h2>Mise à jour d'un ou plusieurs rapports</h2>
 <p>
-Le formulaire suivant vous permet d'importer un ou plusieurs rapports édités offline.<br/>
-Le fichier à importer doit avoir été récupéré au préalable via la fonction Export au format csv.
+	Le formulaire suivant vous permet d'importer un ou plusieurs rapports
+	édités offline.<br /> Le fichier à importer doit avoir été récupéré au
+	préalable via la fonction Export au format csv.
 </p>
 <?php 
-	displayImport();
+displayImport();
 
 }
-	
-	if(isSecretaire())
+
+if(isSecretaire())
 {
 	?>
-	<hr/>
+<hr />
 
 
 <?php 
 /*
-try
+ try
 {
-	$sql = "SELECT * FROM ".units_db." LIMIT 0,5";
-	$result = sql_request($sql);
+$sql = "SELECT * FROM ".units_db." LIMIT 0,5";
+$result = sql_request($sql);
 
-	$rows = array();
-	while ($row = mysql_fetch_object($result))
-		$rows[] = $row;
+$rows = array();
+while ($row = mysql_fetch_object($result))
+	$rows[] = $row;
 
-	$csv_reports = compileUnitsAsCSV($rows);
-	$filename = "csv/exemple_unites.csv";
-	if($handle = fopen($filename, 'w'))
-	{
-		fwrite ($handle, $csv_reports);
-		fclose($handle);
-	}
-	else
-	{
-		echo("Watchout: couldn't create exemple csv file ".$filename);
-	}
+$csv_reports = compileUnitsAsCSV($rows);
+$filename = "csv/exemple_unites.csv";
+if($handle = fopen($filename, 'w'))
+{
+fwrite ($handle, $csv_reports);
+fclose($handle);
+}
+else
+{
+echo("Watchout: couldn't create exemple csv file ".$filename);
+}
 }
 catch(Exception $e)
 {
-	echo("Watchout: couldn't create exemple csv file ".$e->getMessage());
+echo("Watchout: couldn't create exemple csv file ".$e->getMessage());
 }
 */
 
-	displaySecretaryImport();
+displaySecretaryImport();
 
-	?>
+?>
 
-	
+
 
 <?php 
 }
-	?>
+?>
 

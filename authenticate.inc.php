@@ -13,23 +13,27 @@ $firstlogin = authenticateBase('admin','password');
 		<br/>
 		<br/>
 		<br/>
-		<!-- 
+		<br/>
+		<h3>"Marmotte", une interface de gestion des rapports pour les sections du Comité National.</h3>
 		<br/>
 		<br/>
-		<h3>"We can only see a short distance ahead, but we can see plenty there that needs to be done." Alan Turing.
+		<br/>
+<!-- 
+		<h3>"We can only see a short distance ahead, but we can see plenty there that needs to be done."
 		</h3>
-		 -->
+		Alan Türing.
 <h3>
   Phil: To the groundhog.<br/>
   Rita: I always drink to world peace
 </h3>
-<!--
+ -->
+ <!--
 		 <h3>
 <b>Ned:</b> So what are you doing for dinner?<br/>
 <b>Phil:</b> Umm... something else. <br/>
--->
  --<I>Groundhog Day</I>.
- 		<br/>
+-->
+ <br/>
 		<br/>
 </h3>
 		</div>
@@ -65,8 +69,26 @@ En cas de besoin, merci de contacter hugo.gimbert@labri.fr afin d'obtenir un mot
 </font>
 </p>
 -->
-	 <h2><a href="index.php?action=auth_janus">Authentification Janus (login e-valuation)</a></h2>
-	 <h2><a href="index.php?action=auth_marmotte">Authentification Marmotte (anciens logins)</a></h2>
+	 <h2><a href="index.php?action=auth_janus">Authentification  par login e-valuation</a></h2>
+	 <h3><a href="index.php?action=auth_marmotte">Authentification Marmotte (anciens logins)</a></h3>
+	 <br/>
+	 <br/>
+	  <br/>
+	 <br/>
+	 <br/>
+	  <br/>
+	 <br/>
+	  <br/>
+	  <h3>Contributeurs Marmotte 2.0</h3>
+	  <ul>
+	  <li>Hugo Gimbert (développeur, coordinateur technique, section 6)</li>
+	  <li>Yann Ponty (développeur, section 6)</li>
+	  <li>Matias Velazquez (coordinateur déploiement, section 25)</li>
+	  <li>Sophie Achard (beta-testeuse, section 7)</li>
+	  <li>Laurent Chazaly (beta-testeur, formateur, SGCN)</li>
+	  <li>Guillaume Lapeyre (beta-testeur, section 19)</li>
+	  <li>Caroline Strube (beta-testeuse, section 15)</li>
+	  </ul>
 	 <?php 
 	 }
 	 ?>
