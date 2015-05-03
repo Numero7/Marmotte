@@ -141,10 +141,12 @@
 	</table>
 </form>
 <br />
+
+<!--
 <hr />
 
-<hr />
-<h3 id="importaccounts">Import des membres</h3>
+<hr /><h3 id="importaccounts">Import des membres</h3>
+
 <p>Importer automatiquement les comptes des membres de la section, et
 	les ajouter à la liste des comptes existant et/ou mettre à jour les comptes correspondants.</p>
 <form method="post" action="index.php">
@@ -200,7 +202,7 @@
 </form>
 <br />
 
-
+-->
 <hr />
 <h3 id="admindeleteaccount">Suppression d'un membre</h3>
 <form method="post" action="index.php"
@@ -220,6 +222,7 @@
 	<input type="submit" value="Supprimer" />
 </form>
 <br />
+<!--
 <hr />
 <h3 id="admindeleteallaccounts">Suppression de tous les membres de la
 	section</h3>
@@ -274,5 +277,6 @@
 		</tr>
 	</table>
 </form>
+-->
 <hr />
 <?php

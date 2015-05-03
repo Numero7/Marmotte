@@ -348,10 +348,9 @@ if(isBureauUser() && is_current_session_concours())
 					}
 					else
 					{
-						showIconAvis($fieldID,$data);
 						if( ($type == "unit") && isset($prettyunits[$row->$fieldID]))
 							$data = $prettyunits[$row->$fieldID]->nickname;
-						echo '<span class="valeur">'.$data.'</span>';
+						echo '<span class="valeur">'.substr($data,0,25).'</span>';
 					}
 				}
 				echo '</td>';

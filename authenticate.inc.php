@@ -12,17 +12,23 @@ $firstlogin = authenticateBase('admin','password');
 		<br/>
 		<br/>
 		<br/>
-		<br/>
+
+<br/>
+  <br/>
+  <h3>"Marmotte", une interface de gestion des rapports pour les sections du Comit&eacute; National.</h3>
+  <br/>
+  <br/>
+<br/>
 		<!-- 
 		<br/>
 		<br/>
 		<h3>"We can only see a short distance ahead, but we can see plenty there that needs to be done." Alan Turing.
 		</h3>
-		 -->
 		 <h3>
 <b>Ned:</b> So what are you doing for dinner?<br/>
 <b>Phil:</b> Umm... something else. <br/>
  --<I>Groundhog Day</I>.
+		 -->
  		<br/>
 		<br/>
 </h3>
@@ -59,13 +65,27 @@ En cas de besoin, merci de contacter hugo.gimbert@labri.fr afin d'obtenir un mot
 </font>
 </p>
 -->
-	 <h2><a href="index.php?action=auth_janus">Authentification Janus (login e-valuation)</a></h2>
-	 <h2><a href="index.php?action=auth_marmotte">Authentification Marmotte (anciens logins)</a></h2>
+	 <h2><a href="index.php?action=auth_janus">Authentification par login e-valuation</a></h2>
+	 <h3><a href="index.php?action=auth_marmotte">Authentification Marmotte (anciens logins)</a></h3>
 	 <?php 
 	 }
 	 ?>
 	<br/>
 	<br/>
+ <br/>
+  <br/>
+<br/>
+  <br/>
+  <h3>Contributeurs Marmotte 2.0</h3>
+  <ul>
+  <li>Hugo Gimbert (d&eacute;veloppeur, coordinateur technique, section 6)</li>
+  <li>Yann Ponty (d&eacute;veloppeur, section 6)</li>
+  <li>Mathias Velazquez (beta-testeur, coordinateur d&eacute;ploiement SCC, section 25)</li>
+  <li>Caroline Strube (beta-testeuse, formatrice, section 15)</li>
+  <li>Sophie Achard (beta-testeuse, formatrice, section 7)</li>
+  <li>Laurent Chazaly (beta-testeur, SGCN)</li>
+  <li>Guillaume Lapeyre (beta-testeur, section 19)</li>
+ </ul>
  	</div>
 </div>
 <!-- <iframe width="90%" height="20%" src="https://lejournal.cnrs.fr/"></iframe>  -->
