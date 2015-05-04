@@ -63,13 +63,11 @@ function change_current_section($section)
 
 function get_bureau_stats()
 {
+	$stats = array();
 	if(is_current_session_concours())
 	{
 		$sousjurys = getSousJuryMap();
-
 		$concours = getConcours();
-
-		/* pour chaque niveau, pour chaque rapporteur, nombre de candidats par rapporteurs */
 
 		$stats = array("Candidats CR"=>array(), "Candidats DR"=>array());
 		$fields = array("rapporteur","rapporteur2","rapporteur3");
@@ -123,6 +121,28 @@ function get_bureau_stats()
 				if( !isset( $stats[$key][$row->rapporteur]["rapporteur"]["counter"] ) )
 					$stats[$key][$row->rapporteur]["rapporteur"]["counter"] = 0;
 				$stats[$key][$row->rapporteur]["rapporteur"]["counter"]++;
+			}
+		}
+	}
+	else
+	{
+		$sql = "SELECT * FROM reports WHERE section=\"".currentSection()."\" AND id_session=\"".current_session().  "\" AND id=id_origine AND statut!=\"supprime\"";
+		$result= sql_request($sql);
+		$fields = array("rapporteur","rapporteur2","rapporteur3");
+		while( $row = mysqli_fetch_object($result))
+		{
+			foreach($fields as $field)
+			{
+				if($row->$field == "")
+					continue;
+				if(!isset($stats[$row->$field]))
+				{
+					foreach($fields as $field2)
+						$stats[$row->$field][$field2] = 0;
+					$stats[$row->$field]["total"] = 0;
+				}
+				$stats[$row->$field][$field]++;
+				$stats[$row->$field]["total"]++;
 			}
 		}
 	}
