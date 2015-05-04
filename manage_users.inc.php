@@ -142,9 +142,14 @@ function get_bureau_stats()
 					$stats[$row->$field]["total"] = 0;
 				}
 				$stats[$row->$field][$field]++;
-				$stats[$row->$field]["total"]++;
+				$stats[$row->$field]["total"]++;/* mysort*/
 			}
 		}
+		function callback ( $stata, $statb )
+		{
+			return ($stata["total"] > $statb["total"]) ? 1 : ($stata["total"] == $statb["total"]) ? 0 : -1; 
+		}
+		$result = uasort ( $stats, 'callback' );
 	}
 	return $stats;
 }
