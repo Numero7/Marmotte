@@ -86,7 +86,7 @@ En cas de besoin, merci de contacter hugo.gimbert@labri.fr afin d'obtenir un mot
   <ul>
   <li>Hugo Gimbert (d&eacute;veloppeur, coordinateur technique, section 6)</li>
   <li>Yann Ponty (d&eacute;veloppeur, section 6)</li>
-  <li>Mathias Velazquez (beta-testeur, coordinateur d&eacute;ploiement SCC, section 25)</li>
+  <li>Mathias Velazquez (beta-testeur, coordinateur d&eacute;ploiement SSC, section 25)</li>
   <li>Caroline Strube (beta-testeuse, formatrice, section 15)</li>
   <li>Sophie Achard (beta-testeuse, formatrice, section 7)</li>
   <li>Laurent Chazaly (beta-testeur, formateur, SGCN)</li>
