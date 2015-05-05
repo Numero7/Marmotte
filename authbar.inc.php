@@ -146,7 +146,7 @@ if(!is_authenticated_with_JANUS())
 			Mode:
 			<select onchange="window.location='index.php?action=change_role&amp;role=' + this.value;">
 			<?php 
-						$levels = array(NIVEAU_PERMISSION_SECRETAIRE => "Admin", NIVEAU_PERMISSION_BUREAU => "Bureau", NIVEAU_PERMISSION_BASE => "Normal");
+						$levels = array(NIVEAU_PERMISSION_SECRETAIRE => "Secrétaire", NIVEAU_PERMISSION_BUREAU => "Bureau", NIVEAU_PERMISSION_BASE => "Normal");
 						foreach($levels as $level => $name)
 						{
 							if(getUserPermissionLevel("",false) >= $level )
