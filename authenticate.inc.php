@@ -83,8 +83,9 @@ En cas de besoin, merci de contacter hugo.gimbert@labri.fr afin d'obtenir un mot
   <li>Mathias Velazquez (beta-testeur, coordinateur d&eacute;ploiement SCC, section 25)</li>
   <li>Caroline Strube (beta-testeuse, formatrice, section 15)</li>
   <li>Sophie Achard (beta-testeuse, formatrice, section 7)</li>
-  <li>Laurent Chazaly (beta-testeur, SGCN)</li>
+  <li>Laurent Chazaly (beta-testeur, formateur, SGCN)</li>
   <li>Guillaume Lapeyre (beta-testeur, section 19)</li>
+<li>Mich&egrave;le Desumeur (beta-testeuse ACN, SGCN)</li>
  </ul>
  	</div>
 </div>
