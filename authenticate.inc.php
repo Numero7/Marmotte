@@ -74,8 +74,14 @@ En cas de besoin, merci de contacter hugo.gimbert@labri.fr afin d'obtenir un mot
 	<br/>
  <br/>
   <br/>
-<br/>
+<br/>	
   <br/>
+<br/>	
+  <br/>
+  <table>
+  <tr>
+  <td width="60%"></td>
+  <td width="40%">
   <h3>Contributeurs Marmotte 2.0</h3>
   <ul>
   <li>Hugo Gimbert (d&eacute;veloppeur, coordinateur technique, section 6)</li>
@@ -86,6 +92,10 @@ En cas de besoin, merci de contacter hugo.gimbert@labri.fr afin d'obtenir un mot
   <li>Laurent Chazaly (beta-testeur, SGCN)</li>
   <li>Guillaume Lapeyre (beta-testeur, section 19)</li>
  </ul>
- 	</div>
-</div>
+ </td>
+ </tr>
+ </table>
+ </div>
+  </div>
+ </div>
 <!-- <iframe width="90%" height="20%" src="https://lejournal.cnrs.fr/"></iframe>  -->
