@@ -234,7 +234,11 @@
 </form>
 <br />
 
-
+-->
+<?php 
+if(isSuperUser())
+{
+	?>
 
 <hr />
 <h3 id="adminnewpwd">Modification d'un mot de passe</h3>
@@ -277,6 +281,6 @@
 		</tr>
 	</table>
 </form>
--->
 <hr />
 <?php
+}
