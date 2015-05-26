@@ -557,7 +557,11 @@ function addReportToDatabase($report,$normalize = true)
 
 
 	if(isset($report->unite))
+try
+  {
 		createUnitIfNeeded($report->unite);
+  }
+	catch(Exception $e){}
 
 	$specialRule = array("date","id","id_origine","auteur");
 

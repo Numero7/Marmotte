@@ -159,6 +159,9 @@ function filename_from_doc($doc)
 	$nom = str_replace( array("'"," "), array("","_") , mb_convert_case(replace_accents($doc->nom), MB_CASE_TITLE));
 	$prenom = mb_convert_case(replace_accents($doc->prenom), MB_CASE_TITLE);
 
+	$nom = iconv("UTF-8","ASCII//TRANSLIT",$nom);
+	$prenom = iconv("UTF-8","ASCII//TRANSLIT",$prenom);
+
 	$sessions = sessionArrays();
 	$session = $sessions[$doc->id_session];
 	return filename_from_params($nom, $prenom, $doc->grade_rapport, $doc->unite, $doc->type, $session, $doc->avis, $doc->concours, $doc->sousjury, $doc->ecole);

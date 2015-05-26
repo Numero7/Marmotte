@@ -406,7 +406,8 @@ function createXMLReportElem($row, DOMDocument $doc, $keep_br = true)
 	appendLeaf("type", $row->type, $doc, $rapportElem);
 	/*$filename = filename_from_node($nodes->item(0)).".pdf";*/
 	
-	$rapportElem->setAttribute('filename', filename_from_doc($row));
+	$filename = filename_from_doc($row);
+	$rapportElem->setAttribute('filename', $filename);
 	$rapportElem->setAttribute('type', $row->type);
 	
 	return $rapportElem;

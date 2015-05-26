@@ -7,7 +7,7 @@
 	<li><b>Rapporteur</b>: peut voir tous les rapports et éditer les
 		rapports et candidats dont il/elle est rapporteur.</li>
 	<li><b>Bureau</b>: peut changer les rapporteurs et éditer les infos
-		candidats.</li>
+		des chercheurs et candidats.</li>
 	<li><b>Secrétaire et président</b>: tous les droits sur tout dans la
 		section.</li>
 	<li><b>Admin</b>: tous les droits sur la configuration des membres et
@@ -91,7 +91,8 @@
 
 <hr />
 <h3 id="adminnewaccount">Création nouveau membre</h3>
-<p>Ce formulaire permet de créer un nouveau rapporteur</p>
+	  <p>Ce formulaire permet de créer un nouveau compte Marmotte pour un nouveau membre ne possédant pas encore de compte Janus (accès à e-valuation).<br/>
+	  A ne pas utiliser si le membre possède déjà un accès à e-valuation via son login Janus, dans ce cas rapprochez vous de votre ACN pour intégrer le nouveau membre à Marmotte.</p>
 <form method="post" action="index.php">
 	<input type="hidden" name="admin_users"></input>
 	<table class="inputreport">
@@ -154,7 +155,36 @@
 		name="action" value="importaccountsfromJanus" /> <input type="submit"
 		value="Importer les comptes" />
 </form>
-<p>Fusionner un ancien compte Marmotte avec un nouveau compte Janus.</p>
+-->
+<hr />
+
+<h3 id="admindeleteaccount">Suppression d'un membre</h3>
+<form method="post" action="index.php"
+	onsubmit="return confirm('Etes vous sur de vouloir supprimer cet utilisateur ?');">
+	<input type="hidden" name="admin_users"></input>
+	 <select name="login">
+		<?php
+		$users = listUsers();
+		foreach($users as $user => $data)
+		{
+			if ($data->permissions <= getUserPermissionLevel() || (isSecretaire() && $data->permissions == NIVEAU_PERMISSION_PRESIDENT))
+				echo "<option value=\"$user\">".ucfirst($data->description)." [".$user."]"."</option>";
+		}
+		?>
+	</select>
+	 <input type="hidden" name="action" value="admindeleteaccount" />
+	<input type="submit" value="Supprimer" />
+</form>
+
+<hr />
+
+<?php
+if(isSecretaire())
+{
+?>
+<h3>Fusionner deux comptes</h3>
+<p> Ce menu permet de fusionner deux comptes en transmettant les dossiers de l ancien compte au nouveau compte.</p>
+
 <form method="post" action="index.php">
 	<input type="hidden" name="admin_users"></input> <input type="hidden"
 		name="action" value="mergeUsers" /> <input type="submit"
@@ -200,28 +230,17 @@
 		?>
 	</select>
 </form>
+<?php
+}
+?>
 <br />
 
--->
+
 <hr />
-<h3 id="admindeleteaccount">Suppression d'un membre</h3>
-<form method="post" action="index.php"
-	onsubmit="return confirm('Etes vous sur de vouloir supprimer cet utilisateur ?');">
-	<input type="hidden" name="admin_users"></input>
-	 <select name="login">
-		<?php
-		$users = listUsers();
-		foreach($users as $user => $data)
-		{
-			if ($data->permissions <= getUserPermissionLevel() || (isSecretaire() && $data->permissions == NIVEAU_PERMISSION_PRESIDENT))
-				echo "<option value=\"$user\">".ucfirst($data->description)." [".$user."]"."</option>";
-		}
-		?>
-	</select>
-	 <input type="hidden" name="action" value="admindeleteaccount" />
-	<input type="submit" value="Supprimer" />
-</form>
-<br />
+
+
+
+
 <!--
 <hr />
 <h3 id="admindeleteallaccounts">Suppression de tous les membres de la
