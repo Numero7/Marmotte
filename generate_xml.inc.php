@@ -135,7 +135,7 @@ function getReportsAsXML($filter_values, $sort_criteria = array(), $keep_br = tr
 			if($row->type == "Candidature")
 			{
 				global $concours_ouverts;
-				if(is_auditionneCR($row))
+				if(needs_audition_report($row))
 					$types[] = "Audition";
 				if(is_classe($row))
 					$types[] = "Classement";
@@ -459,7 +459,8 @@ function createXMLReportElem($row, DOMDocument $doc, $keep_br = true)
 	appendLeaf("type", $row->type, $doc, $rapportElem);
 	/*$filename = filename_from_node($nodes->item(0)).".pdf";*/
 	
-	$rapportElem->setAttribute('filename', filename_from_doc($row));
+	$filename = filename_from_doc($row);
+	$rapportElem->setAttribute('filename', $filename);
 	$rapportElem->setAttribute('type', $row->type);
 	
 	return $rapportElem;

@@ -280,10 +280,12 @@ function voir_rapport_pdf($row)
 {
 	$eval_type = $row->type;
 
-	if($eval_type  == "Candidature" && is_auditionne($row))
+	if($eval_type  == "Candidature")
 	{
+	  if(is_auditionne($row))
+	    {
 		echo "<B>Rapports:</B>";
-		if(is_auditionneCR($row))
+		if(needs_audition_report($row))
 		{
 			echo "<a href=\"export.php?action=viewpdf&amp;option=Audition&amp;id=".$row->id_origine."&amp;id_origine=".$row->id_origine."\">\n";
 			echo "d'audition\n";
@@ -295,6 +297,7 @@ function voir_rapport_pdf($row)
 			echo "sur le candidat classé\n";
 			echo "</a>\n";
 		}
+	    }
 	}
 	else if($eval_type  != "Equivalence")
 	{
