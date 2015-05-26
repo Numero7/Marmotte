@@ -143,38 +143,18 @@
 </form>
 <br />
 
-<!--
 <hr />
 
-<hr /><h3 id="importaccounts">Import des membres</h3>
+<hr /><h3 id="importaccounts">Mise à jour des membres</h3>
 
-<p>Importer automatiquement les comptes des membres de la section, et
+<p>Importer automatiquement les comptes des membres de la section depuis Janus, et
 	les ajouter à la liste des comptes existant et/ou mettre à jour les comptes correspondants.</p>
 <form method="post" action="index.php">
 	<input type="hidden" name="admin_users"></input> <input type="hidden"
 		name="action" value="importaccountsfromJanus" /> <input type="submit"
 		value="Importer les comptes" />
 </form>
--->
-<hr />
-
-<h3 id="admindeleteaccount">Suppression d'un membre</h3>
-<form method="post" action="index.php"
-	onsubmit="return confirm('Etes vous sur de vouloir supprimer cet utilisateur ?');">
-	<input type="hidden" name="admin_users"></input>
-	 <select name="login">
-		<?php
-		$users = listUsers();
-		foreach($users as $user => $data)
-		{
-			if ($data->permissions <= getUserPermissionLevel() || (isSecretaire() && $data->permissions == NIVEAU_PERMISSION_PRESIDENT))
-				echo "<option value=\"$user\">".ucfirst($data->description)." [".$user."]"."</option>";
-		}
-		?>
-	</select>
-	 <input type="hidden" name="action" value="admindeleteaccount" />
-	<input type="submit" value="Supprimer" />
-</form>
+<br/>
 
 <hr />
 
@@ -183,7 +163,7 @@ if(isSecretaire())
 {
 ?>
 <h3>Fusionner deux comptes</h3>
-<p> Ce menu permet de fusionner deux comptes en transmettant les dossiers de l ancien compte au nouveau compte.</p>
+<p> Ce menu permet de fusionner deux comptes: transmission des dossiers de l'ancien compte au nouveau compte et suppression de l'ancien compte.</p>
 
 <form method="post" action="index.php">
 	<input type="hidden" name="admin_users"></input> <input type="hidden"
@@ -230,6 +210,26 @@ if(isSecretaire())
 		?>
 	</select>
 </form>
+<hr />
+
+<h3 id="admindeleteaccount">Suppression d'un membre</h3>
+<form method="post" action="index.php"
+	onsubmit="return confirm('Etes vous sur de vouloir supprimer cet utilisateur ?');">
+	<input type="hidden" name="admin_users"></input>
+	 <select name="login">
+		<?php
+		$users = listUsers();
+		foreach($users as $user => $data)
+		{
+			if ($data->permissions <= getUserPermissionLevel() || (isSecretaire() && $data->permissions == NIVEAU_PERMISSION_PRESIDENT))
+				echo "<option value=\"$user\">".ucfirst($data->description)." [".$user."]"."</option>";
+		}
+		?>
+	</select>
+	 <input type="hidden" name="action" value="admindeleteaccount" />
+	<input type="submit" value="Supprimer" />
+</form>
+
 <?php
 }
 ?>

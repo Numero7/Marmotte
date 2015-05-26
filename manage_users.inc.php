@@ -613,6 +613,7 @@ function importAllUsersFromJanus()
 			}
 			else
 			{
+				echo "Ajout du compte ".$login." à la section<br/>".
 				$sql = "INSERT INTO ".users_db." (login,sections,permissions,section_code,section_role_code,CID_code,CID_role_code,passHash,description,email,tel) ";
 				$sql .= "VALUES ('";
 				$sql .= real_escape_string($login)."','','0','".$row->section_code."','".$row->section_role_code."','".$row->CID_code."','".$row->CID_role_code."','','".real_escape_string($row->nom." ".$row->prenom)."','".$login."','');";
