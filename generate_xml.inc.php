@@ -23,59 +23,6 @@ function implode_with_keys($assoc,$inglue=':',$outglue=','){
 	return implode($outglue,$res);
 }
 
-/*
- *
-* For exportation
-*/
-function exportReportsAsXML($reports,$filename)
-{
-	global $typesRapportToAvis;
-	global $fieldsTypes;
-	global $mandatory_export_fields;
-
-	$result = "";
-
-	$doc = new DOMDocument("1.0","UTF-8");
-	$root = $doc->createElement("rapports");
-
-	$first = true;
-	$activefields = array();
-
-	foreach($reports as $report)
-	{
-		$node = $doc->createElement("evaluation");
-
-		if($first)
-		{
-			$activefields = array_unique(array_merge($mandatory_export_fields, get_editable_fields($report)));
-			$first = false;
-		}
-
-		$type = $report->type;
-		$avis = $typesRapportToAvis[$type];
-		foreach($activefields as $field)
-		{
-			if(!isSecretaire() && $fieldsTypes[$field] == "avis" && $report->$field =="")
-			{
-				$report->$field = "Avis possibles (supprimer avis inutiles)\n";
-				foreach($avis as $key => $value)
-					$report->$field .= $key."\n";
-			}
-		}
-
-		thing_to_xml_node($report,$node, $doc, "", $activefields);
-		$root->appendChild($node);
-	}
-
-	$doc->appendChild($root);
-
-	$doc->formatOutput = true;
-	$ret = $doc->save($filename);
-	if($ret == false)
-		throw string("Failed to save reports as xml");
-	else
-		return $ret;
-}
 
 function exportReportAsXML($report,$activefields,$filename)
 {
@@ -135,7 +82,7 @@ function getReportsAsXML($filter_values, $sort_criteria = array(), $keep_br = tr
 			if($row->type == "Candidature")
 			{
 				global $concours_ouverts;
-				if(is_auditionneCR($row))
+				if(needs_audition_report($row))
 					$types[] = "Audition";
 				if(is_classe($row))
 					$types[] = "Classement";
