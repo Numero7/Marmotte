@@ -72,7 +72,7 @@ try
 				# Fabrique un objet PMSP
 				$pmsp = new Pmsp(
 						"https://vigny.dr15.cnrs.fr/secure/pmsp-server.php",
-						"/home/gimbert/Panda/PMSP/pmsp.pub",
+						certif_janus,
 						"Marmotte",
 						adresse_du_site."/index.php?action=auth_janus",
 						false);

@@ -248,7 +248,6 @@ function strcontains($haystack, $needle)
 function checkTypeIsSpecified($properties)
 {
 	global $possible_type_labels;
-
 	foreach($possible_type_labels as $label)
 		if( isset( $properties[$label] ) &&  $properties[$label] != "" )
 		{

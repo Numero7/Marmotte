@@ -80,6 +80,97 @@ function showIconAvis($fieldID,$data)
 	}
 }
 
+function displayStatsConcours()
+{
+	$stats = get_bureau_stats();
+	$roles = array("rapporteur","rapporteur2","rapporteur3");
+	?>
+<center>
+<table>
+	<tr>
+		<?php
+		foreach($stats as $niveau => $data)
+			echo "<th>".$niveau."</th>";
+		?>
+	</tr>
+	<tr valign="top">
+		<?php
+		foreach($stats as $niveau => $data)
+		{
+			?>
+		<td>
+			<table class="stats">
+				<tr>
+					<th>login</th>
+					<th>rapp</th>
+					<th>rapp 2</th>
+					<th>rapp 3</th>
+					<th>Total</th>
+				</tr>
+				<?php
+				foreach($data as $login => $data_rapporteur)
+				{
+					$nom= isset($rapporteurs[$login])? $rapporteurs[$login] : $login;
+					echo "<tr ><td>".$nom."</td>";
+					$total = 0;
+					foreach($roles as $role)
+					{
+						if(isset($data_rapporteur[$role]))
+						{
+							$stat = $data_rapporteur[$role]["counter"];
+							echo "<td>".$stat."</td>";
+							$total += $stat;
+						}
+						else
+							echo "<td></td>";
+					}
+					echo "<td>".$total."</td>";
+					echo "</tr>";
+				}
+				?>
+			</table>
+		</td>
+		<?php
+		}
+		?>
+	</tr>
+</table>
+</center>
+<?php
+}
+
+function displayStatsSession()
+{
+	$stats = get_bureau_stats();
+	$roles = array("rapporteur","rapporteur2","rapporteur3");
+	?>
+	<center>
+	<table  class="stats">
+	<tr><th>Rapporteur</th><th>total</th><th>1</th><th>2</th><th>3</th></tr>
+	<?php
+	foreach($stats as $rapporteur => $compteurs)
+	{
+	echo "<tr><td>".$rapporteur."</td>";
+	echo "<td>".$compteurs["total"]."</td>";
+	echo "<td>".$compteurs["rapporteur"]."</td>";
+	echo "<td>".$compteurs["rapporteur2"]."</td>";
+	echo "<td>".$compteurs["rapporteur3"]."</td>";
+	echo "</tr>\n";
+	}
+	?>
+	</table>
+	</center>
+	<?php 
+}
+
+function displayStats()
+{
+	if(is_current_session_concours())
+		displayStatsConcours();
+	else
+		displayStatsSession();
+}
+
 function displayRows($rows, $fields, $filters, $filter_values)
 {
 	global $fieldsAll;
@@ -164,71 +255,16 @@ function displayRows($rows, $fields, $filters, $filter_values)
 </table>
 <hr />
 <p>
-	<?php  echo count($rows); ?> rapports
+	<?php  echo count($rows); ?>
+	rapports
 </p>
 
 <?php 
 $rapporteurs = listNomRapporteurs();
 $bur = isBureauUser();
 
-if(isBureauUser() && is_current_session_concours())
-{
-
-	$stats = get_bureau_stats();
-
-	$roles = array("rapporteur","rapporteur2","rapporteur3");
-	?>
-<table>
-	<tr>
-		<?php 
-		foreach($stats as $niveau => $data)
-			echo "<th>".$niveau."</th>";
-		?>
-	</tr>
-	<tr valign="top">
-		<?php 
-		foreach($stats as $niveau => $data)
-		{
-			?>
-		<td>
-			<table class="stats">
-				<tr>
-					<th>login</th>
-					<th>rapp</th>
-					<th>rapp 2</th>
-					<th>rapp 3</th>
-					<th>Total</th>
-				</tr>
-				<?php 
-				foreach($data as $login => $data_rapporteur)
-				{
-					$nom= isset($rapporteurs[$login])? $rapporteurs[$login] : $login;
-					echo "<tr ><td>".$nom."</td>";
-					$total = 0;
-					foreach($roles as $role)
-					{
-						if(isset($data_rapporteur[$role]))
-						{
-							$stat = $data_rapporteur[$role]["counter"];
-							echo "<td>".$stat."</td>";
-							$total += $stat;
-						}
-						else
-							echo "<td></td>";
-					}
-					echo "<td>".$total."</td>";
-					echo "</tr>";
-				}
-				?>
-			</table>
-		</td>
-		<?php 
-		}
-		?>
-	</tr>
-</table>
-<?php 
-}
+if($bur)
+	displayStats();
 ?>
 <table class="summary">
 	<tr>
@@ -238,6 +274,18 @@ if(isBureauUser() && is_current_session_concours())
 		$sec = isSecretaire() || (isBureauUser() && isSecretaire(getLogin() , false));
 		$concours = getConcours();
 
+
+		$listeavis = array();
+		if( is_current_session_concours() )
+		{
+			global $avis_candidature_short;
+			$listeavis = $avis_candidature_short;
+		}
+		else
+		{
+			global $tous_avis;
+			$listeavis = $tous_avis;
+		}
 
 		global $typesRapportToAvis;
 
@@ -285,6 +333,26 @@ if(isBureauUser() && is_current_session_concours())
 
 		foreach($fields as $fieldID)
 		{
+			// is_in_conflict(getLogin(), $candidate)
+			/*
+			 $candidate = get_or_create_candidate($row);
+			$conflit = is_in_conflict(getLogin(), $candidate);
+			*/
+			$conflit = is_in_conflict_efficient($row, getLogin());
+			$style = getStyle("",$odd,$conflit);
+			$odd = !$odd;
+			?>
+	
+	
+	<tr id="t<?php echo $row->id;?>" class="<?php echo $style;?>">
+		<?php
+
+		echo '<td>';
+		displayActionsMenu($row,"", $actions1,$row->rapporteur, $row->rapporteur);
+		echo '</td>';
+
+		foreach($fields as $fieldID)
+		{
 			$title = $fieldsAll[$fieldID];
 			echo '<td>';
 			$data = $row->$fieldID;
@@ -310,11 +378,6 @@ if(isBureauUser() && is_current_session_concours())
 				else
 					echo (isset($rapporteurs[$row->$fieldID]) ? $rapporteurs[$row->$fieldID] : $row->$fieldID);
 			}
-			else if($type == "type")
-			{
-				echo isset($id_rapport_to_label[$row->$fieldID]) ? $id_rapport_to_label[$row->$fieldID] : $row->$fieldID;
-//				rr();
-			}
 			else if($type=="avis")
 			{
 				//		displayAvisMenu($fieldID,$row);
@@ -335,11 +398,22 @@ if(isBureauUser() && is_current_session_concours())
 				}
 				else if($fieldID == "avis" || $bur || !isset($row->statut) || $row->statut != "doubleaveugle")
 				{
-					global $tous_avis;
-					//les avis de la section sont toujours visibales et les avis des rapporteurs seuelemtn si on n'est pas en double aveugle
-					$content = isset($tous_avis[$row->$fieldID]) ? $tous_avis[$row->$fieldID] : $row->$fieldID;
-					showIconAvis($fieldID,$data);
-					echo $content;
+					?>
+					<!-- Displaying field <?php echo $fieldID; ?>menu -->
+					<?php 
+
+					if($fieldID=="nom")
+					{
+						echo "<a href=\"?action=edit&amp;id=".($row->id)."\">";
+						echo '<span class="valeur">'.$data.'</span>';
+						echo '</a>';
+					}
+					else
+					{
+						if( ($type == "unit") && isset($prettyunits[$row->$fieldID]))
+							$data = $prettyunits[$row->$fieldID]->nickname;
+						echo '<span class="valeur">'.substr($data,0,25).'</span>';
+					}
 				}
 			}
 			else if($fieldID == "concours")
@@ -386,8 +460,8 @@ if(isBureauUser() && is_current_session_concours())
 		?>
 	</tr>
 	<?php
-			}
-			?>
+		}
+		?>
 </table>
 <br />
 <br />

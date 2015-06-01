@@ -61,6 +61,8 @@ if(isSecretaire() && !isSuperUser())
 <h2 id="ajout">Ajout ou mise-à-jour d'une unité</h2>
 <p>Si une unité avec le même code existe déjà, ses données seront mises
 	à jour sans que l'unité ne soit dupliquée.</p>
+<p>Si l'unite est une UMR vous pouvez renseigner uniquement le champ "code" et les infos restantes
+(acronyme, nom, directeur) seront automatiquement recuperees.</p>
 <form enctype="multipart/form-data" action="index.php" method="post">
 	<input type="hidden" name="admin_unites"></input>
 	<table class="inputreport">

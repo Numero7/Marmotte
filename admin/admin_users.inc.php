@@ -7,7 +7,7 @@
 	<li><b>Rapporteur</b>: peut voir tous les rapports et éditer les
 		rapports et candidats dont il/elle est rapporteur.</li>
 	<li><b>Bureau</b>: peut changer les rapporteurs et éditer les infos
-		candidats.</li>
+		des chercheurs et candidats.</li>
 	<li><b>Secrétaire et président</b>: tous les droits sur tout dans la
 		section.</li>
 	<li><b>Admin</b>: tous les droits sur la configuration des membres et
@@ -91,7 +91,8 @@
 
 <hr />
 <h3 id="adminnewaccount">Création nouveau membre</h3>
-<p>Ce formulaire permet de créer un nouveau rapporteur</p>
+	  <p>Ce formulaire permet de créer un nouveau compte Marmotte pour un nouveau membre ne possédant pas encore de compte Janus (accès à e-valuation).<br/>
+	  A ne pas utiliser si le membre possède déjà un accès à e-valuation via son login Janus, dans ce cas rapprochez vous de votre ACN pour intégrer le nouveau membre à Marmotte.</p>
 <form method="post" action="index.php">
 	<input type="hidden" name="admin_users"></input>
 	<table class="inputreport">
@@ -141,18 +142,29 @@
 	</table>
 </form>
 <br />
-<hr />
 
 <hr />
-<h3 id="importaccounts">Import des membres</h3>
-<p>Importer automatiquement les comptes des membres de la section, et
+
+<hr /><h3 id="importaccounts">Mise à jour des membres</h3>
+
+<p>Importer automatiquement les comptes des membres de la section depuis Janus, et
 	les ajouter à la liste des comptes existant et/ou mettre à jour les comptes correspondants.</p>
 <form method="post" action="index.php">
 	<input type="hidden" name="admin_users"></input> <input type="hidden"
 		name="action" value="importaccountsfromJanus" /> <input type="submit"
 		value="Importer les comptes" />
 </form>
-<p>Fusionner un ancien compte Marmotte avec un nouveau compte Janus.</p>
+<br/>
+
+<hr />
+
+<?php
+if(isSecretaire())
+{
+?>
+<h3>Fusionner deux comptes</h3>
+<p> Ce menu permet de fusionner deux comptes: transmission des dossiers de l'ancien compte au nouveau compte et suppression de l'ancien compte.</p>
+
 <form method="post" action="index.php">
 	<input type="hidden" name="admin_users"></input> <input type="hidden"
 		name="action" value="mergeUsers" /> <input type="submit"
@@ -198,10 +210,8 @@
 		?>
 	</select>
 </form>
-<br />
-
-
 <hr />
+
 <h3 id="admindeleteaccount">Suppression d'un membre</h3>
 <form method="post" action="index.php"
 	onsubmit="return confirm('Etes vous sur de vouloir supprimer cet utilisateur ?');">
@@ -219,7 +229,19 @@
 	 <input type="hidden" name="action" value="admindeleteaccount" />
 	<input type="submit" value="Supprimer" />
 </form>
+
+<?php
+}
+?>
 <br />
+
+
+<hr />
+
+
+
+
+<!--
 <hr />
 <h3 id="admindeleteallaccounts">Suppression de tous les membres de la
 	section</h3>
@@ -231,7 +253,11 @@
 </form>
 <br />
 
-
+-->
+<?php 
+if(isSuperUser())
+{
+	?>
 
 <hr />
 <h3 id="adminnewpwd">Modification d'un mot de passe</h3>
@@ -276,3 +302,4 @@
 </form>
 <hr />
 <?php
+}
