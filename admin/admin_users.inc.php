@@ -12,7 +12,6 @@
 		section.</li>
 	<li><b>Admin</b>: tous les droits sur la configuration des membres et
 		des unités de toutes les sections, ne peut voir aucun rapport.</b>
-
 </ul>
 
 <table>
@@ -145,14 +144,13 @@
 
 <hr />
 
-<hr /><h3 id="importaccounts">Mise à jour des membres</h3>
+<hr /><h3 id="importaccounts">Synchronisation des membres avec e-valuation</h3>
 
-<p>Importer automatiquement les comptes des membres de la section depuis Janus, et
-	les ajouter à la liste des comptes existant et/ou mettre à jour les comptes correspondants.</p>
+<p>Synchroniser les comptes Marmotte et les comptes e-valuation.</p>
 <form method="post" action="index.php">
 	<input type="hidden" name="admin_users"></input> <input type="hidden"
 		name="action" value="importaccountsfromJanus" /> <input type="submit"
-		value="Importer les comptes" />
+		value="Synchroniser" />
 </form>
 <br/>
 

@@ -1,19 +1,20 @@
 <?php
 require_once('config/configDB.inc.php');
 
+global $dbh;
+
 function db_from_scratch()
 {
 	$msg = "Please properly configure the databse access in the file config/configDB.inc.php<br/>";
 	$msg .= "and/or initialize the database with <h1><a href=\"marmotte.sql\">this SQL script</a></h1></br></br></br>.";
 }
 
-$dbh = NULL;
 
 
-function db_connect($serverName,$dbname,$login,$password)
+function db_connect($serverName,$db,$login,$password)
 {
 	global $dbh;
-	$dbh = mysqli_connect($serverName, $login, $password, $dbname) or die("Could not connect to the server '".$serverName."<br/>".mysqli_error($dbh));
+	$dbh = mysqli_connect($serverName, $login, $password, $db) or die("Could not connect to the server '".$serverName."<br/>".mysqli_error($dbh));
 	
 	mysqli_query($dbh, "SET NAMES utf8;");
 		
@@ -34,12 +35,11 @@ function export_db($tablename)
 	global $servername;
 	global $serverlogin;
 	global $serverpassword;
-	global $dbname;
 	
 	$filename = $tablename.'.toto.sql';
 	$worked = 0;
 
-	$command='mysqldump --opt -h' .$servername .' -u' .$serverlogin .($serverpassword == "" ? "" : ' -p' .$serverpassword) .' ' .$dbname;
+	$command='mysqldump --opt -h' .$servername .' -u' .$serverlogin .($serverpassword == "" ? "" : ' -p' .$serverpassword) .' ' .marmottedbname;
 	
 	$output=array();
 	
@@ -49,20 +49,20 @@ function export_db($tablename)
 	
 	switch($worked){
 		case 0:
-			return 'Database <b>' .$dbname .'</b> successfully exported to <b>~/' .$filename .'</b>';
+			return 'Database <b>' .marmottedbname .'</b> successfully exported to <b>~/' .$filename .'</b>';
 		case 1:
-			return 'There was a warning during the export of <b>' .$dbname .'</b> to <b>~/' .$filename .'</b>'.implode("\n",$output);
+			return 'There was a warning during the export of <b>' .marmottedbname .'</b> to <b>~/' .$filename .'</b>'.implode("\n",$output);
 		case 2:
 			return 'There was an error during export. Please check your values.';
 	}
 }
 
-function import_db($dbname)
+function import_db($db)
 {
-	$filename = 'db/'.$dbname.'.sql';
+	$filename = 'db/'.$db.'.sql';
 	
 	
-	$command='mysql -h' .$servername .' -u' .$serverlogin .' -p' .$serverpassword .' ' .$dbname .' < ' .$filename;
+	$command='mysql -h' .$servername .' -u' .$serverlogin .' -p' .$serverpassword .' ' .$db .' < ' .$filename;
 	exec($command,$output=array(),$worked);
 	switch($worked)
 	{
@@ -76,9 +76,9 @@ function import_db($dbname)
 }
 
 
-function migrate( $section, $serverName, $dbname, $login, $password, $type)
+function migrate( $section, $serverName, $db, $login, $password, $type)
 {
-	$remote_dbh = mysqli_connect($serverName, $login, $password, $dbname) or die("Could not connect to the server '".$serverName."<br/>");
+	$remote_dbh = mysqli_connect($serverName, $login, $password, $db) or die("Could not connect to the server '".$serverName."<br/>");
 	mysqli_query($remote_dbh, "SET NAMES utf8;");
 
 	global $dbh;

@@ -18,7 +18,7 @@ session_start();
 global $dbh;
 
 
-db_connect($servername,$dbname,$serverlogin,$serverpassword);
+db_connect($servername,marmottedbname,$serverlogin,$serverpassword);
 
 if (authenticate())
 	{

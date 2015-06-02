@@ -1,7 +1,6 @@
 <?php 
-//require_once('manage_user
-
-$firstlogin = authenticateBase('admin','password');
+require_once("config_tools.inc.php");
+$is_maintenance = (get_config("maintenance","off",false,"0") === "on");
 
 			?>
 
@@ -19,21 +18,17 @@ $firstlogin = authenticateBase('admin','password');
   <br/>
   <br/>
 <br/>
-		<br/>
-		<h3>"Marmotte", une interface de gestion des rapports pour les sections du Comité National.</h3>
-		<br/>
-		<br/>
-		<br/>
-<!-- 
-		<h3>"We can only see a short distance ahead, but we can see plenty there that needs to be done."
-		</h3>
-		 <h3>
-<b>Ned:</b> So what are you doing for dinner?<br/>
-<b>Phil:</b> Umm... something else. <br/>
- --<I>Groundhog Day</I>.
-		 -->
- 		<br/>
-		<br/>
+<?php 
+if($is_maintenance)
+{
+?>
+<p><font color="red">
+Site fermé pour maintenance, accès temporairement réservé aux administrateurs.
+</font>
+</p>
+<?php 
+}
+?>
 </h3>
 		</div>
 
@@ -47,13 +42,13 @@ $firstlogin = authenticateBase('admin','password');
 	<table>
 		<tr>
 			<td><span class="label">Login</span></td>
-			<td><input name="login" type="text" value="<?php if($firstlogin) echo 'admin';?>"></input></td>
+			<td><input name="login" type="text" value=""></input></td>
 			<td rowspan="2"><input type="submit" value="Valider">
 			<input type="hidden" name="action" value="auth_marmotte"></td>
 		</tr>
 		<tr>
 			<td><span class="label">Mot de passe</span></td>
-			<td><input name="password" type="password" value="<?php if($firstlogin) echo 'password';?>"></input></td>
+			<td><input name="password" type="password" value=""></input></td>
 		</tr>
 	</table>
 	 <?php 
@@ -61,15 +56,8 @@ $firstlogin = authenticateBase('admin','password');
 	 else
 	 {
 	 ?>
-<!--
-<p><font color="red">
-[21/04/2015 11:29] Le service d'authentification Janus fourni par la DSI n'est actuellement pas fonctionnel.
-En cas de besoin, merci de contacter hugo.gimbert@labri.fr afin d'obtenir un mot de passe provisoire.
-</font>
-</p>
--->
-	 <h2><a href="index.php?action=auth_janus">Authentification par login e-valuation</a></h2>
-	 <h3><a href="index.php?action=auth_marmotte">Authentification Marmotte (anciens logins)</a></h3>
+	 <h2><a href="index.php?action=auth_janus">Authentification e-valuation</a></h2>
+	 <h3><a href="index.php?action=auth_marmotte">Authentification Marmotte</a></h3>
 	 <?php 
 	 }
 	 ?>

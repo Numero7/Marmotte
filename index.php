@@ -27,7 +27,7 @@ try
 {
 	try
 	{
-		db_connect($servername,$dbname,$serverlogin,$serverpassword);
+		db_connect($servername,marmottedbname,$serverlogin,$serverpassword);
 	}
 	catch(Exception $e)
 	{

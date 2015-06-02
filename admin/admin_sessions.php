@@ -45,7 +45,12 @@ else
 </form>
 			<br/>
 <hr />
-			
+			<h3>Synchronisation des sessions avec e-valuation</h3>
+	<p>
+<a href="index.php?action=synchronize_sessions_with_dsi&amp;admin_maintenance=">Synchroniser les sessions avec e-valuation.</a>
+</p>
+<hr />
+
 			<h3>Ajout d'une session</h3>
 			<p>Ce menu permet de créer une nouvelle session.</p>
 			<form method="post" action="index.php"

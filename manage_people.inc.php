@@ -225,7 +225,14 @@ function get_or_create_candidate($data)
 }
 
 
-
+function get_candidate_from_SIRHUS($sirhus)
+{
+	$sql = "SELECT * FROM ".dsidbname.".".dsi_people_db." WHERE numsirhus=\"".$sirhus."\";";
+	$res = sql_request($sql);
+	while($row = mysqli_fetch_object($res))
+		return $row;
+	return null;
+}
 
 function norm_name($nom)
 {

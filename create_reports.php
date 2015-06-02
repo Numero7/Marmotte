@@ -14,7 +14,7 @@ session_start();
 require_once("db.inc.php");
 require_once('authenticate_tools.inc.php');
 
-db_connect($servername,$dbname,$serverlogin,$serverpassword);
+db_connect($servername,marmottedbname,$serverlogin,$serverpassword);
 
 require_once("utils.inc.php");
 require_once("manage_users.inc.php");

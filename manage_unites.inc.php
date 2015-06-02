@@ -41,10 +41,32 @@ function unitExists($code)
 	return array_key_exists($code, unitsList());
 }
 
+function unitDSIExists($code)
+{
+	$sql = "SELECT * FROM ".dsidbname.".".dsi_units_db." WHERE CODEUNITE=".$code.";";
+	$res = sql_request($sql);
+	return (mysql_numrows($res) > 0);
+}
+
 function createUnitIfNeeded($code)
 {
 	if(!unitExists($code))
+	{
+		if(unitDSIExists($code))
+		{
+			$sql = "SELECT * FROM ".dsidbname.".".dsi_units_db." WHERE CODEUNITE=".$code.";";
+			$res = sql_request($sql);
+			while($row = mysqli_fetch_object($res))
+			{
+				addUnit($row->SIGLEUNI,$row->CODEUNITE,$row->INTUNI,$row->COURRIELDIRUNI);
+				break;
+			}
+		}
+		else
+		{
 		addUnit($code,$code,$code,"");
+		}
+	}
 }
 
 function updateUnitData($unite, $data)

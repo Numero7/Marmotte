@@ -5,6 +5,7 @@ require_once('generate_csv.inc.php');
 require_once('manage_unites.inc.php');
 
 $admin_sessions = isset($_REQUEST["admin_sessions"]) && isSecretaire();
+$admin_maintenance = isset($_REQUEST["admin_maintenance"]) && isSecretaire();
 $admin_users = isset($_REQUEST["admin_users"]) && isSecretaire();
 $admin_concours = isset($_REQUEST["admin_concours"]) && isSecretaire() && !isSuperUser();
 $admin_config = isset($_REQUEST["admin_config"]) && isSecretaire();
@@ -20,6 +21,12 @@ if(isSecretaire())
 <h1>Interface d'administration</h1>
 <ul>
 	<?php 
+	if(isSecretaire())
+	{
+		?>
+	<li><a href="index.php?action=admin&amp;admin_maintenance=">Maintenance</a></li>
+	<?php 
+	}
 	if(isSecretaire() && !isSuperUser())
 	{
 		?>
@@ -41,7 +48,8 @@ if(isSecretaire())
  if( is_current_session_concours() )
 {
 		?>
-	<li><a href="index.php?action=admin&amp;admin_concours=">Concours</a></li>
+	<li>
+	<a href="index.php?action=admin&amp;admin_concours=">Concours</a></li>
 <?php
 }
 ?>
@@ -66,6 +74,29 @@ if(isSecretaire())
 <hr />
 
 <?php 	
+
+if($admin_maintenance)
+{
+	if(isSuperUser())
+	{
+	?>
+<p>
+Statut maintenance: '<?php echo get_config("maintenance", "off", true, 0); ?>'</p>
+<p>
+<a href="index.php?action=maintenance_on&amp;admin_maintenance=">Commencer la maintenance (et fermer le site).</a>
+</p>
+<p>
+<a href="index.php?action=maintenance_off&amp;admin_maintenance=">Terminer la maintenance.</a>
+</p>
+<?php 
+	}
+	?>
+<p>
+<a href="index.php?action=synchronize_with_dsi&amp;admin_maintenance=">Synchroniser avec la dsi.</a>
+</p>
+<?php
+}
+
 if($admin_sessions)
 {
 	?>
@@ -174,8 +205,8 @@ if($admin_concours)
 		</tr>
 	</table>
 	<input type="hidden" name="admin_concours"></input> <input
-		type="hidden" name="action" value="add_concours" /> <input
-		type="submit" value="Ajouter / Mettre à jour" />
+		type="hidden" name="action" value="add_concours" />
+	<input type="submit" value="Ajouter / Mettre à jour" />
 </form>
 <br />
 <hr />

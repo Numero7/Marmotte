@@ -2,6 +2,7 @@
 require_once('utils.inc.php');
 require_once('manage_filters_and_sort.inc.php');
 require_once('manage_sessions.inc.php');
+require_once('synchro.inc.php');
 
 function displayFiltrage($rows, $fields, $filters, $filter_values)
 {
@@ -54,7 +55,7 @@ function displayFiltrage($rows, $fields, $filters, $filter_values)
 						?>
 					<td></td>
 					<td style="width: 10em;"><h3>
-							<a href="index.php?action=view&reset_filter=">Réinitialiser
+							<a href="index.php?action=view&amp;reset_filter=">Réinitialiser
 								filtres</a>
 						</h3>
 					</td>
@@ -86,55 +87,55 @@ function displayStatsConcours()
 	$roles = array("rapporteur","rapporteur2","rapporteur3");
 	?>
 <center>
-<table>
-	<tr>
-		<?php
-		foreach($stats as $niveau => $data)
-			echo "<th>".$niveau."</th>";
-		?>
-	</tr>
-	<tr valign="top">
-		<?php
-		foreach($stats as $niveau => $data)
-		{
+	<table>
+		<tr>
+			<?php
+			foreach($stats as $niveau => $data)
+				echo "<th>".$niveau."</th>";
 			?>
-		<td>
-			<table class="stats">
-				<tr>
-					<th>login</th>
-					<th>rapp</th>
-					<th>rapp 2</th>
-					<th>rapp 3</th>
-					<th>Total</th>
-				</tr>
-				<?php
-				foreach($data as $login => $data_rapporteur)
-				{
-					$nom= isset($rapporteurs[$login])? $rapporteurs[$login] : $login;
-					echo "<tr ><td>".$nom."</td>";
-					$total = 0;
-					foreach($roles as $role)
-					{
-						if(isset($data_rapporteur[$role]))
-						{
-							$stat = $data_rapporteur[$role]["counter"];
-							echo "<td>".$stat."</td>";
-							$total += $stat;
-						}
-						else
-							echo "<td></td>";
-					}
-					echo "<td>".$total."</td>";
-					echo "</tr>";
-				}
+		</tr>
+		<tr valign="top">
+			<?php
+			foreach($stats as $niveau => $data)
+			{
 				?>
-			</table>
-		</td>
-		<?php
-		}
-		?>
-	</tr>
-</table>
+			<td>
+				<table class="stats">
+					<tr>
+						<th>login</th>
+						<th>rapp</th>
+						<th>rapp 2</th>
+						<th>rapp 3</th>
+						<th>Total</th>
+					</tr>
+					<?php
+					foreach($data as $login => $data_rapporteur)
+					{
+						$nom= isset($rapporteurs[$login])? $rapporteurs[$login] : $login;
+						echo "<tr ><td>".$nom."</td>";
+						$total = 0;
+						foreach($roles as $role)
+						{
+							if(isset($data_rapporteur[$role]))
+							{
+								$stat = $data_rapporteur[$role]["counter"];
+								echo "<td>".$stat."</td>";
+								$total += $stat;
+							}
+							else
+								echo "<td></td>";
+						}
+						echo "<td>".$total."</td>";
+						echo "</tr>";
+					}
+					?>
+				</table>
+			</td>
+			<?php
+			}
+			?>
+		</tr>
+	</table>
 </center>
 <?php
 }
@@ -144,23 +145,29 @@ function displayStatsSession()
 	$stats = get_bureau_stats();
 	$roles = array("rapporteur","rapporteur2","rapporteur3");
 	?>
-	<center>
-	<table  class="stats">
-	<tr><th>Rapporteur</th><th>total</th><th>1</th><th>2</th><th>3</th></tr>
-	<?php
-	foreach($stats as $rapporteur => $compteurs)
-	{
-	echo "<tr><td>".$rapporteur."</td>";
-	echo "<td>".$compteurs["total"]."</td>";
-	echo "<td>".$compteurs["rapporteur"]."</td>";
-	echo "<td>".$compteurs["rapporteur2"]."</td>";
-	echo "<td>".$compteurs["rapporteur3"]."</td>";
-	echo "</tr>\n";
-	}
-	?>
+<center>
+	<table class="stats">
+		<tr>
+			<th>Rapporteur</th>
+			<th>total</th>
+			<th>1</th>
+			<th>2</th>
+			<th>3</th>
+		</tr>
+		<?php
+		foreach($stats as $rapporteur => $compteurs)
+		{
+			echo "<tr><td>".$rapporteur."</td>";
+			echo "<td>".$compteurs["total"]."</td>";
+			echo "<td>".$compteurs["rapporteur"]."</td>";
+			echo "<td>".$compteurs["rapporteur2"]."</td>";
+			echo "<td>".$compteurs["rapporteur3"]."</td>";
+			echo "</tr>\n";
+		}
+		?>
 	</table>
-	</center>
-	<?php 
+</center>
+<?php 
 }
 
 function displayStats()
@@ -171,86 +178,174 @@ function displayStats()
 		displayStatsSession();
 }
 
-function displayRows($rows, $fields, $filters, $filter_values)
+function displayRowCell($row, $fieldID)
 {
 	global $fieldsAll;
-	global $actions;
+	$bur = isBureauUser();
+	$sec = isSecretaire() || ( $bur && isSecretaire(getLogin() , false));
+
+	$concours = getConcours();	
+	$rapporteurs = listNomRapporteurs();
+	
+	$title = $fieldsAll[$fieldID];
+	echo '<td>';
+	$data = $row->$fieldID;
+
 	global $fieldsTypes;
-	global $specialtr_fields;
-	global $start_tr_fields;
-	global $end_tr_fields;
-	global $id_rapport_to_label;
+	$type = isset($fieldsTypes[$fieldID]) ?  $fieldsTypes[$fieldID] : "";
+
+	if($type=="rapporteur")
+	{
+		if($bur)
+		{
+			?>
+	<select
+		onchange="window.location='index.php?action=set_property&property=<?php echo $fieldID; ?>&all_reports=&id_origine=<?php echo $row->id_origine; ?>&value=' + this.value;">
+		<?php
+		foreach($rapporteurs as $rapporteur => $nom)
+		{
+			$selected = ($rapporteur == $row->$fieldID) ? "selected=on" : "";
+			echo "<option ".$selected." value=\"".$rapporteur."\">".$nom."</option>\n";
+		}
+		?>
+	</select>
+	<?php
+		}
+		else
+			echo (isset($rapporteurs[$row->$fieldID]) ? $rapporteurs[$row->$fieldID] : $row->$fieldID);
+	}
+	else if($type=="avis")
+	{
+		global $typesRapportToAvis;
+		$listeavis = isset($typesRapportToAvis[$row->type]) ? $typesRapportToAvis[$row->type] : array();
+		
+		if(isset($filters['avis']) && isset($data['avis']['liste']))
+			$avis = $data['avis']['liste'];
+		
+		if($sec && $fieldID == "avis")
+		{
+			?><select onchange="window.location='index.php?action=set_property&property=<?php echo $fieldID; ?>&id_origine=<?php echo $row->id_origine; ?>&value=' + encodeURIComponent(this.value);">
+		<?php
+		foreach($listeavis as $key => $value)
+		{
+			$selected = (strval($key) === $row->$fieldID) ? "selected=on" : "";
+			echo "<option ".$selected." value=\"".$key."\">".$value."</option>\n";
+		}
+		?>
+	</select>
+	<?php
+		}
+		else if($fieldID == "avis" || $bur || !isset($row->statut) || $row->statut != "doubleaveugle")
+		{
+			showIconAvis($fieldID,$data);
+			echo $fieldID;
+		}
+	}
+	else if($fieldID == "concours")
+	{
+		echo isset($concours[$row->$fieldID]) ? $concours[$row->$fieldID]->intitule : "";
+	}
+	else if($fieldID=="sousjury")
+	{
+		echo $row->$fieldID;
+	}
+	else if($fieldID=="nom")
+	{
+		echo "<a href=\"?action=edit&amp;id=".($row->id)."\">";
+		echo '<span class="valeur">'.$data.'</span>';
+		echo '</a>';
+	}
+	else if( ($type == "unit") && isset( $prettyunits[$row->$fieldID] ) )
+	{
+		$prettyunits = unitsList();
+		$data = $prettyunits[$row->$fieldID]->nickname;
+		echo '<span class="valeur">'.$data.'</span>';
+	}
+	else
+		echo '<span class="valeur">'.$data.'</span>';
+		
+	echo '</td>';
+}
+
+function display_updates()
+{
+	if(isSecretaire() && !isset($_SESSION["update_performed"]))
+	{
+		synchronizeWithDsiMembers();
+		$_SESSION["update_performed"] = true;
+	}
+}
+
+
+function displayStatutMenu()
+{
+	?>
+<td>
+	<table>
+		<tr>
+			<td>
+				<form
+					onsubmit="return confirm('Changer les statuts des rapports?');"
+					method="post" action="index.php">
+					<table>
+						<tr>
+							<td><input type="submit" value="Changer statuts" />
+							</td>
+							<td><select name="new_statut">
+									<?php
+									global $statutsRapports;
+									foreach ($statutsRapports as $val => $nom)
+									{
+										$sel = "";
+										echo "<option value=\"".$val."\" $sel>".$nom."</option>\n";
+									}
+									?>
+							</select> <input type="hidden" name="action"
+								value="change_statut" />
+							</td>
+						</tr>
+					</table>
+				</form>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<form onsubmit="return confirm('Supprimer ces rapports?');"
+					method="post" action="index.php">
+					<input type="hidden" name="action" value="deleteCurrentSelection" />
+					<input type="submit" value="Supprimer rapports" />
+				</form>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<form method="post" action="index.php"
+					onsubmit="return confirm('Affecter les sous-jurys?');">
+					<input type="hidden" name="action" value="affectersousjurys2" /> <input
+						type="submit" value="Affecter sous-jurys" /> <input type="hidden"
+						name="admin_concours"></input>
+				</form>
+			</td>
+		</tr>
+
+	</table>
+</td>
+<?php 
+}
+
+function displayRows($rows, $fields, $filters, $filter_values)
+{
+	display_updates();
+	
+	global $fieldsAll;
 
 	?>
 <table>
 	<tr>
 		<td>
-			<table>
-				<tr>
-					<td><?php 
-					displayFiltrage($rows, $fields, $filters, $filter_values);
-					?>
-					</td>
-				</tr>
-			</table>
+		<?php displayFiltrage($rows, $fields, $filters, $filter_values); ?>
 		</td>
-		<?php 
-		if(isSecretaire())
-		{
-			?>
-		<td>
-			<table>
-				<tr>
-					<td>
-						<form
-							onsubmit="return confirm('Changer les statuts des rapports?');"
-							method="post" action="index.php">
-							<table>
-								<tr>
-									<td><input type="submit" value="Changer statuts" />
-									</td>
-									<td><select name="new_statut">
-											<?php  
-											global $statutsRapports;
-											foreach ($statutsRapports as $val => $nom)
-											{
-												$sel = "";
-												echo "<option value=\"".$val."\" $sel>".$nom."</option>\n";
-											}
-											?>
-									</select> <input type="hidden" name="action"
-										value="change_statut" />
-									</td>
-								</tr>
-							</table>
-						</form>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<form onsubmit="return confirm('Supprimer ces rapports?');"
-							method="post" action="index.php">
-							<input type="hidden" name="action" value="deleteCurrentSelection" />
-							<input type="submit" value="Supprimer rapports" />
-						</form>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<form method="post" action="index.php"
-							onsubmit="return confirm('Affecter les sous-jurys?');">
-							<input type="hidden" name="action" value="affectersousjurys2" />
-							<input type="submit" value="Affecter sous-jurys" /> <input
-								type="hidden" name="admin_concours"></input>
-						</form>
-					</td>
-				</tr>
-
-			</table>
-		</td>
-		<?php 
-		}
-		?>
+		<?php if(isSecretaire()) displayStatutMenu(); ?>
 	</tr>
 </table>
 <hr />
@@ -271,29 +366,6 @@ if($bur)
 		<th class="oddrow"><span class="nomColonne"></span></th>
 		<?php
 
-		$sec = isSecretaire() || (isBureauUser() && isSecretaire(getLogin() , false));
-		$concours = getConcours();
-
-
-		$listeavis = array();
-		if( is_current_session_concours() )
-		{
-			global $avis_candidature_short;
-			$listeavis = $avis_candidature_short;
-		}
-		else
-		{
-			global $tous_avis;
-			$listeavis = $tous_avis;
-		}
-
-		global $typesRapportToAvis;
-
-		if(isset($filters['avis']) && isset($data['avis']['liste']))
-			$avis = $data['avis']['liste'];
-
-		$prettyunits = unitsList();
-
 		foreach($fields as $fieldID)
 			if(isset($fieldsAll[$fieldID]))
 			{
@@ -307,172 +379,36 @@ if($bur)
 		</th>
 		<?php
 			}
-			echo '</tr>';
-
-
-			global $actions1;
-			global $actions2;
-
-			$odd = false;
-			foreach($rows as $row)
-			{
-				$listeavis = isset($typesRapportToAvis[$row->type]) ? $typesRapportToAvis[$row->type] : array();
-				
-				$conflit = is_in_conflict_efficient($row, getLogin());
-				$style = getStyle("",$odd,$conflit);
-				$odd = !$odd;
-				?>
-	
-	
-	<tr id="t<?php echo $row->id;?>" class="<?php echo $style;?>">
-		<?php
-
-		echo '<td>';
-		displayActionsMenu($row,"", $actions1,$row->rapporteur, $row->rapporteur);
-		echo '</td>';
-
-		foreach($fields as $fieldID)
-		{
-			// is_in_conflict(getLogin(), $candidate)
-			/*
-			 $candidate = get_or_create_candidate($row);
-			$conflit = is_in_conflict(getLogin(), $candidate);
-			*/
-			$conflit = is_in_conflict_efficient($row, getLogin());
-			$style = getStyle("",$odd,$conflit);
-			$odd = !$odd;
 			?>
-	
-	
-	<tr id="t<?php echo $row->id;?>" class="<?php echo $style;?>">
-		<?php
-
-		echo '<td>';
-		displayActionsMenu($row,"", $actions1,$row->rapporteur, $row->rapporteur);
-		echo '</td>';
-
-		foreach($fields as $fieldID)
-		{
-			$title = $fieldsAll[$fieldID];
-			echo '<td>';
-			$data = $row->$fieldID;
-			$type = isset($fieldsTypes[$fieldID]) ?  $fieldsTypes[$fieldID] : "";
-
-			if($type=="rapporteur")
-			{
-				if($bur)
-				{
-					?>
-		<select
-			onchange="window.location='index.php?action=set_property&property=<?php echo $fieldID; ?>&all_reports=&id_origine=<?php echo $row->id_origine; ?>&value=' + this.value;">
-			<?php 
-			foreach($rapporteurs as $rapporteur => $nom)
-			{
-				$selected = ($rapporteur == $row->$fieldID) ? "selected=on" : "";
-				echo "<option ".$selected." value=\"".$rapporteur."\">".$nom."</option>\n";
-			}
-			?>
-		</select>
-		<?php 
-				}
-				else
-					echo (isset($rapporteurs[$row->$fieldID]) ? $rapporteurs[$row->$fieldID] : $row->$fieldID);
-			}
-			else if($type=="avis")
-			{
-				//		displayAvisMenu($fieldID,$row);
-				if($sec && $fieldID == "avis")
-				{
-					?>
-		<select
-			onchange="window.location='index.php?action=set_property&property=<?php echo $fieldID; ?>&id_origine=<?php echo $row->id_origine; ?>&value=' + encodeURIComponent(this.value);">
-			<?php
-			foreach($listeavis as $key => $value)
-			{
-				$selected = (strval($key) === $row->$fieldID) ? "selected=on" : "";
-				echo "<option ".$selected." value=\"".$key."\">".$value."</option>\n";
-			}
-			?>
-		</select>
-		<?php
-				}
-				else if($fieldID == "avis" || $bur || !isset($row->statut) || $row->statut != "doubleaveugle")
-				{
-					?>
-					<!-- Displaying field <?php echo $fieldID; ?>menu -->
-					<?php 
-
-					if($fieldID=="nom")
-					{
-						echo "<a href=\"?action=edit&amp;id=".($row->id)."\">";
-						echo '<span class="valeur">'.$data.'</span>';
-						echo '</a>';
-					}
-					else
-					{
-						if( ($type == "unit") && isset($prettyunits[$row->$fieldID]))
-							$data = $prettyunits[$row->$fieldID]->nickname;
-						echo '<span class="valeur">'.substr($data,0,25).'</span>';
-					}
-				}
-			}
-			else if($fieldID == "concours")
-			{
-				echo isset($concours[$row->$fieldID]) ? $concours[$row->$fieldID]->intitule : "";
-			}
-			else if($fieldID=="sousjury")
-			{
-				?>
-		<!-- Displaying sous jury menu -->
-		<?php 
-		/***
-		 displaySousJuryMenu($fieldID,$row);***/
-		echo $row->$fieldID;
-			}
-			else if($data != "")
-			{
-				?>
-		<!-- Displaying field <?php echo $fieldID; ?>menu -->
-		<?php 
-
-		if($fieldID=="nom")
-		{
-			echo "<a href=\"?action=edit&amp;id=".($row->id)."\">";
-			echo '<span class="valeur">'.$data.'</span>';
-			echo '</a>';
-		}
-		else
-		{
-			showIconAvis($fieldID,$data);
-			if( ($type == "unit") && isset($prettyunits[$row->$fieldID]))
-				$data = $prettyunits[$row->$fieldID]->nickname;
-			echo '<span class="valeur">'.$data.'</span>';
-		}
-			}
-			echo '</td>';
-		}
-		?>
-		<!-- Displaying action menu -->
-		<?php 
-		echo '<td>';
-		displayActionsMenu($row,"", $actions2);
-		echo '</td>';
-		?>
 	</tr>
-	<?php
-		}
+	<?php 
+	global $actions1;
+	global $actions2;
+
+	$odd = false;
+	foreach($rows as $row)
+	{
+		$conflit = is_in_conflict_efficient($row, getLogin());
+		$style = getStyle("",$odd,$conflit);
+		$odd = !$odd;
+	?>
+	<tr id="t<?php echo $row->id;?>" class="<?php echo $style;?>">
+		<td>
+		<?php displayActionsMenu($row,"", $actions1); ?>
+		</td>
+		<?php 
+		foreach($fields as $fieldID)
+			displayRowCell($row, $fieldID);
 		?>
+		<td>
+		<?php displayActionsMenu($row,"", $actions2); ?>
+		</td>
+	</tr>
+	<?php 
+	}
+}
+	?>
 </table>
 <br />
 <br />
 <br />
-<p>
-	Marmotte a été développé par Hugo Gimbert et Yann Ponty.<br /> Code
-	libre d'utilisation par les sections du Comité National de la Recherche
-	Scientifique.<br /> Utilisations commerciales réservées.
-</p>
-<?php
-} ;
-
-
-?>

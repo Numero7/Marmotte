@@ -113,13 +113,21 @@ function deleteSession($id, $supprimerdossiers)
 		throw new Exception("Vous n'avez pas les droits suffisants pour effacer une session");
 }
 
-function get_all_sessions()
+function get_all_sessions($section = "")
 {
-	$sql = "SELECT * FROM sessions WHERE 1;";
+	if($section != "")
+		$sql = "SELECT * FROM sessions WHERE `section`=\"".$section."\";";
+	else
+		$sql = "SELECT * FROM sessions WHERE 1;";
 	$result = sql_request($sql);
 	$sessions = array();
 	while($row = mysqli_fetch_object($result))
-		$sessions[$row->section][] = $id;
+	{
+	if($section != "")
+		$sessions[] = $row->id;
+	else
+		$sessions[$row->section][] = $row->id;
+	}
 	return $sessions;
 }
 ?>

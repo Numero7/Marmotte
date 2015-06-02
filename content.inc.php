@@ -231,6 +231,28 @@ function alertText($text)
 			
 			switch($action)
 			{
+				case 'synchronize_sessions_with_dsi':
+					$answer = synchronizeSessions();
+					if($answer != "")
+						echo $answer;
+					else
+						include 'admin/admin.inc.php';
+					break;
+				case 'synchronize_with_dsi':
+					$answer = synchronize_with_evaluation();
+					if($answer != "")
+						echo $answer;
+					else
+						include 'admin/admin.inc.php';
+					break;
+				case 'maintenance_on':
+					set_config("maintenance", "on");
+					include 'admin/admin.inc.php';
+					break;
+				case 'maintenance_off':
+					set_config("maintenance", "off");
+					include 'admin/admin.inc.php';
+					break;
 				case 'migrate_to_eval_codes':
 					migrate_to_eval_codes();
 					break;
@@ -475,9 +497,11 @@ function alertText($text)
 					scrollToId("membres");
 					break;
 				case 'importaccountsfromJanus':
-					importAllUsersFromJanus();
-					include "admin/admin.inc.php";
-					scrollToId("membres");
+					$result = synchronizeWithDsiMembers();
+					if($result != "")
+						echo $result;
+					else
+						include "admin/admin.inc.php";
 					break;
 				case 'infosrapporteur':
 					if (isset($_REQUEST["login"]) and isset($_REQUEST["permissions"]))

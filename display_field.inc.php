@@ -156,6 +156,16 @@ function display_select($row, $fieldID, $liste,$readonly)
 	echo "</td>\n";
 }
 
+function display_dsi($row, $fieldID, $readonly)
+{
+	$report = getDSIReport($row->DKEY);
+	if($report != null)
+	{
+		foreach($report as $field => $value)
+			echo $field.":".$value."<br/>";
+	}
+}
+
 function display_enum($row, $fieldID, $readonly)
 {
 	global $enumFields;

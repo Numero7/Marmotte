@@ -1,5 +1,6 @@
 <?php
 require_once("db.inc.php");
+require_once('config_tools.inc.php');
 
 define("NIVEAU_PERMISSION_BASE", 0);
 define("NIVEAU_PERMISSION_BUREAU", 100);
@@ -131,7 +132,9 @@ function removeCredentials()
 				$params["secure"], $params["httponly"]
 		);
 	}
-	session_destroy();
+		
+	if(session_id() != "")
+		session_destroy();
 }
 
 function authenticateBase($login,$pwd)
@@ -200,7 +203,12 @@ function get_last_user_section($user)
 		$sections[] = $section;
 
 	if(count($sections)  === 0)
-		throw new Exception("No section");
+	{
+		if($row->permissions < NIVEAU_PERMISSION_SUPER_UTILISATEUR)
+			throw new Exception("No section");
+		else
+			$sections[] = 0;
+	}
 
 	if( ($row->permissions < NIVEAU_PERMISSION_SUPER_UTILISATEUR) && array_search($last,$sections) === false)
 		$last = $sections[0];
@@ -210,7 +218,7 @@ function get_last_user_section($user)
 
 function is_authenticated_with_JANUS()
 {
-	return isset($_SESSION['REMOTE_USER']);
+	return (isset($_SESSION['janus']) && $_SESSION['janus']);
 }
 
 function authenticate()
@@ -243,9 +251,13 @@ function authenticate()
 				{
 					removeCredentials();
 					throw new Exception("Votre authentification est correcte mais le login '".$login."' n'est actuellement associé à aucune section ou CID dans Marmotte.");
-					return false;
 				}
 				update_permissions($login, $last, $row);
+				if( (get_config("maintenance", "off", false, "0") == "on") && ($row->permissions < NIVEAU_PERMISSION_SUPER_UTILISATEUR) )
+				{
+					removeCredentials();
+					throw new Exception("Le site est provisoirement fermé pour maintenance");
+				}
 				return true;
 			}
 			else

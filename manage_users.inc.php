@@ -417,21 +417,46 @@ function changeUserInfos($login,$permissions, $sections, $section_code = "", $se
 	unset($_SESSION['all_users']);
 }
 
-function existsUser($login, $all_sections = false)
+function getUserBySectionChaire($chaire)
+{
+		$sql = "SELECT * FROM ".users_db." WHERE `section_numchaire`='".real_escape_string($chaire)."';";
+		$result= sql_request($sql);
+		while($user = mysqli_fetch_object())
+			return $user;
+		return null;
+}
+function getUserByCIDChaire($chaire)
+{
+	$sql = "SELECT * FROM ".users_db." WHERE `CID_numchaire`='".real_escape_string($chaire)."';";
+	$result= sql_request($sql);
+	while($user = mysqli_fetch_object())
+		return $user;
+	return null;
+}
+
+function getUserByLogin($login, $all_sections = false)
 {
 	if(!$all_sections)
 	{
-	$users = listUsers();
-	return array_key_exists($login, $users);
+		$users = listUsers();
+		if(array_key_exists($login, $users))
+			return $users[$login];
+		else 
+			return null;
 	}
 	else
 	{
 		$sql = "SELECT * FROM ".users_db." WHERE `login`='".real_escape_string($login)."';";
 		$result= sql_request($sql);
-		if($result ==  false)
-			throw new Exception("Failed to process sql query ".$sql.": ".mysql_error());
-		return (mysqli_num_rows($result) > 0);
+		while($user = mysqli_fetch_object($result))
+			 return $user;
+		return null;
 	}
+}
+
+function existsUser($login, $all_sections = false)
+{
+	return (getUserByLogin($login,$all_sections) !== null);
 }
 
 function createUser(
@@ -584,52 +609,6 @@ function deleteAllUsers()
 	}
 }
 
-function importAllUsersFromJanus()
-{
-	if(!isSecretaire())
-		throw new Exception("Vous n'avez pas les droits sffisnats pour cette opération");
-
-	$users = listUsers();
-
-	$errors = "";
-
-	if (isSuperUser())
-		$sql = "SELECT * FROM ".dsidbname.".".dsi_users_db." WHERE 1;";
-	else
-	  $sql = "SELECT * FROM ".dsidbname.".".dsi_users_db." WHERE CID_code=\"".currentSection()."\" OR section_code=\"".currentSection()."\";";
-
-
-	$result = sql_request($sql);
-	while ($row = mysqli_fetch_object($result))
-	{
-		$login = $row->mailpro;
-		try
-		{
-			if(existsUser($login, true))
-			{
-				$sql = "UPDATE ".users_db." SET `section_code`='".$row->section_code."',`section_role_code`='".$row->section_role_code."',`CID_code`='".$row->CID_code."'";
-				$sql .= ",`CID_role_code`='".$row->CID_role_code."', `description`='".real_escape_string($row->nom." ".$row->prenom)."' WHERE `login`='".$login."';";
-				sql_request($sql);
-			}
-			else
-			{
-				echo "Ajout du compte ".$login." à la section<br/>".
-				$sql = "INSERT INTO ".users_db." (login,sections,permissions,section_code,section_role_code,CID_code,CID_role_code,passHash,description,email,tel) ";
-				$sql .= "VALUES ('";
-				$sql .= real_escape_string($login)."','','0','".$row->section_code."','".$row->section_role_code."','".$row->CID_code."','".$row->CID_role_code."','','".real_escape_string($row->nom." ".$row->prenom)."','".$login."','');";
-				sql_request($sql);
-			}
-		}
-		catch(Exception $exc)
-		{
-			$errors .= $exc->getMessage()."\n<br/>";
-		}
-	}
-	unset($_SESSION['all_users']);
-
-	if($errors != "")
-		throw new Exception($errors);
-}
 
 function mergeUsers($old_login, $new_login)
 {

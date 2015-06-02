@@ -177,6 +177,9 @@ function displayEditableField($row, $fieldId, $canedit, $session, $extra_object 
 				
 			switch($fieldsTypes[$fieldId])
 			{
+				case "dsi":
+					display_dsi($row, $fieldId, !$editable);
+					break;
 				case "enum":
 					display_enum($row, $fieldId, !$editable);
 					break;

@@ -94,6 +94,21 @@ function deleteCurrentSelection()
  * returns an object
 */
 
+function getDSIReport($DKEY)
+{
+	$sql = "SELECT * FROM ".dsidbname.".".dsi_evaluation_db." WHERE DKEY=\"".$DKEY."\";";
+	$res = sql_request($sql);
+	while($row = mysqli_fetch_object($res))
+		return $row;
+
+	$sql = "SELECT * FROM ".dsidbname.".".dsi_evaluation_units_db." WHERE DKEY=\"".$DKEY."\";";
+	$res = sql_request($sql);
+	while($row = mysqli_fetch_object($res))
+		return $row;
+	
+	return null;	
+}
+
 function getReport($id_rapport, $most_recent = true)
 {
 	if($most_recent)

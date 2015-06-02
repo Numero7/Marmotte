@@ -60,7 +60,7 @@ $add_rubriques_chercheurs = get_rubriques("chercheurs");
 $add_rubriques_unites = get_rubriques("unites");
 
 /* champs apparaissant sur l'écran principal */
-$fieldsSummary = array("type","unite","nom","prenom",/*"ecole",*/"avis","rapporteur","avis1","rapporteur2","avis2", "rapporteur3","grade_rapport","theme1","theme2",	"theme3");
+$fieldsSummary = array("DKEY", "type","unite","nom","prenom",/*"ecole",*/"avis","rapporteur","avis1","rapporteur2","avis2", "rapporteur3","grade_rapport","theme1","theme2",	"theme3");
 $fieldsSummaryConcours = array("type","nom","prenom","concours","sousjury","avis","rapporteur","avis1",
 		"rapporteur2","avis2","theme1","theme2","labo1","labo2","diploma","grade_rapport"
 );
@@ -82,7 +82,9 @@ $genreCandidat = array(
 
 /* mapping from fields in the database to labels */
 $fieldsRapportAll = array(
+		"dsi" => "Infos e-valuation",
 		"statut" => "Statut rapport",
+		"DKEY" => "DKEY",
 		"concours" => "Concours",
 		"sousjury" => "Sous-jury",
 		"section"=> "Section",
@@ -329,6 +331,8 @@ $fieldsDelegation = array("statut","rapporteur","rapporteur2","rapporteur3","nom
 );
 
 $fieldsIndividualDefault = array(
+		"DKEY",
+		"dsi",
 		"statut",
 		"rapporteur",
 		"nom",
@@ -353,7 +357,8 @@ $fieldsIndividualDefault = array(
 
 
 $fieldsUnites0 = array(
-array("type", "statut"),
+array("type", "statut", "DKEY"),
+"dsi",
 		"intitule",
 		array(
 				"rapporteur",
@@ -368,9 +373,8 @@ array("type", "statut"),
 );
 
 $fieldsEcoles0 = array(
-		array(
-				"type",
-				"statut"),
+		array("type","DKEY", "statut"),
+		"dsi",
 		"intitule",
 		array("nom", "prenom"),
 		array(
@@ -436,6 +440,7 @@ $empty_report = array(
 		"statut" => "doubleaveugle",
 		"type" => "Generique",
 		"id_session" => "",
+		"id_origine" => "0",
 		"nom" => "",
 		"prenom" => "",
 		"grade_rapport" => "",
@@ -620,6 +625,7 @@ $enumFields = array(
 
 /****************************** Mise en page des détails sur un rapport ******************************/
 $fieldsTypes = array(
+		"dsi"=>"dsi",
 		"intitule" => "short",
 		"concours" => "concours",
 		"sousjury" => "sousjury",
@@ -972,6 +978,10 @@ $grades = array(
 
 /* permissions levels for actions */
 $actions_level = array(
+		"synchronize_with_dsi" => NIVEAU_PERMISSION_SECRETAIRE,
+		"synchronize_sessions_with_dsi" => NIVEAU_PERMISSION_SECRETAIRE,
+		"maintenance_on" => NIVEAU_PERMISSION_SUPER_UTILISATEUR,
+		"maintenance_off" => NIVEAU_PERMISSION_SUPER_UTILISATEUR,
 		"migrate_to_eval_codes" => NIVEAU_PERMISSION_SUPER_UTILISATEUR,
 		"delete_units" =>NIVEAU_PERMISSION_SECRETAIRE,
 		"set_rapporteur" => NIVEAU_PERMISSION_BUREAU,
@@ -1112,7 +1122,7 @@ $typeExports = array(
 )*/
 );
 
-$dont_export_fields = array("id_origine","id_unite","id_people","statut","genre","report_id","people_id","date","auteur","type");
+$dont_export_fields = array("id_origine","statut","genre","report_id","people_id","date","auteur","type");
 
 $report_types_with_multiple_exports = array(
 		'Candidature' => array('Audition', 'Classement')
@@ -1196,13 +1206,13 @@ $filtersReports = array(
 		'avis1' => array('name'=>"Avis Rapp 1" , 'liste' => $avis_sessions, 'default_value' => "tous", 'default_name' => ""),
 		'avis2' => array('name'=>"Avis Rapp 2" , 'liste' => $avis_sessions, 'default_value' => "tous", 'default_name' => ""),
 		//'avis3' => array('name'=>"Avis Rapp 3" , 'liste' => $avis_sessions, 'default_value' => "tous", 'default_name' => ""),
-'statut' => array('name'=>"Statut" , 'liste' => $statutsRapports, 'default_value' => "tous", 'default_name' => "Tous"),
-//'theme3' => array('name'=>"Theme3" , 'liste' => $topics, 'default_value' => "tous", 'default_name' => ""),
-'genre' => array('name' =>"Genre", 'liste' => $genreCandidat, 'default_value' => "tous", 'default_name' => "Tous"),
-'id_session' => array('name'=>"Session", 'default_value' =>-1, 'default_name' => "Toutes les sessions"),
-'avancement' => array('name'=>"Avancement" , 'default_value' => "", 'default_name' => ""),
-'id_origine' => array('default_value' =>-1),
-'id' => array('default_value' =>-1)
+		'statut' => array('name'=>"Statut" , 'liste' => $statutsRapports, 'default_value' => "tous", 'default_name' => "Tous"),
+		//'theme3' => array('name'=>"Theme3" , 'liste' => $topics, 'default_value' => "tous", 'default_name' => ""),
+		'genre' => array('name' =>"Genre", 'liste' => $genreCandidat, 'default_value' => "tous", 'default_name' => "Tous"),
+		'id_session' => array('name'=>"Session", 'default_value' =>-1, 'default_name' => "Toutes les sessions"),
+		'avancement' => array('name'=>"Avancement" , 'default_value' => "", 'default_name' => ""),
+		'id_origine' => array('default_value' =>-1),
+		'id' => array('default_value' =>-1)
 );
 
 $filtersDelegation = array(

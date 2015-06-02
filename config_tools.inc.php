@@ -3,8 +3,6 @@
 
 function init_config()
 {
-	global $dbh;
-
 	$configus = array(
 		"section_shortname"=> array("intitulé court de la section ou CID","Section 6"),
 		"section_intitule"=> array("intitulé long de la section","Sciences de l\'information : fondements de l\'informatique, calculs, algorithmes, représentations, exploitations"),
@@ -22,10 +20,8 @@ function init_config()
 	}
 	$section = $_SESSION['filter_section'];
 
-	$sql = "SELECT * FROM ".config_db." WHERE `section`='".$section."';";
-	$query = mysqli_query($dbh,$sql);
-	if(!$query)
-		throw new Exception("Failed to process sql query '".$sql."'");
+	$sql = "SELECT * FROM ".config_db." WHERE `section`='".real_escape_string($section)."';";
+	$query = sql_request($sql);
 	$_SESSION["config"] = array();
 	while($result = mysqli_fetch_object($query))
 		$_SESSION["config"][$result->key] = $result->value;
@@ -66,11 +62,13 @@ function save_config_from_request()
 			set_config($key,$value);
 }
 
-function get_config($key,$default_value="", $create_if_needed=true)
+function get_config($key,$default_value="", $create_if_needed=true, $section = "")
 {	
 	if($key == "")
 		throw new Exception("No config with empty key");
 		
+if($section === "")
+{
 	if(!isset($_SESSION["config"]))
 		init_config();
 
@@ -82,6 +80,15 @@ function get_config($key,$default_value="", $create_if_needed=true)
 			set_config($key,$default_value);
 	}
 	return $_SESSION["config"][$key];
+}
+else
+{
+	$sql = "SELECT * FROM ".config_db." WHERE `section`='".real_escape_string($section)."' AND `key`='".real_escape_string($key)."';";
+	$query = sql_request($sql);
+	while($result = mysqli_fetch_object($query))
+		return $result->value;
+	return $default_value;
+}
 }
 
 function get_array_config($key,$delimiter ="|")
