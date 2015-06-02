@@ -137,6 +137,9 @@ function get_directories_list($session)
 
 function find_unit_files($unit, $force, $session, $create_directory_if_nexists = false, $directories = NULL)
 {
+  if($unit->unite == "")
+    return array();
+
 	$basedir = get_unit_directory($unit, $session, false);
 	if($force && !is_dir($basedir))
 	{

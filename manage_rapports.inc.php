@@ -856,7 +856,7 @@ function find_unit_reports($code)
 		return array();
 
 	$sql = "SELECT * from ".reports_db. " WHERE id=id_origine AND statut!=\"supprime\"";
-	$sql .= ' AND unite="'.$code.'" ORDER BY id ASC';
+	$sql .= ' AND unite="'.$code.'" AND section="'.currentSection().'" ORDER BY id ASC';
 
 	$result=sql_request($sql);
 
