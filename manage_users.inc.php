@@ -167,8 +167,10 @@ function permissionToRole($perm)
 	}
 }
 
-function listUsers($forcenew = false)
+function listUsers($forcenew = false, $section = "")
 {
+	if($section == "")
+		$section = currentSection();
 	if($forcenew)
 		unset($_SESSION['all_users']);
 
@@ -180,7 +182,6 @@ function listUsers($forcenew = false)
 		$result= sql_request($sql);
 		if($result ==  false)
 			throw new Exception("Failed to process sql query ".$sql.": ".mysql_error());
-		$section = currentSection();
 		while ($row = mysqli_fetch_object($result))
 		{
 			if(isSuperUser())

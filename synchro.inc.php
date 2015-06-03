@@ -46,12 +46,11 @@ function synchronizeEmailsUpdates()
 }
 
 
-function synchronizeWithDsiMembers()
+function synchronizeWithDsiMembers($section)
 {
 	$result = "";
-	if(!isSecretaire())
-		throw new Exception("Vous n'avez pas les droits sffisnats pour cette opération");
-	$users = listUsers();
+
+	$users = listUsers(true, $section);
 
 //	$result .= "La base marmotte contient ".count($users)." membres.<br/>\n";
 
@@ -61,7 +60,7 @@ function synchronizeWithDsiMembers()
 	if (isSuperUser())
 		$sql = "SELECT * FROM ".dsidbname.".".dsi_users_db." WHERE 1;";
 	else
-		$sql = "SELECT * FROM ".dsidbname.".".dsi_users_db." WHERE CID_code=\"".currentSection()."\" OR section_code=\"".currentSection()."\";";
+		$sql = "SELECT * FROM ".dsidbname.".".dsi_users_db." WHERE CID_code=\"".$section."\" OR section_code=\"".$section."\";";
 
 	$res = sql_request($sql);
 //	$result .= "La base dsi contient ". mysqli_num_rows($res)." membres.<br/>\n";
@@ -112,14 +111,14 @@ function synchronizeWithDsiMembers()
 	return $result;
 }
 
-function synchronizeSessions()
+function synchronizeSessions($section)
 {
 	$changed = false;
 	$answer = "<B>Synchronization des sessions </B><br/>\n";
 	$sql = "SELECT DISTINCT LIB_SESSION,ANNEE FROM ".dsidbname.".".dsi_evaluation_db;
-	$sql.=" WHERE `CODE_SECTION` =\"".currentSection()."\" OR `CODE_SECTION_2`=\"".currentSection()."\" OR `CODE_SECTION_EXCPT`=\"".currentSection()."\";";
+	$sql.=" WHERE `CODE_SECTION` =\"".$section."\" OR `CODE_SECTION_2`=\"".$section."\" OR `CODE_SECTION_EXCPT`=\"".$section."\";";
 	$res = sql_request($sql);
-	$sessions = get_all_sessions(currentSection());
+	$sessions = get_all_sessions($section);
 	while($row = mysqli_fetch_object($res))
 	{
 		$session = $row->LIB_SESSION.$row->ANNEE;
@@ -127,7 +126,7 @@ function synchronizeSessions()
 		{
 			$changed = true;
 			$answer .= "Création de la session ".$session. ".<br/>";
-			createSession($row->LIB_SESSION, $row->ANNEE, currentSection());
+			createSession($row->LIB_SESSION, $row->ANNEE, $section);
 		}
 	}
 	if(!$changed)
@@ -135,9 +134,9 @@ function synchronizeSessions()
 	return $answer;
 }
 
-function synchronizePeople()
+function synchronizePeople($section)
 {
-	$answer = "<B>Synchronisation des numéros SIRHUS de chercheurs</B><br/>\n";
+	$answer = "<B>Synchronisation des numéros SIRHUS de chercheurs (toutes sections)</B><br/>\n";
 	$sql =  "UPDATE ".people_db." marmotte JOIN ".dsidbname.".".dsi_people_db." dsi ";
 	$sql .= " ON marmotte.nom=dsi.nom AND marmotte.prenom=dsi.prenom";
 	$sql .= " SET marmotte.NUMSIRHUS=dsi.numsirhus";
@@ -152,10 +151,11 @@ function synchronizePeople()
 	return 	$answer;
 }
 //id_unite
-function synchronizePeopleReports()
+function synchronizePeopleReports($section)
 {
 	$answer = "<B>Synchronisation des rapports chercheurs</B><br/>\n";
 	$sql = "SELECT * FROM ".dsidbname.".".dsi_evaluation_db;
+
 	$sql.=" WHERE (DKEY NOT IN (SELECT DKEY FROM ".marmottedbname.".".reports_db."  WHERE DKEY != \"\")) ";
 	$sql .=" AND (`CODE_SECTION` =\"".currentSection()."\" OR `CODE_SECTION_2`=\"".currentSection()."\" OR `CODE_SECTION_EXCPT`=\"".currentSection()."\");";
 	
@@ -173,7 +173,7 @@ function synchronizePeopleReports()
 		{
 			$sql  = "UPDATE ".reports_db;
 			$sql .= " SET NUMSIRHUS=\"".$row->NUMSIRHUS."\", DKEY=\"".$row->DKEY."\" WHERE id_session=\"".$session."\"";
-			$sql .= " AND section=\"".currentSection()."\" AND DKEY=\"\" AND type=\"".$row->TYPE_EVAL."\" AND nom=\"".$user->nom."\" AND prenom=\"".$user->prenom."\";";
+			$sql .= " AND section=\"".$section."\" AND DKEY=\"\" AND type=\"".$row->TYPE_EVAL."\" AND nom=\"".$user->nom."\" AND prenom=\"".$user->prenom."\";";
 			$res = sql_request($sql);
 			global $dbh;
 			$num = mysqli_affected_rows($dbh);
@@ -191,7 +191,7 @@ function synchronizePeopleReports()
 		$answer .= "Import de l'evaluations chercheur de DKEY ".$row->DKEY."<br/>\n";
 		$row->id_origine=0;
 		$row->id_session = $session;
-		$row->section = currentSection();
+		$row->section = $section;
 		$row->type = $row->TYPE_EVAL;
 		
 		addReportToDatabase($row);
@@ -199,15 +199,16 @@ function synchronizePeopleReports()
 	return $answer;
 }
 
-function synchronizeUnitReports()
+function synchronizeUnitReports($section = "")
 {
+	if($section == "") $section = currentSection();
 	$answer = "<B>Synchronisation des rapports unités</B><br/>\n";
 	$sql = "SELECT * FROM ".dsidbname.".".dsi_evaluation_units_db;
 	$sql.=" WHERE ( DKEY NOT IN (SELECT DKEY FROM ".marmottedbname.".".reports_db." WHERE DKEY != \"\") ";
 	$sql .= " AND (";
-	$sql .= "`CODE_SECTION1`=\"".currentSection()."\" OR `CODE_SECTION2`=\"".currentSection()."\"  OR `CODE_SECTION3`=\"".currentSection()."\"";
-	$sql .= " OR `CODE_SECTION4`=\"".currentSection()."\" OR `CODE_SECTION5`=\"".currentSection()."\"  OR `CODE_SECTION6`=\"".currentSection()."\"";
-	$sql .= " OR `CODE_SECTION7`=\"".currentSection()."\" OR `CODE_SECTION8`=\"".currentSection()."\"  OR `CODE_SECTION9`=\"".currentSection()."\"";
+	$sql .= "`CODE_SECTION1`=\"".$section."\" OR `CODE_SECTION2`=\"".$section."\"  OR `CODE_SECTION3`=\"".$section."\"";
+	$sql .= " OR `CODE_SECTION4`=\"".$section."\" OR `CODE_SECTION5`=\"".$section."\"  OR `CODE_SECTION6`=\"".$section."\"";
+	$sql .= " OR `CODE_SECTION7`=\"".$section."\" OR `CODE_SECTION8`=\"".$section."\"  OR `CODE_SECTION9`=\"".$section."\"";
 	$sql .= ") );";
 
 	$res = sql_request($sql);
@@ -219,7 +220,7 @@ function synchronizeUnitReports()
 		$session = $row->LIB_SESSION.$row->ANNEE;
 		$sql  = "UPDATE ".reports_db;
 		$sql .= " SET DKEY=\"".$row->DKEY."\" WHERE id_session=\"".$session."\"";
-		$sql .= " AND section=\"".currentSection()."\" AND DKEY=\"\" AND type=\"".$row->TYPE_EVAL."\" AND unite=\"".$row->UNITE_EVAL."\";";
+		$sql .= " AND section=\"".$section."\" AND DKEY=\"\" AND type=\"".$row->TYPE_EVAL."\" AND unite=\"".$row->UNITE_EVAL."\";";
 		$result = sql_request($sql);
 
 		global $dbh;
@@ -234,7 +235,7 @@ function synchronizeUnitReports()
 		$row->unite = $row->UNITE_EVAL;
 		$row->type = $row->TYPE_EVAL;
 		$row->id_session = $session;
-		$row->section = currentSection();
+		$row->section = $section;
 		$row->id_origine=0;
 		addReportToDatabase($row);
 	}
@@ -242,16 +243,16 @@ function synchronizeUnitReports()
 }
 
 /* performs synchro with evaluation and returns diagnostic , empty string if nothing happaned */
-function synchronize_with_evaluation()
+function synchronize_with_evaluation($section = "")
 {
-	$answer = "<B>Synchronisation avec e-valuation</B><br/>\n";
+	$answer = "<B>Synchronisation avec e-valuation de la section ".$section."</B><br/>\n";
 	if(isSecretaire())
 	{
-		$answer .= synchronizeWithDsiMembers()."<br/>";
-		$answer .= synchronizeSessions()."<br/>";
-		$answer .= synchronizePeople()."<br/>";
-		$answer .= synchronizePeopleReports()."<br/>";
-		$answer .= synchronizeUnitReports()."<br/>";
+		$answer .= synchronizeWithDsiMembers($section)."<br/>";
+		$answer .= synchronizeSessions($section)."<br/>";
+		$answer .= synchronizePeople($section)."<br/>";
+		$answer .= synchronizePeopleReports($section)."<br/>";
+		$answer .= synchronizeUnitReports($section)."<br/>";
 	}
 	return $answer;
 }
