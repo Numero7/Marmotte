@@ -236,8 +236,11 @@ function display_rapports($row, $fieldId)
 					echo '<tr><td><a href="index.php?action=edit&amp;id='.$report->id.'">'.$report->id_session. " - " .$type." - " . $report->concours ."</a></td></tr>";
 				else if( is_equivalence_type($type) )
 					echo '<tr><td><a href="index.php?action=edit&amp;id='.$report->id.'">'.$report->id_session. " - " .$type." - " . $report->grade_rapport ."</a></td></tr>";
-				else 
-					echo '<tr><td><a href="index.php?action=edit&amp;id='.$report->id.'">'.$report->id_session. " - " .$type."</a></td></tr>";
+				else  if(is_rapport_unite($report))
+				  echo '<tr><td><a href="index.php?action=edit&amp;id='.$report->id.'">'.$report->id_session." - ".$report->unite. " - " .$type."</a></td></tr>";
+				else
+				  echo '<tr><td><a href="index.php?action=edit&amp;id='.$report->id.'">'.$report->id_session." - ".$report->nom."  ".$report->prenom. " - " .$type."</a></td></tr>";
+
 			}
 		}
 		echo "</table>";

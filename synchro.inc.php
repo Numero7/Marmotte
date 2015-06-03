@@ -156,7 +156,7 @@ function synchronizePeopleReports()
 {
 	$answer = "<B>Synchronisation des rapports chercheurs</B><br/>\n";
 	$sql = "SELECT * FROM ".dsidbname.".".dsi_evaluation_db;
-	$sql.=" WHERE (DKEY NOT IN (SELECT DISTINCT DKEY FROM ".marmottedbname.".".reports_db."  WHERE DKEY != \"\")) ";
+	$sql.=" WHERE (DKEY NOT IN (SELECT DKEY FROM ".marmottedbname.".".reports_db."  WHERE DKEY != \"\")) ";
 	$sql .=" AND (`CODE_SECTION` =\"".currentSection()."\" OR `CODE_SECTION_2`=\"".currentSection()."\" OR `CODE_SECTION_EXCPT`=\"".currentSection()."\");";
 	
 	//echo $sql."<br/>";
@@ -203,7 +203,7 @@ function synchronizeUnitReports()
 {
 	$answer = "<B>Synchronisation des rapports unités</B><br/>\n";
 	$sql = "SELECT * FROM ".dsidbname.".".dsi_evaluation_units_db;
-	$sql.=" WHERE ( DKEY NOT IN (SELECT DISTINCT DKEY FROM ".marmottedbname.".".reports_db." WHERE DKEY != \"\") ";
+	$sql.=" WHERE ( DKEY NOT IN (SELECT DKEY FROM ".marmottedbname.".".reports_db." WHERE DKEY != \"\") ";
 	$sql .= " AND (";
 	$sql .= "`CODE_SECTION1`=\"".currentSection()."\" OR `CODE_SECTION2`=\"".currentSection()."\"  OR `CODE_SECTION3`=\"".currentSection()."\"";
 	$sql .= " OR `CODE_SECTION4`=\"".currentSection()."\" OR `CODE_SECTION5`=\"".currentSection()."\"  OR `CODE_SECTION6`=\"".currentSection()."\"";
