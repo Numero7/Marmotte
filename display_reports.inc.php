@@ -181,6 +181,7 @@ function displayStats()
 function displayRowCell($row, $fieldID)
 {
 	global $fieldsAll;
+	    global $typesRapportsAll;
 	$bur = isBureauUser();
 	$sec = isSecretaire() || ( $bur && isSecretaire(getLogin() , false));
 
@@ -261,6 +262,10 @@ function displayRowCell($row, $fieldID)
 		$data = $prettyunits[$row->$fieldID]->nickname;
 		echo '<span class="valeur">'.$data.'</span>';
 	}
+	else if($fieldID == "type" && isset($typesRapportsAll[$data]))
+	  {
+	    echo '<span class="valeur">'.$typesRapportsAll[$data] .'</span>';
+	  }
 	else
 		echo '<span class="valeur">'.$data.'</span>';
 		
