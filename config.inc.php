@@ -68,7 +68,7 @@ $add_rubriques_chercheurs = get_rubriques("chercheurs");
 $add_rubriques_unites = get_rubriques("unites");
 
 /* champs apparaissant sur l'écran principal */
-$fieldsSummary = array("DKEY", "type","unite","nom","prenom",/*"ecole",*/"avis","rapporteur","avis1","rapporteur2","avis2", "rapporteur3","grade_rapport","theme1","theme2",	"theme3");
+$fieldsSummary = array("DKEY", "type","unite","nom","prenom",/*"ecole",*/"avis","rapporteur","avis1","rapporteur2","avis2", "rapporteur3","avis3","grade_rapport","theme1","theme2",	"theme3");
 $fieldsSummaryConcours = array("type","nom","prenom","concours","sousjury","avis","rapporteur","avis1",
 		"rapporteur2","avis2","theme1","theme2","labo1","labo2","diploma","grade_rapport"
 );

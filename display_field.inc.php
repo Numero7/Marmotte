@@ -284,8 +284,7 @@ b - 1 )
 		//		echo "dossier_stockage_dsi : '".$dossier_stockage_dsi."'<br/>";
 		foreach($files["evaluation"] as $label => $path)
 		{
-		  
-			if($i % $nb	 == $nb - 1 )
+		  	if($i % $nb	 == $nb - 1 )
 				echo '</td></tr><tr><td style="padding-right: 10px">';
 			echo '<a  target="_blank" href="export.php?evaluation=&amp;action=get_file&amp;path=';
 			echo urlencode($dossier_stockage_dsi."/".$path).'&amp;filename='.urlencode($label).'">'.$label."</a><br/>\n";
