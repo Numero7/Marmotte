@@ -256,9 +256,10 @@ function display_fichiers($row, $fieldID, $session, $readonly)
 	
 	$files = find_files($row, $session, false);	
 
+
 	echo "<td><table><tr>\n";
 	
-	if( (count($files) == 0))
+	if( (count($files["marmotte"]) == 0) && (count($files["evaluation"]) == 0))
 	  echo "<td></td>\n";
 	else
 	{
@@ -268,28 +269,41 @@ function display_fichiers($row, $fieldID, $session, $readonly)
 		echo "<td><table>\n";
 		echo '<tr><td style="padding-right: 10px">';
 
-		$nb = intval((count($files) + 2)/ 3);
+		$nb = intval((count($files["marmotte"]) + count($files["evaluation"]) + 2)/ 3);
 
 /*		foreach($dsifiles as )
 		{
-			if($i % $nb	 == $nb - 1 )
+			if($i % $nb	 == $n
+b - 1 )
 				echo '</td></tr><tr><td style="padding-right: 10px">';
 			echo '<a  target="_blank" href="export.php?dsi=&amp;action=get_file&amp;filename='.urlencode($path).'&amp;path='.urlencode($label).'">'.$label."</a><br/>\n";
 			$i++;
 		}
 	*/	
-		foreach($files as $label => $path)
+		global  $dossier_stockage_dsi;
+		//		echo "dossier_stockage_dsi : '".$dossier_stockage_dsi."'<br/>";
+		foreach($files["evaluation"] as $label => $path)
+		{
+		  
+			if($i % $nb	 == $nb - 1 )
+				echo '</td></tr><tr><td style="padding-right: 10px">';
+			echo '<a  target="_blank" href="export.php?evaluation=&amp;action=get_file&amp;path=';
+			echo urlencode($dossier_stockage_dsi."/".$path).'&amp;filename='.urlencode($label).'">'.$label."</a><br/>\n";
+			$i++;
+		}
+		foreach($files["marmotte"] as $label => $path)
 		{
 			if($i % $nb	 == $nb - 1 )
 				echo '</td></tr><tr><td style="padding-right: 10px">';
-			echo '<a  target="_blank" href="export.php?action=get_file&amp;filename='.urlencode($file).'&amp;path='.urlencode($label).'">'.$label."</a><br/>\n";
+			echo '<a  target="_blank" href="export.php?action=get_file&amp;path=';
+			echo urlencode($path).'&amp;filename='.urlencode($label).'">'.$label."</a><br/>\n";
 			$i++;
 		}
 		echo '</td></tr>';
 		echo "</table>\n";
 		echo "</td><td>";
 
-		foreach($files as $label => $file)
+		foreach($files["marmotte"] as $label => $file)
 			if(strcontains($file,"id.jpg"))//, $needle) is_picture($file))
 			echo '<img class="photoid" src="'.$file.'" alt="'.$file.'" />';
 		echo "</td>";
@@ -336,7 +350,7 @@ function display_fichiers($row, $fieldID, $session, $readonly)
 	<table><tr><td>
 <select name="deletedfile">
 	<?php
-	foreach($files as $date => $file)
+	foreach($files["marmotte"] as $date => $file)
 	{
 		echo  "<option value=\"".$dir."/".$file."\" >".$file."</option>\n";
 	}
@@ -352,8 +366,8 @@ echo "</td></tr>";
 		{
 			
 			$pictures = array();
-			foreach($files as $date => $file)
-				if(is_picture($file))
+			foreach($files["marmotte"] as $date => $file)
+			  if(strcontains($file,"id.jpg"))
 				$pictures[] = $file;
 
 			if(count($pictures)  > 0  )
@@ -366,15 +380,11 @@ echo "</td></tr>";
 	<select name="deletedfile">
 	<?php
 	foreach($pictures as $file)
-	{
 		echo  "<option value=\"".$dir."\" >".$file."</option>\n";
-	}
 	?>
 </select>
-</td></tr><tr><td>
-<input
-	type="submit" name="suppressionfichier" value="Supprimer photo" />
-	</td></tr></table>
+</td></tr>
+</table>
 <?php 
 echo "</td></tr>";
 

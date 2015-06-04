@@ -44,9 +44,14 @@ if(!isset($_SESSION['filter_section']))
 $dossier_temp = realpath($rootdir."./tmp/".$_SESSION['filter_section']."/");
 $dossier_stockage_short = $rootdir."./storage/".$_SESSION['filter_section']."/";
 $dossier_stockage = realpath($dossier_stockage_short);
+$dossier_stockage_dsi = realpath($rootdir."./storage/".$dsirootdir."/");
+$dossier_stockage_dsi = $rootdir."./storage/".$dsirootdir."/";
 
-$dossier_stockage_dsi = realpath($dsirootdir);
-
+$typesdocs = array();
+$sql = "SELECT * FROM ".dsidbname."."."typesdocs WHERE 1;";
+$result = sql_request($sql);
+while($row = mysqli_fetch_object($result))
+  $typesdocs[$row->id] = $row->doctyplib;
 
 $rubriques_supplementaires = array(
 		"individus" => array("rubriques_individus","Info","chercheur"),

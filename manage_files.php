@@ -24,19 +24,39 @@ function is_associated_directory_unit($unit, $directory)
 
 function find_files($row, $session, $create_directory_if_nexists = false)
 {
-	$files = array();
-	$sql = "SELECT * FROM ".dsidbname.".".dsi_docs_db." WHERE dkey=\"DKEY\"";
-	$result = sql_request($sql);
+  $files = array();
+	$dsifiles = array();
 	global $typesRapportsAll;
-	while($roww = mysqli_fetch_object($result))
-	{
+
+	if(isset($row->NUMSIRHUS) && ($row->NUMSIRHUS != ""))
+	  {
+	    $sql = "SELECT * FROM ".dsidbname.".".dsi_docs_liens_db." WHERE numsirhus=\"".$row->NUMSIRHUS."\"";
+	    $result = sql_request($sql);
+
+	    while($rowww = mysqli_fetch_object($result))
+	      {
+
+	    $sql = "SELECT * FROM ".dsidbname.".".dsi_docs_db." WHERE dkey=\"".$rowww->dkeydoc."\"";
+	    $res2 = sql_request($sql);
+
+	    global $typesdocs;
+	    while($roww = mysqli_fetch_object($res2))
+	      {
+		//		echo count($files)." Files<br/>";
 		//annee_doc		// code_tye_doc		// dkey		// nom_document		// path_sas		// session_doc
 		$code = $roww->code_type_doc;
-		$label = isset($typesRapportsAll[$code]) ? $typesRapportsAll[$code] : ("Inconnu ".$code);
+		$label = isset($typesdocs[$code]) ? $typesdocs[$code] : ("Inconnu ".$code);
 		$label = $roww->annee_doc." - " . $roww->session_doc. " - " . $label. " - ". $roww->nom_document;
-		$files[$label] =  $roww->path_sas."/".$roww->nom_document;
-	}	
+		$dsifiles[$label] =  $roww->path_sas."/".$roww->nom_document;
+	      }	
+	      }
+	  }
+	else
+	  echo "No DKEY" ;
 	
+	$files["evaluation"] = $dsifiles;
+	$files["marmotte"] = array();
+
 	$marmotte_files = array();
 	$dir = "";
 	if(  is_rapport_unite($row) )
@@ -60,7 +80,7 @@ function find_files($row, $session, $create_directory_if_nexists = false)
 		$arr2 = array("","");
 		$prettyfile = str_replace($arr, $arr2, $prettyfile);
 	}
-	$files[$pretty_file] = $dir."/".$file;
+	$files["marmotte"][$prettyfile] = $dir."/".$file;
 	}
 	
 	return $files;
@@ -68,6 +88,7 @@ function find_files($row, $session, $create_directory_if_nexists = false)
 
 function find_people_files($candidate, $force, $session, $create_directory_if_nexists = false, $directories = NULL)
 {
+  $files = array();
 	if($candidate->nom == "" && $candidate->prenom == "")
 		return array();
 	$basedir = get_people_directory($candidate, $session, false);
@@ -121,7 +142,7 @@ function create_dir_if_needed2($basedir)
 {
 	if(!is_dir($basedir))
 	{
-		echo "Creating directory ".$basedir."<br/>";
+	  //		echo "Creating directory ".$basedir."<br/>";
 		$result = mkdir($basedir,0770, true);
 		if(!$result)
 			echo "Failed to create directory ".$basedir."<br/>";

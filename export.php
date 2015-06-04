@@ -43,7 +43,7 @@ if (authenticate())
 					{
 						$localpath = urldecode(($_REQUEST["path"]));
 						$remotepath = urldecode(($_REQUEST["filename"]));
-						send_file($localpath,$remotepath, isset($_REQUEST["dsi"]));
+						send_file($localpath,$remotepath, isset($_REQUEST["evaluation"]));
 					}
 					break;
 				break;
