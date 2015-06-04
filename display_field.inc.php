@@ -304,6 +304,7 @@ function display_fichiers($row, $fieldID, $session, $readonly)
 			?>
 			<table><tr><td>
 <input
+
 	type="hidden" name="MAX_FILE_SIZE" value="10000000" />
 	<input type="hidden" name="uploaddir" value="<?php echo $dir;?>"/>
 	<input name="uploadedfile"
