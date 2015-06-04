@@ -21,12 +21,6 @@ if(isSecretaire())
 <h1>Interface d'administration</h1>
 <ul>
 	<?php 
-	if(isSecretaire())
-	{
-		?>
-	<li><a href="index.php?action=admin&amp;admin_maintenance=">Maintenance</a></li>
-	<?php 
-	}
 	if(isSecretaire() && !isSuperUser())
 	{
 		?>
@@ -67,7 +61,13 @@ if(isSecretaire())
 	</li>
 	<?php 
 	}
+	if(isSecretaire())
+	{
 	?>
+	<li><a href="index.php?action=admin&amp;admin_maintenance=">Maintenance</a></li>
+	<?php 
+	}
+?>
 </ul>
 
 <hr />
@@ -91,8 +91,10 @@ Statut maintenance: '<?php echo get_config("maintenance", "off", true, 0); ?>'</
 <?php 
 	}
 	?>
+<h3>Synchronisaton avec e-valuation</h3>
 <p>
-<a href="index.php?action=synchronize_with_dsi&amp;admin_maintenance=">Synchroniser avec la dsi.</a>
+Le lien suivant permet de synchroniser Marmotte avec les bases de donnees d'e-valuation.<br/>
+<a href="index.php?action=synchronize_with_dsi&amp;admin_maintenance=">Synchroniser avec e-valuation.</a>
 </p>
 <?php
 }

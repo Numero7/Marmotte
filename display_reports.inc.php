@@ -188,6 +188,7 @@ function displayRowCell($row, $fieldID)
 	$concours = getConcours();	
 	$rapporteurs = listNomRapporteurs();
 	
+
 	$title = $fieldsAll[$fieldID];
 	echo '<td>';
 	$data = $row->$fieldID;
@@ -218,6 +219,8 @@ function displayRowCell($row, $fieldID)
 	else if($type=="avis")
 	{
 		global $typesRapportToAvis;
+		global $tous_avis;
+
 		$listeavis = isset($typesRapportToAvis[$row->type]) ? $typesRapportToAvis[$row->type] : array();
 		
 		if(isset($filters['avis']) && isset($data['avis']['liste']))
@@ -239,7 +242,7 @@ function displayRowCell($row, $fieldID)
 		else if($fieldID == "avis" || $bur || !isset($row->statut) || $row->statut != "doubleaveugle")
 		{
 			showIconAvis($fieldID,$data);
-			echo $fieldID;
+			echo isset($tous_avis[$data]) ? $tous_avis[$data] : $data;
 		}
 	}
 	else if($fieldID == "concours")
@@ -256,10 +259,10 @@ function displayRowCell($row, $fieldID)
 		echo '<span class="valeur">'.$data.'</span>';
 		echo '</a>';
 	}
-	else if( ($type == "unit") && isset( $prettyunits[$row->$fieldID] ) )
+	else if( $type == "unit")
 	{
 		$prettyunits = unitsList();
-		$data = $prettyunits[$row->$fieldID]->nickname;
+		$data = isset($prettyunits[$row->$fieldID]) ? $prettyunits[$row->$fieldID]->nickname : $row->$fieldID;
 		echo '<span class="valeur">'.$data.'</span>';
 	}
 	else if($fieldID == "type" && isset($typesRapportsAll[$data]))
@@ -276,7 +279,7 @@ function display_updates()
 {
 	if(isSecretaire() && !isset($_SESSION["update_performed"]))
 	{
-		synchronizeWithDsiMembers();
+	  synchronizeWithDsiMembers($currentSection());
 		$_SESSION["update_performed"] = true;
 	}
 }
@@ -340,7 +343,7 @@ function displayStatutMenu()
 
 function displayRows($rows, $fields, $filters, $filter_values)
 {
-	display_updates();
+  //	display_updates();
 	
 	global $fieldsAll;
 
