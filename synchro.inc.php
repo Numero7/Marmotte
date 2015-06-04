@@ -118,14 +118,19 @@ function synchronizeSessions($section)
 	$sql = "SELECT DISTINCT LIB_SESSION,ANNEE FROM ".dsidbname.".".dsi_evaluation_db;
 	$sql.=" WHERE `CODE_SECTION` =\"".$section."\" OR `CODE_SECTION_2`=\"".$section."\" OR `CODE_SECTION_EXCPT`=\"".$section."\";";
 	$res = sql_request($sql);
+	echo("Section ".$section);
 	$sessions = get_all_sessions($section);
+	foreach($sessions as $session)
+	  echo($session."<br/>");
+
 	while($row = mysqli_fetch_object($res))
 	{
 		$session = $row->LIB_SESSION.$row->ANNEE;
 		if( ! in_array($session, $sessions) )
 		{
 			$changed = true;
-			$answer .= "Création de la session ".$session. ".<br/>";
+			$answer .= "Creation de la session ".$session. ".<br/>";
+			echo("Creation de la session ".$session);
 			createSession($row->LIB_SESSION, $row->ANNEE, $section);
 		}
 	}
@@ -289,7 +294,11 @@ function synchronizeUnitReports($section = "")
 /* performs synchro with evaluation and returns diagnostic , empty string if nothing happaned */
 function synchronize_with_evaluation($section = "")
 {
+  if( ($section == "") and !isSuperUser())
+    $section = currentSection();
+
 	$answer = "<B>Synchronisation avec e-valuation de la section ".$section."</B><br/>\n";
+	echo $answer;
 	if(isSecretaire())
 	{
 		$answer .= synchronizeWithDsiMembers($section)."<br/>";
