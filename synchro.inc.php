@@ -156,7 +156,7 @@ function synchronizePeopleReports($section)
 	$answer = "<B>Synchronisation des rapports chercheurs</B><br/>\n";
 	$sql = "SELECT * FROM ".dsidbname.".".dsi_evaluation_db;
 	$sql.=" WHERE (DKEY NOT IN (SELECT DISTINCT DKEY FROM ".marmottedbname.".".reports_db."  WHERE DKEY != \"\")) ";
-	$sql .=" AND (`CODE_SECTION` =\"".$section."\" OR `CODE_SECTION_2`=\"".$section."\" OR `CODE_SECTION_EXCPT`=\"".$section."\");";
+	$sql .=" AND (`CODE_SECTION` =\"".$section."\" OR `CODE_SECTION_2`=\"".$section."\" OR `CODE_SECTION_EXCPT`=\"".$section."\") ";
 
 	$result = sql_request($sql);
 	$answer .= "La base dsi contient ".mysqli_num_rows($result). " DE chercheurs qui n'apparaissent pas encore dans Marmotte.<br/>\n";
@@ -168,21 +168,21 @@ function synchronizePeopleReports($section)
 
 		if($section == $row->CODE_SECTION)
 		{
-			$rapporteur = $row->RAPPORTEUR1;
-			$rapporteur2 = $row->RAPPORTEUR2;
-			$rapporteur3 = $row->RAPPORTEUR3;
+			$rapporteur = getEmailFromChaire($row->RAPPORTEUR1);
+			$rapporteur2 = getEmailFromChaire($row->RAPPORTEUR2);
+			$rapporteur3 = getEmailFromChaire($row->RAPPORTEUR3);
 		}
 		else if($section == $row->CODE_SECTION_2)
 		{
-			$rapporteur = $row->RAPPORTEUR4;
-			$rapporteur2 = $row->RAPPORTEUR5;
-			$rapporteur3 = $row->RAPPORTEUR6;
+			$rapporteur = getEmailFromChaire($row->RAPPORTEUR4);
+			$rapporteur2 = getEmailFromChaire($row->RAPPORTEUR5);
+			$rapporteur3 = getEmailFromChaire($row->RAPPORTEUR6);
 		}
 		else if($section == $row->CODE_SECTION_EXCPT)
 		{
-			$rapporteur = $row->RAPPORTEUR7;
-			$rapporteur2 = $row->RAPPORTEUR8;
-			$rapporteur3 = $row->RAPPORTEUR9;
+			$rapporteur = getEmailFromChaire($row->RAPPORTEUR7);
+			$rapporteur2 = getEmailFromChaire($row->RAPPORTEUR8);
+			$rapporteur3 = getEmailFromChaire($row->RAPPORTEUR9);
 		}
 
 		if($user != null)
@@ -248,9 +248,9 @@ function synchronizeUnitReports($section = "")
 			if($section == $row->$field)
 			{
 				$field = "RAPPORTEUR".$i."1";
-				$rapporteur = $row->$field;
+				$rapporteur = getEmailFromChaire($row->$field);
 				$field = "RAPPORTEUR".$i."2";
-				$rapporteur2 = $row->$field;
+				$rapporteur2 = getEmailFromChaire($row->$field);
 				break;
 			}
 		}
