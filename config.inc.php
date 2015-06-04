@@ -35,6 +35,7 @@ define("signature_blanche","img/signature_blanche.jpg");
 //	define("config_file_save","config/config.sauv.xml");
 
 global $rootdir;
+global $dsirootdir;
 if(!isset($_SESSION['filter_section']))
 {
 	removeCredentials();
@@ -43,6 +44,8 @@ if(!isset($_SESSION['filter_section']))
 $dossier_temp = realpath($rootdir."./tmp/".$_SESSION['filter_section']."/");
 $dossier_stockage_short = $rootdir."./storage/".$_SESSION['filter_section']."/";
 $dossier_stockage = realpath($dossier_stockage_short);
+
+$dossier_stockage_dsi = realpath($dsirootdir);
 
 
 $rubriques_supplementaires = array(

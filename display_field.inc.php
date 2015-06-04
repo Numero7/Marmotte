@@ -254,25 +254,15 @@ function display_fichiers($row, $fieldID, $session, $readonly)
 	if(!isset($row->type))
 		return;
 	
-	if(  is_rapport_unite($row) )
-	{
-		$files = find_unit_files($row,true, $session, true);
-		$dir = get_unit_directory($row, $session, false);
-	}
-	else
-	{
-		if(isset($row->unite) && $row->unite == "") return;
-		$files = find_people_files($row,true, $session, true);
-		$dir = get_people_directory($row, $session, false);
-	}
-	
+	$files = find_files($row, $session, false);	
+
 	echo "<td><table><tr>\n";
 	
-	if(count($files) == 0)
+	if( (count($files) == 0))
 	  echo "<td></td>\n";
 	else
 	{
-		ksort($files);
+//		ksort($files);
 		$i = -1;
 //	echo "<td><table><tr>";
 		echo "<td><table>\n";
@@ -280,31 +270,29 @@ function display_fichiers($row, $fieldID, $session, $readonly)
 
 		$nb = intval((count($files) + 2)/ 3);
 
-		foreach($files as $date => $file)
+/*		foreach($dsifiles as )
 		{
 			if($i % $nb	 == $nb - 1 )
 				echo '</td></tr><tr><td style="padding-right: 10px">';
-
-			$prettyfile = str_replace("_", " ", $file);
-			if(strlen($file) > 20)
-			{
-				$arr = array(strtolower($row->nom), strtolower($row->prenom));
-				$arr2 = array("","");
-				$prettyfile = str_replace($arr, $arr2, $prettyfile);
-			}
-			echo '<a  target="_blank" href="export.php?action=get_file&amp;filename='.urlencode($file).'&amp;path='.urlencode($dir."/".$file).'">'.$prettyfile."</a><br/>\n";
+			echo '<a  target="_blank" href="export.php?dsi=&amp;action=get_file&amp;filename='.urlencode($path).'&amp;path='.urlencode($label).'">'.$label."</a><br/>\n";
+			$i++;
+		}
+	*/	
+		foreach($files as $label => $path)
+		{
+			if($i % $nb	 == $nb - 1 )
+				echo '</td></tr><tr><td style="padding-right: 10px">';
+			echo '<a  target="_blank" href="export.php?action=get_file&amp;filename='.urlencode($file).'&amp;path='.urlencode($label).'">'.$label."</a><br/>\n";
 			$i++;
 		}
 		echo '</td></tr>';
 		echo "</table>\n";
 		echo "</td><td>";
 
-		foreach($files as $date => $file)
-			if(is_picture($file))
-			echo '<img class="photoid" src="'.$dir."/".$file.'" alt="'.$file.'" />';
-
+		foreach($files as $label => $file)
+			if(strcontains($file,"id.jpg"))//, $needle) is_picture($file))
+			echo '<img class="photoid" src="'.$file.'" alt="'.$file.'" />';
 		echo "</td>";
-	
 				}
 				echo "</tr>";
 				
@@ -312,6 +300,7 @@ function display_fichiers($row, $fieldID, $session, $readonly)
 		{
 			echo "<tr><td>";
 			
+			$dir = is_rapport_unite($row) ?  get_unit_directory($row, $session, false) :  get_people_directory($row, $session, false);
 			?>
 			<table><tr><td>
 <input
@@ -321,6 +310,8 @@ function display_fichiers($row, $fieldID, $session, $readonly)
 	type="file" />
 			<input
 	type="submit" name="ajoutfichier" value="Ajouter fichier" />
+				<input
+	type="submit" name="ajoutphoto" value="Ajouter photo" />
 			</td></tr><tr><td>
 <input type="hidden" name="type"
 	value="candidatefile" />

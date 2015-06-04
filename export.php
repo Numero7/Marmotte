@@ -43,10 +43,11 @@ if (authenticate())
 					{
 						$localpath = urldecode(($_REQUEST["path"]));
 						$remotepath = urldecode(($_REQUEST["filename"]));
-						send_file($localpath,$remotepath);
+						send_file($localpath,$remotepath, isset($_REQUEST["dsi"]));
 					}
 					break;
-				case 'export':
+				break;
+					case 'export':
 					{
 						if (isset($_REQUEST["save"]) and isset($_REQUEST["avis"]) and isset($_REQUEST["rapport"]))
 						{

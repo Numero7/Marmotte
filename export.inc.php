@@ -10,12 +10,13 @@ require_once('generate_csv.inc.php');
 require_once('generate_pdf.inc.php');
 require_once('generate_zip.inc.php');
 
-function send_file($local_filename, $remote_filename)
+function send_file($local_filename, $remote_filename, $dsi = false)
 {	
 	global $dossier_stockage;
+	global $dossier_stockage_dsi;
 	global $dossier_temp;
 	
-	$dossier_stockage = realpath($dossier_stockage);
+	$dossier_stockage = ($dsi ? realpath($dossier_stockage_dsi) : realpath($dossier_stockage) );
 	$dossier_temp = realpath($dossier_temp);
 	
 	$sub  = substr(realpath($local_filename),0, strlen($dossier_stockage) );
