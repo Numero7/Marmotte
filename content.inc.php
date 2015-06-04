@@ -395,6 +395,12 @@ function alertText($text)
 						echo process_upload(true,	$directory);
 						editReport($id_origine);
 					}
+					else if(isset($_REQUEST['ajoutphoto']) && isset($_REQUEST['uploaddir']))
+					{
+						$directory = $_REQUEST['uploaddir'];
+						echo process_upload(true,	$directory);
+						editReport($id_origine);
+					}
 					else if(isset($_REQUEST['suppressionfichier']))
 					{
 						if(isset($_REQUEST['deletedfile']))

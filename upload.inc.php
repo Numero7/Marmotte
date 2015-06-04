@@ -67,8 +67,9 @@ function process_upload($create = false, $directory = null)
 						break;
 					case "candidatefile":
 						{
-								if(!move_uploaded_file($tmpname, $directory."/".$files['name'] ))
-									throw new Exception("Failed to add file to candidate ");
+							$new_name = isset($_REQUEST['ajoutphoto']) ? "id.jpg" : $files['name'];
+								if(!move_uploaded_file($tmpname, $directory."/".$new_name ))
+									throw new Exception("Failed to add file");
 								return ("Fichier ".$files['name']." ajouté au candidat ");
 						}
 						break;
