@@ -1039,7 +1039,7 @@ function is_field_editable($row, $fieldId)
 	{
 		global $fieldsCandidat;
 		$f = in_array($fieldId,$fieldsCandidat);
-		return (isSecretaire() && ($f || $f0 || $f1 || $f2 || f3)) || ( $is_rapp1 && ($f1 || $f) )  || ($is_rapp2 && ($f2 || $f)) || ($is_rapp3 && ($f3 || $f) );
+		return (isSecretaire() && ($f || $f0 || $f1 || $f2 || $f3)) || ( $is_rapp1 && ($f1 || $f) )  || ($is_rapp2 && ($f2 || $f)) || ($is_rapp3 && ($f3 || $f) );
 	}
 
 	if(isset($typesRapportsUnites[$eval_type]))
@@ -1047,6 +1047,7 @@ function is_field_editable($row, $fieldId)
 		global $fieldsUnites;
 		$result = in_array($fieldId,$fieldsUnites) &&
 		(isSecretaire()
+		 || ($fieldId == "ecole" && ($is_rapp1 || $is_rapp2 || $is_rapp3))
 				|| ($fieldId == "prerapport" && $is_rapp1)
 				|| ($fieldId == "prerapport2" && $is_rapp2)
 				|| ($fieldId == "prerapport3" && $is_rapp3)
@@ -1067,6 +1068,7 @@ function is_field_editable($row, $fieldId)
 				|| ( $is_rapp1 && ($f1 || $f) )
 		  || ($is_rapp2 && ($f2 || $f) )
 		  || ($is_rapp3 && ($f3 || $f) )
+		      || ($fieldId == "ecole")
 		  ;
 	}
 
