@@ -495,6 +495,15 @@ function addReportFromRequest($id_origine, $request)
 
 	$report = createReportFromRequest($id_origine, $request);
 
+	if(isset($report->NUMSIRHUS))
+          {
+            $cand = get_candidate_from_SIRHUS($data->NUMSIRHUS);
+            if($cand != null)
+              {
+                $report->nom = $cand->nom;
+                $report->prenom = $cand->prenom;
+              }
+          }
 
 	$id_nouveau = addReportToDatabase($report,false);
 
@@ -576,7 +585,6 @@ function addReportToDatabase($report,$normalize = true)
 	if($normalize)
 	 $report = normalizeReport($report);
 
-
 	if(isset($report->unite))
 try
   {
@@ -610,7 +618,10 @@ try
 
 				if (!in_array($field,$specialRule))
 				{
-					if(isset($report->$field) && isset($previous_report->$field) &&($previous_report->$field !== $report->$field) && isset($fieldsPermissions[$field]) &&  $fieldsPermissions[$field] > $level)
+					if(
+					   isset($report->$field) && isset($previous_report->$field)
+					   &&($previous_report->$field !== $report->$field) && isset($fieldsPermissions[$field])
+					   &&  $fieldsPermissions[$field] > $level)
 						throw new Exception("Vous n'avez pas les autorisations nécessaires (".$level."<".$fieldsPermissions[$field].") pour modifier le champ ".$field);
 					if(isset($report->$field))
 					{

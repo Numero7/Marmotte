@@ -417,6 +417,7 @@ function displayEditableReport($row, $canedit = true)
 			$titre= "<h1>".$year." / ".$eval_name. ": ". $row->nom." ".$row->prenom.( isset($row->concours)  ? (" / concours ".$row->concours) : ""). ( (isset($row->sousjury) && $row->sousjury != "")  ? (" sousjury ".$row->sousjury) : ""). "</h1>";
 
 		$candidate = get_or_create_candidate($row);
+		//		$row->NUMSIRHUS = $candidate->NUMSIRHUS;
 		$conflit = (
 				is_in_conflict(getLogin(), $candidate))
 				&& !isSecretaire()
@@ -512,7 +513,7 @@ function displayEditableReport($row, $canedit = true)
 */
 			
 		echo "<h1>".$eval_name. ": ". (isset($row->nom) ? $row->nom : "")." ".(isset($row->prenom) ? $row->prenom : "");
-		echo " (".(isset($row->id) && $row->id != 0 ? "#".$row->id : "New").")</h1>";
+		echo " (".(isset($row->DKEY) && $row->DKEY != 0 ? "#".$row->DKEY : "New").")</h1>";
 
 
 		if(!$conflit)
@@ -566,7 +567,8 @@ function displayEditableReport($row, $canedit = true)
 		
 		displayEditionFrameStart("",$hidden,$submits);
 		voir_rapport_pdf($row);
-		echo "<h1>".$eval_name. ": ". (isset($row->unite) ? $row->unite : "")." (#".(isset($row->id) && $row->id != 0 ? $row->id : "New").")</h1>";
+		echo "<h1>".$eval_name. ": ". (isset($row->unite) ? $row->unite : "");
+		echo " (#".(isset($row->DKEY) && $row->DKEY != 0 ? $row->DKEY : "New").")</h1>";
 		echo "</div>"; 
 
 		displayEditionFrameStart("",$hidden,array());

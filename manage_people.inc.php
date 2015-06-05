@@ -124,9 +124,6 @@ function updateCandidateFromData($data)
 	sql_request($sql);
 
 	return get_or_create_candidate($data );
-
-
-
 }
 
 function getAllCandidates()
@@ -158,12 +155,16 @@ function add_candidate_to_database($data,$section="")
 		if($field != "fichiers")
 		{
 			$sqlfields .= ($first ? "" : ",") ."`".$field."`";
-			$sqlvalues .= ($first ? "" : ",") .'"'.(isset($data->$field) ? $data->$field : ( isset($empty_individual[$field]) ? $empty_individual[$field] : "") ).'"';
+			$sqlvalues .= ($first ? "" : ",");
+			$sqlvalues .= '"'.(isset($data->$field) ? $data->$field : ( isset($empty_individual[$field]) ? $empty_individual[$field] : "") );
+			$sqlvalues .= '"';
 			$first = false;
 		}
 
 		$sqlfields .= ",section";
 		$sqlvalues .= ",".$section;
+		$sqlfields .= ",NUMSIRHUS";
+		$sqlvalues .= ",".$data->NUMSIRHUS;
 
 		$sql = "INSERT INTO ".people_db." ($sqlfields) VALUES ($sqlvalues);";
 		sql_request($sql);
@@ -178,50 +179,33 @@ function add_candidate_to_database($data,$section="")
 		return $candidate;
 }
 
-/*
- * This function will always return a candidate,
-* created if needed,
-* or throw an exception
-*/
-function get_or_create_candidate_from_nom($nom, $prenom, $section="")
+function get_or_create_candidate($data)
 {
-	if($section == "")
-		$section = currentSection();
-
-	
+	$data = normalizeCandidat($data);
+	$data->nom = ucwords(strtolower($data->nom));
+	$data->prenom = ucwords(strtolower($data->prenom));
+	$section = currentSection();
+	echo("Getting candidate of SIRHUS '".$data->NUMSIRHUS."'<br/>");
 	try
 	{
-		$sql = "SELECT * FROM ".people_db.' WHERE nom="'.$nom.'" AND prenom="'.$prenom.'" AND section="'.$section.'" ;';
+		$sql = "SELECT * FROM ".people_db.' WHERE nom="'.$data->nom.'" AND prenom="'.$data->prenom.'" AND section="'.$section.'" ;';
 		$result = sql_request($sql);
 
 		$cdata = mysqli_fetch_object($result);
 		if($cdata == false)
 		{
-			$data = (object) array();
-			$data->nom = $nom;
-			$data->prenom = $prenom;
 			add_candidate_to_database($data,$section);
 			$result = sql_request($sql);
 			$cdata = mysqli_fetch_object($result);
 			if($cdata == false)
 				throw new Exception("Failed to find candidate previously added<br/>".$sql);
 		}
-
-		$cdata->nom = ucwords(strtolower($cdata->nom));
-		$cdata->prenom = ucwords(strtolower($cdata->prenom));
-		
 		return normalizeCandidat($cdata);
 	}
 	catch(Exception $exc)
 	{
 		throw new Exception("Failed to add candidate from report:<br/>".$exc->getMessage());
 	}
-}
-
-function get_or_create_candidate($data)
-{
-	$data = normalizeCandidat($data);
-	return get_or_create_candidate_from_nom($data->nom,$data->prenom);
 }
 
 

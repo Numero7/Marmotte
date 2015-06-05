@@ -30,6 +30,7 @@ function find_files($row, $session, $create_directory_if_nexists = false)
 
 	if(isset($row->NUMSIRHUS) && ($row->NUMSIRHUS != ""))
 	  {
+	    echo "NUMSIRHUS ".$row->NUMSIRHUS."<br/>";
 	    $sql = "SELECT * FROM ".dsidbname.".".dsi_docs_liens_db." WHERE numsirhus=\"".$row->NUMSIRHUS."\"";
 	    $result = sql_request($sql);
 
@@ -52,7 +53,7 @@ function find_files($row, $session, $create_directory_if_nexists = false)
 	      }
 	  }
 	else
-	  echo "No DKEY" ;
+	  echo "Pas de NumSirhus" ;
 	
 	$files["evaluation"] = $dsifiles;
 	$files["marmotte"] = array();
@@ -102,7 +103,7 @@ function find_people_files($candidate, $force, $session, $create_directory_if_ne
 		{
 			if( is_associated_directory_people($candidate, $directory) )
 			{
-				echo "Renaming '".$directory . "' to '". $basedir."'<br/>";
+//				echo "Renaming '".$directory . "' to '". $basedir."'<br/>";
 				rename($directory,$basedir);
 				break;
 			}
