@@ -990,12 +990,12 @@ Une phrase de conclusion sur le candidat incluant un commentaire sur l'audition
 	
 	$tous_avis = array_merge(
 			$avis_eval,
-			$avis_candidature_short,
-			$avis_ie,
 			$avis_pertinence,
+			$avis_ie,
 			$avis_ecoles,
 			$avis_binaire, 
-			$avis_lettre
+			$avis_lettre,
+			$avis_candidature_short
 			);
 
 	for($i = 1; $i <= $max_classement; $i++)

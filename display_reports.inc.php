@@ -380,19 +380,8 @@ if($bur)
 					?>
 					<!-- Displaying field <?php echo $fieldID; ?>menu -->
 					<?php 
-
-					if($fieldID=="nom")
-					{
-						echo "<a href=\"?action=edit&amp;id=".($row->id)."\">";
-						echo '<span class="valeur">'.$data.'</span>';
-						echo '</a>';
-					}
-					else
-					{
-						if( ($type == "unit") && isset($prettyunits[$row->$fieldID]))
-							$data = $prettyunits[$row->$fieldID]->nickname;
+					showIconAvis($fieldID,$data);
 						echo '<span class="valeur">'.substr($data,0,25).'</span>';
-					}
 				}
 			}
 			else if($fieldID == "concours")
@@ -422,7 +411,6 @@ if($bur)
 		}
 		else
 		{
-			showIconAvis($fieldID,$data);
 			if( ($type == "unit") && isset($prettyunits[$row->$fieldID]))
 				$data = $prettyunits[$row->$fieldID]->nickname;
 			echo '<span class="valeur">'.$data.'</span>';
