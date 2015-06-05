@@ -68,7 +68,8 @@ $add_rubriques_chercheurs = get_rubriques("chercheurs");
 $add_rubriques_unites = get_rubriques("unites");
 
 /* champs apparaissant sur l'écran principal */
-$fieldsSummary = array("DKEY", "type","unite","nom","prenom",/*"ecole",*/"avis","rapporteur","avis1","rapporteur2","avis2", "rapporteur3","avis3","grade_rapport","theme1","theme2",	"theme3");
+$fieldsSummary = array("type","unite","nom","prenom",/*"ecole",*/"avis","rapporteur","avis1","rapporteur2","avis2", "rapporteur3","avis3","theme1","theme2", "theme3","grade_rapport","DKEY");
+
 $fieldsSummaryConcours = array("type","nom","prenom","concours","sousjury","avis","rapporteur","avis1",
 		"rapporteur2","avis2","theme1","theme2","labo1","labo2","diploma","grade_rapport"
 );
@@ -93,6 +94,7 @@ $fieldsRapportAll = array(
 		"dsi" => "Infos e-valuation",
 		"statut" => "Statut rapport",
 		"DKEY" => "DKEY",
+		"NUMSIRHUS" => "NUMSIRHUS",
 		"concours" => "Concours",
 		"sousjury" => "Sous-jury",
 		"section"=> "Section",
@@ -138,7 +140,7 @@ $fieldsRapportAll = array(
 */
 $fieldsIndividual0 = array(
 		array("type", "statut"),
-		"intitule",
+		"intitule","dsi",
 		array(
 				"rapporteur",
 				"rapporteur2",
@@ -728,7 +730,7 @@ function is_concours($type)
 
 function is_avis_classement($avis)
 {
-	return (count($avis) > 0) && ($avis[0] == "c") && is_numeric($avis[1]);
+	return (count($avis) > 1) && ($avis[0] == "c") && is_numeric($avis[1]);
 }
 
 function classement_from_avis($avis)
@@ -748,10 +750,14 @@ foreach($report_class_to_types as $class => $ids)
 		{
 			switch($class)
 			{
-				case REPORT_CLASS_CHERCHEUR: $typesRapportToFields[$id] = $fieldsArrayChercheur; break;
-				case REPORT_CLASS_UNIT: $typesRapportToFields[$id] = $fieldsArrayUnite; break;
-				case REPORT_CLASS_DELEGATION: $typesRapportToFields[$id] = $fieldsArrayDelegation; break;
-				case REPORT_CLASS_CONCOURS: $typesRapportToFields[$id] = $fieldsArrayCandidat; break;
+				case REPORT_CLASS_CHERCHEUR:
+				  $typesRapportToFields[$id] = $fieldsArrayChercheur; break;
+				case REPORT_CLASS_UNIT:
+				  $typesRapportToFields[$id] = $fieldsArrayUnite; break;
+				case REPORT_CLASS_DELEGATION:
+				  $typesRapportToFields[$id] = $fieldsArrayDelegation; break;
+				case REPORT_CLASS_CONCOURS:
+				  $typesRapportToFields[$id] = $fieldsArrayCandidat; break;
 			}
 		}
 	}

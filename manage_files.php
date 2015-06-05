@@ -52,8 +52,8 @@ function find_files($row, $session, $create_directory_if_nexists = false)
 	      }	
 	      }
 	  }
-	else
-	  echo "Pas de NumSirhus" ;
+	//	else
+	// echo "Pas de NumSirhus" ;
 	
 	$files["evaluation"] = $dsifiles;
 	$files["marmotte"] = array();

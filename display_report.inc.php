@@ -512,8 +512,11 @@ function displayEditableReport($row, $canedit = true)
 			$fieldsIndividual0 = array_merge($fieldsUnitesExtra[$eval_type], $fieldsIndividual0);dsi.db
 */
 			
-		echo "<h1>".$eval_name. ": ". (isset($row->nom) ? $row->nom : "")." ".(isset($row->prenom) ? $row->prenom : "");
-		echo " (".(isset($row->DKEY) && $row->DKEY != 0 ? "#".$row->DKEY : "New").")</h1>";
+		echo "<h1>".$eval_name. ": ";
+		echo (isset($row->id_session) ? $row->id_session : "")." - ";
+		echo (isset($row->nom) ? $row->nom : "");
+		echo " ".(isset($row->prenom) ? $row->prenom : "")." - ";
+		echo (isset($row->DKEY) && $row->DKEY != 0 ? "#".$row->DKEY : "")."</h1>";
 
 
 		if(!$conflit)

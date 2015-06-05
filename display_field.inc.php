@@ -159,10 +159,15 @@ function display_select($row, $fieldID, $liste,$readonly)
 function display_dsi($row, $fieldID, $readonly)
 {
 	$report = getDSIReport($row->DKEY);
+	echo "<br/>";
 	if($report != null)
 	{
 		foreach($report as $field => $value)
-			echo $field.":".$value."<br/>";
+		  if($value != "" 
+		     && !strcontains($field,"RAPPORTEUR")
+		     && !strcontains($field,"AVIS")
+)
+		    echo $field.":".$value."<br/>";
 	}
 }
 
@@ -217,15 +222,14 @@ function display_rapports($row, $fieldId)
 	if($is_unit)
 		$reports = isset($row->unite) ? find_unit_reports($row->unite) : array();
 	else
-		$reports = (isset($row->nom) && isset($row->prenom)) ? find_people_reports($row->nom, $row->prenom) : array();
+		$reports = 
+		  (isset($row->nom) && isset($row->prenom)) ?
+		  find_people_reports($row->nom, $row->prenom)
+		  : array();
 
-	global $id_rapport_to_label;
-	echo "<td>";
-	if(count($reports) > 1)
-	{
-		echo "<table>";
-		foreach($reports as $report)
+	for($i = 0; $i < count($reports) ; $i++)
 		{
+		  $report = $reports[$i];
 			if( ( !isset($row->id) || $report->id != $row->id ) )
 			{
 				if(isset($id_rapport_to_label[$report->type]))
@@ -233,15 +237,51 @@ function display_rapports($row, $fieldId)
 				else
 					$type = "Unknown";
 				if($type == REPORT_CANDIDATURE && isset($report->concours) )
-					echo '<tr><td><a href="index.php?action=edit&amp;id='.$report->id.'">'.$report->id_session. " - " .$type." - " . $report->concours ."</a></td></tr>";
+				  $reports[$i]->label =
+				    $report->id_session. " - " .$type." - " . $report->concours;
 				else if( is_equivalence_type($type) )
-					echo '<tr><td><a href="index.php?action=edit&amp;id='.$report->id.'">'.$report->id_session. " - " .$type." - " . $report->grade_rapport ."</a></td></tr>";
+				  $reports[$i]->label =
+				    $report->id_session. " - " .$type." - " . $report->grade_rapport;
 				else  if(is_rapport_unite($report))
-				  echo '<tr><td><a href="index.php?action=edit&amp;id='.$report->id.'">'.$report->id_session." - ".$report->unite. " - " .$type."</a></td></tr>";
+				  $reports[$i]->label =
+				    $report->id_session." - ".$report->unite. " - " .$type;
 				else
-				  echo '<tr><td><a href="index.php?action=edit&amp;id='.$report->id.'">'.$report->id_session." - ".$report->nom."  ".$report->prenom. " - " .$type."</a></td></tr>";
-
+				  $reports[$i]->label =
+			         $report->id_session." - ".$report->nom."  ".$report->prenom. " - " .$type;
 			}
+		}
+
+	global $id_rapport_to_label;
+	echo "<td>";
+	if(count($reports) > 1 && count($reports) < 10)
+	{
+		echo "<table>";
+		foreach($reports as $report)
+		{
+		  if(isset($report->label))
+		    {
+		  echo '<tr><td><a href="index.php?action=view&amp;id='.$report->id.'">';
+		  echo $report->label;
+		  echo "</a></td></tr>";
+		    }
+		}
+		echo "</table>";
+	}
+	else if(count($reports) > 10)
+	{
+		?>
+	  <select onchange="window.location='index.php?action=read&amp;id=' + this.value;">
+	    <?php
+		foreach($reports as $report)
+		{
+		  if(isset($report->label))
+		    {
+?>
+		  <option value="<?php echo $report->id; ?>">
+		  <?php  echo $report->label; ?>
+		  </option>
+<?php
+		}
 		}
 		echo "</table>";
 	}
@@ -286,8 +326,10 @@ b - 1 )
 		{
 		  	if($i % $nb	 == $nb - 1 )
 				echo '</td></tr><tr><td style="padding-right: 10px">';
-			echo '<a  target="_blank" href="export.php?evaluation=&amp;action=get_file&amp;path=';
-			echo urlencode($dossier_stockage_dsi."/".$path).'&amp;filename='.urlencode($label).'">'.$label."</a><br/>\n";
+			echo '<a  target="_blank" href="export.php?evaluation=&amp;';
+			echo 'action=get_file&amp;path=';
+			echo urlencode($dossier_stockage_dsi."/".$path);
+			echo '&amp;filename='.urlencode($label).'">'.$label."</a><br/>\n";
 			$i++;
 		}
 		foreach($files["marmotte"] as $label => $path)
@@ -349,9 +391,9 @@ b - 1 )
 	<table><tr><td>
 <select name="deletedfile">
 	<?php
-	foreach($files["marmotte"] as $date => $file)
+	foreach($files["marmotte"] as $label => $path)
 	{
-		echo  "<option value=\"".$dir."/".$file."\" >".$file."</option>\n";
+		echo  "<option value=\"".$path."\" >".$label."</option>\n";
 	}
 	?>
 </select>

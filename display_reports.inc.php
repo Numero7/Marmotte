@@ -267,12 +267,31 @@ function displayRowCell($row, $fieldID)
 	}
 	else if($fieldID == "type" && isset($typesRapportsAll[$data]))
 	  {
-	    echo '<span class="valeur">'.$typesRapportsAll[$data] .'</span>';
+	    $label = $typesRapportsAll[$data];
+	    $num = 25;
+	    if(strlen($label) > $num)
+	      {
+		$arr = explode(" ",$label);
+		$tot = 0;
+		$lab = "";
+		foreach($arr as $piece)
+		  {
+		  $tot += strlen($piece);
+		  $lab .= $piece." ";
+		  if($tot > $num) 
+		    {
+		    $lab .= "<br/>"; 
+		    $tot = 0;
+		    }
+		  }
+		$label = $lab;
+	      }
+	    echo '<span class="valeur">'.$label.'</span>';
 	  }
 	else
 		echo '<span class="valeur">'.$data.'</span>';
 		
-	echo '</td>';
+	echo "</td>\n";
 }
 
 function display_updates()

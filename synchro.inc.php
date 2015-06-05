@@ -23,7 +23,8 @@ function synchronizeEmailsUpdates()
 			if($user->$field != "")
 			{
 				$sql = "SELECT * FROM ".dsidbname.".".dsi_users_db;
-				$sql .= " WHERE `mailpro`!=\"".$user->login."\" AND `".$field."` =\"".$user->$field ."\" ";
+				$sql .= " WHERE `mailpro`!=\"".$user->login."\" AND `";
+				$sql .= $field."` =\"".$user->$field ."\" ";
 				if (isSuperUser())
 					$sql .= ";";
 				else
@@ -165,6 +166,7 @@ function synchronizePeopleReports($section)
 {
 	$answer =   date('H:i:s')."<B>Synchronisation des rapports chercheurs</B><br/>\n";
 
+	// 		Inefficient
 	//	$sql = "SELECT * FROM ".marmottedbname.".".reports_db." WHERE DKEY != \"\"";
         //$sql .= " INNER JOIN ".dsidbname.".".dsi_evaluation_units_db.", dsi ON ";
         //$sql .= " dsi.DKEY NOT IN marmotte)";
@@ -281,18 +283,21 @@ function synchronizeUnitReports($section = "")
 	
 	$sql = "SELECT * FROM ".dsidbname.".".dsi_evaluation_units_db;
 	$sql .=" WHERE ";
-	$sql .= "(`CODE_SECTION1`=\"".$section."\" OR `CODE_SECTION2`=\"".$section."\"  OR `CODE_SECTION3`=\"".$section."\"";
-	$sql .= " OR `CODE_SECTION4`=\"".$section."\" OR `CODE_SECTION5`=\"".$section."\"  OR `CODE_SECTION6`=\"".$section."\"";
-	$sql .= " OR `CODE_SECTION7`=\"".$section."\" OR `CODE_SECTION8`=\"".$section."\"  OR `CODE_SECTION9`=\"".$section."\"";
+	$sql .= "(`CODE_SECTION1`=\"".$section."\" OR `CODE_SECTION2`=\"";
+	$sql .= $section."\"  OR `CODE_SECTION3`=\"".$section."\"";
+	$sql .= " OR `CODE_SECTION4`=\"".$section."\" OR `CODE_SECTION5`=\"";
+	$sql .= $section."\"  OR `CODE_SECTION6`=\"".$section."\"";
+	$sql .= " OR `CODE_SECTION7`=\"".$section."\" OR `CODE_SECTION8`=\"";
+	$sql .= $section."\"  OR `CODE_SECTION9`=\"".$section."\"";
 	$sql .= ") ";
 	$sql .= " AND ";
-	$sql .= " ( DKEY NOT IN (SELECT DKEY FROM ".marmottedbname.".".reports_db." WHERE DKEY != \"\" AND section=\"".$section."\") )";
+	$sql .= " ( DKEY NOT IN (SELECT DKEY FROM ";
+	$sql .= marmottedbname.".".reports_db." WHERE DKEY != \"\" AND section=\"".$section."\") )";
 
-	//	$answer .= $sql."<br/>";
 	$res = sql_request($sql);
-//	echo $sql."<br/>";
 
-	$answer .= "La base dsi contient ".mysqli_num_rows($res). " DE unités qui n'apparaissent pas encore dans Marmotte.<br/>\n";
+	$answer .= "La base dsi contient ".mysqli_num_rows($res);
+	$answer .= " DE unités qui n'apparaissent pas encore dans Marmotte.<br/>\n";
 	while($row = mysqli_fetch_object($res))
 	{
 		
@@ -324,10 +329,14 @@ function synchronizeUnitReports($section = "")
 		global $dbh;
 		if($num >0)
 		{
+		  $answer .= "Mise a jour des rapporteurs ".$rapporteur." - ".$rapporteur2;
+		  $answer .= " du dossier unite ".$row->UNITE_EVAL."<br/>";
 			if($rapporteur != "")
-				sql_request("UPDATE ".reports_db." SET rapporteur=\"".$rapporteur."\" WHERE DKEY=\"".$row->DKEY."\" AND rapporteur=\"\";");
+				sql_request(
+				"UPDATE ".reports_db." SET rapporteur=\"".$rapporteur."\" WHERE DKEY=\"".$row->DKEY."\" AND rapporteur=\"\";");
 			if($rapporteur2 != "")
-				sql_request("UPDATE ".reports_db." SET rapporteur2=\"".$rapporteur2."\" WHERE DKEY=\"".$row->DKEY."\" AND rapporteur2=\"\";");
+				sql_request(
+				"UPDATE ".reports_db." SET rapporteur2=\"".$rapporteur2."\" WHERE DKEY=\"".$row->DKEY."\" AND rapporteur2=\"\";");
 			$answer .= $num." rapports Marmotte ont ete synchronisee (KEY ".$row->DKEY.")<br/>\n";
 			continue;
 		}
@@ -338,17 +347,20 @@ function synchronizeUnitReports($section = "")
 		$num = mysqli_num_rows(sql_request($sql));
 		if($num == 1)
 		  {
+		  $answer .= "Mise a jour des rapporteurs ".$rapporteur." - ".$rapporteur2;
+		  $answer .= " du dossier unite 'repeche'".$row->UNITE_EVAL."<br/>";
+
 		    $sql = "UPDATE ".reports_db." SET type=\"".$row->TYPE_EVAL."\", DKEY=\"".$row->DKEY."\" WHERE";
 		    $sql .= " DKEY=\"\" AND id_session=\"".$session."\" AND section=\"".$section."\"";
 		    $sql .= " AND unite=\"".$row->UNITE_EVAL."\" ;";		    
 		    //	    $answer .= $sql;
+		    sql_request($sql);
 
 		    if($rapporteur != "")
 		    	sql_request("UPDATE ".reports_db." SET rapporteur=\"".$rapporteur."\" WHERE DKEY=\"".$row->DKEY."\" AND rapporteur=\"\";");
 		    if($rapporteur2 != "")
 		    	sql_request("UPDATE ".reports_db." SET rapporteur2=\"".$rapporteur2."\" WHERE DKEY=\"".$row->DKEY."\" AND rapporteur2=\"\";");
 		    
-		    sql_request($sql);
 		    global $dbh;
 		    $num = mysqli_affected_rows($dbh);
 
@@ -381,7 +393,11 @@ function synchronize_with_evaluation($section = "")
 	$answer = "<B>Synchronisation avec e-valuation de la section ".$section."</B><br/>\n";
 	if(isSecretaire())
 	{
-	  $answer = date('H:i:s'); 
+	$sql = "DELETE FROM ".reports_db." WHERE id!=id_origine AND section=\"".$section."\";";
+	sql_request($sql);
+	global $dbh;
+	$answer .= mysqli_affected_rows($dbh)." doublons ont ete retires de la base <br/>\n";
+	  $answer .= date('H:i:s'); 
 		$answer .= synchronizeWithDsiMembers($section)."<br/>";
 	  $answer .= date('H:i:s'); 
 		$answer .= synchronizeSessions($section)."<br/>";
