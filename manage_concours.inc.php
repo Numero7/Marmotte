@@ -26,6 +26,8 @@ function affectersousjurys()
 			}
 		}
 	}
+	unset($_SESSION["allconcours"]);
+	
 }
 
 /* map from login * concours to sousjury */
@@ -55,14 +57,17 @@ function getSousJuryMap()
 
 function getConcours()
 {
+	if(!isset($_SESSION["allconcours"]))
+	{
 	$concours = array();
 	$sql = "SELECT * FROM ".concours_db." WHERE section='".real_escape_string(currentSection()). "' and session='".real_escape_string(current_session_id())."'";
 	$sql.= ";";
 	$result = sql_request($sql);
 	while ($row = mysqli_fetch_object($result))
 		$concours[ $row->code ] = $row;
-
-	return $concours;
+	$_SESSION["allconcours"] = $concours;
+	}
+	return $_SESSION["allconcours"];
 }
 
 function getPresidentSousJury($sousjury)
@@ -129,13 +134,15 @@ function setConcours($conc)
 	$sql .= "')";
 
 	sql_request($sql);
-
+	unset($_SESSION["allconcours"]);
 }
 
 function setConcoursStatut($code, $statut)
 {
 	$sql = "UPDATE ".concours_db." SET statut=\"".real_escape_string($statut)."\" WHERE code=\"".real_escape_string($code)."\"";
 	sql_request($sql);
+	unset($_SESSION["allconcours"]);
+	
 }
 
 function deleteConcours($code)
@@ -145,6 +152,7 @@ function deleteConcours($code)
 	$sql .= " and session='".real_escape_string(current_session_id())."'";
 	$sql .= " and code='".real_escape_string($code)."';";
 	sql_request($sql);
+	unset($_SESSION["allconcours"]);
 }
 
 function addSousJury($code, $sousjury, $login)

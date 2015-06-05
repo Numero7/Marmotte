@@ -29,7 +29,7 @@ function db_disconnect()
 	$dbh=0;
 } ;
 
-
+//select idavis
 function export_db($tablename)
 {
 	global $servername;
@@ -255,7 +255,7 @@ function migrate( $section, $serverName, $db, $login, $password, $type)
 function sql_request($sql)
 {
 	global $dbh;
-	echo $sql."<br/>\n";
+//	echo $sql."<br/>\n";
 	$result = mysqli_query($dbh, $sql);
 	if($result == false)
 		throw new Exception("Failed to process sql query: <br/>\t".mysqli_error($dbh)."<br/>".$sql);

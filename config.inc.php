@@ -6,35 +6,35 @@ date_default_timezone_set('Europe/Paris');
 require_once("config/configDB.inc.php");
 require_once("config_tools.inc.php");
 
-	
-	$rubriques_supplementaires = array(
-			"individus" => array("rubriques_individus","Info","chercheur"),
-			"candidats" => array("rubriques_candidats", "Info","candidat"),
-			"concours" => array("rubriques_concours", "Generic","rapport concours"),
-			"chercheurs" => array("rubriques_chercheurs", "Generic","rapport chercheur"),
-			"unites" => array("rubriques_unites", "Generic","rapport unite")
-	);
-	
-	$add_rubriques_people = get_rubriques("individus");
-	$add_rubriques_candidats = get_rubriques("candidats");
-	$add_rubriques_concours = get_rubriques("concours");
-	$add_rubriques_chercheurs = get_rubriques("chercheurs");
-	$add_rubriques_unites = get_rubriques("unites");
-				
-	$statutsRapports = array(
-			'doubleaveugle'=>'Edition Prérapports Double Aveugle',
-			 'edition' => "Edition Prérapports et Rapports",
-			 'avistransmis'=>"Publication des Avis",
-			 'publie'=>"Publication des Rapports",
-			 'audition'=>"Audition"
-	);
-	$statutsRapportsACN = array(
-			'doubleaveugle'=>'Edition Prérapports Double Aveugle',
-			'edition' => "Edition Prérapports et Rapports",
-			'avistransmis'=>"Publication des Avis",
-	);
-	
-	
+
+$rubriques_supplementaires = array(
+		"individus" => array("rubriques_individus","Info","chercheur"),
+		"candidats" => array("rubriques_candidats", "Info","candidat"),
+		"concours" => array("rubriques_concours", "Generic","rapport concours"),
+		"chercheurs" => array("rubriques_chercheurs", "Generic","rapport chercheur"),
+		"unites" => array("rubriques_unites", "Generic","rapport unite")
+);
+
+$add_rubriques_people = get_rubriques("individus");
+$add_rubriques_candidats = get_rubriques("candidats");
+$add_rubriques_concours = get_rubriques("concours");
+$add_rubriques_chercheurs = get_rubriques("chercheurs");
+$add_rubriques_unites = get_rubriques("unites");
+
+$statutsRapports = array(
+		'doubleaveugle'=>'Edition Prérapports Double Aveugle',
+		'edition' => "Edition Prérapports et Rapports",
+		'avistransmis'=>"Publication des Avis",
+		'publie'=>"Publication des Rapports",
+		'audition'=>"Audition"
+);
+$statutsRapportsACN = array(
+		'doubleaveugle'=>'Edition Prérapports Double Aveugle',
+		'edition' => "Edition Prérapports et Rapports",
+		'avistransmis'=>"Publication des Avis",
+);
+
+
 
 //	define("config_file","config/config.xml");
 define("signature_file","img/signature.jpg");
@@ -58,7 +58,7 @@ $typesdocs = array();
 $sql = "SELECT * FROM ".dsidbname."."."typesdocs WHERE 1;";
 $result = sql_request($sql);
 while($row = mysqli_fetch_object($result))
-  $typesdocs[$row->id] = $row->doctyplib;
+	$typesdocs[$row->id] = $row->doctyplib;
 
 $rubriques_supplementaires = array(
 		"individus" => array("rubriques_individus","Info","chercheur"),
@@ -378,8 +378,8 @@ $fieldsIndividualDefault = array(
 
 
 $fieldsUnites0 = array(
-array("type", "statut", "DKEY"),
-"dsi",
+		array("type", "statut", "DKEY"),
+		"dsi",
 		"intitule",
 		array(
 				"rapporteur",
@@ -587,7 +587,7 @@ while ($row = mysqli_fetch_object($result))
 	$report_types_to_class[$row->id] = $row->classe;
 	$id_rapport_to_label[$row->id] = $row->label;
 	$typesRapportsAll[$row->id] = $row->label;
-	
+
 	switch($row->classe)
 	{
 		case REPORT_CLASS_CHERCHEUR:
@@ -762,13 +762,13 @@ foreach($report_class_to_types as $class => $ids)
 			switch($class)
 			{
 				case REPORT_CLASS_CHERCHEUR:
-				  $typesRapportToFields[$id] = $fieldsArrayChercheur; break;
+					$typesRapportToFields[$id] = $fieldsArrayChercheur; break;
 				case REPORT_CLASS_UNIT:
-				  $typesRapportToFields[$id] = $fieldsArrayUnite; break;
+					$typesRapportToFields[$id] = $fieldsArrayUnite; break;
 				case REPORT_CLASS_DELEGATION:
-				  $typesRapportToFields[$id] = $fieldsArrayDelegation; break;
+					$typesRapportToFields[$id] = $fieldsArrayDelegation; break;
 				case REPORT_CLASS_CONCOURS:
-				  $typesRapportToFields[$id] = $fieldsArrayCandidat; break;
+					$typesRapportToFields[$id] = $fieldsArrayCandidat; break;
 			}
 		}
 	}
@@ -873,17 +873,17 @@ foreach($avis_lettre as $avis => $lettre)
 
 
 $tous_avis = array();
-	$sql = "SELECT * FROM dsi.reftypeavis WHERE 1;";
-	$result= sql_request($sql);
-	while($row = mysqli_fetch_object($result))
-	{
-		if($row->id == avis_classe)
-			$tous_avis[$row->id] = $avis_classement;
-		else if($row->id == avis_ouinon)
-			$tous_avis[$row->id] = array(avis_oui => "oui", avis_non => "non");
-		else
-			$tous_avis[$row->id] = $row->label;
-	}
+$sql = "SELECT * FROM dsi.reftypeavis WHERE 1;";
+$result= sql_request($sql);
+while($row = mysqli_fetch_object($result))
+{
+	if($row->id == avis_classe)
+		$tous_avis[$row->id] = $avis_classement;
+	else if($row->id == avis_ouinon)
+		$tous_avis[$row->id] = array(avis_oui => "oui", avis_non => "non");
+	else
+		$tous_avis[$row->id] = $row->label;
+}
 foreach($avis_lettre as $avi => $label)
 	if(!isset($tous_avis[$avi])) $tous_avis[$avi] = $label;
 foreach($avis_candidature_short as $avi => $label)
@@ -891,34 +891,40 @@ foreach($avis_candidature_short as $avi => $label)
 foreach($avis_classement as $avi => $label)
 	if(!isset($tous_avis[$avi])) $tous_avis[$avi] = $label;
 
-	
+
 //	$sql = "select label from reftypeavis where id in (select idavis from reltypevalavis where ideval = '7017');";
 $typesRapportToAvis = array(
 		REPORT_CANDIDATURE => $avis_candidature_short,
 		REPORT_DELEGATION => $avis_lettre
-		);
+);
 
-
-$type_avis_classement = array();
-foreach($id_rapport_to_label as $type => $data)
- {
-   $typesRapportToAvis[$type][0] = "";
-	$sql = "select idavis from dsi.reltypevalavis where ideval = '$type'";
-	$result = sql_request($sql);
-	while($row = mysqli_fetch_object($result))
+if(!isset($_SESSION["type_avis_classement"]))
+{
+	$type_avis_classement = array();
+	foreach($id_rapport_to_label as $type => $data)
 	{
-		if(is_array($tous_avis[$row->idavis]))
+		$typesRapportToAvis[$type][0] = "";
+		$sql = "select idavis from dsi.reltypevalavis where ideval = '$type'";
+		$result = sql_request($sql);
+		while($row = mysqli_fetch_object($result))
 		{
-			foreach($tous_avis[$row->idavis] as $id => $avis)
-			$typesRapportToAvis[$type][$id] = $avis;
+			if(is_array($tous_avis[$row->idavis]))
+			{
+				foreach($tous_avis[$row->idavis] as $id => $avis)
+					$typesRapportToAvis[$type][$id] = $avis;
+			}
+			else
+				$typesRapportToAvis[$type][$row->idavis]= $tous_avis[$row->idavis];
+			if($row->idavis == avis_classe)
+				$type_avis_classement[] = $type;
 		}
-		else
-			$typesRapportToAvis[$type][$row->idavis]= $tous_avis[$row->idavis];
-		if($row->idavis == avis_classe)
-			$type_avis_classement[] = $type;
 	}
+	$_SESSION["type_avis_classement"] = $type_avis_classement;
 }
-
+else
+{
+	$type_avis_classement = $_SESSION["type_avis_classement"];
+}
 /************************* Mise en page *******************************/
 
 $typesRapportToMiseEnPage = array(
@@ -1220,7 +1226,7 @@ foreach($topics as $key => $value)
 
 /** FILTERS **/
 $filtersReports = array(
-			'type' => array('name'=>"Type d'évaluation" , 'liste' =>  $typesRapportsAll , 'default_value' => "tous", 'default_name' => "Tous les types"),
+		'type' => array('name'=>"Type d'évaluation" , 'liste' =>  $typesRapportsAll , 'default_value' => "tous", 'default_name' => "Tous les types"),
 		'rapporteur' => array('name'=>"Rapporteur" , 'default_value' =>"tous", 'default_name' => "Tous les rapporteurs"),
 		'rapporteur2' => array('name'=>"Rapporteur2" ,'default_value' =>"tous", 'default_name' => "Tous les rapporteurs"),
 		'grade' => array('name'=>"Grade" , 'liste' => $grades, 'default_value' => "tous", 'default_name' => "Tous les grades"),
@@ -1231,13 +1237,13 @@ $filtersReports = array(
 		'avis1' => array('name'=>"Avis Rapp 1" , 'liste' => $avis_sessions, 'default_value' => "tous", 'default_name' => ""),
 		'avis2' => array('name'=>"Avis Rapp 2" , 'liste' => $avis_sessions, 'default_value' => "tous", 'default_name' => ""),
 		//'avis3' => array('name'=>"Avis Rapp 3" , 'liste' => $avis_sessions, 'default_value' => "tous", 'default_name' => ""),
-		'statut' => array('name'=>"Statut" , 'liste' => $statutsRapports, 'default_value' => "tous", 'default_name' => "Tous"),
-		//'theme3' => array('name'=>"Theme3" , 'liste' => $topics, 'default_value' => "tous", 'default_name' => ""),
-		'genre' => array('name' =>"Genre", 'liste' => $genreCandidat, 'default_value' => "tous", 'default_name' => "Tous"),
-		'id_session' => array('name'=>"Session", 'default_value' =>-1, 'default_name' => "Toutes les sessions"),
-		'avancement' => array('name'=>"Avancement" , 'default_value' => "", 'default_name' => ""),
-		'id_origine' => array('default_value' =>-1),
-		'id' => array('default_value' =>-1)
+'statut' => array('name'=>"Statut" , 'liste' => $statutsRapports, 'default_value' => "tous", 'default_name' => "Tous"),
+//'theme3' => array('name'=>"Theme3" , 'liste' => $topics, 'default_value' => "tous", 'default_name' => ""),
+'genre' => array('name' =>"Genre", 'liste' => $genreCandidat, 'default_value' => "tous", 'default_name' => "Tous"),
+'id_session' => array('name'=>"Session", 'default_value' =>-1, 'default_name' => "Toutes les sessions"),
+'avancement' => array('name'=>"Avancement" , 'default_value' => "", 'default_name' => ""),
+'id_origine' => array('default_value' =>-1),
+'id' => array('default_value' =>-1)
 );
 
 $filtersDelegation = array(
@@ -1342,7 +1348,7 @@ $icones_avis = array(
 		"oral"=>"img/Icon-Yes.png",
 		avis_classe=>"img/Icon-Yes.png",
 		avis_oui=>"img/Icon-Yes.png",
-		
+
 
 		avis_reserve => "img/Icon-NoComment.png",
 		"B+" => "img/Icon-NoComment.png",
@@ -1357,7 +1363,7 @@ $icones_avis = array(
 		"nonconcur"=>"img/Icon-No.png",
 		avis_alerte=>"img/Icon-No.png",
 		avis_non =>"img/Icon-No.png",
-		
+
 		avis_pas_davis => "img/Icon-Maybe.png",
 		"adiscuter" => "img/Icon-Maybe.png",
 		"" =>"img/Icon-Maybe.png",
