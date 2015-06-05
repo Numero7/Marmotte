@@ -226,7 +226,7 @@ function displayRowCell($row, $fieldID)
 		if(isset($filters['avis']) && isset($data['avis']['liste']))
 			$avis = $data['avis']['liste'];
 		
-		if($sec && $fieldID == "avis")
+		if($sec && !isACN() && $fieldID == "avis")
 		{
 			?><select onchange="window.location='index.php?action=set_property&property=<?php echo $fieldID; ?>&id_origine=<?php echo $row->id_origine; ?>&value=' + encodeURIComponent(this.value);">
 		<?php
@@ -325,6 +325,10 @@ function displayStatutMenu()
 				</form>
 			</td>
 		</tr>
+		<?php
+		if(is_current_session_concours())
+		{
+		?> 
 		<tr>
 			<td>
 				<form method="post" action="index.php"
@@ -335,7 +339,10 @@ function displayStatutMenu()
 				</form>
 			</td>
 		</tr>
-
+		<?php 
+		}
+		?>
+		
 	</table>
 </td>
 <?php 
@@ -353,7 +360,7 @@ function displayRows($rows, $fields, $filters, $filter_values)
 		<td>
 		<?php displayFiltrage($rows, $fields, $filters, $filter_values); ?>
 		</td>
-		<?php if(isSecretaire()) displayStatutMenu(); ?>
+		<?php if(isSecretaire() && !isACN()) displayStatutMenu(); ?>
 	</tr>
 </table>
 <hr />

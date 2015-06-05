@@ -22,12 +22,14 @@ require_once("config_tools.inc.php");
 	$add_rubriques_unites = get_rubriques("unites");
 				
 	$statutsRapports = array(
-			'doubleaveugle'=>'Double Aveugle',
-			 'prerapport' => "Prerapport",
-			 'rapport'=>"Rapport",
-			 'audition'=>"Audition",
-			 'publie'=>"Rapport publié"
-			);
+			'doubleaveugle'=>'Edition Prérapports Double Aveugle',
+			 'edition' => "Edition Prérapports et Rapports",
+			 'avistransmis'=>"Publication des Avis",
+			 'publie'=>"Publication des Rapports",
+			 'audition'=>"Audition"
+	);
+
+	
 
 //	define("config_file","config/config.xml");
 define("signature_file","img/signature.jpg");
@@ -73,14 +75,6 @@ $fieldsSummaryConcours = array("type","nom","prenom","concours","sousjury","avis
 		"rapporteur2","avis2","theme1","theme2","labo1","labo2","diploma","grade_rapport"
 );
 
-/* possibles sttauts des rapports */
-$statutsRapports = array(
-		'doubleaveugle'=>'Double Aveugle',
-		'prerapport' => "Prerapport",
-		'rapport'=>"Rapport",
-		'audition'=>"Audition",
-		'publie'=>"Rapport publié"
-);
 
 $genreCandidat = array(
 		'' => "",
@@ -89,6 +83,18 @@ $genreCandidat = array(
 );
 
 /* mapping from fields in the database to labels */
+$fieldsRapportACN = array(
+		"dsi", "statut", "DKEY", "concours", "sousjury", "section", "intitule", "nom",
+		"prenom", "unite", "type", "grade_rapport", "rapporteur", "rapporteur2", "rapporteur3",
+		"avis", "avis1", "avis2", "avis3",
+		"rapport"
+);
+$fieldsEditableACN = array(
+		"concours", "sousjury", "intitule", "nom",
+		"prenom", "unite", "type", "grade_rapport", "rapporteur", "rapporteur2", "rapporteur3",
+		"rapport"
+);
+
 $fieldsRapportAll = array(
 		"dsi" => "Infos e-valuation",
 		"statut" => "Statut rapport",
@@ -1191,6 +1197,7 @@ while($result = mysqli_fetch_object($query))
 $permission_levels = array(
 		NIVEAU_PERMISSION_BASE => "rapporteur",
 		NIVEAU_PERMISSION_BUREAU => "bureau",
+		NIVEAU_PERMISSION_ACN => "ACN",
 		NIVEAU_PERMISSION_SECRETAIRE => "secrétaire",
 		NIVEAU_PERMISSION_PRESIDENT => "président(e)",
 		NIVEAU_PERMISSION_SUPER_UTILISATEUR => "admin"

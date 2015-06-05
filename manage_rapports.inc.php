@@ -971,29 +971,45 @@ function is_in_conflict_efficient($row, $login)
 
 function is_field_editable($row, $fieldId)
 {
+	$statut = isset($row->statut) ? $row->statut : "rapport";
 	$eval_type = isset($row->type) ? $row->type : "";
 	global $typesRapportToFields;
 	global $fieldsPeople;
 
+	//certains champs ne sont pas voués à etre edites
 	global $nonEditableFieldsTypes;
 	if(in_array($fieldId, $nonEditableFieldsTypes))
 		return false;
 
-	if($fieldId == "statut")
+	//le secretaire/ACN peut changer le statut, seul le secrétaire/president peut dépublier
+	if($fieldId == "statut" && ($statut != "publie" || !isACN()))
 		return isSecretaire();
 
-	if(isset($row->statut) && ($row->statut == "publie"))
+	//une fois le rapport transmis, plus rien n'est publiable
+	if($statut == "publie")
 		return false;
 
+	//une fois les avis tranmis, seul le rapport et les rapporteurs sont editables et l'ACN n'a également accès qu'à ces éléments en édition
+	if((isACN() || $statut == "avistransmis") &&  ! ($fieldId == "rapport" || $fieldId == 'rapporteur' || $fieldId == 'rapporteur2' || $fieldId == 'rapporteur3'))
+		return false;			
+	
+	//ACN can not see only certain fields
+	if(isACN())
+	{
+		global $fieldsEditableACN;
+		return in_array($fieldId, $fieldsEditableACN);
+	}
+	
 	if($fieldId == "type" || $fieldId == "conflits")
 		return isSecretaire();
-
+	
 	if($fieldId == 'rapporteur' || $fieldId == 'rapporteur2' || $fieldId == 'rapporteur3')
 		return isBureauUser();
 
 	if(isSecretaire())
 		return true;
 
+	//le bureau peut éditer les infos nominatives
 	if(isBureauUser() && in_array($fieldId, $fieldsPeople) )
 		return true;
 
@@ -1003,9 +1019,13 @@ function is_field_editable($row, $fieldId)
 	$is_rapp2 = isset($row->rapporteur2) && ($login == $row->rapporteur2);
 	$is_rapp3 = isset($row->rapporteur3) && ($login == $row->rapporteur3);
 
-	//echo $fieldId." ".$login." ".$row->rapporteur." ".$row->rapporteur2;
-
-	if($is_rapp1 && $fieldId == "rapport" && isset($row->statut))
+	/*			'doubleaveugle'=>'Edition Prérapports Double Aveugle',
+			 'edition' => "Edition Prérapports et Rapports",
+			 'avistransmis'=>"Publication des Avis",
+			 'publie'=>"Publication des Rapports",
+			 'audition'=>"Audition"
+*/
+	if(($is_rapp1 || $is_rapp2 || $is_rapp3) && $fieldId == "rapport")
 		return true;
 
 	if(isset($row->statut) && ($row->statut == "audition"))
@@ -1021,12 +1041,6 @@ function is_field_editable($row, $fieldId)
 	}
 
 	if(isset($row->type) && $row->type == REPORT_CANDIDATURE && isset($row->avis) && is_numeric($row->avis) && $fieldId =="rapport" && ($is_rapp1 || $is_rapp2 || $is_rapp3))
-		return true;
-
-	if(isset($row->statut) && ($row->statut == "rapport" || $row->statut == "publie"))
-		return isSecretaire();
-
-	if($is_rapp1 && ($fieldId == "rapport"))
 		return true;
 
 	if(!$is_rapp1 && !$is_rapp2 && !$is_rapp3 && !isSecretaire())
@@ -1101,6 +1115,14 @@ function is_field_visible($row, $fieldId)
 	if(in_array($fieldId, $alwaysVisibleFieldsTypes))
 		return true;
 
+	
+	//ACN can not see only certain fields
+	if(isACN())
+	{
+		global $fieldsRapportACN;
+		return in_array($fieldId, $fieldsRapportACN);
+	}	
+	
 	if($fieldId == "type" && !isSecretaire())
 		return false;
 
@@ -1116,19 +1138,12 @@ function is_field_visible($row, $fieldId)
 	if($row->$fieldId == '')
 		return false;
 
-	if(isset($row->statut) && $row->statut == "prerapport")
-		return true;
-
-	if($fieldId == "rapport" || $fieldId == "avis")
-		return true;
-
 	//during prerapport edition we do not want rapporteurs to see each other reports
 	//only editable info is visible
 	$login = getLogin();
 	$is_rapp1 = isset($row->rapporteur) && ($login == $row->rapporteur);
 	$is_rapp2 = isset($row->rapporteur2) && ($login == $row->rapporteur2);
 	$is_rapp3 = isset($row->rapporteur3) && ($login == $row->rapporteur3);
-
 
 	if(isset($row->statut) && ($row->statut == "doubleaveugle") && ($is_rapp1 || $is_rapp2 || $is_rapp3))
 		return false;
