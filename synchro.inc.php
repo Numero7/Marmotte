@@ -143,12 +143,12 @@ function synchronizeSessions($section)
 
 function synchronizePeople($section)
 {
-	$answer = "<B>Synchronisation des numeros SIRHUS de chercheurs (toutes sections)</B><br/>\n";
+	$answer = "<B>Synchronisation des numeros SIRHUS de chercheurs </B><br/>\n";
 	$sql =  "UPDATE ".people_db." marmotte JOIN ".dsidbname.".".dsi_people_db." dsi ";
 	$sql .= " ON marmotte.nom=dsi.nom AND marmotte.prenom=dsi.prenom";
-	$sql .= " AND marmotte.NUMSIRHUS=\"\" AND marmotte.section=\"".$section."\"";
-	$sql .= " SET marmotte.NUMSIRHUS=dsi.numsirhus;";
-//	$sql .= " WHERE marmotte.NUMSIRHUS=\"\" AND marmotte.section=\"".$section."\";";
+	//	$sql .= " AND marmotte.NUMSIRHUS=\"\" AND marmotte.section=\"".$section."\"";
+	$sql .= " SET marmotte.NUMSIRHUS=dsi.numsirhus";
+	$sql .= " WHERE marmotte.NUMSIRHUS=\"\";";
 	$res = sql_request($sql);
 	global $dbh;
 	$num = mysqli_affected_rows($dbh);
@@ -156,6 +156,8 @@ function synchronizePeople($section)
 		$answer = "Mise a jour de ".$num." numéros SIRHUS<br/>";
 	else
 		$answer .= "Aucune numéro SIRHUS n'a été mis à jour.<br/>";
+	//$sql =  "DELETE FROM ".people_db." WHERE NUMSIRHUS=\"\" AND section=\"".$section."\";";
+	//sql_request($sql);
 	return 	$answer;
 }
 //id_unite
@@ -170,10 +172,11 @@ function synchronizePeopleReports($section)
 	//$sql .= " (`dsi.CODE_SECTION` =\"".$section."\" OR `dsi.CODE_SECTION_2`=\"".$section."\" OR `dsi.CODE_SECTION_EXCPT`=\"".$section." \
 	//\";";
 
-	$sql = "SELECT * FROM ".dsidbname.".".dsi_evaluation_db;
-	$sql .=" WHERE";
+	$sql = "SELECT * FROM ".dsidbname.".".dsi_evaluation_db." AS eval";
+	$sql .= " LEFT JOIN ".dsidbname.".".dsi_people_db." AS people";
+	$sql .= " ON eval.NUMSIRHUS=people.numsirhus WHERE ";
 	// (DKEY NOT IN (SELECT DKEY FROM ".marmottedbname.".".reports_db."  WHERE DKEY != \"\")) AND ";
-	$sql .=" (`CODE_SECTION` =\"".$section."\" OR `CODE_SECTION_2`=\"".$section."\" OR `CODE_SECTION_EXCPT`=\"".$section."\");";
+	$sql .=" (eval.CODE_SECTION =\"".$section."\" OR eval.CODE_SECTION_2=\"".$section."\" OR eval.CODE_SECTION_EXCPT=\"".$section."\");";
 	
 	$answer .= date('H:i:s')."Executing ".$sql."<br/>";
 
@@ -205,56 +208,63 @@ function synchronizePeopleReports($section)
 			$rapporteur2 = getEmailFromChaire($row->RAPPORTEUR8);
 			$rapporteur3 = getEmailFromChaire($row->RAPPORTEUR9);
 		}
-		
+
+			$sql  = "UPDATE ".people_db;
+			$sql .= " SET labo1=\"".$row->code_unite."\", NUMSIRHUS=\"".$row->NUMSIRHUS."\"";
+			$sql .= " WHERE LOWER(nom)=LOWER(\"".$row->nom."\")";
+			$sql .= " AND LOWER(prenom)=LOWER(\"".$row->prenom."\");";
+			$res = sql_request($sql);
+			global $dbh;
+			$num = mysqli_affected_rows($dbh);
+			if($num == 0)
+			  {
+				$sql  = "INSERT INTO ".people_db;
+				$sql .= " (NUMSIRHUS,labo1,nom,prenom,section) VALUES ";
+				$sql .= "(\"".$row->NUMSIRHUS."\",\"".$row->code_unite."\",\"".$row->nom."\",\"".$row->prenom."\",\"".$section."\");";
+				try{ sql_request($sql); }catch(Exception $e){}
+			  }
+
 	  $sql = "SELECT * FROM ".marmottedbname.".".reports_db." WHERE DKEY=".$row->DKEY.";";
 	  $res2 = sql_request($sql);
 	  if(mysqli_num_rows($res2) == 0)
 	    {
-	      //	      $answer .= date('H:i:s')."New row, getting user<br/>";
 	      $session = $row->LIB_SESSION.$row->ANNEE;
-	      $user = get_candidate_from_SIRHUS($row->NUMSIRHUS);
-	      //$answer .= date('H:i:s')."New row, getting user<br/>";
-	      if($user != null)
-		{
-		  //  $answer .= date('H:i:s')."User no null<br/>";
 			$sql  = "UPDATE ".reports_db;
 			$sql .= " SET NUMSIRHUS=\"".$row->NUMSIRHUS."\", DKEY=\"".$row->DKEY."\" WHERE id_session=\"".$session."\"";
 			$sql .= " AND section=\"".$section."\" AND DKEY=\"\" AND type=\"".$row->TYPE_EVAL."\"";
-			$sql .= " AND nom=\"".$user->nom."\" AND prenom=\"".$user->prenom."\";";
+			$sql .= " AND LOWER(nom)=LOWER(\"".$row->nom."\") AND LOWER(prenom)=LOWER(\"".$row->prenom."\");";
 			$res = sql_request($sql);
 			global $dbh;
 			$num = mysqli_affected_rows($dbh);
 			if($num > 0)
 			{
-				if($rapporteur != "")
-					sql_request("UPDATE ".reports_db." SET rapporteur=\"".$rapporteur."\" WHERE DKEY=\"".$row->DKEY."\" AND rapporteur=\"\";");
-				if($rapporteur2 != "")
-					sql_request("UPDATE ".reports_db." SET rapporteur2=\"".$rapporteur2."\" WHERE DKEY=\"".$row->DKEY."\" AND rapporteur2=\"\";");
-				if($rapporteur3 != "")
-					sql_request("UPDATE ".reports_db." SET rapporteur3=\"".$rapporteur3."\" WHERE DKEY=\"".$row->DKEY."\" AND rapporteur3=\"\";");
-			  $answer .= date('H:i:s').": ".$num." evaluations chercheur ont reçu le DKEY ".$row->DKEY." w<br/>\n";
+			if($rapporteur != "")
+				sql_request("UPDATE ".reports_db." SET rapporteur=\"".$rapporteur."\" WHERE DKEY=\"".$row->DKEY."\" AND rapporteur=\"\";");
+			if($rapporteur2 != "")
+				sql_request("UPDATE ".reports_db." SET rapporteur2=\"".$rapporteur2."\" WHERE DKEY=\"".$row->DKEY."\" AND rapporteur2=\"\";");
+			if($rapporteur3 != "")
+				sql_request("UPDATE ".reports_db." SET rapporteur3=\"".$rapporteur3."\" WHERE DKEY=\"".$row->DKEY."\" AND rapporteur3=\"\";");
+
+			  $answer .= date('H:i:s').": ".$num." evaluations chercheur ont recu le DKEY".$row->DKEY;
+			  $answer .= " et le NUMSIRHUS ".$row->NUMSIRHUS."<br/>\n";
 			  $changed = true;
 				continue;
 			}
-		}
-		if($user != null)
-		{
-			$row->nom = $user->nom;
-			$row->prenom = $user->prenom;
-		}
-		$answer .= "Import de l'evaluations chercheur de DKEY ".$row->DKEY."<br/>\n";
+
 		$row->id_origine=0;
 		$row->id_session = $session;
 		$row->section = $section;
 		$row->rapporteur = $rapporteur;
-		$row->rapporteur2 = $rapporteur2;
+
+		$row->rapporteur = $rapporteur;
 		$row->rapporteur3 = $rapporteur3;
 		$row->type = $row->TYPE_EVAL;
 		
-		$answer .= date('H:i:s')."Ajout d'un nouveau rapport a la base Marmotte<br/>";
+		$answer .= date('H:i:s')." Ajout de l'evaluations chercheur de DKEY ".$row->DKEY." et Sirhus ".$row->NUMSIRHUS."<br/>\n";
 		addReportToDatabase($row);
 		$changed = true;
-	    }
+
+	        }
 		else
 		{
 //		$answer .= "Le rapport de DKEY ".$row->DKEY." a deja ete importe dans Marmotte<br/>\n";
