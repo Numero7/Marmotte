@@ -226,7 +226,7 @@ function displayRowCell($row, $fieldID)
 		if(isset($filters['avis']) && isset($data['avis']['liste']))
 			$avis = $data['avis']['liste'];
 		
-		if($sec && $fieldID == "avis")
+		if($sec && !isACN() && $fieldID == "avis")
 		{
 			?><select onchange="window.location='index.php?action=set_property&property=<?php echo $fieldID; ?>&id_origine=<?php echo $row->id_origine; ?>&value=' + encodeURIComponent(this.value);">
 		<?php
@@ -321,7 +321,10 @@ function displayStatutMenu()
 							<td><select name="new_statut">
 									<?php
 									global $statutsRapports;
-									foreach ($statutsRapports as $val => $nom)
+									global $statutsRapportsACN;
+									$statuts = isACN() ? $statutsRapportsACN : $statutsRapports;									
+
+									foreach ($statuts as $val => $nom)
 									{
 										$sel = "";
 										echo "<option value=\"".$val."\" $sel>".$nom."</option>\n";
@@ -344,6 +347,10 @@ function displayStatutMenu()
 				</form>
 			</td>
 		</tr>
+		<?php
+		if(is_current_session_concours())
+		{
+		?> 
 		<tr>
 			<td>
 				<form method="post" action="index.php"
@@ -354,7 +361,10 @@ function displayStatutMenu()
 				</form>
 			</td>
 		</tr>
-
+		<?php 
+		}
+		?>
+		
 	</table>
 </td>
 <?php 

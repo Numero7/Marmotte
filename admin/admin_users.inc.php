@@ -8,8 +8,10 @@
 		rapports et candidats dont il/elle est rapporteur.</li>
 	<li><b>Bureau</b>: peut changer les rapporteurs et éditer les infos
 		des chercheurs et candidats.</li>
-	<li><b>Secrétaire et président</b>: tous les droits sur tout dans la
-		section.</li>
+	<li><b>ACN</b>: attribution des rapporteurs, correction des rapports de section.
+	</li>
+		<li><b>Secrétaire et président</b>: tous les droits sur tout dans la
+		section, y compris le changement de statut des rapports.</li>
 	<li><b>Admin</b>: tous les droits sur la configuration des membres et
 		des unités de toutes les sections, ne peut voir aucun rapport.</b>
 </ul>

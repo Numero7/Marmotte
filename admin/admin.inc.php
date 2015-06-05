@@ -517,6 +517,7 @@ if(count($rubriques) > 0)
 if($admin_migration)
 {
 	?>
+	<!-- 
 <h2>Migration depuis Marmotte 1.0</h2>
 <form method="post" action="index.php">
 	<table>
@@ -539,9 +540,16 @@ if($admin_migration)
 		</tr>
 	</table>
 </form>
+ -->	
+<h2>Migration depuis Marmotte 2.1</h2>
+<p>
+<a href="index.php?action=migrate_to_eval_codes&amp;admin_maintenance=">Migrer les codes d'évaluation.</a>
+<p/>
+<!-- 
 <h2>Purge dossiers</h2>
 <h3>Purge historique</h3>
 <h3>Purge session</h3>
+-->
 <?php 
 	}
 	?>

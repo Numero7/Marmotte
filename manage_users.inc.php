@@ -162,6 +162,7 @@ function permissionToRole($perm)
 		case NIVEAU_PERMISSION_SUPER_UTILISATEUR: return "ADM";
 		case NIVEAU_PERMISSION_PRESIDENT: return "PRE";
 		case NIVEAU_PERMISSION_SECRETAIRE: return "SSC";
+		case NIVEAU_PERMISSION_ACN: return "ACN";
 		case NIVEAU_PERMISSION_BUREAU: return "BUR";
 		default: return "";
 	}
@@ -284,12 +285,28 @@ function isSuperUser($login = "")
 	return getUserPermissionLevel($login) >= NIVEAU_PERMISSION_SUPER_UTILISATEUR;
 };
 
+function isPresident($login = "", $use_mask = true)
+{
+	if($login == "")
+		$login = getLogin();
+	$level = getUserPermissionLevel($login, $use_mask);
+	return ($level >= NIVEAU_PERMISSION_PRESIDENT);
+};
+
 function isSecretaire($login = "", $use_mask = true)
 {
 	if($login == "")
 		$login = getLogin();
 	$level = getUserPermissionLevel($login, $use_mask);
-	return ($level >= NIVEAU_PERMISSION_SECRETAIRE);
+	return ($level >= NIVEAU_PERMISSION_ACN);
+};
+
+function isACN($login = "", $use_mask = true)
+{
+	if($login == "")
+		$login = getLogin();
+	$level = getUserPermissionLevel($login, $use_mask);
+	return ($level == NIVEAU_PERMISSION_ACN);
 };
 
 function getLogin()

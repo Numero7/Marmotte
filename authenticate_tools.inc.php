@@ -4,6 +4,7 @@ require_once('config_tools.inc.php');
 
 define("NIVEAU_PERMISSION_BASE", 0);
 define("NIVEAU_PERMISSION_BUREAU", 100);
+define("NIVEAU_PERMISSION_ACN", 400);
 define("NIVEAU_PERMISSION_SECRETAIRE", 500);
 define("NIVEAU_PERMISSION_PRESIDENT", 700);
 define("NIVEAU_PERMISSION_SUPER_UTILISATEUR", 1000);
@@ -156,6 +157,7 @@ function roleToPermission($role)
 	switch($role)
 	{
 		case "ADM": return NIVEAU_PERMISSION_SUPER_UTILISATEUR;
+		case "ACN": return NIVEAU_PERMISSION_ACN;
 		case "PRE": return NIVEAU_PERMISSION_PRESIDENT;
 		case "SSC": return NIVEAU_PERMISSION_SECRETAIRE;
 		case "BUR": return NIVEAU_PERMISSION_BUREAU;

@@ -22,12 +22,19 @@ require_once("config_tools.inc.php");
 	$add_rubriques_unites = get_rubriques("unites");
 				
 	$statutsRapports = array(
-			'doubleaveugle'=>'Double Aveugle',
-			 'prerapport' => "Prerapport",
-			 'rapport'=>"Rapport",
-			 'audition'=>"Audition",
-			 'publie'=>"Rapport publié"
-			);
+			'doubleaveugle'=>'Edition Prérapports Double Aveugle',
+			 'edition' => "Edition Prérapports et Rapports",
+			 'avistransmis'=>"Publication des Avis",
+			 'publie'=>"Publication des Rapports",
+			 'audition'=>"Audition"
+	);
+	$statutsRapportsACN = array(
+			'doubleaveugle'=>'Edition Prérapports Double Aveugle',
+			'edition' => "Edition Prérapports et Rapports",
+			'avistransmis'=>"Publication des Avis",
+	);
+	
+	
 
 //	define("config_file","config/config.xml");
 define("signature_file","img/signature.jpg");
@@ -74,14 +81,6 @@ $fieldsSummaryConcours = array("type","nom","prenom","concours","sousjury","avis
 		"rapporteur2","avis2","theme1","theme2","labo1","labo2","diploma","grade_rapport"
 );
 
-/* possibles sttauts des rapports */
-$statutsRapports = array(
-		'doubleaveugle'=>'Double Aveugle',
-		'prerapport' => "Prerapport",
-		'rapport'=>"Rapport",
-		'audition'=>"Audition",
-		'publie'=>"Rapport publié"
-);
 
 $genreCandidat = array(
 		'' => "",
@@ -90,6 +89,18 @@ $genreCandidat = array(
 );
 
 /* mapping from fields in the database to labels */
+$fieldsRapportACN = array(
+		"dsi", "statut", "DKEY", "concours", "sousjury", "section", "intitule", "nom",
+		"prenom", "unite", "type", "grade_rapport", "rapporteur", "rapporteur2", "rapporteur3",
+		"avis", "avis1", "avis2", "avis3",
+		"rapport"
+);
+$fieldsEditableACN = array(
+		"concours", "sousjury", "intitule", "nom",
+		"prenom", "unite", "type", "grade_rapport", "rapporteur", "rapporteur2", "rapporteur3",
+		"rapport"
+);
+
 $fieldsRapportAll = array(
 		"dsi" => "Infos e-valuation",
 		"statut" => "Statut rapport",
@@ -992,52 +1003,51 @@ $grades = array(
 
 /* permissions levels for actions */
 $actions_level = array(
-		"synchronize_with_dsi" => NIVEAU_PERMISSION_SECRETAIRE,
-		"synchronize_sessions_with_dsi" => NIVEAU_PERMISSION_SECRETAIRE,
+		"synchronize_with_dsi" => NIVEAU_PERMISSION_ACN,
+		"synchronize_sessions_with_dsi" => NIVEAU_PERMISSION_ACN,
 		"maintenance_on" => NIVEAU_PERMISSION_SUPER_UTILISATEUR,
 		"maintenance_off" => NIVEAU_PERMISSION_SUPER_UTILISATEUR,
 		"migrate_to_eval_codes" => NIVEAU_PERMISSION_SUPER_UTILISATEUR,
-		"delete_units" =>NIVEAU_PERMISSION_SECRETAIRE,
+		"delete_units" =>NIVEAU_PERMISSION_ACN,
 		"set_rapporteur" => NIVEAU_PERMISSION_BUREAU,
 		"change_role" => NIVEAU_PERMISSION_BASE,
 		"migrate" => NIVEAU_PERMISSION_SUPER_UTILISATEUR,
-		"removerubrique" => NIVEAU_PERMISSION_SECRETAIRE,
-		"addrubrique" => NIVEAU_PERMISSION_SECRETAIRE,
-		"removetopic" => NIVEAU_PERMISSION_SECRETAIRE,
-		"addtopic" => NIVEAU_PERMISSION_SECRETAIRE,
-		"updateconfig" => NIVEAU_PERMISSION_SECRETAIRE,
-		"delete" => NIVEAU_PERMISSION_SECRETAIRE,
-		"change_statut" => NIVEAU_PERMISSION_SECRETAIRE,
+		"removerubrique" => NIVEAU_PERMISSION_ACN,
+		"addrubrique" => NIVEAU_PERMISSION_ACN,
+		"removetopic" => NIVEAU_PERMISSION_ACN,
+		"addtopic" => NIVEAU_PERMISSION_ACN,
+		"updateconfig" => NIVEAU_PERMISSION_ACN,
+		"delete" => NIVEAU_PERMISSION_ACN,
+		"change_statut" => NIVEAU_PERMISSION_ACN,
 		"view" => NIVEAU_PERMISSION_BASE,
-		"deleteCurrentSelection" => NIVEAU_PERMISSION_SECRETAIRE,
-		"affectersousjurys" => NIVEAU_PERMISSION_SECRETAIRE,
+		"deleteCurrentSelection" => NIVEAU_PERMISSION_ACN,
+		"affectersousjurys" => NIVEAU_PERMISSION_ACN,
 		"edit" => NIVEAU_PERMISSION_BASE,
 		"read" => NIVEAU_PERMISSION_BASE,
-		"upload" => NIVEAU_PERMISSION_SECRETAIRE,
+		"upload" => NIVEAU_PERMISSION_ACN,
 		"update" => NIVEAU_PERMISSION_BASE,
-		"change_current_session" => NIVEAU_PERMISSION_SECRETAIRE,
-		"new" => NIVEAU_PERMISSION_SECRETAIRE,
+		"change_current_session" => NIVEAU_PERMISSION_ACN,
+		"new" => NIVEAU_PERMISSION_ACN,
 		"newpwd" => NIVEAU_PERMISSION_BASE,
-		"adminnewpwd" => NIVEAU_PERMISSION_SECRETAIRE,
-		"admin" => NIVEAU_PERMISSION_SECRETAIRE,
-		"admindeleteaccount" => NIVEAU_PERMISSION_SECRETAIRE,
-		"infosrapporteur" => NIVEAU_PERMISSION_SECRETAIRE,
-		"checkpwd" => NIVEAU_PERMISSION_SECRETAIRE,
-		"adminnewaccount" => NIVEAU_PERMISSION_SECRETAIRE,
-		"admindeletesession" => NIVEAU_PERMISSION_SECRETAIRE,
+		"adminnewpwd" => NIVEAU_PERMISSION_ACN,
+		"admin" => NIVEAU_PERMISSION_ACN,
+		"admindeleteaccount" => NIVEAU_PERMISSION_ACN,
+		"infosrapporteur" => NIVEAU_PERMISSION_ACN,
+		"checkpwd" => NIVEAU_PERMISSION_ACN,
+		"adminnewaccount" => NIVEAU_PERMISSION_ACN,
+		"admindeletesession" => NIVEAU_PERMISSION_ACN,
 		"changepwd" => NIVEAU_PERMISSION_BASE,
-		"add_concours" => NIVEAU_PERMISSION_SECRETAIRE,
-		"delete_concours" => NIVEAU_PERMISSION_SECRETAIRE,
-		"ajoutlabo" => NIVEAU_PERMISSION_SECRETAIRE,
-		"deletelabo" => NIVEAU_PERMISSION_SECRETAIRE,
-		"mailing" => NIVEAU_PERMISSION_SECRETAIRE,
-		"email_rapporteurs" => NIVEAU_PERMISSION_SECRETAIRE,
-		"trouverfichierscandidats" => NIVEAU_PERMISSION_SECRETAIRE,
-		"creercandidats" => NIVEAU_PERMISSION_SECRETAIRE,
-		"creercandidats" => NIVEAU_PERMISSION_SECRETAIRE,
-		"injectercandidats" => NIVEAU_PERMISSION_SECRETAIRE,
-		"displayunits" => NIVEAU_PERMISSION_SECRETAIRE,
-		"displayimportexport" => NIVEAU_PERMISSION_SECRETAIRE
+		"add_concours" => NIVEAU_PERMISSION_ACN,
+		"delete_concours" => NIVEAU_PERMISSION_ACN,
+		"ajoutlabo" => NIVEAU_PERMISSION_ACN,
+		"deletelabo" => NIVEAU_PERMISSION_ACN,
+		"mailing" => NIVEAU_PERMISSION_ACN,
+		"email_rapporteurs" => NIVEAU_PERMISSION_ACN,
+		"trouverfichierscandidats" => NIVEAU_PERMISSION_ACN,
+		"creercandidats" => NIVEAU_PERMISSION_ACN,
+		"injectercandidats" => NIVEAU_PERMISSION_ACN,
+		"displayunits" => NIVEAU_PERMISSION_ACN,
+		"displayimportexport" => NIVEAU_PERMISSION_ACN
 );
 
 $actions1 = array(
@@ -1081,7 +1091,7 @@ $typeExports = array(
 				"mime" => "application/x-zip",
 				"xsl" => "",
 				"name" => "pdf",
-				"permissionlevel" => NIVEAU_PERMISSION_SECRETAIRE,
+				"permissionlevel" => NIVEAU_PERMISSION_ACN,
 		),
 		"html" => 	array(
 				"mime" => "text/html",
@@ -1197,6 +1207,7 @@ while($result = mysqli_fetch_object($query))
 $permission_levels = array(
 		NIVEAU_PERMISSION_BASE => "rapporteur",
 		NIVEAU_PERMISSION_BUREAU => "bureau",
+		NIVEAU_PERMISSION_ACN => "ACN",
 		NIVEAU_PERMISSION_SECRETAIRE => "secrétaire",
 		NIVEAU_PERMISSION_PRESIDENT => "président(e)",
 		NIVEAU_PERMISSION_SUPER_UTILISATEUR => "admin"

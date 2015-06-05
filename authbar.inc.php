@@ -124,7 +124,20 @@ if(!isSuperUser())
 			Mode:
 			<select onchange="window.location='index.php?action=change_role&amp;role=' + this.value;">
 			<?php 
-						$levels = array(NIVEAU_PERMISSION_SECRETAIRE => "Secrétaire", NIVEAU_PERMISSION_BUREAU => "Bureau", NIVEAU_PERMISSION_BASE => "Normal");
+			if(!isACN("",false))
+			{
+						$levels = array(
+								NIVEAU_PERMISSION_PRESIDENT => "Président",
+								NIVEAU_PERMISSION_SECRETAIRE => "Secrétaire",
+								NIVEAU_PERMISSION_BUREAU => "Bureau",
+								NIVEAU_PERMISSION_BASE => "Normal");
+			}
+			else
+			{
+						$levels = array(
+								NIVEAU_PERMISSION_ACN => "ACN",
+								NIVEAU_PERMISSION_BASE => "Normal");
+			}
 						foreach($levels as $level => $name)
 						{
 							if(getUserPermissionLevel("",false) >= $level )
