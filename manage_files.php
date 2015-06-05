@@ -30,7 +30,7 @@ function find_files($row, $session, $create_directory_if_nexists = false)
 
 	if(isset($row->NUMSIRHUS) && ($row->NUMSIRHUS != ""))
 	  {
-	    echo "NUMSIRHUS ".$row->NUMSIRHUS."<br/>";
+//	    echo "NUMSIRHUS ".$row->NUMSIRHUS."<br/>";
 	    $sql = "SELECT * FROM ".dsidbname.".".dsi_docs_liens_db." WHERE numsirhus=\"".$row->NUMSIRHUS."\"";
 	    $result = sql_request($sql);
 
