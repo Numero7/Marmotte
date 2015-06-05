@@ -302,7 +302,10 @@ function displayStatutMenu()
 							<td><select name="new_statut">
 									<?php
 									global $statutsRapports;
-									foreach ($statutsRapports as $val => $nom)
+									global $statutsRapportsACN;
+									$statuts = isACN() ? $statutsRapportsACN : $statutsRapports;									
+
+									foreach ($statuts as $val => $nom)
 									{
 										$sel = "";
 										echo "<option value=\"".$val."\" $sel>".$nom."</option>\n";
@@ -360,7 +363,7 @@ function displayRows($rows, $fields, $filters, $filter_values)
 		<td>
 		<?php displayFiltrage($rows, $fields, $filters, $filter_values); ?>
 		</td>
-		<?php if(isSecretaire() && !isACN()) displayStatutMenu(); ?>
+		<?php if(isSecretaire()) displayStatutMenu(); ?>
 	</tr>
 </table>
 <hr />

@@ -540,7 +540,7 @@ if($admin_migration)
 		</tr>
 	</table>
 </form>
- -->
+ -->	
 <h2>Migration depuis Marmotte 2.1</h2>
 <p>
 <a href="index.php?action=migrate_to_eval_codes&amp;admin_maintenance=">Migrer les codes d'évaluation.</a>
