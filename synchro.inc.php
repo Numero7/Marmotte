@@ -144,7 +144,7 @@ function synchronizeSessions($section)
 
 function synchronizePeople($section)
 {
-	$answer = "<B>Synchronisation des numeros SIRHUS de chercheurs </B><br/>\n";
+  $answer = date('H:i:s')."<B>Synchronisation des numeros SIRHUS de chercheurs </B><br/>\n";
 	$sql =  "UPDATE ".people_db." marmotte JOIN ".dsidbname.".".dsi_people_db." dsi ";
 	$sql .= " ON marmotte.nom=dsi.nom AND marmotte.prenom=dsi.prenom";
 	//	$sql .= " AND marmotte.NUMSIRHUS=\"\" AND marmotte.section=\"".$section."\"";
@@ -154,9 +154,9 @@ function synchronizePeople($section)
 	global $dbh;
 	$num = mysqli_affected_rows($dbh);
 	if($num > 0)
-		$answer = "Mise a jour de ".$num." numéros SIRHUS<br/>";
+	  $answer .= date('H:i:s')."Mise a jour de ".$num." numéros SIRHUS<br/>";
 	else
-		$answer .= "Aucune numéro SIRHUS n'a été mis à jour.<br/>";
+	  $answer .= date('H:i:s')."Aucune numéro SIRHUS n'a été mis à jour.<br/>";
 	//$sql =  "DELETE FROM ".people_db." WHERE NUMSIRHUS=\"\" AND section=\"".$section."\";";
 	//sql_request($sql);
 	return 	$answer;
@@ -390,7 +390,7 @@ function synchronize_with_evaluation($section = "")
 	if( ($section == "") and !isSuperUser())
 		$section = currentSection();
 
-	$answer = "<B>Synchronisation avec e-valuation de la section ".$section."</B><br/>\n";
+	$answer = date('H:i:s')."<B>Synchronisation avec e-valuation de la section ".$section."</B><br/>\n";
 	if(isSecretaire())
 	{
 	$sql = "DELETE FROM ".reports_db." WHERE id!=id_origine AND section=\"".$section."\";";

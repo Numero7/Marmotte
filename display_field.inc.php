@@ -158,16 +158,28 @@ function display_select($row, $fieldID, $liste,$readonly)
 
 function display_dsi($row, $fieldID, $readonly)
 {
+  $ignored_fields = array(
+			  "TYPE_EVAL",
+			  "UNITE_EVAL",
+			  "RAPPORTEUR",
+			  "AVIS")
+			  ;
 	$report = getDSIReport($row->DKEY);
 	echo "<br/>";
 	if($report != null)
 	{
 		foreach($report as $field => $value)
-		  if($value != "" 
-		     && !strcontains($field,"RAPPORTEUR")
-		     && !strcontains($field,"AVIS")
-)
+		  if($value != "")
+		    {
+		      $ok = true;
+		  foreach($ignored_fields as $f)
+		    {
+		    if(strcontains($field,$f))
+		      $ok = false;
+		    }
+		  if($ok)
 		    echo $field.":".$value."<br/>";
+		    }
 	}
 }
 

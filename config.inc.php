@@ -920,10 +920,12 @@ if(!isset($_SESSION["type_avis_classement"]))
 		}
 	}
 	$_SESSION["type_avis_classement"] = $type_avis_classement;
+	$_SESSION["type_rapport_to_avis"] = $typesRapportToAvis;
 }
 else
 {
 	$type_avis_classement = $_SESSION["type_avis_classement"];
+	$typesRapportToAvis = $_SESSION["type_rapport_to_avis"];
 }
 /************************* Mise en page *******************************/
 
