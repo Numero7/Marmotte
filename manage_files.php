@@ -28,20 +28,24 @@ function find_files($row, $session, $create_directory_if_nexists = false)
 	$dsifiles = array();
 	global $typesRapportsAll;
 
+	$sql = "";
+
 	if(isset($row->NUMSIRHUS) && ($row->NUMSIRHUS != ""))
 	  {
-//	    echo "NUMSIRHUS ".$row->NUMSIRHUS."<br/>";
-	    $sql = "SELECT * FROM ".dsidbname.".".dsi_docs_liens_db." WHERE numsirhus=\"".$row->NUMSIRHUS."\"";
+    	    $sql = "SELECT * FROM ".dsidbname.".".dsi_docs_liens_db." AS t1 ";
+	    $sql .="JOIN ".dsidbname.".".dsi_docs_db." AS t2 ON t1.dkeydoc=t2.dkey WHERE t1.UNITE_EVAL=\"".$row->NUMSIRHUS."\"";
+	  }
+	else if(isset($row->unite) && ($row->unite != ""))
+	  {
+	    $unite = $row->unite;
+    	    $sql = "SELECT * FROM ".dsidbname.".".dsi_docs_liens_unites_db." AS t1 ";
+	    $sql .="JOIN ".dsidbname.".".dsi_docs_db." AS t2 ON t1.dkeydoc=t2.dkey WHERE t1.UNITE_EVAL=\"".$unite."\"";
+	  }
+	if($sql != "")
+	  {
 	    $result = sql_request($sql);
-
-	    while($rowww = mysqli_fetch_object($result))
-	      {
-
-	    $sql = "SELECT * FROM ".dsidbname.".".dsi_docs_db." WHERE dkey=\"".$rowww->dkeydoc."\"";
-	    $res2 = sql_request($sql);
-
 	    global $typesdocs;
-	    while($roww = mysqli_fetch_object($res2))
+	    while($roww = mysqli_fetch_object($result))
 	      {
 		//		echo count($files)." Files<br/>";
 		//annee_doc		// code_tye_doc		// dkey		// nom_document		// path_sas		// session_doc
@@ -50,10 +54,7 @@ function find_files($row, $session, $create_directory_if_nexists = false)
 		$label = $roww->annee_doc." - " . $roww->session_doc. " - " . $label. " - ". $roww->nom_document;
 		$dsifiles[$label] =  $roww->path_sas."/".$roww->nom_document;
 	      }	
-	      }
 	  }
-	//	else
-	// echo "Pas de NumSirhus" ;
 	
 	$files["evaluation"] = $dsifiles;
 	$files["marmotte"] = array();

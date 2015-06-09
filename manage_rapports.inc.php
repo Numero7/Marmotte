@@ -1192,7 +1192,8 @@ function migrate_to_eval_codes()
 				"Reexamen"=>6008,"EvalMiVague"=>6005,
 				"Delegation"=>7778, "DEChercheur"=>7779,
 				"Creation-GDR"=>8015,"Changement d'aff"=>7012,
-				"Ch-section"=>"6515","Candidature"=>7777
+				"Ch-section"=>"6515","Candidature"=>7777,
+				"Generique"=>"7780","DEChercheur"=>"7779"
 		);
 
 		foreach($mig as $pref => $id)
@@ -1239,7 +1240,7 @@ function migrate_to_eval_codes()
 		sql_request($sql);
 
 
-		$sql = "SELECT * FROM report_types WHERE 1;";
+		$sql = "SELECT * FROM report_types WHERE code_marmotte=\"\";";
 		$result = sql_request($sql);
 		while ($row = mysqli_fetch_object($result))
 		{
@@ -1251,7 +1252,7 @@ function migrate_to_eval_codes()
 		foreach($id_rapport_to_label as $id => $data)
 		{
 			if($id != 9999)
-				$sql = "UPDATE `".reports_db."` SET `intitule`=\"".$data."\" WHERE `type`=\"".$id."\";";
+				$sql = "UPDATE `".reports_db."` SET `intitule`=\"".$data."\" WHERE `type`=\"".$id."\" AND intitule=\"\";";
 			else
 				$sql = "UPDATE `".reports_db."` SET `intitule`=`ecole` WHERE `type`=\"9999\";";
 			sql_request($sql);
