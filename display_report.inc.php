@@ -546,9 +546,11 @@ function displayEditableReport($row, $canedit = true)
 		}
 		displayEditableObject("Rapport section", $row,$fieldsIndividual0, $canedit, $session);
 	}
-	else if( is_rapport_unite($row) )
+	else// if( is_rapport_unite($row) )
 	{
 		$units = unitsList();
+		if(!isset($typesRapportToFields[$eval_type]))
+		  $eval_type = REPORT_INCONNU;
 
 		$fieldsUnites0 = $typesRapportToFields[$eval_type][1];
 		$fieldsUnites1 = $typesRapportToFields[$eval_type][2];
@@ -602,12 +604,7 @@ function displayEditableReport($row, $canedit = true)
 		displayEditableObject("Rapport section", $row,$fieldsUnites0, $canedit, $session);
 
 	}
-	else{
-		echo "<div id=\"toolbar\">";
-		displayEditionFrameStart("",$hidden,$submits);
-		voir_rapport_pdf($row);
-		echo "</div>";
-	}
+
 	echo "</form>\n";
 
 	echo('

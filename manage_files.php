@@ -33,7 +33,7 @@ function find_files($row, $session, $create_directory_if_nexists = false)
 	if(isset($row->NUMSIRHUS) && ($row->NUMSIRHUS != ""))
 	  {
     	    $sql = "SELECT * FROM ".dsidbname.".".dsi_docs_liens_db." AS t1 ";
-	    $sql .="JOIN ".dsidbname.".".dsi_docs_db." AS t2 ON t1.dkeydoc=t2.dkey WHERE t1.UNITE_EVAL=\"".$row->NUMSIRHUS."\"";
+	    $sql .="JOIN ".dsidbname.".".dsi_docs_db." AS t2 ON t1.dkeydoc=t2.dkey WHERE t1.numsirhus=\"".$row->NUMSIRHUS."\"";
 	  }
 	else if(isset($row->unite) && ($row->unite != ""))
 	  {
@@ -55,6 +55,7 @@ function find_files($row, $session, $create_directory_if_nexists = false)
 		$dsifiles[$label] =  $roww->path_sas."/".$roww->nom_document;
 	      }	
 	  }
+		ksort($dsifiles);
 	
 	$files["evaluation"] = $dsifiles;
 	$files["marmotte"] = array();

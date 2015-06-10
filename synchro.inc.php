@@ -147,9 +147,9 @@ function synchronizePeople($section)
   $answer = date('H:i:s')."<B>Synchronisation des numeros SIRHUS de chercheurs </B><br/>\n";
 	$sql =  "UPDATE ".people_db." marmotte JOIN ".dsidbname.".".dsi_people_db." dsi ";
 	$sql .= " ON marmotte.nom=dsi.nom AND marmotte.prenom=dsi.prenom";
-	//	$sql .= " AND marmotte.NUMSIRHUS=\"\" AND marmotte.section=\"".$section."\"";
+	//	$sql .= " AND marm""otte.NUMSIRHUS=\"\" AND marmotte.section=\"".$section."\"";
 	$sql .= " SET marmotte.NUMSIRHUS=dsi.numsirhus";
-	$sql .= " WHERE marmotte.NUMSIRHUS=\"\";";
+	$sql .= " WHERE section=\"".$section."\" AND marmotte.NUMSIRHUS=\"\";";
 	$res = sql_request($sql);
 	global $dbh;
 	$num = mysqli_affected_rows($dbh);
@@ -165,6 +165,11 @@ function synchronizePeople($section)
 function synchronizePeopleReports($section)
 {
 	$answer =   date('H:i:s')."<B>Synchronisation des rapports chercheurs</B><br/>\n";
+	//LIB_SESSION,ANNEE 
+	$session = current_session_id();
+	$year = session_year($session);
+	$lib = session_lib($session);
+
 
 	// 		Inefficient
 	//	$sql = "SELECT * FROM ".marmottedbname.".".reports_db." WHERE DKEY != \"\"";
@@ -178,6 +183,7 @@ function synchronizePeopleReports($section)
 	$sql .= " LEFT JOIN ".dsidbname.".".dsi_people_db." AS people";
 	$sql .= " ON eval.NUMSIRHUS=people.numsirhus WHERE ";
 	// (DKEY NOT IN (SELECT DKEY FROM ".marmottedbname.".".reports_db."  WHERE DKEY != \"\")) AND ";
+	$sql .= " eval.LIB_SESSION=\"".$lib."\" AND eval.ANNEE=\"".$year."\" AND ";
 	$sql .=" (eval.CODE_SECTION =\"".$section."\" OR eval.CODE_SECTION_2=\"".$section."\" OR eval.CODE_SECTION_EXCPT=\"".$section."\");";
 	
 	$answer .= date('H:i:s')."Executing ".$sql."<br/>";
@@ -187,7 +193,7 @@ function synchronizePeopleReports($section)
 	$answer .= date('H:i:s')."Done<br/>";
 
 	$answer .= "La base dsi contient ".mysqli_num_rows($result);
-	$answer .= " DE chercheurs.<br/>\n";// qui n'apparaissent pas encore dans Marmotte.<br/>\n";
+	$answer .= " DE chercheurs pour la section.<br/>\n";// qui n'apparaissent pas encore dans Marmotte.<br/>\n";
 
 	$changed = false;
 	while($row = mysqli_fetch_object($result))
@@ -230,6 +236,27 @@ function synchronizePeopleReports($section)
 	  $res2 = sql_request($sql);
 	  if(mysqli_num_rows($res2) == 0)
 	    {
+	//pas de DKEY corr dans la base
+			$sql  = "SELECT * FROM ".reports_db;
+			$sql .= " WHERE id_session=\"".$session."\"";
+			$sql .= " AND section=\"".$section."\" AND DKEY=\"\"";
+			$sql .= " AND LOWER(nom)=LOWER(\"".$row->nom."\") AND LOWER(prenom)=LOWER(\"".$row->prenom."\");";
+			$res5 = sql_request($sql);
+	//if only one this is the one
+			if(mysqli_num_rows($res5) == 1)
+			{
+			  //			  echo "Oly one report for ".$row->nom."<br/>";
+			  $answer .= "Changement du type de la DE chercheur <br/>\n";
+			$sql  = "UPDATE ".reports_db;
+			$sql .= " SET type=\"".$row->TYPE_EVAL."\" WHERE id_session=\"".$session."\"";
+			$sql .= " AND section=\"".$section."\" AND DKEY=\"\"";
+			$sql .= " AND LOWER(nom)=LOWER(\"".$row->nom."\") AND LOWER(prenom)=LOWER(\"".$row->prenom."\");";				
+			sql_request($sql);
+			}
+			//			else
+			//echo "More than  one report ".mysqli_num_rows($res5). " for ".$row->nom."<br/>";
+			//			if($row->nom == "CHANARON")die(0);
+
 	      $session = $row->LIB_SESSION.$row->ANNEE;
 			$sql  = "UPDATE ".reports_db;
 			$sql .= " SET NUMSIRHUS=\"".$row->NUMSIRHUS."\", DKEY=\"".$row->DKEY."\" WHERE id_session=\"".$session."\"";
@@ -251,6 +278,9 @@ function synchronizePeopleReports($section)
 			  $answer .= " et le NUMSIRHUS ".$row->NUMSIRHUS."<br/>\n";
 			  $changed = true;
 				continue;
+			}
+			else
+			{
 			}
 
 		$row->id_origine=0;
@@ -278,11 +308,16 @@ function synchronizePeopleReports($section)
 
 function synchronizeUnitReports($section = "")
 {
+	$session = current_session_id();
+	$year = session_year($session);
+	$lib = session_lib($session);
+
 	if($section == "") $section = currentSection();
-	$answer = "<B>Synchronisation des rapports unités</B><br/>\n";
+	$answer = date('H:i:s')."<B>Synchronisation des rapports unités</B><br/>\n";
 	
 	$sql = "SELECT * FROM ".dsidbname.".".dsi_evaluation_units_db;
 	$sql .=" WHERE ";
+	$sql .= " LIB_SESSION=\"".$lib."\" AND ANNEE=\"".$year."\" AND ";
 	$sql .= "(`CODE_SECTION1`=\"".$section."\" OR `CODE_SECTION2`=\"";
 	$sql .= $section."\"  OR `CODE_SECTION3`=\"".$section."\"";
 	$sql .= " OR `CODE_SECTION4`=\"".$section."\" OR `CODE_SECTION5`=\"";
@@ -292,11 +327,11 @@ function synchronizeUnitReports($section = "")
 	$sql .= ") ";
 	$sql .= " AND ";
 	$sql .= " ( DKEY NOT IN (SELECT DKEY FROM ";
-	$sql .= marmottedbname.".".reports_db." WHERE DKEY != \"\" AND section=\"".$section."\") )";
+	$sql .= marmottedbname.".".reports_db." WHERE id_session=\"".$session."\" AND DKEY != \"\" AND section=\"".$section."\") )";
 
 	$res = sql_request($sql);
 
-	$answer .= "La base dsi contient ".mysqli_num_rows($res);
+	$answer .= date('H:i:s')."La base dsi contient ".mysqli_num_rows($res);
 	$answer .= " DE unités qui n'apparaissent pas encore dans Marmotte.<br/>\n";
 	while($row = mysqli_fetch_object($res))
 	{
@@ -315,7 +350,7 @@ function synchronizeUnitReports($section = "")
 		}
 		
 	  //		$answer .= "Synchronisation de la DKEY ".$row->DKEY."<br/>\n";
-		$session = $row->LIB_SESSION.$row->ANNEE;
+		//		$session = $row->LIB_SESSION.$row->ANNEE;
 		$sql  = "UPDATE ".reports_db;
 		$sql .= " SET DKEY=\"".$row->DKEY."\" WHERE id_session=\"".$session."\"";
 		$sql .= " AND section=\"".$section."\" AND DKEY=\"\" ";
@@ -329,7 +364,7 @@ function synchronizeUnitReports($section = "")
 		global $dbh;
 		if($num >0)
 		{
-		  $answer .= "Mise a jour des rapporteurs ".$rapporteur." - ".$rapporteur2;
+		  $answer .= date('H:i:s')."Mise a jour des rapporteurs ".$rapporteur." - ".$rapporteur2;
 		  $answer .= " du dossier unite ".$row->UNITE_EVAL."<br/>";
 			if($rapporteur != "")
 				sql_request(
@@ -347,7 +382,7 @@ function synchronizeUnitReports($section = "")
 		$num = mysqli_num_rows(sql_request($sql));
 		if($num == 1)
 		  {
-		  $answer .= "Mise a jour des rapporteurs ".$rapporteur." - ".$rapporteur2;
+		  $answer .= date('H:i:s')."Mise a jour des rapporteurs ".$rapporteur." - ".$rapporteur2;
 		  $answer .= " du dossier unite 'repeche'".$row->UNITE_EVAL."<br/>";
 
 		    $sql = "UPDATE ".reports_db." SET type=\"".$row->TYPE_EVAL."\", DKEY=\"".$row->DKEY."\" WHERE";
@@ -365,12 +400,12 @@ function synchronizeUnitReports($section = "")
 		    $num = mysqli_affected_rows($dbh);
 
 		    
-		    $answer .= $num." evaluations unites a ete synchronisee (KEY ".$row->DKEY."<br/>\n";
+		    $answer .= date('H:i:s').$num." evaluations unites a ete synchronisee (KEY ".$row->DKEY."<br/>\n";
 		    continue;
 		  }
 
 
-		$answer .= "Import de l'evaluations unite de DKEY ".$row->DKEY."<br/>\n";
+		$answer .= date('H:i:s')."Import de l'evaluations unite de DKEY ".$row->DKEY."<br/>\n";
 		$row->unite = $row->UNITE_EVAL;
 		$row->type = $row->TYPE_EVAL;
 		$row->id_session = $session;

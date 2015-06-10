@@ -577,6 +577,7 @@ define("REPORT_EVAL", 6005);
 define("REPORT_EVAL_RE", 6008);
 define("REPORT_EMERITAT", 7017);
 define("REPORT_EMERITAT_RE", 7018);
+define("REPORT_INCONNU", 9999);
 
 //reltypevalavis
 $sql = "SELECT * FROM ".dsidbname.".reftypeval  WHERE 1 ORDER BY label ASC;";
@@ -773,6 +774,8 @@ foreach($report_class_to_types as $class => $ids)
 		}
 	}
 }
+$typesRapportToFields[REPORT_INCONNU] = $fieldsArrayUnite;
+
 
 /*********************** renommge de champs pour import ******************************************/
 $copies = array(

@@ -21,10 +21,20 @@ function sessionArrays($force = false)
 
 function session_year($id_session)
 {
-	$sessions = sessionArrays();
-	$nom_session = $sessions[$id_session];
-	date_default_timezone_set('Europe/Paris');
-	$result = date("Y", strtotime(substr($nom_session,strlen($nom_session) -4,4) ) );
+  //$sessions = sessionArrays();
+  //	$nom_session = $sessions[$id_session];
+	//date_default_timezone_set('Europe/Paris');
+	//	$result = date("Y", strtotime(substr($nom_session,strlen($nom_session) -4,4) ) );
+	$result = substr($id_session,strlen($id_session) -4,4);
+	return $result;
+}
+
+function session_lib($id_session)
+{
+
+	//date_default_timezone_set('Europe/Paris');
+	//	$result = date("Y", strtotime(substr($nom_session,strlen($nom_session) -4,4) ) );
+	$result = substr($id_session,0, strlen($id_session) -4);
 	return $result;
 }
 

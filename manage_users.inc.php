@@ -451,8 +451,10 @@ function getUserByCIDChaire($chaire)
 		return $user;
 	return null;
 }
+
 function getEmailFromChaire($chaire)
 {
+  if($chaire == "") return NULL;
 	$sql = "SELECT mailpro FROM ".dsidbname.".".dsi_users_db." WHERE `CID_numchaire`='".real_escape_string($chaire)."' OR `section_numchaire`='".real_escape_string($chaire)."';";
 	$result= sql_request($sql);
 	while($user = mysqli_fetch_object($result))

@@ -389,7 +389,7 @@ b - 1 )
 		}
 
 		
-		if(isSecretaire() && (count($files) > 0))
+		if(isSecretaire() && (count($files["marmotte"]) > 0))
 		{
 			echo "<tr><td>";
 						
