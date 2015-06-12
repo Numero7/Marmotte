@@ -509,6 +509,7 @@ $empty_report = array(
 );
 
 $empty_individual = array(
+	"NUMSIRHUS"=>"",
 		"nom" => "",
 		"prenom" => "",
 		"genre" => "None",
@@ -522,12 +523,7 @@ $empty_individual = array(
 		"theme1" => "",
 		"theme2" => "",
 		"theme3" => "",
-		"audition" => "1. Présentation générale du candidat: Nom, Prénom, date de la thèse, situation actuelle.<br/>
-		2. Parcours scientifique: Intitulé et lieu de thèse et de post-doc.<br/>
-		3. Production scientifique: « qualité » des publications.<br/>
-		4. Projet de recherche: Intitulé du projet – équipe/laboratoire d’accueil souhaité.<br/>.
-		Une phrase de conclusion sur le candidat incluant un commentaire sur l'audition
-		<b>(à préparer par le rapporteur après l'audition, et qui sera validé en jury d’admissibilité)</b>.",
+		"audition" => "",
 		"concourspresentes" => ""
 );
 
@@ -577,6 +573,7 @@ define("REPORT_ECOLE", 8515);
 define("REPORT_EVAL", 6005);
 define("REPORT_EVAL_RE", 6008);
 define("REPORT_EMERITAT", 7017);
+define("REPORT_CHERCHEUR", 7779);
 define("REPORT_EMERITAT_RE", 7018);
 define("REPORT_INCONNU", 9999);
 

@@ -162,9 +162,9 @@ function add_candidate_to_database($data,$section="")
 		}
 
 		$sqlfields .= ",section";
-		$sqlvalues .= ",".$section;
+		$sqlvalues .= ",\"".$section."\"";
 		$sqlfields .= ",NUMSIRHUS";
-		$sqlvalues .= ",".$data->NUMSIRHUS;
+		$sqlvalues .= ",".(isset($data->NUMSIRHUS) ? ("\"".$data->NUMSIRHUS ."\"") : "\"\"");
 
 		$sql = "INSERT INTO ".people_db." ($sqlfields) VALUES ($sqlvalues);";
 		sql_request($sql);

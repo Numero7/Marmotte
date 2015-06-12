@@ -444,6 +444,7 @@ function newReport($type_rapport)
 
 	$row = array();
 	$row['type'] = $type_rapport;
+	$row["DKEY"] = "";
 	$row['section'] = $_SESSION['filter_section'];
 
 	return normalizeReport($row);
@@ -536,8 +537,11 @@ function normalizeReport($report)
 {
 	global $report_prototypes;
 	global $id_rapport_to_label;
+	global $typesRapportsAll;
 	$report = (object) $report;
 	$default = array(
+			 "DKEY"=>"",
+			 "NUMSIRHUS"=>"",
 			"id_session" => current_session_id(),
 			"id_origine" => "",
 			"id" => "",
@@ -564,7 +568,10 @@ function normalizeReport($report)
 	if(isset($report->type))
 	{
 		if(!isset($report->intitule))
-			$report->intitule = (isset($id_rapport_to_label[$report->type])) ? $id_rapport_to_label[$report->type] : $report->type;
+		  $report->intitule = (isset($typesRapportsAll[$report->type])) ? $typesRapportsAll[$report->type] : ("Type inconnu ".$report->type);
+				if(!isset($typesRapportsAll[$report->type]))
+		foreach($typesRapportsAll as $key => $label)
+		  echo ("key ".$key." label ".$label."<br>\n");
 
 		if(isset($report_prototypes[$report->type]))
 		{

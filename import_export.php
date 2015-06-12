@@ -37,7 +37,7 @@ function displaySecretaryImport()
 	{
 		?>
 
-<h2>Ajout d'un nouveau rapport</h2>
+<h2>Ajout d un nouveau rapport</h2>
 <form enctype="multipart/form-data" action="index.php" method="post">
 	<table>
 		<tr>
@@ -49,7 +49,9 @@ function displaySecretaryImport()
 			<td>Choix du type de rapport</td>
 			<td><select name="type" type="hidden">
 					<?php
-					$types = array();
+	    global $typesRapportsAll;
+					$types = $typesRapportsAll;
+/*
 					if(is_current_session_concours())
 					{
 						global $typesRapportsConcours;
@@ -64,8 +66,8 @@ function displaySecretaryImport()
 						global $typesRapportsChercheurs;
 						global $typesRapportsUnites;
 						$types = array_merge($typesRapportsChercheurs, $typesRapportsUnites);
-					}
-					foreach($types as $type => $name)
+*/					
+	foreach($types as $type => $name)
 						echo '<option value='.$type.'>'.$name.'</option><br/>'."\n";
 					?>
 			</select>
