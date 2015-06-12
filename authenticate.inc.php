@@ -19,11 +19,6 @@ $is_maintenance = (get_config("maintenance","off",false,"0") === "on");
   <br/>
 <br/>
 
-<p>
-<font color="red">
-	     [12/06/2015 08:00]Site ferme jusqu'a 9h pour maintenance
-</font>
-</p>
 
 <?php 
 if($is_maintenance)
@@ -73,6 +68,14 @@ En cas de besoin urgent, merci de contacter votre secr&eacute;taire scientifique
 </p>
 -->
 <!--
+<h2>
+<font color="red">
+	     [12/06/2015 08:00]Site ferme jusqu a 9h15 pour maintenance
+</font>
+</h2>
+-->
+<br/><br/><br/><br/><br/>
+
 
 	     <h2><a href="index.php?action=auth_janus">Authentification Janus (personnels des unit&eacute;s CNRS)</a></h2>
 <br/>
@@ -82,7 +85,7 @@ En cas de besoin urgent, merci de contacter votre secr&eacute;taire scientifique
 	 ?>
 	<br/>
 	<br/>
--->
+
  <br/>
   <br/>
 <br/>	

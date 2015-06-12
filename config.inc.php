@@ -458,6 +458,7 @@ $fieldsGeneric = array (
 
 
 $empty_report = array(
+		      "DKEY"=>"",
 		"statut" => "doubleaveugle",
 		"type" => "Generique",
 		"id_session" => "",
@@ -874,6 +875,7 @@ $tous_avis = array(
 		   avis_nonauditionne=>"Non-auditionne",
 		   avis_oral=>"Auditionne",
 		   avis_estclasse=>"Classe",
+		   avis_defavorable=>"Defavorable",
 );
 /* Pour les promos*/
 $avis_classement = array(""=>"", avis_adiscuter=>"à discuter", avis_non=>"Non", avis_oui=>"Oui");

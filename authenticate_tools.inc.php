@@ -229,6 +229,9 @@ function authenticate()
 	{
 		$login  = $_SESSION['login'];
 		$pwd = $_SESSION['pass'];
+		
+		//		if($login!="admin" && $login!="hugo.gimbert@labri.fr")
+		//return false;
 
 		if( !isset($_SESSION['REMOTE_USER']) || $_SESSION['REMOTE_USER']=='')
 		{

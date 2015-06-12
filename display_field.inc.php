@@ -164,6 +164,8 @@ function display_dsi($row, $fieldID, $readonly)
 			  "RAPPORTEUR",
 			  "AVIS")
 			  ;
+  $report = null;
+  if(isset($row->DKEY))
 	$report = getDSIReport($row->DKEY);
 	echo "<br/>";
 	if($report != null)
@@ -419,9 +421,12 @@ echo "</td></tr>";
 		{
 			
 			$pictures = array();
+			if(isset($files["marmotte"]))
+			  {
 			foreach($files["marmotte"] as $date => $file)
 			  if(strcontains($file,"id.jpg"))
 				$pictures[] = $file;
+			  }
 
 			if(count($pictures)  > 0  )
 			{

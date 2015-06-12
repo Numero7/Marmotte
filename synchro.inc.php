@@ -124,6 +124,7 @@ function synchronizeSessions($section)
 	
 	$res = sql_request($sql);
 	$sessions = get_all_sessions($section);
+
 //	foreach($sessions as $session)
 //	 $answer .= "Marmotte ".$session."<br/>";
 
@@ -139,6 +140,7 @@ function synchronizeSessions($section)
 	}
 	if(!$changed)
 		$answer .= "Aucune session n'a été ajoutée.<br/>";
+	sessionArrays(true);
 	return $answer;
 }
 
