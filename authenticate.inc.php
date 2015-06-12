@@ -63,11 +63,6 @@ Site fermé pour maintenance, accès temporairement réservé aux administrateur
 	 else
 	 {
 	 ?>
-<p>
-<font color="red">
-	     [12/06/2015 08:00]Site ferme jusqu'a 9h pour maintenance
-</font>
-</p>
 
 <!--
 <p><font color="red">
@@ -98,7 +93,7 @@ En cas de besoin urgent, merci de contacter votre secr&eacute;taire scientifique
   <tr>
   <td width="60%"></td>
   <td width="40%">
-  <h3>Contributeurs Marmotte 2.0</h3>
+  <h3>Contributeurs Marmotte 2.2</h3>
   <ul>
   <li>Hugo Gimbert (d&eacute;veloppeur, coordinateur technique, section 6)</li>
   <li>Yann Ponty (d&eacute;veloppeur, section 6)</li>
