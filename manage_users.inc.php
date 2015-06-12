@@ -654,6 +654,23 @@ function mergeUsers($old_login, $new_login)
 	}
 	deleteUser($old_login);
 	unset($_SESSION['all_users']);
+
+	$recipient = $new_login;
+        $subject = "Fusion de vos comptes marmotte ".$old_login." et ".$new_login;
+	$body = "Bonjour,\n\ndans le cadre de l'integration de Marmotte dans le SI du CNRS,\r\n vos deux comptes";
+	$body.=" Marmotte ".$old_login." et ".$new_login." ont ete fusionnes.\r\n\r\n";
+  $body .="Veuillez desormais vous logger dans Marmotte avec vos identifiants e-valuation.\r\n\r\n";
+  $body .= "En cas de difficultes de connexion, veuillez contacter votre secretaire scientifique\r\nafin qu'il vous cree un nouveau mot de passe.\r\n\r\n";
+  $body .= "Bien cordialement,\r\n\t Hugo Gimbert\r\n";
+try
+  {
+    email_handler($recipient,$subject,$body,"hugo.gimbert@cnrs.fr","hugo.gimbert@cnrs.fr");
+
+  }
+catch(Exception $e)
+  {
+    echo "Failed to send email to ".$recipient."<br/>";
+}
 }
 
 ?>
