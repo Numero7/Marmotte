@@ -58,20 +58,31 @@ $firstlogin = authenticateBase('admin','password');
 	 else
 	 {
 	 ?>
+<p>
+<font color="red">
+	     [12/06/2015 08:00]Site ferme jusqu'a 9h pour maintenance
+</font>
+</p>
+
 <!--
 <p><font color="red">
-[21/04/2015 11:29] Le service d'authentification Janus fourni par la DSI n'est actuellement pas fonctionnel.
-En cas de besoin, merci de contacter hugo.gimbert@labri.fr afin d'obtenir un mot de passe provisoire.
+[10/06/2015 09:19] L'authentification par login e-valuation est temporairement indisponible
+suite &agrave; un probl&egrave;me sur un serveur de la DSI.
+En cas de besoin urgent, merci de contacter votre secr&eacute;taire scientifique afin d'obtenir un mot de passe provisoire.
 </font>
 </p>
 -->
-	 <h2><a href="index.php?action=auth_janus">Authentification par login e-valuation</a></h2>
-	 <h3><a href="index.php?action=auth_marmotte">Authentification Marmotte (anciens logins)</a></h3>
+<!--
+
+	     <h2><a href="index.php?action=auth_janus">Authentification Janus (personnels des unit&eacute;s CNRS)</a></h2>
+<br/>
+	     <h2><a href="index.php?action=auth_marmotte">Authentification Marmotte (personnels hors-unit&eacute;s CNRS, demandez un mot de passe &agrave; votre ACN)</a></h2>
 	 <?php 
 	 }
 	 ?>
 	<br/>
 	<br/>
+-->
  <br/>
   <br/>
 <br/>	

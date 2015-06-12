@@ -89,6 +89,11 @@
 	?>
 </table>
 
+<?php
+if(isSuperUser())
+{
+?>
+
 <hr />
 <h3 id="adminnewaccount">Création nouveau membre</h3>
 	  <p>Ce formulaire permet de créer un nouveau compte Marmotte pour un nouveau membre ne possédant pas encore de compte Janus (accès à e-valuation).<br/>
@@ -144,6 +149,9 @@
 <br />
 
 <hr />
+<?php
+			      }
+?>
 
 <hr /><h3 id="importaccounts">Mise à jour des membres</h3>
 
@@ -173,6 +181,7 @@ if(isSecretaire())
 		 <select name="old_login">
 		<?php
 		$users = listUsers();
+ksort($users);
 		foreach($users as $user => $data)
 		{
 			if ($data->permissions <= getUserPermissionLevel() || (isSecretaire() && $data->permissions == NIVEAU_PERMISSION_PRESIDENT))
@@ -183,8 +192,7 @@ if(isSecretaire())
 	Nouveau login
 	 <select name="new_login">
 		<?php
-		$users = listUsers();
-		foreach($users as $user => $data)
+	foreach($users as $user => $data)
 		{
 			if ($data->permissions <= getUserPermissionLevel() || (isSecretaire() && $data->permissions == NIVEAU_PERMISSION_PRESIDENT))
 				echo "<option value=\"$user\">".$user."</option>";
@@ -201,7 +209,7 @@ if(isSecretaire())
 	Nouveau login
 	 <select name="new_login">
 		<?php
-		$users = listUsers();
+
 		foreach($users as $user => $data)
 		{
 			if ($data->permissions <= getUserPermissionLevel() || (isSecretaire() && $data->permissions == NIVEAU_PERMISSION_PRESIDENT))
@@ -211,7 +219,10 @@ if(isSecretaire())
 	</select>
 </form>
 <hr />
-
+<?php
+if(isSuperUser())
+{
+?>
 <h3 id="admindeleteaccount">Suppression d'un membre</h3>
 <form method="post" action="index.php"
 	onsubmit="return confirm('Etes vous sur de vouloir supprimer cet utilisateur ?');">
@@ -231,6 +242,7 @@ if(isSecretaire())
 </form>
 
 <?php
+}
 }
 ?>
 <br />
@@ -255,7 +267,7 @@ if(isSecretaire())
 
 -->
 <?php 
-if(isSuperUser())
+if(isSecretaire())
 {
 	?>
 
