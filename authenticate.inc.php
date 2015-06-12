@@ -18,6 +18,13 @@ $is_maintenance = (get_config("maintenance","off",false,"0") === "on");
   <br/>
   <br/>
 <br/>
+
+<p>
+<font color="red">
+	     [12/06/2015 08:00]Site ferme jusqu'a 9h pour maintenance
+</font>
+</p>
+
 <?php 
 if($is_maintenance)
 {
