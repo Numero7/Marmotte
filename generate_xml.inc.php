@@ -136,9 +136,9 @@ function EnteteDroit($row, $units)
 	if(array_key_exists($row->unite,$units))
 	{
 		if($row->unite != $units[$row->unite]->nickname && $units[$row->unite]->nickname != "")
-			$bloc_unite .= " ".$row->unite." (".$units[$row->unite]->nickname.")<br/>(".$units[$row->unite]->directeur.")";
+			$bloc_unite .= " ".$row->unite." (".$units[$row->unite]->nickname.", ".$units[$row->unite]->directeur.")";
 		else if($units[$row->unite]->directeur != "")
-			$bloc_unite .= " ".$row->unite."<br/>(".$units[$row->unite]->directeur.")";
+			$bloc_unite .= " ".$row->unite.", ".$units[$row->unite]->directeur.")";
 		else
 			$bloc_unite .= " ".$row->unite;
 	}
@@ -402,8 +402,12 @@ function createXMLReportElem($row, DOMDocument $doc, $keep_br = true)
 	//On ajoute le nickname de la session
 	if(isset($sessions[$row->id_session]))
 	{
-		appendLeaf("session", $sessions[$row->id_session], $doc, $rapportElem);
-		$row->session = $sessions[$row->id_session];
+	  $session = $row->id_session;
+	  if( (strlen($session) > 4) 
+	     && is_numeric(substr($session,strlen($session)-4)) )
+	     $session = substr($session, 0, strlen($session) -4)." ".substr($session,strlen($session)-4);
+	appendLeaf("session", $session, $doc, $rapportElem);
+	$row->session = $sessions[$row->id_session];
 	}
 	else
 	{

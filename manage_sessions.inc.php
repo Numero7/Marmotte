@@ -99,7 +99,7 @@ function showSessions()
 		while ($row = mysqli_fetch_object($result))
 		{
 			$finalResult[$row->id] = array( "id" => $row->id, "nom" => $row->nom, "date" => $row->date, "prettyprint" => $row->nom.' '.date("Y",strtotime($row->date)));
-			echo $row->id."<br/>";
+			//echo $row->id."<br/>";
 		}
 		return	$finalResult;
 } ;

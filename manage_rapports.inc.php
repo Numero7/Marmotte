@@ -569,9 +569,9 @@ function normalizeReport($report)
 	{
 		if(!isset($report->intitule))
 		  $report->intitule = (isset($typesRapportsAll[$report->type])) ? $typesRapportsAll[$report->type] : ("Type inconnu ".$report->type);
-				if(!isset($typesRapportsAll[$report->type]))
-		foreach($typesRapportsAll as $key => $label)
-		  echo ("key ".$key." label ".$label."<br>\n");
+		///				if(!isset($typesRapportsAll[$report->type]))
+		//foreach($typesRapportsAll as $key => $label)
+		// echo ("key ".$key." label ".$label."<br>\n");
 
 		if(isset($report_prototypes[$report->type]))
 		{
@@ -1337,10 +1337,33 @@ function is_rapport_concours($row)
 	return (isset($row->type) && isset($report_types_to_class[$row->type]) && ($report_types_to_class[$row->type] == REPORT_CLASS_CONCOURS));
 }
 
+function is_concours_type($type)
+{
+	global $report_types_to_class;
+	return ( isset($report_types_to_class[$type]) && ($report_types_to_class[$type] == REPORT_CLASS_CONCOURS));
+}
+
 function is_rapport_unite($row)
 {
 	global $report_types_to_class;
-	return (isset($row->type) && isset($report_types_to_class[$row->type]) && ($report_types_to_class[$row->type] == REPORT_CLASS_UNIT));
+	return (isset($row->type) && is_unite_type($row->type));
+}
+
+function is_unite_type($type)
+{
+	global $report_types_to_class;
+	return (isset($report_types_to_class[$type]) && ($report_types_to_class[$type] == REPORT_CLASS_UNIT));
+}
+/*
+function is_ecole_type($type)
+{
+  return $type == REPORT_ECOLE;
+  }*/
+
+function is_promotion_type($type)
+{
+  global $typesRapportsPromotion;
+  return in_array($type, $typesRapportsPromotion);
 }
 
 function is_eval_type($type)

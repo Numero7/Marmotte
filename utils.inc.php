@@ -160,7 +160,8 @@ function filename_from_doc($doc)
   global $id_rapport_to_label;
 	$nom = str_replace( array("'"," "), array("","_") , mb_convert_case(replace_accents($doc->nom), MB_CASE_TITLE));
 	$prenom = mb_convert_case(replace_accents($doc->prenom), MB_CASE_TITLE);
-	$type = substr($id_rapport_to_label[$doc->type], 0, 10);
+	$type = $doc->type;
+	//substr($id_rapport_to_label[$doc->type], 0, 10);
 	$nom = iconv("UTF-8","ASCII//TRANSLIT",$nom);
 	$prenom = iconv("UTF-8","ASCII//TRANSLIT",$prenom);
 
@@ -171,44 +172,42 @@ function filename_from_doc($doc)
 
 function filename_from_params($nom, $prenom, $grade, $unite, $type, $session, $avis, $concours = "", $sousjury="", $intitule = "")
 {
-	global $typesRapportsUnites;
-	global $typesRapportsConcours;
+  global $typesRapportsAll;
+  $pretty_type = isset($typesRapportsAll[$type]) ? $typesRapportsAll[$type] : $type;
+
 	$liste_unite = unitsList();
+
 	
 	$section = get_config("section_shortname");
-	if($type == "Promotion")
+
+	if(is_promotion_type($type))
 		$grade .= " - ".$avis;
 
-	if($type == "EvalVague" || $type == "EvalMiVague")
-		$type .=  " - ".mb_convert_case($avis,MB_CASE_TITLE);
+	if(is_eval_type($type))
+		$pretty_type .=  " - ".mb_convert_case($avis,MB_CASE_TITLE);
 
-	if(array_key_exists($type,$typesRapportsUnites))
+	if(isset($liste_unite[$unite]))
+		$unite = $unite . " - " . $liste_unite[$unite]->nickname;
+
+	if(is_unite_type($type))
 	{
-		if(isset($liste_unite[$unite]))
-			$unite = $unite . " - " . $liste_unite[$unite]->nickname;
 
-		if($type == 'Generique')
-			return $section." - ".$session." - ".$nom." ".$prenom." - ".$unite;
-		else if($type == 'Ecole')
-			return $section." - ".$session." - ".$type." - ".$intitule."-".$nom." - ".$unite;
+		if(is_ecole_type($type))
+			return $section." - ".$session." - ".$pretty_type." - ".$intitule." - ".$nom." - ".$unite;
 		else
-			return $section." - ".$session." - ".$type." - ".$unite;
+			return $section." - ".$session." - ".$pretty_type." - ".$unite;
 	}
-	else if( array_key_exists($type,$typesRapportsConcours) || $type=="Audition" || $type =="Classement" )
+	else if( is_concours_type($type))
 	{
-		if($type == "Classement")
+	  if(is_classement($type))
 		{
 			$type .=  " - ".mb_convert_case($avis,MB_CASE_TITLE);
-			return $session." - ".$concours." - ".$type." - ".$nom." ".$prenom;
+			return $session." - ".$concours." - ".$pretty_type." - ".$nom." ".$prenom;
 		}
-		else if($type == "Audition")
-		{
-			return $session." - ".$concours." - ".$type." - sousjury ".$sousjury." - ".$nom." ".$prenom;
-		}
-		else return $session." - ".$type." - ".$grade." - ".$nom." ".$prenom;
+		else return $session." - ".$pretty_type." - ".$grade." - ".$nom." ".$prenom;
 	}
 	else
-		return $section." - ".$session." - ".$type." - ".$grade." - ".$nom." ".$prenom;
+		return $section." - ".$session." - ".$pretty_type." - ".$grade." - ".$unite." - ".$nom." ".$prenom;
 }
 
 function getStyle($fieldId,$odd, $conflict = false)

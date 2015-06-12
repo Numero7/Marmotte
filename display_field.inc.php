@@ -162,7 +162,10 @@ function display_dsi($row, $fieldID, $readonly)
 			  "TYPE_EVAL",
 			  "UNITE_EVAL",
 			  "RAPPORTEUR",
-			  "AVIS")
+			  "AVIS",
+			  "DATE_ENVOI_AR",
+			  "DATE_DROIT_REPONSE",
+			  "DKEY")
 			  ;
   $report = null;
   if(isset($row->DKEY))
@@ -243,11 +246,12 @@ function display_rapports($row, $fieldId)
 
 	for($i = 0; $i < count($reports) ; $i++)
 		{
+		  global $typesRapportsAll;
 		  $report = $reports[$i];
 			if( ( !isset($row->id) || $report->id != $row->id ) )
 			{
-				if(isset($id_rapport_to_label[$report->type]))
-					$type = $id_rapport_to_label[$report->type];
+				if(isset($typesRapportsAll[$report->type]))
+					$type = $typesRapportsAll[$report->type];
 				else
 					$type = "Unknown";
 				if($type == REPORT_CANDIDATURE && isset($report->concours) )
@@ -274,7 +278,7 @@ function display_rapports($row, $fieldId)
 		{
 		  if(isset($report->label))
 		    {
-		  echo '<tr><td><a href="index.php?action=view&amp;id='.$report->id.'">';
+		  echo '<tr><td><a href="index.php?action=edit&amp;id='.$report->id.'">';
 		  echo $report->label;
 		  echo "</a></td></tr>";
 		    }

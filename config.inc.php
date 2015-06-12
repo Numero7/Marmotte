@@ -48,7 +48,7 @@ if(!isset($_SESSION['filter_section']))
 	removeCredentials();
 	throw new Exception("Unexpected error");
 }
-$dossier_temp = realpath($rootdir."./tmp/".$_SESSION['filter_section']."/");
+$dossier_temp = $rootdir."./tmp/".$_SESSION['filter_section']."/";
 $dossier_stockage_short = $rootdir."./storage/".$_SESSION['filter_section']."/";
 $dossier_stockage = realpath($dossier_stockage_short);
 $dossier_stockage_dsi = realpath($rootdir."./storage/".$dsirootdir."/");
@@ -560,6 +560,8 @@ $typesRapportsUnitesShort = array();
 $typesRapportsConcours = array();
 $typesRapportsSession = array();
 $typesRapportsAll = array();
+$typesRapportsPromotion = array("4500","4505","4510","4515","4520");
+$typesRapportsPromotion = array("4500","4505","4510","4515","4520");
 $types_needs_checkboxes = array();
 
 define("REPORT_CLASS_CHERCHEUR", "c");
@@ -568,15 +570,18 @@ define("REPORT_CLASS_CONCOURS", "x");
 define("REPORT_CLASS_DELEGATION", "d");
 
 define("REPORT_CANDIDATURE", 7777);
-define("REPORT_DELEGATION", 7778);
+define("REPORT_AUDITION", 7781);
+
+
 define("REPORT_ECOLE", 8515);
+define("REPORT_DELEGATION", 7778);
 define("REPORT_EVAL", 6005);
 define("REPORT_EVAL_RE", 6008);
 define("REPORT_EMERITAT", 7017);
 define("REPORT_CHERCHEUR", 7779);
 define("REPORT_EMERITAT_RE", 7018);
 define("REPORT_INCONNU", 9999);
-
+define("REPORT_UNIT_GENERIC",7780);
 //reltypevalavis
 $sql = "SELECT * FROM ".dsidbname.".reftypeval  WHERE 1 ORDER BY label ASC;";
 $result = sql_request($sql);
@@ -733,9 +738,14 @@ function is_classement($type)
 	return ($type == REPORT_CANDIDATURE) || is_promotion_DR($type) || ($type == REPORT_EMERITAT) || ($type == REPORT_EMERITAT_RE);
 }
 
+function is_equivalence($type)
+{
+  return in_array($type,array(5025,5010,5015,5020)); 
+}
+
 function is_concours($type)
 {
-	return ($type == REPORT_CANDIDATURE);
+  return ($type == REPORT_CANDIDATURE) || ($type == REPORT_AUDITION) ||  is_equivalence($type);
 }
 
 function is_avis_classement($avis)
@@ -806,7 +816,6 @@ $copies = array(
 );
 
 $typesRapportsToXSL = array(
-		'Candidature' => 'xslt/html2.xsl',
 		'Audition' => 'xslt/audition.xsl',
 		'Classement' => 'xslt/classement.xsl',
 		'' => 'xslt/html2.xsl'

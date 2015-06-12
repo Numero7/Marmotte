@@ -107,9 +107,9 @@ function synchronizeWithDsiMembers($section)
 		}
 	}
 	if(!$added)
-		$result .= "Aucun utilisateur n'a été ajouté à la base<br/>";
+		$result .= "Liste d&eacute;j&agrave; &agrave; jour: aucun utilisateur n'a &eacute;t&eacute; ajout&eacute; &agrave; la base.<br/>";
 	if(!$changed)
-		$result .= "Aucune donnée utilisateur n'a été mise à jour<br/>";
+		$result .= "Donn&eacute;es d&eacute;j&agrave; &agrave; jour: aucune donn&egrave;e utilisateur n'a été mise à jour.<br/>";
 	unset($_SESSION['all_users']);
 
 	return $result;

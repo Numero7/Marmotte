@@ -232,7 +232,7 @@ function alertText($text)
 			switch($action)
 			{
 				case 'synchronize_sessions_with_dsi':
-					$answer = synchronizeSessions();
+				  $answer = synchronizeSessions(currentSection());
 					if($answer != "")
 						echo $answer;
 					else
@@ -504,7 +504,7 @@ function alertText($text)
 					scrollToId("membres");
 					break;
 				case 'importaccountsfromJanus':
-					$result = synchronizeWithDsiMembers();
+				  $result = synchronizeWithDsiMembers(currentSection());
 					if($result != "")
 						echo $result;
 					else

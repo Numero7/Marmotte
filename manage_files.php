@@ -37,6 +37,7 @@ function find_files($row, $session, $create_directory_if_nexists = false)
 	  }
 	else if(isset($row->unite) && ($row->unite != ""))
 	  {
+	    //	    echo "Looking for files of unit ".$row->unite."<br/>";
 	    $unite = $row->unite;
     	    $sql = "SELECT * FROM ".dsidbname.".".dsi_docs_liens_unites_db." AS t1 ";
 	    $sql .="JOIN ".dsidbname.".".dsi_docs_db." AS t2 ON t1.dkeydoc=t2.dkey WHERE t1.UNITE_EVAL=\"".$unite."\"";
