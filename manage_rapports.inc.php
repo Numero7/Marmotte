@@ -1181,6 +1181,50 @@ function get_readable_fields($row)
 		$result[] = $field;
 	return $result;
 }
+function migrate_to_avis_codes()
+{
+
+		foreach(array("avis","avis1","avis2","avis3") as $field)
+			  {
+			    echo "Updating classement<br/>";
+			$sql = "UPDATE `".reports_db."` SET `".$field."`=CONCAT(\"c\",".$field.") WHERE ".$field." REGEXP '[0-9]+';";
+			sql_request($sql);
+			echo $sql;
+			  }
+
+
+  $mig = array(
+	       "tresfavorable" => avis_tres_favorable,
+	       "favorable" => avis_favorable,
+	       "defavorable" => avis_defavorable,
+	       "reserve" => avis_reserve,
+	       "alerte" => avis_alerte,
+	       "differe" => avis_differe,
+	       "sansavis" => avis_pas_davis,
+	       "oui" => avis_oui,
+	       "non" => avis_non,
+	       "nonclasses" => avis_non_classe,
+	       "adiscuter"=> avis_adiscuter,
+	       "desistement"=>avis_desistement,
+	       "nonconcur"=>avis_nonconcur,
+	       "nonauditionne"=>avis_nonauditionne,
+	       "oral"=>avis_oral,
+	       "classe"=>avis_estclasse
+	       );
+
+		foreach($mig as $pref => $id)
+		{
+		  foreach(array("avis","avis1","avis2","avis3") as $field)
+			  {
+			    echo "Updating field ".$field. " avis ".$pref." => ".$id."<br/>";
+			$sql = "UPDATE `".reports_db."` SET `".$field."`=\"".$id."\" WHERE `".$field."`=\"".$pref."\";";
+			sql_request($sql);
+			  }
+		}
+
+
+
+}
 
 function migrate_to_eval_codes()
 {
@@ -1193,7 +1237,10 @@ function migrate_to_eval_codes()
 				"Delegation"=>7778, "DEChercheur"=>7779,
 				"Creation-GDR"=>8015,"Changement d'aff"=>7012,
 				"Ch-section"=>"6515","Candidature"=>7777,
-				"Generique"=>"7780","DEChercheur"=>"7779"
+				"Generique"=>"7780","DEChercheur"=>7779,
+				"EvalVague"=>"6005","Emeritat"=>7017,
+				"ChgtSection"=>6515, "Renouvellement"=>8020,
+				"Association"=>8021
 		);
 
 		foreach($mig as $pref => $id)

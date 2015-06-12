@@ -56,8 +56,9 @@ Site fermé pour maintenance, accès temporairement réservé aux administrateur
 	 else
 	 {
 	 ?>
-	 <h2><a href="index.php?action=auth_janus">Authentification e-valuation</a></h2>
-	 <h3><a href="index.php?action=auth_marmotte">Authentification Marmotte</a></h3>
+	     <h2><a href="index.php?action=auth_janus">Authentification Janus (personnels des unit&eacute;s CNRS)</a></h2>
+<br/>
+	     <h2><a href="index.php?action=auth_marmotte">Authentification Marmotte (personnels hors-unit&eacute;s CNRS, demandez un mot de passe &agrave; votre ACN)</a></h2>
 	 <?php 
 	 }
 	 ?>

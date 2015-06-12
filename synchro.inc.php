@@ -198,6 +198,7 @@ function synchronizePeopleReports($section)
 	$changed = false;
 	while($row = mysqli_fetch_object($result))
 	{
+	  $row->unite = $row->code_unite;
 		if($section == $row->CODE_SECTION)
 		{
 			$rapporteur = getEmailFromChaire($row->RAPPORTEUR1);

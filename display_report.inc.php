@@ -516,7 +516,7 @@ function displayEditableReport($row, $canedit = true)
 		echo (isset($row->id_session) ? $row->id_session : "")." - ";
 		echo (isset($row->nom) ? $row->nom : "");
 		echo " ".(isset($row->prenom) ? $row->prenom : "")." - ";
-		echo (isset($row->DKEY) && $row->DKEY != 0 ? "#".$row->DKEY : "")."</h1>";
+		echo (isset($row->DKEY) && $row->DKEY != 0 ? ("(#".$row->DKEY.")") : "")."</h1>";
 
 
 		if(!$conflit)
@@ -573,7 +573,7 @@ function displayEditableReport($row, $canedit = true)
 		displayEditionFrameStart("",$hidden,$submits);
 		voir_rapport_pdf($row);
 		echo "<h1>".$eval_name. ": ". (isset($row->unite) ? $row->unite : "");
-		echo " (#".(isset($row->DKEY) && $row->DKEY != 0 ? $row->DKEY : "New").")</h1>";
+		echo (isset($row->DKEY) && $row->DKEY != 0 ? ("(#".$row->DKEY .")") : "")."</h1>";
 		echo "</div>"; 
 
 		displayEditionFrameStart("",$hidden,array());

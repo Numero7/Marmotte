@@ -255,6 +255,7 @@ function alertText($text)
 					break;
 				case 'migrate_to_eval_codes':
 					migrate_to_eval_codes();
+					migrate_to_avis_codes();
 					break;
 				case 'delete_units':
 					delete_all_units();

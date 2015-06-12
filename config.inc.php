@@ -858,7 +858,23 @@ define("avis_oui", 72);
 define("avis_non", 73);
 define("avis_non_classe", 74);
 define("avis_adiscuter", 75);
+define("avis_desistement", 76);
+define("avis_nonconcur",77);
+define("avis_nonauditionne",78);
+define("avis_oral",79);
+define("avis_estclasse",80);
 
+$tous_avis = array(
+		   avis_oui=>"Oui",
+		   avis_non=>"Non",
+		   avis_non_classe=>"Non-Classe",
+		   avis_adiscuter=>"A discuter",
+		   avis_desistement=>"Desistement",
+		   avis_nonconcur=>"Non-admis a concourir",
+		   avis_nonauditionne=>"Non-auditionne",
+		   avis_oral=>"Auditionne",
+		   avis_estclasse=>"Classe",
+);
 /* Pour les promos*/
 $avis_classement = array(""=>"", avis_adiscuter=>"à discuter", avis_non=>"Non", avis_oui=>"Oui");
 
@@ -875,7 +891,7 @@ foreach($avis_lettre as $avis => $lettre)
 }
 
 
-$tous_avis = array();
+
 $sql = "SELECT * FROM dsi.reftypeavis WHERE 1;";
 $result= sql_request($sql);
 while($row = mysqli_fetch_object($result))
@@ -898,7 +914,8 @@ foreach($avis_classement as $avi => $label)
 //	$sql = "select label from reftypeavis where id in (select idavis from reltypevalavis where ideval = '7017');";
 $typesRapportToAvis = array(
 		REPORT_CANDIDATURE => $avis_candidature_short,
-		REPORT_DELEGATION => $avis_lettre
+		REPORT_DELEGATION => $avis_lettre,
+		REPORT_INCONNU=>$tous_avis
 );
 
 if(!isset($_SESSION["type_avis_classement"]))
@@ -1356,11 +1373,16 @@ $icones_avis = array(
 
 
 		avis_reserve => "img/Icon-NoComment.png",
+		avis_desistement => "img/Icon-NoComment.png",
+		avis_nonconcur => "img/Icon-NoComment.png",
+		avis_differe => "img/Icon-NoComment.png",
 		"B+" => "img/Icon-NoComment.png",
 		"B" => "img/Icon-NoComment.png",
 		"B-" => "img/Icon-NoComment.png",
 
 		avis_defavorable => "img/Icon-No.png",
+		avis_non_classe => "img/Icon-No.png",
+		avis_nonauditionne => "img/Icon-No.png",
 		"C" => "img/Icon-No.png",
 		'desistement' => 'img/Icon-No.png',
 		"nonauditionne"=>"img/Icon-No.png",
