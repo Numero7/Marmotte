@@ -60,7 +60,8 @@
 <td  height="400">
 <p><B>Appréciations générales et recommandations de la section :</B><br/>
 <small>
-<i> Ce rapport a été établi après délibérations de la section, sous la responsabilité de son président, à partir des appréciations du rapporteur, des observations et recommandations de la section.<br/>
+<i> Ce rapport a été établi après délibérations de la section, sous la responsabilité de son président, à partir des appréciations des rapporteurs et
+des observations et recommandations de la section.<br/>
 Les avis émis par les sections ne préjugent pas de la décision qui sera prise par la direction du CNRS.
 </i></small>
 </p>

@@ -64,7 +64,7 @@ if(isSecretaire())
 	if(isSecretaire())
 	{
 	?>
-	<li><a href="index.php?action=admin&amp;admin_maintenance=">Maintenance</a></li>
+	<li><a href="index.php?action=admin&amp;admin_maintenance=">Synchronisation</a></li>
 	<?php 
 	}
 ?>
@@ -91,7 +91,7 @@ Statut maintenance: '<?php echo get_config("maintenance", "off", true, 0); ?>'</
 <?php 
 	}
 	?>
-<h3>Synchronisaton avec e-valuation</h3>
+<h3>Synchronisation avec e-valuation</h3>
 <p>
 Le lien suivant permet de synchroniser Marmotte avec les bases de donnees d'e-valuation.<br/>
 <a href="index.php?action=synchronize_with_dsi&amp;admin_maintenance=">Synchroniser avec e-valuation.</a>

@@ -272,7 +272,7 @@ if(isSecretaire())
 	?>
 
 <hr />
-<h3 id="adminnewpwd">Modification d'un mot de passe</h3>
+<h3 id="adminnewpwd">Création / modification d'un mot de passe</h3>
 <form method="post" action="index.php">
 	<input type="hidden" name="admin_users"></input>
 	<table class="inputreport">

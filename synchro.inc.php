@@ -223,7 +223,8 @@ function synchronizePeopleReports($section)
 			$sql  = "UPDATE ".people_db;
 			$sql .= " SET labo1=\"".$row->code_unite."\", NUMSIRHUS=\"".$row->NUMSIRHUS."\"";
 			$sql .= " WHERE LOWER(nom)=LOWER(\"".$row->nom."\")";
-			$sql .= " AND LOWER(prenom)=LOWER(\"".$row->prenom."\");";
+			$sql .= " AND LOWER(prenom)=LOWER(\"".$row->prenom."\")";
+			$sql .= " AND section=\"".$section."\";";
 			$res = sql_request($sql);
 			global $dbh;
 			$num = mysqli_affected_rows($dbh);
@@ -232,10 +233,16 @@ function synchronizePeopleReports($section)
 				$sql  = "INSERT INTO ".people_db;
 				$sql .= " (NUMSIRHUS,labo1,nom,prenom,section) VALUES ";
 				$sql .= "(\"".$row->NUMSIRHUS."\",\"".$row->code_unite."\",\"".$row->nom."\",\"".$row->prenom."\",\"".$section."\");";
-				try{ sql_request($sql); }catch(Exception $e){}
+				try{ 
+				  sql_request($sql);
+				}
+				catch(Exception $e)
+				  {
+				    //	    $answer .= "Exception ".$e->getMessage()." when adding NUMSIRHUS ".$row->NUMSIRHUS."<br/>";
+				  }
 			  }
 
-	  $sql = "SELECT * FROM ".marmottedbname.".".reports_db." WHERE DKEY=".$row->DKEY.";";
+	  $sql = "SELECT * FROM ".marmottedbname.".".reports_db." WHERE DKEY=".$row->DKEY." AND section=\"".$section."\";";
 	  $res2 = sql_request($sql);
 	  if(mysqli_num_rows($res2) == 0)
 	    {
@@ -425,8 +432,15 @@ function synchronizeUnitReports($section = "")
 /* performs synchro with evaluation and returns diagnostic , empty string if nothing happaned */
 function synchronize_with_evaluation($section = "")
 {
-	if( ($section == "") and !isSuperUser())
-		$section = currentSection();
+  if(isSuperUser() && isset($_SESSION["answer_dsi_sync"]))
+    echo $_SESSION["answer_dsi_sync"];
+
+  if(isSuperUser() && $section == "")
+      return synchronize_with_evaluation(1);
+
+  if(!isSuperUser())
+    $section = currentSection();
+
 
 	$answer = date('H:i:s')."<B>Synchronisation avec e-valuation de la section ".$section."</B><br/>\n";
 	if(isSecretaire())
@@ -446,5 +460,19 @@ function synchronize_with_evaluation($section = "")
 	  $answer .= date('H:i:s'); 
 		$answer .= synchronizeUnitReports($section)."<br/>";
 	}
+
+	if(isSuperUser())
+	  {
+	    if($section > 55)
+	      {
+		unset($_SESSION["answer_dsi_sync"]);
+	      }
+	    else
+	      {
+		$_SESSION["answer_dsi_sync"] = $answer . $_SESSION["answer_dsi_sync"];
+		echo "<script>window.location = 'index.php?action=synchronize_with_dsi&section=".($section+1)."'</script>";
+	      }
+	  }
+
 	return $answer;
 }

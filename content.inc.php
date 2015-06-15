@@ -239,12 +239,15 @@ function alertText($text)
 						include 'admin/admin.inc.php';
 					break;
 				case 'synchronize_with_dsi':
-					$answer = synchronize_with_evaluation();
-					if($answer != "")
-						echo $answer;
-					else
-						include 'admin/admin.inc.php';
-					break;
+				  if(isSuperUser() && isset($_REQUEST["section"]))
+				    $answer = synchronize_with_evaluation($_REQUEST["section"]);
+				  else
+				    $answer = synchronize_with_evaluation();
+				  if($answer != "")
+				    echo $answer;
+				  else
+				    include 'admin/admin.inc.php';
+				  break;
 				case 'maintenance_on':
 					set_config("maintenance", "on");
 					include 'admin/admin.inc.php';
