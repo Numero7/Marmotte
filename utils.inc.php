@@ -193,21 +193,22 @@ function filename_from_params($nom, $prenom, $grade, $unite, $type, $session, $a
 	{
 
 		if(is_ecole_type($type))
-			return $section." - ".$session." - ".$pretty_type." - ".$intitule." - ".$nom." - ".$unite;
+			$result = $section." - ".$session." - ".$pretty_type." - ".$intitule." - ".$nom." - ".$unite;
 		else
-			return $section." - ".$session." - ".$pretty_type." - ".$unite;
+			$result =  $section." - ".$session." - ".$pretty_type." - ".$unite;
 	}
 	else if( is_concours_type($type))
 	{
 	  if(is_classement($type))
 		{
 			$type .=  " - ".mb_convert_case($avis,MB_CASE_TITLE);
-			return $session." - ".$concours." - ".$pretty_type." - ".$nom." ".$prenom;
+			$result =  $session." - ".$concours." - ".$pretty_type." - ".$nom." ".$prenom;
 		}
-		else return $session." - ".$pretty_type." - ".$grade." - ".$nom." ".$prenom;
+		else $result  =  $session." - ".$pretty_type." - ".$grade." - ".$nom." ".$prenom;
 	}
 	else
-		return $section." - ".$session." - ".$pretty_type." - ".$grade." - ".$unite." - ".$nom." ".$prenom;
+		$result =  $section." - ".$session." - ".$pretty_type." - ".$grade." - ".$unite." - ".$nom." ".$prenom;
+	return replace_accents($result);
 }
 
 function getStyle($fieldId,$odd, $conflict = false)

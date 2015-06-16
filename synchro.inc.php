@@ -424,6 +424,24 @@ function synchronizeUnitReports($section = "")
 	return $answer;
 }
 
+function export_to_evaluation($section)
+{
+		$answer = "<B>Export des avis et rapporteurs vers e-valuation</B><br/>";
+		$sql = "insert into dsi.marmotte(DKEY,AVIS_EVAL,CODE_SECTION,RAPPORTEUR1,RAPPORTEUR2,RAPPORTEUR3,statut)";
+		$sql .=" select DKEY,avis,section,rapporteur,rapporteur2,rapporteur3,statut from panda.reports";
+		$sql .=" WHERE DKEY!=\"\" AND id_origine=id AND section=\"".$section."\" ";
+		$sql .=" ON DUPLICATE KEY UPDATE";
+		$sql .=" dsi.marmotte.AVIS_EVAL= panda.reports.avis,";
+		$sql .=" dsi.marmotte.RAPPORTEUR1=panda.reports.rapporteur,";
+		$sql .=" dsi.marmotte.RAPPORTEUR2=panda.reports.rapporteur2,";
+		$sql .=" dsi.marmotte.RAPPORTEUR3=panda.reports.rapporteur3,";
+		$sql .=" dsi.marmotte.statut=panda.reports.statut";
+		sql_request($sql);
+		$answer .= "Ca l'effectue.";
+		return $answer;
+
+}
+
 
 /* performs synchro with evaluation and returns diagnostic , empty string if nothing happaned */
 function synchronize_with_evaluation($section = "")
@@ -453,6 +471,9 @@ function synchronize_with_evaluation($section = "")
 
 		$answer .= "<br/>".synchronizePeopleReports($section)."<br/>";
 		$answer .= synchronizeUnitReports($section)."<br/>";
+		
+		$answer.= export_to_evaluation($section);
+
 	}
 
 	if(isSuperUser())
