@@ -54,7 +54,7 @@ function synchronizeWithDsiMembers($section)
 	$users = listUsers(true, $section);
 
 	$result .= synchronizeEmailsUpdates();
-	$result .= "<B>Synchronisation des membres de la section</B><br/>\n";
+	$result .= "<br/><B>Synchronisation des membres de la section</B><br/>\n";
 	
 	if (isSuperUser())
 		$sql = "SELECT * FROM ".dsidbname.".".dsi_users_db." WHERE 1;";
@@ -146,7 +146,7 @@ function synchronizeSessions($section)
 
 function synchronizePeople($section)
 {
-  $answer = date('H:i:s')."<B>Synchronisation des numeros SIRHUS de chercheurs </B><br/>\n";
+  $answer = "<B>Synchronisation des numeros SIRHUS de chercheurs </B><br/>\n";
 	$sql =  "UPDATE ".people_db." marmotte JOIN ".dsidbname.".".dsi_people_db." dsi ";
 	$sql .= " ON marmotte.nom=dsi.nom AND marmotte.prenom=dsi.prenom";
 	//	$sql .= " AND marm""otte.NUMSIRHUS=\"\" AND marmotte.section=\"".$section."\"";
@@ -156,9 +156,9 @@ function synchronizePeople($section)
 	global $dbh;
 	$num = mysqli_affected_rows($dbh);
 	if($num > 0)
-	  $answer .= date('H:i:s')."Mise a jour de ".$num." numéros SIRHUS<br/>";
+	  $answer .= $num." numéros SIRHUS ont été mis à jour.<br/>";
 	else
-	  $answer .= date('H:i:s')."Aucune numéro SIRHUS n'a été mis à jour.<br/>";
+	  $answer .= "Aucune numéro SIRHUS n'a été mis à jour.<br/>";
 	//$sql =  "DELETE FROM ".people_db." WHERE NUMSIRHUS=\"\" AND section=\"".$section."\";";
 	//sql_request($sql);
 	return 	$answer;
@@ -166,7 +166,7 @@ function synchronizePeople($section)
 //id_unite
 function synchronizePeopleReports($section)
 {
-	$answer =   date('H:i:s')."<B>Synchronisation des rapports chercheurs</B><br/>\n";
+	$answer =   "<B>Synchronisation des rapports chercheurs</B><br/>\n";
 	//LIB_SESSION,ANNEE 
 	$session = current_session_id();
 	$year = session_year($session);
@@ -185,15 +185,11 @@ function synchronizePeopleReports($section)
 	$sql .= " LEFT JOIN ".dsidbname.".".dsi_people_db." AS people";
 	$sql .= " ON eval.NUMSIRHUS=people.numsirhus WHERE ";
 	// (DKEY NOT IN (SELECT DKEY FROM ".marmottedbname.".".reports_db."  WHERE DKEY != \"\")) AND ";
-	$sql .= " eval.LIB_SESSION=\"".$lib."\" AND eval.ANNEE=\"".$year."\" AND ";
+	$sql .= " eval.EVALUATION_CN!=\"Annulé\" AND  eval.LIB_SESSION=\"".$lib."\" AND eval.ANNEE=\"".$year."\" AND ";
 	$sql .=" (eval.CODE_SECTION =\"".$section."\" OR eval.CODE_SECTION_2=\"".$section."\" OR eval.CODE_SECTION_EXCPT=\"".$section."\");";
 	
-	$answer .= date('H:i:s')."Executing ".$sql."<br/>";
-
 	$result = sql_request($sql);
 	
-	$answer .= date('H:i:s')."Done<br/>";
-
 	$answer .= "La base dsi contient ".mysqli_num_rows($result);
 	$answer .= " DE chercheurs pour la section.<br/>\n";// qui n'apparaissent pas encore dans Marmotte.<br/>\n";
 
@@ -323,11 +319,11 @@ function synchronizeUnitReports($section = "")
 	$lib = session_lib($session);
 
 	if($section == "") $section = currentSection();
-	$answer = date('H:i:s')."<B>Synchronisation des rapports unités</B><br/>\n";
+	$answer = "<B>Synchronisation des rapports unités</B><br/>\n";
 	
 	$sql = "SELECT * FROM ".dsidbname.".".dsi_evaluation_units_db;
 	$sql .=" WHERE ";
-	$sql .= " LIB_SESSION=\"".$lib."\" AND ANNEE=\"".$year."\" AND ";
+	$sql .= " EVALUATION_CN!=\"Annulé\" AND LIB_SESSION=\"".$lib."\" AND ANNEE=\"".$year."\" AND ";
 	$sql .= "(`CODE_SECTION1`=\"".$section."\" OR `CODE_SECTION2`=\"";
 	$sql .= $section."\"  OR `CODE_SECTION3`=\"".$section."\"";
 	$sql .= " OR `CODE_SECTION4`=\"".$section."\" OR `CODE_SECTION5`=\"";
@@ -341,7 +337,7 @@ function synchronizeUnitReports($section = "")
 
 	$res = sql_request($sql);
 
-	$answer .= date('H:i:s')."La base dsi contient ".mysqli_num_rows($res);
+	$answer .= "La base dsi contient ".mysqli_num_rows($res);
 	$answer .= " DE unités qui n'apparaissent pas encore dans Marmotte.<br/>\n";
 	while($row = mysqli_fetch_object($res))
 	{
@@ -442,22 +438,20 @@ function synchronize_with_evaluation($section = "")
     $section = currentSection();
 
 
-	$answer = date('H:i:s')."<B>Synchronisation avec e-valuation de la section ".$section."</B><br/>\n";
+	$answer = "<B>Synchronisation avec e-valuation de la section ".$section."</B><br/>\n";
 	if(isSecretaire())
 	{
+		$answer .= "<br/>".synchronizeWithDsiMembers($section)."<br/>";
+		$answer .= synchronizeSessions($section)."<br/>";
+		$answer .= synchronizePeople($section)."<br/>";
+		
+			$answer .= "<B>Suppression de l'historique des rapports</B><br/>\n";
 	$sql = "DELETE FROM ".reports_db." WHERE id!=id_origine AND section=\"".$section."\";";
 	sql_request($sql);
 	global $dbh;
 	$answer .= mysqli_affected_rows($dbh)." doublons ont ete retires de la base <br/>\n";
-	  $answer .= date('H:i:s'); 
-		$answer .= synchronizeWithDsiMembers($section)."<br/>";
-	  $answer .= date('H:i:s'); 
-		$answer .= synchronizeSessions($section)."<br/>";
-	  $answer .= date('H:i:s'); 
-		$answer .= synchronizePeople($section)."<br/>";
-	  $answer .= date('H:i:s'); 
-		$answer .= synchronizePeopleReports($section)."<br/>";
-	  $answer .= date('H:i:s'); 
+
+		$answer .= "<br/>".synchronizePeopleReports($section)."<br/>";
 		$answer .= synchronizeUnitReports($section)."<br/>";
 	}
 
