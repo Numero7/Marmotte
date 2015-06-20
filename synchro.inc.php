@@ -35,8 +35,8 @@ function synchronizeEmailsUpdates($email = true)
 				while ($row = mysqli_fetch_object($res))
 				{
 					$changed = true;
-					$result .= "Migation des dossers de '".$user->login."' vers '".$row->mailpro;
-					$result .= "' pour le numéro de chaire '".$user->$field."'<br/>";
+					$result .= "Migration des dossers de '".$user->login."' vers '".$row->mailpro;
+					$result .= "' pour le num&eagrave;ro de chaire '".$user->$field."'<br/>";
 					mergeUsers($user->login, $row->mailpro, $email);
 					$sql = "UPDATE ".users_db." SET `login`='".$row->mailpro."', `email`='".$row->mailpro."'";
 					$sql .= " WHERE `".$field."`='".$row->$field."';";
@@ -46,7 +46,7 @@ function synchronizeEmailsUpdates($email = true)
 		}
 	}
 	if(!$changed)
-		$result .= "Aucun email n'a &eacute;t&eacute; mis à jour.<br/>";
+		$result .= "Aucun email n'a &eacute;t&eacute; mis &eagrave; jour.<br/>";
 	return $result;
 }
 
@@ -83,7 +83,7 @@ function synchronizeWithDsiMembers($section,$email = true)
 					if($row->$field != $user->$field)
 					{
 						$changed = true;
-						$result .= "Mise à jour du champ '".$field."' du membre '".$login."' ";
+						$result .= "Mise &eagrave; jour du champ '".$field."' du membre '".$login."' ";
 						$result .= " de '". $user->$field."' vers '".$row->$field."'<br/>\n";
 						$sql = "UPDATE ".users_db." SET `".$field."`='".$row->$field."' WHERE `login`='".$login."';";
 						sql_request($sql);
@@ -92,7 +92,7 @@ function synchronizeWithDsiMembers($section,$email = true)
 			}
 			else
 			{
-				$result .= "Ajout du compte ".$login." à la base marmotte.<br/>";
+				$result .= "Ajout du compte ".$login." &eagrave; la base marmotte.<br/>";
 				$sql = "INSERT INTO ".users_db;
 				$sql .= " (login,sections,permissions,section_code,section_role_code,CID_code";
 				$sql .= ",CID_role_code,section_numchaire,CID_numchaire, passHash,description,email,tel) ";
@@ -112,7 +112,7 @@ function synchronizeWithDsiMembers($section,$email = true)
 	if(!$added)
 		$result .= "Liste d&eacute;j&agrave; &agrave; jour: aucun utilisateur n'a &eacute;t&eacute; ajout&eacute; &agrave; la base.<br/>";
 	if(!$changed)
-		$result .= "Donn&eacute;es d&eacute;j&agrave; &agrave; jour: aucune donn&egrave;e utilisateur n'a été mise à jour.<br/>";
+		$result .= "Donn&eacute;es d&eacute;j&agrave; &agrave; jour: aucune donn&egrave;e utilisateur n'a &eacute;t&eacute; mise &eagrave; jour.<br/>";
 	unset($_SESSION['all_users']);
 
 	return $result;
@@ -144,7 +144,7 @@ function synchronizeSessions($section)
 		}
 	}
 	if(!$changed)
-		$answer .= "Aucune session n'a été ajoutée.<br/>";
+		$answer .= "Aucune session n'a &eagrave;t&eagrave; ajout&eagrave;e.<br/>";
 	sessionArrays(true);
 	return array(
 		     "log"=>$answer, 
