@@ -265,7 +265,7 @@ function display_rapports($row, $fieldId)
 				    $report->id_session." - ".$report->unite. " - " .$type;
 				else
 				  $reports[$i]->label =
-			         $report->id_session." - ".$report->nom."  ".$report->prenom. " - " .$type;
+			         $report->id_session." - ".$report->unite." - ".$report->nom."  ".$report->prenom. " - " .$type;
 			}
 		}
 
@@ -378,7 +378,7 @@ b - 1 )
 			<table><tr><td>
 <input
 
-	type="hidden" name="MAX_FILE_SIZE" value="10000000" />
+	type="hidden" name="MAX_FILE_SIZE" value="50000000" />
 	<input type="hidden" name="uploaddir" value="<?php echo $dir;?>"/>
 	<input name="uploadedfile"
 	type="file" />

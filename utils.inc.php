@@ -120,10 +120,12 @@ function normalizeName($name)
 }
 
 
+/*
 function stripAccents($string){
 	return strtr($string,"'àáâãäçèéêëìíîïñòóôõöùúûüýÿÀÁÂÃÄÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝ",
 			' aaaaaceeeeiiiinooooouuuuyyAAAAACEEEEIIIINOOOOOUUUUY');
-}
+			}*/
+
 
 function exception_handler($exception)
 {

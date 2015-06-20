@@ -59,6 +59,11 @@ Site fermé pour maintenance, accès temporairement réservé aux administrateur
 	 {
 	 ?>
 
+<h2><font color="red">
+[18/06/2015 08:20] Arrêt de Marmotte pour maintenance le lundi 22 juin de 19h à 19h30.
+</font>
+</h2>
+
 <!--
 <p><font color="red">
 [10/06/2015 09:19] L'authentification par login e-valuation est temporairement indisponible
