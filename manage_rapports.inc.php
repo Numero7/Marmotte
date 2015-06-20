@@ -593,10 +593,10 @@ function addReportToDatabase($report,$normalize = true)
 	 $report = normalizeReport($report);
 
 	if(isset($report->unite))
-try
-  {
+	  try
+	    {
 		createUnitIfNeeded($report->unite);
-  }
+	    }
 	catch(Exception $e){}
 
 	$specialRule = array("date","id","id_origine");
@@ -688,7 +688,10 @@ try
 
 		$specialRule = array("date","id");
 
-		$current_report->section = $_SESSION['filter_section'];
+		if(!isSuperUser())
+		  $current_report->section = $_SESSION['filter_section'];
+		else
+		  $current_report->section = $report->section;
 
 		$first = true;
 
@@ -703,7 +706,7 @@ try
 		}
 
 		$sql = "INSERT INTO ".reports_db." ($sqlfields) VALUES ($sqlvalues);";
-		//echo $sql;
+		//	echo $sql."<br/>\n";
 		sql_request($sql);
 
 		global $dbh;
@@ -712,7 +715,9 @@ try
 		if($id_origine != 0 && isset($current_report->id))
 		{
 			$current_id = $current_report->id;
-			$sql = "UPDATE ".reports_db." SET id_origine=".intval($new_id)." WHERE id_origine=".intval($id_origine)." OR id=".intval($new_id)." OR id=".intval($current_id)." OR id_origine=".intval($current_id).";";
+			$sql = "UPDATE ".reports_db." SET id_origine=".intval($new_id);
+			$sql .= " WHERE id_origine=".intval($id_origine)." OR id=".intval($new_id);
+			$sql .= " OR id=".intval($current_id)." OR id_origine=".intval($current_id).";";
 			//			echo $sql;
 			sql_request($sql);
 		}

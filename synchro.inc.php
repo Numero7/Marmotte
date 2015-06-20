@@ -2,8 +2,10 @@
 
 require_once("manage_users.inc.php");
 require_once("manage_sessions.inc.php");
+require_once("manage_rapports.inc.php");
 
-function synchronizeEmailsUpdates()
+
+function synchronizeEmailsUpdates($email = true)
 {
 	if(!isSecretaire())
 		throw new Exception("Vous n'avez pas les droits sffisnats pour cette opération");
@@ -33,8 +35,9 @@ function synchronizeEmailsUpdates()
 				while ($row = mysqli_fetch_object($res))
 				{
 					$changed = true;
-					$result .= "Migation des dossers de '".$user->login."' vers '".$row->mailpro."' pour le numéro de chaire '".$user->$field."'<br/>";
-					mergeUsers($user->login, $row->mailpro);
+					$result .= "Migation des dossers de '".$user->login."' vers '".$row->mailpro;
+					$result .= "' pour le numéro de chaire '".$user->$field."'<br/>";
+					mergeUsers($user->login, $row->mailpro, $email);
 					$sql = "UPDATE ".users_db." SET `login`='".$row->mailpro."', `email`='".$row->mailpro."'";
 					$sql .= " WHERE `".$field."`='".$row->$field."';";
 					sql_request($sql);
@@ -43,17 +46,17 @@ function synchronizeEmailsUpdates()
 		}
 	}
 	if(!$changed)
-		$result .= "Aucun email n'a été mis à jour.<br/>";
+		$result .= "Aucun email n'a &eacute;t&eacute; mis à jour.<br/>";
 	return $result;
 }
 
 
-function synchronizeWithDsiMembers($section)
+function synchronizeWithDsiMembers($section,$email = true)
 {
 	$result = "";
 	$users = listUsers(true, $section);
 
-	$result .= synchronizeEmailsUpdates();
+	$result .= synchronizeEmailsUpdates($email);
 	$result .= "<br/><B>Synchronisation des membres de la section</B><br/>\n";
 	
 	if (isSuperUser())
@@ -117,6 +120,7 @@ function synchronizeWithDsiMembers($section)
 
 function synchronizeSessions($section)
 {
+  $created = array();
 	$changed = false;
 	$answer = "<B>Synchronization des sessions </B><br/>\n";
 	$sql = "SELECT DISTINCT LIB_SESSION,ANNEE FROM ".dsidbname.".".dsi_evaluation_db;
@@ -134,19 +138,23 @@ function synchronizeSessions($section)
 		if( ! in_array($session, $sessions) )
 		{
 			$changed = true;
-			$answer .= "Création de la session ".$session. ".<br/>";
+			$answer .= "Cr&eacute;ation de la session ".$session. ".<br/>";
 			createSession($row->LIB_SESSION, $row->ANNEE, $section);
+			$created[] = $session;
 		}
 	}
 	if(!$changed)
 		$answer .= "Aucune session n'a été ajoutée.<br/>";
 	sessionArrays(true);
-	return $answer;
+	return array(
+		     "log"=>$answer, 
+		     "created"=>$created
+		     );
 }
 
 function synchronizePeople($section)
 {
-  $answer = "<B>Synchronisation des numeros SIRHUS de chercheurs </B><br/>\n";
+  $answer = "<B>Synchro des num SIRHUS de chercheurs </B><br/>\n";
 	$sql =  "UPDATE ".people_db." marmotte JOIN ".dsidbname.".".dsi_people_db." dsi ";
 	$sql .= " ON marmotte.nom=dsi.nom AND marmotte.prenom=dsi.prenom";
 	//	$sql .= " AND marm""otte.NUMSIRHUS=\"\" AND marmotte.section=\"".$section."\"";
@@ -156,22 +164,23 @@ function synchronizePeople($section)
 	global $dbh;
 	$num = mysqli_affected_rows($dbh);
 	if($num > 0)
-	  $answer .= $num." numéros SIRHUS ont été mis à jour.<br/>";
+	  $answer .= $num." num&eacute;ros SIRHUS ont &eacute;t&eacute; mis &agrave; jour.<br/>";
 	else
-	  $answer .= "Aucune numéro SIRHUS n'a été mis à jour.<br/>";
+	  $answer .= "Aucune num&eacute;ro SIRHUS n'a &eacute;t&eacute; mis &agrave; jour.<br/>";
 	//$sql =  "DELETE FROM ".people_db." WHERE NUMSIRHUS=\"\" AND section=\"".$section."\";";
 	//sql_request($sql);
 	return 	$answer;
 }
 //id_unite
-function synchronizePeopleReports($section)
+function synchronizePeopleReports($section, $session = "")
 {
-	$answer =   "<B>Synchronisation des rapports chercheurs</B><br/>\n";
 	//LIB_SESSION,ANNEE 
-	$session = current_session_id();
+	if($session === "")
+	  $session = current_session_id();
 	$year = session_year($session);
 	$lib = session_lib($session);
 
+	$answer =   "<B>Synchro DE chercheurs section ".$section." session ".$session."</B><br/>\n";
 
 	// 		Inefficient
 	//	$sql = "SELECT * FROM ".marmottedbname.".".reports_db." WHERE DKEY != \"\"";
@@ -191,7 +200,7 @@ function synchronizePeopleReports($section)
 	$result = sql_request($sql);
 	
 	$answer .= "La base dsi contient ".mysqli_num_rows($result);
-	$answer .= " DE chercheurs pour la section.<br/>\n";// qui n'apparaissent pas encore dans Marmotte.<br/>\n";
+	$answer .= " DE chercheurs pour la section ".$section." et la session ".$session."<br/>\n";// qui n'apparaissent pas encore dans Marmotte.<br/>\n";
 
 	$changed = false;
 	while($row = mysqli_fetch_object($result))
@@ -252,7 +261,7 @@ function synchronizePeopleReports($section)
 			if(mysqli_num_rows($res5) == 1)
 			{
 			  //			  echo "Oly one report for ".$row->nom."<br/>";
-			  $answer .= "Changement du type de la DE chercheur <br/>\n";
+			  $answer .= "Changement type DE chercheur<br/>\n";
 			$sql  = "UPDATE ".reports_db;
 			$sql .= " SET type=\"".$row->TYPE_EVAL."\" WHERE id_session=\"".$session."\"";
 			$sql .= " AND section=\"".$section."\" AND DKEY=\"\"";
@@ -263,7 +272,6 @@ function synchronizePeopleReports($section)
 			//echo "More than  one report ".mysqli_num_rows($res5). " for ".$row->nom."<br/>";
 			//			if($row->nom == "CHANARON")die(0);
 
-	      $session = $row->LIB_SESSION.$row->ANNEE;
 			$sql  = "UPDATE ".reports_db;
 			$sql .= " SET NUMSIRHUS=\"".$row->NUMSIRHUS."\", DKEY=\"".$row->DKEY."\" WHERE id_session=\"".$session."\"";
 			$sql .= " AND section=\"".$section."\" AND DKEY=\"\" AND type=\"".$row->TYPE_EVAL."\"";
@@ -292,14 +300,23 @@ function synchronizePeopleReports($section)
 		$row->id_origine=0;
 		$row->id_session = $session;
 		$row->section = $section;
-		$row->rapporteur = $rapporteur;
 
 		$row->rapporteur = $rapporteur;
+		$row->rapporteur2 = $rapporteur2;
 		$row->rapporteur3 = $rapporteur3;
+
 		$row->type = $row->TYPE_EVAL;
+
+		if($section == $row->CODE_SECTION)
+		  $row->avis = $row->AVIS_EVAL;
+		else if($section == $row->CODE_SECTION_2)
+		  $row->avis = $row->AVIS_EVAL2;
+		else if($section == $row->CODE_SECTION_EXCPT)
+		  $row->avis = $row->AVIS_EVAL_EXCPT;
 		
-		$answer .= date('H:i:s')." Ajout de l'evaluations chercheur de DKEY ".$row->DKEY." et Sirhus ".$row->NUMSIRHUS."<br/>\n";
 		addReportToDatabase($row);
+
+		$answer .= "+DKEY ".$row->DKEY." ";
 		$changed = true;
 
 	        }
@@ -312,14 +329,15 @@ function synchronizePeopleReports($section)
 	return $answer;
 }
 
-function synchronizeUnitReports($section = "")
+function synchronizeUnitReports($section = "", $session = "")
 {
-	$session = current_session_id();
+  if($session === "")
+    $session = current_session_id();
 	$year = session_year($session);
 	$lib = session_lib($session);
 
-	if($section == "") $section = currentSection();
-	$answer = "<B>Synchronisation des rapports unités</B><br/>\n";
+	if($section === "") $section = currentSection();
+	$answer = "<B>Synchro DE unit&eacute;s section ".$section." session ".$session."</B><br/>\n";
 	
 	$sql = "SELECT * FROM ".dsidbname.".".dsi_evaluation_units_db;
 	$sql .=" WHERE ";
@@ -338,7 +356,7 @@ function synchronizeUnitReports($section = "")
 	$res = sql_request($sql);
 
 	$answer .= "La base dsi contient ".mysqli_num_rows($res);
-	$answer .= " DE unités qui n'apparaissent pas encore dans Marmotte.<br/>\n";
+	$answer .= " DE unit&eacute;s qui n'apparaissent pas encore dans Marmotte.<br/>\n";
 	while($row = mysqli_fetch_object($res))
 	{
 		
@@ -370,15 +388,15 @@ function synchronizeUnitReports($section = "")
 		global $dbh;
 		if($num >0)
 		{
-		  $answer .= date('H:i:s')."Mise a jour des rapporteurs ".$rapporteur." - ".$rapporteur2;
-		  $answer .= " du dossier unite ".$row->UNITE_EVAL."<br/>";
+		  $answer .= "=rapporteurs ".$rapporteur." - ".$rapporteur2;
+		  $answer .= " DKEY ".$row->DKEY." ";
 			if($rapporteur != "")
 				sql_request(
 				"UPDATE ".reports_db." SET rapporteur=\"".$rapporteur."\" WHERE DKEY=\"".$row->DKEY."\" AND rapporteur=\"\";");
 			if($rapporteur2 != "")
 				sql_request(
 				"UPDATE ".reports_db." SET rapporteur2=\"".$rapporteur2."\" WHERE DKEY=\"".$row->DKEY."\" AND rapporteur2=\"\";");
-			$answer .= $num." rapports Marmotte ont ete synchronisee (KEY ".$row->DKEY.")<br/>\n";
+			$answer .= $num." =DKEY ".$row->DKEY." ";
 			continue;
 		}
 
@@ -406,12 +424,11 @@ function synchronizeUnitReports($section = "")
 		    $num = mysqli_affected_rows($dbh);
 
 		    
-		    $answer .= date('H:i:s').$num." evaluations unites a ete synchronisee (KEY ".$row->DKEY."<br/>\n";
+		    $answer .= $num."=DKEY ".$row->DKEY." ";
 		    continue;
 		  }
 
-
-		$answer .= date('H:i:s')."Import de l'evaluations unite de DKEY ".$row->DKEY."<br/>\n";
+		$answer .= "+DKEY ".$row->DKEY." ";
 		$row->unite = $row->UNITE_EVAL;
 		$row->type = $row->TYPE_EVAL;
 		$row->id_session = $session;
@@ -419,6 +436,18 @@ function synchronizeUnitReports($section = "")
 		$row->id_origine=0;
 		$row->rapporteur = $rapporteur;
 		$row->rapporteur2 = $rapporteur2;
+
+		for($i = 1; $i <= 9; $i++)
+		{
+			$field = "CODE_SECTION".$i;
+			if($section == $row->$field)
+			{
+				$field = "AVIS".$i;
+				$row->avis = $row->$field;
+				break;
+			}
+		}
+
 		addReportToDatabase($row);
 	}
 	return $answer;
@@ -427,40 +456,43 @@ function synchronizeUnitReports($section = "")
 function export_to_evaluation($section)
 {
 		$answer = "<B>Export des avis et rapporteurs vers e-valuation</B><br/>";
-		$sql = "insert into dsi.marmotte(DKEY,AVIS_EVAL,CODE_SECTION,RAPPORTEUR1,RAPPORTEUR2,RAPPORTEUR3,statut)";
-		$sql .=" select DKEY,avis,section,rapporteur,rapporteur2,rapporteur3,statut from panda.reports";
+		$sql = "insert into ".dsidbname.".".dsi_marmotte_db."(DKEY,AVIS_EVAL,CODE_SECTION,RAPPORTEUR1,RAPPORTEUR2,RAPPORTEUR3,statut)";
+		$sql .=" select DKEY,avis,section,rapporteur,rapporteur2,rapporteur3,statut from ".marmottedbname.".".reports_db;
 		$sql .=" WHERE DKEY!=\"\" AND id_origine=id AND section=\"".$section."\" ";
 		$sql .=" ON DUPLICATE KEY UPDATE";
-		$sql .=" dsi.marmotte.AVIS_EVAL= panda.reports.avis,";
-		$sql .=" dsi.marmotte.RAPPORTEUR1=panda.reports.rapporteur,";
-		$sql .=" dsi.marmotte.RAPPORTEUR2=panda.reports.rapporteur2,";
-		$sql .=" dsi.marmotte.RAPPORTEUR3=panda.reports.rapporteur3,";
-		$sql .=" dsi.marmotte.statut=panda.reports.statut";
+		$sql .=" dsi.".dsi_marmotte_db.".AVIS_EVAL=".marmottedbname.".".reports_db.".avis,";
+		$sql .=" dsi.".dsi_marmotte_db.".RAPPORTEUR1=".marmottedbname.".".reports_db.".rapporteur,";
+		$sql .=" dsi.".dsi_marmotte_db.".RAPPORTEUR2=".marmottedbname.".".reports_db.".rapporteur2,";
+		$sql .=" dsi.".dsi_marmotte_db.".RAPPORTEUR3=".marmottedbname.".".reports_db.".rapporteur3,";
+		$sql .=" dsi.".dsi_marmotte_db.".statut=".marmottedbname.".".reports_db.".statut";
 		sql_request($sql);
 		$answer .= "Ca l'effectue.";
 		return $answer;
-
 }
 
 
 /* performs synchro with evaluation and returns diagnostic , empty string if nothing happaned */
-function synchronize_with_evaluation($section = "")
+function synchronize_with_evaluation($section = "", $recursive = false, $email = true)
 {
-  if(isSuperUser() && isset($_SESSION["answer_dsi_sync"]))
+  if(isSuperUser() && isset($_SESSION["answer_dsi_sync"]) && !$recursive)
     echo $_SESSION["answer_dsi_sync"];
 
   if(isSuperUser() && $section == "")
-      return synchronize_with_evaluation(1);
+    return synchronize_with_evaluation("1",$recursive,$email);
 
   if(!isSuperUser())
     $section = currentSection();
 
 
-	$answer = "<B>Synchronisation avec e-valuation de la section ".$section."</B><br/>\n";
+	$answer = "<h1>Synchronisation avec e-valuation de la section ".$section."</h1><br/>\n";
 	if(isSecretaire())
 	{
-		$answer .= "<br/>".synchronizeWithDsiMembers($section)."<br/>";
-		$answer .= synchronizeSessions($section)."<br/>";
+	  $answer .= "<br/>".synchronizeWithDsiMembers($section,$email)."<br/>";
+
+		$ans = synchronizeSessions($section);
+		$answer .= $ans["log"]."<br/>\n";
+		$new_sessions = $ans["created"];
+
 		$answer .= synchronizePeople($section)."<br/>";
 		
 			$answer .= "<B>Suppression de l'historique des rapports</B><br/>\n";
@@ -471,8 +503,20 @@ function synchronize_with_evaluation($section = "")
 
 		$answer .= "<br/>".synchronizePeopleReports($section)."<br/>";
 		$answer .= synchronizeUnitReports($section)."<br/>";
+		foreach($new_sessions as $session)
+		  {
+		    $answer .= "<br/>".synchronizePeopleReports($section,$session)."<br/>";
+		    $answer .= synchronizeUnitReports($section,$session)."<br/>";
+		  }		  
 		
+try
+  {
 		$answer.= export_to_evaluation($section);
+  }
+catch(Exception $e)
+  {
+    $answer .=  "Failed to export to e-valuation\n<br/>".$e->getMessage()."\n<br/>"; 
+  }
 
 	}
 
@@ -480,12 +524,20 @@ function synchronize_with_evaluation($section = "")
 	  {
 	    if($section > 55)
 	      {
-		unset($_SESSION["answer_dsi_sync"]);
+		if(!$recursive)
+		  unset($_SESSION["answer_dsi_sync"]);
+		else
+		  return "Done";
 	      }
-	    else
+	    else if(!$recursive)
 	      {
 		$_SESSION["answer_dsi_sync"] = $answer . $_SESSION["answer_dsi_sync"];
 		echo "<script>window.location = 'index.php?action=synchronize_with_dsi&section=".($section+1)."'</script>";
+	      }
+	    else 
+	      {
+		echo $answer;
+		synchronize_with_evaluation($section + 1, true);
 	      }
 	  }
 
