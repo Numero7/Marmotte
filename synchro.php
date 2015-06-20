@@ -33,7 +33,7 @@ catch(Exception $e)
 //        $_SESSION['filter_section'] = '0';
 
 require_once('synchro.inc.php');
-$email = false;
+$email = true;
 synchronize_with_evaluation("",true,$email);
 
 	db_disconnect();

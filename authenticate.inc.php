@@ -20,21 +20,25 @@ $is_maintenance = (get_config("maintenance","off",false,"0") === "on");
 <br/>
 
 
+		</div>
+
+	<div class="content"> 
 <?php 
 if($is_maintenance)
 {
 ?>
-<p><font color="red">
+<h3><font color="red">
 Site fermé pour maintenance, accès temporairement réservé aux administrateurs.
 </font>
-</p>
+</h3>
+<br/>
+<br/>
+
 <?php 
 }
 ?>
-</h3>
-		</div>
 
-	<div class="content"> 
+
 	 <?php 
 	 if(isset($_REQUEST["action"]) && ($_REQUEST["action"] == "auth_marmotte"))
 	 {
