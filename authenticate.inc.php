@@ -27,10 +27,10 @@ $is_maintenance = (get_config("maintenance","off",false,"0") === "on");
 if($is_maintenance)
 {
 ?>
-<h3><font color="red">
+<h2><font color="red">
 Site fermé pour maintenance, accès temporairement réservé aux administrateurs.
 </font>
-</h3>
+</h2>
 <br/>
 <br/>
 
@@ -115,6 +115,7 @@ En cas de besoin urgent, merci de contacter votre secr&eacute;taire scientifique
   <li>Laurent Chazaly (beta-testeur, formateur, SGCN)</li>
   <li>Guillaume Lapeyre (beta-testeur, formateur, section 19)</li>
 <li>Mich&egrave;le Desumeur (beta-testeuse ACN, SGCN)</li>
+<li>Santiago Pita (beta-testeur, section 1)</li>
  </ul>
  </td>
  </tr>

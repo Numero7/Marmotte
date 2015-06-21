@@ -34,7 +34,12 @@ catch(Exception $e)
 
 require_once('synchro.inc.php');
 $email = true;
+set_config("maintenance", "on");
+try
+{
 synchronize_with_evaluation("",true,$email);
-
+}
+catch(Exception $e){}
+set_config("maintenance", "off");
 	db_disconnect();
 ?>

@@ -288,7 +288,7 @@ function synchronizePeopleReports($section, $session = "")
 			if($rapporteur3 != "")
 				sql_request("UPDATE ".reports_db." SET rapporteur3=\"".$rapporteur3."\" WHERE DKEY=\"".$row->DKEY."\" AND rapporteur3=\"\";");
 
-			  $answer .= date('H:i:s').": ".$num." evaluations chercheur ont recu le DKEY".$row->DKEY;
+			  $answer .= $num." evaluations chercheur ont recu le DKEY".$row->DKEY;
 			  $answer .= " et le NUMSIRHUS ".$row->NUMSIRHUS."<br/>\n";
 			  $changed = true;
 				continue;
@@ -466,7 +466,7 @@ function export_to_evaluation($section)
 		$sql .=" dsi.".dsi_marmotte_db.".RAPPORTEUR3=".marmottedbname.".".reports_db.".rapporteur3,";
 		$sql .=" dsi.".dsi_marmotte_db.".statut=".marmottedbname.".".reports_db.".statut";
 		sql_request($sql);
-		$answer .= "Ca l'effectue.";
+		$answer .= "<a href=\"https://www.youtube.com/watch?v=0rCrc6RoJg0\">Ca l'effectue</a>";
 		return $answer;
 }
 
@@ -484,10 +484,10 @@ function synchronize_with_evaluation($section = "", $recursive = false, $email =
     $section = currentSection();
 
 
-	$answer = "<h1>Synchronisation avec e-valuation de la section ".$section."</h1><br/>\n";
+  $answer = "<h1>Synchronisation avec e-valuation de la section ".$section." - ".date('d/m/Y - H:i:s')."</h1>\n";
 	if(isSecretaire())
 	{
-	  $answer .= "<br/>".synchronizeWithDsiMembers($section,$email)."<br/>";
+	  $answer .= synchronizeWithDsiMembers($section,$email)."<br/>";
 
 		$ans = synchronizeSessions($section);
 		$answer .= $ans["log"]."<br/>\n";
