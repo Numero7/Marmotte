@@ -175,18 +175,17 @@ function filename_from_doc($doc)
 function filename_from_params($nom, $prenom, $grade, $unite, $type, $session, $avis, $concours = "", $sousjury="", $intitule = "")
 {
   global $typesRapportsAll;
+  global $tous_avis;
+
+  if(isset($tous_avis[$avis]))
+     $avis = $tous_avis[$avis];
+
   $pretty_type = isset($typesRapportsAll[$type]) ? $typesRapportsAll[$type] : $type;
 
 	$liste_unite = unitsList();
 
 	
 	$section = get_config("section_shortname");
-
-	if(is_promotion_type($type))
-		$grade .= " - ".$avis;
-
-	if(is_eval_type($type))
-		$pretty_type .=  " - ".mb_convert_case($avis,MB_CASE_TITLE);
 
 	if(isset($liste_unite[$unite]))
 		$unite = $unite . " - " . $liste_unite[$unite]->nickname;
@@ -195,21 +194,19 @@ function filename_from_params($nom, $prenom, $grade, $unite, $type, $session, $a
 	{
 
 		if(is_ecole_type($type))
-			$result = $section." - ".$session." - ".$pretty_type." - ".$intitule." - ".$nom." - ".$unite;
+			$result = $section." - ".$session." - ".$pretty_type." - ".$avis." - ".$intitule." - ".$nom." - ".$unite;
 		else
-			$result =  $section." - ".$session." - ".$pretty_type." - ".$unite;
+			$result =  $section." - ".$session." - ".$pretty_type." - ".$avis." - ".$unite;
 	}
 	else if( is_concours_type($type))
 	{
 	  if(is_classement($type))
-		{
-			$type .=  " - ".mb_convert_case($avis,MB_CASE_TITLE);
-			$result =  $session." - ".$concours." - ".$pretty_type." - ".$nom." ".$prenom;
-		}
-		else $result  =  $session." - ".$pretty_type." - ".$grade." - ".$nom." ".$prenom;
+	    $result =  $session." - ".$concours." - ".$pretty_type." - ".$avis." - ".$nom." ".$prenom;
+	else
+		$result  =  $session." - ".$pretty_type." - ".$grade." - ".$avis." - ".$nom." ".$prenom;
 	}
 	else
-		$result =  $section." - ".$session." - ".$pretty_type." - ".$grade." - ".$unite." - ".$nom." ".$prenom;
+		$result =  $section." - ".$session." - ".$pretty_type." - ".$grade." - ".$avis." - ".$unite." - ".$nom." ".$prenom;
 	return replace_accents($result);
 }
 
