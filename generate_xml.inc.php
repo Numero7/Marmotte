@@ -139,7 +139,7 @@ function EnteteDroit($row, $units)
 		if($row->unite != $units[$row->unite]->nickname && $units[$row->unite]->nickname != "")
 			$bloc_unite .= " ".$row->unite." (".$units[$row->unite]->nickname.", ".$units[$row->unite]->directeur.")";
 		else if($units[$row->unite]->directeur != "")
-			$bloc_unite .= " ".$row->unite.", ".$units[$row->unite]->directeur.")";
+			$bloc_unite .= " ".$row->unite.", (".$units[$row->unite]->directeur.")";
 		else
 			$bloc_unite .= " ".$row->unite;
 	}
@@ -148,16 +148,6 @@ function EnteteDroit($row, $units)
 		$bloc_unite .= " ".$row->unite;
 	}
 
-	/*
-	 if( ($row->type == "Promotion") && ($row->grade_rapport != "CR1") && ($row->grade_rapport != "CR2"))
-	 {
-	$result = $enTetesDroit['PromotionDR'];
-	$result .= $avis_classement[$row->avis].'<br/>';
-	$result .= $row->nom." ".$row->prenom.'<br/>';
-	$result .= $bloc_unite;
-	return $result;
-	}
-	*/
 	if(is_rapport_concours($row))
 	{
 		$result .= $avis_candidature_short[$row->avis];
