@@ -247,7 +247,10 @@ function createXMLReportElem($row, DOMDocument $doc, $keep_br = true)
 
 	$fieldsspecial = array('unite','date','type');
 
-
+	global $typesRapportsAll;
+	if(trim($row->intitule) == "" && isset($typesRapportsAll[$row->type]))
+		$row->intitule = $typesRapportsAll[$row->type];
+	
 	//On ajoute une formule à la fin du rapport si nécessaire
 	if(array_key_exists($row->type,$typesRapportsToFormula))
 	{
