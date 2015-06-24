@@ -11,7 +11,7 @@ function unitsList($all_sections = false)
 		if($all_sections || isSuperUser())
 			$sql = "SELECT * FROM ".units_db." ORDER BY LOWER(nickname) ASC;";
 		else
-			$sql = "SELECT * FROM ".units_db." WHERE `section`='". real_escape_string(currentSection())."' ORDER BY LOWER(nickname) ASC;";
+			$sql = "SELECT * FROM ".units_db." WHERE `code`!= \"\" && `section`='". real_escape_string(currentSection())."' ORDER BY LOWER(nickname) ASC;";
 //			$sql = "SELECT * FROM ".units_db." WHERE `section`='". real_escape_string(currentSection())."' OR `section`=\"0\" ORDER BY nickname ASC;";
 		//	$sql = "SELECT * FROM ".units_db." WHERE `section`=\"0\" ORDER BY LOWER(nickname) ASC;";
 
@@ -30,8 +30,8 @@ function unitsList($all_sections = false)
 		}
 
 		uasort($units, 'cmpunits');
-
-		$_SESSION['all_units'] = $units;
+		if(!$all_sections || isSuperUser())
+		  $_SESSION['all_units'] = $units;
 	}
 	return $_SESSION['all_units'];
 }
@@ -50,6 +50,7 @@ function unitDSIExists($code)
 
 function createUnitIfNeeded($code)
 {
+  if($code == "") return;
 	if(!unitExists($code))
 	{
 		if(unitDSIExists($code))
@@ -71,6 +72,7 @@ function createUnitIfNeeded($code)
 
 function updateUnitData($unite, $data)
 {
+  if($unite == "") return;
 	if(isSuperUser() && !isset($data->section))
 	{
 		echo "Superuser cannot update lab with generic section";

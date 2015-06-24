@@ -198,7 +198,7 @@ function displayRowCell($row, $fieldID)
 
 	if($type=="rapporteur")
 	{
-		if($bur)
+	  if(is_field_editable($row, $fieldID))
 		{
 			?>
 	<select
@@ -226,7 +226,7 @@ function displayRowCell($row, $fieldID)
 		if(isset($filters['avis']) && isset($data['avis']['liste']))
 			$avis = $data['avis']['liste'];
 		
-		if($sec && !isACN() && $fieldID == "avis")
+		if(is_field_editable($row, $fieldID))
 		{
 			?><select onchange="window.location='index.php?action=set_property&property=<?php echo $fieldID; ?>&id_origine=<?php echo $row->id_origine; ?>&value=' + encodeURIComponent(this.value);">
 		<?php
@@ -326,6 +326,8 @@ function displayStatutMenu()
 
 									foreach ($statuts as $val => $nom)
 									{
+									  if($val == "avistransmis" || $val == "publie")
+									    continue;
 										$sel = "";
 										echo "<option value=\"".$val."\" $sel>".$nom."</option>\n";
 									}

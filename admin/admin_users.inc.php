@@ -36,7 +36,7 @@
 				echo "CID <input style=\"width:1cm;\" name=\"CID_code\" value=\"".$data->CID_code."\"></input>";
 				echo "CID_role <input style=\"width:2cm;\" name=\"CID_role\" value=\"".$data->CID_role_code."\"></input>";
 				echo "Sections <input style=\"width:5cm;\" name=\"sections\" value=\"".$data->sections."\"></input>";
-			}
+			
 			echo "<input type=\"hidden\" name=\"admin_users\"></input>";
 			echo "<select name=\"permissions\">\n";
 			foreach($permission_levels as $val => $level)
@@ -50,6 +50,13 @@
 				}
 			}
 			echo "</select>";
+			}
+			else
+			  {
+			foreach($permission_levels as $val => $level)
+			  if ($val==$data->permissions)
+					echo "<td>".ucfirst($level)."</td>\n";
+			  }
 			if(is_current_session_concours())
 			{
 				$concours_ouverts = getConcours();
@@ -83,6 +90,7 @@
 
 			echo "<input type=\"hidden\" name=\"login\" value=\"$user\"/>\n";
 			echo "<input type=\"hidden\" name=\"action\" value=\"infosrapporteur\"/>\n";
+			if(isSuperUser() || is_current_session_concours())
 			echo " <input type=\"submit\" value=\"Valider\"/>\n";
 			echo "</form></td></tr>\n";
 		}

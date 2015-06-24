@@ -104,7 +104,7 @@ function display_avis($row, $fieldID, $readonly)
 {
 	global $typesRapportToAvis;
 	if(isset($row->type) && array_key_exists($row->type, $typesRapportToAvis))
-		display_select($row, $fieldID, $typesRapportToAvis[$row->type], !isSecretaire() && $readonly);
+		display_select($row, $fieldID, $typesRapportToAvis[$row->type], $readonly);
 	else
 		echo '<td></td>';
 }

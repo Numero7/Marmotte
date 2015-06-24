@@ -24,8 +24,8 @@ $add_rubriques_unites = get_rubriques("unites");
 $statutsRapports = array(
 		'doubleaveugle'=>'Edition Prérapports Double Aveugle',
 		'edition' => "Edition Prérapports et Rapports",
-		'avistransmis'=>"Publication des Avis",
-		'publie'=>"Publication des Rapports",
+		'avistransmis'=>"Transmission des avis dans e-valuation",
+		'publie'=>"Transmission des rapports",
 		'audition'=>"Audition"
 );
 $statutsRapportsACN = array(

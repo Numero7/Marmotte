@@ -456,9 +456,12 @@ function synchronizeUnitReports($section = "", $session = "")
 function export_to_evaluation($section)
 {
 		$answer = "<B>Export des avis et rapporteurs vers e-valuation</B><br/>";
+		$sql = "DELETE FROM dsi.".dsi_marmotte_db." WHERE 1";
+		sql_request($sql);
+
 		$sql = "insert into ".dsidbname.".".dsi_marmotte_db."(DKEY,AVIS_EVAL,CODE_SECTION,RAPPORTEUR1,RAPPORTEUR2,RAPPORTEUR3,statut)";
 		$sql .=" select DKEY,avis,section,rapporteur,rapporteur2,rapporteur3,statut from ".marmottedbname.".".reports_db;
-		$sql .=" WHERE DKEY!=\"\" AND id_origine=id AND section=\"".$section."\" ";
+		$sql .=" WHERE DKEY!=\"\" AND id_origine=id AND (avis=\"avistransmis\" OR avis=\"publie\") AND section=\"".$section."\" ";
 		$sql .=" ON DUPLICATE KEY UPDATE";
 		$sql .=" dsi.".dsi_marmotte_db.".AVIS_EVAL=".marmottedbname.".".reports_db.".avis,";
 		$sql .=" dsi.".dsi_marmotte_db.".RAPPORTEUR1=".marmottedbname.".".reports_db.".rapporteur,";
