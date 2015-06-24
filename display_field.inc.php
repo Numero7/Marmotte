@@ -92,7 +92,7 @@ function display_short($row, $fieldID, $readonly)
 	{
 		?>
 <input name="field<?php echo $fieldID;?>"
-	value="<?php echo $row->$fieldID;?>" style="width:90%;" />
+	value="<?php echo $row->$fieldID;?>" style="width:99%;" />
 <?php
 	}
 	else
@@ -206,7 +206,17 @@ function display_topic($row, $fieldID, $readonly)
 function display_statut2($row, $fieldID, $readonly)
 {
 	global $statutsRapports;
-	display_select($row, $fieldID,$statutsRapports,$readonly);
+	$statuts = $statutsRapports;
+	if($row->$fieldID == "avistransmis")
+	    $statuts = array(
+			     "avistransmis" => $statuts["avistransmis"],
+			     "publie"=>$statuts["publie"]
+			     );
+	if($row->$fieldID == "publie")
+	    $statuts = array(
+			     "publie"=>$statuts["publie"]
+			     );
+	display_select($row, $fieldID,$statuts,$readonly);
 }
 
 function display_grade($row, $fieldID, $readonly)

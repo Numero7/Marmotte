@@ -109,17 +109,27 @@ function appendLeaf($fieldname, $fieldvalue, DOMDocument $doc, DOMElement $node)
 	$stripped = stripInvalidXml($fieldvalue);
 	//echo $stripped;
 
-	$stripped = str_replace(
-			array("<b>","</b>", "<B>", "</B>", "<br/>", "<br />","<i>", "</i>", "<b>", "</b>", "<I>", "</I>", "<B>", "</B>"),
-			array("#b#","#/b#", "#B#", "#/B#", "#br/#", "#br/#", "#i#", "#/i#", "#b#", "#/b#", "#I#", "#/I#", "#B#", "#/B#"),
-			$stripped);
-	//	echo $stripped;
+	$before = array();
+	$after = array();
+
+	global $html_tags;
+	foreach($html_tags as $tag)
+	  {
+	    $before[] = "<".$tag.">";
+	    $before[] = "</".$tag.">";
+	    $after[] = "#".$tag."#";
+	    $after[] = "#/".$tag."#";
+	  }
+	$before[] = "<br/>";
+	$after[] = "#br/#";
+
+	$stripped = str_replace($before, $after, $stripped);
 
 	$stripped = str_replace(
-			array("<", ">", "#b#","#/b#", "#B#", "#/B#", "#br/#", "#i#", "#/i#", "#b#", "#/b#", "#I#", "#/I#", "#B#", "#/B#"),
-			array("&lt;", "&gt;", "<b>","</b>", "<B>", "</B>", "<br/>", "<i>", "</i>", "<b>", "</b>", "<I>", "</I>", "<B>", "</B>"),
+				array("<", ">"),
+				array("&lt;", "&gt;"),
 			$stripped);
-	//	echo $stripped;
+	$stripped = str_replace($after, $before, $stripped);
 
 	$leaf->appendChild($doc->createCDATASection($stripped));
 	$node->appendChild($leaf);
@@ -134,7 +144,7 @@ function EnteteDroit($row, $units)
 	$result = "";
 
 	$bloc_unite = "";
-	if(array_key_exists($row->unite,$units))
+	if(isset($units[$row->unite]))
 	{
 		if($row->unite != $units[$row->unite]->nickname && $units[$row->unite]->nickname != "")
 			$bloc_unite .= " ".$row->unite." (".$units[$row->unite]->nickname.", ".$units[$row->unite]->directeur.")";

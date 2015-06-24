@@ -105,7 +105,7 @@ if(!isSuperUser())
 		if(isSecretaire() && !isACN())
 		  {
 ?>
-<li><a onclick="return confirm('Veuillez confirmez la transmission des avis de la section au SGCN. Les avis ne seront alors plus modifiables.')" href="?action=change_statut&amp;new_statut=avistransmis">Transmettre les avis au SGCN/SCC</a></li>
+<li><a onclick="return confirm('Veuillez confirmez la transmission des avis de la section au SGCN. Les avis ne seront alors plus modifiables (mais les rapports oui).')" href="?action=change_statut&amp;new_statut=avistransmis">Transmettre les avis au SGCN/SCC</a></li>
 <li><a onclick="return confirm('Veuillez confirmer la transmission des rapports de la section au SGCN. Les rapports ne seront alors plus modifiables.')" href="?action=change_statut&amp;new_statut=publie">Transmettre les rapports</a></li>
 <?php		  }
 		if(isSecretaire() && !isSuperUser())

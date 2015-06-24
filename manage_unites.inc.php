@@ -5,9 +5,9 @@ function cmpunits($a, $b) {
 
 function unitsList($all_sections = false)
 {
+	$units = array();
 	if($all_sections || !isset($_SESSION['all_units']))
 	{
-		$units = array();
 		if($all_sections || isSuperUser())
 			$sql = "SELECT * FROM ".units_db." ORDER BY LOWER(nickname) ASC;";
 		else
@@ -16,7 +16,8 @@ function unitsList($all_sections = false)
 		//	$sql = "SELECT * FROM ".units_db." WHERE `section`=\"0\" ORDER BY LOWER(nickname) ASC;";
 
 		if($result= sql_request($sql))
-			while ($row = mysqli_fetch_object($result))
+		  while ($row = mysqli_fetch_object($result))
+		    if($row->code != "")
 			$units[$row->code] = $row;
 
 		$maxsize = 0;
@@ -33,7 +34,9 @@ function unitsList($all_sections = false)
 		if(!$all_sections || isSuperUser())
 		  $_SESSION['all_units'] = $units;
 	}
-	return $_SESSION['all_units'];
+	else
+	  $units = $_SESSION['all_units'];
+	return $units;
 }
 
 function unitExists($code)

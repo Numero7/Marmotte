@@ -24,10 +24,11 @@ $add_rubriques_unites = get_rubriques("unites");
 $statutsRapports = array(
 		'doubleaveugle'=>'Edition Prérapports Double Aveugle',
 		'edition' => "Edition Prérapports et Rapports",
-		'avistransmis'=>"Transmission des avis dans e-valuation",
-		'publie'=>"Transmission des rapports",
+		'avistransmis'=>"Avis transmis dans e-valuation",
+		'publie'=>"Rapports transmis",
 		'audition'=>"Audition"
 );
+
 $statutsRapportsACN = array(
 		'doubleaveugle'=>'Edition Prérapports Double Aveugle',
 		'edition' => "Edition Prérapports et Rapports",
@@ -96,8 +97,7 @@ $fieldsRapportACN = array(
 		"rapport"
 );
 $fieldsEditableACN = array(
-		"concours", "sousjury", "intitule", "nom",
-		"prenom", "unite", "type", "grade_rapport", "rapporteur", "rapporteur2", "rapporteur3",
+		"concours", "sousjury", "intitule", "unite", "type", "grade_rapport", "rapporteur", "rapporteur2", "rapporteur3",
 		"rapport"
 );
 
@@ -1407,4 +1407,5 @@ $icones_avis = array(
 for($i = 1; $i <= $max_classement; $i++)
 	$icones_avis["c".$i] = "img/Icon-Yes.png";
 
+$html_tags = array("i","I","b","B","u","U","sub","SUB","sup","SUP");
 ?>
