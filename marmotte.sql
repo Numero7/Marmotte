@@ -3,9 +3,9 @@
 -- http://www.phpmyadmin.net
 --
 -- Client: localhost
--- Généré le: Jeu 05 Mars 2015 à 14:58
--- Version du serveur: 5.5.41-0ubuntu0.14.04.1-log
--- Version de PHP: 5.5.9-1ubuntu4.5
+-- Généré le: Mer 24 Juin 2015 à 23:13
+-- Version du serveur: 5.5.43-0ubuntu0.14.04.1-log
+-- Version de PHP: 5.5.9-1ubuntu4.9
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -19,6 +19,8 @@ SET time_zone = "+00:00";
 --
 -- Base de données: `panda`
 --
+CREATE DATABASE IF NOT EXISTS `panda` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+USE `panda`;
 
 -- --------------------------------------------------------
 
@@ -26,24 +28,27 @@ SET time_zone = "+00:00";
 -- Structure de la table `concours`
 --
 
+DROP TABLE IF EXISTS `concours`;
 CREATE TABLE IF NOT EXISTS `concours` (
   `section` tinyint(4) NOT NULL COMMENT 'numero section ou cid',
-  `session` text NOT NULL COMMENT 'l''année du concours',
+  `session` varchar(16) NOT NULL COMMENT 'l''année du concours',
   `code` varchar(10) NOT NULL COMMENT 'code concours 06/03',
+  `statut` varchar(16) DEFAULT NULL,
   `intitule` text NOT NULL COMMENT 'intitule du concours ex CR1_BIGDATA',
   `postes` tinyint(4) NOT NULL DEFAULT '0',
   `sousjury1` text NOT NULL COMMENT 'Le code du sousjury, le nom du sous jury, suivi de la liste des logins des membres, en commençant par le president du sous jury, le tout séparé par des ; Si le nom est une chaine vide, la section est constituée en jury pleinier',
   `sousjury2` text NOT NULL COMMENT 'Le nom du sousjury2, suivi de la liste des logins des membres, en commençant par le president du sous jury, le tout séparé par des ;',
   `sousjury3` text NOT NULL COMMENT 'Le nom du sousjury3, suivi de la liste des logins des membres, en commençant par le president du sous jury, le tout séparé par des ;',
   `sousjury4` text NOT NULL COMMENT 'Le nom du sousjury4, suivi de la liste des logins des membres, en commençant par le president du sous jury, le tout séparé par des ;',
-  `president1` varchar(32) NOT NULL,
-  `president2` varchar(32) NOT NULL,
-  `president3` varchar(32) NOT NULL,
-  `president4` varchar(32) NOT NULL,
+  `president1` varchar(64) NOT NULL,
+  `president2` varchar(64) NOT NULL,
+  `president3` varchar(64) NOT NULL,
+  `president4` varchar(64) NOT NULL,
   `membressj1` text,
   `membressj2` text,
   `membressj3` text,
-  `membressj4` text
+  `membressj4` text,
+  UNIQUE KEY `section` (`section`,`session`,`code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='contient les descriptifs des concours';
 
 -- --------------------------------------------------------
@@ -52,6 +57,7 @@ CREATE TABLE IF NOT EXISTS `concours` (
 -- Structure de la table `config`
 --
 
+DROP TABLE IF EXISTS `config`;
 CREATE TABLE IF NOT EXISTS `config` (
   `section` tinyint(4) NOT NULL,
   `key` text NOT NULL,
@@ -64,7 +70,9 @@ CREATE TABLE IF NOT EXISTS `config` (
 -- Structure de la table `people`
 --
 
+DROP TABLE IF EXISTS `people`;
 CREATE TABLE IF NOT EXISTS `people` (
+  `NUMSIRHUS` varchar(30) NOT NULL DEFAULT '',
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `section` tinyint(4) NOT NULL,
   `nom` varchar(64) NOT NULL DEFAULT '',
@@ -116,7 +124,7 @@ CREATE TABLE IF NOT EXISTS `people` (
   `diploma` varchar(20) DEFAULT NULL,
   PRIMARY KEY (`section`,`nom`,`prenom`),
   UNIQUE KEY `id` (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=6982 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=33514 ;
 
 -- --------------------------------------------------------
 
@@ -124,20 +132,23 @@ CREATE TABLE IF NOT EXISTS `people` (
 -- Structure de la table `reports`
 --
 
+DROP TABLE IF EXISTS `reports`;
 CREATE TABLE IF NOT EXISTS `reports` (
+  `DKEY` varchar(22) NOT NULL DEFAULT '',
+  `NUMSIRHUS` varchar(30) NOT NULL DEFAULT '',
   `section` tinyint(4) NOT NULL,
   `statut` varchar(32) NOT NULL DEFAULT 'doubleaveugle',
   `id_session` varchar(16) NOT NULL,
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `id_origine` int(11) NOT NULL,
-  `id_unite` int(11) NOT NULL DEFAULT '0',
-  `id_people` int(11) NOT NULL DEFAULT '0',
   `nom` varchar(64) DEFAULT NULL,
   `prenom` varchar(64) DEFAULT NULL,
-  `unite` varchar(10) DEFAULT NULL,
+  `unite` varchar(32) DEFAULT NULL,
   `ecole` varchar(64) DEFAULT NULL,
   `grade_rapport` varchar(32) DEFAULT NULL,
   `type` varchar(16) DEFAULT NULL,
+  `type_eval` varchar(4) DEFAULT NULL,
+  `intitule` text NOT NULL,
   `concours` varchar(32) DEFAULT NULL,
   `rapporteur` varchar(64) DEFAULT NULL,
   `rapporteur2` varchar(64) DEFAULT NULL,
@@ -188,7 +199,23 @@ CREATE TABLE IF NOT EXISTS `reports` (
   `Generic30` text,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=88518 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=122972 ;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `report_types`
+--
+
+DROP TABLE IF EXISTS `report_types`;
+CREATE TABLE IF NOT EXISTS `report_types` (
+  `id` varchar(4) NOT NULL,
+  `code_marmotte` varchar(16) NOT NULL,
+  `label` varchar(100) NOT NULL,
+  `condense` varchar(16) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -196,6 +223,7 @@ CREATE TABLE IF NOT EXISTS `reports` (
 -- Structure de la table `sessions`
 --
 
+DROP TABLE IF EXISTS `sessions`;
 CREATE TABLE IF NOT EXISTS `sessions` (
   `id` varchar(16) NOT NULL,
   `section` int(11) NOT NULL,
@@ -211,10 +239,11 @@ CREATE TABLE IF NOT EXISTS `sessions` (
 -- Structure de la table `units`
 --
 
+DROP TABLE IF EXISTS `units`;
 CREATE TABLE IF NOT EXISTS `units` (
   `section` tinyint(11) NOT NULL,
   `nickname` varchar(30) NOT NULL DEFAULT '',
-  `code` varchar(10) NOT NULL DEFAULT '',
+  `code` varchar(32) NOT NULL DEFAULT '',
   `fullname` text NOT NULL,
   `directeur` varchar(40) NOT NULL,
   PRIMARY KEY (`section`,`code`)
@@ -226,10 +255,17 @@ CREATE TABLE IF NOT EXISTS `units` (
 -- Structure de la table `users`
 --
 
+DROP TABLE IF EXISTS `users`;
 CREATE TABLE IF NOT EXISTS `users` (
+  `section_numchaire` varchar(8) NOT NULL DEFAULT '',
+  `CID_numchaire` varchar(8) NOT NULL DEFAULT '',
   `id` int(10) unsigned NOT NULL DEFAULT '0',
-  `login` varchar(40) NOT NULL,
+  `login` varchar(64) NOT NULL,
   `sections` text NOT NULL COMMENT 'list of sections the user belongs to',
+  `section_code` varchar(2) NOT NULL DEFAULT '',
+  `section_role_code` varchar(5) NOT NULL DEFAULT '',
+  `CID_code` varchar(2) NOT NULL DEFAULT '',
+  `CID_role_code` varchar(5) NOT NULL DEFAULT '',
   `last_section_selected` tinyint(11) NOT NULL DEFAULT '0',
   `passHash` varchar(40) NOT NULL,
   `description` text NOT NULL,

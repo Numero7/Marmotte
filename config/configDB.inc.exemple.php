@@ -1,9 +1,7 @@
 <?php
 	
 	$servername = "127.0.0.1";
-	$dbname = "panda";
-	$serverlogin = "monlogin";
-	$serverpassword = "monmotdepasse";
+
 	
 	$rootdir = "";
 	$rootdir = "";
@@ -12,6 +10,9 @@
 	$tmpdir = "";
 	
 define("marmottedbname","panda");
+$serverlogin = "monlogin";
+$serverpassword = "monmotdepasse";
+
 
 define("dsidbname", "dsi");
 define("dsi_users_db","membres");
