@@ -123,6 +123,9 @@ function appendLeaf($fieldname, $fieldvalue, DOMDocument $doc, DOMElement $node)
 	$before[] = "<br/>";
 	$after[] = "#br/#";
 
+	$before[] = "<br />";
+	$after[] = "#br /#";
+
 	$stripped = str_replace($before, $after, $stripped);
 
 	$stripped = str_replace(
