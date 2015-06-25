@@ -222,9 +222,9 @@ function display_statut2($row, $fieldID, $readonly)
 	if( ($row->$fieldID == "avistransmis" || $row->$fieldID == "publie" ) && !isACN())
 	  echo $statuts[$row->$fieldID];
 	else if(isACN())
-	  display_select($row, $fieldID, $statutsRapportsACN, $readonly);
+	  display_select($row, $fieldID, $statuts, $readonly);
 	else
-	  display_select($row, $fieldID,$statuts,$readonly);
+	  display_select($row, $fieldID,$statutsRapportsACN,$readonly);
 }
 
 function display_grade($row, $fieldID, $readonly)

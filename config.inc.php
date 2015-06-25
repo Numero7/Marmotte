@@ -100,7 +100,7 @@ $fieldsEditableACN = array(
 		"rapport", "statut"
 );
 
-$fieldsEditableAvisTranmis = array(
+$fieldsEditableAvisTransmis = array(
 				   "rapport", 'rapporteur', 'rapporteur2','rapporteur3',"intitule"
 				   );
 
