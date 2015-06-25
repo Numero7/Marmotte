@@ -791,7 +791,13 @@ function change_statuts($new_statut)
 {
 	$rows = filterSortReports(getCurrentFiltersList(), getFilterValues(), getSortingValues());
 	foreach($rows as $row)
-		change_statut($row->id, $new_statut);
+	  {
+	    if($row->statut == "publie")
+	      continue;
+	    if($row->statut == "avistransmis" && $new_statut != "publie")
+	      continue;
+	  change_statut($row->id, $new_statut);
+	     }
 }
 
 function updateRapportAvis($id,$avis,$rapport)
