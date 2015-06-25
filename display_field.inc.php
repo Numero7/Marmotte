@@ -224,7 +224,10 @@ function display_statut2($row, $fieldID, $readonly)
 	else if(isACN())
 	  display_select($row, $fieldID, $statuts, $readonly);
 	else
-	  display_select($row, $fieldID,$statutsRapportsACN,$readonly);
+	  {
+	    global $statutsRapportsIndiv;
+	  display_select($row, $fieldID,$statutsRapportsIndiv,$readonly);
+	  }
 }
 
 function display_grade($row, $fieldID, $readonly)

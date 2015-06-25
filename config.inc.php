@@ -34,6 +34,13 @@ $statutsRapportsACN = array(
 		'edition' => "Edition Prérapports et Rapports"
 );
 
+$statutsRapportsIndiv = array(
+		'doubleaveugle'=>'Edition Prérapports Double Aveugle',
+		'edition' => "Edition Prérapports et Rapports",
+		'avistransmis'=>"Transmettre l'avis dans e-valuation (l'avis ne sera plus modifiable)",
+		'publie'=>"Finaliser le rapport (le RS ne sera plus modifable)"
+);
+
 
 
 //	define("config_file","config/config.xml");
@@ -1103,13 +1110,13 @@ $actions2 = array(
 $actions = array_merge($actions1, $actions2);
 
 $fieldsPermissions = array(
-		"statut" => NIVEAU_PERMISSION_SECRETAIRE,
-		"concours" => NIVEAU_PERMISSION_SECRETAIRE,
-		"type" => NIVEAU_PERMISSION_SECRETAIRE,
+		"statut" => NIVEAU_PERMISSION_ACN,
+		"concours" => NIVEAU_PERMISSION_ACN,
+		"type" => NIVEAU_PERMISSION_ACN,
 		"rapporteur" => NIVEAU_PERMISSION_BUREAU,
 		"rapporteur2" => NIVEAU_PERMISSION_BUREAU,
 		"rapporteur3" => NIVEAU_PERMISSION_BUREAU,
-		"avis" => NIVEAU_PERMISSION_SECRETAIRE,
+		"avis" => NIVEAU_PERMISSION_ACN,
 		"date" => NIVEAU_PERMISSION_INFINI,
 		"id" => NIVEAU_PERMISSION_INFINI,
 		"id_session" => NIVEAU_PERMISSION_INFINI,

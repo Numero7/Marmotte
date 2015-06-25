@@ -387,7 +387,9 @@ function checkReportIsEditable($rapport)
 function checkReportDeletable($rapport)
 {
 	if (isSecretaire() && $rapport->statut == 'publie')
-		throw new Exception("Les rapports publies ne sont pas supprimables, changer d'abord le statut du rapport");
+		throw new Exception("Les rapports publies ne sont pas supprimables, demandez à votre ACN de changer le statut du rapport");
+	if (isSecretaire() && $rapport->statut == 'avistransmis')
+		throw new Exception("Les rapports dont l'avis a été transmis ne sont pas supprimables, demandez à votre ACN de changer le statut du rapport");
 	else if (isSecretaire())
 		return true;
 	else if( $rapport->rapporteur != getLogin())
