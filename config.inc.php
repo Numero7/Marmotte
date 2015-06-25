@@ -31,8 +31,7 @@ $statutsRapports = array(
 
 $statutsRapportsACN = array(
 		'doubleaveugle'=>'Edition Prérapports Double Aveugle',
-		'edition' => "Edition Prérapports et Rapports",
-		'avistransmis'=>"Publication des Avis",
+		'edition' => "Edition Prérapports et Rapports"
 );
 
 
@@ -94,11 +93,11 @@ $fieldsRapportACN = array(
 		"dsi", "statut", "DKEY", "concours", "sousjury", "section", "intitule", "nom",
 		"prenom", "unite", "type", "grade_rapport", "rapporteur", "rapporteur2", "rapporteur3",
 		"avis", "avis1", "avis2", "avis3",
-		"rapport"
+		"rapport", "statut"
 );
 $fieldsEditableACN = array(
 		"concours", "sousjury", "intitule", "unite", "type", "grade_rapport", "rapporteur", "rapporteur2", "rapporteur3",
-		"rapport"
+		"rapport", "statut"
 );
 
 $fieldsRapportAll = array(

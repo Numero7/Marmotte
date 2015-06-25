@@ -207,6 +207,7 @@ function display_statut2($row, $fieldID, $readonly)
 {
 	global $statutsRapports;
 	$statuts = $statutsRapports;
+	/*
 	if($row->$fieldID == "avistransmis")
 	    $statuts = array(
 			     "avistransmis" => $statuts["avistransmis"],
@@ -216,7 +217,14 @@ function display_statut2($row, $fieldID, $readonly)
 	    $statuts = array(
 			     "publie"=>$statuts["publie"]
 			     );
-	display_select($row, $fieldID,$statuts,$readonly);
+	*/
+	global $statutsRapportsACN;
+	if( ($row->$fieldID == "avistransmis" || $row->$fieldID == "publie" ) && !isACN())
+	  echo $statuts[$row->$fieldID];
+	else if(isACN())
+	  display_select($row, $fieldID, $statutsRapportsACN, $readonly);
+	else
+	  display_select($row, $fieldID,$statuts,$readonly);
 }
 
 function display_grade($row, $fieldID, $readonly)
