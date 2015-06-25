@@ -352,6 +352,10 @@ if($admin_config)
 	</table>
 </form>
 <hr />
+<?php 
+if(!isSuperUser())
+{
+?>
 <h2>Signature président</h2>
 <p>Le formulaire ci-dessous permet d'uploader la signature du président
 	sous forme d'un fichier image au format jpeg.</p>
@@ -368,6 +372,7 @@ if($admin_config)
 </form>
 <hr />
 <?php 
+}
 }
 if($admin_keywords)
 {

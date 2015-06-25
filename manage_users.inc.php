@@ -658,16 +658,17 @@ function mergeUsers($old_login, $new_login,$email = true)
 	if($email)
 	  {
 	$recipient = $new_login;
-        $subject = "Fusion de vos comptes marmotte ".$old_login." et ".$new_login;
-	$body = "Bonjour,\n\ndans le cadre de l'integration de Marmotte dans le SI du CNRS,\r\n vos deux comptes";
-	$body.=" Marmotte ".$old_login." et ".$new_login." ont ete fusionnes.\r\n\r\n";
-  $body .="Veuillez desormais vous logger dans Marmotte avec vos identifiants e-valuation.\r\n\r\n";
-  $body .= "En cas de difficultes de connexion, veuillez contacter votre ACN\r\nafin qu'il ou elle vous cree un nouveau mot de passe.\r\n\r\n";
-  $body .= "Bien cordialement,\r\n\t Hugo Gimbert\r\n";
+        $subject = "Fusion de vos comptes Marmotte ".$old_login." et ".$new_login;
+	$body = "Bonjour,\r\n\r\n cet email a été envoyé automatiquement par le site ".adresse_du_site." afin de vous prévenir";
+	$body .= "que vos deux comptes";
+	$body .=" Marmotte ".$old_login." et ".$new_login." ont ete fusionnés.\r\n\r\n";
+	$body .= "Les demandes d'évaluation attribuées à ".$old_login." ont été réattribuées à ".$new_login."\r\n\r\n.";
+  $body .="Veuillez désormais vous logger dans Marmotte avec vos identifiants e-valuation (Janus) associés à votre email ".$new_login.".\r\n\r\n";
+  $body .= "En cas de difficultés de connexion, veuillez contacter votre ACN.\r\n\r\n\r\n";
+  $body .= "Bien cordialement,\r\n\t ".get_config("webmaster_nom")."\r\n";
 try
   {
-    email_handler($recipient,$subject,$body,"hugo.gimbert@cnrs.fr","hugo.gimbert@cnrs.fr");
-
+    email_handler($recipient,$subject,$body,get_config("webmaster"));
   }
 catch(Exception $e)
   {

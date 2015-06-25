@@ -102,7 +102,7 @@ if(!isSuperUser())
 <td valign="top">
 <ul>
 		<?php 
-		if(isSecretaire() && !isACN())
+	    if(isSecretaire() && !isACN() && !isSuperUser())
 		  {
 ?>
 <li><a onclick="return confirm('Veuillez confirmez la transmission des avis de la section au SGCN. Les avis ne seront alors plus modifiables (mais les rapports oui).')" href="?action=change_statut&amp;new_statut=avistransmis">Transmettre les avis au SGCN/SCC</a></li>
