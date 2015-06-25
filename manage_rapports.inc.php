@@ -1028,7 +1028,7 @@ function is_field_editable($row, $fieldId)
 	//ACN can not see only certain fields
 	if(isACN())
 	{
-		global $fieldsEditableACN;
+	  global $fieldsEditableACN;
 		return in_array($fieldId, $fieldsEditableACN);
 	}
 	

@@ -100,6 +100,10 @@ $fieldsEditableACN = array(
 		"rapport", "statut"
 );
 
+$fieldsEditableAvisTranmis = array(
+				   "rapport", 'rapporteur', 'rapporteur2','rapporteur3',"intitule"
+				   );
+
 $fieldsRapportAll = array(
 		"dsi" => "Infos e-valuation",
 		"statut" => "Statut rapport",
