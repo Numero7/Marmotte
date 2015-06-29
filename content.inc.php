@@ -3,11 +3,17 @@
 
 require_once("header.inc.php");
 require_once("authbar.inc.php");
+echo "<!-- 1 -->";
 require_once('display_report.inc.php');
+echo "<!-- 1 -->";
 require_once('display_reports.inc.php');
+echo "<!-- 1 -->";
 require_once('manage_filters_and_sort.inc.php');
+echo "<!-- 1 -->";
 require_once('manage_concours.inc.php');
+echo "<!-- 1 -->";
 require_once('export.inc.php');
+echo "<!-- 1 -->";
 
 $id = current_session_id();
 
@@ -675,3 +681,7 @@ function alertText($text)
 		?>
 	</div>
 </div>
+<br/>
+<br/>
+<br/>
+<br/>
