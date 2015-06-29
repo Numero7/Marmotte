@@ -49,6 +49,12 @@ function display_type($row, $fieldID, $readonly)
 					}
 			}
 		}
+		else
+		  {
+		    global $typesRapportsAll;
+		    if(isset($typesRapportsAll[$row->type]))
+		      echo $typesRapportsAll[$row->type];
+		  }
 	}
 }
 
@@ -186,6 +192,7 @@ function display_dsi($row, $fieldID, $readonly)
 		    echo $field.":".$value."<br/>";
 		    }
 	}
+
 }
 
 function display_enum($row, $fieldID, $readonly)

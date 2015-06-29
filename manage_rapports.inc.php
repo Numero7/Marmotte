@@ -42,6 +42,9 @@ function compute_title($row, $fieldId)
 	}
 	else if(isset($fieldsAll[$fieldId]))
 		$title = $fieldsAll[$fieldId];
+	//	else
+	//$title = "Not title for ". $fieldId; 
+	  
 
 	/*global $type_specific_fields_renaming;
 	 if(isset($row->type) && key_exists($row->type, $type_specific_fields_renaming) && key_exists($fieldId, $type_specific_fields_renaming[$row->type]))
@@ -1160,16 +1163,6 @@ function is_field_visible($row, $fieldId)
 	if(in_array($fieldId, $alwaysVisibleFieldsTypes))
 		return true;
 
-	
-	//ACN can not see only certain fields
-	/*
-	if(isACN())
-	{
-		global $fieldsRapportACN;
-		return in_array($fieldId, $fieldsRapportACN);
-	}
-	*/	
-	
 	if($fieldId == "type" && !isSecretaire())
 		return false;
 

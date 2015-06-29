@@ -155,9 +155,11 @@ function displayEditableField($row, $fieldId, $canedit, $session, $extra_object 
 	global $mandatory_edit_fields;
 
 	$title = compute_title($row, $fieldId);
+
 	
 	if($title != "" && is_field_visible($row, $fieldId))
 	{
+	  //		echo $fieldId;
 		if(isset($fieldsTypes[$fieldId]))
 		{
 			$editable = $canedit && is_field_editable($row, $fieldId);
