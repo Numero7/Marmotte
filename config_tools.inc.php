@@ -13,12 +13,18 @@ function init_config()
 		"welcome_message" => array("message d'accueil", "Bienvenue sur le site de la section 6")
 );
 		
+
 	if(!isset($_SESSION['filter_section']))
 	{
 		removeCredentials();
 		throw new Exception("Cannot init config, unknown section");
 	}
 	$section = $_SESSION['filter_section'];
+
+	if($section == "0")
+	  {
+	    $configus["sessions_synchro"]= array("Liste des sessions à synchroniser, séparées par des ';'", "Printemps2015;Automne2015");
+	  }
 
 	$sql = "SELECT * FROM ".config_db." WHERE `section`='".real_escape_string($section)."';";
 	$query = sql_request($sql);

@@ -1087,11 +1087,21 @@ function is_field_editable($row, $fieldId)
 	//individual fields are always editable
 	if(isset($fieldsIndividualAll[$fieldId]))
 		return (isSecretaire() || $is_rapp1 || $is_rapp2 || $is_rapp3);
-
+	
+	if(isset($typesRapportToFields[$eval_type]))
+	  {
 	$fieldsIndividual0 = $typesRapportToFields[$eval_type][1];
 	$fieldsIndividual1 = $typesRapportToFields[$eval_type][2];
 	$fieldsIndividual2 = $typesRapportToFields[$eval_type][3];
 	$fieldsIndividual3 = $typesRapportToFields[$eval_type][4];
+	  }
+	else
+	  {
+	    $fieldsIndividual0 = array();
+	    $fieldsIndividual1 = array();
+	    $fieldsIndividual2 = array();
+	    $fieldsIndividual3 = array();
+	  }
 	$f0 = in_array($fieldId,$fieldsIndividual0);
 	$f1 = in_array($fieldId,$fieldsIndividual1);
 	$f2 = in_array($fieldId,$fieldsIndividual2);

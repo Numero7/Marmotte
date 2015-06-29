@@ -334,6 +334,11 @@ if($admin_config)
 					"webmaster_nom" => array("signataire des emails et pdfs", "Alan Türing"),
 					"welcome_message" => array("message d'accueil", "Bienvenue sur le site de la section 6")
 			);
+if(isSuperUser())
+{
+$configs["sessions_synchro"]= array("Liste des sessions à synchroniser, séparées par des ';'", "Printemps2015;Automne2015");
+}
+
 			foreach($configs as $key => $data)
 			{
 				$value = $data[1];

@@ -120,7 +120,6 @@ function synchronizeWithDsiMembers($section,$email = true)
 
 function synchronizeSessions($section)
 {
-  $created = array();
 	$changed = false;
 	$answer = "<B>Synchronization des sessions </B><br/>\n";
 	$sql = "SELECT DISTINCT LIB_SESSION,ANNEE FROM ".dsidbname.".".dsi_evaluation_db;
@@ -140,16 +139,12 @@ function synchronizeSessions($section)
 			$changed = true;
 			$answer .= "Cr&eacute;ation de la session ".$session. ".<br/>";
 			createSession($row->LIB_SESSION, $row->ANNEE, $section);
-			$created[] = $session;
 		}
 	}
 	if(!$changed)
 		$answer .= "Aucune session n'a &egrave;t&egrave; ajout&egrave;e.<br/>";
 	sessionArrays(true);
-	return array(
-		     "log"=>$answer, 
-		     "created"=>$created
-		     );
+	return $answer;
 }
 
 function synchronizePeople($section)
@@ -492,9 +487,10 @@ function synchronize_with_evaluation($section = "", $recursive = false, $email =
 	{
 	  $answer .= synchronizeWithDsiMembers($section,$email)."<br/>";
 
-		$ans = synchronizeSessions($section);
-		$answer .= $ans["log"]."<br/>\n";
-		$new_sessions = $ans["created"];
+		$answer .= synchronizeSessions($section);
+
+		$new_sessions = explode(";",get_config("sessions_synchro"));
+		
 
 		$answer .= synchronizePeople($section)."<br/>";
 		
@@ -507,6 +503,7 @@ function synchronize_with_evaluation($section = "", $recursive = false, $email =
 		$answer .= "<br/>".synchronizePeopleReports($section)."<br/>";
 		$answer .= synchronizeUnitReports($section)."<br/>";
 		foreach($new_sessions as $session)
+		  if($session != "")
 		  {
 		    $answer .= "<br/>".synchronizePeopleReports($section,$session)."<br/>";
 		    $answer .= synchronizeUnitReports($section,$session)."<br/>";
