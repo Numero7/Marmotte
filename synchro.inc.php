@@ -189,7 +189,8 @@ function synchronizePeopleReports($section, $session = "")
 	$sql .= " LEFT JOIN ".dsidbname.".".dsi_people_db." AS people";
 	$sql .= " ON eval.NUMSIRHUS=people.numsirhus WHERE ";
 	// (DKEY NOT IN (SELECT DKEY FROM ".marmottedbname.".".reports_db."  WHERE DKEY != \"\")) AND ";
-	$sql .= " eval.EVALUATION_CN!=\"Annulé\" AND  eval.LIB_SESSION=\"".$lib."\" AND eval.ANNEE=\"".$year."\" AND ";
+	$sql .= " eval.EVALUATION_CN=\"Soumis\" AND (eval.ETAT_EVAL=\"En cours\" OR eval.ETAT_EVAL=\"Terminée\")";
+	$sql .=" AND  eval.LIB_SESSION=\"".$lib."\" AND eval.ANNEE=\"".$year."\" AND ";
 	$sql .=" (eval.CODE_SECTION =\"".$section."\" OR eval.CODE_SECTION_2=\"".$section."\" OR eval.CODE_SECTION_EXCPT=\"".$section."\");";
 	
 	$result = sql_request($sql);
@@ -336,7 +337,8 @@ function synchronizeUnitReports($section = "", $session = "")
 	
 	$sql = "SELECT * FROM ".dsidbname.".".dsi_evaluation_units_db;
 	$sql .=" WHERE ";
-	$sql .= " EVALUATION_CN!=\"Annulé\" AND LIB_SESSION=\"".$lib."\" AND ANNEE=\"".$year."\" AND ";
+	$sql .= " EVALUATION_CN=\"Soumis\" AND (ETAT_EVAL=\"En cours\" OR ETAT_EVAL=\"Terminée\")";
+	$sql .= " AND LIB_SESSION=\"".$lib."\" AND ANNEE=\"".$year."\" AND ";
 	$sql .= "(`CODE_SECTION1`=\"".$section."\" OR `CODE_SECTION2`=\"";
 	$sql .= $section."\"  OR `CODE_SECTION3`=\"".$section."\"";
 	$sql .= " OR `CODE_SECTION4`=\"".$section."\" OR `CODE_SECTION5`=\"";
