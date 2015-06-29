@@ -472,6 +472,8 @@ function export_to_evaluation($section)
 /* performs synchro with evaluation and returns diagnostic , empty string if nothing happaned */
 function synchronize_with_evaluation($section = "", $recursive = false, $email = true)
 {
+
+
   if(isSuperUser() && isset($_SESSION["answer_dsi_sync"]) && !$recursive)
     echo $_SESSION["answer_dsi_sync"];
 
@@ -524,6 +526,14 @@ catch(Exception $e)
 	  {
 	    if($section > 55)
 	      {
+		$answer.= "<h2>Renommage des intitulés</h2>";
+		$sql = "UPDATE ".marmottedbname.".".reports_db." SET `intitule`=\"Evaluation à vague de chercheurs\" WHERE `DKEY`IN";
+		$sql .= "(SELECT DKEY FROM ".dsidbname.".".dsi_evaluation_db." WHERE `type`=REPORT_EVAL AND `PHASE_EVAL`=\"vague\")";
+		sql_request($sql);
+		$sql = "UPDATE ".marmottedbname.".".reports_db." SET `intitule`=\"Evaluation à mi-vague de chercheurs\" WHERE `DKEY`IN";
+		$sql.="(SELECT DKEY FROM ".dsidbname.".".dsi_evaluation_db." WHERE `type`=REPORT_EVAL AND `PHASE_EVAL`=\"mi-vague\")";
+		sql_request($sql);
+
 		if(!$recursive)
 		  unset($_SESSION["answer_dsi_sync"]);
 		else

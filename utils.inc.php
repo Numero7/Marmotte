@@ -168,7 +168,7 @@ function filename_from_doc($doc)
 	$prenom = iconv("UTF-8","ASCII//TRANSLIT",$prenom);
 
 	$sessions = sessionArrays();
-	$session = isset($sessions[$doc->id_session]) ? $sessions[$doc->id_session] : ("Session inconnue (".$doc->id_session.")");
+	$session = isset($sessions[$doc->id_session]) ? $sessions[$doc->id_session] : "";
 	return filename_from_params($nom, $prenom, $doc->grade_rapport, $doc->unite, $type, $session, $doc->avis, $doc->concours, $doc->sousjury, $doc->intitule);
 }
 
@@ -180,7 +180,7 @@ function filename_from_params($nom, $prenom, $grade, $unite, $type, $session, $a
   if(isset($tous_avis[$avis]))
      $avis = $tous_avis[$avis];
 
-  $pretty_type = isset($typesRapportsAll[$type]) ? $typesRapportsAll[$type] : $type;
+  $pretty_type = ($intitule == "") ? (isset($typesRapportsAll[$type]) ? $typesRapportsAll[$type] : $type) : $intitule;
 
 	$liste_unite = unitsList();
 
@@ -207,6 +207,7 @@ function filename_from_params($nom, $prenom, $grade, $unite, $type, $session, $a
 	}
 	else
 		$result =  $section." - ".$session." - ".$pretty_type." - ".$grade." - ".$avis." - ".$unite." - ".$nom." ".$prenom;
+	$result = str_replace(array("(",")"),array("",""),$result);
 	return replace_accents($result);
 }
 

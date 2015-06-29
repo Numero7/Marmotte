@@ -1025,9 +1025,10 @@ function is_field_editable($row, $fieldId)
 
 	//	if(isACN()) echo "ACN";	
 	//une fois les avis tranmis, seul le rapport et les rapporteurs sont editables et l'ACN n'a également accès qu'à ces éléments en édition
+	global $fieldsEditableAvisTransmis;
 	if( 
 	   (isACN() || $statut == "avistransmis")
-	   &&  ! ($fieldId == "rapport" || $fieldId == 'rapporteur' || $fieldId == 'rapporteur2' || $fieldId == 'rapporteur3' ||   $fieldId == "intitule")
+	   &&  !in_array($fieldId,$fieldsEditableAvisTransmis)
 	    )
 		return false;			
 	

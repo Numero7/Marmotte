@@ -62,6 +62,7 @@ function createUnitIfNeeded($code)
 			$res = sql_request($sql);
 			while($row = mysqli_fetch_object($res))
 			{
+			  if($row->SIGLEUNI == "") $row->SIGLEUNI = $row->CODEUNITE;
 				addUnit($row->SIGLEUNI,$row->CODEUNITE,$row->INTUNI,$row->COURRIELDIRUNI);
 				break;
 			}
