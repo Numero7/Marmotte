@@ -974,7 +974,7 @@ $typesRapportToMiseEnPage = array(
 
 $avis_candidature_necessitant_pas_rapport_sousjury = array("", "adiscuter", "nonauditionne", "desistement");
 
-$avis_sessions = array();
+$avis_sessions = $tous_avis;
 
 /* Definition des checkboxes à la fin de certains rapports*/
 
