@@ -795,12 +795,17 @@ function set_property($property,$id_origine, $value, $all_reports = false)
 function change_statuts($new_statut)
 {
 	$rows = filterSortReports(getCurrentFiltersList(), getFilterValues(), getSortingValues());
+
+	foreach($rows as $row)
+	  if($row->avis == "" && ($new_statut == "avistransmis" || $new_statut == "publie"))
+	    throw new Exception("La DE ".$row->DKEY." n'a pas d'avis. Veuillez renseigner tous les avis avant de transmettre dans e-valuation.");
+ 
 	foreach($rows as $row)
 	  {
 	    if($row->statut == "publie")
 	      continue;
 	    if($row->statut == "avistransmis" && $new_statut != "publie")
-	      continue;
+	      continue;	    
 	  change_statut($row->id, $new_statut);
 	     }
 }

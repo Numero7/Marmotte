@@ -262,7 +262,7 @@ function displayRowCell($row, $fieldID)
 	else if( $type == "unit")
 	{
 		$prettyunits = unitsList();
-		$data = isset($prettyunits[$row->$fieldID]) ? $prettyunits[$row->$fieldID]->nickname : $row->$fieldID;
+		$data = isset($prettyunits[$row->$fieldID]) ? ($prettyunits[$row->$fieldID]->nickname." (".$row->$fieldID.")") : $row->$fieldID;
 		echo '<span class="valeur">'.$data.'</span>';
 	}
 	else if($fieldID == "type" && isset($typesRapportsAll[$data]))

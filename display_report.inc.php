@@ -730,7 +730,11 @@ function displaySummary($filters, $filter_values, $sorting_values)
 	}
 
 	if(isSecretaire())
-		$fields = array_unique(array_merge($fields,array(/*"date","auteur","id",*/"statut")));
+	  {
+	    $fields[] = "rapporteur3";
+	    $fields[] = "avis3";
+	$fields[] = "statut";
+	  }
 
 	if($filter_values['type'] != $filters['type']['default_value'] )
 	{

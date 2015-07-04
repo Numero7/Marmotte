@@ -207,7 +207,7 @@ function filename_from_params($nom, $prenom, $grade, $unite, $type, $session, $a
 	}
 	else
 		$result =  $section." - ".$session." - ".$pretty_type." - ".$grade." - ".$avis." - ".$unite." - ".$nom." ".$prenom;
-	$result = str_replace(array("(",")"),array("",""),$result);
+	$result = str_replace(array("'","(",")"),array(" ","",""),$result);
 	return replace_accents($result);
 }
 

@@ -82,7 +82,9 @@ $add_rubriques_chercheurs = get_rubriques("chercheurs");
 $add_rubriques_unites = get_rubriques("unites");
 
 /* champs apparaissant sur l'écran principal */
-$fieldsSummary = array("type","unite","nom","prenom",/*"ecole",*/"avis","rapporteur","avis1","rapporteur2","avis2", "rapporteur3","avis3","theme1","theme2", "theme3","grade_rapport","DKEY");
+$fieldsSummary = array("type","unite","nom","prenom",/*"ecole",*/"avis","rapporteur","avis1","rapporteur2","avis2", "theme1","theme2","DKEY");
+
+
 
 $fieldsSummaryConcours = array("type","nom","prenom","concours","sousjury","avis","rapporteur","avis1",
 		"rapporteur2","avis2","theme1","theme2","labo1","labo2","diploma","grade_rapport"
@@ -974,7 +976,12 @@ $typesRapportToMiseEnPage = array(
 
 $avis_candidature_necessitant_pas_rapport_sousjury = array("", "adiscuter", "nonauditionne", "desistement");
 
-$avis_sessions = $tous_avis;
+$avis_sessions = array();
+foreach($tous_avis as $id => $label)
+  {
+    if(!is_array($label))
+      $avis_sessions[$id] = $label;
+  }
 
 /* Definition des checkboxes à la fin de certains rapports*/
 

@@ -46,7 +46,8 @@ function synchronizeEmailsUpdates($email = true)
 		}
 	}
 	if(!$changed)
-		$result .= "Aucun email n'a &eacute;t&eacute; mis &egrave; jour.<br/>";
+	  return "";
+	//		$result .= "Aucun email n'a &eacute;t&eacute; mis &egrave; jour.<br/>";
 	return $result;
 }
 
@@ -109,9 +110,11 @@ function synchronizeWithDsiMembers($section,$email = true)
 			$result .= "Erreur: ".$exc->getMessage()."<br/>\n";
 		}
 	}
-	if(!$added)
+	if(!$added && !$changed)
+	  $result = "";
+	else if(!$added)
 		$result .= "Liste d&eacute;j&agrave; &agrave; jour: aucun utilisateur n'a &eacute;t&eacute; ajout&eacute; &agrave; la base.<br/>";
-	if(!$changed)
+	else if(!$changed)
 		$result .= "Donn&eacute;es d&eacute;j&agrave; &agrave; jour: aucune donn&egrave;e utilisateur n'a &eacute;t&eacute; mise &agrave; jour.<br/>";
 	unset($_SESSION['all_users']);
 
@@ -142,7 +145,7 @@ function synchronizeSessions($section)
 		}
 	}
 	if(!$changed)
-		$answer .= "Aucune session n'a &egrave;t&egrave; ajout&egrave;e.<br/>";
+	  $answer = "";//.= "Aucune session n'a &egrave;t&egrave; ajout&egrave;e.<br/>";
 	sessionArrays(true);
 	return $answer;
 }
@@ -161,7 +164,7 @@ function synchronizePeople($section)
 	if($num > 0)
 	  $answer .= $num." num&eacute;ros SIRHUS ont &eacute;t&eacute; mis &agrave; jour.<br/>";
 	else
-	  $answer .= "Aucune num&eacute;ro SIRHUS n'a &eacute;t&eacute; mis &agrave; jour.<br/>";
+	  $answer = "";//.= "Aucune num&eacute;ro SIRHUS n'a &eacute;t&eacute; mis &agrave; jour.<br/>";
 	//$sql =  "DELETE FROM ".people_db." WHERE NUMSIRHUS=\"\" AND section=\"".$section."\";";
 	//sql_request($sql);
 	return 	$answer;
@@ -453,12 +456,12 @@ function synchronizeUnitReports($section = "", $session = "")
 function export_to_evaluation($section)
 {
 		$answer = "<B>Export des avis et rapporteurs vers e-valuation</B><br/>";
-		$sql = "DELETE FROM dsi.".dsi_marmotte_db." WHERE 1";
+		$sql = "DELETE FROM dsi.".dsi_marmotte_db." WHERE CODE_SECTION=\"".$section."\"";
 		sql_request($sql);
 
 		$sql = "insert into ".dsidbname.".".dsi_marmotte_db."(DKEY,AVIS_EVAL,CODE_SECTION,RAPPORTEUR1,RAPPORTEUR2,RAPPORTEUR3,statut)";
 		$sql .=" select DKEY,avis,section,rapporteur,rapporteur2,rapporteur3,statut from ".marmottedbname.".".reports_db;
-		$sql .=" WHERE DKEY!=\"\" AND id_origine=id AND (avis=\"avistransmis\" OR avis=\"publie\") AND section=\"".$section."\" ";
+		$sql .=" WHERE DKEY!=\"\" AND id_origine=id AND (statut=\"avistransmis\" OR statut=\"publie\") AND section=\"".$section."\" ";
 		$sql .=" ON DUPLICATE KEY UPDATE";
 		$sql .=" dsi.".dsi_marmotte_db.".AVIS_EVAL=".marmottedbname.".".reports_db.".avis,";
 		$sql .=" dsi.".dsi_marmotte_db.".RAPPORTEUR1=".marmottedbname.".".reports_db.".rapporteur,";
@@ -502,7 +505,10 @@ function synchronize_with_evaluation($section = "", $recursive = false, $email =
 	$sql = "DELETE FROM ".reports_db." WHERE id!=id_origine AND section=\"".$section."\";";
 	sql_request($sql);
 	global $dbh;
-	$answer .= mysqli_affected_rows($dbh)." doublons ont ete retires de la base <br/>\n";
+	$num  = mysqli_affected_rows($dbh);
+	if($num > 0)
+	  $answer .= $num." doublons ont ete retires de la base <br/>\n";
+
 
 		$answer .= "<br/>".synchronizePeopleReports($section)."<br/>";
 		$answer .= synchronizeUnitReports($section)."<br/>";
