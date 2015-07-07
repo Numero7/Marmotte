@@ -498,20 +498,12 @@ function synchronize_with_evaluation($section = "", $recursive = false, $email =
 
 		$new_sessions = explode(";",get_config("sessions_synchro"));
 		
-
 		$answer .= synchronizePeople($section)."<br/>";
 		
-			$answer .= "<B>Suppression de l'historique des rapports</B><br/>\n";
-	$sql = "DELETE FROM ".reports_db." WHERE id!=id_origine AND section=\"".$section."\";";
-	sql_request($sql);
-	global $dbh;
-	$num  = mysqli_affected_rows($dbh);
-	if($num > 0)
-	  $answer .= $num." doublons ont ete retires de la base <br/>\n";
+		$answer .= "<B>Suppression de l'historique des rapports</B><br/>\n";
+		$sql = "DELETE FROM ".reports_db." WHERE id!=id_origine AND section=\"".$section."\";";
+		sql_request($sql);
 
-
-		$answer .= "<br/>".synchronizePeopleReports($section)."<br/>";
-		$answer .= synchronizeUnitReports($section)."<br/>";
 		foreach($new_sessions as $session)
 		  if($session != "")
 		  {

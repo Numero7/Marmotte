@@ -296,6 +296,27 @@ function export_current_selection_as_single_txt()
 	}
 }
 
+function export_current_selection_as_multiple_txt()
+{
+	$size = 0;
+	$login = getLogin();
+	$filter = getFilterValues();
+
+	$filenames = array();
+	$items = array();
+
+	$filenames = array();
+
+	$reports = filterSortReports(getCurrentFiltersList(),  $filter, getSortingValues(),false);
+
+	if(count($reports) > 0)
+	{
+		$dir = dossier_temp();
+		$file = export_reports_as_txt($reports, $dir);
+		send_file($file, "rapports.zip");
+	}
+}
+
 
 function export_current_selection($export_format)
 {

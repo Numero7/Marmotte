@@ -162,7 +162,7 @@ if (authenticate())
 									$proc->importStyleSheet($xsl);
 									foreach ($typesRapportToAvis as $key => $val)
 									{
-										$proc->setParameter('', $key, implode_with_keys($val));
+									  //$proc->setParameter('', $key, implode_with_keys($val));
 									}
 									echo $proc->transformToXML($xml);
 									break;

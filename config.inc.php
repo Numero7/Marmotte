@@ -1143,19 +1143,19 @@ $typeExports = array(
 		"pdf" => 	array(
 				"mime" => "application/x-zip",
 				"xsl" => "",
-				"name" => "pdf",
+				"name" => "pdf (rapports)",
 				"permissionlevel" => NIVEAU_PERMISSION_ACN,
 		),
 		"html" => 	array(
 				"mime" => "text/html",
 				"xsl" => "xslt/html2.xsl",
-				"name" => "html",
+				"name" => "html(rapports)",
 				"permissionlevel" => NIVEAU_PERMISSION_SECRETAIRE,
 		),
 		"text" => 	array(
 				"mime" => "text/html",
 				"xsl" => "xslt/html2.xsl",
-				"name" => "doc",
+				"name" => "doc (dossiers)",
 				"permissionlevel" => NIVEAU_PERMISSION_BASE,
 		),
 		/*
@@ -1169,7 +1169,7 @@ $typeExports = array(
 		"csvsingle" => 	array(
 				"mime" => "application/x-text",
 				"xsl" => "",
-				"name" => "csv",
+				"name" => "csv (dossiers)",
 				"permissionlevel" => NIVEAU_PERMISSION_BASE
 		),
 		"csvbureau" => 	array(
