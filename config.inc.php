@@ -31,7 +31,8 @@ $statutsRapports = array(
 
 $statutsRapportsACN = array(
 		'doubleaveugle'=>'Edition Prérapports Double Aveugle',
-		'edition' => "Edition Prérapports et Rapports"
+		'edition' => "Edition Prérapports et Rapports",
+		'avistransmis'=>"Avis transmis dans e-valuation"
 );
 
 $statutsRapportsIndiv = array(
@@ -87,7 +88,7 @@ $fieldsSummary = array("type","unite","nom","prenom",/*"ecole",*/"avis","rapport
 
 
 $fieldsSummaryConcours = array("type","nom","prenom","concours","sousjury","avis","rapporteur","avis1",
-		"rapporteur2","avis2","theme1","theme2","labo1","labo2","diploma","grade_rapport"
+		"rapporteur2","avis2","theme1","theme2","labo1","labo2","diploma"
 );
 
 
@@ -100,13 +101,12 @@ $genreCandidat = array(
 /* mapping from fields in the database to labels */
 $fieldsRapportACN = array(
 		"dsi", "statut", "DKEY", "concours", "sousjury", "section", "intitule", "nom",
-		"prenom", "unite", "type", "grade_rapport", "rapporteur", "rapporteur2", "rapporteur3",
+		"prenom", "unite", "type", "rapporteur", "rapporteur2", "rapporteur3",
 		"avis", "avis1", "avis2", "avis3",
 		"rapport", "statut"
 );
 $fieldsEditableACN = array(
-		"concours", "sousjury", "intitule", "unite", "type", "grade_rapport", "rapporteur", "rapporteur2", "rapporteur3",
-		"rapport", "statut"
+			   "concours", "sousjury", "intitule", "unite", "type", "avis", "rapporteur", "rapporteur2", "rapporteur3","rapport", "statut"
 );
 
 $fieldsEditableAvisTransmis = array(
@@ -169,7 +169,7 @@ $fieldsIndividual0 = array(
 				"rapporteur2",
 				"rapporteur3",
 		),
-		array("grade_rapport","unite"),
+		"unite",
 		"avis",
 		"rapport",
 );
@@ -240,7 +240,6 @@ $fieldsRapportsCandidat0 = array(
 
 $fieldsRapportsIE0 = array(
 		"type",
-		"grade_rapport",
 		"rapporteur",
 		"rapporteur2",
 		"rapporteur3",
@@ -308,7 +307,6 @@ array('id','nom','prenom'
 
 $mandatory_export_fields=
 array('id','nom','prenom','genre','type','concours',
-		"grade",
 		"annee_recrutement",
 		"diploma",
 		"labo1",
@@ -716,7 +714,7 @@ for($i = 0 ; $i < 30; $i++)
 
 $nonEditableFieldsTypes = array('id','date');
 $nonVisibleFieldsTypes = array('id');
-$alwaysVisibleFieldsTypes = array('fichiers','rapports','conflits','dsi','intitule','type','grade_rapport','avis');
+$alwaysVisibleFieldsTypes = array('fichiers','rapports','conflits','dsi','intitule','type','avis');
 
 $fieldsArrayCandidat = array($fieldsCandidat, $fieldsRapportsCandidat0, $fieldsRapportsCandidat1, $fieldsRapportsCandidat2, $fieldsRapportsCandidat3);
 $fieldsArrayIE = array($fieldsCandidatAvantAudition, $fieldsRapportsIE0, $fieldsRapportsCandidat1, $fieldsRapportsCandidat2, $fieldsRapportsCandidat3);
@@ -1276,7 +1274,6 @@ $filtersReports = array(
 		'type' => array('name'=>"Type d'évaluation" , 'liste' =>  $typesRapportsAll , 'default_value' => "tous", 'default_name' => "Tous les types"),
 		'rapporteur' => array('name'=>"Rapporteur" , 'default_value' =>"tous", 'default_name' => "Tous les rapporteurs"),
 		'rapporteur2' => array('name'=>"Rapporteur2" ,'default_value' =>"tous", 'default_name' => "Tous les rapporteurs"),
-		'grade' => array('name'=>"Grade" , 'liste' => $grades, 'default_value' => "tous", 'default_name' => "Tous les grades"),
 		'unite' => array('name'=>"Unite" , 'default_value' => "tous", 'default_name' => ""),
 		'theme1' => array('name'=>"Theme1" , 'liste' => $topics, 'default_value' => "tous", 'default_name' => "tous"),
 		'theme2' => array('name'=>"Theme2" , 'liste' => $topics, 'default_value' => "tous", 'default_name' => "tous"),
@@ -1297,7 +1294,6 @@ $filtersDelegation = array(
 		'type' => array('name'=>"Type d'évaluation" , 'liste' => $id_rapport_to_label,'default_value' => "tous", 'default_name' => "Tous les types"),
 		'rapporteur' => array('name'=>"Rapporteur" , 'default_value' =>"tous", 'default_name' => "Tous les rapporteurs"),
 		'rapporteur2' => array('name'=>"Rapporteur2" ,'default_value' =>"tous", 'default_name' => "Tous les rapporteurs"),
-		'grade' => array('name'=>"Grade" , 'liste' => $grades, 'default_value' => "tous", 'default_name' => "Tous les grades"),
 		'labo1' => array('name'=>"Labo1" , 'default_value' => "tous", 'default_name' => ""),
 		'theme1' => array('name'=>"Theme1" , 'liste' => $topics, 'default_value' => "tous", 'default_name' => "tous"),
 		'theme2' => array('name'=>"Theme2" , 'liste' => $topics, 'default_value' => "tous", 'default_name' => "tous"),

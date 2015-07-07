@@ -1020,26 +1020,24 @@ function is_field_editable($row, $fieldId)
 	if(in_array($fieldId, $nonEditableFieldsTypes))
 		return false;
 
-	//le secretaire/ACN peut changer le statut, seul le secrétaire/president peut dépublier
-	if( ($fieldId == "statut"))
-	  return isSecretaire();
-
-	//une fois le rapport transmis, plus rien n'est publiable
+	//le secretaire/ACN peut changer le statut, seul l'ACN dépublier
+	//une fois le rapport transmis, plus rien n'est modifiable sauf le statut en mode ACN
 	if($statut == "publie")
 	  return ( ($fieldId == "statut") &&  isACN());
+
+	if( ($fieldId == "statut"))
+	  return isSecretaire();
 
 	//	if(isACN()) echo "ACN";	
 	//une fois les avis tranmis, seul le rapport et les rapporteurs sont editables et l'ACN n'a également accès qu'à ces éléments en édition
 	global $fieldsEditableAvisTransmis;
-	if( 
-	   (isACN() || $statut == "avistransmis")
-	   &&  !in_array($fieldId,$fieldsEditableAvisTransmis)
-	    )
+	if( $statut == "avistransmis"  &&  !in_array($fieldId,$fieldsEditableAvisTransmis))
 		return false;			
 	
 	//ACN can not see only certain fields
 	if(isACN())
 	{
+	  //	  echo $fieldId;
 	  global $fieldsEditableACN;
 		return in_array($fieldId, $fieldsEditableACN);
 	}

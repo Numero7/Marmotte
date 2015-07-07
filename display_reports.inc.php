@@ -384,7 +384,7 @@ function displayRows($rows, $fields, $filters, $filter_values)
 		<td>
 		<?php displayFiltrage($rows, $fields, $filters, $filter_values); ?>
 		</td>
-   <?php if(isSecretaire() && !isACN()) displayStatutMenu(); ?>
+   <?php if(isSecretaire()) displayStatutMenu(); ?>
 	</tr>
 </table>
 <hr />
