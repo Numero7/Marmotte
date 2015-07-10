@@ -154,9 +154,9 @@ function synchronizePeople($section)
 {
   $answer = "<B>Synchro des num SIRHUS de chercheurs </B><br/>\n";
 	$sql =  "UPDATE ".people_db." marmotte JOIN ".dsidbname.".".dsi_people_db." dsi ";
-	$sql .= " ON marmotte.nom=dsi.nom AND marmotte.prenom=dsi.prenom";
+	$sql .= " ON marmotte.nom=".dsidbname.".nom AND marmotte.prenom=".dsidbname.".prenom";
 	//	$sql .= " AND marm""otte.NUMSIRHUS=\"\" AND marmotte.section=\"".$section."\"";
-	$sql .= " SET marmotte.NUMSIRHUS=dsi.numsirhus";
+	$sql .= " SET marmotte.NUMSIRHUS=".dsidbname.".numsirhus";
 	$sql .= " WHERE section=\"".$section."\" AND marmotte.NUMSIRHUS=\"\";";
 	$res = sql_request($sql);
 	global $dbh;
@@ -456,18 +456,18 @@ function synchronizeUnitReports($section = "", $session = "")
 function export_to_evaluation($section)
 {
 		$answer = "<B>Export des avis et rapporteurs vers e-valuation</B><br/>";
-		$sql = "DELETE FROM dsi.".dsi_marmotte_db." WHERE CODE_SECTION=\"".$section."\"";
+		$sql = "DELETE FROM ".dsidbname.".".dsi_marmotte_db." WHERE CODE_SECTION=\"".$section."\"";
 		sql_request($sql);
 
 		$sql = "insert into ".dsidbname.".".dsi_marmotte_db."(DKEY,AVIS_EVAL,CODE_SECTION,RAPPORTEUR1,RAPPORTEUR2,RAPPORTEUR3,statut)";
 		$sql .=" select DKEY,avis,section,rapporteur,rapporteur2,rapporteur3,statut from ".marmottedbname.".".reports_db;
 		$sql .=" WHERE DKEY!=\"\" AND id_origine=id AND (statut=\"avistransmis\" OR statut=\"publie\") AND section=\"".$section."\" ";
 		$sql .=" ON DUPLICATE KEY UPDATE";
-		$sql .=" dsi.".dsi_marmotte_db.".AVIS_EVAL=".marmottedbname.".".reports_db.".avis,";
-		$sql .=" dsi.".dsi_marmotte_db.".RAPPORTEUR1=".marmottedbname.".".reports_db.".rapporteur,";
-		$sql .=" dsi.".dsi_marmotte_db.".RAPPORTEUR2=".marmottedbname.".".reports_db.".rapporteur2,";
-		$sql .=" dsi.".dsi_marmotte_db.".RAPPORTEUR3=".marmottedbname.".".reports_db.".rapporteur3,";
-		$sql .=" dsi.".dsi_marmotte_db.".statut=".marmottedbname.".".reports_db.".statut";
+		$sql .=" ".dsidbname.".".dsi_marmotte_db.".AVIS_EVAL=".marmottedbname.".".reports_db.".avis,";
+		$sql .=" ".dsidbname.".".dsi_marmotte_db.".RAPPORTEUR1=".marmottedbname.".".reports_db.".rapporteur,";
+		$sql .=" ".dsidbname.".".dsi_marmotte_db.".RAPPORTEUR2=".marmottedbname.".".reports_db.".rapporteur2,";
+		$sql .=" ".dsidbname.".".dsi_marmotte_db.".RAPPORTEUR3=".marmottedbname.".".reports_db.".rapporteur3,";
+		$sql .=" ".dsidbname.".".dsi_marmotte_db.".statut=".marmottedbname.".".reports_db.".statut";
 		sql_request($sql);
 		$answer .= "<a href=\"https://www.youtube.com/watch?v=0rCrc6RoJg0\">Ca l'effectue</a>";
 		return $answer;
@@ -528,10 +528,10 @@ catch(Exception $e)
 	      {
 		$answer.= "<h2>Renommage des intitulés</h2>";
 		$sql = "UPDATE ".marmottedbname.".".reports_db." SET `intitule`=\"Evaluation à vague de chercheurs\" WHERE `DKEY`IN";
-		$sql .= "(SELECT DKEY FROM ".dsidbname.".".dsi_evaluation_db." WHERE `type`=REPORT_EVAL AND `PHASE_EVAL`=\"vague\")";
+		$sql .= "(SELECT DKEY FROM ".dsidbname.".".dsi_evaluation_db." WHERE `type`='".REPORT_EVAL."' AND `PHASE_EVAL`=\"vague\")";
 		sql_request($sql);
 		$sql = "UPDATE ".marmottedbname.".".reports_db." SET `intitule`=\"Evaluation à mi-vague de chercheurs\" WHERE `DKEY`IN";
-		$sql.="(SELECT DKEY FROM ".dsidbname.".".dsi_evaluation_db." WHERE `type`=REPORT_EVAL AND `PHASE_EVAL`=\"mi-vague\")";
+		$sql.="(SELECT DKEY FROM ".dsidbname.".".dsi_evaluation_db." WHERE `type`='".REPORT_EVAL."' AND `PHASE_EVAL`=\"mi-vague\")";
 		sql_request($sql);
 
 		if(!$recursive)

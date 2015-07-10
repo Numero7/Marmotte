@@ -424,7 +424,7 @@ function displayEditableReport($row, $canedit = true)
 				is_in_conflict(getLogin(), $candidate))
 				&& !isSecretaire()
 				&& !( isset($row->avis) && ($row->avis == "nonauditionne" )
-						&& !(isset($row->statut) && ( $row->statut="rapport" || $row->statut="publie") ) );
+				&& !(isset($row->statut) && ( $row->statut="avistransmis" || $row->statut="publie") ) );
 
 		echo "<div id=\"toolbar\">";
 		displayEditionFrameStart("",$hidden,$submits);
