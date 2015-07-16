@@ -42,6 +42,7 @@ if(!isSuperUser())
 									</select>
 							</li>
 							<li>
+									    Session
 									<select onchange="window.location='index.php?reset_filter=&amp;action=view&amp;filter_id_session=' + this.value;">
 									<?php
 									$sessions = sessionArrays();
@@ -59,7 +60,7 @@ if(!isSuperUser())
 									<?php 
 }?>
 			<li>
-			Mode:
+			Mode
 			<select onchange="window.location='index.php?action=change_role&amp;role=' + this.value;">
 			<?php 
 			if(!isACN("",false))
@@ -165,10 +166,16 @@ if(!is_authenticated_with_JANUS())
  								<a href="index.php?action=changepwd">Mot de passe</a>
 								</li>
 								<?php 
-}?>
+}
+if(isSecretaire())
+  {
+?>
 						<li>
 						<a href="index.php?action=admin">Administration</a>
 </li>						
+<?php 
+      }
+?>
 <li><a href="index.php?action=logout">
 Déconnexion
 </a>
