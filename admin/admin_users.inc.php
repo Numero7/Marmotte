@@ -1,14 +1,18 @@
 <h2 id="membres">Membres de la section</h2>
 
 <hr />
-<h3 id="infosrapporteur">Statut des membres</h3>
+<h3 id="infosrapporteur">Modification temporaire du statut</h3>
+   <p>Le statut d'un membre peut-être modifié temporairement pour la journée en cours
+en utilisant le menu ci-dessous.<br/>
+Le statut revient à sa valeur initiale (renseignée par le SGCN dans l'application Ambre)
+quotidiennement à 4h du matin.</p>
 <p>Droits des différents statuts:</p>
 <ul>
 	<li><b>Rapporteur</b>: peut voir tous les rapports et éditer les
 		rapports et candidats dont il/elle est rapporteur.</li>
 	<li><b>Bureau</b>: peut changer les rapporteurs et éditer les infos
 		des chercheurs et candidats.</li>
-	<li><b>ACN</b>: attribution des rapporteurs, correction des rapports de section.
+<li><b>ACN</b>: attribution des rapporteurs, correction des rapports de section, changement de statuts.
 	</li>
 		<li><b>Secrétaire et président</b>: tous les droits sur tout dans la
 		section, y compris le changement de statut des rapports.</li>
@@ -29,14 +33,18 @@
 		{
 			echo "\n<tr><td><b>".ucfirst($data->description)."</b></td><td> [".$user."]</td>\n";
 			echo '<td><form method="post" action="index.php">';
-			if(isSuperUser())
-			{
+			if(isSecretaire())
+			  {
+			  if(isSuperUser())
+			    {
 				echo "Section <input style=\"width:1cm;\" name=\"section_code\" value=\"".$data->section_code."\"></input>";
 				echo "section_role <input style=\"width:2cm;\" name=\"section_role\" value=\"".$data->section_role_code."\"></input>";
 				echo "CID <input style=\"width:1cm;\" name=\"CID_code\" value=\"".$data->CID_code."\"></input>";
 				echo "CID_role <input style=\"width:2cm;\" name=\"CID_role\" value=\"".$data->CID_role_code."\"></input>";
 				echo "Sections <input style=\"width:5cm;\" name=\"sections\" value=\"".$data->sections."\"></input>";
-			
+			    }
+			  else
+			{			
 			echo "<input type=\"hidden\" name=\"admin_users\"></input>";
 			echo "<select name=\"permissions\">\n";
 			foreach($permission_levels as $val => $level)
@@ -51,11 +59,12 @@
 			}
 			echo "</select>";
 			}
-			else
-			  {
-			foreach($permission_levels as $val => $level)
-			  if ($val==$data->permissions)
-					echo "<td>".ucfirst($level)."</td>\n";
+			  //			else
+			  //{
+			  //foreach($permission_levels as $val => $level)
+			  //if ($val==$data->permissions)
+			  //		echo "<td>".ucfirst($level)."</td>\n";
+			  //}
 			  }
 			if(is_current_session_concours())
 			{
@@ -90,7 +99,7 @@
 
 			echo "<input type=\"hidden\" name=\"login\" value=\"$user\"/>\n";
 			echo "<input type=\"hidden\" name=\"action\" value=\"infosrapporteur\"/>\n";
-			if(isSuperUser() || is_current_session_concours())
+			if(isSecretaire() || is_current_session_concours())
 			echo " <input type=\"submit\" value=\"Valider\"/>\n";
 			echo "</form></td></tr>\n";
 		}
