@@ -33,7 +33,7 @@ function init_filter_session()
 					createSession("Printemps", "2015", 0);
 					$result = sql_request($sql);
 				}
-				if(	$row = mysqli_fetch_object($result))
+				if($row = mysqli_fetch_object($result))
 				{
 					createSession($row->nom, date('Y', strtotime($row->date)), $ok);
 					$sql = "SELECT * FROM ".sessions_db." WHERE `section`='". real_escape_string($ok)."' ORDER BY date DESC;";
@@ -66,9 +66,7 @@ function createAdminPasswordIfNeeded()
 		$sql = "INSERT INTO `".mysqli_real_escape_string($dbh, users_db);
 		$sql .="`(`login`, `sections`, `last_section_selected`, `passHash`, `description`, `permissions`, `email`, `tel`) ";
 		$sql .= "VALUES ('admin','0','0','".crypt("password")."','admin',1000,'','');";
-		$result = mysqli_query($dbh, $sql);
-		if(!$result)
-			throw new Exception("Failed to create admin user: ". mysql_error() );
+		sql_request($sql);
 	}
 }
 
@@ -76,12 +74,8 @@ function checkPasswords($password)
 {
 	$users = listUsers();
 	foreach($users as $login => $data)
-	{
 		if(authenticateBase($login, $password))
 			echo $login." a le mot de passe '". $password."'<br/>";
-		else
-			echo "Checked ".$login."<br/>";
-	}
 }
 
 
@@ -143,12 +137,7 @@ function authenticateBase($login,$pwd)
 
 	$realPassHash = getPassHash($login);
 	if ($realPassHash != NULL)
-	{
-		if (crypt($pwd, $realPassHash) == $realPassHash)
-		{
-			return true;
-		}
-	}
+	  return (crypt($pwd, $realPassHash) == $realPassHash);
 	return false;
 }
 
@@ -182,6 +171,10 @@ function update_permissions($login, $section, $user = NULL)
 		$_SESSION['permission'] = roleToPermission($row->CID_role_code);
 	else
 		$_SESSION['permission'] = $row->permissions;
+
+	$sections = explode(";", $row->sections);
+	if(in_array($last,$sections) && $_SESSION['permission'] < $row->permissions)
+	  $_SESSION['permission'] = $row->permissions;
 
 	if($section == "1" && $_SESSION['permission'] ==  NIVEAU_PERMISSION_BUREAU)
 	  $_SESSION['permission'] =  NIVEAU_PERMISSION_BASE;

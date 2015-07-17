@@ -1,11 +1,14 @@
 <h2 id="membres">Membres de la section</h2>
 
 <hr />
-<h3 id="infosrapporteur">Modification temporaire du statut</h3>
+<!--
+<h3 id="infosrapporteur">Memebres de la section/CID</h3>
+
    <p>Le statut d'un membre peut-être modifié temporairement pour la journée en cours
 en utilisant le menu ci-dessous.<br/>
 Le statut revient à sa valeur initiale (renseignée par le SGCN dans l'application Ambre)
 quotidiennement à 4h du matin.</p>
+-->
 <p>Droits des différents statuts:</p>
 <ul>
 	<li><b>Rapporteur</b>: peut voir tous les rapports et éditer les
@@ -19,6 +22,9 @@ quotidiennement à 4h du matin.</p>
 	<li><b>Admin</b>: tous les droits sur la configuration des membres et
 		des unités de toutes les sections, ne peut voir aucun rapport.</b>
 </ul>
+<p>En cas de changement d email, de changement de statut ou 
+si une création d'un compte supplémentaire est nécessaire,
+veuillez contacter votre ACN.</p>
 
 <table>
 	<?php
@@ -33,8 +39,6 @@ quotidiennement à 4h du matin.</p>
 		{
 			echo "\n<tr><td><b>".ucfirst($data->description)."</b></td><td> [".$user."]</td>\n";
 			echo '<td><form method="post" action="index.php">';
-			if(isSecretaire())
-			  {
 			  if(isSuperUser())
 			    {
 				echo "Section <input style=\"width:1cm;\" name=\"section_code\" value=\"".$data->section_code."\"></input>";
@@ -42,10 +46,7 @@ quotidiennement à 4h du matin.</p>
 				echo "CID <input style=\"width:1cm;\" name=\"CID_code\" value=\"".$data->CID_code."\"></input>";
 				echo "CID_role <input style=\"width:2cm;\" name=\"CID_role\" value=\"".$data->CID_role_code."\"></input>";
 				echo "Sections <input style=\"width:5cm;\" name=\"sections\" value=\"".$data->sections."\"></input>";
-			    }
-			  else
-			{			
-			echo "<input type=\"hidden\" name=\"admin_users\"></input>";
+				echo "<input type=\"hidden\" name=\"admin_users\"></input>";
 			echo "<select name=\"permissions\">\n";
 			foreach($permission_levels as $val => $level)
 			{
@@ -58,15 +59,16 @@ quotidiennement à 4h du matin.</p>
 				}
 			}
 			echo "</select>";
-			}
-			  //			else
-			  //{
-			  //foreach($permission_levels as $val => $level)
-			  //if ($val==$data->permissions)
-			  //		echo "<td>".ucfirst($level)."</td>\n";
-			  //}
+			    }
+
+			else
+			  {
+			  foreach($permission_levels as $val => $level)
+			  if ($val==$data->permissions)
+			  		echo "<td>".ucfirst($level)."</td>\n";
 			  }
-			if(is_current_session_concours())
+
+			if(!isSuperUser() && is_current_session_concours())
 			{
 				$concours_ouverts = getConcours();
 				foreach($concours_ouverts as $code => $concours)
@@ -99,7 +101,7 @@ quotidiennement à 4h du matin.</p>
 
 			echo "<input type=\"hidden\" name=\"login\" value=\"$user\"/>\n";
 			echo "<input type=\"hidden\" name=\"action\" value=\"infosrapporteur\"/>\n";
-			if(isSecretaire() || is_current_session_concours())
+			if(isSuperUser() || is_current_session_concours())
 			echo " <input type=\"submit\" value=\"Valider\"/>\n";
 			echo "</form></td></tr>\n";
 		}
@@ -171,6 +173,7 @@ if(isSuperUser())
 			      }
 ?>
 
+<!--
 <hr /><h3 id="importaccounts">Synchronisation des membres avec e-valuation</h3>
 
 <p>Synchroniser les comptes Marmotte et les comptes e-valuation.</p>
@@ -181,12 +184,12 @@ if(isSuperUser())
 </form>
 <br/>
 
-<hr />
-
+-->
 <?php
-if(isSecretaire())
+if(isACN())
 {
 ?>
+<hr/>
 <h3>Fusionner deux comptes</h3>
 <p> Ce menu permet de fusionner deux comptes: transmission des dossiers de l'ancien compte au nouveau compte et suppression de l'ancien compte.</p>
 
@@ -235,11 +238,12 @@ ksort($users);
 		?>
 	</select>
 </form>
-<hr />
+
 <?php
 if(isSuperUser())
 {
 ?>
+<hr />
 <h3 id="admindeleteaccount">Suppression d'un membre</h3>
 <form method="post" action="index.php"
 	onsubmit="return confirm('Etes vous sur de vouloir supprimer cet utilisateur ?');">
@@ -284,7 +288,7 @@ if(isSuperUser())
 
 -->
 <?php 
-if(isSecretaire())
+if(isSuperUser())
 {
 	?>
 
