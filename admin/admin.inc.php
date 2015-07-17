@@ -7,7 +7,7 @@ $admin_sessions = isset($_REQUEST["admin_sessions"]) && isSecretaire();
 $admin_maintenance = isset($_REQUEST["admin_maintenance"]) && isSecretaire();
 $admin_users = isset($_REQUEST["admin_users"]) && isSecretaire();
 $admin_concours = isset($_REQUEST["admin_concours"]) && isSecretaire() && !isSuperUser();
-$admin_config = isset($_REQUEST["admin_config"]) && isSecretaire();
+$admin_config = isset($_REQUEST["admin_config"]) && isSecretaire() && !isACN();
 $admin_keywords = isset($_REQUEST["admin_keywords"]) && isSecretaire();
 $admin_rubriques = isset($_REQUEST["admin_rubriques"]) && isSecretaire() && !isSuperUser();
 $admin_migration = isset($_REQUEST["admin_migration"]) && isSuperUser();
@@ -25,9 +25,14 @@ $admin_unites = isset($_REQUEST["admin_unites"]) && isSecretaire();
 	?>
 	<li><a href="index.php?action=admin&amp;admin_users=">Membres</a></li>
 	<li><a href="index.php?action=admin&amp;admin_unites">Unités</a>	
-	<li><a href="index.php?action=admin&amp;admin_config=">Configuration</a>
-	</li>
-	<?php 
+<?php
+	if(!isACN())
+{
+?>
+	<li><a href="index.php?action=admin&amp;admin_config=">Configuration</a>	</li>
+
+    <?php 
+}
 	if(!isSuperUser())
 	{
 	  if( is_current_session_concours() )
