@@ -1039,21 +1039,20 @@ function is_field_editable($row, $fieldId)
 	{
 	  //	  echo $fieldId;
 	  global $fieldsEditableACN;
-		return in_array($fieldId, $fieldsEditableACN);
+	  return in_array($fieldId, $fieldsEditableACN);
 	}
 	
-	if($fieldId == "type" || $fieldId == "conflits")
+
+	//certains champs sont réservés au secrétaire
+	global $fieldsEditableOnlySecretaire;
+	if(in_array($fieldId,$fieldsEditableOnlySecretaire))
 		return isSecretaire();
+
+	//certains cahmps sont systématqieuement autorisés pour le secrétaire
+	global $fieldsEditableSecretaire;
+	if(isSecretaire() && in_array($fieldId, $fieldsEditableSecretaire))
+	  return true;
 	
-	if($fieldId == 'rapporteur' || $fieldId == 'rapporteur2' || $fieldId == 'rapporteur3')
-		return isBureauUser();
-
-	if(isSecretaire())
-		return true;
-
-	//le bureau peut éditer les infos nominatives
-	if(isBureauUser() && in_array($fieldId, $fieldsPeople) )
-		return true;
 
 	$login = getLogin();
 
@@ -1067,33 +1066,41 @@ function is_field_editable($row, $fieldId)
 			 'publie'=>"Publication des Rapports",
 			 'audition'=>"Audition"
 */
+	/* tous les rapporteurs peuvent éditer le rapport de section */
 	if(($is_rapp1 || $is_rapp2 || $is_rapp3) && $fieldId == "rapport")
 		return true;
 
 	if(isset($row->statut) && ($row->statut == "audition"))
 	{
+	  /* le president du sous jury peut tout diter pendant l'audtiion */
 		if(isset($row->sousjury) && isPresidentSousJury($row->sousjury))
 			return true;
 
+		/* tout le monde peut rajouter un fichier pendant l'audition */
 		if($fieldId == "fichiers")
 			return true;
 
+		/* le rapporteur1 peut modifier l'avais du sous jury pendant l'audition */
 		if( $is_rapp1  && ($fieldId == "avissousjury" || $fieldId=="audition"))
 			return true;
 	}
 
-	if(isset($row->type) && $row->type == REPORT_CANDIDATURE && isset($row->avis) && is_numeric($row->avis) && $fieldId =="rapport" && ($is_rapp1 || $is_rapp2 || $is_rapp3))
-		return true;
+	global $fieldsEditableBureau;
+	//le bureau peut éditer les infos nominatives
+	if(!$is_rapp1 && !$is_rapp2 && !$is_rapp3  && isBureauUser())
+	  return in_array($fieldId, $fieldsEditableBureau);
 
-	if(!$is_rapp1 && !$is_rapp2 && !$is_rapp3 && !isSecretaire())
+	/* les droits suivants ne sont accoordés qu'aux rapporteurs et au secrétaire si ce dernier a les droits nécessaires*/
+	if(!$is_rapp1 && !$is_rapp2 && !$is_rapp3 && (!isSecretaire() || !get_option("sec_can_edit")))
 		return false;
 
 	global $fieldsIndividual;
 	global $fieldsIndividualAll;
 
-	//individual fields are always editable
+	//les champs indivicdues sont éditables
 	if(isset($fieldsIndividualAll[$fieldId]))
-		return (isSecretaire() || $is_rapp1 || $is_rapp2 || $is_rapp3);
+	  return true;
+
 	
 	if(isset($typesRapportToFields[$eval_type]))
 	  {
@@ -1118,23 +1125,28 @@ function is_field_editable($row, $fieldId)
 	{
 		global $fieldsCandidat;
 		$f = in_array($fieldId,$fieldsCandidat);
-		return (isSecretaire() && ($f || $f0 || $f1 || $f2 || $f3)) || ( $is_rapp1 && ($f1 || $f) )  || ($is_rapp2 && ($f2 || $f)) || ($is_rapp3 && ($f3 || $f) );
+		return 
+		  (isSecretaire() && ($f || $f0 || $f1 || $f2 || $f3))
+		  || ( $is_rapp1 && ($f1 || $f) )
+		  || ($is_rapp2 && ($f2 || $f))
+		  || ($is_rapp3 && ($f3 || $f) );
 	}
 
 	if(is_rapport_unite($row))
 	{
 		global $fieldsUnites;
-		$result = in_array($fieldId,$fieldsUnites) &&
-		(isSecretaire()
-		 || ($fieldId == "ecole" && ($is_rapp1 || $is_rapp2 || $is_rapp3))
-				|| ($fieldId == "prerapport" && $is_rapp1)
-				|| ($fieldId == "prerapport2" && $is_rapp2)
-				|| ($fieldId == "prerapport3" && $is_rapp3)
-				|| ($fieldId == "avis1" && $is_rapp1)
-				|| ($fieldId == "avis2" && $is_rapp2)
-				|| ($fieldId == "avis3" && $is_rapp3)
+		return 
+		  in_array($fieldId,$fieldsUnites)
+		  &&
+		  (isSecretaire()
+		   || ($fieldId == "ecole" && ($is_rapp1 || $is_rapp2 || $is_rapp3))
+		   || ($fieldId == "prerapport" && $is_rapp1)
+		   || ($fieldId == "prerapport2" && $is_rapp2)
+		   || ($fieldId == "prerapport3" && $is_rapp3)
+		   || ($fieldId == "avis1" && $is_rapp1)
+		   || ($fieldId == "avis2" && $is_rapp2)
+		   || ($fieldId == "avis3" && $is_rapp3)
 		);
-		return $result;
 	}
 
 	if(is_rapport_chercheur($row))
@@ -1142,12 +1154,11 @@ function is_field_editable($row, $fieldId)
 		global $fieldsChercheursAll;
 		$f = in_array($fieldId,$fieldsChercheursAll);
 		return
-		(isSecretaire() &&
-				($f || $f0 || $f1 || $f2 || $f3))
-				|| ( $is_rapp1 && ($f1 || $f) )
+		(isSecretaire() && ($f || $f0 || $f1 || $f2 || $f3))
+		  || ( $is_rapp1 && ($f1 || $f) )
 		  || ($is_rapp2 && ($f2 || $f) )
 		  || ($is_rapp3 && ($f3 || $f) )
-		      || ($fieldId == "ecole")
+		  || ($fieldId == "ecole")
 		  ;
 	}
 

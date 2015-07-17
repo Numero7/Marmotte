@@ -4,6 +4,53 @@ require_once('manage_filters_and_sort.inc.php');
 require_once('manage_sessions.inc.php');
 require_once('synchro.inc.php');
 
+function displaySummary($filters, $filter_values, $sorting_values)
+{
+	global $fieldsSummary;
+	global $fieldsSummaryConcours;
+	global $statutsRapports;
+	global $filtersReports;
+	global $fieldsTypes;
+
+	global $avis_classement;
+
+	$rows = filterSortReports($filters, $filter_values, $sorting_values);
+
+	$rows_id = array();
+	foreach($rows as $row)
+		$rows_id[] = $row->id;
+	$_SESSION['rows_id'] = $rows_id;
+	
+	$_SESSION['current_id'] = 0;
+
+	if(is_current_session_concours())
+		$fields = $fieldsSummaryConcours;
+	else
+		$fields = $fieldsSummary;
+
+	if( isset($filter_values["type"]) && $filter_values["type"] == "Promotion")
+	{
+		$filters["avis"]["liste"] = $avis_classement;
+		$filters["avis1"]["liste"] = $avis_classement;
+		//	reset_tri	$filters["avis2"]["liste"] = $avis_classement;
+	}
+
+	if(isSecretaire())
+	  $fields[] = "statut";
+
+	if($filter_values['type'] != $filters['type']['default_value'] )
+	{
+		$new_field = array();
+		foreach($fields as $field)
+			if($field != 'type')
+			$new_field[] = $field;
+		$fields = $new_field;
+	}
+
+	displayRows($rows,$fields, $filters, $filter_values);
+}
+
+
 function displayFiltrage($rows, $fields, $filters, $filter_values)
 {
 	global $fieldsAll;
@@ -239,7 +286,7 @@ function displayRowCell($row, $fieldID)
 	</select>
 	<?php
 		}
-		else if($fieldID == "avis" || $bur || !isset($row->statut) || $row->statut != "doubleaveugle")
+		else if($fieldID == "avis" || $sec || !isset($row->statut) || $row->statut != "doubleaveugle")
 		{
 			showIconAvis($fieldID,$data);
 			echo isset($tous_avis[$data]) ? $tous_avis[$data] : $data;

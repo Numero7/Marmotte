@@ -83,13 +83,26 @@ $add_rubriques_chercheurs = get_rubriques("chercheurs");
 $add_rubriques_unites = get_rubriques("unites");
 
 /* champs apparaissant sur l'écran principal */
-$fieldsSummary = array("type","unite","nom","prenom",/*"ecole",*/"avis","rapporteur","avis1","rapporteur2","avis2", "theme1","theme2","DKEY");
 
-
+$fieldsSummary = array("type","unite","nom","prenom",/*"ecole",*/"avis","rapporteur","avis1","rapporteur2","avis2", "rapporteur3", "avis3","theme1","theme2","theme3","DKEY");
 
 $fieldsSummaryConcours = array("type","nom","prenom","concours","sousjury","avis","rapporteur","avis1",
-		"rapporteur2","avis2","theme1","theme2","labo1","labo2","diploma"
+			       "rapporteur2","avis2","rapporteur3","avis3","theme1","theme2","theme3","labo1","labo2","diploma"
 );
+
+if(!get_option("show_rapporteur3"))
+  {
+    $fieldsSummary = array_diff($fieldsSummary, array("rapporteur3","avis3"));
+    $fieldsSummaryConcours = array_diff($fieldsSummaryConcours, array("rapporteur3","avis3"));
+   }
+for($i = 1; $i<= 3; $i++)
+  {
+if(!get_option("show_theme".$i))
+  {
+    $fieldsSummary = array_diff($fieldsSummary, array("theme".$i));
+    $fieldsSummaryConcours = array_diff($fieldsSummaryConcours, array("theme".$i));
+   }
+  }
 
 
 $genreCandidat = array(
@@ -105,9 +118,26 @@ $fieldsRapportACN = array(
 		"avis", "avis1", "avis2", "avis3",
 		"rapport", "statut"
 );
+
+
+
 $fieldsEditableACN = array(
-			   "concours", "sousjury", "intitule", "unite", "type", "avis", "rapporteur", "rapporteur2", "rapporteur3","rapport", "statut"
-);
+			   "concours", "sousjury", "intitule", "unite", "type", "statut", "conflits"
+			     );
+
+if(get_option("acn_can_edit_reports"))
+  $fieldsEditableACN[]= "rapport";
+
+if(get_option("acn_can_edit_avis"))
+  $fieldsEditableACN[]= "avis";
+
+if(get_option("acn_can_edit_rapporteurs"))
+  {
+  $fieldsEditableACN[]= "rapporteur";
+  $fieldsEditableACN[]= "rapporteur2";
+  $fieldsEditableACN[]= "rapporteur3";
+  }
+
 
 $fieldsEditableAvisTransmis = array(
 				    "unite", "labo1", "rapport", 'rapporteur', 'rapporteur2','rapporteur3',"intitule"
@@ -703,14 +733,61 @@ $fieldsTypes = array(
 		"fichiers" => "files",
 		"rapports" => "rapports",
 		"avissousjury" => "avis",
-		"statut" => "statut",
+		"statut" => "statut"
 );
+
 
 for($i = 0 ; $i < 30; $i++)
 {
 	$fieldsTypes["Generic".$i] = "long";
 	$fieldsTypes["Info".$i] = "short";
 }
+
+if(get_option("sec_can_edit"))
+  {
+    foreach($fieldTypes as $key => $val)
+      $fieldsEditableSecretaire[] = $key;
+    }
+ else
+  $fieldsEditableSecretaire = 
+    array(
+		"intitule",
+		"concours",
+		"sousjury",
+		"concourspresentes",
+		"nom",
+		"prenom",
+		"genre",
+		"statut_individu",
+		"grade",
+		"grade_rapport",
+		"theseloc",
+		"unite",
+    "type",
+		"rapporteur",
+		"rapporteur2",
+		"rapporteur3",
+		"avis",
+		"rapport",
+		"anciennete_grade",
+		"annee_recrutement",
+		"avissousjury",
+		"conflits",
+		"birth",
+		"diploma",
+		"labo1",
+		"labo2",
+		"labo3",
+		"theme1",
+		"theme2",
+		"theme3",
+		"audition",
+		"fichiers",
+		"avissousjury",
+    "statut"
+);
+
+$fieldsEditableOnlySecretaire = array("nom","prenom","conflits","type");
 
 $nonEditableFieldsTypes = array('id','date');
 $nonVisibleFieldsTypes = array('id');
@@ -723,6 +800,20 @@ $fieldsArrayUnite = array(array(), $fieldsUnites0, $fieldsUnites1, $fieldsUnites
 $fieldsArrayEcole = array(array(), $fieldsEcoles0, $fieldsUnites1, $fieldsUnites2, $fieldsUnites3);
 
 $fieldsPeople = array_merge($fieldsCandidat, $fieldsChercheursAll);
+
+
+
+  if(get_option("bur_can_meta"))
+    $fieldsEditableBureau = $fieldsPeople;
+  else
+    $fieldsEditableBureau = array("theme1","theme2","theme3","rapporteur","rapporteur2", "rapporteur3");
+
+if(!get_option("bur_can_affect"))
+  $fieldsEditableBureau = array_diff($fieldsEditableBureau, array("rapporteur","rapporteur2","rapporteur3"));
+
+ if(!get_option("bur_can_keywords"))
+  $fieldsEditableBureau = array_diff($fieldsEditableBureau, array("theme1","theme2","theme3"));
+
 
 $fieldsArrayDelegation = array($fieldsChercheursDelegationsAll, $fieldsIndividual0,$fieldsIndividual1,$fieldsIndividual2,$fieldsIndividual3);
 

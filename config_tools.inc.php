@@ -1,18 +1,30 @@
 <?php 
-
+	$configus = array(
+		"section_shortname"=> array("Intitulé court de la section ou CID","Section 6"),
+		"section_intitule"=> 
+   array("intitulé long de la section","Sciences de l\'information : fondements de l\'informatique, calculs, algorithmes, représentations, exploitations"),
+		"president_titre" => array("Titre du président, utilisé pour signer les rapports", "Président de la Section 6"),
+		"president" => array("Nom du président, utilisé pour signer les rapports", "Alan Türing"),
+		"webmaster" => array("Adresse email de l'expéditeur des emails", "alan.turing@cnrs.fr"),
+		"webmaster_nom" => array("Signataire des emails et pdfs", "Alan Türing"),
+		"welcome_message" => array("Message d'accueil", "Bienvenue sur le site de la section 6"),
+			  "bur_can_affect"=> array("Les membres du bureau peuvent affecter les rapporteurs","true"),
+			  "bur_can_meta"=> array("Les membres du bureau peuvent modifier les rubriques chercheurs/candidats","false"),
+			  "bur_can_keywords"=> array("Les membres du bureau peuvent modifier les mots-clés","true"),
+			  "sec_can_edit"=> array("Le secrétaire et le président peuvent éditer les prérapports","false"),
+		"acn_can_edit_avis"=> array("L'ACN peut éditer les avis","true"),
+		"acn_can_edit_reports"=> array("L'ACN peut éditer les rapports de section","true"),
+		"acn_can_edit_rapporteurs"=> array("L'ACN peut modifier les rapporteurs","true"),
+		"show_rapporteur3"=> array("Afficher le raporteur3 et son avis dans l'écran principal","false"),
+		"show_theme1"=> array("Afficher le mot-clé1 dans l'écran principal","true"),
+		"show_theme2"=> array("Afficher le mot-clé2 dans l'écran principal","true"),
+		"show_theme3"=> array("Afficher le mot-clé3 dans l'écran principal","false"),
+			  );
+		
 
 function init_config()
 {
-	$configus = array(
-		"section_shortname"=> array("intitulé court de la section ou CID","Section 6"),
-		"section_intitule"=> array("intitulé long de la section","Sciences de l\'information : fondements de l\'informatique, calculs, algorithmes, représentations, exploitations"),
-		"president_titre" => array("titre du président, utilisé pour signer les rapports", "Président de la Section 6"),
-		"president" => array("nom du président, utilisé pour signer les rapports", "Alan Türing"),
-		"webmaster" => array("adresse email de l'expéditeur des emails", "alan.turing@cnrs.fr"),
-		"webmaster_nom" => array("signataire des emails et pdfs", "Alan Türing"),
-		"welcome_message" => array("message d'accueil", "Bienvenue sur le site de la section 6")
-);
-		
+  global $configus;
 
 	if(!isset($_SESSION['filter_section']))
 	{
@@ -22,9 +34,7 @@ function init_config()
 	$section = $_SESSION['filter_section'];
 
 	if($section == "0")
-	  {
 	    $configus["sessions_synchro"]= array("Liste des sessions à synchroniser, séparées par des ';'", "Printemps2015;Automne2015");
-	  }
 
 	$sql = "SELECT * FROM ".config_db." WHERE `section`='".real_escape_string($section)."';";
 	$query = sql_request($sql);
@@ -68,6 +78,11 @@ function save_config_from_request()
 			set_config($key,$value);
 }
 
+function get_option($key)
+{
+  return (get_config($key,"true",false) == "true");
+}
+
 function get_config($key,$default_value="", $create_if_needed=true, $section = "")
 {	
 	if($key == "")
@@ -81,7 +96,7 @@ if($section === "")
 	if(!isset($_SESSION["config"][$key]))
 	{
 		if(!$create_if_needed)
-			throw exception("No config key '".$key." for section '".$section."' in database");
+			throw new Exception("No config key '".$key."' for section '".$section."' in database");
 		else
 			set_config($key,$default_value);
 	}

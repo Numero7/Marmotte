@@ -4,9 +4,9 @@
 <!--
 <h3 id="infosrapporteur">Memebres de la section/CID</h3>
 
-   <p>Le statut d'un membre peut-être modifié temporairement pour la journée en cours
+   <p>Le statut d&#39;un membre peut-être modifié temporairement pour la journée en cours
 en utilisant le menu ci-dessous.<br/>
-Le statut revient à sa valeur initiale (renseignée par le SGCN dans l'application Ambre)
+Le statut revient à sa valeur initiale (renseignée par le SGCN dans l&#39;application Ambre)
 quotidiennement à 4h du matin.</p>
 -->
 <p>Droits des différents statuts:</p>
@@ -23,11 +23,12 @@ quotidiennement à 4h du matin.</p>
 		des unités de toutes les sections, ne peut voir aucun rapport.</b>
 </ul>
 <p>En cas de changement d email, de changement de statut ou 
-si une création d'un compte supplémentaire est nécessaire,
+	  si une création d&#39;un compte supplémentaire est nécessaire,
 veuillez contacter votre ACN.</p>
 
 <table>
 	<?php
+$password = genere_motdepasse();
 	global $sous_jurys;
 	global $concours_ouverts;
 
@@ -244,7 +245,7 @@ if(isSuperUser())
 {
 ?>
 <hr />
-<h3 id="admindeleteaccount">Suppression d'un membre</h3>
+<h3 id="admindeleteaccount">Suppression d&#39;un membre</h3>
 <form method="post" action="index.php"
 	onsubmit="return confirm('Etes vous sur de vouloir supprimer cet utilisateur ?');">
 	<input type="hidden" name="admin_users"></input>
@@ -276,8 +277,7 @@ if(isSuperUser())
 
 <!--
 <hr />
-<h3 id="admindeleteallaccounts">Suppression de tous les membres de la
-	section</h3>
+<h3 id="admindeleteallaccounts">Suppression de tous les membres de la section</h3>
 <form method="post" action="index.php"
 	onsubmit="return confirm('Etes vous vraiment sûr de vouloir supprimer TOUS LES MEMBRES DE LA SECTION?');">
 	<input type="hidden" name="admin_users"></input> <input type="hidden"
@@ -293,7 +293,7 @@ if(isSuperUser())
 	?>
 
 <hr />
-<h3 id="adminnewpwd">Création / modification d'un mot de passe</h3>
+	<h3 id="adminnewpwd">Création / modification d&#39;un mot de passe</h3>
 <form method="post" action="index.php">
 	<input type="hidden" name="admin_users"></input>
 	<table class="inputreport">

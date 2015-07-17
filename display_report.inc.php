@@ -698,56 +698,6 @@ function displayActionsMenu($row, $excludedaction = "", $actions)
 	echo "</tr></table>";
 }
 
-function displaySummary($filters, $filter_values, $sorting_values)
-{
-	global $fieldsSummary;
-	global $fieldsSummaryConcours;
-	global $statutsRapports;
-	global $filtersReports;
-	global $fieldsTypes;
-
-	global $avis_classement;
-
-	$rows = filterSortReports($filters, $filter_values, $sorting_values);
-
-	$rows_id = array();
-	foreach($rows as $row)
-		$rows_id[] = $row->id;
-	$_SESSION['rows_id'] = $rows_id;
-	
-	$_SESSION['current_id'] = 0;
-
-	if(is_current_session_concours())
-		$fields = $fieldsSummaryConcours;
-	else
-		$fields = $fieldsSummary;
-
-	if( isset($filter_values["type"]) && $filter_values["type"] == "Promotion")
-	{
-		$filters["avis"]["liste"] = $avis_classement;
-		$filters["avis1"]["liste"] = $avis_classement;
-		//	reset_tri	$filters["avis2"]["liste"] = $avis_classement;
-	}
-
-	if(isSecretaire())
-	  {
-	    $fields[] = "rapporteur3";
-	    $fields[] = "avis3";
-	$fields[] = "statut";
-	  }
-
-	if($filter_values['type'] != $filters['type']['default_value'] )
-	{
-		$new_field = array();
-		foreach($fields as $field)
-			if($field != 'type')
-			$new_field[] = $field;
-		$fields = $new_field;
-	}
-
-	displayRows($rows,$fields, $filters, $filter_values);
-}
-
 
 
 ?>

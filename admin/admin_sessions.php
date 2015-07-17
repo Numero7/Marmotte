@@ -1,3 +1,4 @@
+<h2 id="sessions">Sessions</h2>
 <?php 
 require_once('config_tools.inc.php');
 
@@ -15,14 +16,15 @@ if(isSecretaire())
 {
 
 ?>
-<p> Ce menu permet de sélectionner la session courante, c'est à dire la session qui sera automatiquement sélectionnée quand les membres de votre section se connectent à Marmotte. 
+<p> Ce menu permet de sélectionner la session courante,
+    c&#39;est à dire la session qui sera automatiquement sélectionnée quand les membres de votre section se connectent à Marmotte. 
 </p>
 <?php 
 }
 else
 {
 ?>
-<p> Ce menu permet de sélectionner la session courante, c'est à dire la session qui sera automatiquement créée si nécessaire.
+  <p> Ce menu permet de sélectionner la session courante, c&#39;est à dire la session qui sera automatiquement créée si nécessaire.
 </p>
 <?php 
 }
@@ -54,7 +56,7 @@ else
 </p>
 <hr />
 
-			<h3>Ajout d'une session</h3>
+			<h3>Ajout d&#39;une session</h3>
 			<p>Ce menu permet de créer une nouvelle session.</p>
 			<form method="post" action="index.php"
 				onsubmit="return confirm('Etes vous sur de vouloir ajouter cette session ?');">
@@ -77,22 +79,22 @@ else
 			</form>
 			<br/>
 <hr />
-			<h3>Suppression d'une session</h3>
+			<h3>Suppression d&#39;une session</h3>
 			<p>Ce menu permet de supprimer une session.</p>
 			<form method="get" action="index.php"
 				onsubmit="return confirm('Etes vous sur de vouloir supprimer cette session ?');">
 				<B>Session</B>
-<select name="sessionid">
-								<?php 
-								$sessions =  showSessions();
-								foreach($sessions as $session)
-								{
-									$id = $session["id"];
-									echo "<option value=\"$id\">".$id."</option>";
-								}
-								?>
-						</select>
-<input type="hidden" name="action" value="admindeletesession" />
+  <select name="sessionid">
+		<?php 
+		$sessions =  showSessions();
+		foreach($sessions as $session)
+		  {
+			$id = $session["id"];
+			echo "<option value=\"$id\">".$id."</option>";
+		}
+		?>
+    </select>
+						<input type="hidden" name="action" value="admindeletesession" />
 						<input type="submit" value="Supprimer session" />
 												<input type="checkbox" name="supprimerdossiers" 
 									style="width: 10px;" /> Supprimer définitivement les dossiers
