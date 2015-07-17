@@ -111,6 +111,7 @@ function deletePreRapports($id)
   $sql .= ",avis1=\"\", avis2=\"\", avis3=\"\"";
   for($i = 0; $i <= 30; $i++)
     $sql .= ",Generic".$i." =\"\"";
+  $sql .= " WHERE section=\"".real_escape_string($_SESSION['filter_section'])."\"";
   sql_request($sql);
 }
 
