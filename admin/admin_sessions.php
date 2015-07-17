@@ -78,11 +78,36 @@ else
 						<input type="submit" value="Ajouter session" />
 			</form>
 			<br/>
+<?php
+						  if(isSecretaire() && !isACN())
+						    {
+
+?>
+<hr/>
+			<h3>Suppression des prérapports</h3>
+<p>Ce menu permet de supprimer les prérapports d&#39;une session.</p>
+			<form method="get" action="index.php"
+				onsubmit="return confirm('Etes vous sur de vouloir supprimer les prérapports de cette session?');">
+  <select name="sessionid">
+		<?php 
+		$sessions =  showSessions();
+		foreach($sessions as $session)
+		  {
+			$id = $session["id"];
+			echo "<option value=\"$id\">".$id."</option>";
+		}
+		?>
+    </select>
+						<input type="hidden" name="action" value="admindeleteprerapports" />
+						<input type="submit" value="Supprimer les prérapports" />
+</form>
+<?php
+						    }
+?>
 <hr />
 			<h3>Suppression d&#39;une session</h3>
 			<p>Ce menu permet de supprimer une session.</p>
-			<form method="get" action="index.php"
-				onsubmit="return confirm('Etes vous sur de vouloir supprimer cette session ?');">
+
 				<B>Session</B>
   <select name="sessionid">
 		<?php 
@@ -95,7 +120,6 @@ else
 		?>
     </select>
 						<input type="hidden" name="action" value="admindeletesession" />
-						<input type="submit" value="Supprimer session" />
 												<input type="checkbox" name="supprimerdossiers" 
-									style="width: 10px;" /> Supprimer définitivement les dossiers
+									style="width: 10px;" /> Supprimer définitivement les dossiers et rapports
 			</form>

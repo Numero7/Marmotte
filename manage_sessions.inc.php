@@ -104,6 +104,15 @@ function showSessions()
 		return	$finalResult;
 } ;
 
+function deletePreRapports($id)
+{
+  $sql = "UPDATE ".reports_db." SET ";
+  $sql .= "prerapport=\"\", prerapport2=\"\", prerapport3=\"\"";
+  $sql .= ",avis1=\"\", avis2=\"\", avis3=\"\"";
+  for($i = 0; $i <= 30; $i++)
+    $sql .= ",Generic".$i." =\"\"";
+  sql_request($sql);
+}
 
 function deleteSession($id, $supprimerdossiers)
 {

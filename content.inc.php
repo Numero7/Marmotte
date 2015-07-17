@@ -566,6 +566,14 @@ function alertText($text)
 					include "admin/admin.inc.php";
 					scrollToId("membres");
 					break;
+			       case 'admindeleteprerapports':
+					if (isset($_REQUEST["sessionid"]))
+					{
+					  deletePreRapports(real_escape_string($_REQUEST["sessionid"]));
+					  include "admin/admin.inc.php";
+					  scrollToId("sessions");
+					}
+				 break;
 				case 'admindeletesession':
 					if (isset($_REQUEST["sessionid"]))
 					{
