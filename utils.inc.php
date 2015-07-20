@@ -156,16 +156,22 @@ if (isset($_SERVER["SERVER_PORT"]) && $_SERVER["SERVER_PORT"] != "80") {
 }
 
 
+function my_iconv($text)
+{
+  ini_set('mbstring.substitute_character', "none");
+  $text= mb_convert_encoding($text, "UTF-8", "UTF-8"); 
+  return iconv("UTF-8","ASCII//TRANSLIT",$text);
+}
 //Returns the name of the file
 function filename_from_doc($doc)
 {
   global $id_rapport_to_label;
-	$nom = str_replace( array("'"," "), array("","_") , mb_convert_case(replace_accents($doc->nom), MB_CASE_TITLE));
+  $nom = str_replace( array("'"," ","/"), array("","_"," ") , mb_convert_case(replace_accents($doc->nom), MB_CASE_TITLE));
 	$prenom = mb_convert_case(replace_accents($doc->prenom), MB_CASE_TITLE);
 	$type = $doc->type;
 	//substr($id_rapport_to_label[$doc->type], 0, 10);
-	$nom = iconv("UTF-8","ASCII//TRANSLIT",$nom);
-	$prenom = iconv("UTF-8","ASCII//TRANSLIT",$prenom);
+	$nom = my_iconv($nom);
+	$prenom = my_iconv($prenom);
 
 	$sessions = sessionArrays();
 	$session = isset($sessions[$doc->id_session]) ? $sessions[$doc->id_session] : "";
@@ -180,12 +186,21 @@ function filename_from_params($nom, $prenom, $grade, $unite, $type, $session, $a
   if(isset($tous_avis[$avis]))
      $avis = $tous_avis[$avis];
 
-  $pretty_type = ($intitule == "") ? (isset($typesRapportsAll[$type]) ? $typesRapportsAll[$type] : $type) : $intitule;
-
+  $pretty_type = ($intitule == "") ? ( isset($typesRapportsAll[$type]) ? $typesRapportsAll[$type] : $type) : $intitule;
+  if(strlen($pretty_type) >= 20)
+    {
+      $offs = strpos($pretty_type," ",20);
+      if($offs !== false)
+	$pretty_type = substr($pretty_type,0,$offs);
+    }
+ 
 	$liste_unite = unitsList();
 
 	
-	$section = get_config("section_shortname");
+	$section = "S".currentSection();
+
+	if(strlen($session) >5)
+	  $session = substr($session,0,1).substr($session,strlen($session)-2);
 
 	if(isset($liste_unite[$unite]))
 		$unite = $unite . " - " . $liste_unite[$unite]->nickname;
@@ -194,9 +209,9 @@ function filename_from_params($nom, $prenom, $grade, $unite, $type, $session, $a
 	{
 
 		if(is_ecole_type($type))
-			$result = $section." - ".$session." - ".$pretty_type." - ".$avis." - ".$intitule." - ".$nom." - ".$unite;
+			$result = $session." - ".$section." - ".$pretty_type." - ".$avis." - ".$intitule." - ".$nom." - ".$unite;
 		else
-			$result =  $section." - ".$session." - ".$pretty_type." - ".$avis." - ".$unite;
+			$result =  $session." - ".$section." - ".$pretty_type." - ".$avis." - ".$unite;
 	}
 	else if( is_concours_type($type))
 	{
@@ -206,8 +221,8 @@ function filename_from_params($nom, $prenom, $grade, $unite, $type, $session, $a
 		$result  =  $session." - ".$pretty_type." - ".$grade." - ".$avis." - ".$nom." ".$prenom;
 	}
 	else
-		$result =  $section." - ".$session." - ".$pretty_type." - ".$grade." - ".$avis." - ".$unite." - ".$nom." ".$prenom;
-	$result = str_replace(array("'","(",")"),array(" ","",""),$result);
+		$result =  $session." - ".$section." - ".$pretty_type." - ".$grade." - ".$avis." - ".$unite." - ".$nom." ".$prenom;
+	$result = str_replace(array("'","(",")","/"),array(" ","","","-"),$result);
 	return replace_accents($result);
 }
 
