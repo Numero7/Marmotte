@@ -385,9 +385,11 @@ function changePwd($login,$old,$new1,$new2, $envoiparemail)
 
 		if($envoiparemail)
 		{
-			$body = "Votre mot de passe pour le site \r\n".adresse_du_site."\r\n a été mis à jour:\r\n";
+			$body = "Votre mot de passe pour le site \r\n".adresse_du_site."/index.php?action=auth_marmotte\r\n a été mis à jour:\r\n";
 			$body .= "\t\t\t login: '".$login."'\r\n";
-			$body .= "\t\t\t motdepasse: '".$new1."'\r\n";
+			$body .= "\t\t\t motdepasse: '".$new1."'\r\n\r\n";
+			$body .= "Merci d'utiliser ce mot de passe en cliquant sur le lien \"Authentification Marmotte\" (et non";
+			$body .= "\"Authentification Janus\") depuis la page d'accueil.\r\n"; 
 			$body .= "\r\n\r\n\t Amicalement, ".get_config("webmaster_nom").".";
 			$cc = "";
 			foreach($users as $user)
@@ -413,14 +415,16 @@ function changeUserInfos($login,$permissions, $sections, $section_code = "", $se
 		if($permissions >= NIVEAU_PERMISSION_SUPER_UTILISATEUR)
 			$sections = "";
 		$sql = "UPDATE `".users_db."`";
-		$sql .= " SET `section_code`='".real_escape_string($section_code)."'";
-		$sql .= ", `section_role_code`='".real_escape_string($section_role)."'";
-		$sql .= ", `CID_code`='".real_escape_string($CID_code)."'";
-		$sql .= ", `CID_role_code`='".real_escape_string($CID_role)."'";
-		$sql .= ", `sections`='".real_escape_string($sections)."'";
+		$sql .= " SET ";
+		//$sql .= "`section_code`='".real_escape_string($section_code)."'";
+		//$sql .= ", `section_role_code`='".real_escape_string($section_role)."'";
+		//$sql .= ", `CID_code`='".real_escape_string($CID_code)."'";
+		//$sql .= ", `CID_role_code`='".real_escape_string($CID_role)."'";
+		$sql .= " `sections`='".real_escape_string($sections)."'";
 		$sql .= ", `permissions`='".real_escape_string($permissions)."'";
 		$sql .= " WHERE `login`='".real_escape_string($login)."';";
 	}
+	/*
 	else if (isSecretaire())
 	{
 		$role = real_escape_string(permissionToRole($permissions));
@@ -431,6 +435,7 @@ function changeUserInfos($login,$permissions, $sections, $section_code = "", $se
 		else
 			$sql = "UPDATE `".users_db."` SET `permissions`=\"".roleToPermission($role)."\" WHERE `login`='".real_escape_string($login)."';";
 	}
+	*/
 	sql_request($sql);
 	unset($_SESSION['all_users']);
 }

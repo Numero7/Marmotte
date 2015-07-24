@@ -57,7 +57,7 @@ function process_upload($create = false, $directory = null)
 					case "signature":
 						{
 							global $dossier_stockage;
-							$dir = $dossier_stockage."img";
+							$dir = $dossier_stockage."/img";
 							create_dir_if_needed($dir);
 							if(move_uploaded_file($tmpname,$dossier_stockage.signature_file))
 								echo "<p>New signature saved<br/>";

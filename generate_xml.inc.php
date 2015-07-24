@@ -315,10 +315,14 @@ function createXMLReportElem($row, DOMDocument $doc, $keep_br = true)
 		appendLeaf("signataire", get_config("president"), $doc, $rapportElem);
 		global $dossier_stockage;
 		global $rootdir;
+		global $dossier_stockage_short;
 		if(!is_rapport_concours($row) && isset($row->statut) && $row->statut=="publie" && file_exists($dossier_stockage.signature_file))
 		{
-			appendLeaf("signature", $dossier_stockage.signature_file, $doc, $rapportElem);
-			appendLeaf("signature_source", $dossier_stockage.signature_file, $doc, $rapportElem);
+			appendLeaf("signature", "/".$dossier_stockage_short.signature_file, $doc, $rapportElem);
+			appendLeaf("signature_source", "/".$dossier_stockage_short.signature_file, $doc, $rapportElem);
+			//			echo $dossier_stockage.signature_file;
+			//die(0);
+
 		}
 		else
 		{

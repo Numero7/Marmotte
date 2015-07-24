@@ -33,20 +33,37 @@ $password = genere_motdepasse();
 	global $concours_ouverts;
 
 	$users = listUsers();
+function cmp($a, $b)
+{
+    if($a->section_code != $b->section_code) 
+      return ($a->section_code < $b->section_code) ? -1 : 1;
+    else if($a->CID_code != $b->CID_code)
+      return ($a->CID_code < $b->CID_code) ? -1 : 1;
+    else
+      return strcmp($a->description,$b->description);;
+
+}
+uasort($users,"cmp");
 
 	foreach($users as $user => $data)
 	{
 		if ($data->permissions <= getUserPermissionLevel() || ($data->permissions  < NIVEAU_PERMISSION_SUPER_UTILISATEUR && isSecretaire()))
 		{
 			echo "\n<tr><td><b>".ucfirst($data->description)."</b></td><td> [".$user."]</td>\n";
-			echo '<td><form method="post" action="index.php">';
 			  if(isSuperUser())
 			    {
+			      /*
 				echo "Section <input style=\"width:1cm;\" name=\"section_code\" value=\"".$data->section_code."\"></input>";
 				echo "section_role <input style=\"width:2cm;\" name=\"section_role\" value=\"".$data->section_role_code."\"></input>";
 				echo "CID <input style=\"width:1cm;\" name=\"CID_code\" value=\"".$data->CID_code."\"></input>";
 				echo "CID_role <input style=\"width:2cm;\" name=\"CID_role\" value=\"".$data->CID_role_code."\"></input>";
-				echo "Sections <input style=\"width:5cm;\" name=\"sections\" value=\"".$data->sections."\"></input>";
+			      */
+			      echo "<td>"; if($data->section_code){ echo "Section <b> ".$data->section_code."</b>";} echo "</td>";
+			      echo "<td>";if($data->section_role_code){ echo " <b> ".$data->section_role_code."</b>";} echo "</td>";
+				echo "<td>";if($data->CID_code){ echo "CID <b> ".$data->CID_code."</b>";} echo"</td>";
+				echo "<td>"; if($data->CID_role_code) echo " <b> ".$data->CID_role_code."</b>";echo "</td>";
+			      echo "<td><form method=\"post\" action=\"index.php\">";
+			      echo "Sections <input style=\"width:5cm;\" name=\"sections\" value=\"".$data->sections."\"></input>";
 				echo "<input type=\"hidden\" name=\"admin_users\"></input>";
 			echo "<select name=\"permissions\">\n";
 			foreach($permission_levels as $val => $level)
