@@ -745,7 +745,7 @@ for($i = 0 ; $i < 30; $i++)
 
 if(get_option("sec_can_edit"))
   {
-    foreach($fieldTypes as $key => $val)
+    foreach($fieldsTypes as $key => $val)
       $fieldsEditableSecretaire[] = $key;
     }
  else
