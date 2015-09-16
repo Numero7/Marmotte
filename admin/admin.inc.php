@@ -7,7 +7,7 @@ $admin_sessions = isset($_REQUEST["admin_sessions"]) && isSecretaire();
 $admin_maintenance = isset($_REQUEST["admin_maintenance"]) && isSecretaire();
 $admin_users = isset($_REQUEST["admin_users"]) && isSecretaire();
 $admin_concours = isset($_REQUEST["admin_concours"]) && isSecretaire() && !isSuperUser();
-$admin_config = isset($_REQUEST["admin_config"]) && isSecretaire() && !isACN();
+$admin_config = isset($_REQUEST["admin_config"]) && isSecretaire() && !isACN() && !isSuperUser();
 $admin_keywords = isset($_REQUEST["admin_keywords"]) && isSecretaire();
 $admin_rubriques = isset($_REQUEST["admin_rubriques"]) && isSecretaire() && !isSuperUser();
 $admin_migration = isset($_REQUEST["admin_migration"]) && isSuperUser();
@@ -24,9 +24,9 @@ $admin_unites = isset($_REQUEST["admin_unites"]) && isSecretaire();
 	}
 	?>
 	<li><a href="index.php?action=admin&amp;admin_users=">Membres</a></li>
-	<li><a href="index.php?action=admin&amp;admin_unites">Unités</a>	
+	<li><a href="index.php?action=admin&amp;admin_unites">Unit&eacute;s</a>	
 <?php
-	if(!isACN())
+if(!isACN() && !isSuperUser())
 {
 ?>
 	<li><a href="index.php?action=admin&amp;admin_config=">Configuration</a>	</li>
@@ -45,7 +45,7 @@ $admin_unites = isset($_REQUEST["admin_unites"]) && isSecretaire();
 	  ?>
 	<li><a href="index.php?action=admin&amp;admin_rubriques=">Rubriques</a>
 	</li>
-	<li><a href="index.php?action=admin&amp;admin_keywords=">Mots-clés</a>
+	   <li><a href="index.php?action=admin&amp;admin_keywords=">Mots-cl&eacute;s</a>
 	</li>
 	<?php 
 	}
