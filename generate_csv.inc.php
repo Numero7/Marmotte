@@ -41,6 +41,7 @@ function compileObjectsAsTXT($rows)
 function compileObjectsAsCSV($fields, $rows, $text=array(), $sep =";" , $enc='"', $del="\n")
 {
 	global $csv_composite_fields;
+	global $typesRapportsAll;
 	$result = "";
 
 	$first = true;
@@ -70,12 +71,16 @@ function compileObjectsAsCSV($fields, $rows, $text=array(), $sep =";" , $enc='"'
 				$subfields = $csv_composite_fields[$field];
 				$result.= ($first ? "" : $sep).$enc;
 				foreach($subfields as $subfield)
-					$result.=(isset($row->$subfield) ? str_replace('"', '#', $row->$subfield) :"")." ";
+					$result.=(isset($row->$subfield) ? str_replace($enc, '#', $row->$subfield) :"")." ";
 				$result.= $enc;
 			}
 			else
 			{
-				$result.= ($first ? "" : $sep).$enc.(isset($row->$field) ? str_replace('"', '#', $row->$field) :"").$enc;
+			  $data = isset($row->$field) ? str_replace($enc, '#', $row->$field) : "";
+			  if($field == "type" && isset($row->$field) && isset($typesRapportsAll[$data]))
+			    $data = $typesRapportsAll[$data];
+
+			  $result .= ($first ? "" : $sep).$enc.$data.$enc;
 			}
 			$first = false;
 

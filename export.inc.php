@@ -132,20 +132,6 @@ function export_reports_as_csv($reports, $dir, $type = "")
 
 	$texte[] = array();
 	
-	if($type == "attribution_rapporteurs")
-	{
-		$texte[] = array("Pour attribuer les rapporteurs");
-		$texte[] = array("copier-coller les login correspondants");
-		$texte[] = array("(liste ci-dessous) dans les colonnes");
-		$texte[]= array("'rapporteur' et 'rapporteur2' et 'rapporteur3'");
-		$texte[]=array("");
-		$users = listUsers();		
-		foreach($users as $login => $value)
-			$texte[] = array($login);
-		$texte[] = array();
-		$texte[] = array();
-	}
-	
 	$data = compileObjectsAsCSV($activefields, $reports, $texte);
 	if($handle = fopen($file, 'w'))
 	{
