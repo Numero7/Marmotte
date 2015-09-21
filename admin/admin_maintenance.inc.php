@@ -18,3 +18,7 @@ Statut maintenance: '<?php echo get_config("maintenance", "off", true, 0); ?>'</
 Le lien suivant permet de synchroniser Marmotte avec les bases de donnees d&#39;e-valuation.<br/>
 <a href="index.php?action=synchronize_with_dsi&amp;admin_maintenance=">Synchroniser avec e-valuation.</a>
 </p>
+<p>
+<p>
+<a href="index.php?action=check_missing_data&amp;admin_maintenance=">Vérifier les données manquantes.</a>
+</P>

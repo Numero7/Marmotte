@@ -324,7 +324,7 @@ function synchronizePeopleReports($section, $session = "")
 //		$answer .= "Le rapport de DKEY ".$row->DKEY." a deja ete importe dans Marmotte<br/>\n";
 		}
 	}
-	  if(!$changed) $answer.= "Pas de modification de la base marmotte<br/>";
+	  if(!$changed) $answer = "";
 	return $answer;
 }
 
@@ -355,8 +355,16 @@ function synchronizeUnitReports($section = "", $session = "")
 
 	$res = sql_request($sql);
 
-	$answer .= "La base dsi contient ".mysqli_num_rows($res);
+	$n = mysqli_num_rows($res);
+	if($n > 0)
+	  {
+	$answer .= "La base dsi contient ".$n;
 	$answer .= " DE unit&eacute;s qui n'apparaissent pas encore dans Marmotte.<br/>\n";
+	  }
+	else
+	  {
+	    return "";
+	  }
 	while($row = mysqli_fetch_object($res))
 	{
 		
@@ -450,6 +458,13 @@ function synchronizeUnitReports($section = "", $session = "")
 
 		addReportToDatabase($row);
 	}
+	/* synchronizing school names */
+	$answer .= "Synchronization du nom des &eacute;coles<br/>";
+	$sql= "UPDATE ".marmottedbname.".".reports_db." marmotte JOIN ".dsidbname.".".dsi_evaluation_units_db." dsi ON ";
+	$sql.= "marmotte.DKEY=dsi.DKEY SET marmotte.nom=dsi.TITRE, marmotte.prenom=dsi.RESP_PRINCIPAL WHERE dsi.TYPE_EVAL=\"8515\"";
+	$sql .= " AND marmotte.nom=\"\" AND marmotte.prenom=\"\" AND marmotte.section=".$section.";";
+	sql_request($sql);
+
 	return $answer;
 }
 
@@ -469,10 +484,37 @@ function export_to_evaluation($section)
 		$sql .=" ".dsidbname.".".dsi_marmotte_db.".RAPPORTEUR3=".marmottedbname.".".reports_db.".rapporteur3,";
 		$sql .=" ".dsidbname.".".dsi_marmotte_db.".statut=".marmottedbname.".".reports_db.".statut";
 		sql_request($sql);
-		$answer .= "<a href=\"https://www.youtube.com/watch?v=0rCrc6RoJg0\">Ca l'effectue</a>";
+		//		$answer .= "<a href=\"https://www.youtube.com/watch?v=0rCrc6RoJg0\">Ca l'effectue</a>";
 		return $answer;
 }
 
+function check_missing_data()
+{
+  //  echo "Checking missing data"; 
+
+  $msg = "";
+
+  $sql = "SELECT * FROM ".dsidbname.".".dsi_evaluation_db." WHERE NUMSIRHUS NOT IN  (SELECT `numsirhus` FROM ".dsidbname.".".dsi_people_db.")";
+  $sql .= " AND `EVALUATION_CN`=\"Soumis\" AND (ETAT_EVAL=\"En cours\" OR ETAT_EVAL=\"Terminée\");";  
+  $result = sql_request($sql);
+  while($row = mysqli_fetch_object($result))
+    {
+      $msg .= "La DE chercheur de DKEY '".$row->DKEY."' est associée au chercheur de NUMSIRHUS '".$row->NUMSIRHUS."'";
+      $msg .= " qui n'apparaît pas dans la base ".dsidbname.".".dsi_people_db."<br/>\n";
+    }
+
+  /*
+  $sql = "SELECT * FROM ".dsidbname.".".dsi_evaluation_units_db." WHERE UNITE_EVAL NOT IN  (SELECT `CODEUNITE` FROM ".dsidbname.".".dsi_units_db.")";
+  $sql .= " AND `EVALUATION_CN`=\"Soumis\" AND (ETAT_EVAL=\"En cours\" OR ETAT_EVAL=\"Terminée\");";  
+  $result = sql_request($sql);
+  while($row = mysqli_fetch_object($result))
+    {
+      $msg .= "La DE unité de DKEY '".$row->DKEY."' est associée à l'unité '".$row->UNITE_EVAL."'";
+      $msg .= " qui n'aparaît pas dans la base ".dsidbname.".".dsi_units_db.".<br/>\n";
+    }
+  */
+  return $msg;
+}
 
 /* performs synchro with evaluation and returns diagnostic , empty string if nothing happaned */
 function synchronize_with_evaluation($section = "", $recursive = false, $email = true)
@@ -483,7 +525,22 @@ function synchronize_with_evaluation($section = "", $recursive = false, $email =
     echo $_SESSION["answer_dsi_sync"];
 
   if(isSuperUser() && $section == "")
-    return synchronize_with_evaluation("1",$recursive,$email);
+    {
+	$report = check_missing_data();
+	if($report != "")
+	  {
+	    $emails = array(
+			    "hugo.gimbert@cnrs.fr", 
+			    "Laurent.CHAZALY@cnrs-dir.fr",
+			    "velazquez@icmcb-bordeaux.cnrs.fr",
+			    "Rene.PELFRESNE@dsi.cnrs.fr",
+			    "Marie-Claude.LABASTIE@cnrs-dir.fr"
+			    );
+	    foreach($emails as $email)
+	      email_handler($email,"Alerte Marmotte: données manquantes",$report,"hugo.gimbert@cnrs.fr");
+	  }
+	return $report."<br/>\n".synchronize_with_evaluation("1",$recursive,$email);
+    }
 
   if(!isSuperUser())
     $section = currentSection();

@@ -1145,6 +1145,7 @@ $grades = array(
 
 /* permissions levels for actions */
 $actions_level = array(
+		       "check_missing_data" => NIVEAU_PERMISSION_SECRETAIRE,
 		       "admindeleteprerapports" => NIVEAU_PERMISSION_SECRETAIRE,
 		"synchronize_with_dsi" => NIVEAU_PERMISSION_ACN,
 		"synchronize_sessions_with_dsi" => NIVEAU_PERMISSION_ACN,

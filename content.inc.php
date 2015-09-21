@@ -231,8 +231,18 @@ function alertText($text)
 			
 			switch($action)
 			{
-				case 'synchronize_sessions_with_dsi':
-				  $answer = synchronizeSessions(currentSection());
+			case 'check_missing_data':
+			  $report = check_missing_data();
+			  if($report != "")
+			    {
+	  email_handler("hugo.gimbert@cnrs.fr,hugo.gimbert@labri.fr,hugooooo@gmail.com","Alerte Marmotte: données manquantes",$report,"");
+			    echo $report;
+			    }
+			  else
+			    echo "<p>Pas de données manquantes</p>";
+			  break;
+			case 'synchronize_sessions_with_dsi':
+			  $answer = synchronizeSessions(currentSection());
 					if($answer != "")
 						echo $answer;
 					else
