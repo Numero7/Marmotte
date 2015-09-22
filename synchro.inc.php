@@ -570,23 +570,31 @@ function synchronize_with_evaluation($section = "", $recursive = false, $email =
   $answer = "<h1>Synchronisation avec e-valuation de la section ".$section." - ".date('d/m/Y - H:i:s')."</h1>\n";
 	if(isSecretaire())
 	{
-	  $answer .= synchronizeWithDsiMembers($section,$email)."<br/>";
+	  $log = synchronizeWithDsiMembers($section,$email);
+	  if($log != "")
+	    $answer .= $log."<br/>";
 
 		$answer .= synchronizeSessions($section);
 
 		$new_sessions = explode(";",get_config("sessions_synchro"));
 		
-		$answer .= synchronizePeople($section)."<br/>";
+		$log = synchronizePeople($section);
+		if($log != "")
+		  $answer .= $log."<br/>";
 		
-		$answer .= "<B>Suppression de l'historique des rapports</B><br/>\n";
+		//		$answer .= "<B>Suppression de l'historique des rapports</B><br/>\n";
 		$sql = "DELETE FROM ".reports_db." WHERE id!=id_origine AND section=\"".$section."\";";
 		sql_request($sql);
 
 		foreach($new_sessions as $session)
 		  if($session != "")
 		  {
-		    $answer .= "<br/>".synchronizePeopleReports($section,$session)."<br/>";
-		    $answer .= synchronizeUnitReports($section,$session)."<br/>";
+		    $log = synchronizePeopleReports($section,$session);
+		    if($log != "")
+		      $answer .= $log."<br/>";
+		    $log = synchronizeUnitReports($section,$session);
+		    if($log  != "")
+		      $answer .= $log."<br/>";
 		  }		  
 		
 try

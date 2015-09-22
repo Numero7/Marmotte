@@ -52,7 +52,8 @@ function find_files($row, $session, $create_directory_if_nexists = false)
 		//annee_doc		// code_tye_doc		// dkey		// nom_document		// path_sas		// session_doc
 		$code = $roww->code_type_doc;
 		$label = isset($typesdocs[$code]) ? $typesdocs[$code] : ("Inconnu ".$code);
-		$label = $roww->annee_doc." - " . $roww->session_doc. " - " . $label. " - ". $roww->nom_document;
+		$sess = ($roww->session_doc == "NULL") ? "" : $roww->session_doc;
+		$label = $roww->annee_doc." - " . $sess. " - " . $label. " - ". $roww->nom_document;
 		$dsifiles[$label] =  $roww->path_sas."/".$roww->nom_document;
 	      }	
 	  }
