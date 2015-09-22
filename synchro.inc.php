@@ -475,12 +475,16 @@ function synchronizeUnitReports($section = "", $session = "")
 		addReportToDatabase($row);
 	}
 	/* synchronizing school names */
-	$answer .= "Synchronization du nom des &eacute;coles et revues<br/>";
 	$sql= "UPDATE ".marmottedbname.".".reports_db." marmotte JOIN ".dsidbname.".".dsi_evaluation_units_db." dsi ON ";
 	$sql.= "marmotte.DKEY=dsi.DKEY SET marmotte.nom=dsi.TITRE, marmotte.prenom=dsi.RESP_PRINCIPAL WHERE ";
 	$sql .= "(dsi.TYPE_EVAL=\"8515\" OR dsi.TYPE_EVAL=\"8510\" OR dsi.TYPE_EVAL=\"8505\")";
 	$sql .= " AND marmotte.nom=\"\" AND marmotte.prenom=\"\" AND marmotte.section=".$section.";";
 	sql_request($sql);
+
+	global $dbh;
+	$num = mysqli_affected_rows($dbh);
+	if($num > 0)
+	  $answer .= "Synchronization du nom des &eacute;coles et revues:".$num." DE affectées<br/>"; 
 
 	return $answer;
 }
