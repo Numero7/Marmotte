@@ -524,6 +524,24 @@ function check_missing_data()
       $msg .= " qui n'apparaît pas dans la base ".dsidbname.".".dsi_people_db."<br/>\n";
     }
 
+  $sql = "SELECT * FROM ".dsidbname.".".dsi_docs_db." WHERE 1;";
+  $result = sql_request($sql);
+  $missing = array();
+  $total = 0;
+  while($row = mysqli_fetch_object($result))
+    {
+      $total++;      
+      global  $dossier_stockage_dsi;
+      $file = $dossier_stockage_dsi."/".$row->path_sas."/".$row->nom_document;
+      if(!file_exists($file))
+	$missing[] = $row->dkey;
+    }
+  if(count($missing) > 0)
+    {
+      $msg .= "\n\nLa table ".dsidbname.".".dsi_docs_db." contient ".count($missing)." liens vers des documents pdfs inexistants sur le serveur.\n<br/>";
+      /*      foreach($missing as $dkey)
+	      $msg.= $dkey." ";*/
+    }
   /*
   $sql = "SELECT * FROM ".dsidbname.".".dsi_evaluation_units_db." WHERE UNITE_EVAL NOT IN  (SELECT `CODEUNITE` FROM ".dsidbname.".".dsi_units_db.")";
   $sql .= " AND `EVALUATION_CN`=\"Soumis\" AND (ETAT_EVAL=\"En cours\" OR ETAT_EVAL=\"Terminée\");";  
