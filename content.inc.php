@@ -231,6 +231,12 @@ function alertText($text)
 			
 			switch($action)
 			{
+			case 'fix_missing_data':
+			  $report = "";
+			  for($i = 0; $i < 55; $i++)
+			      $report.=synchronizePeople($i);
+			  echo $report;
+			  break;
 			case 'check_missing_data':
 			  $report = check_missing_data();
 			  if($report != "")

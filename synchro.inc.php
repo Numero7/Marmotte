@@ -152,19 +152,35 @@ function synchronizeSessions($section)
 
 function synchronizePeople($section)
 {
-  $answer = "<B>Synchro des num SIRHUS de chercheurs </B><br/>\n";
+  $answer = "";
 	$sql =  "UPDATE ".people_db." marmotte JOIN ".dsidbname.".".dsi_people_db." dsi ";
-	$sql .= " ON marmotte.nom=".dsidbname.".nom AND marmotte.prenom=".dsidbname.".prenom";
-	//	$sql .= " AND marm""otte.NUMSIRHUS=\"\" AND marmotte.section=\"".$section."\"";
-	$sql .= " SET marmotte.NUMSIRHUS=".dsidbname.".numsirhus";
+	$sql .= " ON marmotte.nom=dsi.nom AND marmotte.prenom=dsi.prenom";
+	$sql .= " SET marmotte.NUMSIRHUS=dsi.numsirhus";
 	$sql .= " WHERE section=\"".$section."\" AND marmotte.NUMSIRHUS=\"\";";
 	$res = sql_request($sql);
 	global $dbh;
 	$num = mysqli_affected_rows($dbh);
 	if($num > 0)
+	  {
+	    $answer = "<B>Synchro des num SIRHUS de chercheurs de la section ".$section."</B><br/>\n";
 	  $answer .= $num." num&eacute;ros SIRHUS ont &eacute;t&eacute; mis &agrave; jour.<br/>";
-	else
-	  $answer = "";//.= "Aucune num&eacute;ro SIRHUS n'a &eacute;t&eacute; mis &agrave; jour.<br/>";
+	  }
+
+
+	$sql =  "UPDATE ".reports_db." marmotte JOIN ".dsidbname.".".dsi_people_db." dsi ";
+	$sql .= " ON marmotte.NUMSIRHUS=dsi.numsirhus";
+	$sql .= " SET marmotte.nom=dsi.nom, marmotte.prenom=dsi.prenom";
+	$sql .= " WHERE section=\"".$section."\" AND marmotte.nom=\"\";";
+	$res = sql_request($sql);
+	global $dbh;
+	$num = mysqli_affected_rows($dbh);
+	if($num > 0)
+	  {
+	    $answer .= "<B>Synchro des nom et prénom de chercheurs de la section ".$section."</B><br/>\n";
+	  $answer .= $num." nom et prenoms ont &eacute;t&eacute; mis &agrave; jour.<br/>";
+	  }
+
+
 	//$sql =  "DELETE FROM ".people_db." WHERE NUMSIRHUS=\"\" AND section=\"".$section."\";";
 	//sql_request($sql);
 	return 	$answer;

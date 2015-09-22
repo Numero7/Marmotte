@@ -22,3 +22,6 @@ Le lien suivant permet de synchroniser Marmotte avec les bases de donnees d&#39;
 <p>
 <a href="index.php?action=check_missing_data&amp;admin_maintenance=">Vérifier les données manquantes.</a>
 </P>
+<p>
+<a href="index.php?action=fix_missing_data&amp;admin_maintenance=">Reparer les données manquantes.</a>
+</P>
