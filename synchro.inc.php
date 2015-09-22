@@ -494,7 +494,7 @@ function check_missing_data()
 
   $msg = "";
 
-  $sql = "SELECT * FROM ".dsidbname.".".dsi_evaluation_db." WHERE NUMSIRHUS NOT IN  (SELECT `numsirhus` FROM ".dsidbname.".".dsi_people_db.")";
+  $sql = "SELECT * FROM ".dsidbname.".".dsi_evaluation_db." WHERE NUMSIRHUS != \"\" AND NUMSIRHUS NOT IN  (SELECT `numsirhus` FROM ".dsidbname.".".dsi_people_db.")";
   $sql .= " AND `EVALUATION_CN`=\"Soumis\" AND (ETAT_EVAL=\"En cours\" OR ETAT_EVAL=\"Terminée\");";  
   $result = sql_request($sql);
   while($row = mysqli_fetch_object($result))
