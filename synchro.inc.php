@@ -1,3 +1,4 @@
+
 <?php
 
 require_once("manage_users.inc.php");
@@ -221,6 +222,38 @@ function synchronizePeopleReports($section, $session = "")
 	while($row = mysqli_fetch_object($result))
 	{
 	  $row->unite = $row->code_unite;
+
+		/* mises a jour des données du chercheur concerné */
+		$sql  = "UPDATE ".people_db;
+		$sql .= " SET labo1=\"".$row->code_unite."\", NUMSIRHUS=\"".$row->NUMSIRHUS."\"";
+		$sql .= " WHERE LOWER(nom)=LOWER(\"".$row->nom."\")";
+		$sql .= " AND LOWER(prenom)=LOWER(\"".$row->prenom."\")";
+		$sql .= " AND section=\"".$section."\";";
+		$res = sql_request($sql);
+		global $dbh;
+		$num = mysqli_affected_rows($dbh);
+		/* et création du chercheur concerné si nécesaire */
+		if($num == 0)
+		  {
+			$sql  = "INSERT INTO ".people_db;
+			$sql .= " (NUMSIRHUS,labo1,nom,prenom,section) VALUES ";
+			$sql .= "(\"".$row->NUMSIRHUS."\",\"".$row->code_unite."\",\"".$row->nom."\",\"".$row->prenom."\",\"".$section."\");";
+			try
+			  { 
+			  sql_request($sql);
+			}
+			catch(Exception $e)
+			  {}
+		  }
+
+	  $sql = "SELECT * FROM ".marmottedbname.".".reports_db." WHERE DKEY=".$row->DKEY." AND section=\"".$section."\";";
+	  $res2 = sql_request($sql);
+	  if(mysqli_num_rows($res2) == 0)
+	    {
+		$row->id_origine=0;
+		$row->id_session = $session;
+		$row->section = $section;
+
 		if($section == $row->CODE_SECTION)
 		{
 			$rapporteur = getEmailFromChaire($row->RAPPORTEUR1);
@@ -239,82 +272,6 @@ function synchronizePeopleReports($section, $session = "")
 			$rapporteur2 = getEmailFromChaire($row->RAPPORTEUR8);
 			$rapporteur3 = getEmailFromChaire($row->RAPPORTEUR9);
 		}
-
-			$sql  = "UPDATE ".people_db;
-			$sql .= " SET labo1=\"".$row->code_unite."\", NUMSIRHUS=\"".$row->NUMSIRHUS."\"";
-			$sql .= " WHERE LOWER(nom)=LOWER(\"".$row->nom."\")";
-			$sql .= " AND LOWER(prenom)=LOWER(\"".$row->prenom."\")";
-			$sql .= " AND section=\"".$section."\";";
-			$res = sql_request($sql);
-			global $dbh;
-			$num = mysqli_affected_rows($dbh);
-			if($num == 0)
-			  {
-				$sql  = "INSERT INTO ".people_db;
-				$sql .= " (NUMSIRHUS,labo1,nom,prenom,section) VALUES ";
-				$sql .= "(\"".$row->NUMSIRHUS."\",\"".$row->code_unite."\",\"".$row->nom."\",\"".$row->prenom."\",\"".$section."\");";
-				try{ 
-				  sql_request($sql);
-				}
-				catch(Exception $e)
-				  {
-				    //	    $answer .= "Exception ".$e->getMessage()." when adding NUMSIRHUS ".$row->NUMSIRHUS."<br/>";
-				  }
-			  }
-
-	  $sql = "SELECT * FROM ".marmottedbname.".".reports_db." WHERE DKEY=".$row->DKEY." AND section=\"".$section."\";";
-	  $res2 = sql_request($sql);
-	  if(mysqli_num_rows($res2) == 0)
-	    {
-	//pas de DKEY corr dans la base
-			$sql  = "SELECT * FROM ".reports_db;
-			$sql .= " WHERE id_session=\"".$session."\"";
-			$sql .= " AND section=\"".$section."\" AND DKEY=\"\"";
-			$sql .= " AND LOWER(nom)=LOWER(\"".$row->nom."\") AND LOWER(prenom)=LOWER(\"".$row->prenom."\");";
-			$res5 = sql_request($sql);
-	//if only one this is the one
-			if(mysqli_num_rows($res5) == 1)
-			{
-			  //			  echo "Oly one report for ".$row->nom."<br/>";
-			  $answer .= "Changement type DE chercheur<br/>\n";
-			$sql  = "UPDATE ".reports_db;
-			$sql .= " SET type=\"".$row->TYPE_EVAL."\" WHERE id_session=\"".$session."\"";
-			$sql .= " AND section=\"".$section."\" AND DKEY=\"\"";
-			$sql .= " AND LOWER(nom)=LOWER(\"".$row->nom."\") AND LOWER(prenom)=LOWER(\"".$row->prenom."\");";				
-			sql_request($sql);
-			}
-			//			else
-			//echo "More than  one report ".mysqli_num_rows($res5). " for ".$row->nom."<br/>";
-			//			if($row->nom == "CHANARON")die(0);
-
-			$sql  = "UPDATE ".reports_db;
-			$sql .= " SET NUMSIRHUS=\"".$row->NUMSIRHUS."\", DKEY=\"".$row->DKEY."\" WHERE id_session=\"".$session."\"";
-			$sql .= " AND section=\"".$section."\" AND DKEY=\"\" AND type=\"".$row->TYPE_EVAL."\"";
-			$sql .= " AND LOWER(nom)=LOWER(\"".$row->nom."\") AND LOWER(prenom)=LOWER(\"".$row->prenom."\");";
-			$res = sql_request($sql);
-			global $dbh;
-			$num = mysqli_affected_rows($dbh);
-			if($num > 0)
-			{
-			if($rapporteur != "")
-				sql_request("UPDATE ".reports_db." SET rapporteur=\"".$rapporteur."\" WHERE DKEY=\"".$row->DKEY."\" AND rapporteur=\"\";");
-			if($rapporteur2 != "")
-				sql_request("UPDATE ".reports_db." SET rapporteur2=\"".$rapporteur2."\" WHERE DKEY=\"".$row->DKEY."\" AND rapporteur2=\"\";");
-			if($rapporteur3 != "")
-				sql_request("UPDATE ".reports_db." SET rapporteur3=\"".$rapporteur3."\" WHERE DKEY=\"".$row->DKEY."\" AND rapporteur3=\"\";");
-
-			  $answer .= $num." evaluations chercheur ont recu le DKEY".$row->DKEY;
-			  $answer .= " et le NUMSIRHUS ".$row->NUMSIRHUS."<br/>\n";
-			  $changed = true;
-				continue;
-			}
-			else
-			{
-			}
-
-		$row->id_origine=0;
-		$row->id_session = $session;
-		$row->section = $section;
 
 		$row->rapporteur = $rapporteur;
 		$row->rapporteur2 = $rapporteur2;
@@ -335,12 +292,8 @@ function synchronizePeopleReports($section, $session = "")
 		$changed = true;
 
 	        }
-		else
-		{
-//		$answer .= "Le rapport de DKEY ".$row->DKEY." a deja ete importe dans Marmotte<br/>\n";
-		}
 	}
-	  if(!$changed) $answer = "";
+	if(!$changed) $answer = "";
 	return $answer;
 }
 
@@ -354,6 +307,8 @@ function synchronizeUnitReports($section = "", $session = "")
 	if($section === "") $section = currentSection();
 	$answer = "<B>Synchro DE unit&eacute;s section ".$section." session ".$session."</B><br/>\n";
 	
+	
+	/* import des DE non existentes */
 	$sql = "SELECT * FROM ".dsidbname.".".dsi_evaluation_units_db;
 	$sql .=" WHERE ";
 	$sql .= " EVALUATION_CN=\"Soumis\" AND (ETAT_EVAL=\"En cours\" OR ETAT_EVAL=\"Terminée\")";
@@ -381,85 +336,15 @@ function synchronizeUnitReports($section = "", $session = "")
 	  {
 	    return "";
 	  }
+
 	while($row = mysqli_fetch_object($res))
-	{
-		
-		for($i = 1; $i <= 9; $i++)
-		{
-			$field = "CODE_SECTION".$i;
-			if($section == $row->$field)
-			{
-				$field = "RAPPORTEUR".$i."1";
-				$rapporteur = getEmailFromChaire($row->$field);
-				$field = "RAPPORTEUR".$i."2";
-				$rapporteur2 = getEmailFromChaire($row->$field);
-				break;
-			}
-		}
-		
-	  //		$answer .= "Synchronisation de la DKEY ".$row->DKEY."<br/>\n";
-		//		$session = $row->LIB_SESSION.$row->ANNEE;
-		$sql  = "UPDATE ".reports_db;
-		$sql .= " SET DKEY=\"".$row->DKEY."\" WHERE id_session=\"".$session."\"";
-		$sql .= " AND section=\"".$section."\" AND DKEY=\"\" ";
-		$sql .= " AND (type=\"".$row->TYPE_EVAL."\") ";
-		$sql .= " AND unite=\"".$row->UNITE_EVAL."\";";
-		//$answer .= $sql."<br/>";
-		sql_request($sql);
-		global $dbh;
-		$num = mysqli_affected_rows($dbh);
-
-		global $dbh;
-		if($num >0)
-		{
-		  $answer .= "=rapporteurs ".$rapporteur." - ".$rapporteur2;
-		  $answer .= " DKEY ".$row->DKEY." ";
-			if($rapporteur != "")
-				sql_request(
-				"UPDATE ".reports_db." SET rapporteur=\"".$rapporteur."\" WHERE DKEY=\"".$row->DKEY."\" AND rapporteur=\"\";");
-			if($rapporteur2 != "")
-				sql_request(
-				"UPDATE ".reports_db." SET rapporteur2=\"".$rapporteur2."\" WHERE DKEY=\"".$row->DKEY."\" AND rapporteur2=\"\";");
-			$answer .= $num." =DKEY ".$row->DKEY." ";
-			continue;
-		}
-
-		$sql = "SELECT * FROM ".reports_db." WHERE";
-		$sql .= " DKEY=\"\" AND id=id_origine AND  id_session=\"".$session."\" AND section=\"".$section."\"";
-		$sql .= " AND unite=\"".$row->UNITE_EVAL."\" AND id=id_origine;";
-		$num = mysqli_num_rows(sql_request($sql));
-		if($num == 1)
-		  {
-		  $answer .= date('H:i:s')."Mise a jour des rapporteurs ".$rapporteur." - ".$rapporteur2;
-		  $answer .= " du dossier unite 'repeche'".$row->UNITE_EVAL."<br/>";
-
-		    $sql = "UPDATE ".reports_db." SET type=\"".$row->TYPE_EVAL."\", DKEY=\"".$row->DKEY."\" WHERE";
-		    $sql .= " DKEY=\"\" AND id_session=\"".$session."\" AND section=\"".$section."\"";
-		    $sql .= " AND unite=\"".$row->UNITE_EVAL."\" ;";		    
-		    //	    $answer .= $sql;
-		    sql_request($sql);
-
-		    if($rapporteur != "")
-		    	sql_request("UPDATE ".reports_db." SET rapporteur=\"".$rapporteur."\" WHERE DKEY=\"".$row->DKEY."\" AND rapporteur=\"\";");
-		    if($rapporteur2 != "")
-		    	sql_request("UPDATE ".reports_db." SET rapporteur2=\"".$rapporteur2."\" WHERE DKEY=\"".$row->DKEY."\" AND rapporteur2=\"\";");
-		    
-		    global $dbh;
-		    $num = mysqli_affected_rows($dbh);
-
-		    
-		    $answer .= $num."=DKEY ".$row->DKEY." ";
-		    continue;
-		  }
-
+	{		
 		$answer .= "+DKEY ".$row->DKEY." ";
 		$row->unite = $row->UNITE_EVAL;
 		$row->type = $row->TYPE_EVAL;
 		$row->id_session = $session;
 		$row->section = $section;
 		$row->id_origine=0;
-		$row->rapporteur = $rapporteur;
-		$row->rapporteur2 = $rapporteur2;
 
 		for($i = 1; $i <= 9; $i++)
 		{
@@ -468,13 +353,18 @@ function synchronizeUnitReports($section = "", $session = "")
 			{
 				$field = "AVIS".$i;
 				$row->avis = $row->$field;
-				break;
+				$field = "RAPPORTEUR".$i."1";
+				$row->rapporteur = getEmailFromChaire($row->$field);
+				$field = "RAPPORTEUR".$i."2";
+				$row->$rapporteur2 = getEmailFromChaire($row->$field);
+			break;
 			}
 		}
 
 		addReportToDatabase($row);
 	}
-	/* synchronizing school names */
+
+	/* synchronizing school, conference and revues naes */
 	$sql= "UPDATE ".marmottedbname.".".reports_db." marmotte JOIN ".dsidbname.".".dsi_evaluation_units_db." dsi ON ";
 	$sql.= "marmotte.DKEY=dsi.DKEY SET marmotte.nom=dsi.TITRE, marmotte.prenom=dsi.RESP_PRINCIPAL WHERE ";
 	$sql .= "(dsi.TYPE_EVAL=\"8515\" OR dsi.TYPE_EVAL=\"8510\" OR dsi.TYPE_EVAL=\"8505\")";
@@ -534,13 +424,14 @@ function check_missing_data()
       global  $dossier_stockage_dsi;
       $file = $dossier_stockage_dsi."/".$row->path_sas."/".$row->nom_document;
       if(!file_exists($file))
-	$missing[] = $row->dkey;
+	$missing[$row->dkey] = $file;
     }
   if(count($missing) > 0)
     {
-      $msg .= "\n\nLa table ".dsidbname.".".dsi_docs_db." contient ".count($missing)." liens vers des documents pdfs inexistants sur le serveur.\n<br/>";
-      /*      foreach($missing as $dkey)
-	      $msg.= $dkey." ";*/
+      $msg .= "\n\nLa table ".dsidbname.".".dsi_docs_db." contient ".$total." liens vers des documents pdfs ";
+      $msg .= " dont ".count($missing)." sont inaccessibles depuis Marmotte.\n<br/>";
+      foreach($missing as $dkey => $link)
+	$msg.= "DKEY ".$dkey." ".$link."<br/>\n";
     }
   /*
   $sql = "SELECT * FROM ".dsidbname.".".dsi_evaluation_units_db." WHERE UNITE_EVAL NOT IN  (SELECT `CODEUNITE` FROM ".dsidbname.".".dsi_units_db.")";
@@ -578,6 +469,23 @@ function synchronize_with_evaluation($section = "", $recursive = false, $email =
 	    foreach($emails as $email)
 	      email_handler($email,"Alerte Marmotte: données manquantes",$report,"hugo.gimbert@cnrs.fr");
 	  }
+
+	/* mise a jour des meta données pour les DE unités déjà importées dans marmotte */
+	$sql = "UPDATE ".marmottedbname.".".reports_db." marmotte JOIN ".dsidbname.".".dsi_evaluation_units_db." dsi ";
+	$sql .= "ON marmotte.DKEY=dsi.DKEY ";
+	$sql .= "SET marmotte.unite=dsi.UNITE_EVAL, marmotte.type=dsi.TYPE_EVAL ";
+	$sql .= " WHERE ";
+	$sql .= " dsi.EVALUATION_CN=\"Soumis\" AND (dsi.ETAT_EVAL=\"En cours\" OR dsi.ETAT_EVAL=\"Terminée\")";
+	sql_request($sql);
+
+	/* mise a jour des meta données pour les DE chercheurs déjà importées dans marmotte */
+	$sql = "UPDATE ".marmottedbname.".".reports_db." marmotte JOIN ".dsidbname.".".dsi_evaluation_db." dsi ";
+	$sql .= "ON marmotte.DKEY=dsi.DKEY ";
+	$sql .= "SET marmotte.NUMSIRHUS=dsi.NUMSIRHUS, marmotte.type=dsi.TYPE_EVAL ";
+	$sql .= " WHERE ";
+	$sql .= " dsi.EVALUATION_CN=\"Soumis\" AND (dsi.ETAT_EVAL=\"En cours\" OR dsi.ETAT_EVAL=\"Terminée\")";
+	sql_request($sql);
+
 	return $report."<br/>\n".synchronize_with_evaluation("1",$recursive,$email);
     }
 
