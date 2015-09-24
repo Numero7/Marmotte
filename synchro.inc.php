@@ -60,11 +60,24 @@ function synchronizeWithDsiMembers($section,$email = true)
 
 	$result .= synchronizeEmailsUpdates($email);
 	$result .= "<br/><B>Synchronisation des membres de la section</B><br/>\n";
-	
-	if (isSuperUser())
-		$sql = "SELECT * FROM ".dsidbname.".".dsi_users_db." WHERE 1;";
-	else
-		$sql = "SELECT * FROM ".dsidbname.".".dsi_users_db." WHERE CID_code=\"".$section."\" OR section_code=\"".$section."\";";
+
+	/* synchro des collèges */
+	$sql = "UPDATE ".users_db." marmotte JOIN ".dsidbname.".".dsi_users_db." dsi SET ";
+	$sql .= "marmotte.college=dsi.college_code ";
+	$sql .= "WHERE marmotte.section='".$section."' AND ";
+	$sql .= " ( (marmotte.section_numchaire=dsi.section_numchaire AND dsi.section_numchaire != '')";
+	$sql .= " OR (marmotte.CID_numchaire=dsi.CID_numchaire AND dsi.CID_numchaire != ''))";
+	sql_request($sql);
+
+	/* effacement des utilissateurs ayant disparu du référentiel dsi */
+	$sql = "DELETE FROM ".users_db." WHERE dsi='1' AND section='".$section."' AND login NOT IN (SELECT mailpro FROM ".dsidbname.".".dsi_users_db.")";
+
+	//	if (isSuperUser())
+	//	$sql = "SELECT * FROM ".dsidbname.".".dsi_users_db." WHERE 1;";
+	//else
+
+	/* mise a jour ou ajout des membres de la section */
+	$sql = "SELECT * FROM ".dsidbname.".".dsi_users_db." WHERE CID_code=\"".$section."\" OR section_code=\"".$section."\";";
 
 	$res = sql_request($sql);
 	
@@ -97,12 +110,12 @@ function synchronizeWithDsiMembers($section,$email = true)
 				$result .= "Ajout du compte ".$login." &agrave; la base marmotte.<br/>";
 				$sql = "INSERT INTO ".users_db;
 				$sql .= " (login,sections,permissions,section_code,section_role_code,CID_code";
-				$sql .= ",CID_role_code,section_numchaire,CID_numchaire, passHash,description,email,tel) ";
+				$sql .= ",CID_role_code,section_numchaire,CID_numchaire, passHash,description,email,tel,dsi) ";
 				$sql .= "VALUES ('";
 				$sql .= real_escape_string($login)."','','0','".$row->section_code."','";
 				$sql .= $row->section_role_code."','".$row->CID_code."','".$row->CID_role_code."','";
 				$sql .= $row->section_numchaire."','".$row->CID_numchaire."','','";
-				$sql .= real_escape_string($row->nom." ".$row->prenom)."','".$login."','');";
+				$sql .= real_escape_string($row->nom." ".$row->prenom)."','".$login."','','1');";
 				sql_request($sql);
 			}
 		}

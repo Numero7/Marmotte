@@ -232,6 +232,17 @@ function listNomRapporteurs()
 	return $result;
 }
 //Vous n'avez pas le niveau de permission suffisa
+
+function getCollege($login = "")
+{
+  if($login == "") $login = getLogin();
+  $users = listUsers();
+  if(isset($users[$login]))
+    return $users[$login]->college;
+  else
+    return "";
+}
+
 function getUserPermissionLevel($login = "", $use_mask = true )
 {
 	$mask = NIVEAU_PERMISSION_INFINI;

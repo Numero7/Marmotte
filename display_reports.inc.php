@@ -132,6 +132,7 @@ function displayStatsConcours()
 {
 	$stats = get_bureau_stats();
 	$roles = array("rapporteur","rapporteur2","rapporteur3");
+	$rapporteurs = listNomRapporteurs();
 	?>
 <center>
 	<table>
@@ -233,7 +234,8 @@ function displayRowCell($row, $fieldID)
 	$sec = isSecretaire() || ( $bur && isSecretaire(getLogin() , false));
 
 	$concours = getConcours();	
-	$rapporteurs = listNomRapporteurs();
+	$rapporteurs = 	listUsers();
+	//	$rapporteurs = listNomRapporteurs();
 	
 
 	$title = $fieldsAll[$fieldID];
@@ -251,17 +253,21 @@ function displayRowCell($row, $fieldID)
 	<select
 		onchange="window.location='index.php?action=set_property&property=<?php echo $fieldID; ?>&all_reports=&id_origine=<?php echo $row->id_origine; ?>&value=' + this.value;">
 		<?php
-		foreach($rapporteurs as $rapporteur => $nom)
+		echo "<option value=\"\"></option>\n";
+		foreach($rapporteurs as $rapporteur => $data)
 		{
+		  if(is_rapporteur_allowed($data->college,$row->type))
+		    {
 			$selected = ($rapporteur == $row->$fieldID) ? "selected=on" : "";
-			echo "<option ".$selected." value=\"".$rapporteur."\">".$nom."</option>\n";
+			echo "<option ".$selected." value=\"".$rapporteur."\">".$data->description."</option>\n";
+		    }
 		}
 		?>
 	</select>
 	<?php
 		}
 		else
-			echo (isset($rapporteurs[$row->$fieldID]) ? $rapporteurs[$row->$fieldID] : $row->$fieldID);
+			echo (isset($rapporteurs[$row->$fieldID]) ? $rapporteurs[$row->$fieldID]->description : $row->$fieldID);
 	}
 	else if($type=="avis")
 	{
@@ -441,9 +447,7 @@ function displayRows($rows, $fields, $filters, $filter_values)
 </p>
 
 <?php 
-$rapporteurs = listNomRapporteurs();
 $bur = isBureauUser();
-
 if($bur)
 	displayStats();
 ?>

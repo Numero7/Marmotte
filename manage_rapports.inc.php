@@ -768,6 +768,24 @@ function previous_report($id)
 	}
 }
 
+function is_rapporteur_allowed($college, $type)
+{
+  if($type == "4510" || $type == "4515" || $type == "4520") 
+    return ($college == "A1" || $college == "A2");
+  if($type == "4505" || $type == "7777")
+    return ($college == "A1" || $college == "A2" || $college == "B1" || $college == "B2");
+  return true;
+}
+
+
+function is_seeing_allowed($college, $type)
+{
+  if($type == "4510" || $type == "4515" || $type == "4520") 
+    return ($college == "A1" || $college == "A2");
+  if($type == "7777")
+    return ($college != "C");
+  return true;
+}
 
 function set_property($property,$id_origine, $value, $all_reports = false)
 {

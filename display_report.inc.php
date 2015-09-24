@@ -456,7 +456,7 @@ function displayEditableReport($row, $canedit = true)
 
 			displayEditionFrameStart("",$hidden,$submits);
 				
-			if(!$conflit)
+			if(!$conflit && is_seeing_allowed(getCollege(),$row->type))
 			{
 				echo'<table><tr>';
 				if($has_rapp)
@@ -521,7 +521,7 @@ function displayEditableReport($row, $canedit = true)
 		echo (isset($row->DKEY) && $row->DKEY != 0 ? ("(#".$row->DKEY.")") : "")."</h1>";
 
 
-		if(!$conflit)
+		if(!$conflit && (is_seeing_allowed(getCollege(),$row->type)))
 		{
 			displayEditionFrameStart("",$hidden,array());
 
