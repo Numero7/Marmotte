@@ -356,7 +356,7 @@ function synchronizeUnitReports($section = "", $session = "")
 				$field = "RAPPORTEUR".$i."1";
 				$row->rapporteur = getEmailFromChaire($row->$field);
 				$field = "RAPPORTEUR".$i."2";
-				$row->$rapporteur2 = getEmailFromChaire($row->$field);
+				$row->rapporteur2 = getEmailFromChaire($row->$field);
 			break;
 			}
 		}
@@ -431,7 +431,7 @@ function check_missing_data()
       $msg .= "\n\nLa table ".dsidbname.".".dsi_docs_db." contient ".$total." liens vers des documents pdfs ";
       $msg .= " dont ".count($missing)." sont inaccessibles depuis Marmotte.\n<br/>";
       foreach($missing as $dkey => $link)
-	$msg.= "DKEY ".$dkey." ".$link."<br/>\n";
+	      $msg.= "DKEY ".$dkey." ".$link."<br/>\n";
     }
   /*
   $sql = "SELECT * FROM ".dsidbname.".".dsi_evaluation_units_db." WHERE UNITE_EVAL NOT IN  (SELECT `CODEUNITE` FROM ".dsidbname.".".dsi_units_db.")";
@@ -553,6 +553,7 @@ catch(Exception $e)
 	      }
 	    else if(!$recursive)
 	      {
+		
 		$_SESSION["answer_dsi_sync"] = $answer . $_SESSION["answer_dsi_sync"];
 		echo "<script>window.location = 'index.php?action=synchronize_with_dsi&section=".($section+1)."'</script>";
 	      }
