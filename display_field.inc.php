@@ -117,7 +117,16 @@ function display_avis($row, $fieldID, $readonly)
 
 function display_rapporteur($row, $fieldID, $readonly)
 {
-	display_select($row, $fieldID, listNomRapporteurs(),$readonly);
+  $liste = array(""=>"");
+  $users = listUsers();
+  foreach($users as $user => $data)
+    {
+      if(is_rapporteur_allowed($data->college,$row->type))
+	{
+	  $liste[$user] = $data->description;
+	}
+    }
+  display_select($row, $fieldID, $liste,$readonly);
 }
 
 function display_unit($row, $fieldID, $readonly)
