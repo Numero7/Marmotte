@@ -50,6 +50,8 @@ uasort($users,"cmp");
 		if ($data->permissions <= getUserPermissionLevel() || ($data->permissions  < NIVEAU_PERMISSION_SUPER_UTILISATEUR && isSecretaire()))
 		{
 			echo "\n<tr><td><b>".ucfirst($data->description)."</b></td><td> [".$user."]</td>\n";
+
+
 			  if(isSuperUser())
 			    {
 			      /*
@@ -57,14 +59,13 @@ uasort($users,"cmp");
 				echo "section_role <input style=\"width:2cm;\" name=\"section_role\" value=\"".$data->section_role_code."\"></input>";
 				echo "CID <input style=\"width:1cm;\" name=\"CID_code\" value=\"".$data->CID_code."\"></input>";
 				echo "CID_role <input style=\"width:2cm;\" name=\"CID_role\" value=\"".$data->CID_role_code."\"></input>";
-			      */
+			      */			      
 			      echo "<td>"; if($data->section_code){ echo "Section <b> ".$data->section_code."</b>";} echo "</td>";
 			      echo "<td>";if($data->section_role_code){ echo " <b> ".$data->section_role_code."</b>";} echo "</td>";
 				echo "<td>";if($data->CID_code){ echo "CID <b> ".$data->CID_code."</b>";} echo"</td>";
 				echo "<td>"; if($data->CID_role_code) echo " <b> ".$data->CID_role_code."</b>";echo "</td>";
 			      echo "<td><form method=\"post\" action=\"index.php\">";
 			      echo "Sections <input style=\"width:5cm;\" name=\"sections\" value=\"".$data->sections."\"></input>";
-				echo "<input type=\"hidden\" name=\"admin_users\"></input>";
 			echo "<select name=\"permissions\">\n";
 			foreach($permission_levels as $val => $level)
 			{
@@ -84,7 +85,20 @@ uasort($users,"cmp");
 			  foreach($permission_levels as $val => $level)
 			  if ($val==$data->permissions)
 			  		echo "<td>".ucfirst($level)."</td>\n";
+			      echo "<td><form method=\"post\" action=\"index.php\">";
 			  }
+
+		      $colleges = array("","A1","A2","B1","B2","C");
+		      
+		      	echo "Collège <select name=\"college\">\n";
+			foreach($colleges as $val)
+			{
+				$sel = "";
+				if ($val==$data->college)
+					$sel = " selected=\"selected\"";
+				echo "<option value=\"$val\"$sel>".$val."</option>\n";
+			}
+			echo "</select>";
 
 			if(!isSuperUser() && is_current_session_concours())
 			{
@@ -117,9 +131,9 @@ uasort($users,"cmp");
 				}
 			}
 
+			echo "<input type=\"hidden\" name=\"admin_users\"></input>";
 			echo "<input type=\"hidden\" name=\"login\" value=\"$user\"/>\n";
 			echo "<input type=\"hidden\" name=\"action\" value=\"infosrapporteur\"/>\n";
-			if(isSuperUser() || is_current_session_concours())
 			echo " <input type=\"submit\" value=\"Valider\"/>\n";
 			echo "</form></td></tr>\n";
 		}
@@ -204,7 +218,7 @@ if(isSuperUser())
 
 -->
 <?php
-if(isACN())
+	  if(isACN() || isSuperUser())
 {
 ?>
 <hr/>

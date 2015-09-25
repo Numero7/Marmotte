@@ -530,11 +530,12 @@ function alertText($text)
 						include "admin/admin.inc.php";
 					break;
 				case 'infosrapporteur':
-					if (isset($_REQUEST["login"]) and isset($_REQUEST["permissions"]))
+					if (isset($_REQUEST["login"]))
 					{
 						global  $concours_ouverts;
 						$login = $_REQUEST["login"];
-						$permissions = $_REQUEST["permissions"];
+						$permissions = isset($_REQUEST["permissions"]) ? $_REQUEST["permissions"] : "";
+						$college = $_REQUEST["college"];
 						$sections = isset($_REQUEST["sections"]) ? $_REQUEST["sections"] : "";
 						$section_code = isset($_REQUEST["section_code"]) ? $_REQUEST["section_code"] : "";
 						$CID_code = isset($_REQUEST["CID_code"]) ? $_REQUEST["CID_code"] : "";
@@ -543,7 +544,7 @@ function alertText($text)
 						foreach($concours_ouverts as $concours => $nom)
 							if(isset($_REQUEST["sousjury".$concours]))
 							addSousJury($concours, $_REQUEST["sousjury".$concours], $login);
-						changeUserInfos($login,$permissions,$sections,$section_code, $section_role, $CID_code, $CID_role);
+						changeUserInfos($login,$permissions,$sections,$section_code, $section_role, $CID_code, $CID_role, $college);
 						include "admin/admin.inc.php";
 						scrollToId('infosrapporteur');
 					}

@@ -419,7 +419,7 @@ function changePwd($login,$old,$new1,$new2, $envoiparemail)
 		throw new Exception("La saisie du mot de passe courant est incorrecte, veuillez réessayer.");
 }
 
-function changeUserInfos($login,$permissions, $sections, $section_code = "", $section_role = "", $CID_code = "", $CID_role = "")
+function changeUserInfos($login,$permissions, $sections, $section_code = "", $section_role = "", $CID_code = "", $CID_role = "", $college = "?")
 {
 	if(isSuperUser())
 	{
@@ -427,14 +427,18 @@ function changeUserInfos($login,$permissions, $sections, $section_code = "", $se
 			$sections = "";
 		$sql = "UPDATE `".users_db."`";
 		$sql .= " SET ";
-		//$sql .= "`section_code`='".real_escape_string($section_code)."'";
-		//$sql .= ", `section_role_code`='".real_escape_string($section_role)."'";
-		//$sql .= ", `CID_code`='".real_escape_string($CID_code)."'";
-		//$sql .= ", `CID_role_code`='".real_escape_string($CID_role)."'";
 		$sql .= " `sections`='".real_escape_string($sections)."'";
+		if($college != "?")
+		  $sql .= ", `college`='".real_escape_string($college)."'";
 		$sql .= ", `permissions`='".real_escape_string($permissions)."'";
 		$sql .= " WHERE `login`='".real_escape_string($login)."';";
 	}
+	else if (isSecretaire() && $college != "?")
+	  {
+		$sql = "UPDATE `".users_db."` SET ";
+		$sql .= "`college`='".real_escape_string($college)."'";
+		$sql .= " WHERE `login`='".real_escape_string($login)."';";
+	  }
 	/*
 	else if (isSecretaire())
 	{

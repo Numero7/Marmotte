@@ -61,24 +61,12 @@ function synchronizeWithDsiMembers($section,$email = true)
 	$result .= synchronizeEmailsUpdates($email);
 	$result .= "<br/><B>Synchronisation des membres de la section</B><br/>\n";
 
-	/* synchro des collèges */
-	$sql = "UPDATE ".users_db." marmotte JOIN ".dsidbname.".".dsi_users_db." dsi SET ";
-	$sql .= "marmotte.college=dsi.college_code ";
-	$sql .= "WHERE marmotte.section='".$section."' AND ";
-	$sql .= " ( (marmotte.section_numchaire=dsi.section_numchaire AND dsi.section_numchaire != '')";
-	$sql .= " OR (marmotte.CID_numchaire=dsi.CID_numchaire AND dsi.CID_numchaire != ''))";
-	sql_request($sql);
-
-	/* effacement des utilissateurs ayant disparu du référentiel dsi */
-	$sql = "DELETE FROM ".users_db." WHERE dsi='1' AND section='".$section."' AND login NOT IN (SELECT mailpro FROM ".dsidbname.".".dsi_users_db.")";
-
 	//	if (isSuperUser())
 	//	$sql = "SELECT * FROM ".dsidbname.".".dsi_users_db." WHERE 1;";
 	//else
 
 	/* mise a jour ou ajout des membres de la section */
 	$sql = "SELECT * FROM ".dsidbname.".".dsi_users_db." WHERE CID_code=\"".$section."\" OR section_code=\"".$section."\";";
-
 	$res = sql_request($sql);
 	
 	$changed = false;
@@ -336,7 +324,6 @@ function synchronizeUnitReports($section = "", $session = "")
 	$sql .= " AND ";
 	$sql .= " ( DKEY NOT IN (SELECT DKEY FROM ";
 	$sql .= marmottedbname.".".reports_db." WHERE id_session=\"".$session."\" AND DKEY != \"\" AND section=\"".$section."\") )";
-
 	$res = sql_request($sql);
 
 	$n = mysqli_num_rows($res);
@@ -434,17 +421,17 @@ function check_missing_data()
   while($row = mysqli_fetch_object($result))
     {
       $total++;      
-      global  $dossier_stockage_dsi;
+      $dossier_stockage_dsi = "/home/dsi/data/docs";
       $file = $dossier_stockage_dsi."/".$row->path_sas."/".$row->nom_document;
       if(!file_exists($file))
-	$missing[$row->dkey] = $file;
+      	$missing[$row->dkey] = $file;
     }
   if(count($missing) > 0)
     {
       $msg .= "\n\nLa table ".dsidbname.".".dsi_docs_db." contient ".$total." liens vers des documents pdfs ";
       $msg .= " dont ".count($missing)." sont inaccessibles depuis Marmotte.\n<br/>";
-      foreach($missing as $dkey => $link)
-	      $msg.= "DKEY ".$dkey." ".$link."<br/>\n";
+      //foreach($missing as $dkey => $link)
+      //      $msg.= "DKEY ".$dkey." ".$link."<br/>\n";
     }
   /*
   $sql = "SELECT * FROM ".dsidbname.".".dsi_evaluation_units_db." WHERE UNITE_EVAL NOT IN  (SELECT `CODEUNITE` FROM ".dsidbname.".".dsi_units_db.")";
@@ -462,22 +449,24 @@ function check_missing_data()
 /* performs synchro with evaluation and returns diagnostic , empty string if nothing happaned */
 function synchronize_with_evaluation($section = "", $recursive = false, $email = true)
 {
-
+  //  echo "synchronize_with_evaluation '".$section."' '".$recursive."' '".$email."'\n"; 
 
   if(isSuperUser() && isset($_SESSION["answer_dsi_sync"]) && !$recursive)
     echo $_SESSION["answer_dsi_sync"];
 
   if(isSuperUser() && $section == "")
     {
+try
+  {
 	$report = check_missing_data();
 	if($report != "")
 	  {
 	    $emails = array(
-			    "hugo.gimbert@cnrs.fr", 
-			    "Laurent.CHAZALY@cnrs-dir.fr",
-			    "velazquez@icmcb-bordeaux.cnrs.fr",
-			    "Rene.PELFRESNE@dsi.cnrs.fr",
-			    "Marie-Claude.LABASTIE@cnrs-dir.fr"
+			    "hugo.gimbert@cnrs.fr",
+			    //			    "Laurent.CHAZALY@cnrs-dir.fr",
+			    //"velazquez@icmcb-bordeaux.cnrs.fr",
+			    "Rene.PELFRESNE@dsi.cnrs.fr"
+			    //"Marie-Claude.LABASTIE@cnrs-dir.fr"
 			    );
 	    foreach($emails as $email)
 	      email_handler($email,"Alerte Marmotte: données manquantes",$report,"hugo.gimbert@cnrs.fr");
@@ -499,13 +488,39 @@ function synchronize_with_evaluation($section = "", $recursive = false, $email =
 	$sql .= " dsi.EVALUATION_CN=\"Soumis\" AND (dsi.ETAT_EVAL=\"En cours\" OR dsi.ETAT_EVAL=\"Terminée\")";
 	sql_request($sql);
 
+	/* synchro des collèges */
+	$sql = "UPDATE ".users_db." marmotte JOIN ".dsidbname.".".dsi_users_db." dsi SET ";
+	$sql .= "marmotte.college=dsi.section_college_code ";
+	$sql .= "WHERE marmotte.section_numchaire=dsi.section_numchaire AND dsi.section_code != ''";
+	sql_request($sql);
+
+	$sql = "UPDATE ".users_db." marmotte JOIN ".dsidbname.".".dsi_users_db." dsi SET ";
+	$sql .= "marmotte.college=dsi.CID_acces_college_code ";
+	$sql .= "WHERE marmotte.CID_numchaire=dsi.CID_numchaire AND dsi.CID_code != ''";
+	sql_request($sql);
+
+	/* effacement des utilissateurs ayant disparu du référentiel dsi */
+	$sql = "DELETE FROM ".users_db." WHERE (section_numchaire != \"\" OR CID_numchaire != \"\")";
+	$sql .= " AND login NOT IN (SELECT mailpro FROM ".dsidbname.".".dsi_users_db.")";
+	$res = sql_request($sql);
+
+
+  }
+catch(Exception $e)
+  {
+    echo "Error: ".$e->getMessage();
+    
+    return $e->getMessage();
+  }
+
 	return $report."<br/>\n".synchronize_with_evaluation("1",$recursive,$email);
     }
 
   if(!isSuperUser())
     $section = currentSection();
 
-
+try
+  {
   $answer = "<h1>Synchronisation avec e-valuation de la section ".$section." - ".date('d/m/Y - H:i:s')."</h1>\n";
 	if(isSecretaire())
 	{
@@ -536,16 +551,16 @@ function synchronize_with_evaluation($section = "", $recursive = false, $email =
 		      $answer .= $log."<br/>";
 		  }		  
 		
-try
-  {
+
 		$answer.= export_to_evaluation($section);
+	}
   }
 catch(Exception $e)
   {
-    $answer .=  "Failed to export to e-valuation\n<br/>".$e->getMessage()."\n<br/>"; 
+    echo $e->getMessage();
+    $answer .=  "Failed to synchronize\n<br/>".$e->getMessage()."\n<br/>"; 
   }
 
-	}
 
 	if(isSuperUser())
 	  {
