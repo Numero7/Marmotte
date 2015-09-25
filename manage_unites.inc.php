@@ -110,8 +110,7 @@ function updateUnitData($unite, $data)
 				$sql .=  " WHERE code='$unite' AND `section`='". real_escape_string($data->section).";";
 			else
 				$sql .=  " WHERE code='$unite' AND `section`='". real_escape_string($_SESSION['filter_section']).";";
-
-			mysqli_query($sql);
+			sql_request($sql);
 		}
 	}
 	else
