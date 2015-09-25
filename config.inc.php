@@ -1448,27 +1448,25 @@ $csv_composite_fields = array(
 $csv_preprocessing = array('nom' => 'normalizeName', 'prenom' => 'normalizeName','unit' => 'fromunittocode');
 
 $sgcn_keywords_to_eval_types = array(
-		"cole th" => "Ecole",
-		"Evaluation" => 'EvalVague',
-		'Reconstitution' => 'Reconstitution',
-		'Titularisation' => 'Titularisation',
+				     "ats DR" => 6011,
+				     "ats CR" => 6010,
+		"cole th" => 8515,
+		"Evaluation" => 6005,
+		'Reconstitution' => 6020,
+		'Titularisation' => 6015,
 		'promotion' => 'Promotion',
-		'Changement de direction' => 'ChgtDir',
-		'Changement de section' => 'ChgtSection',
-		'Expertise' => 'Expertise',
-		"Renouvellement de GDR" =>  'Renouvellement',
-		"Evaluation" => "",
-		"Avis de pertinence sur un projet d'association au CNRS" =>'Association',
-		"Avis de pertinence sur un renouvellement d'association au CNRS" => "Renouvellement",
-		"Changement de direction d'unité" => "ChgtDir",
-		"Renouvellement de GDR" => "Renouvellement",
-		"Expertise" => "Expertise",
-		"Rattachement" => "DEChercheur",
-		"Suivi" => "DEChercheur",
-		"Emeritat (renouvellement)" => "EmeritatRen",
-		"Emeritat (1" => "Emeritat",
-		"Renouvellement de mise" => "DEChercheur",
-		"Accueil" => "DEChercheur"
+		'Changement de direction' => 8101,
+		'Changement de section' => 6515,
+		'Expertise' => 8104,
+		"Renouvellement de GDR" =>  8025,
+		"Avis de pertinence sur un projet d'association au CNRS" =>8021,
+		"Avis de pertinence sur un renouvellement d'association au CNRS" => 8020,
+		"Changement de direction d'unité" => 8101,
+		"Suivi" => 6009,
+		"Emeritat (renouvellement)" => 7018,
+		"Emeritat (1" => 7017,
+		"Renouvellement de mise" => 6520,
+		"Accueil" => 5505
 );
 
 $possible_type_labels = array("Type évaluation", "Type d\'évaluation", "type");

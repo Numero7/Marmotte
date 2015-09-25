@@ -296,34 +296,13 @@ function addCsvReport($subtype, $properties)
 
 		foreach($sgcn_keywords_to_eval_types as $key => $value)
 			if(strcontains($properties["type"],$key))
-			{
-				if($key == "promotion")
-				{
-					if(strcontains($properties["type"],"CR1"))
-						$properties["grade_rapport"] = "CR1";
-					if(strcontains($properties["type"],"DR1"))
-						$properties["grade_rapport"] = "DR1";
-					if(strcontains($properties["type"],"DRCE1"))
-						$properties["grade_rapport"] = "DRCE1";
-					if(strcontains($properties["type"],"DRCE2"))
-						$properties["grade_rapport"] = "DRCE2";
-					$properties["type"] = "Promotion";
-				}
-				else if($key == "Evaluation")
-				{
-					if(isset($properties["Phase évaluation"]) && ($properties["Phase évaluation"] =="mi-vague"))
-						$properties["type"] = 'EvalMiVague';
-					else
-						$properties["type"] = 'EvalVague';
-				}
-				else $properties["type"] = $value;
-			}
+				$properties["type"] = $value;
 
 			if(!isset($properties["type"]) || $properties["type"] =="")
 				throw new Exception("Unimplemented report type '" . $type."'");
 
-			global $typesRapports;
-			if(!isset($typesRapports[$properties["type"]]))
+			global $typesRapportsAll;
+			if(!isset($typesRapportsAll[$properties["type"]]))
 			{
 				foreach($properties as $key => $value)
 					if($key == "Chercheur" || $key == "Nom" || $key == "Prenom")

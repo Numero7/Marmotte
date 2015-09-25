@@ -67,7 +67,7 @@ try
   {
 		if(unitDSIExists($code))
 		{
-			$sql = "SELECT * FROM ".dsidbname.".".dsi_units_db." WHERE CODEUNITE=".$code.";";
+			$sql = "SELECT * FROM ".dsidbname.".".dsi_units_db." WHERE CODEUNITE=\"".$code."\";";
 			$res = sql_request($sql);
 			while($row = mysqli_fetch_object($res))
 			{
