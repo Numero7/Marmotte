@@ -1145,6 +1145,7 @@ $grades = array(
 
 /* permissions levels for actions */
 $actions_level = array(
+		       "sync_colleges" => NIVEAU_PERMISSION_SUPER_UTILISATEUR,
 		       "fix_missing_data" => NIVEAU_PERMISSION_SECRETAIRE,
 		       "check_missing_data" => NIVEAU_PERMISSION_SECRETAIRE,
 		       "admindeleteprerapports" => NIVEAU_PERMISSION_SECRETAIRE,

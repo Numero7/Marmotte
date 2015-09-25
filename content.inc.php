@@ -231,6 +231,9 @@ function alertText($text)
 			
 			switch($action)
 			{
+			case 'sync_colleges':
+			  echo synchronize_colleges();
+			  break;
 			case 'fix_missing_data':
 			  $report = "";
 			  for($i = 0; $i < 55; $i++)

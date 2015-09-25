@@ -25,3 +25,5 @@ Le lien suivant permet de synchroniser Marmotte avec les bases de donnees d&#39;
 <p>
 <a href="index.php?action=fix_missing_data&amp;admin_maintenance=">Reparer les données manquantes.</a>
 </P>
+<a href="index.php?action=sync_colleges&amp;admin_maintenance=">Synchroniser les collèges de membres.</a>
+</P>

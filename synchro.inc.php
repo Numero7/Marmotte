@@ -61,6 +61,16 @@ function synchronizeWithDsiMembers($section,$email = true)
 	$result .= synchronizeEmailsUpdates($email);
 	$result .= "<br/><B>Synchronisation des membres de la section</B><br/>\n";
 
+	/* effacement des utilissateurs ayant disparu du référentiel dsi */
+	
+	$sql = "DELETE FROM ".users_db." WHERE (section_numchaire = \"".$section."\" OR CID_numchaire = \"".$section."\")";
+	$sql .= " AND login NOT IN (SELECT mailpro FROM ".dsidbname.".".dsi_users_db.")";
+	$res = sql_request($sql);
+	$num = mysqli_affected_rows($dbh);
+	if($num> 0)
+	  $result .= $num . "membres importés de Ambre vers Marmotte ont été supprimés de Ambre donc de Marmotte<br/>\n";
+	
+
 	//	if (isSuperUser())
 	//	$sql = "SELECT * FROM ".dsidbname.".".dsi_users_db." WHERE 1;";
 	//else
@@ -446,6 +456,40 @@ function check_missing_data()
   return $msg;
 }
 
+function synchronize_colleges()
+{
+  global $dbh;
+  $answer = "";
+	/* synchro des collèges */
+	$num = 0;
+	$sql = "UPDATE ".users_db." marmotte JOIN ".dsidbname.".".dsi_users_db." dsi SET ";
+	$sql .= "marmotte.college=dsi.section_college_code ";
+	$sql .= "WHERE marmotte.section_numchaire=dsi.section_numchaire AND dsi.section_numchaire != '' AND dsi.college_code='';";
+	sql_request($sql);
+	$num += mysqli_affected_rows($dbh);
+
+	$sql = "UPDATE ".users_db." marmotte JOIN ".dsidbname.".".dsi_users_db." dsi SET ";
+	$sql .= "marmotte.college=dsi.CID_acces_college_code ";
+	$sql .= "WHERE marmotte.CID_numchaire=dsi.CID_numchaire AND dsi.CID_numchaire != '' AND dsi.college_code=''";
+	sql_request($sql);
+	$num += mysqli_affected_rows($dbh);
+
+	$sql = "UPDATE ".users_db." marmotte JOIN ".dsidbname.".".dsi_users_db." dsi SET ";
+	$sql .= "marmotte.college=dsi.college_code ";
+	$sql .= "WHERE (";
+	$sql .= "(marmotte.CID_numchaire=dsi.CID_numchaire AND dsi.CID_numchaire != '')";
+	$sql .= " OR ";
+	$sql .= "(marmotte.section_numchaire=dsi.section_numchaire AND dsi.section_numchaire != '')";
+	$sql .= " ) AND dsi.college_code!=''";
+	sql_request($sql);
+	$num += mysqli_affected_rows($dbh);
+
+	if($num> 0)
+	  $answer .= $num . " collèges de membres ont été mis à jour<br/>\n";
+
+  return $answer;
+}
+
 /* performs synchro with evaluation and returns diagnostic , empty string if nothing happaned */
 function synchronize_with_evaluation($section = "", $recursive = false, $email = true)
 {
@@ -479,6 +523,10 @@ try
 	$sql .= " WHERE ";
 	$sql .= " dsi.EVALUATION_CN=\"Soumis\" AND (dsi.ETAT_EVAL=\"En cours\" OR dsi.ETAT_EVAL=\"Terminée\")";
 	sql_request($sql);
+	global $dbh;
+	$num = mysqli_affected_rows($dbh);
+	if($num > 0)
+	  $answer .= "Les meta données de ".$num." DE unités déjà existantes dans la base marmotte ont été mises à jour<br/>"; 
 
 	/* mise a jour des meta données pour les DE chercheurs déjà importées dans marmotte */
 	$sql = "UPDATE ".marmottedbname.".".reports_db." marmotte JOIN ".dsidbname.".".dsi_evaluation_db." dsi ";
@@ -487,23 +535,11 @@ try
 	$sql .= " WHERE ";
 	$sql .= " dsi.EVALUATION_CN=\"Soumis\" AND (dsi.ETAT_EVAL=\"En cours\" OR dsi.ETAT_EVAL=\"Terminée\")";
 	sql_request($sql);
+	$num = mysqli_affected_rows($dbh);
+	if($num > 0)
+	  $answer .= "Les meta données de ".$num." DE chercheurs déjà existantes dans la base marmotte ont été mises à jour<br/>"; 
 
-	/* synchro des collèges */
-	$sql = "UPDATE ".users_db." marmotte JOIN ".dsidbname.".".dsi_users_db." dsi SET ";
-	$sql .= "marmotte.college=dsi.section_college_code ";
-	$sql .= "WHERE marmotte.section_numchaire=dsi.section_numchaire AND dsi.section_code != ''";
-	sql_request($sql);
-
-	$sql = "UPDATE ".users_db." marmotte JOIN ".dsidbname.".".dsi_users_db." dsi SET ";
-	$sql .= "marmotte.college=dsi.CID_acces_college_code ";
-	$sql .= "WHERE marmotte.CID_numchaire=dsi.CID_numchaire AND dsi.CID_code != ''";
-	sql_request($sql);
-
-	/* effacement des utilissateurs ayant disparu du référentiel dsi */
-	$sql = "DELETE FROM ".users_db." WHERE (section_numchaire != \"\" OR CID_numchaire != \"\")";
-	$sql .= " AND login NOT IN (SELECT mailpro FROM ".dsidbname.".".dsi_users_db.")";
-	$res = sql_request($sql);
-
+	$answer .=synchronize_colleges();
 
   }
 catch(Exception $e)
