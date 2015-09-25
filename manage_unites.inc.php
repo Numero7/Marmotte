@@ -101,11 +101,11 @@ function updateUnitData($unite, $data)
 	{
 		$sql = "";
 		foreach($data as $field => $value)
-			if(isset($fieldsUnitsDB[$field]) && $value != "")
+			if($field != "section" && isset($fieldsUnitsDB[$field]) && $value != "")
 			$sql .= " $field='$value' ";
 		if($sql != "")
 		{
-			$sql = "UPDATE FROM ".units_db." SET ".$sql;
+			$sql = "UPDATE ".units_db." SET ".$sql;
 			if(isSuperUser())
 				$sql .=  " WHERE code='$unite' AND `section`='". real_escape_string($data->section).";";
 			else
