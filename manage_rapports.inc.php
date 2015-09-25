@@ -120,6 +120,13 @@ function getReport($id_rapport, $most_recent = true)
 	$result=sql_request($sql);
 	$report = mysqli_fetch_object($result);
 
+	try
+	{
+	    if(isset($report->unite) && $report->unite != "")
+		createUnitIfNeeded($report->unite);
+	}
+	catch(Exception $e){};
+
 	if($report == false)
 	{
 		throw new Exception("No report with id ".$id_rapport);

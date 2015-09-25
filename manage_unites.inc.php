@@ -41,7 +41,9 @@ function unitsList($all_sections = false)
 
 function unitExists($code)
 {
-	return array_key_exists($code, unitsList());
+  $liste = unitsList();
+   $res = array_key_exists($code, $liste);
+   return $res;
 }
 
 function unitDSIExists($code)
@@ -53,11 +55,15 @@ function unitDSIExists($code)
 
 function createUnitIfNeeded($code)
 {
+
   if($code == "") return;
-	if(!unitExists($code))
+      $res = unitExists($code);
+
+	if(!$res)
 	{
 		if(unitDSIExists($code))
 		{
+		  echo "Adding unit known to dsi <br/> "; 
 			$sql = "SELECT * FROM ".dsidbname.".".dsi_units_db." WHERE CODEUNITE=".$code.";";
 			$res = sql_request($sql);
 			while($row = mysqli_fetch_object($res))
@@ -69,6 +75,7 @@ function createUnitIfNeeded($code)
 		}
 		else
 		{
+		  echo "Adding unit unknown to dsi <br/> "; 
 		addUnit($code,$code,$code,"");
 		}
 	}

@@ -61,6 +61,8 @@ function change_current_section($section)
 	update_permissions(getLogin(), $section);
 }
 
+
+
 function get_bureau_stats()
 {
 	$stats = array();
@@ -145,11 +147,17 @@ function get_bureau_stats()
 				$stats[$row->$field]["total"]++;/* mysort*/
 			}
 		}
-		function callback ( $stata, $statb )
+		//		foreach($stats as $key=>$value) echo $value["total"]."<br/>";
+		//echo "Sorting according to total<br/>\n";
+		//foreach($stats as $key=>$value) echo $key;
+		function cmp( $stata, $statb )
 		{
-			return ($stata["total"] > $statb["total"]) ? 1 : ($stata["total"] == $statb["total"]) ? 0 : -1; 
+		  //
+		  //		  echo $stata["total"]." ".$statb["total"]."<br/>";
+		  return ($stata["total"] > $statb["total"]) ? -1 : (($stata["total"] == $statb["total"]) ? 0 : 1); 
 		}
-		$result = uasort ( $stats, 'callback' );
+		uasort ( $stats, 'cmp' );
+		//foreach($stats as $key=>$value) echo $value["total"]."<br/>";
 	}
 	return $stats;
 }
