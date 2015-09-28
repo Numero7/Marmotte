@@ -191,6 +191,7 @@ function displayStatsConcours()
 function displayStatsSession()
 {
 	$stats = get_bureau_stats();
+	$rapporteurs = listNomRapporteurs();
 	$roles = array("rapporteur","rapporteur2","rapporteur3");
 	?>
 <center>
@@ -205,7 +206,8 @@ function displayStatsSession()
 		<?php
 		foreach($stats as $rapporteur => $compteurs)
 		{
-			echo "<tr><td>".$rapporteur."</td>";
+			$nom= isset($rapporteurs[$rapporteur])? $rapporteurs[$rapporteur] : $rapporteur;
+			echo "<tr><td>".$nom."</td>";
 			echo "<td>".$compteurs["total"]."</td>";
 			echo "<td>".$compteurs["rapporteur"]."</td>";
 			echo "<td>".$compteurs["rapporteur2"]."</td>";
