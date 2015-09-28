@@ -1,8 +1,8 @@
 <h2 id="membres">Membres de la section</h2>
 
-<hr />
+
 <!--
-<h3 id="infosrapporteur">Memebres de la section/CID</h3>
+<h3 id="infosrapporteur">Membres de la section/CID</h3>
 
    <p>Le statut d&#39;un membre peut-être modifié temporairement pour la journée en cours
 en utilisant le menu ci-dessous.<br/>
@@ -25,6 +25,14 @@ quotidiennement à 4h du matin.</p>
 <p>En cas de changement d email, de changement de statut ou 
 	  si une création d&#39;un compte supplémentaire est nécessaire,
 veuillez contacter votre ACN.</p>
+<!--
+<h2>Synchronisation</h2>
+<p>
+ Marmotte synchronise la liste des membres avec Ambre chaque nuit,
+Il faut au maximum 12h pour que les modifications dans Ambre soient prises en compte.<br/>
+
+</p>
+-->
 
 <table>
 	<?php

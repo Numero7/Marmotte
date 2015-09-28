@@ -4,7 +4,7 @@ require_once('generate_csv.inc.php');
 require_once('manage_unites.inc.php');
 
 $admin_sessions = isset($_REQUEST["admin_sessions"]) && isSecretaire();
-$admin_maintenance = isset($_REQUEST["admin_maintenance"]) && isSecretaire();
+$admin_maintenance = isset($_REQUEST["admin_maintenance"]) && isSuperUser();
 $admin_users = isset($_REQUEST["admin_users"]) && isSecretaire();
 $admin_concours = isset($_REQUEST["admin_concours"]) && isSecretaire() && !isSuperUser();
 $admin_config = isset($_REQUEST["admin_config"]) && isSecretaire() && !isACN() && !isSuperUser();
@@ -49,8 +49,11 @@ if(!isACN() && !isSuperUser())
 	</li>
 	<?php 
 	}
+	if(isSuperUser())
+	  {
 	?>
 	<li><a href="index.php?action=admin&amp;admin_maintenance=">Synchronisation</a></li>
+	      <?php } ?>
 </ul>
 
 <hr />

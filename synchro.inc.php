@@ -106,6 +106,7 @@ function synchronizeWithDsiMembers($section,$email = true)
 			}
 			else
 			{
+			  $added = TRUE;
 				$result .= "Ajout du compte ".$login." &agrave; la base marmotte.<br/>";
 				$sql = "INSERT INTO ".users_db;
 				$sql .= " (login,sections,permissions,section_code,college,section_role_code,CID_code";
