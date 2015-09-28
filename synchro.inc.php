@@ -61,8 +61,9 @@ function synchronizeWithDsiMembers($section,$email = true)
 	$result .= synchronizeEmailsUpdates($email);
 	$result .= "<br/><B>Synchronisation des membres de la section</B><br/>\n";
 
-	/* effacement des utilissateurs ayant disparu du référentiel dsi */
-	
+	global $dbh;
+
+	/* effacement des utilissateurs ayant disparu du référentiel dsi */	
 	$sql = "DELETE FROM ".users_db." WHERE (section_numchaire = \"".$section."\" OR CID_numchaire = \"".$section."\")";
 	$sql .= " AND login NOT IN (SELECT mailpro FROM ".dsidbname.".".dsi_users_db.")";
 	$res = sql_request($sql);
@@ -107,10 +108,11 @@ function synchronizeWithDsiMembers($section,$email = true)
 			{
 				$result .= "Ajout du compte ".$login." &agrave; la base marmotte.<br/>";
 				$sql = "INSERT INTO ".users_db;
-				$sql .= " (login,sections,permissions,section_code,section_role_code,CID_code";
+				$sql .= " (login,sections,permissions,section_code,college,section_role_code,CID_code";
 				$sql .= ",CID_role_code,section_numchaire,CID_numchaire, passHash,description,email,tel,dsi) ";
 				$sql .= "VALUES ('";
 				$sql .= real_escape_string($login)."','','0','".$row->section_code."','";
+				$sql .= $row->college_code."','";
 				$sql .= $row->section_role_code."','".$row->CID_code."','".$row->CID_role_code."','";
 				$sql .= $row->section_numchaire."','".$row->CID_numchaire."','','";
 				$sql .= real_escape_string($row->nom." ".$row->prenom)."','".$login."','','1');";
@@ -493,6 +495,7 @@ function synchronize_colleges()
 /* performs synchro with evaluation and returns diagnostic , empty string if nothing happaned */
 function synchronize_with_evaluation($section = "", $recursive = false, $email = true)
 {
+  $answer = "";
   //  echo "synchronize_with_evaluation '".$section."' '".$recursive."' '".$email."'\n"; 
 
   if(isSuperUser() && isset($_SESSION["answer_dsi_sync"]) && !$recursive)
@@ -557,7 +560,7 @@ catch(Exception $e)
 
 try
   {
-  $answer = "<h1>Synchronisation avec e-valuation de la section ".$section." - ".date('d/m/Y - H:i:s')."</h1>\n";
+  $answer .= "<h1>Synchronisation avec e-valuation de la section ".$section." - ".date('d/m/Y - H:i:s')."</h1>\n";
 	if(isSecretaire())
 	{
 	  $log = synchronizeWithDsiMembers($section,$email);
