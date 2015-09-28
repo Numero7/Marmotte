@@ -31,6 +31,17 @@ function getCID($login)
 		throw new Exception("Unknown user '" + $login+"'");
 }
 
+
+function emailsACN()
+{
+  $users = listUsers();
+  $resultat = array();
+  foreach($users as $user)
+    if($user->permissions == NIVEAU_PERMISSION_ACN)
+      $resultat[] = $user->login;
+  return $resultat;;
+}
+
 function isCurrentSectionACID()
 {
 	return getCID(getLogin()) == currentSection();

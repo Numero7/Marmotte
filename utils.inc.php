@@ -91,7 +91,7 @@ function message_handler($subject,$body)
 function email_handler($recipient,$subject,$body, $cc = "",$from="")
 {
   if($from == "") $from = get_config("webmaster");
-	echo "Trying to send email to '".$recipient."' with subject '".$subject."'... ";
+	echo "Envoi d'email a '".$recipient."' avec sujet '".$subject."'... ";
 	
 	$headers = 'From: '.$from. "\r\n";
 	if($cc != "")
@@ -102,10 +102,10 @@ function email_handler($recipient,$subject,$body, $cc = "",$from="")
 
 	if($result == false)
 	{
-		echo "failed!";
+		echo "échec!<br/>\n";
 		throw new Exception("Could not send email to ".$recipient." with subject ".$subject);
 	}
-		echo "sucess.";
+		echo "succès<br/>\n.";
 }
 
 

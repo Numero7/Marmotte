@@ -858,6 +858,29 @@ function change_statut($id, $newstatut)
 
 function change_report_property($id_origine, $property_name, $newvalue)
 {
+  if(substr($property_name,0,10) == "rapporteur")
+    {
+      $emails = emailsACN();
+      $sql = "SELECT * FROM reports WHERE id='".$id_origine."';";
+      $res = sql_request($sql);
+      while($rap = mysqli_fetch_object($res))
+	{
+	    if(isset($rap->$property_name) && $rap->$property_name != "" && $rap->$property_name != $newvalue)
+	      {
+		$subject = "Marmotte changement de ".$property_name." section ".$rap->section." DKEY ".$rap->DKEY;
+		$content = "Bonjour,\r\n\r\n";
+		$content .= "cet email vous informe du changement de ".$property_name." \r\npour la section ".$rap->section;
+		$content .= " et le dossier de DKEY ".$rap->DKEY."\r\n\r\n";
+		$content .= "Ancien rapporteur:  ".$rap->$property_name."\r\n";
+		$content .= "Nouveau rapporteur:  ".$newvalue."r\n";
+
+	      foreach($emails as $email)
+		  email_handler($email,$subject,$content);		
+	      }
+	}
+	    
+    }
+
 	$id = getIDOrigine($id_origine);
 	$sql = "UPDATE `reports` SET ". real_escape_string($property_name)."=\"".real_escape_string($newvalue)."\" WHERE id=\"".$id."\"";
 	sql_request($sql);
