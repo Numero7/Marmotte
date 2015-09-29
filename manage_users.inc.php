@@ -32,13 +32,20 @@ function getCID($login)
 }
 
 
-function emailsACN()
+function emailsACN($section = "")
 {
-  $users = listUsers();
+  if($section == "")
+    $section = currentSection();
+
+
+
+  $users = listUsers(true,$section);
+
   $resultat = array();
   foreach($users as $user)
     if($user->permissions == NIVEAU_PERMISSION_ACN)
       $resultat[] = $user->login;
+
   return $resultat;;
 }
 
@@ -189,7 +196,7 @@ function permissionToRole($perm)
 
 function listUsers($forcenew = false, $section = "")
 {
-	if($section == "")
+  if($section == "" && !isSuperUser())
 		$section = currentSection();
 	if($forcenew)
 		unset($_SESSION['all_users']);
@@ -204,7 +211,7 @@ function listUsers($forcenew = false, $section = "")
 			throw new Exception("Failed to process sql query ".$sql.": ".mysql_error());
 		while ($row = mysqli_fetch_object($result))
 		{
-			if(isSuperUser())
+			if($section == "")
 			{
 				$listusers[$row->login] = $row;
 			}

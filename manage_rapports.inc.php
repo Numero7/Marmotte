@@ -875,7 +875,7 @@ function change_report_property($id_origine, $property_name, $newvalue)
 		$content .= "Nouveau rapporteur:  ".$newvalue."r\n";
 
 	      foreach($emails as $email)
-		  email_handler($email,$subject,$content);		
+		email_handler($email,$subject,$content,email_sgcn,email_admin);		
 	      }
 	}
 	    

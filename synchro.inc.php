@@ -36,7 +36,7 @@ function synchronizeEmailsUpdates($email = true)
 				while ($row = mysqli_fetch_object($res))
 				{
 					$changed = true;
-					$result .= "Migration des dossers de '".$user->login."' vers '".$row->mailpro;
+					$result .= "Suite à un changement d'email, migration des dossers de '".$user->login."' vers '".$row->mailpro;
 					$result .= "' pour le num&egrave;ro de chaire '".$user->$field."'<br/>";
 					mergeUsers($user->login, $row->mailpro, $email);
 					$sql = "UPDATE ".users_db." SET `login`='".$row->mailpro."', `email`='".$row->mailpro."'";
@@ -69,7 +69,7 @@ function synchronizeWithDsiMembers($section,$email = true)
 	$res = sql_request($sql);
 	$num = mysqli_affected_rows($dbh);
 	if($num> 0)
-	  $result .= $num . "membres importés de Ambre vers Marmotte ont été supprimés de Ambre donc de Marmotte<br/>\n";
+	  $result .= $num . "membre(s) importé(s) de Ambre vers Marmotte ont été supprimés de Ambre donc de Marmotte<br/>\n";
 	
 
 	//	if (isSuperUser())
@@ -106,7 +106,7 @@ function synchronizeWithDsiMembers($section,$email = true)
 			}
 			else
 			{
-			  $added = TRUE;
+			  $added = true;
 				$result .= "Ajout du compte ".$login." &agrave; la base marmotte.<br/>";
 				$sql = "INSERT INTO ".users_db;
 				$sql .= " (login,sections,permissions,section_code,college,section_role_code,CID_code";
@@ -191,7 +191,7 @@ function synchronizePeople($section)
 	$num = mysqli_affected_rows($dbh);
 	if($num > 0)
 	  {
-	    $answer .= "<B>Synchro des nom et prénom de chercheurs de la section ".$section."</B><br/>\n";
+	    $answer .= "<B>Synchro des noms et prénoms de chercheurs de la section ".$section."</B><br/>\n";
 	  $answer .= $num." nom et prenoms ont &eacute;t&eacute; mis &agrave; jour.<br/>";
 	  }
 
@@ -409,7 +409,7 @@ function export_to_evaluation($section)
 		$sql .=" ".dsidbname.".".dsi_marmotte_db.".statut=".marmottedbname.".".reports_db.".statut";
 		sql_request($sql);
 		//		$answer .= "<a href=\"https://www.youtube.com/watch?v=0rCrc6RoJg0\">Ca l'effectue</a>";
-		return $answer;
+		return "";
 }
 
 function check_missing_data()
@@ -510,10 +510,10 @@ try
 	if($report != "")
 	  {
 	    $emails = array(
-			    "hugo.gimbert@cnrs.fr",
+			    "hugo.gimbert@cnrs.fr"//,
 			    //			    "Laurent.CHAZALY@cnrs-dir.fr",
 			    //"velazquez@icmcb-bordeaux.cnrs.fr",
-			    "Rene.PELFRESNE@dsi.cnrs.fr"
+			    //"Rene.PELFRESNE@dsi.cnrs.fr"
 			    //"Marie-Claude.LABASTIE@cnrs-dir.fr"
 			    );
 	    foreach($emails as $email)
@@ -561,7 +561,6 @@ catch(Exception $e)
 
 try
   {
-  $answer .= "<h1>Synchronisation avec e-valuation de la section ".$section." - ".date('d/m/Y - H:i:s')."</h1>\n";
 	if(isSecretaire())
 	{
 	  $log = synchronizeWithDsiMembers($section,$email);
@@ -600,6 +599,18 @@ catch(Exception $e)
     echo $e->getMessage();
     $answer .=  "Failed to synchronize\n<br/>".$e->getMessage()."\n<br/>"; 
   }
+
+if($answer != "")
+  {
+    $body = html_entity_decode($answer);
+    $subject = "Synchronisation quotidienne Marmotte/e-valuation: section ".$section;
+    $emails = emailsACN($section);
+    foreach($emails as $email)
+      email_handler($email,$subject,$body,email_sgcn,email_admin);		
+  }
+
+
+$answer = "<h1>Synchronisation avec e-valuation de la section ".$section." - ".date('d/m/Y - H:i:s')."</h1>\n".$answer;
 
 
 	if(isSuperUser())
