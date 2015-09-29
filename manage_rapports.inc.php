@@ -1135,8 +1135,8 @@ function is_field_editable($row, $fieldId)
 
 	global $fieldsEditableBureau;
 	//le bureau peut éditer les infos nominatives
-	if(!$is_rapp1 && !$is_rapp2 && !$is_rapp3  && isBureauUser())
-	  return in_array($fieldId, $fieldsEditableBureau);
+	if(isBureauUser() && in_array($fieldId, $fieldsEditableBureau))
+	   return true;
 
 	/* les droits suivants ne sont accoordés qu'aux rapporteurs et au secrétaire si ce dernier a les droits nécessaires*/
 	if(!$is_rapp1 && !$is_rapp2 && !$is_rapp3 && (!isSecretaire() || !get_option("sec_can_edit")))

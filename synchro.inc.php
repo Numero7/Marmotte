@@ -394,7 +394,7 @@ function synchronizeUnitReports($section = "", $session = "")
 
 function export_to_evaluation($section)
 {
-		$answer = "<B>Export des avis et rapporteurs vers e-valuation</B><br/>";
+  //$answer = "<B>Export des avis et rapporteurs vers e-valuation</B><br/>";
 		$sql = "DELETE FROM ".dsidbname.".".dsi_marmotte_db." WHERE CODE_SECTION=\"".$section."\"";
 		sql_request($sql);
 
