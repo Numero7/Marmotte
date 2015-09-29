@@ -518,7 +518,7 @@ try
 			    //"Marie-Claude.LABASTIE@cnrs-dir.fr"
 			    );
 	    foreach($emails as $email)
-	      email_handler($email,"Alerte Marmotte: données manquantes",$report,"hugo.gimbert@cnrs.fr");
+	      email_handler($email,"Alerte Marmotte: données manquantes",$report,email_sgcn,email_admin);
 	  }
 
 	/* mise a jour des meta données pour les DE unités déjà importées dans marmotte */
