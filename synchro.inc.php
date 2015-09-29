@@ -510,10 +510,11 @@ try
 	if($report != "")
 	  {
 	    $emails = array(
-			    "hugo.gimbert@cnrs.fr"//,
+			    "hugo.gimbert@cnrs.fr",
 			    //			    "Laurent.CHAZALY@cnrs-dir.fr",
 			    //"velazquez@icmcb-bordeaux.cnrs.fr",
-			    //"Rene.PELFRESNE@dsi.cnrs.fr"
+			    "Rene.PELFRESNE@dsi.cnrs.fr",
+			    "Wandrille.MEYRAND@dsi.cnrs.fr"
 			    //"Marie-Claude.LABASTIE@cnrs-dir.fr"
 			    );
 	    foreach($emails as $email)
