@@ -69,7 +69,7 @@ if(!isSuperUser())
 								NIVEAU_PERMISSION_PRESIDENT => "Président",
 								NIVEAU_PERMISSION_SECRETAIRE => "Secrétaire",
 								NIVEAU_PERMISSION_BUREAU => "Bureau",
-								NIVEAU_PERMISSION_BASE => "Normal");
+								NIVEAU_PERMISSION_BASE => "Rapporteur");
 			}
 			else
 			{

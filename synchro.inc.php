@@ -127,10 +127,6 @@ function synchronizeWithDsiMembers($section,$email = true)
 	}
 	if(!$added && !$changed)
 	  $result = "";
-	else if(!$added)
-		$result .= "Liste d&eacute;j&agrave; &agrave; jour: aucun utilisateur n'a &eacute;t&eacute; ajout&eacute; &agrave; la base.<br/>";
-	else if(!$changed)
-		$result .= "Donn&eacute;es d&eacute;j&agrave; &agrave; jour: aucune donn&egrave;e utilisateur n'a &eacute;t&eacute; mise &agrave; jour.<br/>";
 	unset($_SESSION['all_users']);
 
 	return $result;
@@ -302,7 +298,7 @@ function synchronizePeopleReports($section, $session = "")
 		
 		addReportToDatabase($row);
 
-		$answer .= "+DKEY ".$row->DKEY." ";
+		$answer .= "Ajout de la DE de DKEY ".$row->DKEY." dans Marmotte<br/>\n";
 		$changed = true;
 
 	        }
