@@ -308,7 +308,7 @@ function voir_rapport_pdf($row)
 	else if(!is_equivalence_type($eval_type))
 	{
 		echo "<a href=\"export.php?action=viewpdf&amp;id=".$row->id_origine."&amp;id_origine=".$row->id_origine."\">\n";
-		echo "Voir le rapport final\n";
+		echo "Voir le rapport de section\n";
 		echo "</a>\n";
 		
 	}

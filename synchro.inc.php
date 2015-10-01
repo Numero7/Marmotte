@@ -225,8 +225,8 @@ function synchronizePeopleReports($section, $session = "")
 	
 	$result = sql_request($sql);
 	
-	$answer .= "La base dsi contient ".mysqli_num_rows($result);
-	$answer .= " DE chercheurs pour la section ".$section." et la session ".$session."<br/>\n";// qui n'apparaissent pas encore dans Marmotte.<br/>\n";
+	//	$answer .= "La base dsi contient ".mysqli_num_rows($result);
+	//$answer .= " DE chercheurs pour la section ".$section." et la session ".$session."<br/>\n";// qui n'apparaissent pas encore dans Marmotte.<br/>\n";
 
 	$changed = false;
 	while($row = mysqli_fetch_object($result))
@@ -298,7 +298,10 @@ function synchronizePeopleReports($section, $session = "")
 		
 		addReportToDatabase($row);
 
-		$answer .= "Ajout de la DE de DKEY ".$row->DKEY." dans Marmotte<br/>\n";
+		global $typesRapportsAll;
+		$type = isset($typesRapportsAll[$row->type]) ? $typesRapportsAll[$row->type] : $row->type;	
+		$answer .= "Ajout de la DE ".$row->DKEY." de type '".$type;
+		$answer .= "' pour le chercheur '".$row->nom." ".$row->prenom."' de NUMSIRHUS '".$row->NUMSIRHUS."'<br/>\n";
 		$changed = true;
 
 	        }
@@ -345,18 +348,20 @@ function synchronizeUnitReports($section = "", $session = "")
 	  {
 	    return "";
 	  }
-
+	global $typesRapportsAll;
 	while($row = mysqli_fetch_object($res))
-	{		
-		$answer .= "+DKEY ".$row->DKEY." ";
+	  {
 		$row->unite = $row->UNITE_EVAL;
 		$row->type = $row->TYPE_EVAL;
+
+		$type = isset($typesRapportsAll[$row->type]) ? $typesRapportsAll[$row->type] : $row->type;	
+		$answer .= "Ajout de la DE ".$row->DKEY." de type '".$type."' pour l'unité '".$row->unite."'<br/>\n";
+
 		$row->id_session = $session;
 		$row->section = $section;
 		$row->id_origine=0;
 
-		for($i = 1; $i <= 9; $i++)
-		{
+		for($i = 1; $i <= 9; $i++)		{
 			$field = "CODE_SECTION".$i;
 			if($section == $row->$field)
 			{
