@@ -218,15 +218,15 @@ function synchronizePeopleReports($section, $session = "")
 	$sql = "SELECT * FROM ".dsidbname.".".dsi_evaluation_db." AS eval";
 	$sql .= " LEFT JOIN ".dsidbname.".".dsi_people_db." AS people";
 	$sql .= " ON eval.NUMSIRHUS=people.numsirhus WHERE ";
-	// (DKEY NOT IN (SELECT DKEY FROM ".marmottedbname.".".reports_db."  WHERE DKEY != \"\")) AND ";
-	$sql .= " eval.EVALUATION_CN=\"Soumis\" AND (eval.ETAT_EVAL=\"En cours\" OR eval.ETAT_EVAL=\"Terminée\")";
-	$sql .=" AND  eval.LIB_SESSION=\"".$lib."\" AND eval.ANNEE=\"".$year."\" AND ";
-	$sql .=" (eval.CODE_SECTION =\"".$section."\" OR eval.CODE_SECTION_2=\"".$section."\" OR eval.CODE_SECTION_EXCPT=\"".$section."\");";
+	$sql .= "(DKEY NOT IN (SELECT DKEY FROM ".marmottedbname.".".reports_db.")) ";
+	$sql .= " AND eval.EVALUATION_CN=\"Soumis\" AND (eval.ETAT_EVAL=\"En cours\" OR eval.ETAT_EVAL=\"Terminée\")";
+	$sql .= " AND  eval.LIB_SESSION=\"".$lib."\" AND eval.ANNEE=\"".$year."\" AND ";
+	$sql .= " (eval.CODE_SECTION =\"".$section."\" OR eval.CODE_SECTION_2=\"".$section."\" OR eval.CODE_SECTION_EXCPT=\"".$section."\");";
 	
 	$result = sql_request($sql);
 	
-	//	$answer .= "La base dsi contient ".mysqli_num_rows($result);
-	//$answer .= " DE chercheurs pour la section ".$section." et la session ".$session."<br/>\n";// qui n'apparaissent pas encore dans Marmotte.<br/>\n";
+	$answer .= "La base dsi contient ".mysqli_num_rows($result);
+	$answer .= " DE chercheurs pour la section ".$section." et la session ".$session." qui n'apparaissent pas encore dans Marmotte.<br/>\n";
 
 	$changed = false;
 	while($row = mysqli_fetch_object($result))
