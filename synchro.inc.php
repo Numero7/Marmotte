@@ -177,11 +177,10 @@ function synchronizePeople($section)
 	  $answer .= $num." num&eacute;ros SIRHUS ont &eacute;t&eacute; mis &agrave; jour.<br/>";
 	  }
 
-
-	$sql =  "UPDATE ".reports_db." marmotte JOIN ".dsidbname.".".dsi_people_db." dsi ";
+	$sql =  "UPDATE ".people_db." marmotte JOIN ".dsidbname.".".dsi_people_db." dsi ";
 	$sql .= " ON marmotte.NUMSIRHUS=dsi.numsirhus";
 	$sql .= " SET marmotte.nom=dsi.nom, marmotte.prenom=dsi.prenom";
-	$sql .= " WHERE section=\"".$section."\" AND marmotte.nom=\"\";";
+	$sql .= " WHERE marmotte.NUMSIRHUS!='' AND section=\"".$section."\" AND marmotte.nom=\"\";";
 	$res = sql_request($sql);
 	global $dbh;
 	$num = mysqli_affected_rows($dbh);
@@ -191,30 +190,35 @@ function synchronizePeople($section)
 	  $answer .= $num." nom et prenoms ont &eacute;t&eacute; mis &agrave; jour.<br/>";
 	  }
 
-	$sql =  "UPDATE ".reports_db." marmotte JOIN ".dsidbname.".".dsi_people_db." dsi ";
+	$sql =  "DELETE marmotte FROM ".people_db." marmotte LEFT JOIN ".dsidbname.".".dsi_people_db." dsi ";
+	$sql .= " ON marmotte.NUMSIRHUS=dsi.numsirhus";
+	$sql .= " WHERE marmotte.NUMSIRHUS!='' AND section=\"".$section."\" AND marmotte.nom!=dsi.nom AND marmotte.prenom!=dsi.prenom;";
+	$res = sql_request($sql);
+
+	$sql =  "UPDATE ".people_db." marmotte JOIN ".dsidbname.".".dsi_people_db." dsi ";
 	$sql .= " ON marmotte.NUMSIRHUS=dsi.numsirhus";
 	$sql .= " SET marmotte.labo1=dsi.code_unite";
-	$sql .= " WHERE section=\"".$section."\" AND dsi.code_unite!='' AND  marmotte.labo1!=dsi.code_unite;";
+	$sql .= " WHERE marmotte.NUMSIRHUS!='' AND section=\"".$section."\" AND dsi.code_unite!='' AND  marmotte.labo1!=dsi.code_unite;";
 	$res = sql_request($sql);
 	global $dbh;
 	$num = mysqli_affected_rows($dbh);
 	if($num > 0)
 	  {
 	    $answer .= "<B>Synchro des unit&eacute;s des chercheurs de la section ".$section."</B><br/>\n";
-	  $answer .= $num." unit&eacute; ont &eacute;t&eacute; mises &agrave; jour.<br/>";
+	  $answer .= $num." unit&eacute;(s) ont &eacute;t&eacute; mises &agrave; jour.<br/>";
 	  }
 
-	$sql =  "UPDATE ".reports_db." marmotte JOIN ".dsidbname.".".dsi_people_db." dsi ";
+	$sql =  "UPDATE ".people_db." marmotte JOIN ".dsidbname.".".dsi_people_db." dsi ";
 	$sql .= " ON marmotte.NUMSIRHUS=dsi.numsirhus";
 	$sql .= " SET marmotte.grade=dsi.grade";
-	$sql .= " WHERE section=\"".$section."\" AND dsi.grade!='' AND  marmotte.grade!=dsi.grade;";
+	$sql .= " WHERE  marmotte.NUMSIRHUS!='' AND section=\"".$section."\" AND dsi.grade!='' AND  marmotte.grade!=dsi.grade;";
 	$res = sql_request($sql);
 	global $dbh;
 	$num = mysqli_affected_rows($dbh);
 	if($num > 0)
 	  {
 	    $answer .= "<B>Synchro des grades des chercheurs de la section ".$section."</B><br/>\n";
-	  $answer .= $num." grades ont &eacute;t&eacute; mises &agrave; jour.<br/>";
+	  $answer .= $num." grades ont &eacute;t&eacute; mis &agrave; jour.<br/>";
 	  }
 
 
@@ -244,15 +248,15 @@ function synchronizePeopleReports($section, $session = "")
 	$sql = "SELECT * FROM ".dsidbname.".".dsi_evaluation_db." AS eval";
 	$sql .= " LEFT JOIN ".dsidbname.".".dsi_people_db." AS people";
 	$sql .= " ON eval.NUMSIRHUS=people.numsirhus WHERE ";
-	$sql .= "(DKEY NOT IN (SELECT DKEY FROM ".marmottedbname.".".reports_db.")) ";
-	$sql .= " AND eval.EVALUATION_CN=\"Soumis\" AND (eval.ETAT_EVAL=\"En cours\" OR eval.ETAT_EVAL=\"Terminée\")";
+	//$sql .= "(DKEY NOT IN (SELECT DKEY FROM ".marmottedbname.".".reports_db.")) AND ";
+	$sql .= " eval.EVALUATION_CN=\"Soumis\" AND (eval.ETAT_EVAL=\"En cours\" OR eval.ETAT_EVAL=\"Terminée\")";
 	$sql .= " AND  eval.LIB_SESSION=\"".$lib."\" AND eval.ANNEE=\"".$year."\" AND ";
 	$sql .= " (eval.CODE_SECTION =\"".$section."\" OR eval.CODE_SECTION_2=\"".$section."\" OR eval.CODE_SECTION_EXCPT=\"".$section."\");";
 	
 	$result = sql_request($sql);
 	
-	$answer .= "La base dsi contient ".mysqli_num_rows($result);
-	$answer .= " DE chercheurs pour la section ".$section." et la session ".$session." qui n'apparaissent pas encore dans Marmotte.<br/>\n";
+	//	$answer .= "La base dsi contient ".mysqli_num_rows($result);
+	//$answer .= " DE chercheurs pour la section ".$section." et la session ".$session." qui n'apparaissent pas encore dans Marmotte.<br/>\n";
 
 	$changed = false;
 	while($row = mysqli_fetch_object($result))
@@ -545,7 +549,7 @@ try
 			    //"Marie-Claude.LABASTIE@cnrs-dir.fr"
 			    );
 	    foreach($emails as $email)
-	      email_handler($email,"Alerte Marmotte: données manquantes",$report,email_sgcn,email_admin);
+	       email_handler($email,"Alerte Marmotte: données manquantes",$report,email_sgcn,email_admin);
 	  }
 
 	/* mise a jour des meta données pour les DE unités déjà importées dans marmotte */
@@ -571,7 +575,22 @@ try
 	if($num > 0)
 	  $answer .= "Les meta données de ".$num." DE chercheurs déjà existantes dans la base marmotte ont été mises à jour<br/>"; 
 
+	/* synchro des colleges */
 	$answer .=synchronize_colleges();
+
+	/* suppression des numsirhus dupliqués */
+	try
+	  {
+	$sql = "CREATE TABLE new_table as SELECT * FROM ".people_db." WHERE 1 GROUP BY section,NUMSIRHUS";
+	sql_request($sql);
+	$sql = "DROP TABLE ".people_db;
+	sql_request($sql);
+	$sql = "RENAME TABLE new_table TO ".people_db;
+	sql_request($sql);
+	  }
+	catch(Exception $e){}
+
+
 
   }
 catch(Exception $e)
@@ -635,6 +654,7 @@ if($answer != "")
     $emails = emailsACN($section);
     foreach($emails as $email)
       email_handler($email,$subject,$body,email_sgcn,email_admin);		
+    
   }
 
 
@@ -660,7 +680,7 @@ $answer = "<h1>Synchronisation avec e-valuation de la section ".$section." - ".d
 	      }
 	    else if(!$recursive)
 	      {
-		
+		if(!isset($_SESSION["answer_dsi_sync"])) $_SESSION["answer_dsi_sync"] = "";		
 		$_SESSION["answer_dsi_sync"] = $answer . $_SESSION["answer_dsi_sync"];
 		echo "<script>window.location = 'index.php?action=synchronize_with_dsi&section=".($section+1)."'</script>";
 	      }
