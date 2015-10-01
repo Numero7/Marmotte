@@ -204,6 +204,19 @@ function synchronizePeople($section)
 	  $answer .= $num." unit&eacute; ont &eacute;t&eacute; mises &agrave; jour.<br/>";
 	  }
 
+	$sql =  "UPDATE ".reports_db." marmotte JOIN ".dsidbname.".".dsi_people_db." dsi ";
+	$sql .= " ON marmotte.NUMSIRHUS=dsi.numsirhus";
+	$sql .= " SET marmotte.grade=dsi.grade";
+	$sql .= " WHERE section=\"".$section."\" AND dsi.grade!='' AND  marmotte.grade!=dsi.grade;";
+	$res = sql_request($sql);
+	global $dbh;
+	$num = mysqli_affected_rows($dbh);
+	if($num > 0)
+	  {
+	    $answer .= "<B>Synchro des grades des chercheurs de la section ".$section."</B><br/>\n";
+	  $answer .= $num." grades ont &eacute;t&eacute; mises &agrave; jour.<br/>";
+	  }
+
 
 	//$sql =  "DELETE FROM ".people_db." WHERE NUMSIRHUS=\"\" AND section=\"".$section."\";";
 	//sql_request($sql);

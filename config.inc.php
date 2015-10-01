@@ -1124,10 +1124,12 @@ get_config("formule_standard_Titularisation_favorable", 'La section donne un avi
 /* Definition des différents grades*/
 
 $grades = array(
-		'CR2' => 'Chargé de Recherche 2ème classe (CR2)',
-		'CR1' => 'Chargé de Recherche 1ère classe (CR1)',
-		'DR2' => 'Directeur de Recherche 2ème classe (DR2)',
-		'DR1' => 'Directeur de Recherche 1ère classe (DR1)',
+		'CR' => 'CR Chargé de Recherche',
+		'CR2' => 'CR2 Chargé de Recherche 2ème classe',
+		'CR1' => 'CR1 Chargé de Recherche 1ère classe',
+		'DR' => 'DR Directeur de Recherche',
+		'DR2' => 'DR2 Directeur de Recherche 2ème classe',
+		'DR1' => 'DR1 Directeur de Recherche 1ère classe',
 		'DRCE1'  => 'Dir. de Recherche Classe Except. 1er échelon (DRCE1)',
 		'DRCE2'  => 'Dir. de Recherche Classe Except. 2ème échelon (DRCE2)',
 		'ChaireMC' => 'Chaire MdC',
@@ -1141,6 +1143,15 @@ $grades = array(
 		'postdoc' => 'Postdoctorant',
 		'CR1_INRIA' => 'CR1 INRIA',
 		'IR_CNRS' => 'IR CNRS',
+		'IR1' => 'IR1 Ingénieur de recherche de première classe',
+		'IR2' => 'IR2 Ingénieur de recherche de seconde classe',
+		'IE1' => 'IE1 Ingénieur d\'étude de première classe',
+		'IE2' => 'IE2 Ingénieur d\'étude de seconde classe',
+		'DLRG'=>'DLRG',
+		'DREM'=>'DREM',
+		'AI'=>'AI',
+		'CRC'=>'CRC',
+		'TCN'=>'TCN'
 );
 
 /* permissions levels for actions */
