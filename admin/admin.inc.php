@@ -52,7 +52,7 @@ if(!isACN() && !isSuperUser())
 	if(isSuperUser())
 	  {
 	?>
-	<li><a href="index.php?action=admin&amp;admin_maintenance=">Synchronisation</a></li>
+	<li><a href="index.php?action=admin&amp;admin_maintenance=">Maintenance</a></li>
 	      <?php } ?>
 </ul>
 

@@ -94,7 +94,11 @@ function showSessions()
 {
 	$finalResult = array();
 	date_default_timezone_set('Europe/Paris');
-	$sql = "SELECT * FROM ".sessions_db." WHERE `section`='". real_escape_string($_SESSION['filter_section'])."' ORDER BY date DESC;";
+	if(!isSuperuser())
+	  $sql = "SELECT * FROM ".sessions_db." WHERE `section`='". real_escape_string($_SESSION['filter_section'])."' ORDER BY date DESC;";
+	else
+  	  $sql = "SELECT * FROM ".sessions_db." WHERE 1 ORDER BY date DESC;";
+
 	if($result= sql_request($sql))
 		while ($row = mysqli_fetch_object($result))
 		{
@@ -111,7 +115,10 @@ function deletePreRapports($id)
   $sql .= ",avis1=\"\", avis2=\"\", avis3=\"\"";
   for($i = 0; $i <= 30; $i++)
     $sql .= ",Generic".$i." =\"\"";
-  $sql .= " WHERE section=\"".real_escape_string($_SESSION['filter_section'])."\"";
+  if(!isSuperUser())
+    $sql .= " WHERE section=\"".real_escape_string($_SESSION['filter_section'])."\";";
+  else
+    $sql .= " WHERE 1;";
   sql_request($sql);
 }
 
