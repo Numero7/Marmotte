@@ -177,7 +177,7 @@ function synchronizePeople($section)
 	  $answer .= $num." num&eacute;ros SIRHUS ont &eacute;t&eacute; mis &agrave; jour.<br/>";
 	  }
 
-	$sql =  "UPDATE ".people_db." marmotte JOIN ".dsidbname.".".dsi_people_db." dsi ";
+	/*	$sql =  "UPDATE ".people_db." marmotte JOIN ".dsidbname.".".dsi_people_db." dsi ";
 	$sql .= " ON marmotte.NUMSIRHUS=dsi.numsirhus";
 	$sql .= " SET marmotte.nom=dsi.nom, marmotte.prenom=dsi.prenom";
 	$sql .= " WHERE marmotte.NUMSIRHUS!='' AND section=\"".$section."\" AND marmotte.nom=\"\";";
@@ -189,6 +189,7 @@ function synchronizePeople($section)
 	    $answer .= "<B>Synchro des noms et prénoms de chercheurs de la section ".$section."</B><br/>\n";
 	  $answer .= $num." nom et prenoms ont &eacute;t&eacute; mis &agrave; jour.<br/>";
 	  }
+	*/
 
 	$sql =  "DELETE marmotte FROM ".people_db." marmotte LEFT JOIN ".dsidbname.".".dsi_people_db." dsi ";
 	$sql .= " ON marmotte.NUMSIRHUS=dsi.numsirhus";
@@ -237,13 +238,35 @@ function synchronizePeopleReports($section, $session = "")
 
 	$answer =   "<B>Synchro DE chercheurs section ".$section." session ".$session."</B><br/>\n";
 
-	// 		Inefficient
-	//	$sql = "SELECT * FROM ".marmottedbname.".".reports_db." WHERE DKEY != \"\"";
-        //$sql .= " INNER JOIN ".dsidbname.".".dsi_evaluation_units_db.", dsi ON ";
-        //$sql .= " dsi.DKEY NOT IN marmotte)";
+	$changed = false;
+
+	//Recherche des DE qui ont changé de section
+	$sql = "SELECT * FROM ".marmottedbname.".".reports_db." marmotte ";
+        $sql .= " JOIN ".dsidbname.".".dsi_evaluation_db." dsi ";
+        $sql .= " ON dsi.DKEY=marmotte.DKEY ";
+	$sql .= "WHERE marmotte.section='".$section."'";
+	$sql .= "AND marmotte.id_session='".$session."'";
+	$sql .= "AND marmotte.section!= dsi.CODE_SECTION ";
+	$sql .= "AND marmotte.section!= dsi.CODE_SECTION_2 ";
+	$sql .= "AND marmotte.section!= dsi.CODE_SECTION_EXCPT;";
+	$result = sql_request($sql);
+	global $typesRapportsAll;
+	while($row = mysqli_fetch_object($result))
+	  {
+	    $changed = true;
+		$row->type = $row->TYPE_EVAL;
+		$type = isset($typesRapportsAll[$row->type]) ? $typesRapportsAll[$row->type] : $row->type;	
+		$answer .= "La DE chercheur ".$row->DKEY." de la session ".$session." de type '".$row->type;
+		$answer .= "' pour le chercheur '".$row->nom." ".$row->prenom."' a &eacute;t&eacute; retir&eacute;e de e-valuation, ";
+		$answer .= "veuillez retirer manuellement cette DE de Marmotte et prévenir le bureau et les rapporteurs.<br/>\n";
+		$changed = true;
+	  }
+
 	//$sql .= " AND marmotte.DKEY=\"\" AND";
 	//$sql .= " (`dsi.CODE_SECTION` =\"".$section."\" OR `dsi.CODE_SECTION_2`=\"".$section."\" OR `dsi.CODE_SECTION_EXCPT`=\"".$section." \
 	//\";";
+	
+       
 
 	$sql = "SELECT * FROM ".dsidbname.".".dsi_evaluation_db." AS eval";
 	$sql .= " LEFT JOIN ".dsidbname.".".dsi_people_db." AS people";
@@ -258,7 +281,6 @@ function synchronizePeopleReports($section, $session = "")
 	//	$answer .= "La base dsi contient ".mysqli_num_rows($result);
 	//$answer .= " DE chercheurs pour la section ".$section." et la session ".$session." qui n'apparaissent pas encore dans Marmotte.<br/>\n";
 
-	$changed = false;
 	while($row = mysqli_fetch_object($result))
 	{
 	  $row->unite = $row->code_unite;
@@ -318,7 +340,6 @@ function synchronizePeopleReports($section, $session = "")
 		$row->rapporteur3 = $rapporteur3;
 
 		$row->type = $row->TYPE_EVAL;
-
 		if($section == $row->CODE_SECTION)
 		  $row->avis = $row->AVIS_EVAL;
 		else if($section == $row->CODE_SECTION_2)
@@ -326,12 +347,14 @@ function synchronizePeopleReports($section, $session = "")
 		else if($section == $row->CODE_SECTION_EXCPT)
 		  $row->avis = $row->AVIS_EVAL_EXCPT;
 		
-		addReportToDatabase($row);
+		$new_id = addReportToDatabase($row);
+		$new_report = getReport($new_id);
 
 		global $typesRapportsAll;
 		$type = isset($typesRapportsAll[$row->type]) ? $typesRapportsAll[$row->type] : $row->type;	
 		$answer .= "Ajout de la DE ".$row->DKEY." de type '".$type;
-		$answer .= "' pour le chercheur '".$row->nom." ".$row->prenom."' de NUMSIRHUS '".$row->NUMSIRHUS."'<br/>\n";
+		$answer .= "' pour la session '".$session."' ";
+		$answer .= "et le chercheur '".$new_report->nom." ".$new_report->prenom."' de NUMSIRHUS '".$row->NUMSIRHUS."'<br/>\n";
 		$changed = true;
 
 	        }
@@ -351,6 +374,34 @@ function synchronizeUnitReports($section = "", $session = "")
 	$answer = "<B>Synchro DE unit&eacute;s section ".$section." session ".$session."</B><br/>\n";
 	
 	
+	//Recherche des DE qui ont changé de section
+	$sql = "SELECT * FROM ".marmottedbname.".".reports_db." marmotte ";
+        $sql .= " JOIN ".dsidbname.".".dsi_evaluation_units_db." dsi ";
+        $sql .= " ON dsi.DKEY=marmotte.DKEY ";
+	$sql .= "WHERE marmotte.section='".$section."'";
+	$sql .= "AND marmotte.id_session='".$session."'";
+	$sql .= "AND marmotte.section!= dsi.CODE_SECTION1 ";
+	$sql .= "AND marmotte.section!= dsi.CODE_SECTION2 ";
+	$sql .= "AND marmotte.section!= dsi.CODE_SECTION3 ";
+	$sql .= "AND marmotte.section!= dsi.CODE_SECTION4 ";
+	$sql .= "AND marmotte.section!= dsi.CODE_SECTION5 ";
+	$sql .= "AND marmotte.section!= dsi.CODE_SECTION6 ";
+	$sql .= "AND marmotte.section!= dsi.CODE_SECTION7 ";
+	$sql .= "AND marmotte.section!= dsi.CODE_SECTION8 ";
+	$sql .= "AND marmotte.section!= dsi.CODE_SECTION9;";
+	$result = sql_request($sql);
+	global $typesRapportsAll;
+	while($row = mysqli_fetch_object($result))
+	  {
+	    $changed = true;
+		$row->type = $row->TYPE_EVAL;
+		$type = isset($typesRapportsAll[$row->type]) ? $typesRapportsAll[$row->type] : $row->type;	
+		$answer .= "La DE unit&eacute; ".$row->DKEY." de la session ".$session." de type '".$row->type;
+		$answer .= "' pour l'unit&eacute, '".$row->unite."' a &eacute;t&eacute; retir&eacute;e de e-valuation, ";
+		$answer .= "veuillez retirer manuellement cette DE de Marmotte et prévenir le bureau et les rapporteurs.<br/>\n";
+		$changed = true;
+	  }
+
 	/* import des DE non existentes */
 	$sql = "SELECT * FROM ".dsidbname.".".dsi_evaluation_units_db;
 	$sql .=" WHERE ";
@@ -578,19 +629,13 @@ try
 	/* synchro des colleges */
 	$answer .=synchronize_colleges();
 
-	/* suppression des numsirhus dupliqués */
-	try
-	  {
+	/* suppression des numsirhus dupliqués 
 	$sql = "CREATE TABLE new_table as SELECT * FROM ".people_db." WHERE 1 GROUP BY section,NUMSIRHUS";
 	sql_request($sql);
 	$sql = "DROP TABLE ".people_db;
 	sql_request($sql);
 	$sql = "RENAME TABLE new_table TO ".people_db;
-	sql_request($sql);
-	  }
-	catch(Exception $e){}
-
-
+	sql_request($sql);*/
 
   }
 catch(Exception $e)

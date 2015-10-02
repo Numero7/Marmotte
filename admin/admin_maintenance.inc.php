@@ -23,6 +23,7 @@ Le lien suivant permet de synchroniser Marmotte avec les bases de donnees d&#39;
 <p>
 <a href="index.php?action=sync_colleges&amp;admin_maintenance=">Synchroniser les collèges des membres.</a>
 </p>
+<!--
 <form method="get" action="index.php"
 		onsubmit="return confirm('Etes vous sur de vouloir supprimer tous les prérapports de la session?');">
   <select name="sessionid">
@@ -38,7 +39,7 @@ Le lien suivant permet de synchroniser Marmotte avec les bases de donnees d&#39;
 						<input type="hidden" name="action" value="admindeleteprerapports" />
 						<input type="submit" value="Supprimer les prérapports (irréversible)" />
 </form>
-</p>
+-->
 <?php 
 	}
 	?>
