@@ -647,7 +647,13 @@ function addReportToDatabase($report,$normalize = true)
 						if(!isset($previous_report->$field) || $previous_report->$field !== $report->$field)
 						{
 							if(! is_field_editable($previous_report, $field))
-								throw new Exception("Le compte ".getLogin()." n'a pas la permission de mettre à jour le champ ".$field." du rapport ".$id_origine.". Si nécessaire, veuillez contacter le bureau pour demander un changement de rapporteur.");
+							  $report->field = $previous_report->$field;
+							//							  {
+							//  $msg = "Le compte ".getLogin()." n'a pas la permission de mettre à jour le champ ".$field;
+							//  $msg .= " du rapport ".$id_origine.".";
+							//  $msg .= "Ancienne valeur '".$previous_report->$field."' nouvelle valeur '".$report->$field."'";
+							//  throw new Exception($msg);
+							// }
 
 							if(
 									isset($current_report->$field)

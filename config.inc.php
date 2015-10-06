@@ -791,7 +791,7 @@ $fieldsEditableOnlySecretaire = array("nom","prenom","conflits","type");
 
 $nonEditableFieldsTypes = array('id','date');
 $nonVisibleFieldsTypes = array('id');
-$alwaysVisibleFieldsTypes = array('fichiers','rapports','conflits','dsi','intitule','type','avis','statut');
+$alwaysVisibleFieldsTypes = array('nom','prenom','unite','fichiers','rapports','conflits','dsi','intitule','type','avis','statut');
 
 $fieldsArrayCandidat = array($fieldsCandidat, $fieldsRapportsCandidat0, $fieldsRapportsCandidat1, $fieldsRapportsCandidat2, $fieldsRapportsCandidat3);
 $fieldsArrayIE = array($fieldsCandidatAvantAudition, $fieldsRapportsIE0, $fieldsRapportsCandidat1, $fieldsRapportsCandidat2, $fieldsRapportsCandidat3);
