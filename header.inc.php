@@ -17,13 +17,13 @@
 <script>
    $(document).ready(function() {
        $('.sproperty').change(function() {
+	   $(this).css({"color" : "#FF0000#"});
 	$.post( 
 		  "action.php",
 		  $(this).parent().serialize()
 		)
 	  	  	  .done(function(data) {
-			      //alert(data);
-			      //		      $(this).parent().parent().parent().css('background-color','red');
+
 			    })
 	 .fail(function(jqXHR, textStatus, errorThrown) {
        alert( "Erreur, impossible d'enregistrer le rapporteur: " + errorThrown);
