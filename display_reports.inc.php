@@ -252,8 +252,11 @@ function displayRowCell($row, $fieldID)
 	  if(is_field_editable($row, $fieldID))
 		{
 			?>
-	<select
-		onchange="window.location='index.php?action=set_property&property=<?php echo $fieldID; ?>&all_reports=&id_origine=<?php echo $row->id_origine; ?>&value=' + this.value;">
+<div class="styled-select">
+<form action="/">
+	<select class="sproperty" name="value">
+		    //		onchange="window.location='index.php?action=set_property
+		    //&property=<?php echo $fieldID; ?>&all_reports=&id_origine=<?php echo $row->id_origine; ?>&value=' + this.value;">
 		<?php
 		echo "<option value=\"\"></option>\n";
 		foreach($rapporteurs as $rapporteur => $data)
@@ -266,6 +269,11 @@ function displayRowCell($row, $fieldID)
 		}
 		?>
 	</select>
+	<input type="hidden" name="action" value="set_property" />
+	<input type="hidden" name="property" value=<?php echo '"'.$fieldID.'";' ?> />
+	<input type="hidden" name="id_origine" value=<?php echo '"'.$row->id_origine.'";' ?> />
+</form>
+</div>
 	<?php
 		}
 		else
@@ -283,7 +291,9 @@ function displayRowCell($row, $fieldID)
 		
 		if(is_field_editable($row, $fieldID))
 		{
-			?><select onchange="window.location='index.php?action=set_property&property=<?php echo $fieldID; ?>&id_origine=<?php echo $row->id_origine; ?>&value=' + encodeURIComponent(this.value);">
+			?>
+<form>
+		  <select class="sproperty" name="value">
 		<?php
 		foreach($listeavis as $key => $value)
 		{
@@ -292,6 +302,10 @@ function displayRowCell($row, $fieldID)
 		}
 		?>
 	</select>
+	<input type="hidden" name="action" value="set_property" />
+	<input type="hidden" name="property" value="avis" />
+	<input type="hidden" name="id_origine" value=<?php echo '"'.$row->id_origine.'";' ?> />
+</form>
 	<?php
 		}
 		else if($fieldID == "avis" || $sec || !isset($row->statut) || $row->statut != "doubleaveugle")
@@ -473,6 +487,7 @@ if($bur)
 			}
 			?>
 	</tr>
+
 	<?php 
 	global $actions1;
 	global $actions2;
@@ -486,12 +501,14 @@ if($bur)
 	?>
 	<tr id="t<?php echo $row->id;?>" class="<?php echo $style;?>">
 		<td>
-		<?php displayActionsMenu($row,"", $actions1); ?>
-		</td>
 		<?php 
+	   displayActionsMenu($row,"", $actions1);
+?>
+</td>
+<?php
 		foreach($fields as $fieldID)
-			displayRowCell($row, $fieldID);
-		?>
+		  displayRowCell($row, $fieldID);
+?>
 		<td>
 		<?php displayActionsMenu($row,"", $actions2); ?>
 		</td>

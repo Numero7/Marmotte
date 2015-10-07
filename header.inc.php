@@ -11,5 +11,24 @@
 <link rel="stylesheet" type="text/css" href="cseprint.css" media="print" />
 <title>Marmotte</title>
 <script type='text/javascript' src='js/jquery.min.js'></script>
+   //<script type='text/javascript' src='js/jquery.color.js'></script>
 </head>
+
+<script>
+   $(document).ready(function() {
+       $('.sproperty').change(function() {
+	$.post( 
+		  "action.php",
+		  $(this).parent().serialize()
+		)
+	  	  	  .done(function(data) {
+			      //alert(data);
+			      //		      $(this).parent().parent().parent().css('background-color','red');
+			    })
+	 .fail(function(jqXHR, textStatus, errorThrown) {
+       alert( "Erreur, impossible d'enregistrer le rapporteur: " + errorThrown);
+	   });
+	 });
+});
+</script>
 <body>

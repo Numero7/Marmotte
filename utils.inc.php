@@ -98,7 +98,7 @@ function email_handler($recipient,$subject,$body, $cc = "",$from="")
 		$headers.= 'CC: ' .$cc . "\r\n";
 	$headers .= 'Reply-To: '.$from. "\r\n".'Content-Type: text/plain; charset="UTF-8"\r\n'.'X-Mailer: PHP/' . phpversion()."\r\n";
 
-	$result = true;//mail($recipient, $subject, "\r\n".$body."\r\n", $headers);
+	$result = mail($recipient, $subject, "\r\n".$body."\r\n", $headers);
 
 	if($result == false)
 	{
