@@ -3,6 +3,16 @@
 }
 
 
+.styled-select select
+{
+    color: #000000;
+}
+
+.styled-select2 select
+{
+    color: #FF0000;
+}
+
 table.toptable
 {
 	    text-align: top;

@@ -252,7 +252,6 @@ function displayRowCell($row, $fieldID)
 	  if(is_field_editable($row, $fieldID))
 		{
 			?>
-<div class="styled-select">
 <form action="/">
 	<select class="sproperty" name="value">
 		    //		onchange="window.location='index.php?action=set_property
@@ -273,7 +272,6 @@ function displayRowCell($row, $fieldID)
 	<input type="hidden" name="property" value=<?php echo '"'.$fieldID.'";' ?> />
 	<input type="hidden" name="id_origine" value=<?php echo '"'.$row->id_origine.'";' ?> />
 </form>
-</div>
 	<?php
 		}
 		else
