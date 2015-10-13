@@ -17,7 +17,7 @@
 <script>
    $(document).ready(function() {
        $('.sproperty').change(function() {
-	   $(this).css({"color" : "#FF0000#"});
+	   $(this).css({"color" : "#FF0000"});
 	$.post( 
 		  "action.php",
 		  $(this).parent().serialize()

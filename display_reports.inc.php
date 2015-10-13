@@ -301,8 +301,8 @@ function displayRowCell($row, $fieldID)
 		?>
 	</select>
 	<input type="hidden" name="action" value="set_property" />
-	<input type="hidden" name="property" value="avis" />
-	<input type="hidden" name="id_origine" value=<?php echo '"'.$row->id_origine.'";' ?> />
+	    <input type="hidden" name="property" value=<?php echo "\"".$fieldID."\""; ?> />
+	    <input type="hidden" name="id_origine" value=<?php echo '"'.$row->id_origine.'"'; ?> />
 </form>
 	<?php
 		}

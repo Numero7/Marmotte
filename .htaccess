@@ -3,7 +3,7 @@
     Deny from all
 </Files>
 
-<Files ~ "create_reports.php|index.php|export.php">
+<Files ~ "create_reports.php|index.php|export.php|action.php">
    order deny,allow
    allow from all
 </Files>
