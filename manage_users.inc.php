@@ -714,7 +714,7 @@ function mergeUsers($old_login, $new_login,$email = true)
   $body .= "Bien cordialement,\r\n\t ".get_config("webmaster_nom")."\r\n";
 try
   {
-    email_handler($recipient,$subject,$body,get_config("webmaster"));
+    email_handler($recipient,$subject,$body,email_admin,email_sgcn);
   }
 catch(Exception $e)
   {

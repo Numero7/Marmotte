@@ -246,9 +246,9 @@ function synchronizePeopleReports($section, $session = "")
         $sql .= " ON dsi.DKEY=marmotte.DKEY ";
 	$sql .= "WHERE marmotte.section='".$section."'";
 	$sql .= "AND marmotte.id_session='".$session."'";
-	$sql .= "AND marmotte.section!= dsi.CODE_SECTION ";
-	$sql .= "AND marmotte.section!= dsi.CODE_SECTION_2 ";
-	$sql .= "AND marmotte.section!= dsi.CODE_SECTION_EXCPT;";
+	$sql .= "AND dsi.CODE_SECTION !='".$section."'";
+	$sql .= "AND dsi.CODE_SECTION_2 !='".$section."'";;
+	$sql .= "AND dsi.CODE_SECTION_EXCPT !='".$section."';";
 	$result = sql_request($sql);
 	global $typesRapportsAll;
 	while($row = mysqli_fetch_object($result))
@@ -256,10 +256,10 @@ function synchronizePeopleReports($section, $session = "")
 	    $changed = true;
 		$row->type = $row->TYPE_EVAL;
 		$type = isset($typesRapportsAll[$row->type]) ? $typesRapportsAll[$row->type] : $row->type;	
-		$answer .= "La DE chercheur ".$row->DKEY." de la session ".$session." de type '".$row->type;
-		$answer .= "' pour le chercheur '".$row->nom." ".$row->prenom."' a &eacute;t&eacute; retir&eacute;e de e-valuation, ";
-		$answer .= "veuillez retirer manuellement cette DE de Marmotte et prévenir le bureau et les rapporteurs.<br/>\n";
-		$changed = true;
+		$answer .= "La DE chercheur ".$row->DKEY." de la session ".$session." de type '".$type;
+		$answer .= "' pour le chercheur '".$row->nom." ".$row->prenom."' a &eacute;t&eacute; retir&eacute;e de e-valuation ";
+		$answer .= "pour la section ".$section.".";
+		$answer .= "Veuillez supprimer manuellement cette DE de Marmotte et pr&eacute;venir le bureau et les rapporteurs.<br/>\n";
 	  }
 
 	//$sql .= " AND marmotte.DKEY=\"\" AND";
@@ -380,15 +380,15 @@ function synchronizeUnitReports($section = "", $session = "")
         $sql .= " ON dsi.DKEY=marmotte.DKEY ";
 	$sql .= "WHERE marmotte.section='".$section."'";
 	$sql .= "AND marmotte.id_session='".$session."'";
-	$sql .= "AND marmotte.section!= dsi.CODE_SECTION1 ";
-	$sql .= "AND marmotte.section!= dsi.CODE_SECTION2 ";
-	$sql .= "AND marmotte.section!= dsi.CODE_SECTION3 ";
-	$sql .= "AND marmotte.section!= dsi.CODE_SECTION4 ";
-	$sql .= "AND marmotte.section!= dsi.CODE_SECTION5 ";
-	$sql .= "AND marmotte.section!= dsi.CODE_SECTION6 ";
-	$sql .= "AND marmotte.section!= dsi.CODE_SECTION7 ";
-	$sql .= "AND marmotte.section!= dsi.CODE_SECTION8 ";
-	$sql .= "AND marmotte.section!= dsi.CODE_SECTION9;";
+	$sql .= "AND dsi.CODE_SECTION1 != '".$section."'";
+	$sql .= "AND dsi.CODE_SECTION2 != '".$section."'";
+	$sql .= "AND dsi.CODE_SECTION3 != '".$section."'";
+	$sql .= "AND dsi.CODE_SECTION4 != '".$section."'";
+	$sql .= "AND dsi.CODE_SECTION5 != '".$section."'";
+	$sql .= "AND dsi.CODE_SECTION6 != '".$section."'";
+	$sql .= "AND dsi.CODE_SECTION7 != '".$section."'";
+	$sql .= "AND dsi.CODE_SECTION8 != '".$section."'";
+	$sql .= "AND dsi.CODE_SECTION9 != '".$section."';";
 	$result = sql_request($sql);
 	global $typesRapportsAll;
 	while($row = mysqli_fetch_object($result))
@@ -398,7 +398,8 @@ function synchronizeUnitReports($section = "", $session = "")
 		$type = isset($typesRapportsAll[$row->type]) ? $typesRapportsAll[$row->type] : $row->type;	
 		$answer .= "La DE unit&eacute; ".$row->DKEY." de la session ".$session." de type '".$row->type;
 		$answer .= "' pour l'unit&eacute, '".$row->unite."' a &eacute;t&eacute; retir&eacute;e de e-valuation, ";
-		$answer .= "veuillez retirer manuellement cette DE de Marmotte et prévenir le bureau et les rapporteurs.<br/>\n";
+		$answer .= " pour la section ".$section.".";
+		$answer .= "Veuillez supprimer manuellement cette DE de Marmotte et prévenir le bureau et les rapporteurs.<br/>\n";
 		$changed = true;
 	  }
 

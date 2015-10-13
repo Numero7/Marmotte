@@ -1215,7 +1215,7 @@ $actions1 = array(
 );
 $actions2 = array(
 		//			'history' => array('title' => "Historique", 'level' => NIVEAU_PERMISSION_SECRETAIRE, 'page' =>'', 'icon' => 'img/history-icon-24px.png'),
-		'delete' => array('title' => "Supprimer", 'level' => NIVEAU_PERMISSION_SECRETAIRE, 'page' =>'', 'icon' => 'img/delete-icon-24px.png'),
+		'delete' => array('title' => "Supprimer", 'level' => NIVEAU_PERMISSION_ACN, 'page' =>'', 'icon' => 'img/delete-icon-24px.png'),
 		//			'viewhtml' => array('title' => "Voir en HTML", 'level' => NIVEAU_PERMISSION_BASE, 'page' =>'export.php', 'icon' => 'img/html-icon-24px.png'),
 );
 $actions = array_merge($actions1, $actions2);

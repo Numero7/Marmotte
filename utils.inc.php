@@ -102,10 +102,10 @@ function email_handler($recipient,$subject,$body, $cc = "",$from="")
 
 	if($result == false)
 	{
-		echo "échec!<br/>\n";
+		echo "failed!<br/>\n";
 		throw new Exception("Could not send email to ".$recipient." with subject ".$subject);
 	}
-		echo "succès<br/>\n.";
+		echo "ok<br/>\n.";
 }
 
 
