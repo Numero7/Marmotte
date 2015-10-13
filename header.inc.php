@@ -11,7 +11,6 @@
 <link rel="stylesheet" type="text/css" href="cseprint.css" media="print" />
 <title>Marmotte</title>
 <script type='text/javascript' src='js/jquery.min.js'></script>
-   //<script type='text/javascript' src='js/jquery.color.js'></script>
 </head>
 
 <script>
