@@ -941,7 +941,6 @@ array(
 
 
 $avis_lettre = array(
-		""=>"",
 		"A+"=>"A+",
 		"A"=>"A",
 		"A-"=>"A-",
@@ -985,7 +984,7 @@ $tous_avis = array(
 		   avis_defavorable=>"Defavorable",
 );
 /* Pour les promos*/
-$avis_classement = array(""=>"", avis_adiscuter=>"à discuter", avis_non=>"Non", avis_oui=>"Oui");
+$avis_classement = array(avis_adiscuter=>"à discuter", avis_non=>"Non", avis_oui=>"Oui");
 
 $max_classement = 30;
 for($i = 1; $i <= $max_classement; $i++)
@@ -1032,7 +1031,7 @@ if(!isset($_SESSION["type_avis_classement"]))
 	$type_avis_classement = array();
 	foreach($id_rapport_to_label as $type => $data)
 	{
-		$typesRapportToAvis[$type][0] = "";
+		$typesRapportToAvis[$type][""] = "";
 		$sql = "select idavis from dsi.reltypevalavis where ideval = '$type'";
 		$result = sql_request($sql);
 		while($row = mysqli_fetch_object($result))
@@ -1040,10 +1039,12 @@ if(!isset($_SESSION["type_avis_classement"]))
 			if(is_array($tous_avis[$row->idavis]))
 			{
 				foreach($tous_avis[$row->idavis] as $id => $avis)
+				  {
 					$typesRapportToAvis[$type][$id] = $avis;
+				  }
 			}
 			else
-				$typesRapportToAvis[$type][$row->idavis]= $tous_avis[$row->idavis];
+			$typesRapportToAvis[$type][$row->idavis]= $tous_avis[$row->idavis];
 			if($row->idavis == avis_classe)
 				$type_avis_classement[] = $type;
 		}
@@ -1056,6 +1057,8 @@ else
 	$type_avis_classement = $_SESSION["type_avis_classement"];
 	$typesRapportToAvis = $_SESSION["type_rapport_to_avis"];
 }
+
+
 /************************* Mise en page *******************************/
 
 $typesRapportToMiseEnPage = array(
