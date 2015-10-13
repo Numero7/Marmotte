@@ -116,13 +116,13 @@ $fieldsRapportACN = array(
 		"dsi", "statut", "DKEY", "concours", "sousjury", "section", "intitule", "nom",
 		"prenom", "unite", "type", "rapporteur", "rapporteur2", "rapporteur3",
 		"avis", "avis1", "avis2", "avis3",
-		"rapport", "statut"
+		"rapport", "statut","signataire"
 );
 
 
 
 $fieldsEditableACN = array(
-			   "concours", "sousjury", "intitule", "unite", "type", "statut", "conflits"
+			   "concours", "sousjury", "intitule", "unite", "type", "statut", "conflits","signataire"
 			     );
 
 if(get_option("acn_can_edit_reports"))
@@ -140,13 +140,14 @@ if(get_option("acn_can_edit_rapporteurs"))
 
 
 $fieldsEditableAvisTransmis = array(
-				    "unite", "labo1", "rapport", 'rapporteur', 'rapporteur2','rapporteur3',"intitule"
+				    "unite", "labo1", "rapport", 'rapporteur', 'rapporteur2','rapporteur3',"intitule","signataire"
 				   );
 
 $fieldsRapportAll = array(
 		"dsi" => "Infos e-valuation",
 		"statut" => "Statut rapport",
 		"DKEY" => "DKEY",
+		"signataire"=>"Signataire",
 		"NUMSIRHUS" => "NUMSIRHUS",
 		"concours" => "Concours",
 		"sousjury" => "Sous-jury",
@@ -202,6 +203,7 @@ $fieldsIndividual0 = array(
 		"unite",
 		"avis",
 		"rapport",
+		"signataire"
 );
 
 $fieldsIndividual1 = array("avis1","prerapport");
@@ -265,7 +267,8 @@ $fieldsRapportsCandidat0 = array(
 		"rapporteur3",
 		"avis",
 		"avissousjury",
-		"rapport"
+		"rapport",
+		"signataire"
 );
 
 $fieldsRapportsIE0 = array(
@@ -274,7 +277,8 @@ $fieldsRapportsIE0 = array(
 		"rapporteur2",
 		"rapporteur3",
 		"avis",
-		"rapport"
+		"rapport",
+		"signataire"
 );
 
 /*
@@ -431,6 +435,7 @@ $fieldsUnites0 = array(
 		"rapports",
 		"avis",
 		"rapport",
+		"signataire"
 );
 
 $fieldsEcoles0 = array(
@@ -447,7 +452,8 @@ $fieldsEcoles0 = array(
 		"fichiers",
 		"rapports",
 		"avis",
-		"rapport"
+		"rapport",
+		"signataire"
 );
 
 $fieldsUnites1 = array(
@@ -503,7 +509,8 @@ $empty_report = array(
 		"type" => "Generique",
 		"id_session" => "",
 		"id_origine" => "0",
-		"nom" => "",
+		  "signataire"=>"",
+		      "nom" => "",
 		"prenom" => "",
 		"grade_rapport" => "",
 		"unite" => "",
@@ -692,6 +699,7 @@ $enumFields = array(
 $fieldsTypes = array(
 		"dsi"=>"dsi",
 		"intitule" => "short",
+		"signataire"=>"short",
 		"concours" => "concours",
 		"sousjury" => "sousjury",
 		"concourspresentes" => "short",
@@ -784,14 +792,14 @@ if(get_option("sec_can_edit"))
 		"audition",
 		"fichiers",
 		"avissousjury",
-    "statut"
+		"statut","signataire"
 );
 
-$fieldsEditableOnlySecretaire = array("nom","prenom","conflits","type");
+$fieldsEditableOnlySecretaire = array("nom","prenom","conflits","type","signataire");
 
 $nonEditableFieldsTypes = array('id','date');
 $nonVisibleFieldsTypes = array('id');
-$alwaysVisibleFieldsTypes = array('nom','prenom','unite','fichiers','rapports','conflits','dsi','intitule','type','avis','statut');
+$alwaysVisibleFieldsTypes = array('nom','prenom','unite','fichiers','rapports','conflits','dsi','intitule','type','avis','statut','signataire');
 
 $fieldsArrayCandidat = array($fieldsCandidat, $fieldsRapportsCandidat0, $fieldsRapportsCandidat1, $fieldsRapportsCandidat2, $fieldsRapportsCandidat3);
 $fieldsArrayIE = array($fieldsCandidatAvantAudition, $fieldsRapportsIE0, $fieldsRapportsCandidat1, $fieldsRapportsCandidat2, $fieldsRapportsCandidat3);

@@ -793,6 +793,7 @@ function is_rapporteur_allowed($college, $type)
 
 function is_seeing_allowed($college, $type)
 {
+  if(isSecretaire(getLogin(), false)) return true;
   if($type == "4510" || $type == "4515" || $type == "4520") 
     return ($college == "A1" || $college == "A2");
   if($type == "7777")
@@ -1100,7 +1101,7 @@ function is_field_editable($row, $fieldId)
 	//certains champs sont réservés au secrétaire
 	global $fieldsEditableOnlySecretaire;
 	if(in_array($fieldId,$fieldsEditableOnlySecretaire))
-		return isSecretaire();
+	  return isSecretaire() || isACN();
 
 	//certains cahmps sont systématqieuement autorisés pour le secrétaire
 	global $fieldsEditableSecretaire;

@@ -248,7 +248,7 @@ function createXMLReportElem($row, DOMDocument $doc, $keep_br = true)
 	$rapportElem->setAttribute("id",$row->id);
 	$rapportElem->setAttribute("id_origine",$row->id_origine);
 
-	$fieldsspecial = array('unite','date','type');
+	$fieldsspecial = array('unite','date','type','signataire');
 
 	global $typesRapportsAll;
 	if(trim($row->intitule) == "" && isset($typesRapportsAll[$row->type]))
@@ -281,13 +281,19 @@ function createXMLReportElem($row, DOMDocument $doc, $keep_br = true)
 		global $tous_sous_jury;
 		$concours = $row->concours;
 		$sousjury = $row->sousjury;
-		if(isset($tous_sous_jury[$concours]) &&  isset($tous_sous_jury[$concours][$sousjury]))
+		if(isset($row->signataire) && $row->signataire != "")
+		  {
+			appendLeaf("signataire",$row->signataire, $doc, $rapportElem);
+			appendLeaf("signature", "", $doc, $rapportElem);
+		  }
+		else if(isset($tous_sous_jury[$concours]) &&  isset($tous_sous_jury[$concours][$sousjury]))
 		{
 
 			$users = listUsers();
 			$login = isset($tous_sous_jury[$concours][$sousjury]["president"]) ? $tous_sous_jury[$concours][$sousjury]["president"] : "";
 			$description = isset($users[$login]) ? $users[$login]->description : "";
 			//			$description = "";
+
 			appendLeaf("signataire",$description, $doc, $rapportElem);
 			appendLeaf("signature", "", $doc, $rapportElem);
 		}
@@ -312,11 +318,19 @@ function createXMLReportElem($row, DOMDocument $doc, $keep_br = true)
 	}
 	else
 	{
-		appendLeaf("signataire", get_config("president"), $doc, $rapportElem);
+		if(isset($row->signataire) && $row->signataire != "")
+		  appendLeaf("signataire", $row->signataire, $doc, $rapportElem);
+		else
+		  appendLeaf("signataire", get_config("president"), $doc, $rapportElem);
 		global $dossier_stockage;
 		global $rootdir;
 		global $dossier_stockage_short;
-		if(!is_rapport_concours($row) && isset($row->statut) && $row->statut=="publie" && file_exists($dossier_stockage.signature_file))
+		if($row->signataire == "" 
+		   && !is_rapport_concours($row) 
+		   && isset($row->statut) 
+		   && $row->statut=="publie" 
+		   && file_exists($dossier_stockage.signature_file)
+		   )
 		{
 			appendLeaf("signature", "/".$dossier_stockage_short.signature_file, $doc, $rapportElem);
 			appendLeaf("signature_source", "/".$dossier_stockage_short.signature_file, $doc, $rapportElem);
