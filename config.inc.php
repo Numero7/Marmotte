@@ -240,7 +240,7 @@ $fieldsChercheursAll = array(
 $fieldsDSIChercheurs = array(
 			     "courriel" => "",
 			     "st" => array("statut_sirhus" => "","drecrute" => "recruté le "),
-			     "Grade" => array("grade" => "Grade:","effet_grade" => " depuis "),
+			     "Grade" => array("grade" => "","effet_grade" => " depuis "),
 			     "Unite1" => array("code_unite" => "", "ddebcodeunite1" => "depuis"),
 			     "Unite2" => array("code_unite2" => "", "ddebcodeunite2" => "depuis"),
 			     "lieu" => array("lieutravail" => "Lieu de travail:", "dr" =>"Deleg"),
