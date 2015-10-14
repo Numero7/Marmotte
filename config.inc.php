@@ -238,14 +238,14 @@ $fieldsChercheursAll = array(
 );
 
 $fieldsDSIChercheurs = array(
-			     "courriel" => "Courriel",
+			     "courriel" => "",
 			     "st" => array("statut_sirhus" => "","drecrute" => "recruté le "),
-			     "Grade" => array("grade" => "","effet_grade" => " depuis "),
+			     "Grade" => array("grade" => "Grade:","effet_grade" => " depuis "),
 			     "Unite1" => array("code_unite" => "", "ddebcodeunite1" => "depuis"),
 			     "Unite2" => array("code_unite2" => "", "ddebcodeunite2" => "depuis"),
-			     "lieutravail" => "Lieu de travail",
-			     "scn1" => "Section1",
-			     "scn2" => "Section2",
+			     "lieu" => array("lieutravail" => "Lieu de travail:", "dr" =>"Deleg"),
+			     "scn1" => "Section:",
+			     "scn2" => "Section2:",
 			     "CodePos" => array("nature_sirhus" => "", "codeposition" => "","ddebposs" =>"du","dfinposs"=>"au","quotite" => "Quotité"),
 			     );
 

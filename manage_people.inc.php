@@ -222,7 +222,7 @@ function get_or_create_candidate($data)
 				  $cdata->infos_evaluation.= $loc."<br/>";
 			      }
 			    else if(isset($cand->$key) && $cand->$key != "")
-			      $cdata->infos_evaluation.= $data.": ".$cand->$key."<br/>";
+			      $cdata->infos_evaluation.= $data." ".$cand->$key."<br/>";
 		      }
 		    $cdata->nom = $cand->nom;
 		    $cdata->prenom = $cand->prenom;
