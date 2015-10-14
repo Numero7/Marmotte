@@ -200,6 +200,35 @@ function get_or_create_candidate($data)
 			if($cdata == false)
 				throw new Exception("Failed to find candidate previously added<br/>".$sql);
 		}
+		else if(isset($data->NUMSIRHUS) && $data->NUMSIRHUS != "")
+	      {
+		$cdata->NUMSIRHUS = $data->NUMSIRHUS;
+		$cand = get_candidate_from_SIRHUS($data->NUMSIRHUS);
+		if($cand != null)
+		  {
+		    global $fieldsDSIChercheurs;
+		    $cdata->infos_evaluation = "";
+		    foreach($fieldsDSIChercheurs as $key => $data)
+		      {
+			    if(is_array($data))
+			      {
+				$loc = "";
+				foreach($data as $key2 => $data2)
+				  {
+				    if(!isset($cand->$key2) || $cand->$key2 == "") break;
+				    $loc.= $data2." ".$cand->$key2." ";
+				  }
+				if($loc != "")
+				  $cdata->infos_evaluation.= $loc."<br/>";
+			      }
+			    else if(isset($cand->$key) && $cand->$key != "")
+			      $cdata->infos_evaluation.= $data.": ".$cand->$key."<br/>";
+		      }
+		    $cdata->nom = $cand->nom;
+		    $cdata->prenom = $cand->prenom;
+		  }
+	      }
+
 		return normalizeCandidat($cdata);
 	}
 	catch(Exception $exc)

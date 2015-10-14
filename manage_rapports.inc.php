@@ -128,12 +128,11 @@ function getReport($id_rapport, $most_recent = true)
 	catch(Exception $e){};
 
 	if($report == false)
-	{
 		throw new Exception("No report with id ".$id_rapport);
-	}
-	else
-		return normalizeReport($report);
-}
+
+
+	return normalizeReport($report);
+ }
 
 function reportShortSummary($report)
 {

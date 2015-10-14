@@ -224,12 +224,11 @@ foreach($add_rubriques_chercheurs as $index => $rubrique)
 $fieldsIndividual = array_merge($fieldsIndividual0, $fieldsIndividual1, $fieldsIndividual2, $fieldsIndividual3);
 
 $fieldsChercheursAll = array(
-		"nom",
-		"prenom",
+			     array("nom","prenom"),
 		"conflits",
+		"infos_evaluation",
 		"genre",
-		"grade",
-		"annee_recrutement",
+		array("grade","annee_recrutement"),
 		"labo1",
 		"theme1",
 		"theme2",
@@ -237,6 +236,19 @@ $fieldsChercheursAll = array(
 		"fichiers",
 		"rapports"
 );
+
+$fieldsDSIChercheurs = array(
+			     "courriel" => "Courriel",
+			     "st" => array("statut_sirhus" => "","drecrute" => "recruté le "),
+			     "Grade" => array("grade" => "","effet_grade" => " depuis "),
+			     "Unite1" => array("code_unite" => "", "ddebcodeunite1" => "depuis"),
+			     "Unite2" => array("code_unite2" => "", "ddebcodeunite2" => "depuis"),
+			     "lieutravail" => "Lieu de travail",
+			     "scn1" => "Section1",
+			     "scn2" => "Section2",
+			     "CodePos" => array("nature_sirhus" => "", "codeposition" => "","ddebposs" =>"du","dfinposs"=>"au","quotite" => "Quotité"),
+			     );
+
 
 $fieldsChercheursDelegationsAll = array(
 		"nom",
@@ -313,6 +325,7 @@ $fieldsRapportsCandidat = array_merge($fieldsRapportsCandidat0, $fieldsRapportsC
 $fieldsIndividualAll = array(
 		"nom" => "Nom",
 		"prenom" => "Prénom",
+		"infos_evaluation" => "Infos e-valuation",
 		"genre" => "Genre",
 		"grade" => "Grade (Individu)",
 		"annee_recrutement" => "Date de recrutement",
@@ -523,6 +536,7 @@ $empty_report = array(
 		"prerapport" => "",
 		"prerapport2" => "",
 		"anciennete_grade" => "",
+		"infos_evaluation" => "",
 		"annee_recrutement" => "",
 		"production" => "",
 		"production2" => "",
@@ -561,6 +575,7 @@ $empty_individual = array(
 		"prenom" => "",
 		"genre" => "None",
 		"grade" => "None",
+	"infos_evaluation"=>"",
 		"annee_recrutement" => "",
 		"birth" => "",
 		"diploma" => "",
@@ -724,6 +739,7 @@ $fieldsTypes = array(
 		"prerapport2" => "treslong",
 		"prerapport3" => "treslong",
 		"anciennete_grade" => "short",
+		"infos_evaluation" => "short",
 		"annee_recrutement" => "short",
 		"avissousjury" => "avis",
 		"date" => "short",
@@ -797,9 +813,9 @@ if(get_option("sec_can_edit"))
 
 $fieldsEditableOnlySecretaire = array("nom","prenom","conflits","type","signataire");
 
-$nonEditableFieldsTypes = array('id','date');
+$nonEditableFieldsTypes = array('id','date',"nom","prenom");
 $nonVisibleFieldsTypes = array('id');
-$alwaysVisibleFieldsTypes = array('nom','prenom','unite','fichiers','rapports','conflits','dsi','intitule','type','avis','statut','signataire');
+$alwaysVisibleFieldsTypes = array('nom','prenom','infos_evaluation','unite','fichiers','rapports','conflits','dsi','intitule','type','avis','statut','signataire');
 
 $fieldsArrayCandidat = array($fieldsCandidat, $fieldsRapportsCandidat0, $fieldsRapportsCandidat1, $fieldsRapportsCandidat2, $fieldsRapportsCandidat3);
 $fieldsArrayIE = array($fieldsCandidatAvantAudition, $fieldsRapportsIE0, $fieldsRapportsCandidat1, $fieldsRapportsCandidat2, $fieldsRapportsCandidat3);

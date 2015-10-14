@@ -90,31 +90,11 @@ function displayEditableChercheur($chercheur,$report = NULL, $canedit = true)
 		$hidden["id_origine"] = $report->id_origine;
 		$hidden["type"] = $report->type;
 
-		if(isset($report->rapporteur))
-			$chercheur->rapporteur = $report->rapporteur;
-		else
-			$chercheur->rapporteur = "";
-			
-		if(isset($report->rapporteur2))
-			$chercheur->rapporteur2 = $report->rapporteur2;
-		else
-			$chercheur->rapporteur2 = "";
-
-		if(isset($report->rapporteur3))
-			$chercheur->rapporteur3 = $report->rapporteur3;
-		else
-			$chercheur->rapporteur3 = "";
-
-		if(isset($report->type))
-			$chercheur->type = $report->type;
-		else
-			$chercheur->type = "";
-
-		if(isset($report->statut))
-			$chercheur->statut = $report->statut;
-		else
-			$chercheur->statut = "";
-
+		$chercheur->rapporteur = isset($report->rapporteur) ? $report->rapporteur : "";
+	        $chercheur->rapporteur2 = isset($report->rapporteur2) ? $report->rapporteur2 : "";
+		$chercheur->rapporteur3 = isset($report->rapporteur3) ? $report->rapporteur3 : "";
+		$chercheur->type = isset($report->type) ? $report->type : "";
+		$chercheur->statut = isset($report->statut) ? $report->statut : "";
 		if(isset($report->id_session))
 			$session = $report->id_session;
 
@@ -434,6 +414,7 @@ function displayEditableReport($row, $canedit = true)
 		echo "</div>";
 		if(true)
 		{
+		  echo $candidate->infos_evaluation;
 			displayEditableCandidate($candidate,$row,$canedit);
 
 			$other_reports = find_somebody_reports($candidate,$eval_type);
