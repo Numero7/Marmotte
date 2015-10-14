@@ -104,7 +104,7 @@ function updateCandidateFromRequest($request, $oldannee="")
 
 function updateCandidateFromData($data)
 {
-	global $fieldsIndividualAll;
+	global $fieldsIndividualDB;
 
 	$candidate = get_or_create_candidate($data );
 	$sqlcore = "";
@@ -112,7 +112,7 @@ function updateCandidateFromData($data)
 	$first = true;
 	foreach($data as  $field => $value)
 	{
-		if(key_exists($field, $fieldsIndividualAll))
+		if(key_exists($field, $fieldsIndividualDB))
 		{
 			$sqlcore.=$first ? "" : ",";
 			$sqlcore.=$field.'="'.real_escape_string($value).'" ';
