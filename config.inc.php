@@ -237,6 +237,18 @@ $fieldsChercheursAll = array(
 		"rapports"
 );
 
+$refposition = array();
+if(!isset($_SESSION["refposition"]))
+  {
+    $sql = "SELECT * FROM ".dsidbname.".refposition WHERE 1;";
+    $result = sql_request($sql);
+    while($row = mysqli_fetch_object($result))
+	$refposition[$row->codeposition] = $row->lib_position;
+    $_SESSION["refposition"] = $refposition;
+  }
+else
+  $refposition = $_SESSION["refposition"];
+
 $fieldsDSIChercheurs = array(
 			     "courriel" => "",
 			     "st" => array("statut_sirhus" => "","drecrute" => "recruté le "),
@@ -246,7 +258,7 @@ $fieldsDSIChercheurs = array(
 			     "lieu" => array("lieutravail" => "Lieu de travail:", "dr" =>"Deleg"),
 			     "scn1" => "Section:",
 			     "scn2" => "Section2:",
-			     "CodePos" => array("nature_sirhus" => "", "codeposition" => "","ddebposs" =>"du","dfinposs"=>"au","quotite" => "Quotité"),
+			     "CodePos" => array("codeposition" => "", "nature_sirhus" => " -", "quotite" => "- quotité", "ddebposs" =>"- du","dfinposs"=>"au"),
 			     );
 
 

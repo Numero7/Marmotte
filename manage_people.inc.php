@@ -207,6 +207,7 @@ function get_or_create_candidate($data)
 		if($cand != null)
 		  {
 		    global $fieldsDSIChercheurs;
+		    global $refposition;
 		    $cdata->infos_evaluation = "";
 		    foreach($fieldsDSIChercheurs as $key => $data)
 		      {
@@ -216,7 +217,10 @@ function get_or_create_candidate($data)
 				foreach($data as $key2 => $data2)
 				  {
 				    if(!isset($cand->$key2) || $cand->$key2 == "") break;
-				    $loc.= $data2." ".$cand->$key2." ";
+				    if($key2 == "codeposition" && isset($refposition[$cand->$key2]))
+				      $loc.= $data2." ".$refposition[$cand->$key2]." ";
+				    else
+				      $loc.= $data2." ".$cand->$key2." ";
 				  }
 				if($loc != "")
 				  $cdata->infos_evaluation.= $loc."<br/>";
