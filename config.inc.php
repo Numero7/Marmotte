@@ -647,6 +647,7 @@ $id_rapport_to_label = array();
 $report_class_to_types = array();
 $report_types_to_class = array();
 
+$typesRapportsEcoles = array();
 $typesRapportsChercheurs = array();
 $typesRapportsChercheursShort = array();
 $typesRapportsUnites = array();
@@ -662,6 +663,7 @@ define("REPORT_CLASS_CHERCHEUR", "c");
 define("REPORT_CLASS_UNIT", "u");
 define("REPORT_CLASS_CONCOURS", "x");
 define("REPORT_CLASS_DELEGATION", "d");
+define("REPORT_CLASS_ECOLE", "e");
 
 define("REPORT_CANDIDATURE", 7777);
 define("REPORT_AUDITION", 7781);
@@ -701,6 +703,9 @@ while ($row = mysqli_fetch_object($result))
 			break;
 		case REPORT_CLASS_CONCOURS:
 			$typesRapportsConcours[$row->id] = $row->label;
+			break;
+		case REPORT_CLASS_ECOLE:
+			$typesRapportsEcoles[$row->id] = $row->label;
 			break;
 	}
 }
@@ -875,11 +880,6 @@ $fieldsArrayDelegation = array($fieldsChercheursDelegationsAll, $fieldsIndividua
 
 $typesRapportToFields =	array();
 
-function is_ecole_type($type)
-{
-	return ($type == 8515);
-}
-
 function is_equivalence_type($type)
 {
 	return ($type == 5015) || ($type == 5010) || ($type == 5025) || ($type == 5020);
@@ -921,12 +921,12 @@ foreach($report_class_to_types as $class => $ids)
 	{
 		if(is_equivalence_type($id))
 			$typesRapportToFields[$id] = $fieldsArrayIE;
-		else if (is_ecole_type($id))
-			$typesRapportToFields[$id] = $fieldsArrayEcole;
 		else
 		{
 			switch($class)
 			{
+				case REPORT_CLASS_ECOLE:
+					$typesRapportToFields[$id] = $fieldsArrayEcole; break;
 				case REPORT_CLASS_CHERCHEUR:
 					$typesRapportToFields[$id] = $fieldsArrayChercheur; break;
 				case REPORT_CLASS_UNIT:

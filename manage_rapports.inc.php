@@ -1150,9 +1150,10 @@ function is_field_editable($row, $fieldId)
 
 	global $fieldsIndividual;
 	global $fieldsIndividualAll;
+	global $fieldsIndividualDB;
 
 	//les champs indivicdues sont éditables
-	if(isset($fieldsIndividualAll[$fieldId]))
+	if(isset($fieldsIndividualDB[$fieldId]))
 	  return true;
 
 	
@@ -1187,6 +1188,22 @@ function is_field_editable($row, $fieldId)
 	}
 
 	if(is_rapport_unite($row))
+	{
+		global $fieldsUnites;
+		return 
+		  in_array($fieldId,$fieldsUnites)
+		  &&
+		  (isSecretaire()
+		   || ($fieldId == "prerapport" && $is_rapp1)
+		   || ($fieldId == "prerapport2" && $is_rapp2)
+		   || ($fieldId == "prerapport3" && $is_rapp3)
+		   || ($fieldId == "avis1" && $is_rapp1)
+		   || ($fieldId == "avis2" && $is_rapp2)
+		   || ($fieldId == "avis3" && $is_rapp3)
+		);
+	}
+
+	if(is_rapport_ecole($row))
 	{
 		global $fieldsUnites;
 		return 
@@ -1436,20 +1453,29 @@ function is_concours_type($type)
 
 function is_rapport_unite($row)
 {
-	global $report_types_to_class;
 	return (isset($row->type) && is_unite_type($row->type));
+}
+
+function is_rapport_ecole($row)
+{
+	return (isset($row->type) && is_ecole_type($row->type));
 }
 
 function is_unite_type($type)
 {
 	global $report_types_to_class;
-	return (isset($report_types_to_class[$type]) && ($report_types_to_class[$type] == REPORT_CLASS_UNIT));
+	return (
+		isset($report_types_to_class[$type])
+		&& ($report_types_to_class[$type] == REPORT_CLASS_UNIT )  );
 }
-/*
+
 function is_ecole_type($type)
 {
-  return $type == REPORT_ECOLE;
-  }*/
+	global $report_types_to_class;
+	return (
+		isset($report_types_to_class[$type])
+		&& ($report_types_to_class[$type] == REPORT_CLASS_ECOLE )  );
+}
 
 function is_promotion_type($type)
 {
