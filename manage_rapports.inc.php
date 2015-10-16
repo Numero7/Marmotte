@@ -1443,7 +1443,9 @@ function is_rapport_unite($row)
 function is_unite_type($type)
 {
 	global $report_types_to_class;
-	return (isset($report_types_to_class[$type]) && ($report_types_to_class[$type] == REPORT_CLASS_UNIT));
+	return (
+		isset($report_types_to_class[$type])
+		&& ($report_types_to_class[$type] == REPORT_CLASS_UNIT ||$report_types_to_class[$type] == REPORT_CLASS_ECOLE )  );
 }
 /*
 function is_ecole_type($type)

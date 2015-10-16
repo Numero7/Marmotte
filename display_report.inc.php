@@ -414,7 +414,6 @@ function displayEditableReport($row, $canedit = true)
 		echo "</div>";
 		if(true)
 		{
-		  echo $candidate->infos_evaluation;
 			displayEditableCandidate($candidate,$row,$canedit);
 
 			$other_reports = find_somebody_reports($candidate,$eval_type);

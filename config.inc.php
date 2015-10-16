@@ -662,6 +662,7 @@ define("REPORT_CLASS_CHERCHEUR", "c");
 define("REPORT_CLASS_UNIT", "u");
 define("REPORT_CLASS_CONCOURS", "x");
 define("REPORT_CLASS_DELEGATION", "d");
+define("REPORT_CLASS_ECOLE", "e");
 
 define("REPORT_CANDIDATURE", 7777);
 define("REPORT_AUDITION", 7781);
@@ -694,13 +695,14 @@ while ($row = mysqli_fetch_object($result))
 			$typesRapportsChercheursShort[$row->id] = $row->label;
 			$typesRapportsSession[$row->id] = $row->label;
 			break;
+		case REPORT_CLASS_CONCOURS:
+			$typesRapportsConcours[$row->id] = $row->label;
+			break;
 		case REPORT_CLASS_UNIT:
+		case REPORT_CLASS_ECOLE:
 			$typesRapportsUnites[$row->id] = $row->label;
 			$typesRapportsUnitesShort[$row->id] = $row->label;
 			$typesRapportsSession[$row->id] = $row->label;
-			break;
-		case REPORT_CLASS_CONCOURS:
-			$typesRapportsConcours[$row->id] = $row->label;
 			break;
 	}
 }
