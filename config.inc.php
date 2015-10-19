@@ -696,7 +696,11 @@ while ($row = mysqli_fetch_object($result))
 			$typesRapportsChercheursShort[$row->id] = $row->label;
 			$typesRapportsSession[$row->id] = $row->label;
 			break;
+		case REPORT_CLASS_CONCOURS:
+			$typesRapportsConcours[$row->id] = $row->label;
+			break;
 		case REPORT_CLASS_UNIT:
+		case REPORT_CLASS_ECOLE:
 			$typesRapportsUnites[$row->id] = $row->label;
 			$typesRapportsUnitesShort[$row->id] = $row->label;
 			$typesRapportsSession[$row->id] = $row->label;

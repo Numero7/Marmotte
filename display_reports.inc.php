@@ -314,7 +314,7 @@ function displayRowCell($row, $fieldID)
 	}
 	else if($fieldID == "concours")
 	{
-		echo isset($concours[$row->$fieldID]) ? $concours[$row->$fieldID]->intitule : "";
+		echo isset($concours[$row->$fieldID]) ? $concours[$row->$fieldID]->intitule : $row->$fieldID;
 	}
 	else if($fieldID=="sousjury")
 	{

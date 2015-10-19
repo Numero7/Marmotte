@@ -72,12 +72,12 @@ function add_conflit_to_report($login, $id_origine)
 function updateCandidateFromRequest($request, $oldannee="")
 {
 
-	global $fieldsIndividualAll;
+	global $fieldsIndividualDB;
 
 	$data = (object) array();
 
 
-	foreach($fieldsIndividualAll as  $field => $value)
+	foreach($fieldsIndividualDB as  $field => $value)
 		if (isset($request["field".$field]))
 		$data->$field = nl2br(trim($request["field".$field]),true);
 
@@ -145,13 +145,13 @@ function add_candidate_to_database($data,$section="")
 	if($section == "")
 		$section = currentSection();
 
-	global $fieldsIndividualAll;
+	global $fieldsIndividualDB;
 	$sqlvalues = "";
 	$sqlfields = "";
 	$first = true;
 
 	global $empty_individual;
-	foreach($fieldsIndividualAll as $field => $desc)
+	foreach($fieldsIndividualDB as $field => $desc)
 		if($field != "fichiers")
 		{
 			$sqlfields .= ($first ? "" : ",") ."`".$field."`";
