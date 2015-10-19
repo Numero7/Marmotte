@@ -506,7 +506,7 @@ function check_missing_data()
   $result = sql_request($sql);
   while($row = mysqli_fetch_object($result))
     {
-      $msg .= "La DE chercheur de DKEY '".$row->DKEY."' est associée au chercheur de NUMSIRHUS '".$row->NUMSIRHUS."'";
+      $msg .= "La DE chercheur de DKEY '".$row->DKEY."' pour la session ".$row->LIB_SESSION." ".$row->ANNEE."est associée au chercheur de NUMSIRHUS '".$row->NUMSIRHUS."'";
       $msg .= " qui n'apparaît pas dans la base ".dsidbname.".".dsi_people_db."<br/>\n";
     }
 

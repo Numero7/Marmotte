@@ -251,8 +251,8 @@ else
 
 $fieldsDSIChercheurs = array(
 			     "courriel" => "",
-			     "st" => array("statut_sirhus" => "","drecrute" => "recruté le "),
-			     "Grade" => array("grade" => "","effet_grade" => " depuis "),
+			     "st" => array("statut_sirhus" => "","grade"=>"","drecrute" => "recruté le "),
+			     //		     "Grade" => array("grade" => "","effet_grade" => " depuis "),
 			     "Unite1" => array("code_unite" => "", "ddebcodeunite1" => "depuis"),
 			     "Unite2" => array("code_unite2" => "", "ddebcodeunite2" => "depuis"),
 			     "lieu" => array("lieutravail" => "Lieu de travail:", "dr" =>"Deleg"),
@@ -879,8 +879,9 @@ $typesRapportToFields =	array();
 
 function is_ecole_type($type)
 {
-	return ($type == 8515);
+	return ($type == REPORT_ECOLE);
 }
+
 
 function is_equivalence_type($type)
 {
@@ -916,6 +917,16 @@ function classement_from_avis($avis)
 {
 	return substr($avis,1);
 }
+
+function is_ecole_or_colloque_type($type)
+{
+  //  echo $type;
+  //  echo $report_types_to_class[$type];
+  //  foreach($report_types_to_class as $type => $class) echo $type." ".$class."<br/>";
+  global $report_types_to_class;
+  return (isset($report_types_to_class[$type]) && $report_types_to_class[$type] == REPORT_CLASS_ECOLE);
+}
+
 
 foreach($report_class_to_types as $class => $ids)
 {

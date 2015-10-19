@@ -184,17 +184,18 @@ function EnteteDroit($row, $units)
 		$result .= $row->nom." ".$row->prenom."<br/>";
 		$result .= $bloc_unite;
 	}
-	else if($row->type == REPORT_ECOLE)
+	else if(is_ecole_or_colloque_type($row->type))
 	{
 		$unit = $row->unite;
 		if(array_key_exists($row->unite,$units) && $units[$row->unite]->nickname != "")
 			$unit = $units[$row->unite]->nickname;
-		if($row->intitule != "")
-			$result .= $row->intitule." "."<br/>";
+		//		if($row->intitule != "")
+		//	$result .= $row->intitule." "."<br/>";
 		$result .= $row->nom." "."<br/>".$row->prenom." (".$unit.") ";
 	}
 	else if(is_rapport_unite($row))
 	{
+	  //	  throw new Exception("roger");
 		$result .= $bloc_unite;
 	}
 	else
