@@ -24,6 +24,23 @@ if(!check_current_session_exists() && !isSuperUser())
 ?>
 
 <script type="text/javascript">
+
+   $(document).ready(function() {
+       $('.sproperty').change(function() {
+	   $(this).css({"color" : "#FF0000"});
+	$.post( 
+		  "action.php",
+		  $(this).parent().serialize()
+		)
+  	  .done(function(data) {
+	      //	  alert("OK");
+			    })
+	 .fail(function(jqXHR, textStatus, errorThrown) {
+       alert( "Erreur, impossible d'enregistrer la propriété: " + errorThrown);
+	   });
+	 });
+});
+
 function alertSize() {
 	var myWidth = 0, myHeight = 0;
 	if( typeof( window.innerWidth ) == 'number' ) {
@@ -267,6 +284,12 @@ function alertText($text)
 				  else
 				    include 'admin/admin.inc.php';
 				  break;
+			case 'see_people':
+			  include 'admin/admin_people.inc.php';
+			  break;
+			case 'see_units':
+			  include 'admin/admin_units.php';
+			  break;
 				case 'maintenance_on':
 					set_config("maintenance", "on");
 					include 'admin/admin.inc.php';
@@ -283,12 +306,18 @@ function alertText($text)
 					delete_all_units();
 					include "admin/admin_units.php";
 					break;
+				case 'set_people_property':
+					$property = $_REQUEST["property"];
+					$numsirhus = $_REQUEST["numsirhus"];
+					$value = $_REQUEST["value"];
+					set_people_property($property,$numsirhus, $value);
+					break;
 				case 'set_property':
 					$property = $_REQUEST["property"];
 					$id_origine = $_REQUEST["id_origine"];
 					$value = $_REQUEST["value"];
 					set_property($property,$id_origine, $value, isset($_REQUEST['all_reports']));
-					displayReports($id_origine);
+					//					displayReports($id_origine);
 					break;
 				case 'change_section':
 					displayReports();

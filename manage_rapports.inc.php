@@ -984,6 +984,26 @@ function find_unit_reports($code)
 	return $rows;
 }
 
+function find_people_year_reports($NUMSIRHUS,$section)
+{
+	if($NUMSIRHUS == "")
+		return array();
+
+	$sql = "SELECT DISTINCT id_session from ".reports_db. " WHERE id=id_origine AND statut!=\"supprime\"";
+	$sql .= ' AND NUMSIRHUS="'.$NUMSIRHUS.'" AND section="'.$section.'"';
+
+	$result=sql_request($sql);
+
+	if($result == false)
+		throw new Exception("Echec de l'execution de la requete <br/>".$sql."<br/>");
+
+	$rows = array();
+	while ($row = mysqli_fetch_object($result))
+		$rows[] = $row->id_session;
+
+	return $rows;
+}
+
 function find_people_reports($nom, $prenom)
 {
 	if($nom == "" && $prenom == "")
