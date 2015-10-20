@@ -15,6 +15,8 @@
 		"acn_can_edit_avis"=> array("L'ACN peut éditer les avis","true"),
 		"acn_can_edit_reports"=> array("L'ACN peut éditer les rapports de section","true"),
 		"acn_can_edit_rapporteurs"=> array("L'ACN peut modifier les rapporteurs","true"),
+		"B_can_view_DR1_promo"=> array("Les rangs B ont accès aux dossiers de promo DR1","true"),
+		"C_can_view_DR1_promo"=> array("Les rangs C ont accès aux dossiers de promo DR1","false"),
 		"show_rapporteur3"=> array("Afficher le raporteur3 et son avis dans l'écran principal","false"),
 		"show_theme1"=> array("Afficher le mot-clé1 dans l'écran principal","true"),
 		"show_theme2"=> array("Afficher le mot-clé2 dans l'écran principal","true"),

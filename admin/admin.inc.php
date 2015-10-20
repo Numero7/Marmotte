@@ -12,6 +12,8 @@ $admin_keywords = isset($_REQUEST["admin_keywords"]) && isSecretaire();
 $admin_rubriques = isset($_REQUEST["admin_rubriques"]) && isSecretaire() && !isSuperUser();
 $admin_migration = isset($_REQUEST["admin_migration"]) && isSuperUser();
 $admin_unites = isset($_REQUEST["admin_unites"]) && isSecretaire();
+$admin_people = isset($_REQUEST["admin_people"]) && isSecretaire();
+
 ?>
   <h1>Interface d&#39;administration</h1>
 <ul>
@@ -24,6 +26,7 @@ $admin_unites = isset($_REQUEST["admin_unites"]) && isSecretaire();
 	}
 	?>
 	<li><a href="index.php?action=admin&amp;admin_users=">Membres</a></li>
+	<li><a href="index.php?action=admin&amp;admin_people=">Chercheurs</a></li>
 	<li><a href="index.php?action=admin&amp;admin_unites">Unit&eacute;s</a>	
 <?php
 if(!isACN() && !isSuperUser())
@@ -61,6 +64,9 @@ if(!isACN() && !isSuperUser())
 <?php 	
 if($admin_maintenance)
   include 'admin/admin_maintenance.inc.php';
+
+if($admin_people)
+  include 'admin/admin_people.inc.php';
 
 if($admin_sessions)
   include 'admin/admin_sessions.php';

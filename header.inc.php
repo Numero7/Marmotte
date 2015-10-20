@@ -12,22 +12,4 @@
 <title>Marmotte</title>
 <script type='text/javascript' src='js/jquery.min.js'></script>
 </head>
-
-<script>
-   $(document).ready(function() {
-       $('.sproperty').change(function() {
-	   $(this).css({"color" : "#FF0000"});
-	$.post( 
-		  "action.php",
-		  $(this).parent().serialize()
-		)
-	  	  	  .done(function(data) {
-
-			    })
-	 .fail(function(jqXHR, textStatus, errorThrown) {
-       alert( "Erreur, impossible d'enregistrer le rapporteur: " + errorThrown);
-	   });
-	 });
-});
-</script>
 <body>

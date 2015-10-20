@@ -656,7 +656,6 @@ $typesRapportsConcours = array();
 $typesRapportsSession = array();
 $typesRapportsAll = array();
 $typesRapportsPromotion = array("4500","4505","4510","4515","4520");
-$typesRapportsPromotion = array("4500","4505","4510","4515","4520");
 $types_needs_checkboxes = array();
 
 define("REPORT_CLASS_CHERCHEUR", "c");

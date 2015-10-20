@@ -254,8 +254,6 @@ function displayRowCell($row, $fieldID)
 			?>
 <form action="/">
 	<select class="sproperty" name="value">
-		    //		onchange="window.location='index.php?action=set_property
-		    //&property=<?php echo $fieldID; ?>&all_reports=&id_origine=<?php echo $row->id_origine; ?>&value=' + this.value;">
 		<?php
 		echo "<option value=\"\"></option>\n";
 		foreach($rapporteurs as $rapporteur => $data)
@@ -269,8 +267,8 @@ function displayRowCell($row, $fieldID)
 		?>
 	</select>
 	<input type="hidden" name="action" value="set_property" />
-	<input type="hidden" name="property" value=<?php echo '"'.$fieldID.'";' ?> />
-	<input type="hidden" name="id_origine" value=<?php echo '"'.$row->id_origine.'";' ?> />
+	    <input type="hidden" name="property" value=<?php echo '"'.$fieldID.'"'; ?> />
+	    <input type="hidden" name="id_origine" value=<?php echo '"'.$row->id_origine.'"'; ?> />
 </form>
 	<?php
 		}

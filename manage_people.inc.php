@@ -45,6 +45,7 @@ function is_auditionneCR($report)
 	&&(is_classe($report) || $report->avis=="oral" || $report->avis=="nonclasse");
 }
 
+
 function is_in_conflict($login, $candidat)
 {
 	//	echo "conflits '".$candidat->conflits."' login '".$login."'";
@@ -139,6 +140,15 @@ function getAllCandidates()
 
 	return $rows;
 }
+
+function  set_people_property($property,$numsirhus, $value)
+{
+  $sql = "UPDATE ".people_db." SET ".$property."=\"".$value."\" WHERE NUMSIRHUS=\"".$numsirhus."\";";
+  sql_request($sql);
+  echo $sql;
+  //  throw new Exception($sql);
+}
+
 
 function add_candidate_to_database($data,$section="")
 {

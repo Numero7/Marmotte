@@ -158,6 +158,12 @@ if(!isSuperUser())
 </ul>
 <td valign="top">
 <ul>
+<li><a href="?action=see_people">Chercheurs section</a></li>
+<li><a href="?action=see_units">Unités section</a></li>
+</ul>
+</td>
+<td valign="top">
+<ul>
 <?php
 if(!is_authenticated_with_JANUS())
 {
