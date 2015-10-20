@@ -892,6 +892,11 @@ function is_promotion_DR($type)
 	return ($type == 4510) || ($type == 4515) || ($type == 4520);
 }
 
+function is_promotion($type)
+{
+	return ($type >= 4500 && $type <= 4520);
+}
+
 function is_classement($type)
 {
 	return ($type == REPORT_CANDIDATURE) || is_promotion_DR($type) || ($type == REPORT_EMERITAT) || ($type == REPORT_EMERITAT_RE);
@@ -1162,11 +1167,7 @@ $labelCheckboxes = array(
 		avis_favorable => "<B>Avis favorable</B>",
 		avis_defavorable => "<B>Avis défavorable</B>",
 		avis_reserve => "<B>Avis réservé</B>",
-		avis_pas_davis => "<B>Pas d'avis</B>",
-		"A+" => "<B>A+</B>",
-		"A" => "<B>A</B>",
-		"B" => "<B>B</B>",
-		"C" => "<B>C</B>"
+		avis_pas_davis => "<B>Pas d'avis</B>"
 );
 
 

@@ -20,6 +20,7 @@ if(!authenticate())
  }
 
 require_once('manage_rapports.inc.php');
+require_once('manage_people.inc.php');
 
 $action = isset($_POST['action']) ? $_POST['action'] : '?';
 
@@ -32,6 +33,12 @@ case 'set_property':
   set_property($property,$id_origine, $value, true);
   echo "set property '".$property."' with value '".$value."' for report '".$id_origine."'";
   break;
+case 'set_people_property':
+ $property = $_REQUEST["property"];
+ $numsirhus = $_REQUEST["numsirhus"];
+ $value = $_REQUEST["value"];
+ set_people_property($property,$numsirhus, $value);
+break;
 }
 
 db_disconnect();

@@ -14,9 +14,11 @@ $sql .="SELECT dsi.nom,prenom,numsirhus,scn2,code_unite,code_unite2 FROM ".dsidb
 $sql .= "WHERE dsi.scn2 = '".$_SESSION['filter_section']."';";
 $result = sql_request($sql);
 
+//$sql = "SELECT * ,".dsidbname.".".dsi_people_db.".nom AS dsi_nom, ".dsidbname.".".dsi_people_db.".prenom AS dsi_prenom FROM `people` marmotte ";
 $sql = "SELECT * FROM `people` marmotte ";
-$sql .= "INNER JOIN dsi.chercheurs dsi ON marmotte.NUMSIRHUS = dsi.numsirhus ";
+$sql .= "INNER JOIN ".dsidbname.".".dsi_people_db." dsi ON marmotte.NUMSIRHUS = dsi.numsirhus ";
 $sql .= "WHERE marmotte.section = \"".$_SESSION['filter_section']."\"";
+
 
 $result = sql_request($sql);
 
@@ -45,6 +47,10 @@ $fields =
 
 
 global $topics;
+echo "<p>";
+foreach($topics as $key => $value)
+  echo $value."<br/>";
+echo "</p>";
 /*
 echo '<script type="text/javascript">';
 echo "\n";
