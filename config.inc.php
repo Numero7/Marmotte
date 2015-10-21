@@ -920,7 +920,7 @@ function is_concours($type)
 
 function is_avis_classement($avis)
 {
-	return (count($avis) > 1) && ($avis[0] == "c") && is_numeric($avis[1]);
+	return (strlen($avis) > 1) && ($avis[0] == "c") && is_numeric($avis[1]);
 }
 
 function classement_from_avis($avis)

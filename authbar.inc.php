@@ -27,9 +27,9 @@ else
 if(!isSuperUser())
 {
 ?>				
-						<li>
-						Section/CID
-									<select onchange="window.location='index.php?reset_filter=&amp;action=change_section&amp;filter_section=' + this.value;">
+	<li>
+		Section/CID
+		<select onchange="window.location='index.php?reset_filter=&amp;action=change_section&amp;filter_section=' + this.value;">
 									<?php
 									foreach($sections as $section)
 									{
@@ -151,9 +151,9 @@ if(!isSuperUser())
 		{?>
 <?php 
 		}
-		if(isBureauUser("", false) && !isSuperUser())
-		{
-					}
+
+if(!is_current_session_concours())
+  {
 				?>
 </ul>
 <td valign="top">
@@ -165,6 +165,7 @@ if(!isSuperUser())
 <td valign="top">
 <ul>
 <?php
+      }
 if(!is_authenticated_with_JANUS())
 {
 ?>
