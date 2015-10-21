@@ -387,7 +387,7 @@ function createXMLReportElem($row, DOMDocument $doc, $keep_br = true)
 
 	//On ajoute les cases à choix multiple, si nécessaires
 	//pour les classements, le classement figure dans l'en tête
-	if(!is_classement($row->type))
+	if(!is_classement($row->type) && !is_avis_classement($row->avis))
 	{
 		global $labelCheckboxes;
 		global $evalCheckboxes;
