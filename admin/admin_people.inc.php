@@ -14,9 +14,32 @@ $sql .="SELECT dsi.nom,prenom,numsirhus,scn2,code_unite,code_unite2 FROM ".dsidb
 $sql .= "WHERE dsi.scn2 = '".$_SESSION['filter_section']."';";
 $result = sql_request($sql);
 
+$sql = "SELECT DISTINCT id_session,NUMSIRHUS FROM `".reports_db."` WHERE NUMSIRHUS != \"\" AND type=\"".REPORT_EVAL."\" OR type=\"".REPORT_EVAL_RE."\"";
+$result = sql_request($sql);
+$evals = array();
+while($row = mysqli_fetch_object($result))
+  {
+    if(!isset($evals[$row->NUMSIRHUS])) $evals[$row->NUMSIRHUS] = array();
+    $evals[$row->NUMSIRHUS][] = substr($row->id_session,0,1) . substr($row->id_session,count($row->id_session)-3,2);
+  }
+
+/*$sql = "SELECT DISTINCT id_session,NUMSIRHUS FROM `".reports_db."` WHERE NUMSIRHUS != \"\" AND type=\"".REPORT_TITU."\"";
+$result = sql_request($sql);
+$titus = array();
+while($row = mysqli_fetch_object($result))
+  {
+    if(!isset($evals[$row->NUMSIRHUS])) $titus[$row->NUMSIRHUS] = array();
+    $titus[$row->NUMSIRHUS][] = $row->id_session;
+  }
+*/
+
+
+//$sql = "SELECT * ,".dsidbname.".".dsi_people_db.".nom AS dsi_nom, ".dsidbname.".".dsi_people_db.".prenom AS dsi_prenom FROM `people` marmotte ";
 $sql = "SELECT * FROM `people` marmotte ";
-$sql .= "INNER JOIN dsi.chercheurs dsi ON marmotte.NUMSIRHUS = dsi.numsirhus ";
-$sql .= "WHERE marmotte.section = \"".$_SESSION['filter_section']."\"";
+$sql .= "INNER JOIN ".dsidbname.".".dsi_people_db." dsi ON marmotte.NUMSIRHUS = dsi.numsirhus ";
+$sql .= "WHERE marmotte.section=\"".$_SESSION['filter_section']."\"";
+$sql .= " AND (dsi.scn1 = \"".$_SESSION['filter_section']."\" OR dsi.scn2 = \"".$_SESSION['filter_section']."\") ORDER BY dsi.nom ASC;";
+
 
 $result = sql_request($sql);
 
@@ -32,6 +55,7 @@ $fields =
 "theme1" => "MotClef1",
 "theme2" => "MotClef2",
 "theme3" => "MotClef3",
+//"titus" => "Titu",
 "evals" => "Evals",
 "statut_sirhus" => "Statut",
 "courriel" => "Courriel",
@@ -45,6 +69,10 @@ $fields =
 
 
 global $topics;
+echo "<p>";
+foreach($topics as $key => $value)
+  echo $value."<br/>";
+echo "</p>";
 /*
 echo '<script type="text/javascript">';
 echo "\n";
@@ -109,11 +137,21 @@ echo "<tr>";
 	else if($key == "evals")
 	  {
 	    	  echo "<td>";
-		  /*	      $years = find_people_year_reports($row->NUMSIRHUS,$section);
-    foreach($years as $year)
-    echo $year." ";*/
+		  if(isset($evals[$row->NUMSIRHUS]))
+		    foreach($evals[$row->NUMSIRHUS] as $session)
+		      echo $session." ";
 	  echo "</td>";
 	}
+      /*
+	else if($key == "titus")
+	  {
+	    	  echo "<td>";
+		  if(isset($titus[$row->NUMSIRHUS]))
+		    foreach($titus[$row->NUMSIRHUS] as $session)
+		      echo $session." ";
+	  echo "</td>";
+	}
+      */
       else
 	{
     echo "<td>".(isset($row->$key) ? $row->$key : "")."</td>\n"; 

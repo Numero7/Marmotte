@@ -672,6 +672,7 @@ define("REPORT_ECOLE", 8515);
 define("REPORT_DELEGATION", 7778);
 define("REPORT_EVAL", 6005);
 define("REPORT_EVAL_RE", 6008);
+define("REPORT_TITU", 6015);
 define("REPORT_EMERITAT", 7017);
 define("REPORT_CHERCHEUR", 7779);
 define("REPORT_EMERITAT_RE", 7018);
@@ -895,6 +896,11 @@ function is_equivalence_type($type)
 function is_promotion_DR($type)
 {
 	return ($type == 4510) || ($type == 4515) || ($type == 4520);
+}
+
+function is_promotion($type)
+{
+	return ($type >= 4500 && $type <= 4520);
 }
 
 function is_classement($type)
@@ -1167,11 +1173,7 @@ $labelCheckboxes = array(
 		avis_favorable => "<B>Avis favorable</B>",
 		avis_defavorable => "<B>Avis défavorable</B>",
 		avis_reserve => "<B>Avis réservé</B>",
-		avis_pas_davis => "<B>Pas d'avis</B>",
-		"A+" => "<B>A+</B>",
-		"A" => "<B>A</B>",
-		"B" => "<B>B</B>",
-		"C" => "<B>C</B>"
+		avis_pas_davis => "<B>Pas d'avis</B>"
 );
 
 
