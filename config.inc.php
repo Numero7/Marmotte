@@ -1000,19 +1000,6 @@ $typesRapportsToXSL = array(
 
 
 /* Pour les concours*/
-$avis_candidature_short =
-array(
-		"" =>"Sans avis",
-		'desistement' => 'Desistement',
-		"adiscuter"=>"A discuter",
-		"nonauditionne"=>"Non-auditionné",
-		"oral"=>"Auditionné",
-		"nonclasse"=>"Non-classé",
-		"classe"=>"Classé",
-		"admisaconcourir" => "Admis a concourir",
-		"nonconcur"=>"Non-admis à concourir"
-);
-
 
 $avis_lettre = array(
 		"A+"=>"A+",
@@ -1044,18 +1031,33 @@ define("avis_nonconcur",77);
 define("avis_nonauditionne",78);
 define("avis_oral",79);
 define("avis_estclasse",80);
+define("avis_admis_a_concourir",81);
+
+$avis_candidature_short =
+array(
+		"" =>"sans avis",
+		avis_desistement => 'désistement',
+		avis_adiscuter=>"à discuter",
+		avis_nonauditionne=>"non-auditionné",
+		avis_oral=>"auditionné",
+		avis_non_classe=>"non-classé",
+		avis_classe=>"classé",
+		avis_admis_a_concourir => "admis à concourir",
+		avis_nonconcur=>"non-admis à concourir"
+);
+
 
 $tous_avis = array(
-		   avis_oui=>"Oui",
-		   avis_non=>"Non",
-		   avis_non_classe=>"Non-Classe",
-		   avis_adiscuter=>"A discuter",
-		   avis_desistement=>"Desistement",
-		   avis_nonconcur=>"Non-admis a concourir",
-		   avis_nonauditionne=>"Non-auditionne",
-		   avis_oral=>"Auditionne",
-		   avis_estclasse=>"Classe",
-		   avis_defavorable=>"Defavorable",
+		   avis_oui=>"oui",
+		   avis_non=>"non",
+		   avis_non_classe=>"non-classé",
+		   avis_adiscuter=>"à discuter",
+		   avis_desistement=>"désistement",
+		   avis_nonconcur=>"non-admis à concourir",
+		   avis_nonauditionne=>"non-auditionné",
+		   avis_oral=>"auditionné",
+		   avis_estclasse=>"classé",
+		   avis_defavorable=>"défavorable",
 );
 /* Pour les promos*/
 $avis_classement = array(avis_adiscuter=>"à discuter", avis_non=>"Non", avis_oui=>"Oui");
@@ -1564,8 +1566,8 @@ $icones_avis = array(
 		avis_favorable => "img/Icon-Yes.png",
 		"A" => "img/Icon-Yes.png",
 		"A-" => "img/Icon-Yes.png",
-		"admisaconcourir" => "img/Icon-Yes.png",
-		"oral"=>"img/Icon-Yes.png",
+		avis_admis_a_concourir => "img/Icon-Yes.png",
+		avis_oral=>"img/Icon-Yes.png",
 		avis_classe=>"img/Icon-Yes.png",
 		avis_oui=>"img/Icon-Yes.png",
 
@@ -1590,7 +1592,7 @@ $icones_avis = array(
 		avis_non =>"img/Icon-No.png",
 
 		avis_pas_davis => "img/Icon-Maybe.png",
-		"adiscuter" => "img/Icon-Maybe.png",
+		avis_adiscuter => "img/Icon-Maybe.png",
 		"" =>"img/Icon-Maybe.png",
 );
 
