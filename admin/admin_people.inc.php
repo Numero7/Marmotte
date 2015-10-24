@@ -4,6 +4,7 @@ require_once('manage_unites.inc.php');
 
 global $fieldsUnitsDB;
 
+
 $sql = "INSERT IGNORE INTO `people` (nom,prenom,NUMSIRHUS,section,labo1,labo2)";
 $sql .="SELECT dsi.nom,prenom,numsirhus,scn1,code_unite,code_unite2 FROM ".dsidbname.".".dsi_people_db." dsi ";
 $sql .= "WHERE dsi.scn1 = '".$_SESSION['filter_section']."';";
@@ -14,7 +15,7 @@ $sql .="SELECT dsi.nom,prenom,numsirhus,scn2,code_unite,code_unite2 FROM ".dsidb
 $sql .= "WHERE dsi.scn2 = '".$_SESSION['filter_section']."';";
 $result = sql_request($sql);
 
-$sql = "SELECT DISTINCT id_session,NUMSIRHUS FROM `".reports_db."` WHERE NUMSIRHUS != \"\" AND type=\"".REPORT_EVAL."\" OR type=\"".REPORT_EVAL_RE."\"";
+$sql = "SELECT DISTINCT id_session,NUMSIRHUS FROM `".reports_db."` WHERE section=\"".$_SESSION['filter_section']."\" AND NUMSIRHUS != \"\" AND type=\"".REPORT_EVAL."\" OR type=\"".REPORT_EVAL_RE."\"";
 $result = sql_request($sql);
 $evals = array();
 while($row = mysqli_fetch_object($result))
@@ -23,6 +24,22 @@ while($row = mysqli_fetch_object($result))
     $evals[$row->NUMSIRHUS][] = substr($row->id_session,0,1) . substr($row->id_session,count($row->id_session)-3,2);
   }
 
+if($_SESSION['filter_section']== "6" && isSecretaire() && !isPresident())
+  {
+    /* mise a jour des num sirhus */
+    $sql = "UPDATE `people` marmotte ";
+    $sql .= "JOIN ".dsidbname.".".dsi_people_db." dsi ON (marmotte.nom=dsi.nom) AND (marmotte.prenom=dsi.prenom) ";
+    $sql .= "SET marmotte.NUMSIRHUS=dsi.NUMSIRHUS ";
+    $sql .= "WHERE marmotte.NUMSIRHUS=\"\" AND marmotte.section=\"".$_SESSION['filter_section']."\" ";
+    $result = sql_request($sql);
+
+    $sql = "UPDATE `reports` marmotte ";
+    $sql .= "JOIN ".dsidbname.".".dsi_people_db." dsi ON (marmotte.nom=dsi.nom) AND (marmotte.prenom=dsi.prenom) ";
+    $sql .= "SET marmotte.NUMSIRHUS=dsi.NUMSIRHUS ";
+    $sql .= "WHERE (dsi.scn1=\"".$_SESSION['filter_section']."\" or dsi.scn2=\"".$_SESSION['filter_section']."\") ";
+    $sql.= "AND marmotte.NUMSIRHUS=\"\" AND marmotte.section=\"".$_SESSION['filter_section']."\" ";
+    $result = sql_request($sql);
+  }
 /*$sql = "SELECT DISTINCT id_session,NUMSIRHUS FROM `".reports_db."` WHERE NUMSIRHUS != \"\" AND type=\"".REPORT_TITU."\"";
 $result = sql_request($sql);
 $titus = array();
@@ -35,8 +52,8 @@ while($row = mysqli_fetch_object($result))
 
 
 //$sql = "SELECT * ,".dsidbname.".".dsi_people_db.".nom AS dsi_nom, ".dsidbname.".".dsi_people_db.".prenom AS dsi_prenom FROM `people` marmotte ";
-$sql = "SELECT * FROM `people` marmotte ";
-$sql .= "INNER JOIN ".dsidbname.".".dsi_people_db." dsi ON marmotte.NUMSIRHUS = dsi.numsirhus ";
+$sql = "SELECT *,dsi.numsirhus AS num FROM `people` marmotte ";
+$sql .= "INNER JOIN ".dsidbname.".".dsi_people_db." dsi ON marmotte.NUMSIRHUS = dsi.numsirhus OR (marmotte.nom=dsi.nom AND marmotte.prenom=dsi.prenom)";
 $sql .= "WHERE marmotte.section=\"".$_SESSION['filter_section']."\"";
 $sql .= " AND (dsi.scn1 = \"".$_SESSION['filter_section']."\" OR dsi.scn2 = \"".$_SESSION['filter_section']."\") ORDER BY dsi.nom ASC;";
 
@@ -64,7 +81,7 @@ $fields =
 "codeposition" => "Position",
 "nature_sirhus" => "Nature",
 "dr" => "DR",
-"numsirhus"=>"Numsirhus"
+"num"=>"Numsirhus"
 	);
 
 
@@ -99,6 +116,9 @@ echo "\n";
 echo '</script>';
 echo "\n";
 */
+
+$units = unitsList();
+
 echo "<table>\n";
 echo "<tr>\n";
 foreach($fields as $key => $label)
@@ -111,6 +131,9 @@ while($row = mysqli_fetch_object($result))
 echo "<tr>";
   foreach($fields as $key => $label)
     {
+      if(($key == "code_unite" || $key == "code_unite2") && isset($units[$row->$key]))
+	  $row->$key = $units[$row->$key]->prettyname;
+
       if(substr($key,0,5) == "theme")
 	{
 	  echo '<td>';
