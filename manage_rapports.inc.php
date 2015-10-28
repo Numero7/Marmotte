@@ -832,12 +832,33 @@ function change_statuts($new_statut)
 	  if($row->avis == "" && ($new_statut == "avistransmis" || $new_statut == "publie"))
 	    throw new Exception("La DE ".$row->DKEY." n'a pas d'avis. Veuillez renseigner tous les avis avant de transmettre dans e-valuation.");
  
+	if($new_statut == "publie" && !isPresident())
+	  throw new Exception("Seul le président peut transmettre et signer les rapports");
+
 	foreach($rows as $row)
 	  {
 	    if($row->statut == "publie")
-	      continue;
-	    if($row->statut == "avistransmis" && $new_statut != "publie")
+	      {
+		echo "Impossible de changer le statut du rapport ".$row->DKEY." qui est déjà publié.<br/>";
+		continue;
+	      }
+	    if($row->statut == "avistransmis" && !isACN())
+	      {
+		echo "Impossible de changer le statut du rapport ".$row->DKEY." dont l'avis est déjà transmis, car vous n'êtes pas ACN.<br/>";
+		continue;
+	      }
+	    if($row->statut == "validation" && !isSecretaire())
 	      continue;	    
+	    if($row->statut == "validation" && !isPresident() && !isACN() && !get_option("sec_can_edit_valid"))
+	      {
+		echo "Impossible de changer le statut du rapport ".$row->DKEY." qui est en mode 'validation', car vous n'êtes pas président.<br/>";
+		continue;
+	      }
+	    if($row->statut == "validation" && isACN() && !get_option("acn_can_edit_valid"))
+	      {
+		echo "Impossible de changer le statut du rapport ".$row->DKEY." qui est en mode 'validation', car vous n'êtes pas président.<br/>";
+		continue;
+	      }
 	  change_statut($row->id, $new_statut);
 	     }
 }
@@ -1102,6 +1123,16 @@ function is_field_editable($row, $fieldId)
 
 	if( ($fieldId == "statut"))
 	  return isSecretaire();
+
+	if($statut == "validation" && !isSecretaire())
+	  return false;
+
+	if($statut == "validation" && !isPresident() && !isACN() && !get_option("sec_can_edit_valid"))
+	  return false;
+
+	if($statut == "validation" && isACN() && !get_option("acn_can_edit_valid"))
+	  return false;
+
 
 	//	if(isACN()) echo "ACN";	
 	//une fois les avis tranmis, seul le rapport et les rapporteurs sont editables et l'ACN n'a également accès qu'à ces éléments en édition

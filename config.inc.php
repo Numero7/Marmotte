@@ -25,6 +25,7 @@ $statutsRapports = array(
 		'doubleaveugle'=>'Edition Prérapports Double Aveugle',
 		'edition' => "Edition Prérapports et Rapports",
 		'avistransmis'=>"Avis transmis dans e-valuation",
+		'validation'=>"Validation par le président",
 		'publie'=>"Rapports transmis",
 		'audition'=>"Audition"
 );
@@ -32,13 +33,15 @@ $statutsRapports = array(
 $statutsRapportsACN = array(
 		'doubleaveugle'=>'Edition Prérapports Double Aveugle',
 		'edition' => "Edition Prérapports et Rapports",
-		'avistransmis'=>"Avis transmis dans e-valuation"
+		'avistransmis'=>"Avis transmis dans e-valuation",
+		'validation'=>"Validation par le président"
 );
 
 $statutsRapportsIndiv = array(
 		'doubleaveugle'=>'Edition Prérapports Double Aveugle',
 		'edition' => "Edition Prérapports et Rapports",
 		'avistransmis'=>"Transmettre l'avis dans e-valuation (l'avis ne sera plus modifiable)",
+		'validation'=>"Validation par le président (les rapporteurs ne peuvent plus éditer le RS)",
 		'publie'=>"Finaliser le rapport (le RS ne sera plus modifable)"
 );
 
