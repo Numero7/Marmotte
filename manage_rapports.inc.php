@@ -308,14 +308,15 @@ function filtersCriteriaToSQL($filters, $filter_values, $rapporteur_or = true)
 			}
 			else if(isset($fieldsTypes[$filter]) && $fieldsTypes[$filter] == "avis")
 			{
-				if($filter_values[$filter] == "classe")
-					$sql .= " AND (".reports_db.".$filter REGEXP \"c^[0-9]\" OR ".reports_db.".$filter=\"classe\") ";
-				else if($filter_values[$filter] == "oral")
-					$sql .= " AND (".reports_db.".$filter=\"oral\" OR ".reports_db.".$filter=\"nonclasse\" OR ".reports_db.".$filter REGEXP \"^[0-9]\" )";
-				else if($filter_values[$filter] == "admisaconcourir")
-					$sql .= " AND ".reports_db.".$filter!=\"nonconcur\" AND ".reports_db.".$filter!=\"desistement\" ";
+				if($filter_values[$filter] == avis_classe)
+					$sql .= " AND (".reports_db.".$filter REGEXP \"^c[0-9]\" OR ".reports_db.".$filter=\"".avis_classe."\") ";
+				else if($filter_values[$filter] == avis_oral)
+				  $sql .= " AND (".reports_db.".$filter=\"".avis_oral."\" OR ".reports_db.".$filter=\"".avis_non_classe."\" OR ".reports_db.".$filter REGEXP \"^c[0-9]\" )";
+				else if($filter_values[$filter] == avis_admis_a_concourir)
+					$sql .= " AND ".reports_db.".$filter!=\"".avis_nonconcur."\" AND ".reports_db.".$filter!=\"".avis_desistement."\" ";
 				else
 					$sql .= " AND ".reports_db.".$filter=\"$filter_values[$filter]\" ";
+				//echo $sql;
 			}
 			else
 			{
@@ -831,12 +832,33 @@ function change_statuts($new_statut)
 	  if($row->avis == "" && ($new_statut == "avistransmis" || $new_statut == "publie"))
 	    throw new Exception("La DE ".$row->DKEY." n'a pas d'avis. Veuillez renseigner tous les avis avant de transmettre dans e-valuation.");
  
+	if($new_statut == "publie" && !isPresident())
+	  throw new Exception("Seul le président peut transmettre et signer les rapports");
+
 	foreach($rows as $row)
 	  {
 	    if($row->statut == "publie")
-	      continue;
-	    if($row->statut == "avistransmis" && $new_statut != "publie")
+	      {
+		echo "Impossible de changer le statut du rapport ".$row->DKEY." qui est déjà publié.<br/>";
+		continue;
+	      }
+	    if($row->statut == "avistransmis" && !isACN())
+	      {
+		echo "Impossible de changer le statut du rapport ".$row->DKEY." dont l'avis est déjà transmis, car vous n'êtes pas ACN.<br/>";
+		continue;
+	      }
+	    if($row->statut == "validation" && !isSecretaire())
 	      continue;	    
+	    if($row->statut == "validation" && !isPresident() && !isACN() && !get_option("sec_can_edit_valid"))
+	      {
+		echo "Impossible de changer le statut du rapport ".$row->DKEY." qui est en mode 'validation', car vous n'êtes pas président.<br/>";
+		continue;
+	      }
+	    if($row->statut == "validation" && isACN() && !get_option("acn_can_edit_valid"))
+	      {
+		echo "Impossible de changer le statut du rapport ".$row->DKEY." qui est en mode 'validation', car vous n'êtes pas président.<br/>";
+		continue;
+	      }
 	  change_statut($row->id, $new_statut);
 	     }
 }
@@ -1101,6 +1123,16 @@ function is_field_editable($row, $fieldId)
 
 	if( ($fieldId == "statut"))
 	  return isSecretaire();
+
+	if($statut == "validation" && !isSecretaire())
+	  return false;
+
+	if($statut == "validation" && !isPresident() && !isACN() && !get_option("sec_can_edit_valid"))
+	  return false;
+
+	if($statut == "validation" && isACN() && !get_option("acn_can_edit_valid"))
+	  return false;
+
 
 	//	if(isACN()) echo "ACN";	
 	//une fois les avis tranmis, seul le rapport et les rapporteurs sont editables et l'ACN n'a également accès qu'à ces éléments en édition
