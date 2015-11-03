@@ -33,7 +33,7 @@ function synchronizeConcours($year = "")
 	  $sec = ltrim($row->numsect_conc, '0');
 	  $msg = "Ajout du concours ".$code." de la section ".$sec."<br/>\n";
 	  $log .= $msg;
-	  echo $msg;
+	  //echo $msg;
 	  $sql = "INSERT INTO ".marmottedbname.".concours (section,session,code,intitule,postes,statut) ";
 	  $sql .= "VALUES (\"".$sec."\",\"Concours".$row->annee."\",\"";
 	  $sql .=$code."\",\"".$row->grade_conc." ".substr($row->n_public,3,2)."\",\"".$row->nb_prop."\",\"IE\")";
@@ -90,7 +90,7 @@ function synchronizeConcours($year = "")
 	  $candidatsids[$row->user_id][] = $section;
 
 	  $msg = "Ajout du candidat ".$row->prenom." ".$row->nom." de user_id ".$row->user_id." a la section ".$section."<br/>";
-	  echo $msg;
+	  //  echo $msg;
 	  $log .= $msg;
 	  $genre = ($row->titre == "Monsieur") ? "homme" : "femme";
 	  $sql = "INSERT INTO ".marmottedbname.".".people_db." (concoursid,section,nom,prenom,genre,diploma,birth) ";
@@ -101,7 +101,7 @@ function synchronizeConcours($year = "")
 	}
 
       $msg .= "Ajout de la candidature de ".$row->prenom." ".$row->nom." de user_id ".$row->user_id." concours ".$row->num_conc."<br/>";
-      echo $msg;
+      //      echo $msg;
       $log .= $msg;
 
       $sql = "INSERT INTO ".marmottedbname.".".reports_db." (concoursid,type,section,avis,concours,id_session,grade_rapport,nom,prenom) ";
