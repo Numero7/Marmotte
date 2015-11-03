@@ -34,8 +34,9 @@ function synchronizeConcours($year = "")
 	  $msg = "Ajout du concours ".$code." de la section ".$sec."<br/>\n";
 	  $log .= $msg;
 	  echo $msg;
-	  $sql = "INSERT INTO ".marmottedbname.".concours (section,session,code,intitule,postes) ";
-	  $sql .= "VALUES (\"".$sec."\",\"Concours".$row->annee."\",\"".$code."\",\"".$row->grade_conc." ".substr($row->n_public,3,2)."\",\"".$row->nb_prop."\")";
+	  $sql = "INSERT INTO ".marmottedbname.".concours (section,session,code,intitule,postes,statut) ";
+	  $sql .= "VALUES (\"".$sec."\",\"Concours".$row->annee."\",\"";
+	  $sql .=$code."\",\"".$row->grade_conc." ".substr($row->n_public,3,2)."\",\"".$row->nb_prop."\",\"IE\")";
 	  sql_request($sql);
 	}
     }

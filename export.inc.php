@@ -342,11 +342,14 @@ function generate_jad_reports($preambules = array())
 	{
 		$preambule = isset($preambules[$concours]) ? $preambules[$concours] : "";
 		if($preambule != "")
-			$docs[$concours] = generate_jad_report($concours, $preambule);
+		  $docs[$concours] = generate_jad_report($concours, $preambule);
 	}
 
 	$login = getLogin();
-	$dir = dossier_temp();
+
+	global $dossier_temp;
+	$dir = $dossier_temp;
+
 	$filenames = array();
 	foreach($docs as $code => $doc)
 	{
@@ -354,7 +357,7 @@ function generate_jad_reports($preambules = array())
 
 		$html = XMLToHTML($doc,'xslt/jad.xsl');
 		$pdf = HTMLToPDF($html);
-		$filename = "rapport_jad_$code.pdf";
+		$filename = "rapport_jad_".preg_replace('/[^A-Za-z0-9\-]/', '', $code).".pdf";
 		$pdf->Output($dir."/".$filename,'F');
 		$filenames[$dir."/".$filename] = $filename;
 	}
@@ -415,11 +418,13 @@ function generate_jad_report($code,$preambule="")
 	$annee_concours = substr($session,strlen($session) -4,4);
 	appendLeaf("annee_concours", $annee_concours, $doc, $root);
 
-	
-	if(strlen($code) >= 4)
+
+	$num_concours = $code;
+	/*	if(strlen($code) >= 4)
 		$num_concours = substr($code,0,2) ."/".substr($code,2,2);
 	else
 		$num_concours = $strlen($code); // peut etre renseigné à la main par le président
+	*/
 	appendLeaf("code_concours", $num_concours, $doc, $root);
 	
 	global $postes_ouverts;

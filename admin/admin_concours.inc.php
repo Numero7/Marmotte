@@ -30,7 +30,7 @@
 <p>
     Ce menu permet d&#39;ajouter ou de mettre à jour un concours.<br /> Le code
 	du concours doit être au format "06/02".</br> L&#39;intitulé du
-	concours doit être court, par exemple "CR2" ou "CR2_Coloriage".<br />
+	concours doit être court et commencer par le grade, par exemple "CR2" ou "CR2_Coloriage".<br />
 	Si le jury est plénier ou si vous ne connaissez pas encore la liste de
 	vos sous-jurys, laisser les champs "SousJury*" et "President*" vides.<br />
 
@@ -88,6 +88,18 @@
 </form>
 <br />
 <hr />
+<h3>Affecter les sous-jurys</h3>
+<p>Cette fonction affecte automatiquement chaque candidat au sous-jury
+	auquel appartient son premier rapporteur.</p>
+
+<form method="post" action="index.php"
+	onsubmit="return confirm('Affecter les sous-jurys?');">
+	<input type="hidden" name="action" value="affectersousjurys" /> <input
+		type="submit" value="Affecter sous-jurys" /> <input type="hidden"
+		name="admin_concours"></input>
+</form>
+<br />
+<hr />
 <h3>Changer le statut du concours</h3>
 <p>Cette fonction permet de changer le statut du concours au fur et à
 	mesure de son avancement.</p>
@@ -124,18 +136,8 @@ foreach($concours as $conc)
 <?php 
 }
 ?>
-<h3>Affecter les sous-jurys</h3>
-<p>Cette fonction affecte automatiquement chaque candidat au sous-jury
-	auquel appartient son premier rapporteur.</p>
-
-<form method="post" action="index.php"
-	onsubmit="return confirm('Affecter les sous-jurys?');">
-	<input type="hidden" name="action" value="affectersousjurys" /> <input
-		type="submit" value="Affecter sous-jurys" /> <input type="hidden"
-		name="admin_concours"></input>
-</form>
-<br />
-<hr />
+<br/>
+<hr/>
 
 <h3>Supprimer un concours</h3>
 <p>Ce menu permet de supprimer un concours.</p>
@@ -172,7 +174,7 @@ foreach($concours as $conc)
 			<td><?php  echo "<b>".$conc->code."</b>"; ?>
 			</td>
 			<td><?php 
-			$key = "preambule_jad_".$conc->code;
+			$key = "preambule_jad_".trim($conc->code,"\\/ ");
 			$text = remove_br(get_config($key));
 			if($text == "")
 				$text = "Renseigner ici le preambule du rapport de JAD pour le concours ".$conc->code.". Laisser vide si un rapport de JAD n'est pas nécessaire.";
