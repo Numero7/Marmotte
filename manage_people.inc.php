@@ -211,7 +211,7 @@ function get_or_create_candidate($data)
 				throw new Exception("Failed to find candidate previously added<br/>".$sql);
 		}
 		else if(isset($data->NUMSIRHUS) && $data->NUMSIRHUS != "")
-	      {
+		  {
 		$cdata->NUMSIRHUS = $data->NUMSIRHUS;
 		$cand = get_candidate_from_SIRHUS($data->NUMSIRHUS);
 		if($cand != null)
@@ -258,6 +258,27 @@ function get_candidate_from_SIRHUS($sirhus)
 	$res = sql_request($sql);
 	while($row = mysqli_fetch_object($res))
 		return $row;
+	return null;
+}
+
+function get_candidate_from_concoursid($user_id)
+{
+	$sql = "SELECT * FROM ".dsidbname.".".celcc_candidats." WHERE user_id=\"".$user_id."\";";
+	$res = sql_request($sql);
+	while($row = mysqli_fetch_object($res))
+	  {
+	    //on récupère tous les concours du candidat
+	    $sql = "SELECT num_conc FROM ".dsidbname.".".celcc_candidatures." WHERE user_id=\"".$row->user_id."\"";
+	    $result2 = sql_request($sql);
+	    $all_concours = "";
+	    while($row2 = mysqli_fetch_object($result2))
+	      {
+		$section = ltrim(substr($row2->num_conc,0,2),'0');
+		$all_concours.=$row2->num_conc." ";
+	      }
+	    $row->cncourspresentes = $all_concours;
+	    return $row;
+	  }
 	return null;
 }
 

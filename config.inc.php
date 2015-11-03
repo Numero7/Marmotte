@@ -1,3 +1,4 @@
+
 <?php
 
 date_default_timezone_set('Europe/Paris');
@@ -89,7 +90,7 @@ $add_rubriques_unites = get_rubriques("unites");
 
 $fieldsSummary = array("type","unite","nom","prenom",/*"ecole",*/"avis","rapporteur","avis1","rapporteur2","avis2", "rapporteur3", "avis3","theme1","theme2","theme3","DKEY");
 
-$fieldsSummaryConcours = array("type","nom","prenom","concours","sousjury","avis","rapporteur","avis1",
+$fieldsSummaryConcours = array("concours","nom","prenom","sousjury","avis","rapporteur","avis1",
 			       "rapporteur2","avis2","rapporteur3","avis3","theme1","theme2","theme3","labo1","labo2","diploma"
 );
 
@@ -371,11 +372,10 @@ $fieldsIndividualDB = array(
 		"theme2" => "Mot-clé 2",
 		"theme3" => "Mot-clé 3",
 		"audition" => "Rapport d'audition",
-		"concourspresentes" => "Concours présentés",
 		"conflits" => "Conflits",
 		"fichiers"=> "Fichiers",
 		"birth" => "Date naissance",
-		"diploma" => "Date diplôme"
+		"diploma" => "Diplôme"
 );
 
 
@@ -397,8 +397,7 @@ array('id','nom','prenom','genre','type','concours',
 		"theme1",
 		"theme2",
 		"theme3",
-		"audition",
-		"concourspresentes"
+		"audition"
 );
 
 /* dirty */
@@ -620,8 +619,7 @@ $empty_individual = array(
 		"theme1" => "",
 		"theme2" => "",
 		"theme3" => "",
-		"audition" => "",
-		"concourspresentes" => ""
+		"audition" => ""
 );
 
 $virgin_report_equivalence =
@@ -822,7 +820,6 @@ if(get_option("sec_can_edit"))
 		"intitule",
 		"concours",
 		"sousjury",
-		"concourspresentes",
 		"nom",
 		"prenom",
 		"genre",
@@ -1519,7 +1516,6 @@ foreach($concours_ouverts as $code => $data)
 	$tous_concours[strval($code)] = $data;
 
 $filtersConcours = array(
-		'type' => array('name'=>"Type d'évaluation" , 'liste' => $typesRapportsConcours,'default_value' => "tous", 'default_name' => ""),
 		'concours' => array('name'=>"Concours" , 'liste' => $tous_concours, 'default_value' => "tous", 'default_name' => ""),
 		'sousjury' => array('name'=>"Sous-jury" , 'liste' => $liste_sous_jurys, 'default_value' => "tous", 'default_name' => ""),
 		'avis' => array('name'=>"Avis section" , 'liste' => $avis_candidature_short, 'default_value' => "tous", 'default_name' => ""),
@@ -1533,6 +1529,7 @@ $filtersConcours = array(
 		'theme1' => array('name'=>"Theme1" , 'liste' => $topics, 'default_value' => "tous", 'default_name' => ""),
 		'theme2' => array('name'=>"Theme2" , 'liste' => $topics, 'default_value' => "tous", 'default_name' => ""),
 		'statut' => array('name'=>"Statut" , 'liste' => $statutsRapports, 'default_value' => "tous", 'default_name' => ""),
+		'type' => array('name'=>"Type d'évaluation" , 'liste' => $typesRapportsConcours,'default_value' => "tous", 'default_name' => ""),
 		//'theme3' => array('name'=>"Theme3" , 'liste' => $topics, 'default_value' => "tous", 'default_name' => ""),
 		//'labo2' => array('name'=>"Labo2" , 'default_value' => "tous", 'default_name' => ""),
 		'id_session' => array('name'=>"Session", 'default_value' =>-1, 'default_name' => "Toutes les sessions"),

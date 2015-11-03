@@ -248,6 +248,10 @@ function alertText($text)
 			
 			switch($action)
 			{
+			case 'synchronizeConcours':
+			  echo synchronizeConcours();
+			  include 'admin/admin_maintenance.inc.php';
+			  break;
 			case 'sync_colleges':
 			  echo synchronize_colleges();
 			  break;

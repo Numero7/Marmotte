@@ -29,8 +29,7 @@
 <h3>Ajouter ou mettre à jour un concours</h3>
 <p>
     Ce menu permet d&#39;ajouter ou de mettre à jour un concours.<br /> Le code
-	du concours doit être numérique, par exempe "0602", les caractères
-	non-numériques seront supprimés automatiquement.</br> L&#39;intitulé du
+	du concours doit être au format "06/02".</br> L&#39;intitulé du
 	concours doit être court, par exemple "CR2" ou "CR2_Coloriage".<br />
 	Si le jury est plénier ou si vous ne connaissez pas encore la liste de
 	vos sous-jurys, laisser les champs "SousJury*" et "President*" vides.<br />
@@ -40,7 +39,7 @@
 	<input type="hidden" name="admin_concours"></input>
 	<table>
 		<tr>
-			<td>code <input name="code" value="0601"></input>
+			<td>code <input name="code" value="06/01"></input>
 			</td>
 			<td>niveau <select name="niveau">
 					<option value="CR">CR</option>

@@ -5,6 +5,121 @@ require_once("manage_users.inc.php");
 require_once("manage_sessions.inc.php");
 require_once("manage_rapports.inc.php");
 
+function synchronizeConcours($year = "")
+{
+  $log = "";
+
+  if($year == "")
+    $year = date("Y");
+  /*************** AJOUT DES CONCOURS ***********************************/
+  $sql = "SELECT * FROM ".dsidbname.".".celcc_concours." WHERE annee=\"".$year."\"";
+  $result = sql_request($sql);
+  while($row = mysqli_fetch_object($result))
+      $dsi_concours[$row->n_public] = $row;
+  $result = sql_request($sql);
+
+  $sql = "SELECT * FROM ".marmottedbname.".concours WHERE session=\"Concours".$year."\"";
+  $result2 = sql_request($sql);
+  $all_concours = array();
+  while($row = mysqli_fetch_object($result2))
+      $all_concours[$row->code] = $row;
+
+  while($row = mysqli_fetch_object($result))
+    {
+      //      $code = str_replace("/","",$row->n_public);
+      $code = $row->n_public;
+      if(!isset($all_concours[$code]))
+	{
+	  $sec = ltrim($row->numsect_conc, '0');
+	  $msg = "Ajout du concours ".$code." de la section ".$sec."<br/>\n";
+	  $log .= $msg;
+	  echo $msg;
+	  $sql = "INSERT INTO ".marmottedbname.".concours (section,session,code,intitule,postes) ";
+	  $sql .= "VALUES (\"".$sec."\",\"Concours".$row->annee."\",\"".$code."\",\"".$row->grade_conc." ".substr($row->n_public,3,2)."\",\"".$row->nb_prop."\")";
+	  sql_request($sql);
+	}
+    }
+
+  /* AJOUT DES CANDIDATS  ET CANDidATURES */
+
+  // abandon des NOT IN car trop lent à la place on précalcule des tableaux
+  //  $sql = "SELECT * FROM ".dsidbname.".".celcc_candidats;
+  //  $sql .= " WHERE user_id NOT IN (SELECT DISTINCT concoursid FROM ".marmottedbname.".people WHERE concoursid!=\"\")";
+
+  /* calcul des candidats déjà connus */
+  $sql = "SELECT concoursid,section FROM ".marmottedbname.".people WHERE concoursid!=\"\"";
+  $result = sql_request($sql);
+  $candidatsids = array();
+  while($row = mysqli_fetch_object($result))
+    {
+      if(!isset($candidatsid[$row->concoursid]))
+	$candidatsid[$row->concoursid] = array();
+      $candidatsid[$row->concoursid][]= $row->section; 
+    }
+  
+  /* calcul des candidatures déjà connues */
+  $sql = "SELECT concoursid, concours FROM ".marmottedbname.".reports WHERE concoursid!=\"\"";
+  $result = sql_request($sql);
+  $candidatures = array();
+  while($row = mysqli_fetch_object($result))
+    {
+      if(!isset($candidatures[$row->concours]))
+	$candidatures[$row->concours] = array();
+      $candidatures[$row->concours][] = $row->concoursid;
+    }
+
+  /* cle unique cote dsi userid + concours */
+  $sql = "SELECT * FROM ".dsidbname.".".celcc_candidatures." candidatures ";
+  $sql .= "LEFT JOIN ".dsidbname.".".celcc_candidats." candidats ON candidatures.user_id=candidats.user_id WHERE 1";
+  
+  $result = sql_request($sql);
+  while($row = mysqli_fetch_object($result))
+    {
+      //si la candidature est déjà connue, on ignore
+      if(isset($candidatures[$row->num_conc]) && in_array($row->user_id,$candidatures[$row->num_conc]))
+	continue;
+
+      $section = ltrim( substr($row->num_conc,0,2), '0');      
+
+      //ajout du candidat si nécessaire, ou mise à jour du concoursid si déjà connu
+      if(!isset($candidatsids[$row->user_id]) || !in_array($section, $candidatsids[$row->user_id]))
+	{
+	  if(!isset($candidatsids[$row->user_id]))
+	    $candidatsids[$row->user_id] = array();
+	  $candidatsids[$row->user_id][] = $section;
+
+	  $msg = "Ajout du candidat ".$row->prenom." ".$row->nom." de user_id ".$row->user_id." a la section ".$section."<br/>";
+	  echo $msg;
+	  $log .= $msg;
+	  $genre = ($row->titre == "Monsieur") ? "homme" : "femme";
+	  $sql = "INSERT INTO ".marmottedbname.".".people_db." (concoursid,section,nom,prenom,genre,diploma,birth) ";
+	  $sql .= "VALUES (\"".$row->user_id."\",\"".$section."\",\"".ucfirst(strtolower($row->nom))."\",\"".ucfirst(strtolower($row->prenom));
+	  $sql .= "\",\"".$genre."\",\"".$row->date_dip."\",\"".$row->datnaiss."\") ";
+	  $sql .= "ON DUPLICATE KEY UPDATE concoursid=\"".$row->user_id."\"";
+	  sql_request($sql);		
+	}
+
+      $msg .= "Ajout de la candidature de ".$row->prenom." ".$row->nom." de user_id ".$row->user_id." concours ".$row->num_conc."<br/>";
+      echo $msg;
+      $log .= $msg;
+
+      $sql = "INSERT INTO ".marmottedbname.".".reports_db." (concoursid,type_eval,section,concours,id_session,grade_rapport,nom,prenom) ";
+      $sql .= "VALUES (";
+      $sql .= "\"".$row->user_id."\",\"".REPORT_CANDIDATURE."\",\"".$section."\",";
+      $sql .= "\"".$row->num_conc."\",";
+      $sql .= "\"Concours".$dsi_concours[$row->num_conc]->annee."\",";
+      $sql .= "\"".$dsi_concours[$row->num_conc]->grade_conc."\",";
+      $sql .= "\"".ucfirst(strtolower($row->nom))."\",\"".ucfirst(strtolower($row->prenom))."\")";
+      sql_request($sql);
+      global $dbh;
+      $new_id = mysqli_insert_id($dbh);
+      $sql = "UPDATE ".marmottedbname.".".reports_db." SET id_origine=id WHERE id=\"".$new_id."\"";
+      sql_request($sql);
+    }
+  
+  return $log;
+}
+
 
 function synchronizeEmailsUpdates($email = true)
 {

@@ -88,7 +88,7 @@ function setConcours($conc)
 			$conc->$suff = "";
 		}
 
-		$conc->code = preg_replace('/\D/', '', $conc->code);
+		//		$conc->code = preg_replace('/\D/', '', $conc->code);
 
 		$sql = "SELECT * FROM ".concours_db;
 		$sql .=" WHERE section='".real_escape_string(currentSection())."'";
