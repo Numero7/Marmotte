@@ -148,6 +148,7 @@ $fieldsEditableAvisTransmis = array(
 				   );
 
 $fieldsRapportAll = array(
+		  "concoursid" => "NumCand",
 		"dsi" => "Infos e-valuation",
 		"statut" => "Statut rapport",
 		"DKEY" => "DKEY",
@@ -231,6 +232,7 @@ $fieldsChercheursAll = array(
 			     array("nom","prenom"),
 		"conflits",
 		"infos_evaluation",
+		"infos_celcc",
 		"genre",
 		array("grade","annee_recrutement"),
 		"labo1",
@@ -342,6 +344,7 @@ $fieldsIndividualAll = array(
 		"nom" => "Nom",
 		"prenom" => "Prénom",
 		"infos_evaluation"=>"Infos e-valuation",
+		"infos_celcc"=>"Infos celcc",
 		"genre" => "Genre",
 		"grade" => "Grade (Individu)",
 		"annee_recrutement" => "Date de recrutement",
@@ -410,14 +413,12 @@ for($i = 0; $i <= 30; $i++)
 $fieldsAll = array_merge($fieldsRapportAll, $fieldsIndividualAll, array("rapports" => "Autres rapports"));
 
 $fieldsCandidatAvantAudition = array(
-		"nom",
-		"prenom",
-		"genre",
-		"grade",
-		"annee_recrutement",
-		"diploma",
-		"birth",
+		array("nom","prenom"),
+		array("diploma","birth"),
+		array("grade","annee_recrutement"),
+		array("genre","concoursid"),
 		"conflits",
+		"infos_celcc",
 		"fichiers",
 		"rapports",
 		"labo1",
@@ -571,6 +572,7 @@ $empty_report = array(
 		"prerapport2" => "",
 		"anciennete_grade" => "",
 		"infos_evaluation" => "",
+		"infos_celcc" => "",
 		"annee_recrutement" => "",
 		"production" => "",
 		"production2" => "",
@@ -610,6 +612,7 @@ $empty_individual = array(
 		"genre" => "None",
 		"grade" => "None",
 	"infos_evaluation"=>"",
+	"infos_celcc"=>"",
 		"annee_recrutement" => "",
 		"birth" => "",
 		"diploma" => "",
@@ -754,6 +757,7 @@ $enumFields = array(
 
 /****************************** Mise en page des détails sur un rapport ******************************/
 $fieldsTypes = array(
+		     "concoursid"=>"short",
 		"dsi"=>"dsi",
 		"intitule" => "short",
 		"signataire"=>"short",
@@ -782,6 +786,7 @@ $fieldsTypes = array(
 		"prerapport3" => "treslong",
 		"anciennete_grade" => "short",
 		"infos_evaluation" => "short",
+		"infos_celcc" => "short",
 		"annee_recrutement" => "short",
 		"avissousjury" => "avis",
 		"date" => "short",
@@ -856,7 +861,7 @@ $fieldsEditableOnlySecretaire = array("nom","prenom","conflits","type","signatai
 
 $nonEditableFieldsTypes = array('id','date',"nom","prenom");
 $nonVisibleFieldsTypes = array('id');
-$alwaysVisibleFieldsTypes = array('nom','prenom','infos_evaluation','unite','fichiers','rapports','conflits','dsi','intitule','type','avis','statut','signataire');
+$alwaysVisibleFieldsTypes = array('nom','prenom','infos_evaluation','infos_celcc','unite','fichiers','rapports','conflits','dsi','intitule','type','avis','statut','signataire');
 
 $fieldsArrayCandidat = array($fieldsCandidat, $fieldsRapportsCandidat0, $fieldsRapportsCandidat1, $fieldsRapportsCandidat2, $fieldsRapportsCandidat3);
 $fieldsArrayIE = array($fieldsCandidatAvantAudition, $fieldsRapportsIE0, $fieldsRapportsCandidat1, $fieldsRapportsCandidat2, $fieldsRapportsCandidat3);

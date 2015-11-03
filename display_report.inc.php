@@ -398,7 +398,11 @@ function displayEditableReport($row, $canedit = true)
 		else
 			$titre= "<h1>".$year." / ".$eval_name. ": ". $row->nom." ".$row->prenom.( isset($row->concours)  ? (" / concours ".$row->concours) : ""). ( (isset($row->sousjury) && $row->sousjury != "")  ? (" sousjury ".$row->sousjury) : ""). "</h1>";
 
-		$candidate = get_or_create_candidate($row);
+		if($row->concoursid != "")
+		  $candidate = get_candidate_from_concoursid($row->concoursid);
+		else 
+		  $candidate = get_or_create_candidate($row);
+
 		//		$row->NUMSIRHUS = $candidate->NUMSIRHUS;
 		$conflit = (
 				is_in_conflict(getLogin(), $candidate))

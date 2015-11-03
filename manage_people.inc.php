@@ -263,7 +263,8 @@ function get_candidate_from_SIRHUS($sirhus)
 
 function get_candidate_from_concoursid($user_id)
 {
-	$sql = "SELECT * FROM ".dsidbname.".".celcc_candidats." WHERE user_id=\"".$user_id."\";";
+  $sql = "SELECT * FROM ".dsidbname.".".celcc_candidats." dsi LEFT JOIN ".marmottedbname.".people marmotte ";
+  $sql .= "ON marmotte.concoursid=dsi.user_id WHERE dsi.user_id=\"".$user_id."\";";
 	$res = sql_request($sql);
 	while($row = mysqli_fetch_object($res))
 	  {
@@ -273,10 +274,33 @@ function get_candidate_from_concoursid($user_id)
 	    $all_concours = "";
 	    while($row2 = mysqli_fetch_object($result2))
 	      {
-		$section = ltrim(substr($row2->num_conc,0,2),'0');
 		$all_concours.=$row2->num_conc." ";
 	      }
-	    $row->cncourspresentes = $all_concours;
+	    $row->concourspresentes = $all_concours;
+	    //    $row->concoursid = $row->user_id;
+	    
+	    $row->infos_celcc = "<b>".$row->diplome."</b> ".$row->date_dip." ".$row->lieu_dip."<br/>";
+	    if($row->lieu_habil_rech != "")
+	      $row->infos_celcc .= "<b>HDR</b> ".$row->dat_habil_rech." ".$row->lieu_habil_rech."<br/>";
+	    if($row->nb_an_rech != "")
+	      $row->infos_celcc .= "<b>Années d'exercice de la recherche</b> ".$row->nb_an_rech."<br/>";
+	    if($row->sitact_frce == "N/A") $row->sitact_frce = "?";
+	    $row->infos_celcc .= "<b>Situation</b> ".$row->sitact_frce." ";
+	    if($row->epst_frce != "N/A")
+	      $row->infos_celcc .= $row->epst_frce." contrat: ".$row->type_epst_frce." ";
+	    if($row->type_ensup_frce != "N/A")
+	      $row->infos_celcc .= " (".$row->type_ensup_frce.")";
+	    if($row->type_ensec_frce != "N/A")
+	      $row->infos_celcc .= " (".$row->type_ensec_frce.")";
+	    if($row->grade_epst_frce != "N/A")
+	      {
+		$row->grade = $row->grade_epst_frce;
+		$row->infos_celcc .= $row->grade_epst_frce." depuis ".$row->date_grad_epst_frce." ";
+	      }
+	    $row->infos_celcc .= "<br/>";
+	    $row->infos_celcc .= "<b>Origine candidature</b> ".$row->origine." (#".$row->user_id.")<br/>";
+	    
+
 	    return $row;
 	  }
 	return null;
