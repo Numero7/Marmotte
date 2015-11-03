@@ -78,7 +78,6 @@ try
 						"Marmotte",
 						adresse_du_site."/index.php?action=auth_janus",
 						false);
-			# Effectue l'authentification
 			$pmsp->authentify('mail,cn,ou,givenname,displayname');
 			$_SESSION['REMOTE_USER'] = $_SERVER['REMOTE_USER'];
 			} catch (Exception $e) {

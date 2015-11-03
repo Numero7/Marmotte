@@ -11,11 +11,32 @@ function synchronizeConcours($year = "")
 
   if($year == "")
     $year = date("Y");
+
+  /*liste des sesessions */
+  $sessions = array();
+
+  $sql = "SELECT * FROM ".sessions_db." WHERE id=\"Concours".$year."\"";
+  $result = sql_request($sql);
+  while($row = mysqli_fetch_object($result))
+    {
+      echo $row->section."<br/>";
+      $sessions[] = $row->section;
+    }
+
   /*************** AJOUT DES CONCOURS ***********************************/
   $sql = "SELECT * FROM ".dsidbname.".".celcc_concours." WHERE annee=\"".$year."\"";
   $result = sql_request($sql);
   while($row = mysqli_fetch_object($result))
+    {
       $dsi_concours[$row->n_public] = $row;
+      $section = ltrim($row->numsect_conc,'0');
+      if(!in_array($section,$sessions))
+	{
+	  $log .= "Création de la session de concours ".$year." pour la section ".$section."<br/>";
+	  createSession("Concours",$year, $section);
+	  $sessions[] = $section;
+	}
+    }
   $result = sql_request($sql);
 
   $sql = "SELECT * FROM ".marmottedbname.".concours WHERE session=\"Concours".$year."\"";
