@@ -281,7 +281,6 @@ function displayRowCell($row, $fieldID)
 		global $tous_avis;
 
 		$listeavis = isset($typesRapportToAvis[$row->type]) ? $typesRapportToAvis[$row->type] : array();
-		
 		if(isset($filters['avis']) && isset($data['avis']['liste']))
 			$avis = $data['avis']['liste'];
 		

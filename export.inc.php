@@ -397,15 +397,14 @@ function generate_jad_report($code,$preambule="")
 	$filters = array();
 
 	$filters["concours"] = $code;
-	$filters["type"] = "Candidature";
+	$filters["type"] = REPORT_CANDIDATURE;
 	$filters["section"] = currentSection();
 	$filters["id_session"] = current_session_id();
-	$filters["avis"] = "admisaconcourir";
+	$filters["avis"] = avis_admis_a_concourir;
 	
 	$candidats = filterSortReports(getCurrentFiltersList(), $filters, array("nom" => "1+"));
 
-	$filters["avis"] = "oral";
-	
+	$filters["avis"] = avis_oral;	
 	$admissibles = filterSortReports(getCurrentFiltersList(), $filters, array("nom" => "1+"));
 
 	global $concours_ouverts;

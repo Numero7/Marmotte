@@ -104,9 +104,10 @@ function synchronizeConcours($year = "")
       echo $msg;
       $log .= $msg;
 
-      $sql = "INSERT INTO ".marmottedbname.".".reports_db." (concoursid,type_eval,section,concours,id_session,grade_rapport,nom,prenom) ";
+      $sql = "INSERT INTO ".marmottedbname.".".reports_db." (concoursid,type,section,avis,concours,id_session,grade_rapport,nom,prenom) ";
       $sql .= "VALUES (";
       $sql .= "\"".$row->user_id."\",\"".REPORT_CANDIDATURE."\",\"".$section."\",";
+      $sql .= "\"".avis_admis_a_concourir."\",";
       $sql .= "\"".$row->num_conc."\",";
       $sql .= "\"Concours".$dsi_concours[$row->num_conc]->annee."\",";
       $sql .= "\"".$dsi_concours[$row->num_conc]->grade_conc."\",";
