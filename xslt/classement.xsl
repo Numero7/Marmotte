@@ -66,7 +66,7 @@
 					</tr>
 					<tr style="text-align:center;">
 						<td colspan="2">
-							<B>Candidat classé n° <xsl:value-of disable-output-escaping="yes" select="avis" />
+							<B>Candidat <xsl:value-of disable-output-escaping="yes" select="pretty_avis" />
 							 </B>
 						</td>
 					</tr>

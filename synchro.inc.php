@@ -1,4 +1,3 @@
-
 <?php
 
 require_once("manage_users.inc.php");
@@ -874,3 +873,4 @@ $answer = "<h1>Synchronisation avec e-valuation de la section ".$section." - ".d
 
 	return $answer;
 }
+?>

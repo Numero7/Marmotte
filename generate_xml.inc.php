@@ -161,13 +161,7 @@ function EnteteDroit($row, $units)
 		$bloc_unite .= " ".$row->unite;
 	}
 
-	if(is_rapport_concours($row))
-	{
-		$result .= $avis_candidature_short[$row->avis];
-		$result .= "<br/>";
-		$result .= $row->nom." ".$row->prenom;
-	}
-	else if(is_avis_classement($row->avis))
+	if(is_avis_classement($row->avis))
 	{
 		$result .= '<B>Classement, nom et unité :</B><br/>';
 		$result .= '<B>'.classement_from_avis($row->avis)."</B><br/>";
@@ -346,8 +340,12 @@ function createXMLReportElem($row, DOMDocument $doc, $keep_br = true)
 		}
 	}
 
-	if( is_concours($row->type))
+	//	throw new Exception($row->type);
+	if( $row->type == "Classement" || is_concours($row->type))
 	{
+	  global $avis_candidature_short;
+		appendLeaf("pretty_avis", $avis_candidature_short[$row->avis], $doc, $rapportElem);
+
 		global $concours_ouverts;
 		if(isset($concours_ouverts[$row->concours]))
 			appendLeaf("grade_concours", substr($concours_ouverts[$row->concours],0,3	), $doc, $rapportElem);
@@ -357,6 +355,8 @@ function createXMLReportElem($row, DOMDocument $doc, $keep_br = true)
 		$conc = $sessions[$row->id_session];
 		appendLeaf("annee_concours", substr($conc,strlen($conc)-4,4), $doc, $rapportElem);
 			
+
+
 		$conc = $row->concours;
 		if(strlen($conc) == 4)
 			appendLeaf("nom_concours", (substr($conc,0,2)."/".substr($conc,2,4)), $doc, $rapportElem);

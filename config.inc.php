@@ -1,4 +1,3 @@
-
 <?php
 
 date_default_timezone_set('Europe/Paris');
@@ -1084,7 +1083,7 @@ $max_classement = 30;
 for($i = 1; $i <= $max_classement; $i++)
 {
 	$avis_classement["c".strval($i)] = "Classé $i";
-	$avis_candidature_short["c".strval($i)] = "Classé $i";
+	$avis_candidature_short["c".strval($i)] = "classé n°$i";
 }
 foreach($avis_lettre as $avis => $lettre)
 {

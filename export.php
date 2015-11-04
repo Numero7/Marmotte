@@ -12,11 +12,9 @@ ini_set('xdebug.show_local_vars', 'on');
 require_once("db.inc.php");
 require_once('authenticate_tools.inc.php');
 
-
 session_start();
 
 global $dbh;
-
 
 db_connect($servername,marmottedbname,$serverlogin,$serverpassword);
 
