@@ -373,8 +373,15 @@ $fieldsIndividualDB = array(
 
 
 foreach($add_rubriques_people as $index => $rubrique)
+  {
 	$fieldsIndividualAll["Info".$index] = $rubrique;
-
+	$fieldsIndividualDB["Info".$index] = $rubrique;	
+  }
+foreach($add_rubriques_candidats as $index => $rubrique)
+  {
+	$fieldsIndividualAll["Info".$index] = $rubrique;
+	$fieldsIndividualDB["Info".$index] = $rubrique;	
+  }
 
 $mandatory_edit_fields=
 array('id','nom','prenom'
@@ -797,7 +804,7 @@ $fieldsTypes = array(
 for($i = 0 ; $i < 30; $i++)
 {
 	$fieldsTypes["Generic".$i] = "long";
-	$fieldsTypes["Info".$i] = "short";
+	$fieldsTypes["Info".$i] = "long";
 }
 
 if(get_option("sec_can_edit"))

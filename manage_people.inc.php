@@ -79,10 +79,13 @@ function updateCandidateFromRequest($request, $oldannee="")
 
 
 	foreach($fieldsIndividualDB as  $field => $value)
+	  {
 		if (isset($request["field".$field]))
 		$data->$field = nl2br(trim($request["field".$field]),true);
+	  }
 
-
+	/*
+	  Abandon de la gestion des changementsde nom
 	if(	isset($request['previousnom']) && isset($request['previousprenom']))
 	{
 		$ppnom = $request['previousnom'];
@@ -98,6 +101,7 @@ function updateCandidateFromRequest($request, $oldannee="")
 		}
 
 	}
+	*/
 	$candidate = updateCandidateFromData($data);
 
 	return $candidate;
@@ -121,7 +125,6 @@ function updateCandidateFromData($data)
 		}
 	}
 	$sql = "UPDATE ".people_db." SET ".$sqlcore." WHERE nom=\"".$data->nom."\" AND prenom=\"".$data->prenom."\" AND section=\"".currentSection()."\" ;";
-
 	sql_request($sql);
 
 	return get_or_create_candidate($data );
