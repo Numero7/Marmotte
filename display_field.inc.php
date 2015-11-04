@@ -98,7 +98,7 @@ function display_short($row, $fieldID, $readonly)
 	{
 		?>
 <input name="field<?php echo $fieldID;?>"
-	value="<?php echo $row->$fieldID;?>" style="width:99%;" />
+	value="<?php echo $row->$fieldID;?>"/>
 <?php
 	}
 	else

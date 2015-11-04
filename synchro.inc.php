@@ -113,7 +113,8 @@ function synchronizeConcours($year = "")
 	  $sql = "INSERT INTO ".marmottedbname.".".people_db." (concoursid,section,nom,prenom,genre,diploma,birth) ";
 	  $sql .= "VALUES (\"".$row->user_id."\",\"".$section."\",\"".ucfirst(strtolower($row->nom))."\",\"".ucfirst(strtolower($row->prenom));
 	  $sql .= "\",\"".$genre."\",\"".$row->date_dip."\",\"".$row->datnaiss."\") ";
-	  $sql .= "ON DUPLICATE KEY UPDATE concoursid=\"".$row->user_id."\"";
+	  $sql .= "ON DUPLICATE KEY UPDATE genre=\"".$genre."\", concoursid=\"".$row->user_id."\",";
+	  $sql .= "birth=\"".$row->datnaiss."\", diploma=\"".$row->date_dip."\"";
 	  sql_request($sql);		
 	}
 

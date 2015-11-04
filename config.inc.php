@@ -346,7 +346,6 @@ $fieldsIndividualAll = array(
 		"theme2" => "Mot-clé 2",
 		"theme3" => "Mot-clé 3",
 		"audition" => "Rapport d'audition",
-		"concourspresentes" => "Concours présentés",
 		"conflits" => "Conflits",
 		"fichiers"=> "Fichiers",
 		"birth" => "Date naissance",
@@ -406,10 +405,8 @@ $fieldsAll = array_merge($fieldsRapportAll, $fieldsIndividualAll, array("rapport
 $fieldsCandidatAvantAudition = array(
 		array("nom","prenom"),
 		array("diploma","birth"),
-		array("grade","annee_recrutement"),
-		array("genre","concoursid"),
+		array("infos_celcc","genre"),
 		"conflits",
-		"infos_celcc",
 		"fichiers",
 		"rapports",
 		"labo1",
@@ -417,8 +414,7 @@ $fieldsCandidatAvantAudition = array(
 		"labo3",
 		"theme1",
 		"theme2",
-		"theme3",
-		"concourspresentes"
+		"theme3"
 );
 
 foreach($add_rubriques_candidats as $index => $rubrique)
@@ -754,8 +750,7 @@ $fieldsTypes = array(
 		"signataire"=>"short",
 		"concours" => "concours",
 		"sousjury" => "sousjury",
-		"concourspresentes" => "short",
-		"nom" => "short",
+	     	"nom" => "short",
 		"prenom" => "short",
 		"genre" => "enum",
 		"statut_individu"=> "enum",
@@ -850,7 +845,7 @@ if(get_option("sec_can_edit"))
 
 $fieldsEditableOnlySecretaire = array("nom","prenom","conflits","type","signataire");
 
-$nonEditableFieldsTypes = array('id','date',"nom","prenom");
+$nonEditableFieldsTypes = array('id','date',"nom","prenom","infos_celcc","infos_evaluation");
 $nonVisibleFieldsTypes = array('id');
 $alwaysVisibleFieldsTypes = array('nom','prenom','infos_evaluation','infos_celcc','unite','fichiers','rapports','conflits','dsi','intitule','type','avis','statut','signataire');
 

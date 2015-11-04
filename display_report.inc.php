@@ -220,9 +220,7 @@ function displayEditableField($row, $fieldId, $canedit, $session, $extra_object 
 function displayEditableObject($titlle, $row, $fields, $canedit, $session, $extra_objects = array())
 {
 	if($titlle != "")
-		echo '<table><tr><td><h2><span  style="font-weight:bold;" >'.$titlle.'</span></h2></td></tr>';
-	else
-		echo '<table>';
+		echo '<h2>'.$titlle.'</h2>';
 
 	global $fieldsTypes;
 	global $mandatory_edit_fields;
@@ -234,13 +232,14 @@ function displayEditableObject($titlle, $row, $fields, $canedit, $session, $extr
 	{
 		$style = is_array($fieldId) ? getStyle($fieldId[0],$odd): getStyle($fieldId,$odd);
 		$odd = !$odd;
-		echo '<tr class="'.$style.'" style="width:90%"><td><table style="width:90%"><tr class="'.$style.'">';
+		echo '<table style="width:90%"><tr class="'.$style.'">'."\n";
 		if(is_array($fieldId))
-		{
+		  {
+		    //		    echo count($fieldId);
 			foreach($fieldId as $singleField)
 			{
 				echo '<td style="width:'.strval(round(100/(count($fieldId) ))).'%">';
-				echo '<table style="width:100%"><tr class="'.$style.'">'."\n";
+				echo '<table style="width:100%">'."\n".'<tr class="'.$style.'">'."\n";
 				displayEditableField($row, $singleField,$canedit,$session);
 				echo "\n".'</tr></table></td>'."\n";
 			}
@@ -258,9 +257,8 @@ function displayEditableObject($titlle, $row, $fields, $canedit, $session, $extr
 			echo '<td>'.$extra_objects[$fieldId].'</td>';
 			echo '</tr>';
 		}
-		echo '</tr></table></td></tr>';
+		echo '</tr></table>'."\n";
 	}
-	echo "</table>\n";
 }
 
 function voir_rapport_pdf($row)
