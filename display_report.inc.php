@@ -136,18 +136,19 @@ function displayEditableField($row, $fieldId, $canedit, $session, $extra_object 
 
 	$title = compute_title($row, $fieldId);
 
+	//	  echo $title;
 	
 	if($title != "" && is_field_visible($row, $fieldId))
 	{
-	  //		echo $fieldId;
 		if(isset($fieldsTypes[$fieldId]))
 		{
-			$editable = $canedit && is_field_editable($row, $fieldId);
+	  		$editable = $canedit && is_field_editable($row, $fieldId);
 			if($fieldId === "fichiers")
 				if(isset($row->statut) && $row->statut == "audition")
 				$editable = true;
 
-				echo '<td style="width:10%"><span><B>'.$title.'</B></span>';
+			//				echo '<td style="width:20%"><span><B>'.$title.'</B></span>';
+				echo '<td><span><B>'.$title.'</B></span>';
 			if($fieldsTypes[$fieldId] == "long" || $fieldsTypes[$fieldId] == "treslong")
 			echo '</tr><tr>';
 

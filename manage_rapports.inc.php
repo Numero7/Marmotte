@@ -52,7 +52,6 @@ function compute_title($row, $fieldId)
 	if(isset($row->intitule))
 		$title .= " - ".$row->intitule;
 	*/
-
 	return $title;
 }
 
@@ -1309,12 +1308,12 @@ function is_field_visible($row, $fieldId)
 		return true;
 
 	//when non editable non existing fields are not visible
-	if(!isset($row->$fieldId))
-		return false;
+	//	if(!isset($row->$fieldId))
+	//	return false;
 
 	//nothing to display -> nothing displayed
-	if($row->$fieldId == '')
-		return false;
+	//	if($row->$fieldId == '')
+  //		return false;
 
 	//during prerapport edition we do not want rapporteurs to see each other reports
 	//only editable info is visible
