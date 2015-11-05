@@ -3,9 +3,9 @@
 -- http://www.phpmyadmin.net
 --
 -- Client: localhost
--- Généré le: Mer 24 Juin 2015 à 23:13
--- Version du serveur: 5.5.43-0ubuntu0.14.04.1-log
--- Version de PHP: 5.5.9-1ubuntu4.9
+-- Généré le: Ven 06 Novembre 2015 à 00:42
+-- Version du serveur: 5.5.44-0ubuntu0.14.04.1-log
+-- Version de PHP: 5.5.9-1ubuntu4.13
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -17,10 +17,8 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8 */;
 
 --
--- Base de données: `panda`
+-- Base de données: `panda22`
 --
-CREATE DATABASE IF NOT EXISTS `panda` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
-USE `panda`;
 
 -- --------------------------------------------------------
 
@@ -28,11 +26,10 @@ USE `panda`;
 -- Structure de la table `concours`
 --
 
-DROP TABLE IF EXISTS `concours`;
 CREATE TABLE IF NOT EXISTS `concours` (
   `section` tinyint(4) NOT NULL COMMENT 'numero section ou cid',
   `session` varchar(16) NOT NULL COMMENT 'l''année du concours',
-  `code` varchar(10) NOT NULL COMMENT 'code concours 06/03',
+  `code` varchar(5) NOT NULL COMMENT 'code concours 06/03',
   `statut` varchar(16) DEFAULT NULL,
   `intitule` text NOT NULL COMMENT 'intitule du concours ex CR1_BIGDATA',
   `postes` tinyint(4) NOT NULL DEFAULT '0',
@@ -57,11 +54,11 @@ CREATE TABLE IF NOT EXISTS `concours` (
 -- Structure de la table `config`
 --
 
-DROP TABLE IF EXISTS `config`;
 CREATE TABLE IF NOT EXISTS `config` (
   `section` tinyint(4) NOT NULL,
-  `key` text NOT NULL,
-  `value` text NOT NULL
+  `key` varchar(128) NOT NULL,
+  `value` text NOT NULL,
+  PRIMARY KEY (`section`,`key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -70,15 +67,14 @@ CREATE TABLE IF NOT EXISTS `config` (
 -- Structure de la table `people`
 --
 
-DROP TABLE IF EXISTS `people`;
 CREATE TABLE IF NOT EXISTS `people` (
   `NUMSIRHUS` varchar(30) NOT NULL DEFAULT '',
+  `concoursid` varchar(10) DEFAULT NULL,
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `section` tinyint(4) NOT NULL,
   `nom` varchar(64) NOT NULL DEFAULT '',
   `prenom` varchar(64) NOT NULL DEFAULT '',
   `grade` varchar(32) NOT NULL DEFAULT '',
-  `concourspresentes` varchar(128) DEFAULT NULL,
   `audition` text,
   `labo1` text,
   `labo2` text,
@@ -122,9 +118,10 @@ CREATE TABLE IF NOT EXISTS `people` (
   `conflits` text,
   `birth` varchar(20) DEFAULT NULL,
   `diploma` varchar(20) DEFAULT NULL,
+  `concourspresentes` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`section`,`nom`,`prenom`),
   UNIQUE KEY `id` (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=33514 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=725145 ;
 
 -- --------------------------------------------------------
 
@@ -132,10 +129,10 @@ CREATE TABLE IF NOT EXISTS `people` (
 -- Structure de la table `reports`
 --
 
-DROP TABLE IF EXISTS `reports`;
 CREATE TABLE IF NOT EXISTS `reports` (
   `DKEY` varchar(22) NOT NULL DEFAULT '',
   `NUMSIRHUS` varchar(30) NOT NULL DEFAULT '',
+  `concoursid` varchar(10) DEFAULT NULL,
   `section` tinyint(4) NOT NULL,
   `statut` varchar(32) NOT NULL DEFAULT 'doubleaveugle',
   `id_session` varchar(16) NOT NULL,
@@ -149,7 +146,7 @@ CREATE TABLE IF NOT EXISTS `reports` (
   `type` varchar(16) DEFAULT NULL,
   `type_eval` varchar(4) DEFAULT NULL,
   `intitule` text NOT NULL,
-  `concours` varchar(32) DEFAULT NULL,
+  `concours` varchar(5) DEFAULT NULL,
   `rapporteur` varchar(64) DEFAULT NULL,
   `rapporteur2` varchar(64) DEFAULT NULL,
   `rapporteur3` varchar(64) DEFAULT NULL,
@@ -197,25 +194,10 @@ CREATE TABLE IF NOT EXISTS `reports` (
   `Generic28` text,
   `Generic29` text,
   `Generic30` text,
+  `signataire` text,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=122972 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `report_types`
---
-
-DROP TABLE IF EXISTS `report_types`;
-CREATE TABLE IF NOT EXISTS `report_types` (
-  `id` varchar(4) NOT NULL,
-  `code_marmotte` varchar(16) NOT NULL,
-  `label` varchar(100) NOT NULL,
-  `condense` varchar(16) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `id` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=223274 ;
 
 -- --------------------------------------------------------
 
@@ -223,7 +205,6 @@ CREATE TABLE IF NOT EXISTS `report_types` (
 -- Structure de la table `sessions`
 --
 
-DROP TABLE IF EXISTS `sessions`;
 CREATE TABLE IF NOT EXISTS `sessions` (
   `id` varchar(16) NOT NULL,
   `section` int(11) NOT NULL,
@@ -239,7 +220,6 @@ CREATE TABLE IF NOT EXISTS `sessions` (
 -- Structure de la table `units`
 --
 
-DROP TABLE IF EXISTS `units`;
 CREATE TABLE IF NOT EXISTS `units` (
   `section` tinyint(11) NOT NULL,
   `nickname` varchar(30) NOT NULL DEFAULT '',
@@ -255,12 +235,12 @@ CREATE TABLE IF NOT EXISTS `units` (
 -- Structure de la table `users`
 --
 
-DROP TABLE IF EXISTS `users`;
 CREATE TABLE IF NOT EXISTS `users` (
   `section_numchaire` varchar(8) NOT NULL DEFAULT '',
   `CID_numchaire` varchar(8) NOT NULL DEFAULT '',
   `id` int(10) unsigned NOT NULL DEFAULT '0',
   `login` varchar(64) NOT NULL,
+  `college` varchar(2) NOT NULL DEFAULT '',
   `sections` text NOT NULL COMMENT 'list of sections the user belongs to',
   `section_code` varchar(2) NOT NULL DEFAULT '',
   `section_role_code` varchar(5) NOT NULL DEFAULT '',
@@ -272,6 +252,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `permissions` int(11) NOT NULL DEFAULT '0',
   `email` text NOT NULL,
   `tel` text NOT NULL,
+  `dsi` tinyint(4) NOT NULL DEFAULT '0' COMMENT 'utilisateur importe depuis la base dsi',
   PRIMARY KEY (`login`),
   UNIQUE KEY `login` (`login`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
