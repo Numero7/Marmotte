@@ -448,7 +448,7 @@ function deleteReport($id_rapport, $all_versions = false)
 	return ($before !=false) ? $before->id : -1;
 };
 
-function newReport($type_rapport)
+function newReport($type_rapport,$nom="",$prenom="")
 {
 	if(!isReportCreatable())
 		throw new Exception("Vous n'avez pas les droits nécessaires à la création d'un rapport. Veuillez contacter le secrétaire scientifique.");
@@ -457,6 +457,8 @@ function newReport($type_rapport)
 	$row['type'] = $type_rapport;
 	$row["DKEY"] = "";
 	$row['section'] = $_SESSION['filter_section'];
+	$row["nom"]=$nom;
+	$row["prenom"]=$prenom;
 
 	return normalizeReport($row);
 } ;
