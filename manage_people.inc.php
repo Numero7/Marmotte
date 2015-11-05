@@ -129,8 +129,6 @@ function updateCandidateFromData($data)
 		}
 	}
 	$sql = "UPDATE ".people_db." SET ".$sqlcore." WHERE nom=\"".$data->nom."\" AND prenom=\"".$data->prenom."\" AND section=\"".currentSection()."\" ;";
-	echo $sql;
-	throw new Exception($sql);
 	sql_request($sql);
 
 	return get_or_create_candidate($data );
@@ -275,7 +273,7 @@ function get_candidate_from_concoursid($user_id)
   $sql = "SELECT * FROM ".dsidbname.".".celcc_candidats." dsi LEFT JOIN ".marmottedbname.".people marmotte ";
   $sql .= "ON marmotte.concoursid=dsi.user_id WHERE dsi.user_id=\"".$user_id."\" AND marmotte.section=\"".currentSection()."\";";
 	$res = sql_request($sql);
-	echo $sql."<br/>";
+	//	echo $sql."<br/>";
 	while($row = mysqli_fetch_object($res))
 	  {
 	    //on récupère tous les concours du candidat
@@ -311,9 +309,6 @@ function get_candidate_from_concoursid($user_id)
 	    $row->infos_celcc .= "<b>Concours présentés</b> ".$row->concourspresentes."<br/>";
 	    $row->infos_celcc .= "<b>Origine candidature</b> ".$row->origine." (#".$row->user_id.")<br/>";
 	    
-
-	    foreach($row as $key => $value)
-	      echo $key." ".$value."<br/>";
 	    return $row;
 	  }
 	return null;

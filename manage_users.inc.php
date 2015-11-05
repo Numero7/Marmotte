@@ -37,8 +37,6 @@ function emailsACN($section = "")
   if($section == "")
     $section = currentSection();
 
-
-
   $users = listUsers(true,$section);
 
   $resultat = array();
