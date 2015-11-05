@@ -31,15 +31,15 @@ function needs_audition_report($report)
 {
   global $concours_ouverts;
   global $tous_sous_jury;
-  $a = (isset($concours_ouverts[$report->concours]) && substr($concours_ouverts[$report->concours],0,2)=="CR");
-  $b = isset($tous_sous_jury[$report->concours]);
-  $c = isset($tous_sous_jury[$report->concours]["sj2"]);
-  $d = ($tous_sous_jury[$report->concours]["sj2"] != "");
-  $e = (is_classe($report) || $report->avis==avis_oral || $report->avis==avis_non_classe || $report->avis==avis_non || $report->avis == avis_classe);
+  return  (isset($concours_ouverts[$report->concours]) && substr($concours_ouverts[$report->concours],0,2)=="CR")
+  && isset($tous_sous_jury[$report->concours])
+  && isset($tous_sous_jury[$report->concours]["sj2"])
+  && ($tous_sous_jury[$report->concours]["sj2"] != "")
+  && (is_classe($report) || $report->avis==avis_oral || $report->avis==avis_non_classe || $report->avis==avis_non || $report->avis == avis_classe);
   //echo "'".$a."'".$b."'".$c."'".$d."'".$e."'";
   //foreach($tous_sous_jury[$report->concours] as $key=>$value)
   //echo $key;
-return $a && $b && $c && $d && $e;
+  //return $a && $b && $c && $d && $e;
 }
 
 function is_auditionneCR($report)
@@ -129,6 +129,8 @@ function updateCandidateFromData($data)
 		}
 	}
 	$sql = "UPDATE ".people_db." SET ".$sqlcore." WHERE nom=\"".$data->nom."\" AND prenom=\"".$data->prenom."\" AND section=\"".currentSection()."\" ;";
+	echo $sql;
+	throw new Exception($sql);
 	sql_request($sql);
 
 	return get_or_create_candidate($data );
@@ -271,8 +273,9 @@ function get_candidate_from_SIRHUS($sirhus)
 function get_candidate_from_concoursid($user_id)
 {
   $sql = "SELECT * FROM ".dsidbname.".".celcc_candidats." dsi LEFT JOIN ".marmottedbname.".people marmotte ";
-  $sql .= "ON marmotte.concoursid=dsi.user_id WHERE dsi.user_id=\"".$user_id."\";";
+  $sql .= "ON marmotte.concoursid=dsi.user_id WHERE dsi.user_id=\"".$user_id."\" AND marmotte.section=\"".currentSection()."\";";
 	$res = sql_request($sql);
+	echo $sql."<br/>";
 	while($row = mysqli_fetch_object($res))
 	  {
 	    //on récupère tous les concours du candidat
@@ -309,6 +312,8 @@ function get_candidate_from_concoursid($user_id)
 	    $row->infos_celcc .= "<b>Origine candidature</b> ".$row->origine." (#".$row->user_id.")<br/>";
 	    
 
+	    foreach($row as $key => $value)
+	      echo $key." ".$value."<br/>";
 	    return $row;
 	  }
 	return null;
