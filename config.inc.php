@@ -412,8 +412,7 @@ $fieldsAll = array_merge($fieldsRapportAll, $fieldsIndividualAll, array("rapport
 $fieldsCandidatAvantAudition = array(
 		array("nom","prenom"),
 		array("diploma","birth"),
-		array("infos_celcc","genre"),
-		"conflits",
+		array("infos_celcc","conflits"),
 		"fichiers",
 		"rapports",
 		"labo1",
@@ -783,7 +782,7 @@ $fieldsTypes = array(
 		"annee_recrutement" => "short",
 		"avissousjury" => "avis",
 		"date" => "short",
-		"conflits" => "short",
+		"conflits" => "long",
 		"birth" => "short",
 		"diploma" => "short",
 		"labo1" => "unit",

@@ -228,6 +228,7 @@ function displayEditableObject($titlle, $row, $fields, $canedit, $session, $extr
 	$inline = false;
 
 	$odd = true;
+
 	foreach($fields as  $fieldId)
 	{
 		$style = is_array($fieldId) ? getStyle($fieldId[0],$odd): getStyle($fieldId,$odd);
@@ -242,6 +243,12 @@ function displayEditableObject($titlle, $row, $fields, $canedit, $session, $extr
 				echo '<table style="width:100%">'."\n".'<tr class="'.$style.'">'."\n";
 				displayEditableField($row, $singleField,$canedit,$session);
 				echo "\n".'</tr></table></td>'."\n";
+			if( isset( $extra_objects[$singleField]) )
+			  {
+			    echo '<tr class="'.$style.'">';
+			    echo '<td>'.$extra_objects[$singleField].'</td>';
+			    echo '</tr>';
+			  }
 			}
 		}
 		else
@@ -249,14 +256,16 @@ function displayEditableObject($titlle, $row, $fields, $canedit, $session, $extr
 			echo '<td style="100%"><table><tr class="'.$style.'">'."\n";			
 			displayEditableField($row, $fieldId,$canedit,$session);
 			echo "\n".'</tr></table></td>'."\n";
+			if( isset( $extra_objects[$fieldId]) )
+			  {
+			    echo '<tr class="'.$style.'">';
+			    echo '<td>'.$extra_objects[$fieldId].'</td>';
+			    echo '</tr>';
+			  }
 		}
 		
-		if( !is_array($fieldId) && isset( $extra_objects[$fieldId]) )
-		{
-			echo '<tr class="'.$style.'">';
-			echo '<td>'.$extra_objects[$fieldId].'</td>';
-			echo '</tr>';
-		}
+
+
 		echo '</tr></table>'."\n";
 	}
 }
@@ -427,7 +436,7 @@ function displayEditableReport($row, $canedit = true)
 			$fieldsRapportsCandidat2 = $typesRapportToFields[$eval_type][3];
 			$fieldsRapportsCandidat3 = $typesRapportToFields[$eval_type][4];
 
-			echo $titre;
+			//			echo $titre;
 
 			$submits = array();
 
