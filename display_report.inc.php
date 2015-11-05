@@ -346,8 +346,8 @@ function displayEditableReport($row, $canedit = true)
 		$submits["edit"] = "Editer";
 	}
 
-	if(isSecretaire())
-		$submits["deleteandeditnext"] = "Supprimer dernière version";
+	//	if(isSecretaire())
+	//	$submits["deleteandeditnext"] = "Supprimer dernière version";
 	$submits["retourliste"] = "Retour à la liste";
 
 	if($canedit)

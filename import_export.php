@@ -67,14 +67,23 @@ function displaySecretaryImport()
 						global $typesRapportsUnites;
 						$types = array_merge($typesRapportsChercheurs, $typesRapportsUnites);
 */					
-	foreach($types as $type => $name)
-						echo '<option value='.$type.'>'.$name.'</option><br/>'."\n";
+					if(isset($_REQUEST["type"]))
+					  $ttype = $_REQUEST["type"];
+					else
+					  $ttype = "";
+					foreach($types as $type => $name)
+					  if($type != $ttype)
+					    echo '<option value='.$type.'>'.$name.'</option><br/>'."\n";
+					  else
+					    echo '<option selected="selected" value='.$type.'>'.$name.'</option><br/>'."\n";
 					?>
 			</select>
 			</td>
 		</tr>
+			    <tr><td><B>Nom</B></td><td><input name="nom" value=""/></input></td></tr>
+			    <tr><td><B>Prenom</B></td><td><input name="prenom" value=""/></input></td></tr>
 		<tr>
-			<td><input type="submit" value="Créer rapport" /></td>
+			<td><input type="submit" name="createanedit" value="Créer le rapport" /></td>
 		</tr>
 
 	</table>

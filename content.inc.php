@@ -506,9 +506,15 @@ function alertText($text)
 					if (isset($_REQUEST["type"]))
 					{
 						$type = $_REQUEST["type"];
-						$report = newReport($type);
-						$report->id_origine = $id_origine;
-						displayEditableReport($report);
+						$nom = $_REQUEST["nom"];
+						$prenom = $_REQUEST["prenom"];
+						$report = newReport($type,$nom,$prenom);
+						//						$report->id_origine = $id_origine;
+						$nid = addReport($report);
+						//
+						//						displayEditableReport($report);
+						echo "Rapport de type '".$type."' créé sous l'id '".$nid."'<br/>";
+						include "import_export.php";
 					}
 					break;
 				case'newpwd':
