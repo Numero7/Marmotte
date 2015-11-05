@@ -427,13 +427,14 @@ $fieldsCandidatAvantAudition = array(
 		"theme1",
 		"theme2",
 		"theme3",
-		"concourspresentes"
+		"concourspresentes",
+		"audition"
 );
 
 foreach($add_rubriques_candidats as $index => $rubrique)
 	$fieldsCandidatAvantAudition[] = "Info".$index;
 
-$fieldsCandidatAuditionne = array_merge($fieldsCandidatAvantAudition, array("audition"));
+$fieldsCandidatAuditionne = $fieldsCandidatAvantAudition;
 $fieldsCandidat = $fieldsCandidatAuditionne;
 
 $fieldsDelegation = array("statut","rapporteur","rapporteur2","rapporteur3","nom","prenom",
@@ -1198,14 +1199,18 @@ $typesRapportsToCheckboxesTitles = array(
 
 $typesRapportsToFormula = array();
 
-$typesRapportsToFormula['Promotion']['oui'] =
-get_config("formule_standard_Promotion_oui", 'La section donne un avis favorable à la demande de promotion.');
 
-$typesRapportsToFormula['Promotion']['non'] =
-get_config("formule_standard_Promotion_non", 'Le faible nombre de possibilités de promotions ne permet malheureusement pas à la Section 6 du Comité National de proposer ce chercheur à la Direction Générale du CNRS pour une promotion cette année.');
+foreach($typesRapportsPromotion as $type)
+  {
+    $typesRapportsToFormula[$type][avis_oui] =
+      get_config("formule_standard_Promotion_oui", 'La section donne un avis favorable à la demande de promotion.');
 
-$typesRapportsToFormula['Titularisation']['favorable'] =
-get_config("formule_standard_Titularisation_favorable", 'La section donne un avis favorable à la titularisation.');
+    $typesRapportsToFormula[$type][avis_non] =
+      get_config("formule_standard_Promotion_non", 'Le faible nombre de possibilités de promotions ne permet malheureusement pas à la Section 6 du Comité National de proposer ce chercheur à la Direction Générale du CNRS pour une promotion cette année.');
+  }
+
+$typesRapportsToFormula[REPORT_TITU][avis_tres_favorable] =
+  get_config("formule_standard_Titularisation_tres_favorable", 'La section donne un avis très favorable à la titularisation.');
 
 /* Definition des différents grades*/
 

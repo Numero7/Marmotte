@@ -29,12 +29,13 @@ function is_auditionne($report)
 
 function needs_audition_report($report)
 {
+  return true;
   global $concours_ouverts;
   global $tous_sous_jury;
   return (isset($concours_ouverts[$report->concours]) && substr($concours_ouverts[$report->concours],0,2)=="CR")
     && isset($tous_sous_jury[$report->concours])
-    && isset($tous_sous_jury[$report->concours]["sousjury2"])
-    && ($tous_sous_jury[$report->concours]["sousjury2"] != "")
+    && isset($tous_sous_jury[$report->concours]["sj2"])
+    && ($tous_sous_jury[$report->concours]["sj2"] != "")
     &&(is_classe($report) || $report->avis=="oral" || $report->avis=="nonclasse");
 }
 

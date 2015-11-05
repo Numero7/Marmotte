@@ -187,6 +187,7 @@ function filename_from_params($nom, $prenom, $grade, $unite, $type, $session, $a
      $avis = $tous_avis[$avis];
 
   $pretty_type = ($intitule == "") ? ( isset($typesRapportsAll[$type]) ? $typesRapportsAll[$type] : $type) : $intitule;
+  $pretty_type = str_replace("Candidature pour une promotion","Promo",$pretty_type);
   if(strlen($pretty_type) >= 20)
     {
       $offs = strpos($pretty_type," ",20);

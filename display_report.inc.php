@@ -30,8 +30,8 @@ function displayEditableCandidate($candidate,$report = NULL,$canedit = true)
 	{
 		$hidden["id_origine"] = $report->id_origine;
 		$hidden["type"] = $report->type;
-		$rap_audition = false;
-		if( isset($report->concours) && isset($concours[$report->concours]) && $report->type == 7777)
+		$rap_audition = needs_audition_report($report);
+		/*		if( isset($report->concours) && isset($concours[$report->concours]) && $report->type == REPORT_CANDIDATURE)
 		{
 			$intitule = $concours[$report->concours]->intitule;
 			if(strpos($intitule, "DR") === false)
@@ -44,6 +44,7 @@ function displayEditableCandidate($candidate,$report = NULL,$canedit = true)
 				}
 			}
 		}
+		*/
 		if(!$rap_audition)
 			$fields = $fieldsCandidatAvantAudition;
 		else

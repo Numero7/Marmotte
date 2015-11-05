@@ -261,6 +261,7 @@ function createXMLReportElem($row, DOMDocument $doc, $keep_br = true)
 		$formulas = $typesRapportsToFormula[$row->type];
 		if(array_key_exists($row->avis,$formulas))
 		{
+		  //		  throw new Exception("Test");
 			$formula = $formulas[$row->avis];
 			$row->rapport .= "<br/><br/>".stripInvalidXml($formula);
 		}

@@ -57,7 +57,7 @@ function getSousJuryMap()
 
 function getConcours()
 {
-	if(!isset($_SESSION["allconcours"]))
+  //	if(!isset($_SESSION["allconcours"]))
 	{
 	$concours = array();
 	$sql = "SELECT * FROM ".concours_db." WHERE section='".real_escape_string(currentSection()). "' and session='".real_escape_string(current_session_id())."'";
