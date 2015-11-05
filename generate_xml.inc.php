@@ -74,21 +74,26 @@ function getReportsAsXML($filter_values, $sort_criteria = array(), $keep_br = tr
 	if(isset($filter_values['id_edit']))
 		$root->setAttribute('id_edit',$filter_values['id_edit']);
 
+	//	kk();
 	foreach($rows as $row)
 	{
-		$types = array($row->type);
-		if(isset($report_types_with_multiple_exports[$row->type]))
-		{
 			$types = array();
 			if($row->type == REPORT_CANDIDATURE)
 			{
+			  //			  throw new Exception("rr");
 				global $concours_ouverts;
 				if(needs_audition_report($row))
+				  {
 					$types[] = "Audition";
+				  }
 				if(is_classe($row))
 					$types[] = "Classement";
 			}
-		}
+			else
+			{
+			   $types = array($row->type);
+			}
+	       
 		foreach($types as $type)
 		{
 			$row->type = $type;

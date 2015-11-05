@@ -31,11 +31,15 @@ function needs_audition_report($report)
 {
   global $concours_ouverts;
   global $tous_sous_jury;
-  return (isset($concours_ouverts[$report->concours]) && substr($concours_ouverts[$report->concours],0,2)=="CR")
-    && isset($tous_sous_jury[$report->concours])
-    && isset($tous_sous_jury[$report->concours]["sousjury2"])
-    && ($tous_sous_jury[$report->concours]["sousjury2"] != "")
-    &&(is_classe($report) || $report->avis=="oral" || $report->avis=="nonclasse");
+  $a = (isset($concours_ouverts[$report->concours]) && substr($concours_ouverts[$report->concours],0,2)=="CR");
+  $b = isset($tous_sous_jury[$report->concours]);
+  $c = isset($tous_sous_jury[$report->concours]["sj2"]);
+  $d = ($tous_sous_jury[$report->concours]["sj2"] != "");
+  $e = (is_classe($report) || $report->avis==avis_oral || $report->avis==avis_non_classe || $report->avis==avis_non || $report->avis == avis_classe);
+  //echo "'".$a."'".$b."'".$c."'".$d."'".$e."'";
+  //foreach($tous_sous_jury[$report->concours] as $key=>$value)
+  //echo $key;
+return $a && $b && $c && $d && $e;
 }
 
 function is_auditionneCR($report)

@@ -281,6 +281,7 @@ function voir_rapport_pdf($row)
 		echo "<B>Rapports:</B>";
 		if(needs_audition_report($row))
 		{
+		  //	  throw new Exception("prout");
 			echo "<a href=\"export.php?action=viewpdf&amp;option=Audition&amp;id=".$row->id_origine."&amp;id_origine=".$row->id_origine."\">\n";
 			echo "d'audition\n";
 			echo "</a>\n";
