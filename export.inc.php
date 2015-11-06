@@ -55,7 +55,7 @@ function create_dir_if_needed($dir)
 		$result = mkdir($dir,0770, true);
 }
 
-function export_reports_as_txt($reports, $dir, $prefix = "reports")
+function export_reports_as_txt($reports, $dir, $prefix = "rapports")
 {
 	if(count($reports) == 0)
 		throw new Exception("No reports to export");
@@ -169,10 +169,22 @@ function export_report($report, $export_format, $dir)
 		else
 			throw new Exception("Cant create csv file ".$file);
 	}
-	if($export_format == "xml")
+	else if($export_format == "xml")
 	{
 		$file = $dir."/".$file.".txt";
 		exportReportAsXML($report,$activefields, $file);
+	}
+	else if($export_format == "txt")
+	{
+		$file = $dir."/".$file.".doc";
+		$data = compileObjectsAsTXT(array($report));
+		if($handle = fopen($file, 'w'))
+		{
+			fwrite ($handle, $data);
+			fclose($handle);
+		}
+		else
+			throw new Exception("Imposible de creer le fichier doc ".$file);
 	}
 
 	return $file;
@@ -282,27 +294,6 @@ function export_current_selection_as_single_txt()
 	}
 }
 
-function export_current_selection_as_multiple_txt()
-{
-	$size = 0;
-	$login = getLogin();
-	$filter = getFilterValues();
-
-	$filenames = array();
-	$items = array();
-
-	$filenames = array();
-
-	$reports = filterSortReports(getCurrentFiltersList(),  $filter, getSortingValues(),false);
-
-	if(count($reports) > 0)
-	{
-		$dir = dossier_temp();
-		$file = export_reports_as_txt($reports, $dir);
-		send_file($file, "rapports.zip");
-	}
-}
-
 
 function export_current_selection($export_format)
 {
@@ -324,7 +315,7 @@ function export_current_selection($export_format)
 			$filenames[$file] = substr($file,strlen($dir."/"));
 		}
 
-		$remote_filename = 'marmotte_reports_'.$login.'.zip';
+		$remote_filename = 'rapports_marmotte_'.$login.'.zip';
 		$filename = zip_files($filenames,$dir.'/'.$remote_filename);
 
 		if($filename == false)

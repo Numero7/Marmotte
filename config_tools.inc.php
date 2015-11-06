@@ -23,6 +23,9 @@
 		"show_theme1"=> array("Afficher le mot-clé1 dans l'écran principal","true"),
 		"show_theme2"=> array("Afficher le mot-clé2 dans l'écran principal","true"),
 		"show_theme3"=> array("Afficher le mot-clé3 dans l'écran principal","false"),
+		"formule_standard_Promotion_oui"=>array("Formule standard pour les promotions avec avis 'oui' (typiquement CR1)","La section donne un avis favorable à la demande de promotion."),
+		"formule_standard_Promotion_non"=>array("Formule standard pour les promotions avec avis 'non'","Le faible nombre de possibilités de promotions ne permet malheureusement pas à la section de proposer ce chercheur à la Direction Générale du CNRS pour une promotion cette année."),
+		"formule_standard_Titularisation_tres_favorable"=>array("Formule standard pour les titularisations","La section donne un avis très favorable à la titularisation.")
 			  );
 		
 

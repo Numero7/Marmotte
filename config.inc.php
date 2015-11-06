@@ -15,6 +15,12 @@ $rubriques_supplementaires = array(
 		"unites" => array("rubriques_unites", "Generic","rapport unite")
 );
 
+$add_rubriques_people = get_rubriques("individus");
+$add_rubriques_candidats = get_rubriques("candidats");
+$add_rubriques_concours = get_rubriques("concours");
+$add_rubriques_chercheurs = get_rubriques("chercheurs");
+$add_rubriques_unites = get_rubriques("unites");
+
 
 
 $statutsRapports = array(
@@ -66,14 +72,6 @@ $sql = "SELECT * FROM ".dsidbname."."."typesdocs WHERE 1;";
 $result = sql_request($sql);
 while($row = mysqli_fetch_object($result))
 	$typesdocs[$row->id] = $row->doctyplib;
-
-
-
-$add_rubriques_people = get_rubriques("individus");
-$add_rubriques_candidats = get_rubriques("candidats");
-$add_rubriques_concours = get_rubriques("concours");
-$add_rubriques_chercheurs = get_rubriques("chercheurs");
-$add_rubriques_unites = get_rubriques("unites");
 
 
 /* champs apparaissant sur l'écran principal */
@@ -420,13 +418,15 @@ $fieldsCandidatAvantAudition = array(
 		"labo3",
 		"theme1",
 		"theme2",
-		"theme3"
+		"theme3",
+		"concourspresentes",
+		"audition"
 );
 
 foreach($add_rubriques_candidats as $index => $rubrique)
 	$fieldsCandidatAvantAudition[] = "Info".$index;
 
-$fieldsCandidatAuditionne = array_merge($fieldsCandidatAvantAudition, array("audition"));
+$fieldsCandidatAuditionne = $fieldsCandidatAvantAudition;
 $fieldsCandidat = $fieldsCandidatAuditionne;
 
 $fieldsDelegation = array("statut","rapporteur","rapporteur2","rapporteur3","nom","prenom",
@@ -1197,14 +1197,18 @@ $typesRapportsToCheckboxesTitles = array(
 
 $typesRapportsToFormula = array();
 
-$typesRapportsToFormula['Promotion']['oui'] =
-get_config("formule_standard_Promotion_oui", 'La section donne un avis favorable à la demande de promotion.');
 
-$typesRapportsToFormula['Promotion']['non'] =
-get_config("formule_standard_Promotion_non", 'Le faible nombre de possibilités de promotions ne permet malheureusement pas à la Section 6 du Comité National de proposer ce chercheur à la Direction Générale du CNRS pour une promotion cette année.');
+foreach($typesRapportsPromotion as $type)
+  {
+    $typesRapportsToFormula[$type][avis_oui] =
+      get_config("formule_standard_Promotion_oui", 'La section donne un avis favorable à la demande de promotion.');
 
-$typesRapportsToFormula['Titularisation']['favorable'] =
-get_config("formule_standard_Titularisation_favorable", 'La section donne un avis favorable à la titularisation.');
+    $typesRapportsToFormula[$type][avis_non] =
+      get_config("formule_standard_Promotion_non", 'Le faible nombre de possibilités de promotions ne permet malheureusement pas à la Section 6 du Comité National de proposer ce chercheur à la Direction Générale du CNRS pour une promotion cette année.');
+  }
+
+$typesRapportsToFormula[REPORT_TITU][avis_tres_favorable] =
+  get_config("formule_standard_Titularisation_tres_favorable", 'La section donne un avis très favorable à la titularisation.');
 
 /* Definition des différents grades*/
 
@@ -1389,6 +1393,9 @@ $typeExports = array(
 );
 
 $dont_export_fields = array("id_origine","statut","genre","report_id","people_id","date","auteur","type");
+$dont_export_doc_fields = array("id_origine","id","section","nom","prenom","people_nom","people_prenom","statut","genre","report_id","people_id","date","auteur","type","grade");
+$export_doc_fields = array("unite","avis","rapporteur","avis1","rapporteur2","avis2","rapporteur3","theme1","theme2","theme3","labo1","labo2","labo3");
+
 
 $report_types_with_multiple_exports = array(
 		'Candidature' => array('Audition', 'Classement')

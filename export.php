@@ -105,7 +105,8 @@ if (authenticate())
 								export_current_selection_as_single_csv();
 								break;
 							case "text":
-								export_current_selection_as_single_txt();
+							  export_current_selection("txt");
+							  //								export_current_selection_as_single_txt();
 								break;
 							case "csv":
 							case "xml":

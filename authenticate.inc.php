@@ -105,7 +105,7 @@ En cas de besoin urgent, merci de contacter votre secr&eacute;taire scientifique
   <tr>
   <td width="30%"></td>
   <td width="70%">
-  <h3>Contributeurs Marmotte 2.3</h3>
+   <h3>Contributeurs <a href="https://www.youtube.com/watch?v=DEZxV2gckbg">Marmotte 2.3</a></h3>
 <table><tr><td>
   <ul>
   <li><B>Secrétaires scientifiques</B></li>
@@ -121,8 +121,8 @@ En cas de besoin urgent, merci de contacter votre secr&eacute;taire scientifique
 <td>
 <ul>
 <li><B>SGCN</B></li>
-  <li>Laurent Chazaly (beta-testeur, formateur, SGCN)</li>
-<li>Mich&egrave;le Desumeur (beta-testeuse ACN, SGCN)</li>
+	   <li>Laurent Chazaly (chef de projet SGCN, beta-testeur, formateur)</li>
+<li>Mich&egrave;le Desumeur (beta-testeuse ACN)</li>
 </ul>
 </td>
 <td>
