@@ -1,38 +1,73 @@
 <?php
 
 
+function compileFieldAsTxt($row,$field,$value)
+{
+  if($value == "") return "";
+	global $id_rapport_to_label;
+	global $dont_export_doc_fields;
+	global $fieldsTypes;
+	global $fieldsAll;
+	global $tous_avis;
+	global $export_doc_fields;
+	$title = compute_title($row, $field);
+
+	if(isset($fieldsTypes[$field]) && $fieldsTypes[$field] == "avis" && isset($tous_avis[$value]))
+	  {
+	    $value = $tous_avis[$value];
+	  }
+	if(isset($fieldsTypes[$field]) && $fieldsTypes[$field] == "treslong")
+	  {
+	    return "<B>".$title."</B><br/><table border=\"1\"><tr><td>".html_entity_decode($value)."</td></tr></table><br/><br/>";
+	  }
+	else
+	  {
+	    return "<B>".$title."</B>:".html_entity_decode($value)."<br/>";
+	  }
+}
+
 function compileObjectsAsTXT($rows)
 {
 	$result = "";
 
 	$first = true;
-
+	$result .= "<head> <meta charset=\"UTF-8\"> </head><br/>";
+	/*
 	$result .= "****************************************************\n";
 	$result .= "Pour un bon affichage des accents:  sélectionner 'UTF-8' n";
 	$result .= "****************************************************\n";
-	
+	*/
+
 	global $id_rapport_to_label;
-	global $dont_export_fields;
+	global $dont_export_doc_fields;
+	global $fieldsTypes;
+	global $fieldsAll;
+	global $tous_avis;
+	global $export_doc_fields;
+
 	foreach($rows as $row)
 	{
-		$result .= "*****************************************************\n";
-		$result .= "".$id_rapport_to_label[$row->type]."\n";
-		$result .= "*****************************************************\n";
+		$result .= "<h2>".$id_rapport_to_label[$row->type]."</h2>";
 
-		$first = true;
+		if(is_rapport_chercheur($row) || is_rapport_concours($row))
+		  $result .= "<h3>".$row->nom." ".$row->prenom."</h3>";
+
+		foreach( $export_doc_fields as $field)
+		  $result .= compileFieldAsTxt($row,$field,$row->$field);
+
 		if(is_rapport_chercheur($row) || is_rapport_concours($row))
 		{
 			$candidat = get_or_create_candidate($row);
 			foreach($candidat as $field => $value)
-			  if(is_field_visible($row, $field) && !in_array($field, $dont_export_fields))
-					$result.= $field.":\n\t". str_replace(array('"',"<br />"), array('#',''), $value)."\n";
+			  if(is_field_visible($row, $field) && !in_array($field, $dont_export_doc_fields) && !in_array($field,$export_doc_fields))
+			      $result .= 
+				compileFieldAsTxt($row, $field,$candidat->$field);
 		}
-
 		foreach($row as $field => $value)
-		  if(is_field_visible($row, $field) && $value != "" && !in_array($field, $dont_export_fields))
-				$result.= $field.":\n\t". str_replace(array('"',"<br />"), array('#',''), $value)."\n";
+		  if(is_field_visible($row, $field) && !in_array($field, $dont_export_doc_fields) && !in_array($field,$export_doc_fields))
+		    $result .= compileFieldAsTxt($row, $field,$value);
 
-		$result.="\n\n\f";
+		$result.="<br/>\f";
 	}
 	return $result;
 

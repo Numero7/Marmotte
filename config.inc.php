@@ -71,20 +71,6 @@ $result = sql_request($sql);
 while($row = mysqli_fetch_object($result))
 	$typesdocs[$row->id] = $row->doctyplib;
 
-$rubriques_supplementaires = array(
-		"individus" => array("rubriques_individus","Info","chercheur"),
-		"candidats" => array("rubriques_candidats", "Info","candidat"),
-		"concours" => array("rubriques_concours", "Generic","rapport concours"),
-		"chercheurs" => array("rubriques_chercheurs", "Generic","rapport chercheur"),
-		"unites" => array("rubriques_unites", "Generic","rapport unite")
-);
-
-$add_rubriques_people = get_rubriques("individus");
-$add_rubriques_candidats = get_rubriques("candidats");
-$add_rubriques_concours = get_rubriques("concours");
-$add_rubriques_chercheurs = get_rubriques("chercheurs");
-$add_rubriques_unites = get_rubriques("unites");
-
 /* champs apparaissant sur l'écran principal */
 
 $fieldsSummary = array("type","unite","nom","prenom",/*"ecole",*/"avis","rapporteur","avis1","rapporteur2","avis2", "rapporteur3", "avis3","theme1","theme2","theme3","DKEY");
@@ -1395,6 +1381,9 @@ $typeExports = array(
 );
 
 $dont_export_fields = array("id_origine","statut","genre","report_id","people_id","date","auteur","type");
+$dont_export_doc_fields = array("id_origine","id","section","nom","prenom","people_nom","people_prenom","statut","genre","report_id","people_id","date","auteur","type","grade");
+$export_doc_fields = array("unite","avis","rapporteur","avis1","rapporteur2","avis2","rapporteur3","theme1","theme2","theme3","labo1","labo2","labo3");
+
 
 $report_types_with_multiple_exports = array(
 		'Candidature' => array('Audition', 'Classement')
