@@ -104,6 +104,9 @@ if (authenticate())
 							case "csvsingle":
 								export_current_selection_as_single_csv();
 								break;
+							case "xlssingle":
+								export_current_selection_as_single_xls();
+								break;
 							case "text":
 							  export_current_selection("txt");
 							  //								export_current_selection_as_single_txt();

@@ -99,6 +99,8 @@ function compileObjectsAsCSV($fields, $rows, $text=array(), $sep =";" , $enc='"'
 		$first = false;
 	}
 
+	global $fieldsTypes;
+	global $tous_avis;
 	$result.=$del;
 
 	foreach($rows as $row)
@@ -111,17 +113,21 @@ function compileObjectsAsCSV($fields, $rows, $text=array(), $sep =";" , $enc='"'
 				$subfields = $csv_composite_fields[$field];
 				$result.= ($first ? "" : $sep).$enc;
 				foreach($subfields as $subfield)
-					$result.=(isset($row->$subfield) ? str_replace($enc, '#', $row->$subfield) :"")." ";
+					$result.=(isset($row->$subfield) ? str_replace($enc, '#', html_entity_decode($row->$subfield)) :"")." ";
 				$result.= $enc;
 			}
-			else
+			else if(isset($row->$field) && $row->$field != "")
 			{
-			  $data = isset($row->$field) ? str_replace($enc, '#', $row->$field) : "";
+			  $data = str_replace(array($sep,$enc,"<br />"), array('#','#',""), html_entity_decode($row->$field));
 			  if($field == "type" && isset($row->$field) && isset($typesRapportsAll[$data]))
 			    $data = $typesRapportsAll[$data];
-
+			  else if(isset($fieldsTypes[$field]) && $fieldsTypes[$field] == "avis" && isset($tous_avis[$data]))
+			      $data = $tous_avis[$data];
 			  $result .= ($first ? "" : $sep).$enc.$data.$enc;
 			}
+			else
+			  $result .= ($first ? "" : $sep).$enc.$enc;
+
 			$first = false;
 
 		}

@@ -116,7 +116,7 @@ function export_reports_as_csv($reports, $dir, $type = "")
 	array_unique(
 			array_merge(
 					$mandatory_export_fields,
-					 get_editable_fields($reports[0])
+					 get_readable_fields($reports[0])
 					)
 	);
 	}
@@ -265,11 +265,66 @@ function export_current_selection_as_single_csv($type = "")
 		$dir = dossier_temp();
 		$file = export_reports_as_csv($reports, $dir, $type);
 		$filenames[$file] = substr($file,strlen($dir."/"));
+		$remote_filename = 'rapports_marmotte_'.$login.'.csv';
+		send_file($file, $remote_filename);
+		/*
 		$remote_filename = 'marmotte_reports_'.$login.'.zip';
 		$filename = zip_files($filenames,$dir.'/'.$remote_filename);
 		if($filename == false)
 			throw new Exception("Failed to zip files");
 		send_file($filename, $remote_filename);
+		*/
+	}
+}
+function export_current_selection_as_single_xls($type = "")
+{
+	$size = 0;
+	$login = getLogin();
+	$filter = getFilterValues();
+	$filenames = array();
+	$items = array();
+
+	$filenames = array();
+
+	if($type == "releveconclusions")
+	{
+		$sorting = 	array(
+		'type' => '1+',
+		'grade_rapport' => '2+',
+		'avis' => '3+');
+		$reports = filterSortReports(getCurrentFiltersList(),  $filter, $sorting);
+	}
+	else
+	{
+		$reports = filterSortReports(getCurrentFiltersList(),  $filter, getSortingValues());
+	}
+	
+	if(count($reports) > 0)
+	{
+		$dir = dossier_temp();
+		$file = export_reports_as_csv($reports, $dir, $type);
+		require_once("PHPExcel/Classes/PHPExcel.php");
+		// Create new PHPExcel object
+
+		$objReader = PHPExcel_IOFactory::createReader('CSV')->setDelimiter(';')
+		  ->setEnclosure('"')
+		  ->setSheetIndex(0);
+		$objPHPExcelFromCSV = $objReader->load($file);
+		$objWriter2007 = PHPExcel_IOFactory::createWriter($objPHPExcelFromCSV, 'Excel5');
+		$xlsfile = str_replace('.csv', '.xls', $file);
+		$objWriter2007->save($xlsfile);
+
+		$remote_filename = 'rapports_marmotte'.$login.'.xls';
+		send_file($xlsfile, $remote_filename);
+		/*
+		$filenames[$file] = substr($xlsfile,strlen($dir."/"));
+		$remote_filename = 'rapports_marmotte'.$login.'.zip';
+		
+		$filename = zip_files($filenames,$dir.'/'.$remote_filename);
+		if($filename == false)
+			throw new Exception("Failed to zip files");
+		send_file($filename, $remote_filename);
+		*/
 	}
 }
 

@@ -1348,7 +1348,7 @@ $typeExports = array(
 		"text" => 	array(
 				"mime" => "text/html",
 				"xsl" => "xslt/html2.xsl",
-				"name" => "doc (dossiers)",
+				"name" => "Word",
 				"permissionlevel" => NIVEAU_PERMISSION_BASE,
 		),
 		/*
@@ -1359,10 +1359,16 @@ $typeExports = array(
 		 		"permissionlevel" => NIVEAU_PERMISSION_BASE
 		 ),
 */
+		"xlssingle" => 	array(
+				"mime" => "application/x-text",
+				"xsl" => "",
+				"name" => "Excel",
+				"permissionlevel" => NIVEAU_PERMISSION_BASE
+		),
 		"csvsingle" => 	array(
 				"mime" => "application/x-text",
 				"xsl" => "",
-				"name" => "csv (dossiers)",
+				"name" => "csv",
 				"permissionlevel" => NIVEAU_PERMISSION_BASE
 		),
 		"csvbureau" => 	array(
