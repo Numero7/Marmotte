@@ -26,6 +26,11 @@ function compileFieldAsTxt($row,$field,$value)
 	  }
 }
 
+function compileObjectAsTXT($row)
+{
+  return "hello";
+}
+
 function compileObjectsAsTXT($rows)
 {
 	$result = "";
