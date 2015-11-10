@@ -20,9 +20,9 @@ function compute_title($row, $fieldId)
 
 		$suff = intval(substr($fieldId,4));
 
-		if( is_rapport_chercheur($row) )
+		if( is_rapport_chercheur($row) && isset($add_rubriques_people[$suff]))
 			$title = $add_rubriques_people[$suff];
-		else if( is_rapport_concours($row) )
+		else if( is_rapport_concours($row)  && isset($add_rubriques_candidats[$suff]))
 			$title = $add_rubriques_candidats[$suff];
 	}
 	else if( substr($fieldId, 0, 7) == "Generic" )

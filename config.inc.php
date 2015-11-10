@@ -1325,15 +1325,16 @@ $typeExports = array(
 		"pdf" => 	array(
 				"mime" => "application/x-zip",
 				"xsl" => "",
-				"name" => "pdf (rapports)",
+				"name" => "Génération RS",
 				"permissionlevel" => NIVEAU_PERMISSION_ACN,
 		),
 		"html" => 	array(
 				"mime" => "text/html",
 				"xsl" => "xslt/html2.xsl",
-				"name" => "html(rapports)",
+				"name" => "Relecture RS",
 				"permissionlevel" => NIVEAU_PERMISSION_SECRETAIRE,
 		),
+
 		"text" => 	array(
 				"mime" => "text/html",
 				"xsl" => "xslt/html2.xsl",
@@ -1354,12 +1355,13 @@ $typeExports = array(
 				"name" => "Excel",
 				"permissionlevel" => NIVEAU_PERMISSION_BASE
 		),
+		/*
 		"csvsingle" => 	array(
 				"mime" => "application/x-text",
 				"xsl" => "",
 				"name" => "csv",
 				"permissionlevel" => NIVEAU_PERMISSION_BASE
-		),
+				),*/
 		"csvbureau" => 	array(
 				"mime" => "application/x-text",
 				"xsl" => "",
@@ -1373,6 +1375,13 @@ $typeExports = array(
 				"permissionlevel" => NIVEAU_PERMISSION_BUREAU
 		),
 		/*
+		"html" => 	array(
+				"mime" => "text/html",
+				"xsl" => "xslt/html2.xsl",
+				"name" => "html(rapports)",
+				"permissionlevel" => NIVEAU_PERMISSION_SECRETAIRE,
+		),
+
 		 "jad" => 	array(
 		 		"mime" => "application/x-text",
 		 		"xsl" => "",
