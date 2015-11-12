@@ -53,7 +53,7 @@ if(isSecretaire() && !isSuperUser())
 	<input type="hidden" name="directeur" value="" />
 	<input type="hidden" name="type" value="labo" />
 	<input type="hidden" name="action" value="ajoutlabo" />
-	<input type="submit" value="Ajouter unité" />
+	<input type="submit" value="Ajouter ou mettre à jour" />
 		
 	
 </form>
@@ -98,7 +98,7 @@ if(isSecretaire() && !isSuperUser())
 	</table>
 	<input type="hidden" name="type" value="labo" />
 	<input type="hidden" name="action" value="ajoutlabo" />
-	<input type="submit" value="Ajouter unité" />
+	<input type="submit" value="Ajouter ou mettre à jour" />
 </form>
 
 

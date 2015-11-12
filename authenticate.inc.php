@@ -94,9 +94,12 @@ En cas de besoin urgent, merci de contacter votre secr&eacute;taire scientifique
 	 ?>
 	<br/>
 	<br/>
-
- <br/>
-  <br/>
+<p>
+En cas de difficult&eacute; de connexion,
+veuillez contacter votre ACN et utiliser le 
+<a href="https://support.dsi.cnrs.fr/webassistance/index.asp?prod=6106">
+formulaire d&apos;assistance</a>. 
+</p>
 <br/>	
   <br/>
 <br/>	
