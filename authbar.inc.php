@@ -141,7 +141,7 @@ if(!isSuperUser())
 ?>
 <li><a onclick="return confirm('Veuillez confirmer la transmission des rapports de la section au SGCN. Les rapports ne seront alors plus modifiables.')" href="?action=change_statut&amp;new_statut=publie">Transmettre les rapports</a></li>
 <?php		  }
-		if(isSecretaire() && !isSuperUser())
+if(isSecretaire() && !isSuperUser() && !is_current_session_concours())
 		{
 		?>
 <li><a href="index.php?action=displayimportexport">Import/Ajout</a></li>

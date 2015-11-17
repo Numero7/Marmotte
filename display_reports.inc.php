@@ -405,6 +405,9 @@ function displayStatutMenu()
 				</form>
 			</td>
 		</tr>
+							    <?php if(!is_current_session_concours())
+							    {
+?>
 		<tr>
 			<td>
 				<form onsubmit="return confirm('Supprimer ces rapports?');"
@@ -415,6 +418,7 @@ function displayStatutMenu()
 			</td>
 		</tr>
 		<?php
+    }
 		if(is_current_session_concours())
 		{
 		?> 
@@ -506,7 +510,7 @@ if($bur)
 		  displayRowCell($row, $fieldID);
 ?>
 		<td>
-		<?php displayActionsMenu($row,"", $actions2); ?>
+		   <?php if(!is_current_session_concours()) displayActionsMenu($row,"", $actions2); ?>
 		</td>
 	</tr>
 	<?php 

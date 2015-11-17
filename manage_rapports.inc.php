@@ -75,6 +75,8 @@ function getIDOrigine($id_rapport)
 
 function deleteCurrentSelection()
 {
+  if(is_current_session_concours())
+    throw new Exception("Cannot delete reports in a session concours");
 	if(isset($_SESSION['rows_id']))
 	{
 		$rows_id = $_SESSION['rows_id'];
