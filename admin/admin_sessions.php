@@ -64,7 +64,6 @@ else
 																 <select
 				name="sessionname">
 					<?php
-						echo  '<option value="Concours">Concours</option>';
 						echo  '<option value="Delegations">Delegations</option>';
 						echo  '<option value="PES">PES</option>';
 						echo  '<option value="Printemps">Printemps</option>';
@@ -103,6 +102,7 @@ else
 </form>
 <?php
 						    }
+
 ?>
 <hr />
 			<h3>Suppression d&#39;une session</h3>
