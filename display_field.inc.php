@@ -302,7 +302,7 @@ function display_rapports($row, $fieldId)
 				    $report->id_session." - ".$report->unite. " - " .$type;
 				else
 				  $reports[$i]->label =
-			         $report->id_session." - ".$report->unite." - ".$report->nom."  ".$report->prenom. " - " .$type;
+			         $report->id_session." - ".$report->unite." - ".$report->nom."  ".$report->prenom. " - " .$type." - ".$report->id." - ".$row->id;
 			}
 		}
 

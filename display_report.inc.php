@@ -55,6 +55,7 @@ function displayEditableCandidate($candidate,$report = NULL,$canedit = true)
 		$candidate->rapporteur3 = $report->rapporteur3;
 		$candidate->type = $report->type;
 		$candidate->statut = $report->statut;
+		$candidate->id = $report->id;
 
 		if(isset($report->id_session))
 			$session = $report->id_session;
@@ -96,6 +97,7 @@ function displayEditableChercheur($chercheur,$report = NULL, $canedit = true)
 		$chercheur->rapporteur3 = isset($report->rapporteur3) ? $report->rapporteur3 : "";
 		$chercheur->type = isset($report->type) ? $report->type : "";
 		$chercheur->statut = isset($report->statut) ? $report->statut : "";
+		$chercheur->id = $report->id;
 		if(isset($report->id_session))
 			$session = $report->id_session;
 
