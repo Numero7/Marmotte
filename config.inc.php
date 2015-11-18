@@ -78,7 +78,7 @@ while($row = mysqli_fetch_object($result))
 
 $fieldsSummary = array("type","unite","nom","prenom",/*"ecole",*/"avis","rapporteur","avis1","rapporteur2","avis2", "rapporteur3", "avis3","theme1","theme2","theme3","DKEY");
 
-$fieldsSummaryConcours = array("concours","nom","prenom","sousjury","avis","rapporteur","avis1",
+$fieldsSummaryConcours = array("concours","nom","prenom","sousjury","statut_celcc","avis","rapporteur","avis1",
 			       "rapporteur2","avis2","rapporteur3","avis3","theme1","theme2","theme3","labo1","labo2","diploma"
 );
 
@@ -139,6 +139,7 @@ $fieldsRapportAll = array(
 		  "concoursid" => "NumCand",
 		"dsi" => "Infos e-valuation",
 		"statut" => "Statut rapport",
+		"statut_celcc"=>"Statut candidature",
 		"DKEY" => "DKEY",
 		"signataire"=>"Signataire",
 		"NUMSIRHUS" => "NUMSIRHUS",
@@ -228,6 +229,7 @@ $fieldsChercheursAll = array(
 		"theme2",
 		"theme3",
 		"fichiers",
+		"fichiers_evaluation",
 		"rapports"
 );
 
@@ -278,6 +280,7 @@ foreach($add_rubriques_people as $code => $rubrique)
 */
 $fieldsRapportsCandidat0 = array(
 		"type",
+		"statut_celcc",
 		"concours",
 		"sousjury",
 		"rapporteur",
@@ -346,6 +349,8 @@ $fieldsIndividualAll = array(
 		"audition" => "Rapport d'audition",
 		"conflits" => "Conflits",
 		"fichiers"=> "Fichiers",
+		"fichiers_evaluation"=> "Fichiers e-valuation",
+		"fichiers_celcc"=> "Dossier Candidat",
 		"birth" => "Date naissance",
 		"diploma" => "Date diplôme"
 );
@@ -364,7 +369,6 @@ $fieldsIndividualDB = array(
 		"theme3" => "Mot-clé 3",
 		"audition" => "Rapport d'audition",
 		"conflits" => "Conflits",
-		"fichiers"=> "Fichiers",
 		"birth" => "Date naissance",
 		"diploma" => "Diplôme"
 );
@@ -411,6 +415,7 @@ $fieldsCandidatAvantAudition = array(
 		array("nom","prenom"),
 		array("diploma","birth"),
 		array("infos_celcc","conflits"),
+		"fichiers_celcc",
 		"fichiers",
 		"rapports",
 		"labo1",
@@ -473,6 +478,7 @@ $fieldsUnites0 = array(
 		),
 		"unite",
 		"fichiers",
+		"fichiers_evaluation",
 		"rapports",
 		"avis",
 		"rapport",
@@ -491,6 +497,7 @@ $fieldsEcoles0 = array(
 		),
 		"unite",
 		"fichiers",
+		"fichiers_evaluation",
 		"rapports",
 		"avis",
 		"rapport",
@@ -794,6 +801,8 @@ $fieldsTypes = array(
 		"id" =>"short",
 		"audition" => "treslong",
 		"fichiers" => "files",
+		"fichiers_celcc" => "files_celcc",
+		"fichiers_evaluation" => "files_evaluation",
 		"rapports" => "rapports",
 		"avissousjury" => "avis",
 		"statut" => "statut"
@@ -853,7 +862,7 @@ $fieldsEditableOnlySecretaire = array("nom","prenom","conflits","type","signatai
 
 $nonEditableFieldsTypes = array('id','date',"nom","prenom","infos_celcc","infos_evaluation");
 $nonVisibleFieldsTypes = array('id');
-$alwaysVisibleFieldsTypes = array('nom','prenom','infos_evaluation','infos_celcc','unite','fichiers','rapports','conflits','dsi','intitule','type','avis','statut','signataire');
+$alwaysVisibleFieldsTypes = array('nom','prenom','infos_evaluation','infos_celcc','unite','fichiers','fichiers_evaluation','fichiers_celcc','rapports','conflits','dsi','intitule','type','avis','statut','signataire');
 
 $fieldsArrayCandidat = array($fieldsCandidat, $fieldsRapportsCandidat0, $fieldsRapportsCandidat1, $fieldsRapportsCandidat2, $fieldsRapportsCandidat3);
 $fieldsArrayIE = array($fieldsCandidatAvantAudition, $fieldsRapportsIE0, $fieldsRapportsCandidat1, $fieldsRapportsCandidat2, $fieldsRapportsCandidat3);
@@ -1042,18 +1051,22 @@ define("avis_nonauditionne",78);
 define("avis_oral",79);
 define("avis_estclasse",80);
 define("avis_admis_a_concourir",81);
+define("avis_IE_oui",82);
+define("avis_IE_non",83);
 
 $avis_candidature_short =
 array(
 		"" =>"sans avis",
-		avis_desistement => 'désistement',
+		//		avis_desistement => 'désistement',
 		avis_adiscuter=>"à discuter",
 		avis_nonauditionne=>"non-auditionné",
 		avis_oral=>"auditionné",
 		avis_non_classe=>"non-classé",
 		avis_classe=>"classé",
-		avis_admis_a_concourir => "admis à concourir",
-		avis_nonconcur=>"non-admis à concourir"
+		avis_IE_oui=>"IE oui",
+		avis_IE_non=>"IE non"
+		//avis_admis_a_concourir => "admis à concourir",
+		//avis_nonconcur=>"non-admis à concourir"
 );
 
 
@@ -1068,6 +1081,8 @@ $tous_avis = array(
 		   avis_oral=>"auditionné",
 		   avis_estclasse=>"classé",
 		   avis_defavorable=>"défavorable",
+		   avis_IE_oui=>"IE oui",
+		   avis_IE_non=>"IE non"
 );
 /* Pour les promos*/
 $avis_classement = array(avis_adiscuter=>"à discuter", avis_non=>"Non", avis_oui=>"Oui");
@@ -1534,8 +1549,18 @@ $tous_concours = array("CR"=>"tous CR","DR"=>"tous DR");
 foreach($concours_ouverts as $code => $data)
 	$tous_concours[strval($code)] = $data;
 
+
 $filtersConcours = array(
 		'concours' => array('name'=>"Concours" , 'liste' => $tous_concours, 'default_value' => "tous", 'default_name' => ""),
+		'statut_celcc' => array('name'=>"Statut candidature" ,
+					'liste' => array(
+							 "soumis à IE"=>"soumis à IE",
+							 "soumis à CS"=>"soumis à CS",
+							 "admis à concourir"=>"admis à concourir",
+							 "retrait candidature"=>"retrait candidature"
+),
+
+'default_value' => "tous", 'default_name' => ""),
 		'sousjury' => array('name'=>"Sous-jury" , 'liste' => $liste_sous_jurys, 'default_value' => "tous", 'default_name' => ""),
 		'avis' => array('name'=>"Avis section" , 'liste' => $avis_candidature_short, 'default_value' => "tous", 'default_name' => ""),
 		'avis1' => array('name'=>"Avis rapporteur 1" , 'liste' => $avis_candidature_short, 'default_value' => "tous", 'default_name' => ""),
@@ -1602,6 +1627,7 @@ $icones_avis = array(
 		avis_oral=>"img/Icon-Yes.png",
 		avis_classe=>"img/Icon-Yes.png",
 		avis_oui=>"img/Icon-Yes.png",
+		avis_IE_oui=>"img/Icon-Yes.png",
 
 
 		avis_reserve => "img/Icon-NoComment.png",
@@ -1622,6 +1648,7 @@ $icones_avis = array(
 		"nonconcur"=>"img/Icon-No.png",
 		avis_alerte=>"img/Icon-No.png",
 		avis_non =>"img/Icon-No.png",
+		avis_IE_non =>"img/Icon-No.png",
 
 		avis_pas_davis => "img/Icon-Maybe.png",
 		avis_adiscuter => "img/Icon-Maybe.png",
