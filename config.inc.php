@@ -279,7 +279,6 @@ foreach($add_rubriques_people as $code => $rubrique)
 * pour un rapport candidat
 */
 $fieldsRapportsCandidat0 = array(
-		"type",
 		"statut_celcc",
 		"concours",
 		"sousjury",
@@ -767,6 +766,7 @@ $fieldsTypes = array(
 		"prenom" => "short",
 		"genre" => "enum",
 		"statut_individu"=> "enum",
+		"statut_celcc"=> "short",
 		"grade" => "grade",
 		"grade_rapport" => "grade",
 		"theseloc" => "enum",
@@ -862,7 +862,7 @@ $fieldsEditableOnlySecretaire = array("nom","prenom","conflits","type","signatai
 
 $nonEditableFieldsTypes = array('id','date',"nom","prenom","infos_celcc","infos_evaluation");
 $nonVisibleFieldsTypes = array('id');
-$alwaysVisibleFieldsTypes = array('nom','prenom','infos_evaluation','infos_celcc','unite','fichiers','fichiers_evaluation','fichiers_celcc','rapports','conflits','dsi','intitule','type','avis','statut','signataire');
+$alwaysVisibleFieldsTypes = array('nom','prenom','rapporteur','concours','avissousjury','sousjury','rapporteur2','rapporteur3','infos_evaluation','infos_celcc','unite','fichiers','fichiers_evaluation','fichiers_celcc','rapports','conflits','dsi','intitule','type','avis','statut','statut_celcc','signataire');
 
 $fieldsArrayCandidat = array($fieldsCandidat, $fieldsRapportsCandidat0, $fieldsRapportsCandidat1, $fieldsRapportsCandidat2, $fieldsRapportsCandidat3);
 $fieldsArrayIE = array($fieldsCandidatAvantAudition, $fieldsRapportsIE0, $fieldsRapportsCandidat1, $fieldsRapportsCandidat2, $fieldsRapportsCandidat3);
