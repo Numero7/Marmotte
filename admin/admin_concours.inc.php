@@ -26,11 +26,10 @@
 
 <br />
 <hr />
-<h3>Ajouter ou mettre à jour un concours</h3>
+<h3>Configurer un concours</h3>
 <p>
-    Ce menu permet d&#39;ajouter ou de mettre à jour un concours.<br /> Le code
-	du concours doit être au format "06/02".</br> L&#39;intitulé du
-	concours doit être court et commencer par le grade, par exemple "CR2" ou "CR2_Coloriage".<br />
+    Ce menu permet de configurer un concours.<br />
+    L&#39;intitulé du concours doit être court et commencer par le grade, par exemple "CR2" ou "CR2_coloriage".<br />
 	Si le jury est plénier ou si vous ne connaissez pas encore la liste de
 	vos sous-jurys, laisser les champs "SousJury*" et "President*" vides.<br />
 
@@ -57,8 +56,10 @@
 			</td>
 			<td>intitule <input name="intitule" value="DR2"></input>
 			</td>
+<!--
 			<td>postes <select name="postes">
 					<?php for($i = 0 ; $i < 100; $i++) echo "<option value=\"".$i."\">".$i."</option>"; ?>
+-->
 			</select>
 			</td>
 		</tr>
@@ -108,6 +109,7 @@
 		name="admin_concours"></input>
 </form>
 <br />
+<!--
 <hr />
 <h3>Changer le statut du concours</h3>
 <p>Cette fonction permet de changer le statut du concours au fur et à
@@ -146,6 +148,7 @@ foreach($concours as $conc)
 }
 ?>
 <br/>
+
 <hr/>
 
 <h3>Supprimer un concours</h3>
@@ -163,6 +166,7 @@ foreach($concours as $conc)
 	<input type="hidden" name="action" value="delete_concours" /> <input
 		type="submit" value="Supprimer" />
 </form>
+-->
 <br />
 <hr />
 <h3>Rapports JAD</h3>

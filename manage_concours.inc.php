@@ -77,39 +77,9 @@ function getPresidentSousJury($sousjury)
 function setConcours($conc)
 {
 	if( isset($conc->niveau) && strpos($conc->intitule,$conc->niveau) !==0)
-		$conc->intitule = $conc->niveau.$conc->intitule;
+		$conc->intitule = $conc->niveau." ".$conc->intitule;
 
-	if(!isset($conc->membressj1))
-	{
-		for($i = 1; $i <= 4; $i++)
-		{
-			$suff = "membressj".$i;
-			$conc->$suff = "";
-		}
-
-		//		$conc->code = preg_replace('/\D/', '', $conc->code);
-
-		$sql = "SELECT * FROM ".concours_db;
-		$sql .=" WHERE section='".real_escape_string(currentSection())."'";
-		$sql .= " and session='".real_escape_string(current_session_id())."'";
-		$sql .= " and code='".real_escape_string($conc->code)."';";
-		sql_request($sql);
-
-		$result = sql_request($sql);
-
-		while($row = mysqli_fetch_object($result))
-		{
-			for($i = 1; $i <= 4; $i++)
-			{
-				$suff = "membressj".$i;
-				$conc->$suff = $row->$suff;
-			}
-			break;
-		}
-	}
-
-
-	for($i = 1; $i <= 4; $i++)
+	/*	for($i = 1; $i <= 4; $i++)
 	{
 		$suff = "membressj".$i;
 		while(strpos($conc->$suff,";;")!==false)
@@ -117,20 +87,26 @@ function setConcours($conc)
 	}
 
 
-	$sql = "DELETE FROM ".concours_db;
+		$sql = "DELETE FROM ".concours_db;
 	$sql .=" WHERE section='".real_escape_string(currentSection())."'";
 	$sql .= " and session='".real_escape_string(current_session_id())."'";
 	$sql .= " and code='".real_escape_string($conc->code)."';";
 	sql_request($sql);
+	*/
 
-	$sql = "INSERT INTO `concours` (`section`, `session`, `code`, `intitule`, `postes`, `sousjury1`, `sousjury2`, `sousjury3`, `sousjury4`, `president1`, `president2`, `president3`, `president4`,`membressj1`, `membressj2`, `membressj3`, `membressj4`)";
-	$sql .= " VALUES ('".real_escape_string(currentSection())."','".real_escape_string(current_session_id());
-	$sql .= "','".real_escape_string($conc->code)."','".real_escape_string($conc->intitule)."','".real_escape_string($conc->postes);
-	$sql .= "','".real_escape_string($conc->sousjury1)."','".real_escape_string($conc->sousjury2)."','".real_escape_string($conc->sousjury3);
-	$sql .= "','".real_escape_string($conc->sousjury4)."','".real_escape_string($conc->president1)."','".real_escape_string($conc->president2);
-	$sql .= "','".real_escape_string($conc->president3)."','".real_escape_string($conc->president4);
-	$sql .= "','".real_escape_string($conc->membressj1)."','".real_escape_string($conc->membressj2)."','".real_escape_string($conc->membressj3)."','".real_escape_string($conc->membressj4);
-	$sql .= "')";
+	$sql = "UPDATE `concours` SET ";
+	$fields = array("intitule",
+"sousjury1","sousjury2","sousjury3","sousjury4",
+			"president1","president2","president3","president4"
+);
+	$first = true;
+	foreach($fields as $field)
+	  {
+	    if(!$first) $sql.=",";
+	  $sql.=$field."=\"".real_escape_string($conc->$field)."\" ";
+	  $first = false;
+	  }
+	$sql .= "WHERE code=\"".$conc->code."\" AND section=\"".currentSection()."\" AND session=\"".current_session_id()."\"";
 
 	sql_request($sql);
 	unset($_SESSION["allconcours"]);
