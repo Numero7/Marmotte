@@ -42,7 +42,9 @@ function find_celcc_files($row, $session)
 
   while($doc = mysqli_fetch_object($result))
     {
-      $pretty_name = $doc->type_doc." ".$doc->num_conc." ".$doc->corps_grade." ".$doc->annee_conc." - ".$doc->nom_doc;
+      $pretty_name = $doc->type_doc." ".$doc->num_conc." ".$doc->corps_grade." ".$doc->annee_conc." - ";
+      //      $pretty_name = str_replace(array("_",strtoupper($row->nom),strtoupper($row->prenom),$row->concoursid),array(""), $doc->nom_doc);
+      $pretty_name .= str_replace(array("_",$row->concoursid),array(" "), $doc->nom_doc);
       $files[$pretty_name]=$dossier_stockage_dsi."/".$doc->path_sas.$doc->nom_doc;
     }  
   return $files;
