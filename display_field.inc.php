@@ -344,64 +344,42 @@ function display_rapports($row, $fieldId)
 }
 
 
-function display_fichiers($row, $fieldID, $session, $readonly)
+function display_fichiers($row, $fieldID, $session, $readonly, $type)
 {
 	if(!isset($row->type))
 		return;
 	
-	$files = find_files($row, $session, false);	
+	$files = find_files($row, $session, false,$type);	
 
 
 	echo "<td><table><tr>\n";
 	
-	if( (count($files["marmotte"]) == 0) && (count($files["evaluation"]) == 0))
+	if(count($files)== 0)
 	  echo "<td></td>\n";
 	else
 	{
-//		ksort($files);
 		$i = -1;
-//	echo "<td><table><tr>";
 		echo "<td><table>\n";
 		echo '<tr><td style="padding-right: 10px">';
 
-		$nb = intval((count($files["marmotte"]) + count($files["evaluation"]) + 2)/ 3);
+		$nb = intval((count($files) + 2)/ 3);
 
-/*		foreach($dsifiles as )
-		{
-			if($i % $nb	 == $n
-b - 1 )
-				echo '</td></tr><tr><td style="padding-right: 10px">';
-			echo '<a  target="_blank" href="export.php?dsi=&amp;action=get_file&amp;filename='.urlencode($path).'&amp;path='.urlencode($label).'">'.$label."</a><br/>\n";
-			$i++;
-		}
-	*/	
-		global  $dossier_stockage_dsi;
 		//		echo "dossier_stockage_dsi : '".$dossier_stockage_dsi."'<br/>";
-		foreach($files["evaluation"] as $label => $path)
+		foreach($files as $label => $path)
 		{
-		  	if($i % $nb	 == $nb - 1 )
-				echo '</td></tr><tr><td style="padding-right: 10px">';
 			echo '<a  target="_blank" href="export.php?evaluation=&amp;';
 			echo 'action=get_file&amp;path=';
-			echo urlencode($dossier_stockage_dsi."/".$path);
+			echo urlencode($path);
 			echo '&amp;filename='.urlencode($label).'">'.$label."</a><br/>\n";
-			$i++;
-		}
-		foreach($files["marmotte"] as $label => $path)
-		{
-			if($i % $nb	 == $nb - 1 )
-				echo '</td></tr><tr><td style="padding-right: 10px">';
-			echo '<a  target="_blank" href="export.php?action=get_file&amp;path=';
-			echo urlencode($path).'&amp;filename='.urlencode($label).'">'.$label."</a><br/>\n";
 			$i++;
 		}
 		echo '</td></tr>';
 		echo "</table>\n";
 		echo "</td><td>";
 
-		foreach($files["marmotte"] as $label => $file)
-			if(strcontains($file,"id.jpg"))//, $needle) is_picture($file))
-			echo '<img class="photoid" src="'.$file.'" alt="'.$file.'" />';
+		foreach($files as $label => $file)
+			if(strcontains($file,"id.jpg"))
+			  echo '<img class="photoid" src="'.$file.'" alt="'.$file.'" />';
 		echo "</td>";
 				}
 				echo "</tr>";
@@ -432,7 +410,7 @@ b - 1 )
 		}
 
 		
-		if(isSecretaire() && (count($files["marmotte"]) > 0))
+		if(isSecretaire() && (count($files) > 0))
 		{
 			echo "<tr><td>";
 						
@@ -457,37 +435,6 @@ b - 1 )
 <?php 
 echo "</td></tr>";
 
-		}
-		else
-		{
-			
-			$pictures = array();
-			if(isset($files["marmotte"]))
-			  {
-			foreach($files["marmotte"] as $date => $file)
-			  if(strcontains($file,"id.jpg"))
-				$pictures[] = $file;
-			  }
-
-			if(count($pictures)  > 0  )
-			{
-			echo "<tr><td>";
-				?>
-	<table><tr><td>
-	<input type="hidden" name="type"
-	value="candidatefile" />
-	<select name="deletedfile">
-	<?php
-	foreach($pictures as $file)
-		echo  "<option value=\"".$dir."\" >".$file."</option>\n";
-	?>
-</select>
-</td></tr>
-</table>
-<?php 
-echo "</td></tr>";
-
-			}
 		}
 		echo "</table></td>\n";
 }

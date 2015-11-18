@@ -56,6 +56,7 @@ function displayEditableCandidate($candidate,$report = NULL,$canedit = true)
 		$candidate->type = $report->type;
 		$candidate->statut = $report->statut;
 		$candidate->id = $report->id;
+		$candidate->concours = $report->concours;
 
 		if(isset($report->id_session))
 			$session = $report->id_session;
@@ -202,7 +203,13 @@ function displayEditableField($row, $fieldId, $canedit, $session, $extra_object 
 					break;
 					*/
 				case "files":
-					display_fichiers($row, $fieldId, $session, !$editable);
+				  display_fichiers($row, $fieldId, $session, !$editable,"marmotte");
+					break;
+				case "files_celcc":
+				  display_fichiers($row, $fieldId, $session, true,"celcc");
+					break;
+				case "files_evaluation":
+				  display_fichiers($row, $fieldId, $session, true,"e-valuation");
 					break;
 				case "rapports":
 					display_rapports($row, $fieldId);

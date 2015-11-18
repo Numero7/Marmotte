@@ -347,9 +347,9 @@ $fieldsIndividualAll = array(
 		"theme3" => "Mot-clé 3",
 		"audition" => "Rapport d'audition",
 		"conflits" => "Conflits",
-		"fichiers"=> "Fichiers",
+		"fichiers"=> "Fichiers Marmotte",
 		"fichiers_evaluation"=> "Fichiers e-valuation",
-		"fichiers_celcc"=> "Dossier Candidat",
+		"fichiers_celcc"=> "Dossier candidat",
 		"birth" => "Date naissance",
 		"diploma" => "Date diplôme"
 );

@@ -22,14 +22,37 @@ function is_associated_directory_unit($unit, $directory)
 	return (isset($unit->unite) && $unit->unite != "" && strpos(norm_name($directory), norm_name($unit->unite) ) != false );
 }
 
-function find_files($row, $session, $create_directory_if_nexists = false)
+function find_celcc_files($row, $session)
 {
+  $concours = getConcours();
+  if(isset($concours[$row->concours]))
+      $grade = substr($concours[$row->concours]->intitule,0,2);
+     else
+       $grade = "";
+
+  if($row->concoursid=="")
+    return array();
+  $sql = "SELECT * FROM ".dsidbname.".".celcc_docs." ";
+  $sql .="WHERE user_id='".real_escape_string($row->concoursid)."' ";
+  $sql .= "AND (num_conc='' OR num_conc='".real_escape_string($row->concours)."') ";
+  $sql .= "AND (corps_grade='' OR corps_grade='".real_escape_string($grade)."') ";
+  $result = sql_request($sql);
   $files = array();
-	$dsifiles = array();
+		global  $dossier_stockage_dsi;
+
+  while($doc = mysqli_fetch_object($result))
+    {
+      $pretty_name = $doc->type_doc." ".$doc->num_conc." ".$doc->corps_grade." ".$doc->annee_conc." - ".$doc->nom_doc;
+      $files[$pretty_name]=$dossier_stockage_dsi."/".$doc->path_sas.$doc->nom_doc;
+    }  
+  return $files;
+}
+
+function find_evaluation_files($row, $session)
+{
 	global $typesRapportsAll;
-
-	$sql = "";
-
+	$dsifiles = array();
+	$sql= "";
 	if(isset($row->NUMSIRHUS) && ($row->NUMSIRHUS != ""))
 	  {
     	    $sql = "SELECT * FROM ".dsidbname.".".dsi_docs_liens_db." AS t1 ";
@@ -44,6 +67,7 @@ function find_files($row, $session, $create_directory_if_nexists = false)
 	  }
 	if($sql != "")
 	  {
+	    global $dossier_stockage_dsi;
 	    $result = sql_request($sql);
 	    global $typesdocs;
 	    while($roww = mysqli_fetch_object($result))
@@ -54,14 +78,17 @@ function find_files($row, $session, $create_directory_if_nexists = false)
 		$label = isset($typesdocs[$code]) ? $typesdocs[$code] : ("Inconnu ".$code);
 		$sess = ($roww->session_doc == "NULL") ? "" : $roww->session_doc;
 		$label = $roww->annee_doc." - " . $sess. " - " . $label. " - ". $roww->nom_document;
-		$dsifiles[$label] =  $roww->path_sas."/".$roww->nom_document;
+		$dsifiles[$label] =  $dossier_stockage_dsi."/".$roww->path_sas."/".$roww->nom_document;
 	      }	
-	  }
 		ksort($dsifiles);
-	
-	$files["evaluation"] = $dsifiles;
-	$files["marmotte"] = array();
+		return $dsifiles;
+	  }
+}
 
+function find_marmotte_files($row, $session, $create_directory_if_nexists = false)
+{
+    global $typesRapportsAll;
+    $files = array();
 	$marmotte_files = array();
 	$dir = "";
 	if(  is_rapport_unite($row) )
@@ -85,10 +112,20 @@ function find_files($row, $session, $create_directory_if_nexists = false)
 		$arr2 = array("","");
 		$prettyfile = str_replace($arr, $arr2, $prettyfile);
 	}
-	$files["marmotte"][$prettyfile] = $dir."/".$file;
+	$files[$prettyfile] = $dir."/".$file;
 	}
-	
 	return $files;
+}
+
+function find_files($row, $session, $create_directory_if_nexists = false,$type)
+{
+	if($type == "e-valuation")
+	  return find_evaluation_files($row,$session);
+	else if($type == "marmotte")
+	  return find_marmotte_files($row,$session,$create_directory_if_nexists);
+	else if($type == "celcc")
+	  return find_celcc_files($row,$session);
+	return array();
 }
 
 function find_people_files($candidate, $force, $session, $create_directory_if_nexists = false, $directories = NULL)
