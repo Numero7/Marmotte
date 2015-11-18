@@ -211,8 +211,9 @@ function synchronizeConcours($year = "")
   if($changed > 0)
     $log .= $changed." avis marmotte ont été basculés à 'non classé'<br/>";
 
-  $sql = "UPDATE reports marmotte, ".dsidbname.".".celcc_statuts." dsi SET marmotte.avis='".avis_non_classe."', marmotte.statut_celcc='retrait candidature' ";
-  $sql .= "WHERE marmotte.avis='' AND dsi.num_conc=marmotte.concours AND dsi.user_id=marmotte.concoursid AND dsi.retrait_candidature!='non'"; 
+  $sql = "UPDATE reports marmotte, ".dsidbname.".".celcc_statuts." dsi ";
+  $sql .= "SET marmotte.avis='".avis_non_classe."', marmotte.statut_celcc='retrait candidature' ";
+  $sql .= "WHERE dsi.num_conc=marmotte.concours AND dsi.user_id=marmotte.concoursid AND dsi.retrait_candidature!='non'"; 
   sql_request($sql);
   global $dbh;
   $changed = mysqli_affected_rows($dbh);

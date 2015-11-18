@@ -1558,7 +1558,9 @@ $filtersConcours = array(
 							 "soumis à IE"=>"soumis à IE",
 							 "soumis à CS"=>"soumis à CS",
 							 "admis à concourir"=>"admis à concourir",
-							 "retrait candidature"=>"retrait candidature"
+							 "retrait candidature"=>"retrait candidature",
+							 "non-admissible"=>"non-admissible",
+							 "non-admis"=>"non-admis"
 ),
 
 'default_value' => "tous", 'default_name' => ""),
