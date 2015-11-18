@@ -33,7 +33,7 @@ function displayImport()
 
 function displaySecretaryImport()
 {
-	if(isSecretaire())
+  if(isSecretaire() && !is_current_session_concours())
 	{
 		?>
 
@@ -71,11 +71,15 @@ function displaySecretaryImport()
 					  $ttype = $_REQUEST["type"];
 					else
 					  $ttype = "";
+					global $typesRapportsConcours;
 					foreach($types as $type => $name)
+					  {
+					    if(isset($typesRapportsConcours[$type])) continue;
 					  if($type != $ttype)
 					    echo '<option value='.$type.'>'.$name.'</option><br/>'."\n";
 					  else
 					    echo '<option selected="selected" value='.$type.'>'.$name.'</option><br/>'."\n";
+					  }
 					?>
 			</select>
 			</td>
@@ -90,8 +94,11 @@ function displaySecretaryImport()
 
 </form>
 <hr />
-
-<h2>[Réservé SGCN] Import d'une liste de rapports</h2>
+<?php
+			    if(!is_current_session_concours())
+			      {
+?>
+<h2>[Réservé SGCN] Import de plusieurs rapports</h2>
 <p>Cette fonction maintenant réservée au SGCN disparaîtra prochainement
 	de Marmotte.</p>
 <form enctype="multipart/form-data" action="index.php" method="post">
@@ -132,6 +139,7 @@ function displaySecretaryImport()
 
 </form>
 <?php 
+			      }
 	}
 }
 

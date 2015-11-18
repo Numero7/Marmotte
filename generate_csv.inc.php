@@ -22,7 +22,7 @@ function compileFieldAsTxt($row,$field,$value)
 	  }
 	else
 	  {
-	    return "<B>".$title."</B>:".html_entity_decode($value)."<br/>";
+	    return "<p><B>".$title."</B>:".html_entity_decode($value)."</p>";
 	  }
 }
 
@@ -37,6 +37,8 @@ function compileObjectsAsTXT($rows)
 
 	$first = true;
 	$result .= "<head> <meta charset=\"UTF-8\"> </head><br/>";
+	$result .= "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />";
+
 	/*
 	$result .= "****************************************************\n";
 	$result .= "Pour un bon affichage des accents:  sélectionner 'UTF-8' n";

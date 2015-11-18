@@ -404,6 +404,9 @@ function displayStatutMenu()
 				</form>
 			</td>
 		</tr>
+							    <?php if(!is_current_session_concours())
+							    {
+?>
 		<tr>
 			<td>
 				<form onsubmit="return confirm('Supprimer ces rapports?');"
@@ -414,6 +417,7 @@ function displayStatutMenu()
 			</td>
 		</tr>
 		<?php
+    }
 		if(is_current_session_concours())
 		{
 		?> 
@@ -435,6 +439,41 @@ function displayStatutMenu()
 </td>
 <?php 
 }
+
+function displayActionsMenu($row, $excludedaction = "", $actions)
+{
+	$id = $row->id;
+	$id_origine = $row->id_origine;
+	echo "<table><tr>";
+	foreach($actions as $action => $actiondata)
+	{
+		if ($action!=$excludedaction)
+		{
+			$title = $actiondata['title'];
+			$icon = $actiondata['icon'];
+			$page = $actiondata['page'];
+			$level = $actiondata['level'];
+			if(getUserPermissionLevel() >= $level )
+			{
+			  if(isset($actiondata['warning']))
+			    {
+			      echo "<td>\n<a ";
+			      echo " href=\"$page?action=$action&amp;id=$id&amp;id_origine=$id_origine\"";
+			      echo " onclick=\"return confirm('".$actiondata['warning']."')\" ";
+			      echo ">\n";
+			    }
+			  else
+			    {
+				echo "<td>\n<a href=\"$page?action=$action&amp;id=$id&amp;id_origine=$id_origine\">\n";
+			    }
+				echo "<img class=\"icon\" width=\"24\" height=\"24\" src=\"$icon\" alt=\"$title\"/>\n</a>\n</td>\n";
+			}
+		}
+	}
+	echo "</tr></table>";
+}
+
+
 
 function displayRows($rows, $fields, $filters, $filter_values)
 {
@@ -505,7 +544,7 @@ if($bur)
 		  displayRowCell($row, $fieldID);
 ?>
 		<td>
-		<?php displayActionsMenu($row,"", $actions2); ?>
+		   <?php if(!is_current_session_concours()) displayActionsMenu($row,"", $actions2); ?>
 		</td>
 	</tr>
 	<?php 

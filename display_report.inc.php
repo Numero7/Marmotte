@@ -55,6 +55,7 @@ function displayEditableCandidate($candidate,$report = NULL,$canedit = true)
 		$candidate->rapporteur3 = $report->rapporteur3;
 		$candidate->type = $report->type;
 		$candidate->statut = $report->statut;
+		$candidate->id = $report->id;
 
 		if(isset($report->id_session))
 			$session = $report->id_session;
@@ -96,6 +97,7 @@ function displayEditableChercheur($chercheur,$report = NULL, $canedit = true)
 		$chercheur->rapporteur3 = isset($report->rapporteur3) ? $report->rapporteur3 : "";
 		$chercheur->type = isset($report->type) ? $report->type : "";
 		$chercheur->statut = isset($report->statut) ? $report->statut : "";
+		$chercheur->id = $report->id;
 		if(isset($report->id_session))
 			$session = $report->id_session;
 
@@ -667,30 +669,6 @@ function viewReport($id_rapport)
 	}
 
 };
-
-function displayActionsMenu($row, $excludedaction = "", $actions)
-{
-	$id = $row->id;
-	$id_origine = $row->id_origine;
-	echo "<table><tr>";
-	foreach($actions as $action => $actiondata)
-	{
-		if ($action!=$excludedaction)
-		{
-			$title = $actiondata['title'];
-			$icon = $actiondata['icon'];
-			$page = $actiondata['page'];
-			$level = $actiondata['level'];
-			if(getUserPermissionLevel() >= $level )
-			{
-
-				echo "<td>\n<a href=\"$page?action=$action&amp;id=$id&amp;id_origine=$id_origine\">\n";
-				echo "<img class=\"icon\" width=\"24\" height=\"24\" src=\"$icon\" alt=\"$title\"/>\n</a>\n</td>\n";
-			}
-		}
-	}
-	echo "</tr></table>";
-}
 
 
 
