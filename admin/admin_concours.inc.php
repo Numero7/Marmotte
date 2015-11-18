@@ -39,7 +39,16 @@
 	<input type="hidden" name="admin_concours"></input>
 	<table>
 		<tr>
-			<td>code <input name="code" value="06/01"></input>
+			<td>
+<select name="code">
+<?php
+	foreach($concours as $conc)
+	{
+	  echo "<option value=\"".htmlentities($conc->code)."\">".$conc->code."</option>\n";
+	}
+
+?>
+</select>
 			</td>
 			<td>niveau <select name="niveau">
 					<option value="CR">CR</option>
