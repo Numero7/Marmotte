@@ -347,11 +347,11 @@ $fieldsIndividualAll = array(
 		"theme3" => "Mot-clé 3",
 		"audition" => "Rapport d'audition",
 		"conflits" => "Conflits",
-		"fichiers"=> "Fichiers Marmotte",
+		"fichiers"=> "Fichiers Prérapports",
 		"fichiers_evaluation"=> "Fichiers e-valuation",
 		"fichiers_celcc"=> "Dossier candidat",
 		"birth" => "Date naissance",
-		"diploma" => "Date diplôme"
+		"diploma" => "Data diplôme"
 );
 
 $fieldsIndividualDB = array(
@@ -369,7 +369,7 @@ $fieldsIndividualDB = array(
 		"audition" => "Rapport d'audition",
 		"conflits" => "Conflits",
 		"birth" => "Date naissance",
-		"diploma" => "Diplôme"
+		"diploma" => "Date diplôme"
 );
 
 
@@ -411,8 +411,8 @@ for($i = 0; $i <= 30; $i++)
 $fieldsAll = array_merge($fieldsRapportAll, $fieldsIndividualAll, array("rapports" => "Autres rapports"));
 
 $fieldsCandidatAvantAudition = array(
-		array("nom","prenom"),
-		array("diploma","birth"),
+	     array("nom","prenom"),
+	     array("diploma","birth"),
 		array("infos_celcc","conflits"),
 		"fichiers_celcc",
 		"fichiers",

@@ -17,8 +17,16 @@ if($id == "" && !isSuperUser())
 }
 if(!check_current_session_exists() && !isSuperUser())
 {
-	echo "<p>La session courante intitulée '".$id."' n'existe pas dans la base de données<br/>";
-	echo "<p>Veuillez créer une session intitulée '".$id."' ou changer de session courante</p>";
+  $sessions = showSessions();
+  if(count($sessions) == 0)
+      throw new Exception("Aucune session courante n'est configurée, veuillez demander au secrétaire de créer une session via le menu Admin/Sessions");
+  else
+    foreach($sessions as $sid => $data)
+      {
+	set_current_session_id($sid);
+      }
+  //	echo "<p>La session courante intitulée '".$id."' n'existe pas dans la base de données<br/>";
+  //	echo "<p>Veuillez créer une session intitulée '".$id."' ou changer de session courante</p>";
 }
 
 ?>

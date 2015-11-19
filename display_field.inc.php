@@ -424,7 +424,7 @@ function display_fichiers($row, $fieldID, $session, $readonly, $type)
 	<table><tr><td>
 <select name="deletedfile">
 	<?php
-	foreach($files["marmotte"] as $label => $path)
+	foreach($files as $label => $path)
 	{
 		echo  "<option value=\"".$path."\" >".$label."</option>\n";
 	}
