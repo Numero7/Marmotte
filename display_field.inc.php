@@ -273,6 +273,8 @@ function display_rapports($row, $fieldId)
 {
 	$is_unit= is_rapport_unite($row);
 	
+	$conc = is_current_session_concours();
+
 	if($is_unit)
 		$reports = isset($row->unite) ? find_unit_reports($row->unite) : array();
 	else
@@ -291,10 +293,12 @@ function display_rapports($row, $fieldId)
 					$type = $typesRapportsAll[$report->type];
 				else
 					$type = "Unknown";
-				if($type == REPORT_CANDIDATURE && isset($report->concours) )
+				if($conc && $report->type != REPORT_CANDIDATURE)
+				  continue;
+				if($report->type == REPORT_CANDIDATURE)
 				  $reports[$i]->label =
-				    $report->id_session. " - " .$type." - " . $report->concours;
-				else if( is_equivalence_type($type) )
+				    $report->id_session. " - " .$report->concours;				
+				else if( is_equivalence_type($report) )
 				  $reports[$i]->label =
 				    $report->id_session. " - " .$type." - " . $report->grade_rapport;
 				else  if(is_rapport_unite($report))

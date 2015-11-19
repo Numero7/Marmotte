@@ -415,7 +415,7 @@ $fieldsCandidatAvantAudition = array(
 	     array("diploma","birth"),
 		array("infos_celcc","conflits"),
 		"fichiers_celcc",
-		"fichiers",
+	     //		"fichiers",
 		"rapports",
 		"labo1",
 		"labo2",
