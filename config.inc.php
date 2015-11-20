@@ -351,7 +351,7 @@ $fieldsIndividualAll = array(
 		"fichiers_evaluation"=> "Fichiers e-valuation",
 		"fichiers_celcc"=> "Dossier candidat",
 		"birth" => "Date naissance",
-		"diploma" => "Data diplôme"
+		"diploma" => "Date diplôme"
 );
 
 $fieldsIndividualDB = array(
