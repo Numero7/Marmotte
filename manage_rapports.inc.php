@@ -845,13 +845,16 @@ function change_statuts($new_statut)
 		echo "Impossible de changer le statut du rapport ".$row->DKEY." qui est déjà publié.<br/>";
 		continue;
 	      }
-	    if($row->statut == "avistransmis" && !isACN())
+	    if($row->statut == "avistransmis" && !isACN() && $new_statut != "publie" && $new_statut != "validation")
 	      {
 		echo "Impossible de changer le statut du rapport ".$row->DKEY." dont l'avis est déjà transmis, car vous n'êtes pas ACN.<br/>";
 		continue;
 	      }
 	    if($row->statut == "validation" && !isSecretaire())
+	      {
+		echo "Impossible de changer le statut du rapport ".$row->DKEY." qui est en mode 'validation', car vous n'êtes pas secrétaire.<br/>";
 	      continue;	    
+	      }
 	    if($row->statut == "validation" && !isPresident() && !isACN() && !get_option("sec_can_edit_valid"))
 	      {
 		echo "Impossible de changer le statut du rapport ".$row->DKEY." qui est en mode 'validation', car vous n'êtes pas président.<br/>";

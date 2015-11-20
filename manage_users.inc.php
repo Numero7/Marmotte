@@ -436,7 +436,7 @@ function changePwd($login,$old,$new1,$new2, $envoiparemail)
 					break;
 				}
 			}
-			email_handler($users[$login]->email,"Votre compte Marmotte",$body,$cc);
+			email_handler($users[$login]->email,"Votre compte Marmotte",$body,$cc,email_sgcn);
 		}
 		return true;
 	}
@@ -598,18 +598,18 @@ function createUser(
 				$body .= "\r\nLors de votre première connexion vous pourrez changer votre mot de passe.\r\n";
 				$body .= "\r\n\r\n\t Amicalement, ".get_config("webmaster_nom").".";
 
-				$cc = "";
+				$cc = email_sgcn;
 				$currLogin = getLogin();
 				$users = listUsers();
 				foreach($users as $user)
 				{
 					if($user->login == $currLogin && $currLogin != $login)
 					{
-						$cc = $user->email;
+						$cc .= ";".$user->email;
 						break;
 					}
 				}
-				email_handler($email,"Votre compte Marmotte",$body,$cc);
+				email_handler($email,"Votre compte Marmotte",$body,$cc,email_sgcn);
 			}
 		}
 		unset($_SESSION['all_users']);
@@ -713,7 +713,7 @@ function mergeUsers($old_login, $new_login,$email = true)
   $body .= "Bien cordialement,\r\n\t ".get_config("webmaster_nom")."\r\n";
 try
   {
-    email_handler($recipient,$subject,$body,email_admin,email_sgcn);
+    email_handler($recipient,$subject,$body,email_sgcn,email_sgcn);
   }
 catch(Exception $e)
   {
