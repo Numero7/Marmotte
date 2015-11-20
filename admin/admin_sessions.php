@@ -93,6 +93,7 @@ else
 		foreach($sessions as $session)
 		  {
 			$id = $session["id"];
+			if(strpos($id,"Concours")===FALSE)
 			echo "<option value=\"$id\">".$id."</option>";
 		}
 		?>
@@ -115,11 +116,14 @@ else
 		foreach($sessions as $session)
 		  {
 			$id = $session["id"];
-			echo "<option value=\"$id\">".$id."</option>";
+			if(strpos($id,"Concours")===FALSE)
+			  echo "<option value=\"$id\">".$id."</option>";
 		}
 		?>
     </select>
 						<input type="hidden" name="action" value="admindeletesession" />
-												<input type="checkbox" name="supprimerdossiers" 
+					<input type="checkbox" name="supprimerdossiers" 
 									style="width: 10px;" /> Supprimer définitivement les dossiers et rapports
+</input>
+						<input type="submit" value="Supprimer la session" />
 			</form>
