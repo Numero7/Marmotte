@@ -284,7 +284,7 @@ function voir_rapport_pdf($row)
 {
 	$eval_type = $row->type;
 
-	if($eval_type  == REPORT_CANDIDATURE && is_auditionne($row))
+	if($eval_type  == REPORT_CANDIDATURE)
 	{
 	  if(is_auditionne($row))
 	    {

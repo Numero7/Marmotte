@@ -19,12 +19,13 @@ function normalizeCandidat($data)
 
 function is_classe($report)
 {
-	return is_numeric($report->avis);
+  return $report->avis != "" && $report->avis[0] == 'c';
 }
 
 function is_auditionne($report)
 {
-	return is_classe($report) || $report->avis=="oral" || $report->avis=="nonclasse";
+  global $avis_lettre;
+  return is_classe($report) || $report->avis==avis_oral || $report->avis==avis_non_classe || isset($avis_lettre[$report->avis]);
 }
 
 function needs_audition_report($report)

@@ -59,6 +59,9 @@ function viewReportAsPdf($id_rapport,$option = "")
 	$nodes =$doc->getElementsByTagName("rapport");
 	if($nodes)
 	{
+	  if($type == "Audition")
+		$filename = filename_from_doc(getReport($id_rapport))." - audition.pdf";
+	  else
 		$filename = filename_from_doc(getReport($id_rapport)).".pdf";
 		$pdf->Output($filename, 'D');
 	}
