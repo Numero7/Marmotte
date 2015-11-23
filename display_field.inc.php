@@ -403,8 +403,9 @@ function display_fichiers($row, $fieldID, $session, $readonly, $type)
 	type="file" />
 			<input
 	type="submit" name="ajoutfichier" value="Ajouter fichier" />
-				<input
+<!--				<input
 	type="submit" name="ajoutphoto" value="Ajouter photo" />
+-->
 			</td></tr><tr><td>
 <input type="hidden" name="type"
 	value="candidatefile" />
@@ -414,7 +415,7 @@ function display_fichiers($row, $fieldID, $session, $readonly, $type)
 		}
 
 		
-		if(isSecretaire() && (count($files) > 0))
+		if(!$readonly && isSecretaire() && (count($files) > 0))
 		{
 			echo "<tr><td>";
 						
