@@ -840,9 +840,14 @@ function change_statuts($new_statut)
 
 	foreach($rows as $row)
 	  {
-	    if($row->statut == "publie")
+	    if($row->statut == "publie" && !isACN())
 	      {
 		echo "Impossible de changer le statut du rapport ".$row->DKEY." qui est déjà publié.<br/>";
+		continue;
+	      }
+	    if($new_statut == "publie" && (isACN() || !isSecretaire()))
+	      {
+		echo "Seuls le secrétaire et le président peuvent publier le rapport ".$row->DKEY.".<br/>";
 		continue;
 	      }
 	    if($row->statut == "avistransmis" && !isACN() && $new_statut != "publie" && $new_statut != "validation")
