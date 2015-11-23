@@ -98,8 +98,12 @@ uasort($users,"cmp");
 
 		      $colleges = array("","A1","A2","B1","B2","C");
 		      
+		      if(!isSuperUser())
+			{
 		      echo "<td>".$data->college."</td>";
-		      /*<select name=\"college\">\n";
+		      }
+		      else {
+		      echo "<td><select name=\"college\">\n";
 			foreach($colleges as $val)
 			{
 				$sel = "";
@@ -107,9 +111,9 @@ uasort($users,"cmp");
 					$sel = " selected=\"selected\"";
 				echo "<option value=\"$val\"$sel>".$val."</option>\n";
 			}
-			echo "</select>";
-		      */
-		      echo "<td>";
+			echo "</select></td>";
+			}
+		         echo "<td>";
 			if(!isSuperUser() && is_current_session_concours())
 			{
 				$concours_ouverts = getConcours();
