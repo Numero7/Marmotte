@@ -14,22 +14,25 @@ function synchronizeConcours($year = "")
   /*liste des sesessions */
   $sessions = array();
 
-  $sql = "SELECT * FROM ".sessions_db." WHERE id=\"Concours".$year."\"";
+  $sql = "SELECT * FROM ".sessions_db." WHERE id LIKE \"%Concours%\"";
   $result = sql_request($sql);
   while($row = mysqli_fetch_object($result))
       $sessions[] = $row->section;
 
   /*************** AJOUT DES CONCOURS ***********************************/
-  $sql = "SELECT * FROM ".dsidbname.".".celcc_concours." WHERE annee=\"".$year."\"";
+  $sql = "SELECT * FROM ".dsidbname.".".celcc_concours." WHERE 1";
   $result = sql_request($sql);
   while($row = mysqli_fetch_object($result))
     {
+      /* special hack for formations */
+      if($row->annee == "2015") $row->annee = "2016";
+      $year=$row->annee;
       $dsi_concours[$row->n_public] = $row;
       $section = ltrim($row->numsect_conc,'0');
       if(!in_array($section,$sessions))
 	{
 	  $log .= "Création de la session de concours ".$year." pour la section ".$section."<br/>";
-	  createSession("Concours",$year, $section);
+	  createSession("Concours",$row->annee, $section);
 	  $sessions[] = $section;
 	}
     }
