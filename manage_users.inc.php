@@ -92,7 +92,7 @@ function get_bureau_stats()
 		$fields = array("rapporteur","rapporteur2","rapporteur3");
 
 		$sql = "SELECT * FROM reports WHERE section=\"".currentSection()."\" AND id_session=\"".current_session();
-		$sql .="\" AND type=\"Candidature\" AND id=id_origine AND statut!=\"supprime\"";
+		$sql .="\" AND type=\"".REPORT_CANDIDATURE."\" AND id=id_origine AND statut!=\"supprime\"";
 		$result= sql_request($sql);
 
 		$iid_seen = array();
@@ -103,9 +103,9 @@ function get_bureau_stats()
 				$pref = substr($concours[$row->concours]->intitule,0,2);
 			else
 				$pref = $row->concours;
-			$iid = $row->nom.$row->prenom;
+			$iid = $row->concoursid;
 
-			if($row->avis == "nonauditionne")
+			if($row->avis == avis_nonauditionne)
 				continue;
 
 			foreach($fields as $field)
@@ -130,7 +130,10 @@ function get_bureau_stats()
 			$already_seen = isset($iid_seen[$iid]);
 			$iid_seen[$iid] = true;
 
-			if(!$already_seen && isset($sousjurys[$row->rapporteur][$row->concours]) && ($row->avis == "oral" ||  $row->avis == "nonclasse" || is_numeric($row->avis)))
+			if(
+			   !$already_seen 
+			   && isset($sousjurys[$row->rapporteur][$row->concours]) 
+			   && (is_auditionne($row)))
 			{
 				$sj = $sousjurys[$row->rapporteur][$row->concours];
 				$key = "Sousjury ".$sj;

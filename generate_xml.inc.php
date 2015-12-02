@@ -282,12 +282,8 @@ function createXMLReportElem($row, DOMDocument $doc, $keep_br = true)
 		global $tous_sous_jury;
 		$concours = $row->concours;
 		$sousjury = $row->sousjury;
-		if(isset($row->signataire) && $row->signataire != "")
-		  {
-			appendLeaf("signataire",$row->signataire, $doc, $rapportElem);
-			appendLeaf("signature", "", $doc, $rapportElem);
-		  }
-		else if(isset($tous_sous_jury[$concours]) &&  isset($tous_sous_jury[$concours][$sousjury]))
+
+		if(isset($tous_sous_jury[$concours]) &&  isset($tous_sous_jury[$concours][$sousjury]))
 		{
 
 			$users = listUsers();

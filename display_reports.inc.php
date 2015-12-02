@@ -159,6 +159,7 @@ function displayStatsConcours()
 					<?php
 					foreach($data as $login => $data_rapporteur)
 					{
+						  echo ".";
 						$nom= isset($rapporteurs[$login])? $rapporteurs[$login] : $login;
 						echo "<tr ><td>".$nom."</td>";
 						$total = 0;
@@ -424,9 +425,9 @@ function displayStatutMenu()
 		<tr>
 			<td>
 				<form method="post" action="index.php"
-					onsubmit="return confirm('Affecter les sous-jurys?');">
+					onsubmit="return confirm('Affecter les sections de jury?');">
 					<input type="hidden" name="action" value="affectersousjurys2" /> <input
-						type="submit" value="Affecter sous-jurys" /> <input type="hidden"
+						type="submit" value="Affecter sections de jurys" /> <input type="hidden"
 						name="admin_concours"></input>
 				</form>
 			</td>
