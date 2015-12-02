@@ -119,6 +119,9 @@ uasort($users,"cmp");
 				$concours_ouverts = getConcours();
 				foreach($concours_ouverts as $code => $concours)
 				{
+				  if(!in_array($user,$concours->jures))
+				    continue;
+
 					if($concours->sousjury1 != "")
 					{
 						echo "$concours->intitule <select name=\"sousjury".$code."\">\n";

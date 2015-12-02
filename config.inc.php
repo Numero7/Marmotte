@@ -1460,6 +1460,31 @@ $sql .= ";";
 
 $query = mysqli_query($dbh, $sql) or die("Failed to execute concours query ".$sql.":".mysqli_error($dbh));
 
+$permission_levels = array(
+		NIVEAU_PERMISSION_BASE => "rapporteur",
+		NIVEAU_PERMISSION_BUREAU => "bureau",
+		NIVEAU_PERMISSION_ACN => "ACN",
+		NIVEAU_PERMISSION_SECRETAIRE => "secrétaire",
+		NIVEAU_PERMISSION_PRESIDENT => "président(e)",
+		NIVEAU_PERMISSION_SUPER_UTILISATEUR => "admin"
+);
+
+
+/* Computation of concours I am alloed to see (should be optimized */
+if(!isset($_SESSION["myconc"]))
+  {
+  $sql = "SELECT numconc FROM ".dsidbname.".".dsi_rapp_conc." WHERE emailpro=\"".$_SESSION["login"]."\"";
+  $_SESSION["myconc"] =array();
+  $result = sql_request($sql);
+  while ($row = mysqli_fetch_object($result))
+    $_SESSION["myconc"][$row->numconc] = $row->numconc;
+  
+  $_SESSION["conc_section"]  = array();
+
+  }
+
+    $my_conc = $_SESSION["myconc"];
+
 $concours_ouverts = array();
 $postes_ouverts = array();
 $tous_sous_jury = array();
@@ -1468,7 +1493,13 @@ $tous_sous_jury = array();
 
 while($result = mysqli_fetch_object($query))
 {
+
 	$code = $result->code;
+  if($_SESSION['permission_mask'] >= NIVEAU_PERMISSION_SECRETAIRE)
+     $my_conc[$code] = $code;
+  else if(!isset($my_conc[$code]))
+	  continue;
+
 	$concours_ouverts[$code] = $result->grade_conc." ".$result->n_public." ".$result->intitule;
 	$postes_ouverts[$code] = $result->nb_prop;
 	$tous_sous_jury[$code] = array();
@@ -1484,14 +1515,7 @@ while($result = mysqli_fetch_object($query))
 	}
 }
 
-$permission_levels = array(
-		NIVEAU_PERMISSION_BASE => "rapporteur",
-		NIVEAU_PERMISSION_BUREAU => "bureau",
-		NIVEAU_PERMISSION_ACN => "ACN",
-		NIVEAU_PERMISSION_SECRETAIRE => "secrétaire",
-		NIVEAU_PERMISSION_PRESIDENT => "président(e)",
-		NIVEAU_PERMISSION_SUPER_UTILISATEUR => "admin"
-);
+
 
 /* initializes topics */
 $topics = get_topics();

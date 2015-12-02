@@ -55,6 +55,24 @@ function getSousJuryMap()
 	return $user;
 }
 
+function myConcours()
+{
+  $sql = "SELECT numconc FROM ".dsidbname.".".dsi_rapp_conc." WHERE emailpro=\"".$_SESSION["login"]."\"";
+  $myc =array();
+  $result = sql_request($sql);
+  while ($row = mysqli_fetch_object($result))
+    $mys[$row->numconc] = $row->numconc;
+
+  if(isSecretaire())
+    {
+      $sql = "SELECT code FROM ".marmottedbname.".".concours_db." ";
+      $sql .= "WHERE section='".real_escape_string(currentSection()). "' and session='".real_escape_string(current_session_id())."'";
+      while ($row = mysqli_fetch_object($result))
+	$mys[$row->code] = $row->code;
+    }
+  return $mys;
+}
+
 function getConcours()
 {
 	{
@@ -64,12 +82,20 @@ function getConcours()
 	$sql .= ";";
 	$result = sql_request($sql);
 
+	global $my_conc;
 	while ($row = mysqli_fetch_object($result))
 	  {
+	    if(!isset($my_conc[$row->code]))
+	      continue;
 	    $row->postes = $row->nb_prop;
 	    $row->grade=$row->grade_conc;
 	    $row->intitule = $row->grade_conc." ".$row->code." ".$row->intitule;
+	    $row->jures = array();
 		$concours[ $row->code ] = $row;
+		$sql = "SELECT * FROM ".dsidbname.".".dsi_rapp_conc." WHERE numconc=\"".$row->code."\"";
+		  $result2 = sql_request($sql);
+		while($row2 = mysqli_fetch_object($result2))
+		  $row->jures[] = $row2->emailpro;
 	  }
 	
 

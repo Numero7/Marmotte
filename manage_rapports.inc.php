@@ -200,8 +200,14 @@ function filterSortReports($filters, $filter_values = array(), $sorting_value = 
 	$rows = array();
 	//echo $sql."<br/>".count($rows)." rows ".mysqli_num_rows($result)." sqlrows<br/>";
 
+	global $my_conc;
 	while ($row = mysqli_fetch_object($result))
 	{
+	  /*dirty rule to skip reports that I am not allowed to see */
+	  if($row->concours!="" && !isset($my_conc[$row->concours]))
+	    {
+	    continue;
+	    }
 		$row->id = $row->report_id;
 		$rows[] = $row;
 	}
@@ -899,7 +905,7 @@ function change_report_property($id_origine, $property_name, $newvalue)
 {
   if(substr($property_name,0,10) == "rapporteur")
     {
-      $emails = emailsACN();
+      $emails = is_current_session_concours() ? array(get_config("email_scc")) :  emailsACN();
       $sql = "SELECT * FROM reports WHERE id='".$id_origine."';";
       $res = sql_request($sql);
       while($rap = mysqli_fetch_object($res))
@@ -914,6 +920,7 @@ function change_report_property($id_origine, $property_name, $newvalue)
 		$content .= "Nouveau rapporteur:  ".$newvalue."r\n";
 
 	      foreach($emails as $email)
+		if($email != "")
 		email_handler($email,$subject,$content,email_sgcn,email_admin);		
 	      }
 	}
@@ -1117,6 +1124,11 @@ function is_in_conflict_efficient($row, $login)
 
 function is_field_editable($row, $fieldId)
 {
+  global $my_conc;
+ 
+ if(($row->concours != "") && !isset($my_conc[$row->concours]))
+    return false;
+
 	$statut = isset($row->statut) ? $row->statut : "rapport";
 	$eval_type = isset($row->type) ? $row->type : "";
 	global $typesRapportToFields;
@@ -1302,6 +1314,10 @@ function is_field_editable($row, $fieldId)
 
 function is_field_visible($row, $fieldId)
 {
+  global $my_conc;
+ if(($row->concours != "") && !isset($my_conc[$row->concours]))
+    return false;
+
 	global $typesRapportToFields;
 	global $alwaysVisibleFieldsTypes;
 
