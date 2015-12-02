@@ -1454,23 +1454,23 @@ $typeImports = array(
 );
 
 global $dbh;
-$sql = "SELECT * FROM `".concours_db."` WHERE";
-$sql .= " `section`='". real_escape_string($_SESSION['filter_section'])."'";
-$sql .= " AND `session`='". real_escape_string( $_SESSION['filter_id_session'] )."'";
+$sql = "SELECT * FROM ".marmottedbname.".".concours_db." conc JOIN ".dsidbname.".".dsi_GOC." goc ON conc.code=goc.n_public ";
+$sql .= " WHERE conc.section='".real_escape_string($_SESSION['filter_section']). "' and conc.session='".real_escape_string($_SESSION['filter_id_session'])."'";
+$sql .= ";";
+
 $query = mysqli_query($dbh, $sql) or die("Failed to execute concours query ".$sql.":".mysqli_error($dbh));
 
 $concours_ouverts = array();
 $postes_ouverts = array();
 $tous_sous_jury = array();
 
-
-/* Ugly hack translated from former xml configuration system ... */
+/* Ugly hack translated from former xml configuration system ... */
 
 while($result = mysqli_fetch_object($query))
 {
 	$code = $result->code;
-	$concours_ouverts[$code] = $result->intitule;
-	$postes_ouverts[$code] = $result->postes;
+	$concours_ouverts[$code] = $result->grade_conc." ".$result->n_public." ".$result->intitule;
+	$postes_ouverts[$code] = $result->nb_prop;
 	$tous_sous_jury[$code] = array();
 	for($i = 1 ; $i <= 4; $i++)
 	{

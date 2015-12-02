@@ -96,14 +96,17 @@ if (authenticate())
 									echo "<script>window.location = 'create_reports.php?zip_files=oui'</script>";
 								break;
 							case "csvbureau":
-								export_current_selection_as_single_csv("attribution_rapporteurs");
+								export_current_selection_as_single_xls("attribution_rapporteurs");
 								break;
 							case "releveconclusions":
-								export_current_selection_as_single_csv("releveconclusions");
+								export_current_selection_as_single_xls("releveconclusions");
 								break;
 							case "csvsingle":
 								export_current_selection_as_single_csv();
 								break;
+						case "sousjurys":
+						  export_sous_jurys();
+						  break;
 							case "xlssingle":
 								export_current_selection_as_single_xls();
 								break;

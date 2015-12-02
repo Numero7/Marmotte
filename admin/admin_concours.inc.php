@@ -2,16 +2,17 @@
 <hr />
 
 <h3>Liste des concours</h3>
-<table>
+<table class="stats">
 	<?php 
 	$concours = getConcours();
-	echo "<tr><th> Code </th><th> Intitule </th><th>Postes</th>";
+	echo "<tr><th> Code </th><th> Intitule </th><th>Postes</th><th>Institut</th><th>Intitule Complet";
 	echo "<th>SousJury1</th><th>President1</th><th>SousJury2</th><th>President2</th><th>SousJury3</th><th>President3</th><th>SousJury4</th><th>President4</th>";
 	echo "</tr>";
 	foreach($concours as $conc)
 	{
 		echo "<tr>";
-		echo "<td><b>".$conc->code . "</b></td><td>". $conc->intitule. "</td><td>".$conc->postes;
+		echo "<td><b>".$conc->code . "</b></td><td>". $conc->intitule. "</td><td>".$conc->postes."</td><td>".$conc->sigle_institut_conc;
+		echo "</td><td>".$conc->intitule_conc_fr;
 		for($i = 1; $i <= 4; $i++)
 		{
 			$suff = "sousjury".$i;
@@ -49,12 +50,7 @@
 ?>
 </select>
 			</td>
-			<td>niveau <select name="niveau">
-					<option value="CR">CR</option>
-					<option value="DR">DR</option>
-			</select>
-			</td>
-			<td>intitule <input name="intitule" value="DR2"></input>
+			<td>intitule <input name="intitule" value=""></input>
 			</td>
 <!--
 			<td>postes <select name="postes">

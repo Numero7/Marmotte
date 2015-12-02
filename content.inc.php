@@ -657,7 +657,7 @@ function alertText($text)
 					break;
 				case 'add_concours':
 					$concours = (object) array();
-					$fields = array("code", "niveau", "intitule",
+					$fields = array("code", "intitule",
 							"sousjury1","sousjury2", "sousjury3", "sousjury4",
 							"president1", "president2", "president3", "president4"
 					);

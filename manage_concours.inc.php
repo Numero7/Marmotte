@@ -59,11 +59,20 @@ function getConcours()
 {
 	{
 	$concours = array();
-	$sql = "SELECT * FROM ".concours_db." WHERE section='".real_escape_string(currentSection()). "' and session='".real_escape_string(current_session_id())."'";
-	$sql.= ";";
+	$sql = "SELECT * FROM ".marmottedbname.".".concours_db." conc JOIN ".dsidbname.".".dsi_GOC." goc ON conc.code=goc.n_public ";
+	$sql .= " WHERE conc.section='".real_escape_string(currentSection()). "' and conc.session='".real_escape_string(current_session_id())."'";
+	$sql .= ";";
 	$result = sql_request($sql);
+
 	while ($row = mysqli_fetch_object($result))
+	  {
+	    $row->postes = $row->nb_prop;
+	    $row->grade=$row->grade_conc;
+	    $row->intitule = $row->grade_conc." ".$row->code." ".$row->intitule;
 		$concours[ $row->code ] = $row;
+	  }
+	
+
 	$_SESSION["allconcours"] = $concours;
 	}
 	return $_SESSION["allconcours"];
@@ -76,24 +85,6 @@ function getPresidentSousJury($sousjury)
 
 function setConcours($conc)
 {
-	if( isset($conc->niveau) && strpos($conc->intitule,$conc->niveau) !==0)
-		$conc->intitule = $conc->niveau." ".$conc->intitule;
-
-	/*	for($i = 1; $i <= 4; $i++)
-	{
-		$suff = "membressj".$i;
-		while(strpos($conc->$suff,";;")!==false)
-			$conc->$suff = str_replace(";;",";",$conc->$suff);
-	}
-
-
-		$sql = "DELETE FROM ".concours_db;
-	$sql .=" WHERE section='".real_escape_string(currentSection())."'";
-	$sql .= " and session='".real_escape_string(current_session_id())."'";
-	$sql .= " and code='".real_escape_string($conc->code)."';";
-	sql_request($sql);
-	*/
-
 	$sql = "UPDATE `concours` SET ";
 	$fields = array("intitule",
 "sousjury1","sousjury2","sousjury3","sousjury4",

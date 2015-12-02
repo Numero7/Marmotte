@@ -105,6 +105,8 @@ function compileObjectsAsCSV($fields, $rows, $text=array(), $sep =";" , $enc='"'
 	global $tous_avis;
 	$result.=$del;
 
+	$users = simpleListUsers();
+
 	foreach($rows as $row)
 	{
 		$first = true;
@@ -120,6 +122,8 @@ function compileObjectsAsCSV($fields, $rows, $text=array(), $sep =";" , $enc='"'
 			}
 			else if(isset($row->$field) && $row->$field != "")
 			{
+			  if(substr($field,0,4)=="rapp" && isset($users[$row->$field]))
+			    $row->$field = $users[$row->$field];
 			  $data = str_replace(array($sep,$enc,"<br />"), array('#','#',""), html_entity_decode($row->$field));
 			  if($field == "type" && isset($row->$field) && isset($typesRapportsAll[$data]))
 			    $data = $typesRapportsAll[$data];
