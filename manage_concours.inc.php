@@ -115,7 +115,7 @@ function setConcours($conc)
 	$fields = array("intitule",
 "sousjury1","sousjury2","sousjury3","sousjury4",
 			"president1","president2","president3","president4",
-			"membressj1","memberssj2","membressj3","membressj4"
+			"membressj1","membressj2","membressj3","membressj4"
 );
 	$first = true;
 	foreach($fields as $field)
