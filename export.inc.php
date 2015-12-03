@@ -328,6 +328,40 @@ function export_current_selection_as_single_xls($type = "")
 	}
 }
 
+function export_sous_jurys()
+{
+		require_once("PHPExcel/Classes/PHPExcel.php");
+  global $tous_sous_jury;
+  $objPHPExcel = new PHPExcel();
+  $objPHPExcel->setActiveSheetIndex(0);
+  $sheet =  $objPHPExcel->getActiveSheet();
+$sheet->SetCellValue('A1', 'Sections de jury');
+$i=3;
+
+  foreach($tous_sous_jury as $code => $sj)
+    {
+      if(count($sj) > 0)
+	$sheet->SetCellValue("A".$i++, 'Sections de jury du concours '.$code);
+      else
+	$sheet->SetCellValue("A".$i++, 'Pas de section de jury pour le concours '.$code);
+
+      foreach($sj as $sjj => $liste)
+	{
+      $sheet->SetCellValue("B".$i++, 'Section de jury: '.$sjj);
+      $sheet->SetCellValue("B".$i++, 'President: '.$liste["president"]);
+      foreach($liste["membres"] as $login)
+	       $sheet->SetCellValue("C".$i++, $login);
+      $sheet->SetCellValue("A".$i++, "");
+	}
+      $sheet->SetCellValue("A".$i++, "");
+    }
+
+  $objWriter2007 = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');
+  $xlsfile = "sousjurys.xls";
+  $objWriter2007->save(dossier_temp()."/".$xlsfile);
+  send_file(dossier_temp()."/".$xlsfile, $xlsfile);
+}
+
 function export_current_selection_as_single_txt()
 {
 	$size = 0;

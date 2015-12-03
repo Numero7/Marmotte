@@ -1400,7 +1400,15 @@ $typeExports = array(
 				"xsl" => "",
 				"name" => "Relevé Conclusions",
 				"permissionlevel" => NIVEAU_PERMISSION_BUREAU
-		),
+					      ),
+		"sousjurys" => 	array(
+				"mime" => "application/x-text",
+				"xsl" => "",
+				"name" => "Sections de jury",
+				"permissionlevel" => NIVEAU_PERMISSION_SECRETAIRE
+				      ),
+
+
 		/*
 		"html" => 	array(
 				"mime" => "text/html",

@@ -114,6 +114,7 @@ if(!isSuperUser())
 								if(!isSuperUser())
 								{
 		global $typeExports;
+		if(!is_current_session_concours()) unset($typeExports["sousjurys"]);
 		foreach($typeExports as $idexp => $exp)
 		{
 			$expname= $exp["name"];
