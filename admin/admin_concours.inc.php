@@ -90,7 +90,7 @@
 	</table>
 	<input type="hidden" name="admin_concours"></input> <input
 		type="hidden" name="action" value="add_concours" />
-	<input type="submit" value="Ajouter / Mettre à jour" />
+	<input type="submit" value="Mettre à jour" />
 </form>
 <br />
 <hr />

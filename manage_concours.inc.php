@@ -114,14 +114,18 @@ function setConcours($conc)
 	$sql = "UPDATE `concours` SET ";
 	$fields = array("intitule",
 "sousjury1","sousjury2","sousjury3","sousjury4",
-			"president1","president2","president3","president4"
+			"president1","president2","president3","president4",
+			"membressj1","memberssj2","membressj3","membressj4"
 );
 	$first = true;
 	foreach($fields as $field)
 	  {
+	    if(isset($conc->$field))
+	      {
 	    if(!$first) $sql.=",";
 	  $sql.=$field."=\"".real_escape_string($conc->$field)."\" ";
 	  $first = false;
+	  }
 	  }
 	$sql .= "WHERE code=\"".$conc->code."\" AND section=\"".currentSection()."\" AND session=\"".current_session_id()."\"";
 
@@ -149,20 +153,23 @@ function deleteConcours($code)
 
 function addSousJury($code, $sousjury, $login)
 {
+  echo $code." ".$sousjury." " .$login."<br/>";
 	$concours = getConcours();
 	if(isset($concours[$code]))
 	{
 		$liste = array();
-		$row = $concours[$code];
+		$row = new stdClass();;//new object();
+		$row->code = $code;
 		for($i = 1; $i <=4 ; $i++)
 		{
 			$field = "membressj".$i;
-			$row->$field = str_replace($login,"",$row->$field);
-			$row->field = str_replace(";;","",$row->$field);
+			$row->$field = str_replace($login,"",$concours[$code]->$field);
+			$row->field = str_replace(";;",";",$row->$field);
 			if($sousjury == $i)
 				$row->$field.= ";".$login;
 		}
 	}
+	unset($row->intitule);
 	setConcours($row);
 }
 

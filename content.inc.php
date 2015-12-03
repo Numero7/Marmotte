@@ -596,8 +596,6 @@ function alertText($text)
 							addSousJury($concours, $_REQUEST["sousjury".$concours], $login);
 						if(isSuperUser())
 						  changeUserInfos($login,$permissions,$sections,$section_code, $section_role, $CID_code, $CID_role,$college);
-						else
-						  changeUserInfos($login,$permissions,$sections,$section_code, $section_role, $CID_code, $CID_role);
 						include "admin/admin.inc.php";
 						scrollToId('infosrapporteur');
 					}

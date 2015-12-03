@@ -460,15 +460,10 @@ function changeUserInfos($login,$permissions, $sections, $section_code = "", $se
 		  $sql .= ", `college`='".real_escape_string($college)."'";
 		$sql .= ", `permissions`='".real_escape_string($permissions)."'";
 		$sql .= " WHERE `login`='".real_escape_string($login)."';";
+	  sql_request($sql);
+	unset($_SESSION['all_users']);
 	}
-	else if (isSecretaire() && $college != "?")
-	  {
-		$sql = "UPDATE `".users_db."` SET ";
-		$sql .= "`college`='".real_escape_string($college)."'";
-		$sql .= " WHERE `login`='".real_escape_string($login)."';";
-	  }
 	/*
-	else if (isSecretaire())
 	{
 		$role = real_escape_string(permissionToRole($permissions));
 		if(currentSection() == getSection($login))
@@ -479,8 +474,6 @@ function changeUserInfos($login,$permissions, $sections, $section_code = "", $se
 			$sql = "UPDATE `".users_db."` SET `permissions`=\"".roleToPermission($role)."\" WHERE `login`='".real_escape_string($login)."';";
 	}
 	*/
-	sql_request($sql);
-	unset($_SESSION['all_users']);
 }
 
 function getUserBySectionChaire($chaire)
