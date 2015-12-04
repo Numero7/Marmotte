@@ -108,24 +108,25 @@ formulaire d&apos;assistance</a>.
   <tr>
   <td width="30%"></td>
   <td width="70%">
-   <h3>Contributeurs <a href="https://www.youtube.com/watch?v=DEZxV2gckbg">Marmotte 2.3</a></h3>
+		    <h3>Contributeurs Marmotte 2.3 "RainSeason"</h3>
 <table><tr><td>
   <ul>
   <li><B>Secrétaires scientifiques</B></li>
   <li>Hugo Gimbert (d&eacute;veloppeur, coordinateur technique, section 6)</li>
   <li>Yann Ponty (d&eacute;veloppeur, section 6)</li>
-  <li>Matias Velazquez (beta-testeur, coordinateur d&eacute;ploiement SSC, section 15)</li>
-  <li>Caroline Strube (beta-testeuse, formatrice, section 25)</li>
-  <li>Sophie Achard (beta-testeuse, formatrice, section 7)</li>
-  <li>Guillaume Lapeyre (beta-testeur, formateur, section 19)</li>
-<li>Santiago Pita (beta-testeur, section 1)</li>
+		    <li>Matias Velazquez (&beta;-testeur, coordinateur d&eacute;ploiement SSC, section 15)</li>
+		    <li>Caroline Strube (&beta;-testeuse, formatrice, section 25)</li>
+		    <li>Sophie Achard (&beta;-testeuse, formatrice, section 7)</li>
+		    <li>Guillaume Lapeyre (&beta;-testeur, formateur, section 19)</li>
+		    <li>Santiago Pita (&beta;-testeur, section 1)</li>
 </ul>
 </td>
 <td>
 <ul>
 <li><B>SGCN</B></li>
-	   <li>Laurent Chazaly (chef de projet SGCN, beta-testeur, formateur)</li>
-<li>Mich&egrave;le Desumeur (beta-testeuse ACN)</li>
+		    <li>Marie-Claude Labastie (ambassadrice)</li>
+	   <li>Laurent Chazaly (coordinateur SGCN et formation)</li>
+		    <li>Mich&egrave;le Desumeur (&beta;-testeuse ACN)</li>
 </ul>
 </td>
 <td>

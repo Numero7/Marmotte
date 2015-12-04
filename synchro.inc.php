@@ -11,29 +11,34 @@ function synchronizeConcours($year = "")
   if($year == "")
     $year = date("Y");
 
+  if($year==2015) $year=2016;
+
   /*liste des sesessions */
   $sessions = array();
 
-  $sql = "SELECT * FROM ".sessions_db." WHERE id LIKE \"%Concours%\"";
+  $sql = "SELECT * FROM ".sessions_db." WHERE id=\"Concours".$year."\"";
   $result = sql_request($sql);
   while($row = mysqli_fetch_object($result))
       $sessions[] = $row->section;
 
   /*************** AJOUT DES CONCOURS ***********************************/
-  $sql = "SELECT * FROM ".dsidbname.".".celcc_concours." WHERE 1";
+  $sql = "SELECT * FROM ".dsidbname.".".celcc_concours." WHERE annee=\"".$year."\"";
   $result = sql_request($sql);
   while($row = mysqli_fetch_object($result))
     {
       /* special hack for formations */
       if($row->annee == "2015") $row->annee = "2016";
-      $year=$row->annee;
+      //      $year=$row->annee;
       $dsi_concours[$row->n_public] = $row;
       $section = ltrim($row->numsect_conc,'0');
       if(!in_array($section,$sessions))
 	{
+try
+  {
 	  $log .= "Création de la session de concours ".$year." pour la section ".$section."<br/>";
 	  createSession("Concours",$row->annee, $section);
 	  $sessions[] = $section;
+  }catch(Exception $e){};
 	}
     }
   $result = sql_request($sql);
@@ -950,6 +955,7 @@ $answer = "<h1>Synchronisation avec e-valuation de la section ".$section." - ".d
 	  {
 	    if($section > 55)
 	      {
+		$answer .= synchronizeConcours();
 		$answer.= "<h2>Renommage des intitulés</h2>";
 		$sql = "UPDATE ".marmottedbname.".".reports_db." SET `intitule`=\"Evaluation à vague de chercheurs\" WHERE `DKEY`IN";
 		$sql .= "(SELECT DKEY FROM ".dsidbname.".".dsi_evaluation_db." WHERE `type`='".REPORT_EVAL."' AND `PHASE_EVAL`=\"vague\")";
