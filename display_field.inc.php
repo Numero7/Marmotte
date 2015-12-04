@@ -298,7 +298,7 @@ function display_rapports($row, $fieldId)
 				if($report->type == REPORT_CANDIDATURE)
 				  $reports[$i]->label =
 				    $report->id_session. " - " .$report->concours;				
-				else if( is_equivalence_type($report) )
+				else if( is_equivalence_type($report->type) )
 				  $reports[$i]->label =
 				    $report->id_session. " - " .$type." - " . $report->grade_rapport;
 				else  if(is_rapport_unite($report))
@@ -307,6 +307,7 @@ function display_rapports($row, $fieldId)
 				else
 				  $reports[$i]->label =
 			         $report->id_session." - ".$report->unite." - ".$report->nom."  ".$report->prenom. " - " .$type." - ".$report->id." - ".$row->id;
+				
 			}
 		}
 
