@@ -204,7 +204,7 @@ function filterSortReports($filters, $filter_values = array(), $sorting_value = 
 	while ($row = mysqli_fetch_object($result))
 	{
 	  /*dirty rule to skip reports that I am not allowed to see */
-	  if($row->concours!="" && !isset($my_conc[$row->concours]))
+	  if(isset($row->concours) && $row->concours!="" && !isset($my_conc[$row->concours]))
 	    {
 	    continue;
 	    }
@@ -1126,7 +1126,7 @@ function is_field_editable($row, $fieldId)
 {
   global $my_conc;
  
- if(($row->concours != "") && !isset($my_conc[$row->concours]))
+  if(isset($row->concours) && ($row->concours != "") && !isset($my_conc[$row->concours]))
     return false;
 
 	$statut = isset($row->statut) ? $row->statut : "rapport";
@@ -1315,7 +1315,7 @@ function is_field_editable($row, $fieldId)
 function is_field_visible($row, $fieldId)
 {
   global $my_conc;
- if(($row->concours != "") && !isset($my_conc[$row->concours]))
+  if(isset($row->concours) && ($row->concours != "") && !isset($my_conc[$row->concours]))
     return false;
 
 	global $typesRapportToFields;
