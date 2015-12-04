@@ -119,8 +119,15 @@ function display_rapporteur($row, $fieldID, $readonly)
 {
   $liste = array(""=>"");
   $users = listUsers();
-  foreach($users as $user => $data)
+ $concours_ouverts = getConcours();
+ 
+ foreach($users as $user => $data)
     {
+		  if(isset($row->concours) 
+		     && $row->concours != "" 
+		     && isset($concours_ouverts[$row->concours])		     
+		     && !in_array($rapporteur,$concours_ouverts[$row->concours]->jures))
+		    continue;
       if(is_rapporteur_allowed($data->college,$row->type))
 	{
 	  $liste[$user] = $data->description;
