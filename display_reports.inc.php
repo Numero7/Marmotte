@@ -257,8 +257,16 @@ function displayRowCell($row, $fieldID)
 	<select class="sproperty" name="value">
 		<?php
 		echo "<option value=\"\"></option>\n";
+
+		  $concours_ouverts = getConcours();
 		foreach($rapporteurs as $rapporteur => $data)
 		{
+		  if(isset($row->concours) 
+		     && $row->concours != "" 
+		     && isset($concours_ouverts[$row->concours])		     
+		     && !in_array($rapporteur,$concours_ouverts[$row->concours]->jures))
+		    continue;
+
 		  if(is_rapporteur_allowed($data->college,$row->type))
 		    {
 			$selected = ($rapporteur == $row->$fieldID) ? "selected=on" : "";
