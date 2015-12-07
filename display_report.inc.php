@@ -137,6 +137,10 @@ function displayEditableField($row, $fieldId, $canedit, $session, $extra_object 
 	global $fieldsAll;
 	global $fieldsTypes;
 	global $mandatory_edit_fields;
+	
+	if(!is_current_session_concours())
+	  $fieldsAll["fichiers"]= "Fichiers section";
+
 
 	$title = compute_title($row, $fieldId);
 
