@@ -267,7 +267,7 @@ function displayRowCell($row, $fieldID)
 		     && !in_array($rapporteur,$concours_ouverts[$row->concours]->jures))
 		    continue;
 
-		  if(is_rapporteur_allowed($data->college,$row->type))
+		  if(is_rapporteur_allowed($data,$row))
 		    {
 			$selected = ($rapporteur == $row->$fieldID) ? "selected=on" : "";
 			echo "<option ".$selected." value=\"".$rapporteur."\">".$data->description."</option>\n";

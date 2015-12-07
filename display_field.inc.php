@@ -53,7 +53,7 @@ function display_type($row, $fieldID, $readonly)
 		  {
 		    global $typesRapportsAll;
 		    if(isset($typesRapportsAll[$row->type]))
-		      echo $typesRapportsAll[$row->type];
+		      echo "&nbsp;&nbsp;".$typesRapportsAll[$row->type];
 		  }
 	}
 }
@@ -128,7 +128,7 @@ function display_rapporteur($row, $fieldID, $readonly)
 		     && isset($concours_ouverts[$row->concours])		     
 		     && !in_array($row->rapporteur,$concours_ouverts[$row->concours]->jures))
 		    continue;
-      if(is_rapporteur_allowed($data->college,$row->type))
+      if(is_rapporteur_allowed($data,$row))
 	{
 	  $liste[$user] = $data->description;
 	}
@@ -243,7 +243,7 @@ function display_statut2($row, $fieldID, $readonly)
 	*/
 	global $statutsRapportsACN;
 	if( ($row->$fieldID == "avistransmis" || $row->$fieldID == "publie" ) && !isACN())
-	  echo $statuts[$row->$fieldID];
+	  echo "&nbsp;&nbsp;".$statuts[$row->$fieldID];
 	else if(isACN())
 	  display_select($row, $fieldID, $statuts, $readonly);
 	else

@@ -290,9 +290,18 @@ select {
 }
 
 input {
-    font-size:150%;
+    font-size:100%;
 }
 
+textarea {
+    font-size:100%;
+}
+
+input[type="submit"]{
+ cursor:pointer;
+ font-size:150%;
+ font-weight:bold;
+}
 
 /* round edges */
 .roundtl,.roundtr,.roundbl,.roundbr {

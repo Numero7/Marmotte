@@ -204,7 +204,7 @@ function filterSortReports($filters, $filter_values = array(), $sorting_value = 
 	while ($row = mysqli_fetch_object($result))
 	{
 	  /*dirty rule to skip reports that I am not allowed to see */
-	  if(isset($row->concours) && $row->concours!="" && !isset($my_conc[$row->concours]))
+	  if(!isSecretaire("",false) && isset($row->concours) && $row->concours!="" && !isset($my_conc[$row->concours]))
 	    {
 	    continue;
 	    }
@@ -790,8 +790,12 @@ function previous_report($id)
 	}
 }
 
-function is_rapporteur_allowed($college, $type)
+function is_rapporteur_allowed($data, $row)
 {
+  if(is_in_conflict_efficient($row, $data->login))
+    return false;
+  $college = $data->college;
+  $type = $row->type;
   if($type == "4510" || $type == "4515" || $type == "4520") 
     return ($college == "A1" || $college == "A2");
   if($type == "4505" || $type == "7777")
@@ -1315,7 +1319,7 @@ function is_field_editable($row, $fieldId)
 function is_field_visible($row, $fieldId)
 {
   global $my_conc;
-  if(isset($row->concours) && ($row->concours != "") && !isset($my_conc[$row->concours]))
+  if(!isSecretaire("",false) && isset($row->concours) && ($row->concours != "") && !isset($my_conc[$row->concours]))
     return false;
 
 	global $typesRapportToFields;

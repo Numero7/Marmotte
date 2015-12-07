@@ -26,11 +26,11 @@ function send_file($local_filename, $remote_filename, $dsi = false)
 	$dossier_stockage = ($dsi ? realpath($dossier_stockage_dsi) : realpath($dossier_stockage) );
 	$dossier_temp = realpath($dossier_temp);
 	
-	$sub  = substr(realpath($local_filename),0, strlen($dossier_stockage_dsi) );
+	$sub  = substr(realpath($local_filename),0, strlen($dossier_stockage) );
 	$sub2 = substr(realpath($local_filename),0, strlen($dossier_temp) );
 
 	if( ($sub != $dossier_stockage) &&  ($sub2 != $dossier_temp) && !$ok3)
-	  throw new Exception("Forbidden access to file".realpath($local_filename)."<br/>".$sub."<br/>".$dossier_stockage."<br/>".$sub2."<br/>".$dossier_temp);		
+	  throw new Exception("Forbidden access to file".realpath($local_filename));//."<br/>".$sub."<br/>".$dossier_stockage."<br/>".$sub2."<br/>".$dossier_temp);		
 	
 	if(!is_file($local_filename))
 		throw new Exception("Cannot find file .$local_filename");

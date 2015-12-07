@@ -234,7 +234,7 @@ function displayEditableField($row, $fieldId, $canedit, $session, $extra_object 
 function displayEditableObject($titlle, $row, $fields, $canedit, $session, $extra_objects = array())
 {
 	if($titlle != "")
-		echo '<h2>'.$titlle.'</h2>';
+		echo '<h3>'.$titlle.'</h3>';
 
 	global $fieldsTypes;
 	global $mandatory_edit_fields;
@@ -415,11 +415,6 @@ function displayEditableReport($row, $canedit = true)
 
 	if(is_rapport_concours($row))
 	{
-		$titre = "";
-		if(is_equivalence_type($eval_type))
-			$titre= "<h3>".$year." / Equivalence: ". $row->nom." ".$row->prenom. ( (isset($row->grade_rapport) &&  $row->grade_rapport != "") ? (" (grade  " .$row->grade_rapport) .")" : "") . "</h3>";
-		else
-			$titre= "<h3>".$year." / ".$eval_name. ": ". $row->nom." ".$row->prenom.( isset($row->concours)  ? (" / concours ".$row->concours) : ""). ( (isset($row->sousjury) && $row->sousjury != "")  ? (" sousjury ".$row->sousjury) : ""). "</h3>";
 
 		if($row->concoursid != "")
 		  $candidate = get_candidate_from_concoursid($row->concoursid);
@@ -434,6 +429,7 @@ function displayEditableReport($row, $canedit = true)
 				&& !(isset($row->statut) && ( $row->statut="avistransmis" || $row->statut="publie") ) );
 
 		echo "<div id=\"toolbar\">";
+			$titre= "<h3>".$year." / ".$eval_name. ": ". $row->nom." ".$row->prenom.( isset($row->concours)  ? (" / concours ".$row->concours) : ""). ( (isset($row->sousjury) && $row->sousjury != "")  ? (" sousjury ".$row->sousjury) : ""). "</h3>";
 		echo $titre;
 		displayEditionFrameStart("",$hidden,$submits);
 		voir_rapport_pdf($row);
@@ -496,14 +492,15 @@ function displayEditableReport($row, $canedit = true)
 		$conflit = ( is_in_conflict(getLogin(), $chercheur)) && !isSecretaire()  ;
 		
 		echo "<div id=\"toolbar\">";
-		displayEditionFrameStart("",$hidden,$submits);
+		echo "<h3>".$eval_name. ": ";
+		echo (isset($row->id_session) ? $row->id_session : "")." - ";
+		echo (isset($row->nom) ? $row->nom : "");
+		echo " ".(isset($row->prenom) ? $row->prenom : "")." - ";
+		echo (isset($row->DKEY) && $row->DKEY != 0 ? ("(#".$row->DKEY.")") : "")."</h3>";		displayEditionFrameStart("",$hidden,$submits);
 		voir_rapport_pdf($row);
-		if(isset($chercheur->genre) && $chercheur->genre == "femme")
-			echo '<h1>Chercheuse : '.$chercheur->nom." ".$chercheur->prenom." ".'</h1>';
-		else
-			echo '<h1>Chercheur : '.$chercheur->nom." ".$chercheur->prenom." ".'</h1>';
 		echo "</div>";
 		
+
 		displayEditableChercheur($chercheur,$row,$canedit);
 
 		//$other_reports = find_somebody_reports($chercheur,$eval_type);
@@ -514,18 +511,8 @@ function displayEditableReport($row, $canedit = true)
 		$fieldsIndividual2 = $typesRapportToFields[$eval_type][3];
 		$fieldsIndividual3 = $typesRapportToFields[$eval_type][4];
 
-		/*
-		global $fieldsUnitesExtra;
-
-		if(key_exists($eval_type,$fieldsUnitesExtra))
-			$fieldsIndividual0 = array_merge($fieldsUnitesExtra[$eval_type], $fieldsIndividual0);dsi.db
-*/
 			
-		echo "<h1>".$eval_name. ": ";
-		echo (isset($row->id_session) ? $row->id_session : "")." - ";
-		echo (isset($row->nom) ? $row->nom : "");
-		echo " ".(isset($row->prenom) ? $row->prenom : "")." - ";
-		echo (isset($row->DKEY) && $row->DKEY != 0 ? ("(#".$row->DKEY.")") : "")."</h1>";
+
 
 
 		if(!$conflit && (is_seeing_allowed(getCollege(),$row->type)))
@@ -578,11 +565,10 @@ function displayEditableReport($row, $canedit = true)
 		$hidden["create_new"] = true;
 		$hidden["id_origine"] = $row->id_origine;
 		
-		
+				echo "<h3>".$eval_name. ": ". (isset($row->unite) ? $row->unite : "");
+		echo (isset($row->DKEY) && $row->DKEY != 0 ? ("(#".$row->DKEY .")") : "")."</h3>";
 		displayEditionFrameStart("",$hidden,$submits);
 		voir_rapport_pdf($row);
-		echo "<h1>".$eval_name. ": ". (isset($row->unite) ? $row->unite : "");
-		echo (isset($row->DKEY) && $row->DKEY != 0 ? ("(#".$row->DKEY .")") : "")."</h1>";
 		echo "</div>"; 
 
 		displayEditionFrameStart("",$hidden,array());
