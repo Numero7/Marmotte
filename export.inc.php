@@ -418,26 +418,23 @@ function generate_jad_reports($preambules = array())
 {
 	global $concours_ouverts;
 	$docs = array();
-	foreach($preambules as $concours => $pre)
-	  echo $concours." ".$pre."<br/>";
+
 	foreach($concours_ouverts as $concours => $niveau)
 	{
-	  echo $concours."<br/>";
+	  //	  echo $concours."<br/>";
 		$preambule = isset($preambules[$concours]) ? $preambules[$concours] : "";
 		$docs[$concours] = generate_jad_report($concours, $preambule);
 	}
 
-	//	throw new Exception("fuck");
 
 	$login = getLogin();
 
-	global $dossier_temp;
-	$dir = $dossier_temp;
+	$dir = dossier_temp();
 
 	$filenames = array();
 	foreach($docs as $code => $doc)
 	{
-		echo $code;
+	  //		echo $code;
 
 		$doc->formatOutput = true;
 

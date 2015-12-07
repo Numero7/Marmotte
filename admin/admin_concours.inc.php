@@ -6,7 +6,7 @@
 	<?php 
 	$concours = getConcours();
 	echo "<tr><th> Code </th><th> Intitule </th><th>Postes</th><th>Institut</th><th>Intitule Complet";
-	echo "<th>SousJury1</th><th>President1</th><th>SousJury2</th><th>President2</th><th>SousJury3</th><th>President3</th><th>SousJury4</th><th>President4</th>";
+	echo "<th>SecJury1</th><th>President1</th><th>SecJury2</th><th>President2</th><th>SecJury3</th><th>President3</th><th>SecJury4</th><th>President4</th>";
 	echo "</tr>";
 	foreach($concours as $conc)
 	{
@@ -32,7 +32,7 @@
     Ce menu permet de configurer un concours.<br />
     L&#39;intitulé du concours doit être court et commencer par le grade, par exemple "CR2" ou "CR2_coloriage".<br />
 	Si le jury est plénier ou si vous ne connaissez pas encore la liste de
-	vos sous-jurys, laisser les champs "SousJury*" et "President*" vides.<br />
+	vos sections de jurys, laisser les champs "SecJury*" et "President*" vides.<br />
 
 </p>
 <form method="post" action="index.php">
@@ -68,7 +68,7 @@
 				$suffp = "president".$i;
 				$suffm = "membressj".$i;
 				?>
-			<td>SousJury<?php echo $i;?> <input name="sousjury<?php echo $i;?>" />
+			<td>Section de Jury<?php echo $i;?> <input name="sousjury<?php echo $i;?>" />
 			</td>
 			<td>President<?php echo $i;?> <select
 				name="president<?php echo $i;?>">
@@ -94,14 +94,14 @@
 </form>
 <br />
 <hr />
-<h3>Affecter les sous-jurys</h3>
-<p>Cette fonction affecte automatiquement chaque candidat au sous-jury
+<h3>Affecter les sections de jurys aux candidats</h3>
+<p>Cette fonction affecte automatiquement chaque candidat à la section de jury
 	auquel appartient son premier rapporteur.</p>
 
 <form method="post" action="index.php"
 	onsubmit="return confirm('Affecter les sous-jurys?');">
 	<input type="hidden" name="action" value="affectersousjurys" /> <input
-		type="submit" value="Affecter sous-jurys" /> <input type="hidden"
+		type="submit" value="Affecter sections de jurys" /> <input type="hidden"
 		name="admin_concours"></input>
 </form>
 <br />

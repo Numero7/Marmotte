@@ -126,7 +126,7 @@ function display_rapporteur($row, $fieldID, $readonly)
 		  if(isset($row->concours) 
 		     && $row->concours != "" 
 		     && isset($concours_ouverts[$row->concours])		     
-		     && !in_array($rapporteur,$concours_ouverts[$row->concours]->jures))
+		     && !in_array($row->rapporteur,$concours_ouverts[$row->concours]->jures))
 		    continue;
       if(is_rapporteur_allowed($data->college,$row->type))
 	{
