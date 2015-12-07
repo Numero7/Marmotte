@@ -24,7 +24,7 @@ a {
 body {
 	background: #FFF url(img/bg.gif) repeat-x;
 	color: #444;
-	font: normal 100% "Lucida Sans Unicode",Verdana,sans-serif;
+	font: normal 95% "Lucida Sans Unicode",Verdana,sans-serif;
 	padding-top: 5px;
 }
 p,code,ul {
@@ -120,7 +120,7 @@ h1,h2,h3,h4 {
 
 .content {
 	margin-bottom: 10px;
-	font-size:80%;
+	font-size:85%;
 }
 
 .content .descr {
@@ -299,7 +299,7 @@ textarea {
 
 input[type="submit"]{
  cursor:pointer;
- font-size:150%;
+ font-size:200%;
  font-weight:bold;
 }
 

@@ -61,10 +61,6 @@ function displayFiltrage($rows, $fields, $filters, $filter_values)
 	global $end_tr_fields;
 
 	?>
-<!--  Menu filtrage -->
-<table>
-	<tr>
-		<td>
 			<table class="inputreport">
 				<tr>
 					<?php
@@ -109,12 +105,6 @@ function displayFiltrage($rows, $fields, $filters, $filter_values)
 
 				</tr>
 			</table>
-		</td>
-	</tr>
-</table>
-
-<!-- END  Menu filtrage -->
-
 <?php
 }
 
@@ -315,7 +305,7 @@ function displayRowCell($row, $fieldID)
 		else if($fieldID == "avis" || $sec || !isset($row->statut) || $row->statut != "doubleaveugle")
 		{
 			showIconAvis($fieldID,$data);
-			echo isset($tous_avis[$data]) ? $tous_avis[$data] : $data;
+			echo (isset($tous_avis[$data]) && !is_array($tous_avis[$data]) )? $tous_avis[$data] : $data;
 		}
 	}
 	else if($fieldID == "concours")
@@ -486,11 +476,8 @@ function displayActionsMenu($row, $excludedaction = "", $actions)
 
 function displayRows($rows, $fields, $filters, $filter_values)
 {
-  //	display_updates();
-	
 	global $fieldsAll;
-
-	?>
+?>
 <table>
 	<tr>
 		<td>

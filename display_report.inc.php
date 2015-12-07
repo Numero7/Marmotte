@@ -31,20 +31,6 @@ function displayEditableCandidate($candidate,$report = NULL,$canedit = true)
 		$hidden["id_origine"] = $report->id_origine;
 		$hidden["type"] = $report->type;
 		$rap_audition = needs_audition_report($report);
-		/*		if( isset($report->concours) && isset($concours[$report->concours]) && $report->type == REPORT_CANDIDATURE)
-		{
-			$intitule = $concours[$report->concours]->intitule;
-			if(strpos($intitule, "DR") === false)
-			{
-				if(isset($tous_sous_jury[$report->concours]))
-				{
-					$nb_sous_jurys = count($tous_sous_jury[$report->concours]);
-					if($nb_sous_jurys >= 2)
-						$rap_audition = true;
-				}
-			}
-		}
-		*/
 		if(!$rap_audition)
 			$fields = $fieldsCandidatAvantAudition;
 		else
@@ -62,7 +48,6 @@ function displayEditableCandidate($candidate,$report = NULL,$canedit = true)
 			$session = $report->id_session;
 	}
 	$submit = array();
-	//"conflit" => "Se déclarer en conflit");
 
 	displayEditionFrameStart("",$hidden,$submit);
 	displayEditableObject("",
@@ -256,26 +241,27 @@ function displayEditableObject($titlle, $row, $fields, $canedit, $session, $extr
 				echo '<td style="width:'.strval(round(100/(count($fieldId) ))).'%">';
 				echo '<table style="width:100%">'."\n".'<tr class="'.$style.'">'."\n";
 				displayEditableField($row, $singleField,$canedit,$session);
-				echo "\n".'</tr></table></td>'."\n";
 			if( isset( $extra_objects[$singleField]) )
 			  {
-			    echo '<tr class="'.$style.'">';
+			    //echo '<tr class="'.$style.'">';
 			    echo '<td>'.$extra_objects[$singleField].'</td>';
-			    echo '</tr>';
+			    //echo $extra_objects[$singleField];
+			    //echo '</tr>';
 			  }
+				echo "\n".'</tr></table></td>'."\n";
 			}
 		}
 		else
 		{
 			echo '<td style="100%"><table><tr class="'.$style.'">'."\n";			
 			displayEditableField($row, $fieldId,$canedit,$session);
-			echo "\n".'</tr></table></td>'."\n";
 			if( isset( $extra_objects[$fieldId]) )
 			  {
-			    echo '<tr class="'.$style.'">';
+			    //			    echo '<tr class="'.$style.'">';
 			    echo '<td>'.$extra_objects[$fieldId].'</td>';
-			    echo '</tr>';
+			    //echo '</tr>';
 			  }
+			echo "\n".'</tr></table></td>'."\n";
 		}
 		
 

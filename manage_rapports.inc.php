@@ -1123,14 +1123,18 @@ function listOfAllVirginReports()
 
 function is_in_conflict_efficient($row, $login)
 {
+  if(isset($row->conflits))
+	return (strpos($row->conflits,$login)!== false);
+  if(isset($row->people_conflits))
 	return (strpos($row->people_conflits,$login)!== false);
+  return false;
 }
 
 function is_field_editable($row, $fieldId)
 {
   global $my_conc;
  
-  if(isset($row->concours) && ($row->concours != "") && !isset($my_conc[$row->concours]))
+  if(!isSecretaire() && isset($row->concours) && ($row->concours != "") && !isset($my_conc[$row->concours]))
     return false;
 
 	$statut = isset($row->statut) ? $row->statut : "rapport";

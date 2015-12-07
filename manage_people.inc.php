@@ -72,16 +72,14 @@ function add_conflit_to_report($login, $id_origine)
 	$report = getReport($id_origine);
 	$row = normalizeReport($report);
 	$candidat = get_or_create_candidate($row);
-	if(isset($candidat->conflits))
+
+	$conflits = isset($candidat->conflits) ? $candidat->conflits : "";
+	if(strpos($conflits,$login) === false)
 	{
-		$conflits = $candidat->conflits;
-		if(strpos($conflits,$login) === false)
-		{
 			$conflits .= ";".$login;
 			if(isset($candidat->nom) && isset($candidat->prenom) && $candidat->nom != "")
 				$candidat->conflits = $conflits;
 			updateCandidateFromData($candidat);
-		}
 	}
 }
 
