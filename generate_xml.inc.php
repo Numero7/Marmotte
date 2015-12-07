@@ -299,6 +299,8 @@ function createXMLReportElem($row, DOMDocument $doc, $keep_br = true)
 			appendLeaf("signataire","", $doc, $rapportElem);
 			appendLeaf("signature", "", $doc, $rapportElem);
 		}
+
+		  appendLeaf("signataire_titre", "Président(e) de section de jury", $doc, $rapportElem);
 			
 		$candidat = get_or_create_candidate($row);
 		appendLeaf("audition", $candidat->audition, $doc, $rapportElem);
@@ -316,9 +318,15 @@ function createXMLReportElem($row, DOMDocument $doc, $keep_br = true)
 	else
 	{
 		if(isset($row->signataire) && $row->signataire != "")
+		  {
 		  appendLeaf("signataire", $row->signataire, $doc, $rapportElem);
+		  appendLeaf("signataire_titre", "Président(e) par interim", $doc, $rapportElem);
+		  }
 		else
+		  {
 		  appendLeaf("signataire", get_config("president"), $doc, $rapportElem);
+		  appendLeaf("signataire_titre", get_config("president_titre"), $doc, $rapportElem);
+		  }
 		global $dossier_stockage;
 		global $rootdir;
 		global $dossier_stockage_short;
@@ -451,8 +459,7 @@ function createXMLReportElem($row, DOMDocument $doc, $keep_br = true)
 	//On ajoute l'intitulé de la section
 	appendLeaf("section_intitule", get_config("section_intitule"), $doc, $rapportElem);
 
-	//On ajoute le nom et le tire du signataire
-	appendLeaf("signataire_titre", get_config("president_titre"), $doc, $rapportElem);
+
 
 
 	$ltype = isset($id_rapport_to_label[$row->type]) ? $id_rapport_to_label[$row->type] :"";
