@@ -101,10 +101,10 @@ function displayFiltrage($rows, $fields, $filters, $filter_values)
 						}
 						?>
 					<td></td>
-					<td style="width: 10em;"><h3>
+					<td style="width: 10em;">
 							<a href="index.php?action=view&amp;reset_filter=">Réinitialiser
 								filtres</a>
-						</h3>
+						
 					</td>
 
 				</tr>

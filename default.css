@@ -24,15 +24,13 @@ a {
 body {
 	background: #FFF url(img/bg.gif) repeat-x;
 	color: #444;
-	font: normal 62.5% "Lucida Sans Unicode",Verdana,sans-serif;
+	font: normal 100% "Lucida Sans Unicode",Verdana,sans-serif;
 	padding-top: 5px;
 }
 p,code,ul {
-	font-size: 1.2em;
 	padding-bottom: 1.2em;
 }
 dl {
-    font-size: 1.2em;
     padding: 8px;
 }
 dd {
@@ -41,20 +39,18 @@ dd {
 dt {
     margin-left: 16px;
 }
+
 li {
 	list-style: none;
 }
-h1 {
-	font-size: 1.4em;
 
-}
 code {
 	background-color: #ddd  ;
 	border: 1px solid #F0F0F0;
 	border-left: 6px solid #a91623;	
 	color: #444;
 	display: block;
-	font: normal 1.1em "Lucida Sans Unicode",serif;
+	font: normal 100% "Lucida Sans Unicode",serif;
 	margin-bottom: 12px;
 	padding: 8px 10px;
 	white-space: pre;
@@ -65,13 +61,13 @@ blockquote {
 	border-top: 1px solid #444;
 	color: #fff;
 	display: block;
-	font: normal 0.9em Verdana,sans-serif;
+	font: normal 90% Verdana,sans-serif;
 	margin-bottom: 12px;
 	padding: 12px;
 }
 
 h1,h2,h3,h4 {
-	font: bold 1.2em "Trebuchet MS",sans-serif;
+	font: bold  "Trebuchet MS",sans-serif; 
 	color: #002A4C;
 }
 
@@ -89,7 +85,7 @@ h1,h2,h3,h4 {
 }
 .header h1 {
 	color: #222;
-	font: normal 4em sans-serif;
+	font: normal sans-serif;
 	margin-top: 10px;
 	text-align: center;
 }
@@ -124,30 +120,27 @@ h1,h2,h3,h4 {
 
 .content {
 	margin-bottom: 10px;
+	font-size:80%;
 }
 
 .content .descr {
 	color: #63C3DC;
-	font-size: 1.2em;
 }
 .content li {
 	list-style: disc;
 	margin-left: 28px;
 }
 .content h1 {
-	font-size: 2.4em;
 	margin-bottom: 4px;
 	vertical-align: bottom;
 }
 
 .content h2 {
-    font-size: 1.6em;
     color: #222;
     margin-bottom: 4px;
     margin-top: 8px;
 }
 .content h3 {
-    font-size: 1.3em;
     color: #002A4C;
     margin-bottom: 4px;
     margin-top: 4px;
@@ -219,7 +212,6 @@ h1,h2,h3,h4 {
 .nav li a {
 	color: #888;
 	display: block;
-	font: normal 1.4em serif;
 	padding: 8px 0;
 }
 .nav li a:hover {
@@ -241,7 +233,6 @@ h1,h2,h3,h4 {
 }
 .subnav h1 {
 	color: #c1e0e8;
-	font-size: 1.4em;
 	height: 20px;
 	padding:0;
 	margin-left: 6px;
@@ -274,7 +265,6 @@ h1,h2,h3,h4 {
 .subnav li a {	
 	color: #fff;
 	display: block;
-	font-size: 0.9em;
 	padding: 0;
 	margin-bottom:3px;
 	text-decoration: none;
@@ -289,6 +279,18 @@ h1,h2,h3,h4 {
 
 .liste a:hover {
     color: #002A4C;
+}
+
+option {
+    font-size:100%;
+}
+
+select {
+    font-size:100%;
+}
+
+input {
+    font-size:150%;
 }
 
 
@@ -335,7 +337,6 @@ h1,h2,h3,h4 {
 
 .liste h2 {
     color: #63C3DC;
-    font-size: 1.4em;
 }
 
 .liste p {

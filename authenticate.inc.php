@@ -83,16 +83,14 @@ En cas de besoin urgent, merci de contacter votre secr&eacute;taire scientifique
 </font>
 </h2>
 -->
-<br/><br/><br/><br/><br/>
+<br/><br/><br/>
 
 
-	     <h2><a href="index.php?action=auth_janus">Authentification Janus (personnels des unit&eacute;s CNRS)</a></h2>
-<br/>
-	     <h2><a href="index.php?action=auth_marmotte">Authentification Marmotte (personnels hors-unit&eacute;s CNRS, demandez un mot de passe &agrave; votre ACN)</a></h2>
+	     <p><a href="index.php?action=auth_janus">Authentification Janus (personnels des unit&eacute;s CNRS)</a></p>
+	     <p><a href="index.php?action=auth_marmotte">Authentification Marmotte (personnels hors-unit&eacute;s CNRS, demandez un mot de passe &agrave; votre ACN)</a></p>
 	 <?php 
 	 }
 	 ?>
-	<br/>
 	<br/>
 <p>
 En cas de difficult&eacute; de connexion,

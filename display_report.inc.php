@@ -417,9 +417,9 @@ function displayEditableReport($row, $canedit = true)
 	{
 		$titre = "";
 		if(is_equivalence_type($eval_type))
-			$titre= "<h1>".$year." / Equivalence: ". $row->nom." ".$row->prenom. ( (isset($row->grade_rapport) &&  $row->grade_rapport != "") ? (" (grade  " .$row->grade_rapport) .")" : "") . "</h1>";
+			$titre= "<h3>".$year." / Equivalence: ". $row->nom." ".$row->prenom. ( (isset($row->grade_rapport) &&  $row->grade_rapport != "") ? (" (grade  " .$row->grade_rapport) .")" : "") . "</h3>";
 		else
-			$titre= "<h1>".$year." / ".$eval_name. ": ". $row->nom." ".$row->prenom.( isset($row->concours)  ? (" / concours ".$row->concours) : ""). ( (isset($row->sousjury) && $row->sousjury != "")  ? (" sousjury ".$row->sousjury) : ""). "</h1>";
+			$titre= "<h3>".$year." / ".$eval_name. ": ". $row->nom." ".$row->prenom.( isset($row->concours)  ? (" / concours ".$row->concours) : ""). ( (isset($row->sousjury) && $row->sousjury != "")  ? (" sousjury ".$row->sousjury) : ""). "</h3>";
 
 		if($row->concoursid != "")
 		  $candidate = get_candidate_from_concoursid($row->concoursid);
@@ -434,9 +434,9 @@ function displayEditableReport($row, $canedit = true)
 				&& !(isset($row->statut) && ( $row->statut="avistransmis" || $row->statut="publie") ) );
 
 		echo "<div id=\"toolbar\">";
+		echo $titre;
 		displayEditionFrameStart("",$hidden,$submits);
 		voir_rapport_pdf($row);
-		echo $titre;
         echo "<div id=\"border-bottom\"></div>";
 		echo "</div>";
 		if(true)
