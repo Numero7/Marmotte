@@ -21,7 +21,7 @@ table.toptable
 }
 
 td {
-    padding:3px;
+    padding:1px;
 }
 
 .photoid {
@@ -194,7 +194,7 @@ font-weight:bold;
 .summary td{
     vertical-align: middle;
 	white-space:nowrap;
-	padding:2px;
+	padding:1px;
 }
 
 .iconeAvis{

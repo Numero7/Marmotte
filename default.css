@@ -120,7 +120,7 @@ h1,h2,h3,h4 {
 
 .content {
 	margin-bottom: 10px;
-	font-size:85%;
+	font-size:95%;
 }
 
 .content .descr {
@@ -299,7 +299,7 @@ textarea {
 
 input[type="submit"]{
  cursor:pointer;
- font-size:200%;
+ font-size:100%;
  font-weight:bold;
 }
 
