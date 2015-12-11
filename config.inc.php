@@ -140,6 +140,7 @@ $fieldsRapportAll = array(
 		"dsi" => "Infos e-valuation",
 		"statut" => "Statut rapport",
 		"statut_celcc"=>"Statut candidature",
+		"voeux"=>"Voeux affectation",
 		"DKEY" => "DKEY",
 		"signataire"=>"Président par interim",
 		"NUMSIRHUS" => "NUMSIRHUS",
@@ -280,6 +281,7 @@ foreach($add_rubriques_people as $code => $rubrique)
 */
 $fieldsRapportsCandidat0 = array(
 		"statut_celcc",
+		"voeux",
 		"concours",
 		"sousjury",
 		"rapporteur",
@@ -767,6 +769,7 @@ $fieldsTypes = array(
 		"genre" => "enum",
 		"statut_individu"=> "enum",
 		"statut_celcc"=> "short",
+		"voeux"=> "short",
 		"grade" => "grade",
 		"grade_rapport" => "grade",
 		"theseloc" => "enum",
@@ -862,7 +865,7 @@ $fieldsEditableOnlySecretaire = array("nom","prenom","conflits","type","signatai
 
 $nonEditableFieldsTypes = array('id','date',"nom","prenom","infos_celcc","infos_evaluation");
 $nonVisibleFieldsTypes = array('id');
-$alwaysVisibleFieldsTypes = array('nom','prenom','rapporteur','concours','avissousjury','sousjury','rapporteur2','rapporteur3','infos_evaluation','infos_celcc','unite','fichiers','fichiers_evaluation','fichiers_celcc','rapports','conflits','dsi','intitule','type','avis','statut','statut_celcc','signataire');
+$alwaysVisibleFieldsTypes = array('nom','prenom','rapporteur','concours','avissousjury','sousjury','rapporteur2','rapporteur3','infos_evaluation','infos_celcc','unite','fichiers','fichiers_evaluation','fichiers_celcc','rapports','conflits','dsi','intitule','type','avis','statut','statut_celcc','voeux','signataire');
 
 $fieldsArrayCandidat = array($fieldsCandidat, $fieldsRapportsCandidat0, $fieldsRapportsCandidat1, $fieldsRapportsCandidat2, $fieldsRapportsCandidat3);
 $fieldsArrayIE = array($fieldsCandidatAvantAudition, $fieldsRapportsIE0, $fieldsRapportsCandidat1, $fieldsRapportsCandidat2, $fieldsRapportsCandidat3);

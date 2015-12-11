@@ -121,6 +121,7 @@ function getReport($id_rapport, $most_recent = true)
 	$result=sql_request($sql);
 	$report = mysqli_fetch_object($result);
 
+
 	try
 	{
 	    if(isset($report->unite) && $report->unite != "")
@@ -131,6 +132,17 @@ function getReport($id_rapport, $most_recent = true)
 	if($report == false)
 		throw new Exception("No report with id ".$id_rapport);
 
+	if(is_rapport_concours($report) && $report->concoursid != "")
+	  {
+	    $sql = "SELECT * FROM ".dsidbname.".".celcc_candidatures." WHERE num_conc=\"".$report->concours."\" AND user_id=\"".$report->concoursid."\"";
+	    while($cand = mysqli_fetch_object(sql_request($sql)))
+	      {
+		$report->voeux = $cand->rappel_int_labo;
+		break;
+	      }
+	  }
+	else
+	  $report->voeux = "";
 
 	return normalizeReport($report);
  }

@@ -469,7 +469,7 @@ function displayEditableReport($row, $canedit = true)
 				echo'</tr></table>';
 			}
 
-			displayEditableObject("Rapport section", $row, array_merge(array("statut"),$fieldsRapportsCandidat0),$canedit, $session);
+			displayEditableObject("", $row, array_merge(array("statut"),$fieldsRapportsCandidat0),$canedit, $session);
 		}
 	}
 	else if( is_rapport_chercheur($row) )
