@@ -34,7 +34,7 @@ Il faut au maximum 12h pour que les modifications dans Ambre soient prises en co
 </p>
 -->
 
-<table>
+				  <table>
 	<?php
 $password = genere_motdepasse();
 	global $sous_jurys;
@@ -57,7 +57,7 @@ uasort($users,"cmp");
 	{
 		if ($data->permissions <= getUserPermissionLevel() || ($data->permissions  < NIVEAU_PERMISSION_SUPER_UTILISATEUR && isSecretaire()))
 		{
-			echo "\n<tr><td><b>".ucfirst($data->description)."</b></td><td> [".$user."]</td>\n";
+			echo "\n<tr><td><table><tr><td><b>".ucfirst($data->description)."</b></td></tr><tr><td> [".$user."]</td></tr></table></td>\n";
 
 
 			  if(isSuperUser())
@@ -73,7 +73,7 @@ uasort($users,"cmp");
 				echo "<td>";if($data->CID_code){ echo "CID <b> ".$data->CID_code."</b>";} echo"</td>";
 				echo "<td>"; if($data->CID_role_code) echo " <b> ".$data->CID_role_code."</b>";echo "</td>";
 			      echo "<td><form method=\"post\" action=\"index.php\">";
-			      echo "Sections <input style=\"width:5cm;\" name=\"sections\" value=\"".$data->sections."\"></input>";
+			      echo "Sections <input  name=\"sections\" value=\"".$data->sections."\"></input>";
 			echo "<select name=\"permissions\">\n";
 			foreach($permission_levels as $val => $level)
 			{

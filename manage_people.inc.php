@@ -317,6 +317,7 @@ function get_candidate_from_concoursid($user_id)
 	    $row->infos_celcc .= "<br/>";
 	    $row->infos_celcc .= "<b>Concours présentés</b> ".$row->concourspresentes."<br/>";
 	    $row->infos_celcc .= "<b>Origine candidature</b> ".$row->origine." (#".$row->user_id.")<br/>";
+	    //	    $row->infos_celcc .= "<b>Voeux affectation</b> ".$row->rappel_int_labo."<br/>";
 	    
 	    return $row;
 	  }

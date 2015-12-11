@@ -130,7 +130,7 @@ formulaire d&apos;assistance</a>.
 <td>
 <ul>
 <li><B>DSI</B></li>
-  <li>Ren&egrave; Pelfresnes (chef de projet DSI)</li>
+  <li>Ren&eacute; Pelfresnes (chef de projet DSI)</li>
 </ul>
 </td>
  </ul>
