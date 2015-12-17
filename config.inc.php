@@ -1024,12 +1024,12 @@ $typesRapportsToXSL = array(
 /* Pour les concours*/
 
 $avis_lettre = array(
-		"A+"=>"A+",
+		"Ap"=>"A+",
 		"A"=>"A",
-		"A-"=>"A-",
-		"B+"=>"B+",
+		"Am"=>"A-",
+		"Bp"=>"B+",
 		"B"=>"B",
-		"B-"=>"B-",
+		"Bm"=>"B-",
 		"C"=>"C"
 );
 
@@ -1090,17 +1090,19 @@ $tous_avis = array(
 /* Pour les promos*/
 $avis_classement = array(avis_adiscuter=>"à discuter", avis_non=>"Non", avis_oui=>"Oui");
 
+foreach($avis_lettre as $avis => $lettre)
+{
+	$avis_classement[$avis] = $lettre;
+	$avis_candidature_short[$avis] = $lettre;
+}
+
 $max_classement = 30;
 for($i = 1; $i <= $max_classement; $i++)
 {
 	$avis_classement["c".strval($i)] = "Classé $i";
 	$avis_candidature_short["c".strval($i)] = "classé $i";
 }
-foreach($avis_lettre as $avis => $lettre)
-{
-	$avis_classement[$avis] = $lettre;
-	$avis_candidature_short[$avis] = $lettre;
-}
+
 
 
 

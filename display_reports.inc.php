@@ -370,7 +370,7 @@ function display_updates()
 function displayStatutMenu()
 {
 	?>
-<td>
+</tr><tr><td>
 	<table>
 		<tr>
 			<td>
