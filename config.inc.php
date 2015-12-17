@@ -1271,11 +1271,11 @@ $actions_level = array(
 		"synchronize_sessions_with_dsi" => NIVEAU_PERMISSION_ACN,
 		"maintenance_on" => NIVEAU_PERMISSION_SUPER_UTILISATEUR,
 		"maintenance_off" => NIVEAU_PERMISSION_SUPER_UTILISATEUR,
-		"migrate_to_eval_codes" => NIVEAU_PERMISSION_SUPER_UTILISATEUR,
+		       //"migrate_to_eval_codes" => NIVEAU_PERMISSION_SUPER_UTILISATEUR,
 		"delete_units" =>NIVEAU_PERMISSION_ACN,
 		"set_rapporteur" => NIVEAU_PERMISSION_BUREAU,
 		"change_role" => NIVEAU_PERMISSION_BASE,
-		"migrate" => NIVEAU_PERMISSION_SUPER_UTILISATEUR,
+		       //"migrate" => NIVEAU_PERMISSION_SUPER_UTILISATEUR,
 		"removerubrique" => NIVEAU_PERMISSION_ACN,
 		"addrubrique" => NIVEAU_PERMISSION_ACN,
 		"removetopic" => NIVEAU_PERMISSION_ACN,
@@ -1490,11 +1490,16 @@ if(!isset($_SESSION["myconc"]))
   while ($row = mysqli_fetch_object($result))
     $_SESSION["myconc"][$row->numconc] = $row->numconc;
   
-  $_SESSION["conc_section"]  = array();
+  $sql  = "SELECT DISTINCT annee FROM ".dsidbname.".".celcc_concours;
+  $result = sql_request($sql);
+  while ($row = mysqli_fetch_object($result))
+    $_SESSION["conc_year"] = $row->annee;
+
 
   }
 
     $my_conc = $_SESSION["myconc"];
+$conc_year = isset($_SESSION["conc_year"]) ? $_SESSION["conc_year"] : "2016";
 
 $concours_ouverts = array();
 $postes_ouverts = array();

@@ -56,6 +56,17 @@ table.rapporteurs
 	border-collapse : collapse;
 }
 
+table.people
+{
+	border: 1px solid black;
+	border-collapse : collapse;
+}
+
+table.people tr {
+	  border:solid 1px gray;
+	  padding: 2px;
+}
+
 table.calendrier
 {
 	border: 1px solid black;

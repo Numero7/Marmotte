@@ -115,6 +115,9 @@ function get_bureau_stats()
 					$key = "Candidats ".$pref;
 					if(!isset($stats[$key]["Total"][$field]["counter"]))
 						$stats[$key]["Total"][$field]["counter"] = 0;
+					if(!isset($stats[$key][$row->$field]["total"]))
+					   $stats[$key][$row->$field]["total"] =0;
+					$stats[$key][$row->$field]["total"]++;
 					if(!isset($stats[$key][$row->$field][$field][$iid]))
 					{
 						$stats[$key]["Total"][$field]["counter"]++;
@@ -145,6 +148,18 @@ function get_bureau_stats()
 				$stats[$key][$row->rapporteur]["rapporteur"]["counter"]++;
 			}
 		}
+		function cmp( $stata, $statb )
+		{
+		  if(!isset($stata["total"])) return isset($statb["total"]) ? 1 : 0;
+		  if(!isset($statb["total"])) return -1;
+		  return ($stata["total"] > $statb["total"]) 
+		    ? -1 
+		    : (($stata["total"] == $statb["total"]) ? 0 : 1); 
+		}
+		foreach($stats as $key => $data)
+		  {
+		    uasort ( $stats[$key], 'cmp' );
+		  }
 	}
 	else
 	{

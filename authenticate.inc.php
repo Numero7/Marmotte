@@ -14,7 +14,7 @@ $is_maintenance = (get_config("maintenance","off",false,"0") === "on");
 
 <br/>
   <br/>
-  <h3>"Marmotte", une interface de gestion des rapports pour les sections du Comit&eacute; National.</h3>
+  <h3>"Marmotte", un outil de gestion des rapports pour les sections et CID du Comit&eacute; National.</h3>
   <br/>
   <br/>
 <br/>
@@ -86,17 +86,17 @@ En cas de besoin urgent, merci de contacter votre secr&eacute;taire scientifique
 <br/><br/><br/>
 
 
-	     <p><a href="index.php?action=auth_janus">Authentification Janus (personnels des unit&eacute;s CNRS)</a></p>
-	     <p><a href="index.php?action=auth_marmotte">Authentification Marmotte (personnels hors-unit&eacute;s CNRS, demandez un mot de passe &agrave; votre ACN)</a></p>
+	     <p><a href="index.php?action=auth_janus">Authentification Janus (membres des unit&eacute;s CNRS)</a></p>
+	     <p><a href="index.php?action=auth_marmotte">Authentification Marmotte (membres hors-unit&eacute;s CNRS, demandez un mot de passe &agrave; votre ACN)</a></p>
 	 <?php 
 	 }
 	 ?>
 	<br/>
 <p>
 En cas de difficult&eacute; de connexion,
-veuillez contacter votre ACN et utiliser le 
+veuillez utiliser le 
 <a href="https://support.dsi.cnrs.fr/webassistance/index.asp?prod=6106">
-formulaire d&apos;assistance</a>. 
+formulaire d&apos;assistance de la dsi</a>. 
 </p>
 <br/>	
   <br/>
@@ -104,9 +104,9 @@ formulaire d&apos;assistance</a>.
   <br/>
   <table>
   <tr>
-  <td width="30%"></td>
-  <td width="70%">
-		    <h3>Contributeurs Marmotte 2.3 "RainSeason"</h3>
+  <td width="20%"></td>
+  <td width="80%">
+		    <h3>Contributeurs <a href="http://s.scifi-universe.com/galeries/images-old/abominable/jour_sans_fin_01.jpg">Marmotte 2.3 "RainSeason"</a></h3>
 <table><tr><td>
   <ul>
   <li><B>Secrétaires scientifiques</B></li>
@@ -122,15 +122,15 @@ formulaire d&apos;assistance</a>.
 <td>
 <ul>
 <li><B>SGCN</B></li>
-		    <li>Marie-Claude Labastie (ambassadrice)</li>
-	   <li>Laurent Chazaly (coordinateur SGCN et formation)</li>
-		    <li>Mich&egrave;le Desumeur (&beta;-testeuse ACN)</li>
+		    <li>Marie-Claude Labastie<br/> (ambassadrice)</li>
+	   <li>Laurent Chazaly<br/> (coordinateur SGCN et formation)</li>
+		    <li>Mich&egrave;le Desumeur<br/> (&beta;-testeuse ACN)</li>
 </ul>
 </td>
 <td>
 <ul>
 <li><B>DSI</B></li>
-  <li>Ren&eacute; Pelfresnes (chef de projet DSI)</li>
+  <li>Ren&eacute; Pelfresnes<br/> (chef de projet DSI)</li>
 </ul>
 </td>
  </ul>

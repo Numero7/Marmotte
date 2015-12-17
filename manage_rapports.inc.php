@@ -191,13 +191,6 @@ function filterSortReports($filters, $filter_values = array(), $sorting_value = 
 	$sql = "SELECT *, ".reports_db.".id AS report_id, ".people_db.".id AS people_id, ".people_db.".nom AS people_nom, ".people_db.".prenom AS people_prenom, ".people_db.".conflits AS people_conflits, ".reports_db.".nom AS nom, ".reports_db.".prenom AS prenom FROM ".reports_db;
 	$sql .=" left join ".people_db." on ".reports_db.".nom=".people_db.".nom AND ".reports_db.".prenom=".people_db.".prenom AND ".reports_db.".section=".people_db.".section WHERE ";
 	$sql .= reports_db.".id=".reports_db.".id_origine AND ".reports_db.".statut!=\"supprime\" AND ".reports_db.".section=\"".$section."\"";
-	//$sql = "SELECT * FROM ".reports_db." WHERE id = id_origine AND statut!=\"supprime\"";
-	//$sql = "SELECT * FROM ".reports_db." WHERE date = (SELECT MAX(date) FROM evaluations AS mostrecent WHERE mostrecent.id_origine = evaluations.id_origine AND statut!=\"supprime\")";
-	//$sql = "SELECT * FROM ( SELECT id, MAX(date) AS date FROM evaluations GROUP BY id_origine) mostrecent ON tt.date = mostrecent.date";
-	//$sql = "SELECT * FROM evaluations WHERE (SELECT id, MAX(date) AS date FROM evaluations GROuP BY id_origine) AS X "
-	//$sql = "SELECT tt.*, ss.nom AS nom_session, ss.date AS date_session FROM evaluations tt INNER JOIN ( SELECT id, MAX(date) AS date FROM evaluations GROUP BY id_origine) mostrecent ON tt.date = mostrecent.date, sessions ss WHERE ss.id=tt.id_session ";
-	//$sql = "SELECT * FROM evaluations WHERE 1 ";
-
 
 	$sql .= filtersCriteriaToSQL($filters,$filter_values, $rapporteur_or);
 	$sql .= sortCriteriaToSQL($sorting_value);
@@ -213,10 +206,12 @@ function filterSortReports($filters, $filter_values = array(), $sorting_value = 
 	//echo $sql."<br/>".count($rows)." rows ".mysqli_num_rows($result)." sqlrows<br/>";
 
 	global $my_conc;
+	global $conc_year;
+
 	while ($row = mysqli_fetch_object($result))
 	{
 	  /*dirty rule to skip reports that I am not allowed to see */
-	  if(!isSecretaire("",false) && isset($row->concours) && $row->concours!="" && !isset($my_conc[$row->concours]))
+	  if(!isSecretaire("",false) && isset($row->concours) && $row->concours!="" && ($row->id_session=="Concours".$conc_year) && !isset($my_conc[$row->concours]))
 	    {
 	    continue;
 	    }
@@ -632,7 +627,7 @@ function addReportToDatabase($report,$normalize = true)
 	    }
 	catch(Exception $e){}
 
-	$specialRule = array("date","id","id_origine");
+	$specialRule = array("date","id","id_origine","voeux");
 
 	$id_origine = isset($report->id_origine) ? $report->id_origine : 0;
 	if($id_origine == 0)
@@ -725,7 +720,7 @@ function addReportToDatabase($report,$normalize = true)
 		$sqlfields = "";
 		$sqlvalues = "";
 
-		$specialRule = array("date","id");
+		$specialRule = array("date","id","voeux");
 
 		if(!isSuperUser())
 		  $current_report->section = $_SESSION['filter_section'];
@@ -1395,6 +1390,8 @@ function get_readable_fields($row)
 		$result[] = $field;
 	return $result;
 }
+
+/*
 function migrate_to_avis_codes()
 {
 
@@ -1524,6 +1521,8 @@ function migrate_to_eval_codes()
 
 
 }
+*/
+
 
 function is_rapport_chercheur($row)
 {
@@ -1605,7 +1604,7 @@ function get_current_report_types()
 		return $typesRapportsSession;
 	}
 }
-
+/*
 function inject_new_reports_from_dsi()
 {
 	$sql = "SELECT * FROM dsi.evaluationdoc WHERE numsirhus NOT IN SELECT numsirhus FROM dsi.evaluationdoc;";
@@ -1639,4 +1638,5 @@ function inject_new_reports_from_dsi()
 		}
 	}
 }
+*/
 ?>

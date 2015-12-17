@@ -310,10 +310,10 @@ function alertText($text)
 					set_config("maintenance", "off");
 					include 'admin/admin.inc.php';
 					break;
-				case 'migrate_to_eval_codes':
+					/*				case 'migrate_to_eval_codes':
 					migrate_to_eval_codes();
 					migrate_to_avis_codes();
-					break;
+					break;*/
 				case 'delete_units':
 					delete_all_units();
 					include "admin/admin_units.php";
@@ -334,12 +334,12 @@ function alertText($text)
 				case 'change_section':
 					displayReports();
 					break;
-				case 'migrate':
+					/*case 'migrate':
 					$types = array("users","reports","people","sessions","units");
 					foreach($types as $type)
 						if(isset($_REQUEST[$type]) && $_REQUEST[$type]=="on")
 						migrate( $_REQUEST["section"], $_REQUEST["db_ip"], $_REQUEST["db_name"],$_REQUEST["db_user"],  $_REQUEST["db_pass"], $type);
-					break;
+						break;*/
 				case 'addrubrique':
 					add_rubrique($_REQUEST["index"], $_REQUEST["rubrique"], $_REQUEST["type"]);
 					include 'admin/admin.inc.php';

@@ -48,13 +48,14 @@ else
 			<br/>
 <hr />
 
-			<h3>Synchronisation des sessions avec e-valuation</h3>
+<!--			<h3>Synchronisation des sessions avec e-valuation</h3>
 	<p>
   R&eacute;cup&egrave;re la liste des sessions disponibles dans e-valuation.
 </p><p>
 <a href="index.php?action=synchronize_sessions_with_dsi&amp;admin_maintenance=">Synchroniser les sessions avec e-valuation.</a>
 </p>
 <hr />
+-->
 
 			<h3>Ajout d&#39;une session</h3>
 			<p>Ce menu permet de créer une nouvelle session.</p>

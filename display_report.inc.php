@@ -50,7 +50,7 @@ function displayEditableCandidate($candidate,$report = NULL,$canedit = true)
 	$submit = array();
 
 	displayEditionFrameStart("",$hidden,$submit);
-	displayEditableObject("",
+	displayEditableObject("Candidat(e)",
 			 $candidate,
 			 $fields,
 			$canedit,
@@ -232,22 +232,16 @@ function displayEditableObject($titlle, $row, $fields, $canedit, $session, $extr
 	{
 		$style = is_array($fieldId) ? getStyle($fieldId[0],$odd): getStyle($fieldId,$odd);
 		$odd = !$odd;
-		echo '<table style="width:90%"><tr class="'.$style.'">'."\n";
+		echo '<table style="width:100%"><tr class="'.$style.'">'."\n";
 		if(is_array($fieldId))
 		  {
-		    //		    echo count($fieldId);
 			foreach($fieldId as $singleField)
 			{
 				echo '<td style="width:'.strval(round(100/(count($fieldId) ))).'%">';
-				echo '<table style="width:100%">'."\n".'<tr class="'.$style.'">'."\n";
+				echo '<table style="width:100%>'."\n".'<tr class="'.$style.'">'."\n";
 				displayEditableField($row, $singleField,$canedit,$session);
 			if( isset( $extra_objects[$singleField]) )
-			  {
-			    //echo '<tr class="'.$style.'">';
 			    echo '<td>'.$extra_objects[$singleField].'</td>';
-			    //echo $extra_objects[$singleField];
-			    //echo '</tr>';
-			  }
 				echo "\n".'</tr></table></td>'."\n";
 			}
 		}
@@ -263,9 +257,6 @@ function displayEditableObject($titlle, $row, $fields, $canedit, $session, $extr
 			  }
 			echo "\n".'</tr></table></td>'."\n";
 		}
-		
-
-
 		echo '</tr></table>'."\n";
 	}
 }
@@ -469,7 +460,7 @@ function displayEditableReport($row, $canedit = true)
 				echo'</tr></table>';
 			}
 
-			displayEditableObject("", $row, array_merge(array("statut"),$fieldsRapportsCandidat0),$canedit, $session);
+			displayEditableObject("Candidature", $row, array_merge(array("statut"),$fieldsRapportsCandidat0),$canedit, $session);
 		}
 	}
 	else if( is_rapport_chercheur($row) )
