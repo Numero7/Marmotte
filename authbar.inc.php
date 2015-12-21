@@ -203,6 +203,7 @@ if(isSecretaire())
 <?php 
       }
 ?>
+<li><a href="http://www.cnrs.fr/comitenational/outils/doc/prise_en_main_marmotte_concours.pdf">Aide</li>
 <li><a href="index.php?action=logout">
 Déconnexion
 </a>

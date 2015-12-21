@@ -111,6 +111,8 @@ else
 			<p>Ce menu permet de supprimer une session.</p>
 
 				<B>Session</B>
+			<form method="get" action="index.php"
+				onsubmit="return confirm('Etes vous sur de vouloir supprimer cette session?');">
   <select name="sessionid">
 		<?php 
 		$sessions =  showSessions();
@@ -124,7 +126,7 @@ else
     </select>
 						<input type="hidden" name="action" value="admindeletesession" />
 					<input type="checkbox" name="supprimerdossiers" 
-									style="width: 10px;" /> Supprimer définitivement les dossiers et rapports
+									style="width: 10px;"> Supprimer définitivement les dossiers et rapports
 </input>
-						<input type="submit" value="Supprimer la session" />
+						<input type="submit" value="Supprimer la session"></input>
 			</form>

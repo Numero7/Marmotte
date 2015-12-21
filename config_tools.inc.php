@@ -17,7 +17,7 @@
 		"acn_can_edit_rapporteurs"=> array("L'ACN peut modifier les rapporteurs","true"),
 		"sec_can_edit_valid"=> array("En plus du président, le secrétaire peut éditer les rapports en mode 'validation'","true"),
 		"acn_can_edit_valid"=> array("En plus du président, l'ACN peut éditer les rapports en mode 'validation'","true"),
-		"email_scc"=>array("email à utiliser pour alerter la SCC d'un changement de rapporteur",""),
+		"email_scc"=>array("email utilisé pour informer le SCC d'un changement de rapporteur sur une candidature",""),
 		"B_can_view_DR1_promo"=> array("Les rangs B ont accès aux dossiers de promo DR1","true"),
 		"C_can_view_DR1_promo"=> array("Les rangs C ont accès aux dossiers de promo DR1","false"),
 		"show_rapporteur3"=> array("Afficher le raporteur3 et son avis dans l'écran principal","false"),
