@@ -97,24 +97,6 @@ function updateCandidateFromRequest($request, $oldannee="")
 		$data->$field = nl2br(trim($request["field".$field]),true);
 	  }
 
-	/*
-	  Abandon de la gestion des changementsde nom
-	if(	isset($request['previousnom']) && isset($request['previousprenom']))
-	{
-		$ppnom = $request['previousnom'];
-		$ppprenom = $request['previousprenom'];
-
-		if( (isset($data->nom) && $ppnom != "" && $data->nom != $ppnom) || (isset($data->prenom) && $ppprenom != "" && $data->prenom != $ppprenom) )
-		{
-			$sql = "UPDATE ".reports_db." SET nom=\"".$data->nom."\", prenom=\"".$data->prenom."\" WHERE nom =\"".$ppnom."\" AND prenom=\"".$ppprenom."\"  AND section=\"".currentSection()."\"";
-			sql_request($sql);
-			$sql = "UPDATE ".people_db." SET nom=\"".$data->nom."\", prenom=\"".$data->prenom."\" WHERE nom =\"".$ppnom."\" AND prenom=\"".$ppprenom."\"  AND section=\"".currentSection()."\"";
-			sql_request($sql);
-			rename_people_directory(current_session_id(), $data->nom, $data->prenom, $ppnom, $ppprenom);
-		}
-
-	}
-	*/
 	$candidate = updateCandidateFromData($data);
 
 	return $candidate;

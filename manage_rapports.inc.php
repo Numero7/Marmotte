@@ -1009,6 +1009,7 @@ function getTodoReports($login)
 
 function find_somebody_reports($candidate,$eval_type = "")
 {
+  if(!isset($candidate->nom) || $candidate->nom == "") return array();
 	if($eval_type == "")
 		return  filterSortReports(array("nom"=>"","prenom" => ""), array("nom"=>$candidate->nom,"prenom" => $candidate->prenom), array("id_session"=>"+", "type"=>"+"));
 	else

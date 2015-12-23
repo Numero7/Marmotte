@@ -18,14 +18,12 @@ function displayEditableCandidate($candidate,$report = NULL,$canedit = true)
 
 	$hidden = array("action" => "update");
 
-	$hidden["previousnom"] = $candidate->nom;
-	$hidden["previousprenom"] = $candidate->prenom;
-
 	$session = current_session();
 
 	global $tous_sous_jury;
 	$concours = getConcours();
-	
+
+	if($candidate == null) $candidate = (object) null;	
 	if($report != NULL)
 	{
 		$hidden["id_origine"] = $report->id_origine;

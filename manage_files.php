@@ -36,7 +36,7 @@ function find_celcc_files($row, $session)
        $corps_grade = "";
     }
 
-  if($row->concoursid=="")
+  if(!isset($row->concoursid) || $row->concoursid=="")
     return array();
   $sql = "SELECT * FROM ".dsidbname.".".celcc_docs." ";
   $sql .="WHERE user_id='".real_escape_string($row->concoursid)."' ";
