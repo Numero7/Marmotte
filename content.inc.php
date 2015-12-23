@@ -642,13 +642,13 @@ function alertText($text)
 					  scrollToId("sessions");
 					}
 				 break;
+			case 'delete_concours':
 				case 'admindeletesession':
 					if (isset($_REQUEST["sessionid"]))
 					{
 						deleteSession(real_escape_string($_REQUEST["sessionid"]), isset($_REQUEST["supprimerdossiers"]));
-?>
-		<script type="text/javascript">	window.location = "index.php?action=admin&admin_sessions="</script>
-<?php
+						if(!isSuperUser())
+							displayWithRedirects();
 					}
 					break;
 				case 'changepwd':

@@ -124,6 +124,26 @@ function deletePreRapports($id)
 
 function deleteSession($id, $supprimerdossiers)
 {
+  if(isSuperUser())
+    {
+      echo "<p>Suppression des sessions d'intitule ".$id."<br/>";
+		$sql = "DELETE FROM ".sessions_db." WHERE id='$id'";
+		sql_request($sql);
+		unset($_SESSION['all_sessions']);
+		if($supprimerdossiers)
+		{
+      echo "<p>Suppression des dossiers de la sessions ".$id."<br/>";
+			$sql = "DELETE FROM ".reports_db." WHERE id_session='$id'";
+			sql_request($sql);
+		}
+		if(strpos($id,"Concours") !== FALSE)
+		  {
+      echo "<p>Suppression de toutes les fiches candidats<br/>";
+		    	$sql = "DELETE FROM ".people_db." WHERE concoursid!=\"\"";
+			sql_request($sql);
+		  }
+    }
+  else
 	if (isSecretaire())
 	{
 		$sql = "DELETE FROM ".sessions_db." WHERE id='$id' AND section='".$_SESSION['filter_section']."';";

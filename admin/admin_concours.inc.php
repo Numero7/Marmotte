@@ -1,6 +1,35 @@
+
 <h2 id="concours">Concours</h2>
 <hr />
-
+<?php
+   if(isSuperUser())
+     {
+       $all_concours=array();
+       $sql = "SELECT DISTINCT id_session FROM reports";
+       $result = sql_request($sql);
+       while($row = mysqli_fetch_object($result))
+	 if(strpos($row->id_session,"Concours") !== false)
+	   $all_concours[]=$row->id_session;
+       ?>
+<form method="post" onsubmit="return confirm('Etes vous complètement sur de vouloir supprimer les données de ce concours pour toutes les sections?);">
+       <form>
+<select name="sessionid">
+<?php
+   foreach($all_concours as $concours)
+   echo "<option value=\"".$concours."\">".$concours."</option>";
+?>
+</select>
+<br/>
+	<input type="hidden" name="supprimerdossiers"></input>
+	<input type="hidden" name="admin_concours"></input>
+       <input  type="hidden" name="action" value="delete_concours" />
+	<input type="submit" value="Supprimer entièrement ce concours de la base de données" />
+</form>
+<?php
+     }
+   else
+     {
+?>
 <h3>Liste des concours</h3>
 <table class="stats">
 	<?php 
@@ -196,3 +225,6 @@ foreach($concours as $conc)
 	
 	</table>
 </form>
+<?php
+	    }
+?>

@@ -6,7 +6,7 @@ require_once('manage_unites.inc.php');
 $admin_sessions = isset($_REQUEST["admin_sessions"]) && isSecretaire();
 $admin_maintenance = isset($_REQUEST["admin_maintenance"]) && isSuperUser();
 $admin_users = isset($_REQUEST["admin_users"]) && isSecretaire();
-$admin_concours = isset($_REQUEST["admin_concours"]) && isSecretaire() && !isSuperUser();
+$admin_concours = isset($_REQUEST["admin_concours"]) && isSecretaire();
 $admin_config = isset($_REQUEST["admin_config"]) && isSecretaire() && !isACN() && !isSuperUser();
 $admin_keywords = isset($_REQUEST["admin_keywords"]) && isSecretaire();
 $admin_rubriques = isset($_REQUEST["admin_rubriques"]) && isSecretaire() && !isSuperUser();
@@ -37,6 +37,13 @@ if(!isACN() && !isSuperUser())
 
     <?php 
 }
+if(isSuperUser())
+  {
+	      ?>
+	      <li>
+	      <a href="index.php?action=admin&amp;admin_concours=">Concours</a></li>
+		<?php
+  }
 	if(!isSuperUser())
 	{
 	  if( is_current_session_concours() )
@@ -78,7 +85,7 @@ if($admin_users)
 if($admin_unites)
   include "admin_units.php";
 
-if($admin_concours && is_current_session_concours() )
+if($admin_concours && (isSuperUser() || is_current_session_concours()) )
   include 'admin/admin_concours.inc.php';
 
 if($admin_config)

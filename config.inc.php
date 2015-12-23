@@ -1302,6 +1302,7 @@ $actions_level = array(
 		"checkpwd" => NIVEAU_PERMISSION_ACN,
 		"adminnewaccount" => NIVEAU_PERMISSION_ACN,
 		"admindeletesession" => NIVEAU_PERMISSION_ACN,
+		"deleteconcours" => NIVEAU_PERMISSION_SUPER_UTILISATEUR,
 		"changepwd" => NIVEAU_PERMISSION_BASE,
 		"add_concours" => NIVEAU_PERMISSION_ACN,
 		"delete_concours" => NIVEAU_PERMISSION_ACN,
