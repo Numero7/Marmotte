@@ -141,6 +141,9 @@ function deleteSession($id, $supprimerdossiers)
       echo "<p>Suppression de toutes les fiches candidats<br/>";
 		    	$sql = "DELETE FROM ".people_db." WHERE concoursid!=\"\"";
 			sql_request($sql);
+      echo "<p>Suppression de tous les sousjurys<br/>";
+		    	$sql = "DELETE FROM ".concours_db." WHERE 1";
+			sql_request($sql);
 		  }
     }
   else
