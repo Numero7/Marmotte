@@ -149,17 +149,15 @@ function displayStatsConcours()
 					<?php
 					foreach($data as $login => $data_rapporteur)
 					{
-						  echo ".";
 						$nom= isset($rapporteurs[$login])? $rapporteurs[$login] : $login;
 						echo "<tr ><td>".$nom."</td>";
-						$total = 0;
+						$total = isset($data_rapporteur["total"]) ? $data_rapporteur["total"] : 0;
 						foreach($roles as $role)
 						{
 							if(isset($data_rapporteur[$role]))
 							{
 								$stat = $data_rapporteur[$role]["counter"];
 								echo "<td>".$stat."</td>";
-								$total += $stat;
 							}
 							else
 								echo "<td></td>";

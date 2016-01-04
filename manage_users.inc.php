@@ -88,7 +88,7 @@ function get_bureau_stats()
 		$sousjurys = getSousJuryMap();
 		$concours = getConcours();
 
-		$stats = array("Candidats CR"=>array(), "Candidats DR"=>array());
+		$stats = array();//"Candidats CR"=>array(), "Candidats DR"=>array());
 		$fields = array("rapporteur","rapporteur2","rapporteur3");
 
 		$sql = "SELECT * FROM reports WHERE section=\"".currentSection()."\" AND id_session=\"".current_session();
@@ -110,21 +110,22 @@ function get_bureau_stats()
 
 			foreach($fields as $field)
 			{
-				if($row->$field != "" && !isset($stats[$pref][$row->$field][$field][$iid]))
+			  $rapp = $row->$field;
+			  if($rapp != "" && ($iid == "" || !isset($stats[$pref][$rapp][$field][$iid])))
 				{
 					$key = "Candidats ".$pref;
 					if(!isset($stats[$key]["Total"][$field]["counter"]))
 						$stats[$key]["Total"][$field]["counter"] = 0;
-					if(!isset($stats[$key][$row->$field]["total"]))
+					if(!isset($stats[$key][$rapp]["total"]))
 					   $stats[$key][$row->$field]["total"] =0;
-					$stats[$key][$row->$field]["total"]++;
-					if(!isset($stats[$key][$row->$field][$field][$iid]))
+					$stats[$key][$rapp]["total"]++;
+					if($iid == "" || !isset($stats[$key][$rapp][$field][$iid]))
 					{
 						$stats[$key]["Total"][$field]["counter"]++;
-						$stats[$key][$row->$field][$field][$iid] = "ok";
-						if(!isset($stats[$key][$row->$field][$field]["counter"]))
-							$stats[$key][$row->$field][$field]["counter"] = 0;
-						$stats[$key][$row->$field][$field]["counter"]++;
+						$stats[$key][$rapp][$field][$iid] = "ok";
+						if(!isset($stats[$key][$rapp][$field]["counter"]))
+							$stats[$key][$rapp][$field]["counter"] = 0;
+						$stats[$key][$rapp][$field]["counter"]++;
 					}
 					//echo "add 1 to ".$iid." ".$pref." ".$row->$field." ".$field." tot ".$stats[$pref][$row->$field][$field]["counter"]."<br/>";
 				}
