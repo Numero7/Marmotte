@@ -66,7 +66,7 @@ $tris = array(
 	      "key3"=>"marmotte.theme3",
 	      "age"=>"dsi.drecrute");
 
-if(isset($tris[$_REQUEST["tri"]]))
+if(isset($_REQUEST["tri"]) && isset($tris[$_REQUEST["tri"]]))
   {
    $tri = $_REQUEST["tri"];
    $ftri = $tris[$tri];

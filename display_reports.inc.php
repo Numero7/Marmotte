@@ -238,6 +238,8 @@ function displayRowCell($row, $fieldID)
 	global $fieldsTypes;
 	$type = isset($fieldsTypes[$fieldID]) ?  $fieldsTypes[$fieldID] : "";
 
+	global $statutsRapports;
+
 	if($type=="rapporteur")
 	{
 	  if(is_field_editable($row, $fieldID))
@@ -328,6 +330,11 @@ function displayRowCell($row, $fieldID)
 		$data = isset($prettyunits[$row->$fieldID]) ? ($prettyunits[$row->$fieldID]->nickname." (".$row->$fieldID.")") : $row->$fieldID;
 		echo '<span class="valeur">'.$data.'</span>';
 	}
+	else if($type == "statut")
+	  {
+
+	    echo isset($statutsRapports[$data]) ? $statutsRapports[$data]: $data;
+	  }
 	else if($fieldID == "type" && isset($typesRapportsAll[$data]))
 	  {
 	    $label = $typesRapportsAll[$data];
@@ -370,10 +377,8 @@ function display_updates()
 function displayStatutMenu()
 {
 	?>
-</tr><tr><td>
-	<table>
-		<tr>
-			<td>
+</tr>
+<tr><td>
 				<form
 					onsubmit="return confirm('Changer les statuts des rapports?');"
 					method="post" action="index.php">
@@ -385,13 +390,13 @@ function displayStatutMenu()
 									<?php
 									global $statutsRapports;
 									global $statutsRapportsACN;
-									$statuts = isACN() ? $statutsRapportsACN : $statutsRapports;									
+									global $statutsRapportsMulti;
+									//	  display_select($row, $fieldID,$statutsRapportsIndiv,$readonly);
+									$statuts = isACN() ? $statutsRapportsACN : $statutsRapportsMulti;									
 
 									foreach ($statuts as $val => $nom)
 									{
-									  if($val == "avistransmis" || $val == "publie")
-									    continue;
-										$sel = "";
+									    										$sel = "";
 										echo "<option value=\"".$val."\" $sel>".$nom."</option>\n";
 									}
 									?>
@@ -401,40 +406,29 @@ function displayStatutMenu()
 						</tr>
 					</table>
 				</form>
-			</td>
-		</tr>
 							    <?php if(!is_current_session_concours())
 							    {
 ?>
-		<tr>
-			<td>
 				<form onsubmit="return confirm('Supprimer ces rapports?');"
 					method="post" action="index.php">
 					<input type="hidden" name="action" value="deleteCurrentSelection" />
 					<input type="submit" value="Supprimer rapports" />
 				</form>
-			</td>
-		</tr>
 		<?php
     }
 		if(is_current_session_concours())
 		{
 		?> 
-		<tr>
-			<td>
 				<form method="post" action="index.php"
 					onsubmit="return confirm('Affecter les sections de jury?');">
 					<input type="hidden" name="action" value="affectersousjurys2" /> <input
 						type="submit" value="Affecter sections de jurys" /> <input type="hidden"
 						name="admin_concours"></input>
 				</form>
-			</td>
-		</tr>
 		<?php 
 		}
 		?>
 		
-	</table>
 </td>
 <?php 
 }

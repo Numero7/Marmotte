@@ -131,7 +131,7 @@ if(!isSuperUser())
 <td valign="top">
 <ul>
 		<?php 
-		  if(isSecretaire() && !isSuperUser())
+		  if(false && isSecretaire() && !isSuperUser())
 		  {
 		    if(!is_current_session_concours())
 		      {
@@ -147,7 +147,7 @@ else
 		      }
 
 		  }
-if(isSecretaire() && !isACN() && !isSuperUser())
+if(false && isSecretaire() && !isACN() && !isSuperUser())
 	      {
 		if(!is_current_session_concours())
 		  {
@@ -203,11 +203,12 @@ if(isSecretaire())
 <?php 
       }
 ?>
-<li><a href="http://www.cnrs.fr/comitenational/outils/doc/prise_en_main_marmotte_concours.pdf">Aide</li>
 <li><a href="index.php?action=logout">
 Déconnexion
 </a>
-</li></ul>
+</li>
+<li><a href="http://www.cnrs.fr/comitenational/outils/doc/prise_en_main_marmotte_concours.pdf">Aide</li>
+</ul>
 </td>
 </tr>
 					</table>

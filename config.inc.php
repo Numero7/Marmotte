@@ -24,28 +24,37 @@ $add_rubriques_unites = get_rubriques("unites");
 
 
 $statutsRapports = array(
-		'doubleaveugle'=>'Edition Prérapports Double Aveugle',
-		'edition' => "Edition Prérapports et Rapports",
-		'avistransmis'=>"Avis transmis dans e-valuation",
-		'validation'=>"Validation par le président",
-		'publie'=>"Rapports transmis",
+		'doubleaveugle'=>'Edition Double Aveugle',
+		'edition' => "Edition",
+		'avistransmis'=>"Avis transmis",
+		'validation'=>"Validation président",
+		'publie'=>"Rapport transmis",
 		'audition'=>"Audition"
 );
 
 $statutsRapportsACN = array(
-		'doubleaveugle'=>'Edition Prérapports Double Aveugle',
-		'edition' => "Edition Prérapports et Rapports",
-		'avistransmis'=>"Avis transmis dans e-valuation",
-		'validation'=>"Validation par le président"
+		'doubleaveugle'=>'Edition Double Aveugle',
+		'edition' => "Edition",
+		'avistransmis'=>"Avis transmis",
+		'validation'=>"Validation président"
 );
 
 $statutsRapportsIndiv = array(
-		'doubleaveugle'=>'Edition Prérapports Double Aveugle',
-		'edition' => "Edition Prérapports et Rapports",
-		'avistransmis'=>"Transmettre l'avis dans e-valuation (l'avis ne sera plus modifiable)",
-		'validation'=>"Validation par le président (les rapporteurs ne peuvent plus éditer le RS)",
-		'publie'=>"Finaliser le rapport (le RS ne sera plus modifable)"
+		'doubleaveugle'=>'Edition Double Aveugle (les rapporteurs ne voient que leus propres prérapports)',
+		'edition' => "Edition (édition par les rapporteurs)",
+		'avistransmis'=>"Transmettre l'avis (l'avis ne sera définitivement plus modifiable)",
+		'validation'=>"Validation président (seuls le président et le secrétaire peuvent éditer le rapport)",
+		'publie'=>"Transmettre le rapport (le RS ne sera définitivement plus modifable)"
 );
+$statutsRapportsMulti = array(
+		'doubleaveugle'=>'Edition Double Aveugle (les rapporteurs ne voient que leurs propres prérapports)',
+		'edition' => "Edition (édition par les rapporteurs)",
+		'avistransmis'=>"Transmettre les avis (les avis ne sont définitivement plus modifiables)",
+		'validation'=>"Validation président (seuls le président et le secrétaire peuvent éditer les rapports)",
+		'publie'=>"Transmettre les rapports (les rapports ne sont définitivement plus modifables)"
+);
+
+
 
 
 

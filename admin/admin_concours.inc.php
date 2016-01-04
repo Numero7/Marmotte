@@ -59,7 +59,7 @@
 <h3>Configurer un concours</h3>
 <p>
     Ce menu permet de configurer un concours.<br />
-    L&#39;intitulé du concours doit être court et commencer par le grade, par exemple "CR2" ou "CR2_coloriage".<br />
+    Le champ 'intitulé' permet d associer un mot clé avec un concours, utilisé pour affichage dans Marmotte.<br />
 	Si le jury est plénier ou si vous ne connaissez pas encore la liste de
 	vos sections de jurys, laisser les champs "SecJury*" et "President*" vides.<br />
 
