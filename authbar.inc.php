@@ -131,7 +131,7 @@ if(!isSuperUser())
 <td valign="top">
 <ul>
 		<?php 
-		  if(false && isSecretaire() && !isSuperUser())
+		  if(isSecretaire() && !isSuperUser())
 		  {
 		    if(!is_current_session_concours())
 		      {
@@ -147,7 +147,7 @@ else
 		      }
 
 		  }
-if(false && isSecretaire() && !isACN() && !isSuperUser())
+if(isSecretaire() && !isACN() && !isSuperUser())
 	      {
 		if(!is_current_session_concours())
 		  {
