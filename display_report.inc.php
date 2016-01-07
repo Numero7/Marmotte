@@ -415,7 +415,7 @@ function displayEditableReport($row, $canedit = true)
 			displayEditableCandidate($candidate,$row,$canedit);
 
 			$other_reports = find_somebody_reports($candidate,$eval_type);
-			echo "<br/><hr/><br/>";
+
 
 			$fieldsRapportsCandidat0 = $typesRapportToFields[$eval_type][1];
 			$fieldsRapportsCandidat1 = $typesRapportToFields[$eval_type][2];
@@ -431,6 +431,8 @@ function displayEditableReport($row, $canedit = true)
 				$submits["importconcours".$report->concours] = "Importer données concours ".$report->concours;
 
 			$hidden['fieldconcours'] = $row->concours;
+
+		echo "<br/><hr/><br/>";
 
 			displayEditionFrameStart("",$hidden,$submits);
 				
@@ -457,6 +459,8 @@ function displayEditableReport($row, $canedit = true)
 				}
 				echo'</tr></table>';
 			}
+
+		echo "<br/><hr/><br/>";
 
 			displayEditableObject("Candidature", $row, array_merge(array("statut"),$fieldsRapportsCandidat0),$canedit, $session);
 		}
@@ -515,6 +519,7 @@ function displayEditableReport($row, $canedit = true)
 			}
 			echo '</tr></table>';
 		}
+			echo "<br/><hr/><br/>";
 		displayEditableObject("Rapport section", $row,$fieldsIndividual0, $canedit, $session);
 	}
 	else// if( is_rapport_unite($row) )
@@ -571,6 +576,7 @@ function displayEditableReport($row, $canedit = true)
 		}
 
 		echo'</tr></table>';
+			echo "<br/><hr/><br/>";
 		displayEditableObject("Rapport section", $row,$fieldsUnites0, $canedit, $session);
 
 	}

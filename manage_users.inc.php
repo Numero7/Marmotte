@@ -100,53 +100,43 @@ function get_bureau_stats()
 		while( $row = mysqli_fetch_object($result))
 		{
 			if(isset($concours[$row->concours]))
+			  {
 				$pref = substr($concours[$row->concours]->intitule,0,2);
+				$pref = substr($concours[$row->concours]->grade,0,2);
+			  }
 			else
+			  {
 				$pref = $row->concours;
+				
+				$pref = "CR/DR";
+			  }
 			$iid = $row->concoursid;
 
 			if($row->avis == avis_nonauditionne)
 				continue;
 
+			$done = array();
+
 			foreach($fields as $field)
 			{
 			  $rapp = $row->$field;
-			  if($rapp != "" && ($iid == "" || !isset($stats[$pref][$rapp][$field][$iid])))
+			  if($rapp != "" && ($iid == "" || !isset($done[$pref][$rapp][$iid])))
 				{
-					$key = "Candidats ".$pref;
-					if(!isset($stats[$key]["Total"][$field]["counter"]))
-						$stats[$key]["Total"][$field]["counter"] = 0;
-					if(!isset($stats[$key][$rapp]["total"]))
-					   $stats[$key][$row->$field]["total"] =0;
-					$stats[$key][$rapp]["total"]++;
-					if($iid == "" || !isset($stats[$key][$rapp][$field][$iid]))
+					if(!isset($stats[$pref]["Total"][$field]))
+						$stats[$pref]["Total"][$field] = 0;
+					if(!isset($stats[$pref][$rapp]["total"]))
+					   $stats[$pref][$row->$field]["total"] =0;
+					$stats[$pref][$rapp]["total"]++;
+					//if($iid == "" || !isset($stats[$key][$rapp][$field][$iid]))
 					{
-						$stats[$key]["Total"][$field]["counter"]++;
-						$stats[$key][$rapp][$field][$iid] = "ok";
-						if(!isset($stats[$key][$rapp][$field]["counter"]))
-							$stats[$key][$rapp][$field]["counter"] = 0;
-						$stats[$key][$rapp][$field]["counter"]++;
+						$stats[$pref]["Total"][$field]++;
+						$done[$pref][$rapp][$iid] = "ok";
+						if(!isset($stats[$pref][$rapp][$field]))
+							$stats[$pref][$rapp][$field] = 0;
+						$stats[$pref][$rapp][$field]++;
 					}
 					//echo "add 1 to ".$iid." ".$pref." ".$row->$field." ".$field." tot ".$stats[$pref][$row->$field][$field]["counter"]."<br/>";
 				}
-			}
-
-			$already_seen = isset($iid_seen[$iid]);
-			$iid_seen[$iid] = true;
-
-			if(
-			   !$already_seen 
-			   && isset($sousjurys[$row->rapporteur][$row->concours]) 
-			   && (is_auditionne($row)))
-			{
-				$sj = $sousjurys[$row->rapporteur][$row->concours];
-				$key = "Sousjury ".$sj;
-				if(!isset($stats[$key]["Total"]["rapporteur"]["counter"]))
-					$stats[$key]["Total"]["rapporteur"]["counter"] = 0;
-				$stats[$key]["Total"]["rapporteur"]["counter"]++;
-				if( !isset( $stats[$key][$row->rapporteur]["rapporteur"]["counter"] ) )
-					$stats[$key][$row->rapporteur]["rapporteur"]["counter"] = 0;
-				$stats[$key][$row->rapporteur]["rapporteur"]["counter"]++;
 			}
 		}
 		function cmp( $stata, $statb )
@@ -183,17 +173,11 @@ function get_bureau_stats()
 				$stats[$row->$field]["total"]++;/* mysort*/
 			}
 		}
-		//		foreach($stats as $key=>$value) echo $value["total"]."<br/>";
-		//echo "Sorting according to total<br/>\n";
-		//foreach($stats as $key=>$value) echo $key;
 		function cmp( $stata, $statb )
 		{
-		  //
-		  //		  echo $stata["total"]." ".$statb["total"]."<br/>";
 		  return ($stata["total"] > $statb["total"]) ? -1 : (($stata["total"] == $statb["total"]) ? 0 : 1); 
 		}
 		uasort ( $stats, 'cmp' );
-		//foreach($stats as $key=>$value) echo $value["total"]."<br/>";
 	}
 	return $stats;
 }

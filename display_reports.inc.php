@@ -156,7 +156,7 @@ function displayStatsConcours()
 						{
 							if(isset($data_rapporteur[$role]))
 							{
-								$stat = $data_rapporteur[$role]["counter"];
+								$stat = $data_rapporteur[$role];
 								echo "<td>".$stat."</td>";
 							}
 							else
