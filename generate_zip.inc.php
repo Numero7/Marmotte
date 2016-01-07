@@ -14,15 +14,6 @@ function type_from_node(DOMNode $node)
 }
 
 
-/**
- * Zip files to an archive
- * @param filenames array(string -> string) <p>
- * Collection of pairs of loclfilename and name in the archive.
- * </p>
- * @param zipfilename string[optional] <p>
- * the name of the zip file
- * @return bool Returns zip filename on success or false on failure.
- */
 function zip_files($filenames,$zipname = "reports.zip")
 {
 	$zip = new ZipArchive();

@@ -241,15 +241,23 @@ function display_statut2($row, $fieldID, $readonly)
 			     "publie"=>$statuts["publie"]
 			     );
 	*/
-	global $statutsRapportsACN;
 	if( ($row->$fieldID == "avistransmis" || $row->$fieldID == "publie" ) && !isACN())
 	  echo "&nbsp;&nbsp;".$statuts[$row->$fieldID];
 	else if(isACN())
+	  {
+	global $statutsRapportsACN;
+	    $statuts = $statutsRapportsACN;
+	   if(!is_current_session_concours())
+	     unset($statuts["audition"]);
 	  display_select($row, $fieldID, $statuts, $readonly);
+	  }
 	else
 	  {
 	    global $statutsRapportsIndiv;
-	  display_select($row, $fieldID,$statutsRapportsIndiv,$readonly);
+	    $statuts = $statutsRapportsIndiv;
+	   if(!is_current_session_concours())
+	     unset($statuts["audition"]);
+	  display_select($row, $fieldID,$statuts,$readonly);
 	  }
 }
 

@@ -408,6 +408,36 @@ function isPresidentSousJury($concours = "", $sousjury = "")
 
 function changePwd($login,$old,$new1,$new2, $envoiparemail)
 {
+  /* règles DSI 8 caractères dont au moins 1 caractère issu de chacune des 4 familles : minuscules, majuscules, chiffres, caractères spéciaux */
+  if(strlen($new1) < 8)
+    throw new exception("Le nouveau mot de passe est trop court, il doit faire au moins 8 caractères");
+
+  $okmin = false;
+  $okmaj = false;
+  $okchif = false;
+  $okspec = false;
+
+  for($i =0 ; $i < strlen($new1) ; $i ++)
+    {
+      if($new1[$i] >= 'a' && $new1[$i] <= 'z')
+	$okmin = true;
+      else if($new1[$i] >= 'A' && $new1[$i] <= 'Z')
+	$okmaj = true;
+      else if($new1[$i] >= '0' && $new1[$i] <= '9')
+	$okchif = true;
+      else
+	$okspec = true;
+    }
+
+  if(!$okmin)
+    throw new exception("Le nouveau mot de passe doit contenir au moins une minuscule");
+  if(!$okmaj)
+    throw new exception("Le nouveau mot de passe doit contenir au moins une majuscule");
+  if(!$okchif)
+    throw new exception("Le nouveau mot de passe doit contenir au moins un chiffre");
+  if(!$okspec)
+    throw new exception("Le nouveau mot de passe doit contenir au moins un caractère spécial");
+
 	$currLogin = getLogin();
 	$users = listUsers();
 	if (authenticateBase($login,$old) or isSecretaire())

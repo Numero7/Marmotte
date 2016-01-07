@@ -394,7 +394,9 @@ function displayStatutMenu()
 
 									foreach ($statuts as $val => $nom)
 									{
-									    										$sel = "";
+									  if($val == "audition" && !is_current_session_concours())
+									    continue;
+									  $sel = "";
 										echo "<option value=\"".$val."\" $sel>".$nom."</option>\n";
 									}
 									?>

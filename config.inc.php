@@ -888,7 +888,7 @@ $fieldsPeople = array_merge($fieldsCandidat, $fieldsChercheursAll);
 
 
 
-  if(get_option("bur_can_meta"))
+  if(get_option("bur_can_meta"))
     {
       $fieldsEditableBureau = array();
       foreach($fieldsPeople as $key)
@@ -897,8 +897,8 @@ $fieldsPeople = array_merge($fieldsCandidat, $fieldsChercheursAll);
 	  else $fieldsEditableBureau[] = $key;
 	}
     }
-  else
-    $fieldsEditableBureau = array("theme1","theme2","theme3","rapporteur","rapporteur2", "rapporteur3");
+  else
+    $fieldsEditableBureau = array("theme1","theme2","theme3","rapporteur","rapporteur2", "rapporteur3");
 
 
 if(!get_option("bur_can_affect"))
