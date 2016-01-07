@@ -129,7 +129,7 @@ function displayStatsConcours()
 		<tr>
 			<?php
 			foreach($stats as $niveau => $data)
-				echo "<th>".$niveau."</th>";
+				echo "<th>Nombre de candidats ".$niveau."</th>";
 			?>
 		</tr>
 		<tr valign="top">
