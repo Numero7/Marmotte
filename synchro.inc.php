@@ -773,6 +773,26 @@ function check_missing_data()
       //foreach($missing as $dkey => $link)
       //      $msg.= "DKEY ".$dkey." ".$link."<br/>\n";
     }
+
+  $sql = "SELECT * FROM ".dsidbname.".".celcc_docs." WHERE 1;";
+  $result = sql_request($sql);
+  $missing = array();
+  $total = 0;
+  global  $dossier_stockage_dsi;
+  while($row = mysqli_fetch_object($result))
+    {
+      $total++;      
+      $file = $dossier_stockage_dsi."/".$row->path_sas."/".$row->nom_doc;
+      if(!file_exists($file))
+      	$missing[] = $file;
+    }
+ if(count($missing) > 0)
+    {
+      $msg .= "\n\nLa table ".dsidbname.".".celcc_docs_db." contient ".$total." liens vers des documents pdfs ";
+      $msg .= " dont ".count($missing)." sont inaccessibles depuis Marmotte.\n<br/>";
+      //foreach($missing as $dkey => $link)
+      //      $msg.= "DKEY ".$dkey." ".$link."<br/>\n";
+    }
   /*
   $sql = "SELECT * FROM ".dsidbname.".".dsi_evaluation_units_db." WHERE UNITE_EVAL NOT IN  (SELECT `CODEUNITE` FROM ".dsidbname.".".dsi_units_db.")";
   $sql .= " AND `EVALUATION_CN`=\"Soumis\" AND (ETAT_EVAL=\"En cours\" OR ETAT_EVAL=\"Terminée\");";  
