@@ -123,11 +123,13 @@ function display_rapporteur($row, $fieldID, $readonly)
  
  foreach($users as $user => $data)
     {
+      /*
 		  if(isset($row->concours) 
 		     && $row->concours != "" 
 		     && isset($concours_ouverts[$row->concours])		     
 		     && !in_array($row->rapporteur,$concours_ouverts[$row->concours]->jures))
 		    continue;
+      */
       if(is_rapporteur_allowed($data,$row))
 	{
 	  $liste[$user] = $data->description;
