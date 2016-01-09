@@ -93,7 +93,7 @@ function find_evaluation_files($row, $session)
 	  }
 }
 
-function find_marmotte_files($row, $session, $create_directory_if_nexists = false)
+function find_marmotte_files($row, $session, $create_directory_if_nexists = false, $subtype = "")
 {
     global $typesRapportsAll;
     $files = array();
@@ -101,14 +101,14 @@ function find_marmotte_files($row, $session, $create_directory_if_nexists = fals
 	$dir = "";
 	if(  is_rapport_unite($row) )
 	{
+		if(isset($row->unite) && $row->unite == "") return $files;
 		$marmotte_files = find_unit_files($row,true, $session, true);
 		$dir = get_unit_directory($row, $session, false);
 	}
 	else
 	{
-		if(isset($row->unite) && $row->unite == "") return;
-		$marmotte_files = find_people_files($row,true, $session, true);
-		$dir = get_people_directory($row, $session, false);
+	  $marmotte_files = find_people_files($row,true, $session, $subtype, true);
+	  $dir = get_people_directory($row, $session, false,$subtype);
 	}
 	
 	foreach($marmotte_files as $file)
@@ -125,25 +125,25 @@ function find_marmotte_files($row, $session, $create_directory_if_nexists = fals
 	return $files;
 }
 
-function find_files($row, $session, $create_directory_if_nexists = false,$type)
+function find_files($row, $session, $create_directory_if_nexists = false,$type, $subtype = "")
 {
 	if($type == "e-valuation")
 	  return find_evaluation_files($row,$session);
 	else if($type == "marmotte")
-	  return find_marmotte_files($row,$session,$create_directory_if_nexists);
+	  return find_marmotte_files($row,$session,$create_directory_if_nexists, $subtype);
 	else if($type == "celcc")
 	  return find_celcc_files($row,$session);
 	return array();
 }
 
-function find_people_files($candidate, $force, $session, $create_directory_if_nexists = false, $directories = NULL)
+function find_people_files($candidate, $force, $session, $type, $create_directory_if_nexists = false, $directories = NULL)
 {
   $files = array();
 	if($candidate->nom == "" && $candidate->prenom == "")
 		return array();
-	$basedir = get_people_directory($candidate, $session, false);
 
-		/* rename if the directory name is not marmotte style (happens when imported from GETCC) */
+	/*
+
 	if($force && !is_dir($basedir))
 	{
 		if($directories == NULL)
@@ -157,9 +157,9 @@ function find_people_files($candidate, $force, $session, $create_directory_if_ne
 				break;
 			}
 		}
-	}
+	}*/
 
-	$basedir = get_people_directory($candidate, $session, $create_directory_if_nexists);
+	$basedir = get_people_directory($candidate, $session, $create_directory_if_nexists, $type);
 
 	if ( is_dir($basedir) )
 	{
@@ -169,10 +169,8 @@ function find_people_files($candidate, $force, $session, $create_directory_if_ne
 			while(1)
 			{
 				$file = readdir($handle);
-				if($file === false)
+				if($file === false || is_dir($basedir."/".$file))
 					break;
-				if($file != "." && $file != "..")
-				{
 					$filenames[] = $file;
 					foreach($filenames as $file)
 					{
@@ -180,7 +178,6 @@ function find_people_files($candidate, $force, $session, $create_directory_if_ne
 						if($timestamp != false)
 							$files[date("d/m/Y - h:i:s",$timestamp).$file]=$file;
 					}
-				}
 			}
 			closedir($handle);
 		}
@@ -207,11 +204,11 @@ function get_dir($session,$nom,$prenom)
 	return  $dossier_stockage_short."/".$session."/".$nom."_".$prenom."/";
 }
 
-function get_people_directory($candidate, $session, $create_directory_if_nexists = false)
+function get_people_directory($candidate, $session, $create_directory_if_nexists = false, $subtype = "")
 {
 	$basedir = get_dir($session, $candidate->nom, $candidate->prenom);
 	if($create_directory_if_nexists)
-		create_dir_if_needed2($basedir);
+		create_dir_if_needed2($basedir."/".$subtype);
 	return $basedir;
 }
 

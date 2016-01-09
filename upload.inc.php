@@ -5,14 +5,14 @@ require_once 'import.inc.php';
 require_once 'manage_people.inc.php';
 
 
-function process_upload($create = false, $directory = null)
+function process_upload($create = false, $directory = null, $files)
 {
 	global $typeImports;
 	try
 	{
-		if (isset($_FILES['uploadedfile']))
+	  //		if (isset($_FILES['uploadedfile']))
 		{
-			$files = $_FILES['uploadedfile'];
+		  //			$files = $_FILES['uploadedfile'];
 			if (isset($files['tmp_name']) && isset($files['name']))
 			{
 				switch($files['error'])
@@ -81,10 +81,6 @@ function process_upload($create = false, $directory = null)
 			{
 				throw new Exception('No uploaded file name, aborting');
 			}
-		}
-		else
-		{
-			throw new Exception('No uploaded file, aborting');
 		}
 	}
 	catch(Exception $exc)

@@ -364,12 +364,12 @@ function display_rapports($row, $fieldId)
 }
 
 
-function display_fichiers($row, $fieldID, $session, $readonly, $type)
+function display_fichiers($row, $fieldID, $session, $readonly, $type, $subtype = "")
 {
 	if(!isset($row->type))
 		return;
 	
-	$files = find_files($row, $session, false,$type);	
+	$files = find_files($row, $session, false,$type, $subtype);	
 
 
 	echo "<td><table><tr>\n";
@@ -384,7 +384,6 @@ function display_fichiers($row, $fieldID, $session, $readonly, $type)
 
 		$nb = intval((count($files) + 2)/ 3);
 
-		//		echo "dossier_stockage_dsi : '".$dossier_stockage_dsi."'<br/>";
 		foreach($files as $label => $path)
 		{
 			echo '<a  target="_blank" href="export.php?evaluation=&amp;';
@@ -408,17 +407,17 @@ function display_fichiers($row, $fieldID, $session, $readonly, $type)
 		{
 			echo "<tr><td>";
 			
-			$dir = is_rapport_unite($row) ?  get_unit_directory($row, $session, false) :  get_people_directory($row, $session, false);
+			$dir = is_rapport_unite($row) ?  get_unit_directory($row, $session, false) :  get_people_directory($row, $session, true, $subtype);
 			?>
 			<table><tr><td>
 <input
 
 	type="hidden" name="MAX_FILE_SIZE" value="50000000" />
-	<input type="hidden" name="uploaddir" value="<?php echo $dir;?>"/>
-	<input name="uploadedfile"
+	<input type="hidden" name="uploaddir<?php echo $fieldID;?>" value="<?php echo $dir;?>"/>
+	<input name="uploadedfile<?php echo $fieldID;?>"
 	type="file" />
 			<input
-	type="submit" name="ajoutfichier" value="Ajouter fichier" />
+	type="submit" name="ajout<?php echo $fieldID;?>" value="Ajouter fichier" />
 <!--				<input
 	type="submit" name="ajoutphoto" value="Ajouter photo" />
 -->
@@ -438,7 +437,7 @@ function display_fichiers($row, $fieldID, $session, $readonly, $type)
 			?>
 			<table><tr><td>
 <input
-	type="submit" name="suppressionfichier" value="Supprimer fichier" />
+	type="submit" name="suppressionfichier<?php echo $fieldID;?>" value="Supprimer fichier" />
 	</td></tr><tr><td>
 	<input type="hidden" name="type"
 	value="candidatefile" />

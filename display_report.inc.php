@@ -192,6 +192,9 @@ function displayEditableField($row, $fieldId, $canedit, $session, $extra_object 
 				case "files":
 				  display_fichiers($row, $fieldId, $session, !$editable,"marmotte");
 					break;
+				case "files_avis":
+				  display_fichiers($row, $fieldId, $session, !$editable,"marmotte","avis");
+					break;
 				case "files_celcc":
 				  display_fichiers($row, $fieldId, $session, true,"celcc");
 					break;

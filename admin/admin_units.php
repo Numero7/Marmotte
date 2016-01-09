@@ -8,7 +8,13 @@ if(isSuperUser())
 {
 	?>
 <h2>Import et mise à jour globale de la liste des unités</h2>
-<p>Les champs suivatns sont nécessaires: "Code unité", "Intitulé unité",
+<form>
+<input type="hidden" name="admin_unites">
+<input type="hidden" name="action" value="sync_units"> 
+<input type="submit" value="Synchroniser la liste des unités">
+</form>
+
+<p>Les champs suivants sont nécessaires: "Code unité", "Intitulé unité",
 	"Responsable nom", "Responsable prénom", "Sigle unité", "Liste
 	section(s)"</p>
 <form enctype="multipart/form-data" action="index.php" method="post"

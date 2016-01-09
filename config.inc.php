@@ -360,7 +360,8 @@ $fieldsIndividualAll = array(
 		"theme3" => "Mot-clé 3",
 		"audition" => "Avis sur l'audition",
 		"conflits" => "Conflits",
-		"fichiers"=> "Avis de personnalités scientifiques",
+		"fichiers_avis"=> "Avis de personnalités scientifiques",
+		"fichiers"=> "Fichiers des rapporteurs",
 		"fichiers_evaluation"=> "Fichiers e-valuation",
 		"fichiers_celcc"=> "Dossier candidat",
 		"birth" => "Date naissance",
@@ -428,6 +429,7 @@ $fieldsCandidatAvantAudition = array(
 	     array("diploma","birth"),
 		array("infos_celcc","conflits"),
 		"fichiers_celcc",
+	     "fichiers_avis",
 	     "fichiers",
 		"rapports",
 		"labo1",
@@ -815,6 +817,7 @@ $fieldsTypes = array(
 		"id" =>"short",
 		"audition" => "treslong",
 		"fichiers" => "files",
+		"fichiers_avis" => "files_avis",
 		"fichiers_celcc" => "files_celcc",
 		"fichiers_evaluation" => "files_evaluation",
 		"rapports" => "rapports",
@@ -867,6 +870,7 @@ if(get_option("sec_can_edit"))
 		"theme2",
 		"theme3",
 		"audition",
+		"fichiers_avis",
 		"fichiers",
 		"avissousjury",
 		"statut","signataire"
@@ -876,7 +880,9 @@ $fieldsEditableOnlySecretaire = array("nom","prenom","conflits","type","signatai
 
 $nonEditableFieldsTypes = array('id','date',"nom","prenom","infos_celcc","infos_evaluation");
 $nonVisibleFieldsTypes = array('id');
-$alwaysVisibleFieldsTypes = array('nom','prenom','rapporteur','concours','avissousjury','sousjury','rapporteur2','rapporteur3','infos_evaluation','infos_celcc','unite','fichiers','fichiers_evaluation','fichiers_celcc','rapports','conflits','dsi','intitule','type','avis','statut','statut_celcc','voeux','signataire');
+$alwaysVisibleFieldsTypes = array('nom','prenom','rapporteur','concours','avissousjury','sousjury','rapporteur2','rapporteur3','infos_evaluation','infos_celcc',
+				  'unite','fichiers_avis','fichiers','fichiers_evaluation','fichiers_celcc',
+				  'rapports','conflits','dsi','intitule','type','avis','statut','statut_celcc','voeux','signataire');
 
 $fieldsArrayCandidat = array($fieldsCandidat, $fieldsRapportsCandidat0, $fieldsRapportsCandidat1, $fieldsRapportsCandidat2, $fieldsRapportsCandidat3);
 $fieldsArrayIE = array($fieldsCandidatAvantAudition, $fieldsRapportsIE0, $fieldsRapportsCandidat1, $fieldsRapportsCandidat2, $fieldsRapportsCandidat3);

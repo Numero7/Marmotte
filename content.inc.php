@@ -263,6 +263,9 @@ function alertText($text)
 			case 'sync_colleges':
 			  echo synchronize_colleges();
 			  break;
+			case 'sync_units':
+			  echo synchronize_units();
+			  break;
 			case 'fix_missing_data':
 			  $report = "";
 			  for($i = 0; $i < 55; $i++)
@@ -411,7 +414,7 @@ function alertText($text)
 					break;
 				case 'upload':
 					$create = isset($_REQUEST["create"]);
-					$result= process_upload($create);
+					$result= process_upload($create, null, $_FILES['uploadedfile']);
 					alertText($result);
 					include 'admin/admin.inc.php';
 					break;
@@ -453,16 +456,22 @@ function alertText($text)
 						add_conflit_to_report(getLogin(), $id_origine);
 						viewWithRedirect($id_origine);
 					}
-					else if(isset($_REQUEST['ajoutfichier']) && isset($_REQUEST['uploaddir']))
+					else if(isset($_REQUEST['ajoutfichiers']) && isset($_REQUEST['uploaddirfichiers']) && isset($_FILES['uploadedfilefichiers']))
 					{
-						$directory = $_REQUEST['uploaddir'];
-						echo process_upload(true,	$directory);
+						$directory = $_REQUEST['uploaddirfichiers'];
+						echo process_upload(true, $directory, $_FILES['uploadedfilefichiers']);
 						editReport($id_origine);
 					}
-					else if(isset($_REQUEST['ajoutphoto']) && isset($_REQUEST['uploaddir']))
+					else if(isset($_REQUEST['ajoutfichiers_avis']) && isset($_REQUEST['uploaddirfichiers_avis']) && isset($_FILES['uploadedfilefichiers_avis']))
 					{
-						$directory = $_REQUEST['uploaddir'];
-						echo process_upload(true,	$directory);
+						$directory = $_REQUEST['uploaddirfichiers_avis'];
+						echo process_upload(true, $directory,$_FILES['uploadedfilefichiers_avis']);
+						editReport($id_origine);
+					}
+					else if(isset($_REQUEST['ajoutphoto']) && isset($_REQUEST['uploaddir_fichiers']) && isset($_FILES['uploadedfile_fichiers']))
+					{
+						$directory = $_REQUEST['uploaddir_fichiers'];
+						echo process_upload(true,$directory,$_FILES['uploadedfile_fichiers']);
 						editReport($id_origine);
 					}
 					else if(isset($_REQUEST['suppressionfichier']))
@@ -478,6 +487,9 @@ function alertText($text)
 					}
 					else
 					{
+					  /*					  foreach($_REQUEST as $key => $value)
+					    echo $key ." - ". $value ."<br/>";
+					    hh();*/
 						$done = false;
 						foreach($concours_ouverts as $concours => $nom)
 							if(isset($_REQUEST['importconcours'.$concours]))
