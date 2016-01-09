@@ -11,7 +11,7 @@ $admin_config = isset($_REQUEST["admin_config"]) && isSecretaire() && !isACN() &
 $admin_keywords = isset($_REQUEST["admin_keywords"]) && isSecretaire();
 $admin_rubriques = isset($_REQUEST["admin_rubriques"]) && isSecretaire() && !isSuperUser();
 $admin_migration = isset($_REQUEST["admin_migration"]) && isSuperUser();
-$admin_unites = isset($_REQUEST["admin_unites"]) && isSecretaire();
+$admin_unites = isset($_REQUEST["admin_unites"]) && isBureauUser();
 $admin_people = isset($_REQUEST["admin_people"]) &&!isSuperUser() && isSecretaire();
 
 

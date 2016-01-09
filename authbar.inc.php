@@ -167,25 +167,23 @@ if(isSecretaire() && !isSuperUser() && !is_current_session_concours())
 <li><a href="index.php?action=displayimportexport">Import/Ajout</a></li>
 						<?php 
 		}
-		if(isSecretaire())
-		{?>
-<?php 
-		}
-
-if(!is_current_session_concours())
-  {
-				?>
+ ?>
 </ul>
 <td valign="top">
 <ul>
+<?php
+if(!is_current_session_concours())
+  {
+?>
 <li><a href="?action=see_people">Chercheurs section</a></li>
+<?php } ?>
 <li><a href="?action=see_units">Unités section</a></li>
 </ul>
 </td>
 <td valign="top">
 <ul>
 <?php
-      }
+
 if(!is_authenticated_with_JANUS())
 {
 ?>

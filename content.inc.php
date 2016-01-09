@@ -699,10 +699,10 @@ function alertText($text)
 								$_REQUEST["fullname"],
 								$_REQUEST["directeur"]
 						);
-						echo "Added unit \"".real_escape_string($_REQUEST["nickname"])."\"<br/>";
+						echo "Unité \"".$_REQUEST["code"]."\" ajoutée à la liste des unités de la section (dans Marmotte).<br/>";
 					}
 					include "admin/admin.inc.php";
-					scrollToId('ajout');
+					//					scrollToId('ajout');
 					break;
 				case 'deletelabo':
 					if(isset($_REQUEST["unite"]))

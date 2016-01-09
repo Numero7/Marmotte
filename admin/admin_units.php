@@ -38,12 +38,12 @@ if(isSuperUser())
 
 <?php 
 }
-if(isSecretaire() && !isSuperUser())
+if(isBureauUser() && !isSuperUser())
 {
 	?>
 <hr />
-<h2 id="ajout">Ajout ou mise-à-jour d'une unité existante</h2>
-<p>Permet d'importer une unité depuis la liste de toutes les unités.</p>
+<h3 id="ajout">Ajout ou mise-à-jour d&apos;une unité d&apos;une autre section</h3>								  
+<p>Permet d&apos;ajouter à la liste des unités de la section (dans Marmotte) une unité d&apos;une autre section.</p>
 <form enctype="multipart/form-data" action="index.php" method="post">
 	<input type="hidden" name="admin_unites"></input>
 		<input type="hidden" name="admin_unites"></input>
@@ -63,12 +63,14 @@ if(isSecretaire() && !isSuperUser())
 		
 	
 </form>
+<br/>
 <hr />
-<h2 id="ajout">Ajout ou mise-à-jour d'une unité</h2>
+	    <h3 id="ajout">Ajout ou mise-à-jour d&apos;une unité</h3>
 <p>Si une unité avec le même code existe déjà, ses données seront mises
-	à jour sans que l'unité ne soit dupliquée.</p>
-<p>Si l'unite est une UMR vous pouvez renseigner uniquement le champ "code" et les infos restantes
-(acronyme, nom, directeur) seront automatiquement recuperees.</p>
+	à jour sans que l&apos;unité ne soit dupliquée.
+<br/>
+Si l&apos;unité est une UMR vous pouvez renseigner uniquement le champ &quot;code&quot; et les infos restantes
+(acronyme, nom, directeur) seront automatiquement récupèrées.</p>
 <form enctype="multipart/form-data" action="index.php" method="post">
 	<input type="hidden" name="admin_unites"></input>
 	<table class="inputreport">
@@ -109,8 +111,12 @@ if(isSecretaire() && !isSuperUser())
 
 
 <br />
+<?php
+if(isSecretaire())
+{
+?>
 <hr />
-<h2>Suppression d'une unité</h2>
+<h3>Suppression d&apos;une unité</h3>
 <form method="post" action="index.php">
 	<input type="hidden" name="admin_unites"></input> <select name="unite">
 		<?php
@@ -122,16 +128,20 @@ if(isSecretaire() && !isSuperUser())
 		type="submit" value="Supprimer unité" />
 </form>
 <?php 
-}?>
+	    }
+}
+?>
 <br />
 <hr />
 <table>
 <tr>
+<h3>Liste des unités de la section dans Marmotte</h3>
 	<?php 
 
 
 
 	foreach($fieldsUnitsDB as $field => $intitule)
+if(isSuperUser() || $field != "section")
 		echo "<th>".$intitule."</th>";
 
 	?>
@@ -144,6 +154,7 @@ if(isSecretaire() && !isSuperUser())
 	{
 		echo "<tr>";
 		foreach($fieldsUnitsDB as $field => $intitule)
+		  if(isSuperUser() || $field != "section")
 			echo "<td>".(isset($data->$field) ? $data->$field : "")."</td>";
 		echo "</tr>";
 	}
