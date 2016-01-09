@@ -434,6 +434,9 @@ function displayEditableReport($row, $canedit = true)
 				$submits["importconcours".$report->concours] = "Importer données concours ".$report->concours;
 
 			$hidden['fieldconcours'] = $row->concours;
+		echo "<br/><hr/><br/>";
+
+			displayEditableObject("Candidature", $row, array_merge(array("statut"),$fieldsRapportsCandidat0),$canedit, $session);
 
 		echo "<br/><hr/><br/>";
 
@@ -463,9 +466,6 @@ function displayEditableReport($row, $canedit = true)
 				echo'</tr></table>';
 			}
 
-		echo "<br/><hr/><br/>";
-
-			displayEditableObject("Candidature", $row, array_merge(array("statut"),$fieldsRapportsCandidat0),$canedit, $session);
 		}
 	}
 	else if( is_rapport_chercheur($row) )

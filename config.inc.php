@@ -782,7 +782,7 @@ $fieldsTypes = array(
 		"genre" => "enum",
 		"statut_individu"=> "enum",
 		"statut_celcc"=> "short",
-		"voeux"=> "short",
+		"voeux"=> "treslong",
 		"grade" => "grade",
 		"grade_rapport" => "grade",
 		"theseloc" => "enum",
@@ -815,13 +815,12 @@ $fieldsTypes = array(
 		"theme2" => "topic",
 		"theme3" => "topic",
 		"id" =>"short",
-		"audition" => "treslong",
+		"audition" => "long",
 		"fichiers" => "files",
 		"fichiers_avis" => "files_avis",
 		"fichiers_celcc" => "files_celcc",
 		"fichiers_evaluation" => "files_evaluation",
 		"rapports" => "rapports",
-		"avissousjury" => "avis",
 		"statut" => "statut"
 );
 
@@ -872,13 +871,12 @@ if(get_option("sec_can_edit"))
 		"audition",
 		"fichiers_avis",
 		"fichiers",
-		"avissousjury",
 		"statut","signataire"
 );
 
 $fieldsEditableOnlySecretaire = array("nom","prenom","conflits","type","signataire");
 
-$nonEditableFieldsTypes = array('id','date',"nom","prenom","infos_celcc","infos_evaluation");
+$nonEditableFieldsTypes = array('id','date',"nom","prenom","infos_celcc","infos_evaluation","voeux","statut_celcc");
 $nonVisibleFieldsTypes = array('id');
 $alwaysVisibleFieldsTypes = array('nom','prenom','rapporteur','concours','avissousjury','sousjury','rapporteur2','rapporteur3','infos_evaluation','infos_celcc',
 				  'unite','fichiers_avis','fichiers','fichiers_evaluation','fichiers_celcc',
