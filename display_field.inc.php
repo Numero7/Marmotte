@@ -437,12 +437,12 @@ function display_fichiers($row, $fieldID, $session, $readonly, $type, $subtype =
 			?>
 			<table><tr><td>
 <input
-	type="submit" name="suppressionfichier<?php echo $fieldID;?>" value="Supprimer fichier" />
+	type="submit" name="suppression<?php echo $fieldID;?>" value="Supprimer fichier" />
 	</td></tr><tr><td>
 	<input type="hidden" name="type"
 	value="candidatefile" />
 	<table><tr><td>
-<select name="deletedfile">
+<select name="deleted<?php echo $fieldID;?>">
 	<?php
 	foreach($files as $label => $path)
 	{

@@ -806,6 +806,11 @@ function check_missing_data()
   return $msg;
 }
 
+function synchronize_units()
+{
+
+}
+
 function synchronize_colleges()
 {
   global $dbh;

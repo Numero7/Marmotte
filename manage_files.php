@@ -163,14 +163,20 @@ function find_people_files($candidate, $force, $session, $type, $create_director
 
 	if ( is_dir($basedir) )
 	{
+	  //echo "Find marmotte files ".$candidate->concoursid." ".$session." ".$create_directory_if_nexists." sub ".$type."<br/>";
+
 		$handle = opendir($basedir);
 		if($handle != false)
 		{
+		  //		echo $basedir."<br/>";
 			while(1)
 			{
 				$file = readdir($handle);
-				if($file === false || is_dir($basedir."/".$file))
-					break;
+				//				echo $file."<br/>";
+				if($file === false)
+				  break;
+				if(is_dir($basedir."/".$file))
+					continue;
 					$filenames[] = $file;
 					foreach($filenames as $file)
 					{
@@ -209,7 +215,7 @@ function get_people_directory($candidate, $session, $create_directory_if_nexists
 	$basedir = get_dir($session, $candidate->nom, $candidate->prenom);
 	if($create_directory_if_nexists)
 		create_dir_if_needed2($basedir."/".$subtype);
-	return $basedir;
+	return $basedir."/".$subtype;
 }
 
 function rename_people_directory($session, $nom,$prenom,  $pnom,$pprenom)

@@ -474,13 +474,24 @@ function alertText($text)
 						echo process_upload(true,$directory,$_FILES['uploadedfile_fichiers']);
 						editReport($id_origine);
 					}
-					else if(isset($_REQUEST['suppressionfichier']))
+					else if(isset($_REQUEST['suppressionfichiers']))
 					{
-						if(isset($_REQUEST['deletedfile']))
+						if(isset($_REQUEST['deletedfichiers']))
 						{
-							$file = $_REQUEST['deletedfile'];
+							$file = $_REQUEST['deletedfichiers'];
 							if(!isSecretaire() && !is_picture($file))
 								throw new Exception("You are allowed to delete images only, not documents of type '".$suffix."'");
+							unlink($file);
+						}
+						editReport($id_origine);
+					}
+					else if(isset($_REQUEST['suppressionfichiers_avis']))
+					{
+						if(isset($_REQUEST['deletedfichiers_avis']))
+						{
+							$file = $_REQUEST['deletedfichiers_avis'];
+							if(!isSecretaire())
+								throw new Exception("Vous n etes pas autorisé à aeefacer les avis de personnalités scientifiques");
 							unlink($file);
 						}
 						editReport($id_origine);
