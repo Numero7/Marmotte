@@ -62,11 +62,13 @@ Site fermé pour maintenance, accès temporairement réservé aux administrateur
 	 else
 	 {
 	 ?>
+
+<br/><br/><br/>
 <!--
-<h2><font color="red">
+<p><font color="red">
 [18/06/2015 08:20] Arrêt de Marmotte pour maintenance le lundi 22 juin de 19h à 19h30.
 </font>
-</h2>
+</p>
 -->
 <!--
 <p><font color="red">
@@ -75,16 +77,14 @@ suite &agrave; un probl&egrave;me sur un serveur de la DSI.
 En cas de besoin urgent, merci de contacter votre secr&eacute;taire scientifique afin d'obtenir un mot de passe provisoire.
 </font>
 </p>
--->
-<!--
-<h2>
+<p>
 <font color="red">
-	     [12/06/2015 08:00]Site ferme jusqu a 9h15 pour maintenance
+	     [11/01/2015 15:55]
+L&apos;authentification via Janus est actuellement perturbée. Plus d&apos;information dans quelques minutes.<br/>
+	     [11/01/2015 15:57]													   Suite à un problème matériel sur l’infrastructure du centre serveur de Trélazé, une partie du Système d’Information n’est plus accessible, et en particulier le service Janus a un problème et les indentifications via Janus ne sont actuellement pas possibles.
 </font>
-</h2>
+</p>
 -->
-<br/><br/><br/>
-
 
 	     <p><a href="index.php?action=auth_janus">Authentification Janus (membres des unit&eacute;s CNRS)</a></p>
 	     <p><a href="index.php?action=auth_marmotte">Authentification Marmotte (membres hors-unit&eacute;s CNRS, demandez un mot de passe &agrave; votre ACN)</a></p>

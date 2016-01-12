@@ -213,12 +213,12 @@ function filterSortReports($filters, $filter_values = array(), $sorting_value = 
 	  /*dirty rule to skip reports that I am not allowed to see */
 	  if(!isSecretaire("",false) && isset($row->concours) && $row->concours!="" && ($row->id_session=="Concours".$conc_year) && !isset($my_conc[$row->concours]))
 	    {
-	    continue;
+	      continue;
 	    }
 		$row->id = $row->report_id;
 		$rows[] = $row;
 	}
-
+	//	echo count($rows)."<br/>";
 	return $rows;
 }
 

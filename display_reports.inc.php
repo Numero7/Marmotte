@@ -483,8 +483,7 @@ function displayRows($rows, $fields, $filters, $filter_values)
 </table>
 <hr />
 <p>
-	<?php  echo count($rows); ?>
-	rapports
+   <?php  echo count($rows).(is_current_session_concours() ? " candidatures" : " demandes d'évaluation");?>
 </p>
 
 <?php 

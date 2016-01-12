@@ -4,6 +4,103 @@ require_once("manage_users.inc.php");
 require_once("manage_sessions.inc.php");
 require_once("manage_rapports.inc.php");
 
+function synchronizeStatutsConcours($year = "")
+{
+  if($year == "")
+    $year = date("Y");
+  $log = "<h3>Synchronisation des statuts</h3>";
+
+  $sql = "UPDATE reports marmotte, ".dsidbname.".".celcc_statuts." dsi SET marmotte.statut_celcc='non admis à concourir' ";
+  $sql .= "WHERE dsi.num_conc=marmotte.concours AND dsi.user_id=marmotte.concoursid AND dsi.admis_concourir='non'"; 
+  sql_request($sql);
+  global $dbh;
+  $changed = mysqli_affected_rows($dbh);
+  if($changed > 0)
+    $log .= $changed." statuts celcc ont été basculés à 'non admis a concourir'<br/>";
+
+  // mise a jour des statuts cel_cc
+  $sql = "UPDATE reports marmotte, ".dsidbname.".".celcc_statuts." dsi SET marmotte.statut_celcc='soumis à IE' ";
+  $sql .= "WHERE dsi.num_conc=marmotte.concours AND dsi.user_id=marmotte.concoursid AND dsi.dde_equiv='soumis au IE' AND admis_concourir='non traité'"; 
+  sql_request($sql);
+  $changed = mysqli_affected_rows($dbh);
+  if($changed > 0)
+    $log .= $changed." statuts celcc ont été basculés à 'IE'<br/>";
+
+  $sql = "UPDATE reports marmotte, ".dsidbname.".".celcc_statuts." dsi SET marmotte.statut_celcc='soumis au CS' ";
+  $sql .= "WHERE dsi.num_conc=marmotte.concours AND dsi.user_id=marmotte.concoursid AND dsi.dde_equiv='soumis au CS' AND admis_concourir='non traité'"; 
+  sql_request($sql);
+  $changed = mysqli_affected_rows($dbh);
+  if($changed > 0)
+    $log .= $changed." statuts celcc ont été basculés à 'CS'<br/>";
+
+  $sql = "UPDATE reports marmotte, ".dsidbname.".".celcc_statuts." dsi SET marmotte.statut_celcc='admis à concourir' ";
+  $sql .= "WHERE dsi.num_conc=marmotte.concours AND dsi.user_id=marmotte.concoursid AND dsi.admis_concourir='oui' AND admis_poursuivre='non traité'"; 
+  sql_request($sql);
+  $changed = mysqli_affected_rows($dbh);
+  if($changed > 0)
+    $log .= $changed." statuts celcc ont été basculés à 'admis a concourir'<br/>";
+
+  $sql = "UPDATE reports marmotte, ".dsidbname.".".celcc_statuts." dsi SET marmotte.statut_celcc='admis à poursuivre' ";
+  $sql .= "WHERE dsi.num_conc=marmotte.concours AND dsi.user_id=marmotte.concoursid AND dsi.admis_poursuivre='oui' AND dsi.admissible='non traité'"; 
+  sql_request($sql);
+  $changed = mysqli_affected_rows($dbh);
+  if($changed > 0)
+    $log .= $changed." statuts celcc ont été basculés à 'admis a poursuivre'<br/>";
+
+  $sql = "UPDATE reports marmotte, ".dsidbname.".".celcc_statuts." dsi SET marmotte.statut_celcc='non admis à poursuivre' ";
+  $sql .= "WHERE dsi.num_conc=marmotte.concours AND dsi.user_id=marmotte.concoursid AND dsi.admis_concourir='oui' AND dsi.admis_poursuivre='non'"; 
+  sql_request($sql);
+  $changed = mysqli_affected_rows($dbh);
+  if($changed > 0)
+    $log .= $changed." statuts celcc ont été basculés à 'non admis a poursuivre'<br/>";
+
+  $sql = "UPDATE reports marmotte, ".dsidbname.".".celcc_statuts." dsi SET marmotte.statut_celcc='non-admissible' ";
+  $sql .= "WHERE dsi.num_conc=marmotte.concours AND dsi.user_id=marmotte.concoursid AND dsi.admissible='non'"; 
+  sql_request($sql);
+  $changed = mysqli_affected_rows($dbh);
+  if($changed > 0)
+    $log .= $changed." statuts celcc ont été basculés à 'non admissible'<br/>";
+
+  $sql = "UPDATE reports marmotte, ".dsidbname.".".celcc_statuts." dsi SET marmotte.statut_celcc=CONCAT('admissible: ',dsi.classement_admissibilite) ";
+  $sql .= "WHERE dsi.num_conc=marmotte.concours AND dsi.user_id=marmotte.concoursid AND dsi.admissible='oui' AND dsi.admis='non traité'"; 
+  sql_request($sql);
+  $changed = mysqli_affected_rows($dbh);
+  if($changed > 0)
+    $log .= $changed." statuts celcc ont été basculés à 'admissible'<br/>";
+
+  $sql = "UPDATE reports marmotte, ".dsidbname.".".celcc_statuts." dsi SET marmotte.statut_celcc=CONCAT('non-admis, admissible: ',dsi.classement_admissibilite) ";
+  $sql .= "WHERE dsi.num_conc=marmotte.concours AND dsi.user_id=marmotte.concoursid AND dsi.admissible='oui' AND dsi.admis='non'"; 
+  sql_request($sql);
+  $changed = mysqli_affected_rows($dbh);
+  if($changed > 0)
+    $log .= $changed." statuts celcc ont été basculés à 'non-admis'<br/>";
+
+  $sql = "UPDATE reports marmotte, ".dsidbname.".".celcc_statuts." dsi SET marmotte.statut_celcc=CONCAT('admis: ',dsi.classement_admission,' admissible: ',dsi.classement_admissibilite) ";
+  $sql .= "WHERE dsi.num_conc=marmotte.concours AND dsi.user_id=marmotte.concoursid AND dsi.admissible='oui' AND dsi.admis!='non'"; 
+  sql_request($sql);
+  $changed = mysqli_affected_rows($dbh);
+  if($changed > 0)
+    $log .= $changed." statuts celcc ont été basculés à 'admis'<br/>";
+
+
+  $sql = "UPDATE reports marmotte, ".dsidbname.".".celcc_statuts." dsi SET marmotte.avis='".avis_non_classe."' ";
+  $sql .= "WHERE marmotte.avis='' AND dsi.num_conc=marmotte.concours AND dsi.user_id=marmotte.concoursid AND dsi.admis_concourir='non'"; 
+  sql_request($sql);
+  $changed = mysqli_affected_rows($dbh);
+  if($changed > 0)
+    $log .= $changed." avis marmotte ont été basculés à 'non classé'<br/>";
+
+  $sql = "UPDATE reports marmotte, ".dsidbname.".".celcc_statuts." dsi ";
+  $sql .= "SET marmotte.avis='".avis_non_classe."', marmotte.statut_celcc='retrait candidature' ";
+  $sql .= "WHERE dsi.num_conc=marmotte.concours AND dsi.user_id=marmotte.concoursid AND dsi.retrait_candidature!='non'"; 
+  sql_request($sql);
+  $changed = mysqli_affected_rows($dbh);
+  if($changed > 0)
+    $log .= $changed." avis marmotte ont été basculés à 'retrait candidature'<br/>";
+
+  return $log;
+}
+
 function synchronizeConcours($year = "")
 {
   $log = "";
@@ -11,7 +108,7 @@ function synchronizeConcours($year = "")
   if($year == "")
     $year = date("Y");
 
-  if($year==2015) $year=2016;
+  //  if($year==2015) $year=2016;
 
   /*liste des sesessions */
   $sessions = array();
@@ -144,105 +241,7 @@ try
       $sql = "UPDATE ".marmottedbname.".".reports_db." SET id_origine=id WHERE id=\"".$new_id."\"";
       sql_request($sql);
     }
-
-  $sql = "UPDATE reports marmotte, ".dsidbname.".".celcc_statuts." dsi SET marmotte.statut_celcc='non admis à concourir' ";
-  $sql .= "WHERE dsi.num_conc=marmotte.concours AND dsi.user_id=marmotte.concoursid AND dsi.admis_concourir='non'"; 
-  sql_request($sql);
-  global $dbh;
-  $changed = mysqli_affected_rows($dbh);
-  if($changed > 0)
-    $log .= $changed." statuts celcc ont été basculés à 'non admis a concourir'<br/>";
-
-  // mise a jour des statuts cel_cc
-  $sql = "UPDATE reports marmotte, ".dsidbname.".".celcc_statuts." dsi SET marmotte.statut_celcc='soumis à IE' ";
-  $sql .= "WHERE dsi.num_conc=marmotte.concours AND dsi.user_id=marmotte.concoursid AND dsi.dde_equiv='soumis au IE' AND admis_concourir='non traité'"; 
-  sql_request($sql);
-  global $dbh;
-  $changed = mysqli_affected_rows($dbh);
-  if($changed > 0)
-    $log .= $changed." statuts celcc ont été basculés à 'IE'<br/>";
-
-  $sql = "UPDATE reports marmotte, ".dsidbname.".".celcc_statuts." dsi SET marmotte.statut_celcc='soumis au CS' ";
-  $sql .= "WHERE dsi.num_conc=marmotte.concours AND dsi.user_id=marmotte.concoursid AND dsi.dde_equiv='soumis au CS' AND admis_concourir='non traité'"; 
-  sql_request($sql);
-  global $dbh;
-  $changed = mysqli_affected_rows($dbh);
-  if($changed > 0)
-    $log .= $changed." statuts celcc ont été basculés à 'CS'<br/>";
-
-  $sql = "UPDATE reports marmotte, ".dsidbname.".".celcc_statuts." dsi SET marmotte.statut_celcc='admis à concourir' ";
-  $sql .= "WHERE dsi.num_conc=marmotte.concours AND dsi.user_id=marmotte.concoursid AND dsi.admis_concourir='oui' AND admis_poursuivre='non traité'"; 
-  sql_request($sql);
-  global $dbh;
-  $changed = mysqli_affected_rows($dbh);
-  if($changed > 0)
-    $log .= $changed." statuts celcc ont été basculés à 'admis a concourir'<br/>";
-
-  $sql = "UPDATE reports marmotte, ".dsidbname.".".celcc_statuts." dsi SET marmotte.statut_celcc='admis à poursuivre' ";
-  $sql .= "WHERE dsi.num_conc=marmotte.concours AND dsi.user_id=marmotte.concoursid AND dsi.admis_poursuivre='oui' AND dsi.admissible='non traité'"; 
-  sql_request($sql);
-  global $dbh;
-  $changed = mysqli_affected_rows($dbh);
-  if($changed > 0)
-    $log .= $changed." statuts celcc ont été basculés à 'admis a poursuivre'<br/>";
-
-  $sql = "UPDATE reports marmotte, ".dsidbname.".".celcc_statuts." dsi SET marmotte.statut_celcc='non admis à poursuivre' ";
-  $sql .= "WHERE dsi.num_conc=marmotte.concours AND dsi.user_id=marmotte.concoursid AND dsi.admis_concourir='oui' AND dsi.admis_poursuivre='non'"; 
-  sql_request($sql);
-  global $dbh;
-  $changed = mysqli_affected_rows($dbh);
-  if($changed > 0)
-    $log .= $changed." statuts celcc ont été basculés à 'non admis a poursuivre'<br/>";
-
-  $sql = "UPDATE reports marmotte, ".dsidbname.".".celcc_statuts." dsi SET marmotte.statut_celcc='non-admissible' ";
-  $sql .= "WHERE dsi.num_conc=marmotte.concours AND dsi.user_id=marmotte.concoursid AND dsi.admissible='non'"; 
-  sql_request($sql);
-  global $dbh;
-  $changed = mysqli_affected_rows($dbh);
-  if($changed > 0)
-    $log .= $changed." statuts celcc ont été basculés à 'non admissible'<br/>";
-
-  $sql = "UPDATE reports marmotte, ".dsidbname.".".celcc_statuts." dsi SET marmotte.statut_celcc=CONCAT('admissible: ',dsi.classement_admissibilite) ";
-  $sql .= "WHERE dsi.num_conc=marmotte.concours AND dsi.user_id=marmotte.concoursid AND dsi.admissible='oui' AND dsi.admis='non traité'"; 
-  sql_request($sql);
-  global $dbh;
-  $changed = mysqli_affected_rows($dbh);
-  if($changed > 0)
-    $log .= $changed." statuts celcc ont été basculés à 'admissible'<br/>";
-
-  $sql = "UPDATE reports marmotte, ".dsidbname.".".celcc_statuts." dsi SET marmotte.statut_celcc=CONCAT('non-admis, admissible: ',dsi.classement_admissibilite) ";
-  $sql .= "WHERE dsi.num_conc=marmotte.concours AND dsi.user_id=marmotte.concoursid AND dsi.admissible='oui' AND dsi.admis='non'"; 
-  sql_request($sql);
-  global $dbh;
-  $changed = mysqli_affected_rows($dbh);
-  if($changed > 0)
-    $log .= $changed." statuts celcc ont été basculés à 'non-admis'<br/>";
-
-  $sql = "UPDATE reports marmotte, ".dsidbname.".".celcc_statuts." dsi SET marmotte.statut_celcc=CONCAT('admis: ',dsi.classement_admission,' admissible: ',dsi.classement_admissibilite) ";
-  $sql .= "WHERE dsi.num_conc=marmotte.concours AND dsi.user_id=marmotte.concoursid AND dsi.admissible='oui' AND dsi.admis!='non'"; 
-  sql_request($sql);
-  global $dbh;
-  $changed = mysqli_affected_rows($dbh);
-  if($changed > 0)
-    $log .= $changed." statuts celcc ont été basculés à 'admis'<br/>";
-
-
-  $sql = "UPDATE reports marmotte, ".dsidbname.".".celcc_statuts." dsi SET marmotte.avis='".avis_non_classe."' ";
-  $sql .= "WHERE marmotte.avis='' AND dsi.num_conc=marmotte.concours AND dsi.user_id=marmotte.concoursid AND dsi.admis_concourir='non'"; 
-  sql_request($sql);
-  global $dbh;
-  $changed = mysqli_affected_rows($dbh);
-  if($changed > 0)
-    $log .= $changed." avis marmotte ont été basculés à 'non classé'<br/>";
-
-  $sql = "UPDATE reports marmotte, ".dsidbname.".".celcc_statuts." dsi ";
-  $sql .= "SET marmotte.avis='".avis_non_classe."', marmotte.statut_celcc='retrait candidature' ";
-  $sql .= "WHERE dsi.num_conc=marmotte.concours AND dsi.user_id=marmotte.concoursid AND dsi.retrait_candidature!='non'"; 
-  sql_request($sql);
-  global $dbh;
-  $changed = mysqli_affected_rows($dbh);
-  if($changed > 0)
-    $log .= $changed." avis marmotte ont été basculés à 'retrait candidature'<br/>";
+  $log .= synchronizeStatutsConcours($year);
 
 
   

@@ -256,8 +256,16 @@ function alertText($text)
 			
 			switch($action)
 			{
+			case 'reinitialiserconflits':
+			  echo reinitializeCponflicts();
+			  include 'admin/admin_concours.inc.php';
+			  break;
 			case 'synchronizeConcours':
 			  echo synchronizeConcours();
+			  include 'admin/admin_maintenance.inc.php';
+			  break;
+			case 'synchronizeStatutsConcours':
+			  echo synchronizeStatutsConcours();
 			  include 'admin/admin_maintenance.inc.php';
 			  break;
 			case 'sync_colleges':

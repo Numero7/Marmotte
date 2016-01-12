@@ -24,7 +24,10 @@ Le lien suivant permet de synchroniser Marmotte avec les bases de donnees d&#39;
 <a href="index.php?action=sync_colleges&amp;admin_maintenance=">Synchroniser les collèges des membres.</a>
 </p>
 <p>
-<a href="index.php?action=synchronizeConcours&amp;admin_maintenance=">Synchroniser les concours (expérimental).</a>
+<a href="index.php?action=synchronizeConcours&amp;admin_maintenance=">Synchroniser les concours (attention risque faible de perte de données des utilisateurs connectés)</a>
+</p>
+<p>
+<a href="index.php?action=synchronizeStatutsConcours&amp;admin_maintenance=">Synchroniser les statuts concours.</a>
 </p>
 <!--
 <form method="get" action="index.php"

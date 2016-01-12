@@ -134,64 +134,14 @@
 		name="admin_concours"></input>
 </form>
 <br />
-<!--
-<hr />
-<h3>Changer le statut du concours</h3>
-<p>Cette fonction permet de changer le statut du concours au fur et à
-	mesure de son avancement.</p>
-<ul>
-		    <li>IE: avant et pendant l&#39;IE</li>
-	<li>JAD: avant et pendant le JAD</li>
-	<li>audition: avant et pendant les auditions</li>
-						      <li>admissibilité: avant et pendant le jury d&#39;admissibilité</li>
-	<li>rapports: préparation des rapports sur les candidats classés et
-		auditionnés</li>
-   <li>transmis: rapports transmis au jury d&#39;admission</li>
-</ul>
-<?php
-$concours = getConcours();
-foreach($concours as $conc)
-{
-	echo "<B>".$conc->intitule."</B>";
-	?>
-<form method="post" action="index.php">
-	<input type="hidden" name="admin_concours" value="" /> <input
-		type="hidden" name="action" value="statutconcours" /> <input
-		type="hidden" name="code" value="<?php echo $conc->code; ?>" /> <select
-		name="statut">
-		<?php 
-		global $statuts_concours;
-		foreach($statuts_concours as $code => $intitule)
-		{
-			$visible = ($conc->statut == $code) ? " selected=\"selected\" " : "";
-			echo "<option value=\"".$code."\" ".$visible." >".$intitule."</option>";
-		}
-		?>
-	</select> <input type="submit" value="Changer statut" />
+<h3>Reinitialiser les conflits</h3>
+    <p>Cette fonction permet de supprimer tous les conflits d&apos;intérêts.</p>
+<form method="post" action="index.php"
+	onsubmit="return confirm('Réinitialiser les conflits?');">
+	<input type="hidden" name="action" value="reinitialiserconflits" /> <input
+		type="submit" value="Reinitialiser les conflits" /> <input type="hidden"
+		name="admin_concours"></input>
 </form>
-<?php 
-}
-?>
-<br/>
-
-<hr/>
-
-<h3>Supprimer un concours</h3>
-<p>Ce menu permet de supprimer un concours.</p>
-<form method="post" action="index.php">
-	<input type="hidden" name="admin_concours"></input>
-	<?php 
-	$concours = getConcours();
-	echo " Concours <select name=\"code\">\n";
-	foreach($concours as $conc)
-		echo "<option value=\"$conc->code\">".$conc->code." ".$conc->intitule."</option>\n";
-	echo "</select>\n";
-
-	?>
-	<input type="hidden" name="action" value="delete_concours" /> <input
-		type="submit" value="Supprimer" />
-</form>
--->
 <br />
 <hr />
 <h3>Rapports JAD</h3>

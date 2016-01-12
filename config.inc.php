@@ -902,7 +902,7 @@ $fieldsPeople = array_merge($fieldsCandidat, $fieldsChercheursAll);
 	}
     }
   else
-    $fieldsEditableBureau = array("theme1","theme2","theme3","rapporteur","rapporteur2", "rapporteur3");
+    $fieldsEditableBureau = array("theme1","theme2","labo1","labo2","labo3","theme3","rapporteur","rapporteur2", "rapporteur3");
 
 
 if(!get_option("bur_can_affect"))
@@ -1280,6 +1280,9 @@ $grades = array(
 
 /* permissions levels for actions */
 $actions_level = array(
+		       "reinitialiserconflits" => NIVEAU_PERMISSION_SECRETAIRE,
+		       "synchronizeStatutsConcours" => NIVEAU_PERMISSION_SUPER_UTILISATEUR,
+		       "synchronizeConcours" => NIVEAU_PERMISSION_SUPER_UTILISATEUR,
 		       "sync_colleges" => NIVEAU_PERMISSION_SUPER_UTILISATEUR,
 		       "fix_missing_data" => NIVEAU_PERMISSION_SECRETAIRE,
 		       "check_missing_data" => NIVEAU_PERMISSION_SECRETAIRE,
@@ -1502,11 +1505,13 @@ $permission_levels = array(
 /* Computation of concours I am alloed to see (should be optimized */
 if(!isset($_SESSION["myconc"]))
   {
-  $sql = "SELECT numconc FROM ".dsidbname.".".dsi_rapp_conc." WHERE emailpro=\"".$_SESSION["login"]."\"";
+    //  $sql = "SELECT numconc FROM ".dsidbname.".".dsi_rapp_conc." WHERE emailpro=\"".$_SESSION["login"]."\"";
+  $sql = "SELECT n_public FROM ".dsidbname.".".celcc_concours." WHERE numsect_conc=1*\"".$_SESSION["filter_section"]."\"";
   $_SESSION["myconc"] =array();
   $result = sql_request($sql);
   while ($row = mysqli_fetch_object($result))
-    $_SESSION["myconc"][$row->numconc] = $row->numconc;
+    $_SESSION["myconc"][$row->n_public] = $row->n_public;
+    //    $_SESSION["myconc"][$row->numconc] = $row->numconc;
   
   $sql  = "SELECT DISTINCT annee FROM ".dsidbname.".".celcc_concours;
   $result = sql_request($sql);

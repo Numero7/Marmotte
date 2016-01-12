@@ -2,6 +2,13 @@
 
 require_once('manage_rapports.inc.php');
 
+function reinitializeCponflicts()
+{
+  $sql = "UPDATE ".marmottedbname.".".people_db." SET conflits='' WHERE section='".currentSection()."'";
+  sql_request($sql);
+  return "Conflits remis à zéro";
+}
+
 function affectersousjurys()
 {
 	$rows = get_current_selection();
