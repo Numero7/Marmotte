@@ -45,6 +45,8 @@ function current_session_id()
 
 function set_current_session_id($id)
 {
+  unset($_SESSION['myconc']);
+	unset($_SESSION["rows_id"]);
 	$_SESSION['filter_id_session'] = $id;
 }
 

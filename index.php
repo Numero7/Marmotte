@@ -142,6 +142,11 @@ try
 				change_current_section($_REQUEST['filter_section']);
 				reload("?action=");
 			}
+			if(isset($_REQUEST['filter_id_session']))
+			{
+			       set_current_session_id($_REQUEST['filter_id_session']);
+				reload("?action=");
+			}
 			
 			try{								
 				include("content.inc.php");

@@ -25,6 +25,7 @@ function is_associated_directory_unit($unit, $directory)
 function find_celcc_files($row, $session)
 {
   $concours = getConcours();
+
   if(isset($concours[$row->concours]))
     {
       $grade = substr($concours[$row->concours]->intitule,0,2);
@@ -36,6 +37,7 @@ function find_celcc_files($row, $session)
        $corps_grade = "";
     }
 
+  //  echo $grade."<br/>".$corps_grade."<br/>";
   if(!isset($row->concoursid) || $row->concoursid=="")
     return array();
   $sql = "SELECT * FROM ".dsidbname.".".celcc_docs." ";
@@ -52,6 +54,7 @@ function find_celcc_files($row, $session)
       //      $pretty_name = str_replace(array("_",strtoupper($row->nom),strtoupper($row->prenom),$row->concoursid),array(""), $doc->nom_doc);
       $pretty_name .= str_replace(array("_",$row->concoursid),array(" "), $doc->nom_doc);
       $files[$pretty_name]=$dossier_stockage_dsi."/".$doc->path_sas.$doc->nom_doc;
+      //echo $doc->nom_doc."<br/>";
     }  
   return $files;
 }
@@ -180,6 +183,7 @@ function find_people_files($candidate, $force, $session, $type, $create_director
 					$filenames[] = $file;
 					foreach($filenames as $file)
 					{
+					  //					  echo $file;
 						$timestamp = filemtime($basedir."/".$file);
 						if($timestamp != false)
 							$files[date("d/m/Y - h:i:s",$timestamp).$file]=$file;
