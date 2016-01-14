@@ -1505,13 +1505,13 @@ $permission_levels = array(
 /* Computation of concours I am alloed to see (should be optimized */
 if(!isset($_SESSION["myconc"]))
   {
-    //  $sql = "SELECT numconc FROM ".dsidbname.".".dsi_rapp_conc." WHERE emailpro=\"".$_SESSION["login"]."\"";
-  $sql = "SELECT n_public FROM ".dsidbname.".".celcc_concours." WHERE numsect_conc=1*\"".$_SESSION["filter_section"]."\"";
+  $sql = "SELECT numconc FROM ".dsidbname.".".dsi_rapp_conc." WHERE emailpro=\"".$_SESSION["login"]."\"";
+  //$sql = "SELECT n_public FROM ".dsidbname.".".celcc_concours." WHERE numsect_conc=1*\"".$_SESSION["filter_section"]."\"";
   $_SESSION["myconc"] =array();
   $result = sql_request($sql);
   while ($row = mysqli_fetch_object($result))
-    $_SESSION["myconc"][$row->n_public] = $row->n_public;
-    //    $_SESSION["myconc"][$row->numconc] = $row->numconc;
+    //$_SESSION["myconc"][$row->n_public] = $row->n_public;
+    $_SESSION["myconc"][$row->numconc] = $row->numconc;
   
   $sql  = "SELECT DISTINCT annee FROM ".dsidbname.".".celcc_concours;
   $result = sql_request($sql);

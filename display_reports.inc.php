@@ -251,13 +251,13 @@ function displayRowCell($row, $fieldID)
 		  $concours_ouverts = getConcours();
 		foreach($rapporteurs as $rapporteur => $data)
 		{
-		  /*
+		  
 		  if(isset($row->concours) 
 		     && $row->concours != "" 
 		     && isset($concours_ouverts[$row->concours])		     
 		     && !in_array($rapporteur,$concours_ouverts[$row->concours]->jures))
 		    continue;
-		  */
+		  
 		  if(is_rapporteur_allowed($data,$row))
 		    {
 			$selected = ($rapporteur == $row->$fieldID) ? "selected=on" : "";
