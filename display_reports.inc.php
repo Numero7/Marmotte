@@ -252,7 +252,7 @@ function displayRowCell($row, $fieldID)
 		foreach($rapporteurs as $rapporteur => $data)
 		{
 		  
-		  if(isset($row->concours) 
+		  		  if(isset($row->concours) 
 		     && $row->concours != "" 
 		     && isset($concours_ouverts[$row->concours])		     
 		     && !in_array($rapporteur,$concours_ouverts[$row->concours]->jures))

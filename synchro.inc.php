@@ -757,10 +757,11 @@ function check_missing_data()
   $result = sql_request($sql);
   $missing = array();
   $total = 0;
+  global $dossier_stockage_dsi;
   while($row = mysqli_fetch_object($result))
     {
       $total++;      
-      $dossier_stockage_dsi = "/home/dsi/data/docs";
+      //      $dossier_stockage_dsi = "/home/dsi/data/docs";
       $file = $dossier_stockage_dsi."/".$row->path_sas."/".$row->nom_document;
       if(!file_exists($file))
       	$missing[$row->dkey] = $file;
@@ -777,9 +778,9 @@ function check_missing_data()
   $result = sql_request($sql);
   $missing = array();
   $total = 0;
-  global  $dossier_stockage_dsi;
   while($row = mysqli_fetch_object($result))
     {
+      //      $dossier_stockage_dsi = "./storage/evaluation";
       $total++;      
       $file = $dossier_stockage_dsi."/".$row->path_sas."/".$row->nom_doc;
       if(!file_exists($file))
@@ -787,7 +788,7 @@ function check_missing_data()
     }
  if(count($missing) > 0)
     {
-      $msg .= "\n\nLa table ".dsidbname.".".celcc_docs_db." contient ".$total." liens vers des documents pdfs ";
+      $msg .= "\n\nLa table ".dsidbname.".".celcc_docs." contient ".$total." liens vers des documents pdfs ";
       $msg .= " dont ".count($missing)." sont inaccessibles depuis Marmotte.\n<br/>";
       //foreach($missing as $dkey => $link)
       //      $msg.= "DKEY ".$dkey." ".$link."<br/>\n";

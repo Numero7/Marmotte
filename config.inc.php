@@ -75,7 +75,7 @@ if(!isset($_SESSION['filter_section']))
 $dossier_temp = $rootdir."./tmp/".$_SESSION['filter_section']."/";
 $dossier_stockage_short = $rootdir."./storage/".$_SESSION['filter_section']."/";
 $dossier_stockage = realpath($dossier_stockage_short);
-$dossier_stockage_dsi = realpath($rootdir."./storage/".$dsirootdir."/");
+//$dossier_stockage_dsi = realpath($rootdir."./storage/".$dsirootdir."/");
 $dossier_stockage_dsi = $rootdir."./storage/".$dsirootdir."/";
 
 $typesdocs = array();

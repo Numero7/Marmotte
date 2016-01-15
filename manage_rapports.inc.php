@@ -919,20 +919,23 @@ function change_report_property($id_origine, $property_name, $newvalue)
       $emails = is_current_session_concours() ? array(get_config("email_scc")) :  emailsACN();
       $sql = "SELECT * FROM reports WHERE id='".$id_origine."';";
       $res = sql_request($sql);
+
       while($rap = mysqli_fetch_object($res))
 	{
 	    if(isset($rap->$property_name) && $rap->$property_name != "" && $rap->$property_name != $newvalue)
 	      {
-		$subject = "Marmotte changement de ".$property_name." section ".$rap->section." DKEY ".$rap->DKEY;
+		global $typesRapportsAll;
+		$tt = isset($typesRapportsAll[$rap->type]) ? $typesRapportsAll[$rap->type] : "Inconnu";
+		$subject = "Marmotte changement de ".$property_name." section ".$rap->section;
 		$content = "Bonjour,\r\n\r\n";
 		$content .= "cet email vous informe du changement de ".$property_name." \r\npour la section ".$rap->section;
-		$content .= " et le dossier de DKEY ".$rap->DKEY."\r\n\r\n";
-		$content .= "Ancien rapporteur:  ".$rap->$property_name."\r\n";
-		$content .= "Nouveau rapporteur:  ".$newvalue."r\n";
+		$content .= " et le dossier de type ".$tt." de ".$rap->prenom." ".$rap->nom." ".$rap->unite."\r\n\r\n";
+		$content .= "Ancien rapporteur:  '".$rap->$property_name."'\r\n";
+		$content .= "Nouveau rapporteur:  '".($newvalue == "" ? "aucun" : $newvalue)."'\r\n";
 
 	      foreach($emails as $email)
 		if($email != "")
-		email_handler($email,$subject,$content,email_sgcn,email_admin);		
+		email_handler($email,$subject,$content);		
 	      }
 	}
 	    
