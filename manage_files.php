@@ -145,23 +145,6 @@ function find_people_files($candidate, $force, $session, $type, $create_director
 	if($candidate->nom == "" && $candidate->prenom == "")
 		return array();
 
-	/*
-
-	if($force && !is_dir($basedir))
-	{
-		if($directories == NULL)
-			$directories = get_directories_list($session);
-		foreach($directories as $directory)
-		{
-			if( is_associated_directory_people($candidate, $directory) )
-			{
-//				echo "Renaming '".$directory . "' to '". $basedir."'<br/>";
-				rename($directory,$basedir);
-				break;
-			}
-		}
-	}*/
-
 	$basedir = get_people_directory($candidate, $session, $create_directory_if_nexists, $type);
 
 	if ( is_dir($basedir) )

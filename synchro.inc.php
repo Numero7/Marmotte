@@ -757,11 +757,11 @@ function check_missing_data()
   $result = sql_request($sql);
   $missing = array();
   $total = 0;
-  global $dossier_stockage_dsi;
+  //  global $dossier_stockage_dsi;
+  $dossier_stockage_dsi = "/home/gimbert/Panda/storage/evaluation";
   while($row = mysqli_fetch_object($result))
     {
       $total++;      
-      //      $dossier_stockage_dsi = "/home/dsi/data/docs";
       $file = $dossier_stockage_dsi."/".$row->path_sas."/".$row->nom_document;
       if(!file_exists($file))
       	$missing[$row->dkey] = $file;
@@ -780,7 +780,6 @@ function check_missing_data()
   $total = 0;
   while($row = mysqli_fetch_object($result))
     {
-      //      $dossier_stockage_dsi = "./storage/evaluation";
       $total++;      
       $file = $dossier_stockage_dsi."/".$row->path_sas."/".$row->nom_doc;
       if(!file_exists($file))

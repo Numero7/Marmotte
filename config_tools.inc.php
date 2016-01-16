@@ -1,5 +1,6 @@
 <?php 
 	$configus = array(
+		"welcome_message" => array("Message d'accueil", "Bienvenue sur le site de la section 6"),
 		"section_shortname"=> array("Intitulé court de la section ou CID","Section 6"),
 		"section_intitule"=> 
    array("intitulé long de la section","Sciences de l\'information : fondements de l\'informatique, calculs, algorithmes, représentations, exploitations"),
@@ -7,7 +8,7 @@
 		"president" => array("Nom du président, utilisé pour signer les rapports", "Alan Türing"),
 		"webmaster" => array("Adresse email de l'expéditeur des emails", "alan.turing@cnrs.fr"),
 		"webmaster_nom" => array("Signataire des emails et pdfs", "Alan Türing"),
-		"welcome_message" => array("Message d'accueil", "Bienvenue sur le site de la section 6"),
+		"email_scc"=>array("Email utilisé pour informer le SCC d'un changement de rapporteur sur une candidature",""),
 			  "bur_can_affect"=> array("Les membres du bureau peuvent affecter les rapporteurs","true"),
 			  "bur_can_meta"=> array("Les membres du bureau peuvent modifier les rubriques chercheurs/candidats","false"),
 			  "bur_can_keywords"=> array("Les membres du bureau peuvent modifier les mots-clés","true"),
@@ -17,7 +18,6 @@
 		"acn_can_edit_rapporteurs"=> array("L'ACN peut modifier les rapporteurs","true"),
 		"sec_can_edit_valid"=> array("En plus du président, le secrétaire peut éditer les rapports en mode 'validation'","true"),
 		"acn_can_edit_valid"=> array("En plus du président, l'ACN peut éditer les rapports en mode 'validation'","true"),
-		"email_scc"=>array("email utilisé pour informer le SCC d'un changement de rapporteur sur une candidature",""),
 		"B_can_view_DR1_promo"=> array("Les rangs B ont accès aux dossiers de promo DR1","true"),
 		"C_can_view_DR1_promo"=> array("Les rangs C ont accès aux dossiers de promo DR1","false"),
 		"show_rapporteur3"=> array("Afficher le raporteur3 et son avis dans l'écran principal","false"),
