@@ -12,7 +12,7 @@ function getFilterValue($filter_name)
 
 	if(isset($_REQUEST["filter_".$filter_name]))
 	{
-		$answer = $_REQUEST["filter_".$filter_name];
+	  $answer = urldecode($_REQUEST["filter_".$filter_name]);
 //	echo "Setting filter_value from request ".$filter_name." ".$answer."<br/>";
 	}
 	else if(isset($_SESSION["filter_".$filter_name]))
