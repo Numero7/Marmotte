@@ -1619,7 +1619,7 @@ $filtersConcours = array(
 		'statut_celcc' => array('name'=>"Statut candidature" ,
 					'liste' => array(
 							 "soumis à IE"=>"soumis à IE",
-							 "soumis à CS"=>"soumis à CS",
+							 "soumis au CS"=>"soumis au CS",
 							 "admis à concourir"=>"admis à concourir",
 							 "retrait candidature"=>"retrait candidature",
 							 "non-admissible"=>"non-admissible",
