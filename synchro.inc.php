@@ -174,6 +174,10 @@ try
   $sql .= "SET marmotte.nom=dsi.nom,marmotte.prenom =dsi.prenom ON marmotte.concoursid=dsi.user_id";
   sql_request($sql);
 
+  $sql = "UPDATE ".marmottedbname.".".reportsdb." marmotte, ".dsidbname.".".celcc_candidats." dsi ";
+  $sql .= "SET marmotte.nom=dsi.nom,marmotte.prenom =dsi.prenom ON marmotte.concoursid=dsi.user_id";
+  sql_request($sql);
+
   /* calcul des candidats déjà connus */
   $sql = "SELECT concoursid,section FROM ".marmottedbname.".people WHERE concoursid!=\"\"";
   $result = sql_request($sql);
