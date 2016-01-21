@@ -169,6 +169,11 @@ try
   //  $sql = "SELECT * FROM ".dsidbname.".".celcc_candidats;
   //  $sql .= " WHERE user_id NOT IN (SELECT DISTINCT concoursid FROM ".marmottedbname.".people WHERE concoursid!=\"\")";
 
+  /* mse a jour des candidats ayant changé de nom */
+  $sql = "UPDATE ".marmottedbname.".".peopledb." marmotte, ".dsidbname.".".celcc_candidats." dsi ";
+  $sql .= "SET marmotte.nom=dsi.nom,marmotte.prenom =dsi.prenom ON marmotte.concoursid=dsi.user_id";
+  sql_request($sql);
+
   /* calcul des candidats déjà connus */
   $sql = "SELECT concoursid,section FROM ".marmottedbname.".people WHERE concoursid!=\"\"";
   $result = sql_request($sql);
