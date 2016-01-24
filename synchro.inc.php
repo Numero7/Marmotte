@@ -20,25 +20,32 @@ function synchronizeStatutsConcours($year = "")
 
   // mise a jour des statuts cel_cc
   $sql = "UPDATE reports marmotte, ".dsidbname.".".celcc_statuts." dsi SET marmotte.statut_celcc='soumis à IE' ";
-  $sql .= "WHERE dsi.num_conc=marmotte.concours AND dsi.user_id=marmotte.concoursid AND dsi.dde_equiv='soumis au IE' AND admis_concourir='non traité'"; 
+  $sql .= "WHERE dsi.num_conc=marmotte.concours AND dsi.user_id=marmotte.concoursid AND dsi.dde_equiv='soumis au IE' AND dsi.admis_concourir='non traité'"; 
   sql_request($sql);
   $changed = mysqli_affected_rows($dbh);
   if($changed > 0)
     $log .= $changed." statuts celcc ont été basculés à 'IE'<br/>";
 
   $sql = "UPDATE reports marmotte, ".dsidbname.".".celcc_statuts." dsi SET marmotte.statut_celcc='soumis au CS' ";
-  $sql .= "WHERE dsi.num_conc=marmotte.concours AND dsi.user_id=marmotte.concoursid AND dsi.dde_equiv='soumis au CS' AND admis_concourir='non traité'"; 
+  $sql .= "WHERE dsi.num_conc=marmotte.concours AND dsi.user_id=marmotte.concoursid AND dsi.dde_equiv='soumis au CS' AND dsi.admis_concourir='non traité'"; 
   sql_request($sql);
   $changed = mysqli_affected_rows($dbh);
   if($changed > 0)
     $log .= $changed." statuts celcc ont été basculés à 'CS'<br/>";
 
   $sql = "UPDATE reports marmotte, ".dsidbname.".".celcc_statuts." dsi SET marmotte.statut_celcc='admis à concourir' ";
-  $sql .= "WHERE dsi.num_conc=marmotte.concours AND dsi.user_id=marmotte.concoursid AND dsi.admis_concourir='oui' AND admis_poursuivre='non traité'"; 
+  $sql .= "WHERE dsi.num_conc=marmotte.concours AND dsi.user_id=marmotte.concoursid AND dsi.admis_concourir='oui' AND dsi.admis_poursuivre='non traité'"; 
   sql_request($sql);
   $changed = mysqli_affected_rows($dbh);
   if($changed > 0)
     $log .= $changed." statuts celcc ont été basculés à 'admis a concourir'<br/>";
+
+  $sql = "UPDATE reports marmotte, ".dsidbname.".".celcc_statuts." dsi SET marmotte.avis='' ";
+  $sql .= "WHERE dsi.num_conc=marmotte.concours AND dsi.user_id=marmotte.concoursid AND marmotte.avis=\"".avis_IE_oui."\" AND dsi.admis_concourir='oui' AND dsi.admis_poursuivre='non traité'"; 
+  sql_request($sql);
+  $changed = mysqli_affected_rows($dbh);
+  if($changed > 0)
+    $log .= $changed." avis ont été basculés de 'IE oui' à ''<br/>";
 
   $sql = "UPDATE reports marmotte, ".dsidbname.".".celcc_statuts." dsi SET marmotte.statut_celcc='admis à poursuivre' ";
   $sql .= "WHERE dsi.num_conc=marmotte.concours AND dsi.user_id=marmotte.concoursid AND dsi.admis_poursuivre='oui' AND dsi.admissible='non traité'"; 
@@ -988,6 +995,7 @@ $answer = "<h1>Synchronisation avec e-valuation de la section ".$section." - ".d
 	  {
 	    if($section > 55)
 	      {
+		$answer .= "<h1>Synchro concours</h1>";
 		$answer .= synchronizeConcours();
 		$answer.= "<h2>Renommage des intitulés</h2>";
 		$sql = "UPDATE ".marmottedbname.".".reports_db." SET `intitule`=\"Evaluation à vague de chercheurs\" WHERE `DKEY`IN";
@@ -996,6 +1004,9 @@ $answer = "<h1>Synchronisation avec e-valuation de la section ".$section." - ".d
 		$sql = "UPDATE ".marmottedbname.".".reports_db." SET `intitule`=\"Evaluation à mi-vague de chercheurs\" WHERE `DKEY`IN";
 		$sql.="(SELECT DKEY FROM ".dsidbname.".".dsi_evaluation_db." WHERE `type`='".REPORT_EVAL."' AND `PHASE_EVAL`=\"mi-vague\")";
 		sql_request($sql);
+
+		echo $answer;
+		//		$_SESSION["answer_dsi_sync"] = $answer . $_SESSION["answer_dsi_sync"];
 
 		if(!$recursive)
 		  unset($_SESSION["answer_dsi_sync"]);

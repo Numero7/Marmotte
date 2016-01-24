@@ -112,6 +112,7 @@ function find_marmotte_files($row, $session, $create_directory_if_nexists = fals
 	{
 	  $marmotte_files = find_people_files($row,true, $session, $subtype, true);
 	  $dir = get_people_directory($row, $session, false,$subtype);
+	  //	  echo $dir;
 	}
 	
 	foreach($marmotte_files as $file)
@@ -191,9 +192,8 @@ function create_dir_if_needed2($basedir)
 function get_dir($session,$nom,$prenom)
 {
 	global $dossier_stockage_short;
-	$session = str_replace( "..", "" ,$session);
-	$nom = str_replace("..", "",$nom);
-	$prenom = str_replace("..", "",$prenom);
+	$nom = ucwords(strtolower($nom));
+	$prenom = ucwords(strtolower($prenom));
 	return  $dossier_stockage_short."/".$session."/".$nom."_".$prenom."/";
 }
 
