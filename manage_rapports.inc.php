@@ -213,7 +213,7 @@ function filterSortReports($filters, $filter_values = array(), $sorting_value = 
 	  /*dirty rule to skip reports that I am not allowed to see */
 	  if(!isSecretaire() && isset($row->concours) && $row->concours!="" && ($row->id_session=="Concours".$conc_year) && !isset($my_conc[$row->concours]))
 	    {
-	      continue;
+	      	      continue;
 	    }
 		$row->id = $row->report_id;
 		$rows[] = $row;
@@ -1145,8 +1145,11 @@ function is_field_editable($row, $fieldId)
 {
   global $my_conc;
  
+  if(isACN() && is_current_session_concours())
+    return false;
   if(!isSecretaire() && isset($row->concours) && ($row->concours != "") && !isset($my_conc[$row->concours]))
     return false;
+
 
 	$statut = isset($row->statut) ? $row->statut : "rapport";
 	$eval_type = isset($row->type) ? $row->type : "";
@@ -1239,8 +1242,6 @@ function is_field_editable($row, $fieldId)
 	   return true;
 
 	/* les droits suivants ne sont accoordés qu'aux rapporteurs et au secrétaire si ce dernier a les droits nécessaires*/
-	if(!$is_rapp1 && !$is_rapp2 && !$is_rapp3 && (!isSecretaire() || !get_option("sec_can_edit")))
-		return false;
 
 	global $fieldsIndividual;
 	global $fieldsIndividualAll;
@@ -1250,6 +1251,8 @@ function is_field_editable($row, $fieldId)
 	if(isset($fieldsIndividualDB[$fieldId]))
 	  return true;
 
+	if(!$is_rapp1 && !$is_rapp2 && !$is_rapp3 && (!isSecretaire() || !get_option("sec_can_edit")))
+		return false;
 	
 	if(isset($typesRapportToFields[$eval_type]))
 	  {

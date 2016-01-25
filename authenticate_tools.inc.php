@@ -181,7 +181,9 @@ function update_permissions($login, $section, $user = NULL)
 
 	if ($login == "admin" || $row->permissions == NIVEAU_PERMISSION_SUPER_UTILISATEUR)
 		$_SESSION["permission_mask"] = NIVEAU_PERMISSION_SUPER_UTILISATEUR;
-	else if($row->permissions < NIVEAU_PERMISSION_SUPER_UTILISATEUR)
+	else if($row->permissions == NIVEAU_PERMISSION_ACN)
+		$_SESSION["permission_mask"] = NIVEAU_PERMISSION_ACN;
+	else
 		$_SESSION["permission_mask"] = NIVEAU_PERMISSION_BASE;
 }
 
