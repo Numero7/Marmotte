@@ -1337,7 +1337,7 @@ $actions_level = array(
 
 $actions1 = array(
 		/*		'details' => array('left' => true, 'title' => "Détails", 'level' => NIVEAU_PERMISSION_BASE, 'page' =>'', 'icon' => 'img/details-icon-24px.png'),*/
-		'edit' => array('left' => true, 'title' => "Modifier", 'level' => NIVEAU_PERMISSION_BASE, 'page' =>'', 'icon' => 'img/details-icon-24px.png'),
+		  /*	'edit' => array('left' => true, 'title' => "Modifier", 'level' => NIVEAU_PERMISSION_BASE, 'page' =>'', 'icon' => 'img/details-icon-24px.png'),*/
 		'download' => array('page'=>"export.php", 'left' => true, 'title' => "Telecharger", 'level' => NIVEAU_PERMISSION_BASE, 'icon' => 'img/zip.png'),
 		/*		'viewpdf' => array('title' => "Voir en PDF", 'level' => NIVEAU_PERMISSION_BASE, 'page' =>'export.php', 'icon' => 'img/pdf-icon-24px.png'),
 		 'export&amp;type=text' => array('left' => true, 'title' => "Exporter", 'level' => NIVEAU_PERMISSION_BASE, 'page' =>'export.php', 'icon' => 'img/zip-icon-24px.png')*/
@@ -1636,9 +1636,9 @@ $filtersConcours = array(
 'default_value' => "tous", 'default_name' => ""),
 		'sousjury' => array('name'=>"Section de jury" , 'liste' => $liste_sous_jurys, 'default_value' => "toutes", 'default_name' => ""),
 		'avis' => array('name'=>"Avis section" , 'liste' => $avis_candidature_short, 'default_value' => "tous", 'default_name' => ""),
-		'avis1' => array('name'=>"Avis rapporteur 1" , 'liste' => $avis_candidature_short, 'default_value' => "tous", 'default_name' => ""),
-		'avis2' => array('name'=>"Avis rapporteur 2" , 'liste' => $avis_candidature_short, 'default_value' => "tous", 'default_name' => ""),
-		'rapporteur' => array('name'=>"Rapporteur 1" , 'default_value' =>"tous", 'default_name' => ""),
+		'avis1' => array('name'=>"Avis rapp. 1" , 'liste' => $avis_candidature_short, 'default_value' => "tous", 'default_name' => ""),
+		'avis2' => array('name'=>"Avis rapp. 2" , 'liste' => $avis_candidature_short, 'default_value' => "tous", 'default_name' => ""),
+		'rapporteur' => array('name'=>"Rapporteur" , 'default_value' =>"tous", 'default_name' => ""),
 		'rapporteur2' => array('name'=>"Rapporteur 2" , 'default_value' =>"tous", 'default_name' => ""),
 		'genre' => array('name' =>"Genre", 'liste' => $genreCandidat, 'default_value' => "tous", 'default_name' => ""),
 		//'avis3' => array('name'=>"Avis Rapp 3" , 'liste' => $avis_candidature_short, 'default_value' => "tous", 'default_name' => ""),

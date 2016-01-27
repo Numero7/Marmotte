@@ -206,7 +206,7 @@ if(isSecretaire())
 Déconnexion
 </a>
 </li>
-<li><a href="http://www.cnrs.fr/comitenational/outils/projet_marmotte.htm">Aide</li>
+<li><a href="http://www.cnrs.fr/comitenational/outils/projet_marmotte.htm">Aide</a></li>
 </ul>
 </td>
 </tr>

@@ -527,6 +527,9 @@ if($bur)
 	?>
 	<tr id="t<?php echo $row->id;?>" class="<?php echo $style;?>">
 		<td>
+<?php
+	   	   echo "<a href=\"?action=edit&amp;id=".$row->id."\"><img class=\"icon\" width=\"24px\" height=\"24px\" src=\"img/details-icon-24px.png\"></img></a>";
+?>
 	   <span class="actions1"></span>
 </td>
 <?php

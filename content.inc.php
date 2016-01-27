@@ -118,6 +118,8 @@ $(function() {
 	// Barre d'action/titre "flottante"
 	var nav = $('#toolbar');
 	var bd = $('#toolbar #border-bottom');
+	if(nav.offset() != null)
+	  {
     var navHomeY = nav.offset().top;
     var isFixed = false;
     var $w = $(window);
@@ -150,6 +152,7 @@ $(function() {
             isFixed = false;
         }
     });
+	  }
 });
 </script>
 

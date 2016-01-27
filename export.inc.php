@@ -226,7 +226,7 @@ function download_my_reports()
     {
       $files = aggregate_files($report);
       //      $dir = trim($report->concours." ".$report->nom." ".$report->prenom." ".$report->unite,"/ ");
-      $dir = trim(str_replace("/","",$report->concours." ".$report->nom." ".$report->prenom." ".$report->unite));
+      $dir = trim(str_replace("/","",/*$report->concours." ".*/$report->nom." ".$report->prenom." ".$report->unite));
       foreach($files as $path => $file)
 	{
 	  $filenames[$path] = $dir."/".$file;

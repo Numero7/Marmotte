@@ -413,6 +413,10 @@ function displayEditableReport($row, $canedit = true)
 		voir_rapport_pdf($row);
         echo "<div id=\"border-bottom\"></div>";
 		echo "</div>";
+		if($conflit)
+		  {
+		    echo "<h2 style=\"color:red;\">Vous êtes en conflit d'intérêt sur cette candidature.</h2>";
+		  }
 		if(true)
 		{
 			displayEditableCandidate($candidate,$row,$canedit);
@@ -436,7 +440,10 @@ function displayEditableReport($row, $canedit = true)
 			$hidden['fieldconcours'] = $row->concours;
 		echo "<br/><hr/><br/>";
 
-			displayEditableObject("Candidature", $row, array_merge(array("statut"),$fieldsRapportsCandidat0),$canedit, $session);
+				if($conflit)
+		  {
+		    echo "<h2 style=\"color:red;\">Vous êtes en conflit d'intérêt sur cette candidature.</h2>";
+		  }	displayEditableObject("Candidature", $row, array_merge(array("statut"),$fieldsRapportsCandidat0),$canedit, $session);
 
 		echo "<br/><hr/><br/>";
 

@@ -1203,7 +1203,6 @@ function is_field_editable($row, $fieldId)
 	global $fieldsEditableSecretaire;
 	if(isSecretaire() && in_array($fieldId, $fieldsEditableSecretaire))
 	  return true;
-	
 
 	$login = getLogin();
 
@@ -1236,10 +1235,11 @@ function is_field_editable($row, $fieldId)
 			return true;
 	}
 
+
 	global $fieldsEditableBureau;
 	//le bureau peut éditer les infos nominatives
 	if(isBureauUser() && in_array($fieldId, $fieldsEditableBureau))
-	   return true;
+	  return true;
 
 	/* les droits suivants ne sont accoordés qu'aux rapporteurs et au secrétaire si ce dernier a les droits nécessaires*/
 
@@ -1247,12 +1247,13 @@ function is_field_editable($row, $fieldId)
 	global $fieldsIndividualAll;
 	global $fieldsIndividualDB;
 
+	if(!$is_rapp1 && !$is_rapp2 && !$is_rapp3 && (!isSecretaire() || !get_option("sec_can_edit")))
+		return false;
+
 	//les champs indivicdues sont éditables
 	if(isset($fieldsIndividualDB[$fieldId]))
 	  return true;
 
-	if(!$is_rapp1 && !$is_rapp2 && !$is_rapp3 && (!isSecretaire() || !get_option("sec_can_edit")))
-		return false;
 	
 	if(isset($typesRapportToFields[$eval_type]))
 	  {
