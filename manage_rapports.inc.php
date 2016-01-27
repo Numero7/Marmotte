@@ -211,7 +211,7 @@ function filterSortReports($filters, $filter_values = array(), $sorting_value = 
 	while ($row = mysqli_fetch_object($result))
 	{
 	  /*dirty rule to skip reports that I am not allowed to see */
-	  if(!isSecretaire() && isset($row->concours) && $row->concours!="" && ($row->id_session=="Concours".$conc_year) && !isset($my_conc[$row->concours]))
+	  if(!isSecretaire("",false) && isset($row->concours) && $row->concours!="" && ($row->id_session=="Concours".$conc_year) && !isset($my_conc[$row->concours]))
 	    {
 	      	      continue;
 	    }
@@ -1145,8 +1145,8 @@ function is_field_editable($row, $fieldId)
 {
   global $my_conc;
  
-  if(isACN() && is_current_session_concours())
-    return false;
+  //  if(isACN() && !get_config("acn_can_edit_concours") && is_current_session_concours())
+  //return false;
   if(!isSecretaire() && isset($row->concours) && ($row->concours != "") && !isset($my_conc[$row->concours]))
     return false;
 

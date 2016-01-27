@@ -48,7 +48,7 @@ function send_file($local_filename, $remote_filename, $dsi = false)
 	if( strpos(strtolower($local_filename),"pdf") !== FALSE)
 	  {
 	    header('Content-type: application/pdf');
-	    header('Content-Disposition: inline; filename="$remote_filename"');
+	    header("Content-Disposition: inline; filename=\"$remote_filename\"");
 	  }
 	else
 	  {

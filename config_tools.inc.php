@@ -16,6 +16,7 @@
 		"acn_can_edit_avis"=> array("L'ACN peut éditer les avis","true"),
 		"acn_can_edit_reports"=> array("L'ACN peut éditer les rapports de section","true"),
 		"acn_can_edit_rapporteurs"=> array("L'ACN peut modifier les rapporteurs","true"),
+		"acn_can_edit_concours"=> array("L'ACN peut editer pendant une session concours","true"),
 		"sec_can_edit_valid"=> array("En plus du président, le secrétaire peut éditer les rapports en mode 'validation'","true"),
 		"acn_can_edit_valid"=> array("En plus du président, l'ACN peut éditer les rapports en mode 'validation'","true"),
 		"B_can_view_DR1_promo"=> array("Les rangs B ont accès aux dossiers de promo DR1","true"),
