@@ -1338,6 +1338,7 @@ $actions_level = array(
 $actions1 = array(
 		/*		'details' => array('left' => true, 'title' => "Détails", 'level' => NIVEAU_PERMISSION_BASE, 'page' =>'', 'icon' => 'img/details-icon-24px.png'),*/
 		'edit' => array('left' => true, 'title' => "Modifier", 'level' => NIVEAU_PERMISSION_BASE, 'page' =>'', 'icon' => 'img/details-icon-24px.png'),
+		'download' => array('page'=>"export.php", 'left' => true, 'title' => "Telecharger", 'level' => NIVEAU_PERMISSION_BASE, 'icon' => 'img/zip.png'),
 		/*		'viewpdf' => array('title' => "Voir en PDF", 'level' => NIVEAU_PERMISSION_BASE, 'page' =>'export.php', 'icon' => 'img/pdf-icon-24px.png'),
 		 'export&amp;type=text' => array('left' => true, 'title' => "Exporter", 'level' => NIVEAU_PERMISSION_BASE, 'page' =>'export.php', 'icon' => 'img/zip-icon-24px.png')*/
 );
@@ -1404,6 +1405,12 @@ $typeExports = array(
 				"mime" => "application/x-text",
 				"xsl" => "",
 				"name" => "Excel",
+				"permissionlevel" => NIVEAU_PERMISSION_BASE
+		),
+		"my" => 	array(
+				"mime" => "application/x-zip",
+				"xsl" => "",
+				"name" => "Mes dossiers",
 				"permissionlevel" => NIVEAU_PERMISSION_BASE
 		),
 		/*

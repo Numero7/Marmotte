@@ -32,7 +32,6 @@ if(!check_current_session_exists() && !isSuperUser())
 ?>
 
 <script type="text/javascript">
-
    $(document).ready(function() {
        $('.sproperty').change(function() {
 	   $(this).css({"color" : "#FF0000"});
@@ -40,9 +39,9 @@ if(!check_current_session_exists() && !isSuperUser())
 		  "action.php",
 		  $(this).parent().serialize()
 		)
-  	  .done(function(data) {
+	  //  	  .done(function(data) {
 	      //	  alert("OK");
-			    })
+	  //		    })
 	 .fail(function(jqXHR, textStatus, errorThrown) {
        alert( "Erreur, impossible d'enregistrer la propriété: " + errorThrown);
 	   });

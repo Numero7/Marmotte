@@ -3,6 +3,7 @@ require_once("utils.inc.php");
 require_once('tcpdf/config/lang/eng.php');
 require_once('tcpdf/tcpdf.php');
 require_once('manage_users.inc.php');
+require_once('manage_concours.inc.php');
 require_once('manage_rapports.inc.php');
 require_once('manage_sessions.inc.php');
 require_once('generate_xml.inc.php');
@@ -209,42 +210,80 @@ function export_report($report, $export_format, $dir)
 
 }
 
-function downloadReport($id_rapport)
+function download_my_reports()
 {
-	try
+  $my = filterSortReports(getCurrentFiltersList(), 
+			  array(
+				"rapporteur" => getLogin(), 
+				"id_session" => current_session_id()),
+			  getSortingValues()
+			  );
+  $filenames = array();
+  foreach($my as $report)
+    {
+      $files = aggregate_files($report);
+      $dir = $report->nom."_".$report->prenom."_".$report->unite;
+      foreach($files as $path => $file)
 	{
-		$report = getReport($id_rapport);
+	  $filenames[$path] = $dir."/".$file;
+	  //	  echo $dir."/".$file."<br/>";
+	}
+    }
+		$remote_filename = dossier_temp()."/dossiers_".getLogin().".zip";
 
-		$filenamess = array();
+		//		gg();
+		$filename = zip_files($filenames,$remote_filename);
 
-		$login = getLogin();
-		
-		$prefix = filename_from_doc($report);
-		$dir = dossier_temp();
-		
-		$file = export_reports_as_txt(array($report), $dir, $prefix);
-		$filenames[$file] = $prefix.".txt";
-		
-		if( isset($report->type) && ($report->type == REPORT_CANDIDATURE || is_equivalence_type($report->type) ) )
-		{
-			$candidate = get_or_create_candidate($report);
-			$basedir = get_people_directory($candidate, $report->id_session, false);
-			$extra_files = find_people_files($candidate, true, $report->id_session);
-			foreach($extra_files as $file)
-				$filenames[$basedir."/".$file] = $file;
-		}
-		
-			
-		$remote_filename = $prefix.'.zip';
-		$filename = zip_files($filenames,$dir.'/'.$remote_filename);
-		
-		
 		if($filename == false)
 			throw new Exception("Failed to zip files");
+		send_file($remote_filename, "dossiers ".getLogin().".zip");
+}
+
+function aggregate_files($report)
+{
+  $filenames = array();
+  $dir = dossier_temp();
+	//		$file = export_reports_as_txt(array($report), $dir, $prefix);
+		$file = export_report($report,"txt",$dir);
+		$pref = substr($file,strrpos($file,'/')+1);
+		$filenames[$file] = $pref;
 		
-		send_file($filename, $remote_filename);
-		
-	
+		if( isset($report->type) && $report->type == REPORT_CANDIDATURE)
+		{
+			$extra_files = 
+			  array_merge(
+				      find_files($report, $report->id_session,true,"celcc"),
+				      find_files($report, $report->id_session,true,"marmotte"),
+				      find_files($report, $report->id_session,true,"marmotte","avis")
+				      );
+			foreach($extra_files as $file)
+			  {
+			    $short = substr($file,strrpos($file,'/')+1);
+			    $filenames[$file] = $short;
+			  }
+		}
+		return $filenames;
+
+}
+
+function downloadReport($id_rapport)
+{
+  //  echo $id_rapport;
+  	try
+	{
+		$report = getReport($id_rapport);
+		$filenames = aggregate_files($report);			
+
+		$prefix = filename_from_doc($report);
+		echo $prefix."<br/>";
+		$remote_filename = dossier_temp()."/".$prefix.'.zip';
+		echo $remote_filename."<br/>";
+
+		$filename = zip_files($filenames,$remote_filename);
+
+		if($filename == false)
+			throw new Exception("Failed to zip files");
+		send_file($remote_filename, $prefix.".zip");
 	}
 	catch(Exception $exc)
 	{
