@@ -434,7 +434,7 @@ function displayStatutMenu()
 <?php 
 }
 
-function displayActionsMenu($row, $excludedaction = "", $actions)
+function displayActionsMenu($excludedaction = "", $actions)
 {
 	$id = $row->id;
 	$id_origine = $row->id_origine;
@@ -525,9 +525,7 @@ if($bur)
 	?>
 	<tr id="t<?php echo $row->id;?>" class="<?php echo $style;?>">
 		<td>
-		<?php 
-	   displayActionsMenu($row,"", $actions1);
-?>
+	   <span class="actions1"></span>
 </td>
 <?php
 		foreach($fields as $fieldID)
@@ -539,5 +537,56 @@ if($bur)
 	</tr>
 	<?php 
 	}
-}
 	?>
+	</table>
+<script type="text/javascript">
+	    <?php 
+	foreach(array("actions1","actions2") as $label)
+	  {
+	    global $$label;
+	foreach($$label as $action => $actiondata)
+	{
+	  $level = $actiondata['level'];
+	  if(getUserPermissionLevel() >= $level )
+	    {
+	  $title = $actiondata['title'];
+	  $icon = $actiondata['icon'];
+	  $page = $actiondata['page'];
+	  echo "$('.".$label."').append('";
+	  echo "<input type=\"image\" class=\"link".$action."\" ";
+	  echo "src=\"$icon\" width=\"24\" height=\"24\">";
+	  echo "</input>";
+	  echo "');\n\n";
+	  echo "$('.link".$action."').click( function () {\n";
+	  $location = $page."?action=".$action;
+	  echo "var id = this.closest('tr').id.substring(1);\n";
+	  echo "var location = '".$location."'+'&id='+id;\n";
+	  if(isset($actiondata['warning']))
+	    {
+	      echo "var answer = confirm('".$actiondata['warning']."');";
+	      echo "if (answer) {";
+	      echo "window.location = location;\n";
+	      echo "};";
+	    }
+	  else
+	    {
+	      echo "window.location = location;\n";
+	    }
+	    echo "});\n\n";
+	    }
+	}
+	  }
+	?>
+</script>
+
+
+
+	    <?php
+	    }
+
+
+
+
+
+
+

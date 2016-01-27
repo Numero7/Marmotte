@@ -96,6 +96,7 @@ if(!isSuperUser())
 						?>
 				<td valign="top">
 								<ul>
+<li><B>Selection</B></li>
 								<li><a href="index.php?action=view&amp;reset_filter=">Tous les dossiers</a></li>
 								<li><a href="index.php?action=view">Sélection</a></li>
 									<?php

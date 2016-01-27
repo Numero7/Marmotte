@@ -95,6 +95,9 @@ if (authenticate())
 								if($type=="zip")
 									echo "<script>window.location = 'create_reports.php?zip_files=oui'</script>";
 								break;
+						case "my":
+						  download_my_reports();
+								break;
 							case "csvbureau":
 								export_current_selection_as_single_xls("attribution_rapporteurs");
 								break;

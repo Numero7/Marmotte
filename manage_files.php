@@ -112,7 +112,8 @@ function find_marmotte_files($row, $session, $create_directory_if_nexists = fals
 	{
 	  $marmotte_files = find_people_files($row,true, $session, $subtype, true);
 	  $dir = get_people_directory($row, $session, false,$subtype);
-	  //	  echo $dir;
+	  //echo $dir;
+	  //gg();
 	}
 	
 	foreach($marmotte_files as $file)

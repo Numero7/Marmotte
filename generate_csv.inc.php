@@ -60,7 +60,8 @@ function compileObjectsAsTXT($rows)
 		  $result .= "<h3>".$row->nom." ".$row->prenom."</h3>";
 
 		foreach( $export_doc_fields as $field)
-		  $result .= compileFieldAsTxt($row,$field,$row->$field);
+		  if(isset($row->$field))
+		    $result .= compileFieldAsTxt($row,$field,$row->$field);
 
 		if(is_rapport_chercheur($row) || is_rapport_concours($row))
 		{
