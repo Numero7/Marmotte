@@ -40,13 +40,23 @@ function send_file($local_filename, $remote_filename, $dsi = false)
 	if($size === false)
 		throw new Exception("Cannot get size of file .$local_filename");
 	
+	
+
 	header("Pragma: public");
 	header("Expires: 0");
 	header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
 	header("Cache-Control: public");
-	header("Content-Description: File Transfer");
-	header("Content-type: application/octet-stream");
-	header("Content-Disposition: attachment; filename=\"$remote_filename\"");
+	if( strpos(strtolower($local_filename),"pdf") !== FALSE)
+	  {
+	    header('Content-type: application/pdf');
+	    header('Content-Disposition: inline; filename="$remote_filename"');
+	  }
+	else
+	  {
+	    header("Content-Description: File Transfer");
+	    header("Content-type: application/octet-stream");
+	    header("Content-Disposition: attachment; filename=\"$remote_filename\"");
+	  }
 	header("Content-Transfer-Encoding: binary");
 	header("Content-Length: $size");
 

@@ -223,6 +223,8 @@ function displayRowCell($row, $fieldID)
 	    global $typesRapportsAll;
 	$bur = isBureauUser();
 	$sec = isSecretaire() || ( $bur && isSecretaire(getLogin() , false));
+	if(isACN() && is_current_session_concours())
+	  $sec=false;
 
 	$concours = getConcours();	
 	$rapporteurs = 	listUsers();
