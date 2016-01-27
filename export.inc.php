@@ -218,11 +218,15 @@ function download_my_reports()
 				"id_session" => current_session_id()),
 			  getSortingValues()
 			  );
+  if(count($my) == 0)
+    return;
+
   $filenames = array();
   foreach($my as $report)
     {
       $files = aggregate_files($report);
-      $dir = $report->nom."_".$report->prenom."_".$report->unite;
+      //      $dir = trim($report->concours." ".$report->nom." ".$report->prenom." ".$report->unite,"/ ");
+      $dir = trim(str_replace("/","",$report->concours." ".$report->nom." ".$report->prenom." ".$report->unite));
       foreach($files as $path => $file)
 	{
 	  $filenames[$path] = $dir."/".$file;

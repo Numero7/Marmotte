@@ -39,7 +39,10 @@ try
 {
 synchronize_with_evaluation("",true,$email);
 }
-catch(Exception $e){}
+catch(Exception $e)
+{
+  echo "Synchro failed with exception <br/>".$e.getMessage()."<br/>";
+}
 set_config("maintenance", "off");
 	db_disconnect();
 ?>
