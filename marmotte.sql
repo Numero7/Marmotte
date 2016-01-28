@@ -3,9 +3,9 @@
 -- http://www.phpmyadmin.net
 --
 -- Client: localhost
--- Généré le: Ven 06 Novembre 2015 à 00:42
--- Version du serveur: 5.5.44-0ubuntu0.14.04.1-log
--- Version de PHP: 5.5.9-1ubuntu4.13
+-- Généré le: Jeu 28 Janvier 2016 à 16:13
+-- Version du serveur: 5.5.46-0ubuntu0.14.04.2-log
+-- Version de PHP: 5.5.9-1ubuntu4.14
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -17,8 +17,10 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8 */;
 
 --
--- Base de données: `panda22`
+-- Base de données: `panda`
 --
+CREATE DATABASE IF NOT EXISTS `panda` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+USE `panda`;
 
 -- --------------------------------------------------------
 
@@ -26,13 +28,13 @@ SET time_zone = "+00:00";
 -- Structure de la table `concours`
 --
 
+DROP TABLE IF EXISTS `concours`;
 CREATE TABLE IF NOT EXISTS `concours` (
   `section` tinyint(4) NOT NULL COMMENT 'numero section ou cid',
   `session` varchar(16) NOT NULL COMMENT 'l''année du concours',
   `code` varchar(5) NOT NULL COMMENT 'code concours 06/03',
   `statut` varchar(16) DEFAULT NULL,
   `intitule` text NOT NULL COMMENT 'intitule du concours ex CR1_BIGDATA',
-  `postes` tinyint(4) NOT NULL DEFAULT '0',
   `sousjury1` text NOT NULL COMMENT 'Le code du sousjury, le nom du sous jury, suivi de la liste des logins des membres, en commençant par le president du sous jury, le tout séparé par des ; Si le nom est une chaine vide, la section est constituée en jury pleinier',
   `sousjury2` text NOT NULL COMMENT 'Le nom du sousjury2, suivi de la liste des logins des membres, en commençant par le president du sous jury, le tout séparé par des ;',
   `sousjury3` text NOT NULL COMMENT 'Le nom du sousjury3, suivi de la liste des logins des membres, en commençant par le president du sous jury, le tout séparé par des ;',
@@ -54,6 +56,7 @@ CREATE TABLE IF NOT EXISTS `concours` (
 -- Structure de la table `config`
 --
 
+DROP TABLE IF EXISTS `config`;
 CREATE TABLE IF NOT EXISTS `config` (
   `section` tinyint(4) NOT NULL,
   `key` varchar(128) NOT NULL,
@@ -67,6 +70,7 @@ CREATE TABLE IF NOT EXISTS `config` (
 -- Structure de la table `people`
 --
 
+DROP TABLE IF EXISTS `people`;
 CREATE TABLE IF NOT EXISTS `people` (
   `NUMSIRHUS` varchar(30) NOT NULL DEFAULT '',
   `concoursid` varchar(10) DEFAULT NULL,
@@ -118,10 +122,9 @@ CREATE TABLE IF NOT EXISTS `people` (
   `conflits` text,
   `birth` varchar(20) DEFAULT NULL,
   `diploma` varchar(20) DEFAULT NULL,
-  `concourspresentes` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`section`,`nom`,`prenom`),
   UNIQUE KEY `id` (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=725145 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1405119 ;
 
 -- --------------------------------------------------------
 
@@ -129,12 +132,13 @@ CREATE TABLE IF NOT EXISTS `people` (
 -- Structure de la table `reports`
 --
 
+DROP TABLE IF EXISTS `reports`;
 CREATE TABLE IF NOT EXISTS `reports` (
   `DKEY` varchar(22) NOT NULL DEFAULT '',
   `NUMSIRHUS` varchar(30) NOT NULL DEFAULT '',
-  `concoursid` varchar(10) DEFAULT NULL,
   `section` tinyint(4) NOT NULL,
   `statut` varchar(32) NOT NULL DEFAULT 'doubleaveugle',
+  `statut_celcc` varchar(32) DEFAULT NULL,
   `id_session` varchar(16) NOT NULL,
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `id_origine` int(11) NOT NULL,
@@ -147,6 +151,7 @@ CREATE TABLE IF NOT EXISTS `reports` (
   `type_eval` varchar(4) DEFAULT NULL,
   `intitule` text NOT NULL,
   `concours` varchar(5) DEFAULT NULL,
+  `concoursid` varchar(10) DEFAULT NULL,
   `rapporteur` varchar(64) DEFAULT NULL,
   `rapporteur2` varchar(64) DEFAULT NULL,
   `rapporteur3` varchar(64) DEFAULT NULL,
@@ -155,7 +160,7 @@ CREATE TABLE IF NOT EXISTS `reports` (
   `prerapport3` text,
   `rapport` text,
   `audition` text,
-  `avis` varchar(32) CHARACTER SET latin1 COLLATE latin1_general_ci DEFAULT '',
+  `avis` varchar(32) DEFAULT NULL,
   `avis1` varchar(32) DEFAULT '',
   `avis2` varchar(32) DEFAULT '',
   `avis3` varchar(32) DEFAULT NULL,
@@ -197,7 +202,7 @@ CREATE TABLE IF NOT EXISTS `reports` (
   `signataire` text,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=223274 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=178895 ;
 
 -- --------------------------------------------------------
 
@@ -205,6 +210,7 @@ CREATE TABLE IF NOT EXISTS `reports` (
 -- Structure de la table `sessions`
 --
 
+DROP TABLE IF EXISTS `sessions`;
 CREATE TABLE IF NOT EXISTS `sessions` (
   `id` varchar(16) NOT NULL,
   `section` int(11) NOT NULL,
@@ -220,6 +226,7 @@ CREATE TABLE IF NOT EXISTS `sessions` (
 -- Structure de la table `units`
 --
 
+DROP TABLE IF EXISTS `units`;
 CREATE TABLE IF NOT EXISTS `units` (
   `section` tinyint(11) NOT NULL,
   `nickname` varchar(30) NOT NULL DEFAULT '',
@@ -235,6 +242,7 @@ CREATE TABLE IF NOT EXISTS `units` (
 -- Structure de la table `users`
 --
 
+DROP TABLE IF EXISTS `users`;
 CREATE TABLE IF NOT EXISTS `users` (
   `section_numchaire` varchar(8) NOT NULL DEFAULT '',
   `CID_numchaire` varchar(8) NOT NULL DEFAULT '',
