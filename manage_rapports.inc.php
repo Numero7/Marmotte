@@ -1144,7 +1144,6 @@ function is_in_conflict_efficient($row, $login)
 function is_field_editable($row, $fieldId)
 {
   global $my_conc;
- 
   //  if(isACN() && !get_config("acn_can_edit_concours") && is_current_session_concours())
   //return false;
   if(!isSecretaire() && isset($row->concours) && ($row->concours != "") && !isset($my_conc[$row->concours]))
@@ -1338,7 +1337,13 @@ function is_field_editable($row, $fieldId)
 function is_field_visible($row, $fieldId)
 {
   global $my_conc;
-  if(!isSecretaire("",false) && isset($row->concours) && ($row->concours != "") && !isset($my_conc[$row->concours]))
+  if(
+     !isSecretaire("",false) 
+     && isset($row->concours) 
+     && ($row->concours != "") 
+     && !isset($my_conc[$row->concours])
+     && (!isset($row->id_session) || $row->id_session == current_session_id())
+    )
     return false;
 
 	global $typesRapportToFields;

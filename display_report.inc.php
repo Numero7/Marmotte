@@ -121,16 +121,10 @@ function displayEditableField($row, $fieldId, $canedit, $session, $extra_object 
 	global $fieldsTypes;
 	global $mandatory_edit_fields;
 	
-	if(!is_current_session_concours())
-	  $fieldsAll["fichiers"]= "Fichiers section";
-
-
 	$title = compute_title($row, $fieldId);
-
-	//	  echo $title;
-	
 	if($title != "" && is_field_visible($row, $fieldId))
 	{
+
 		if(isset($fieldsTypes[$fieldId]))
 		{
 	  		$editable = $canedit && is_field_editable($row, $fieldId);
@@ -398,6 +392,7 @@ function displayEditableReport($row, $canedit = true)
 		  $candidate = get_candidate_from_concoursid($row->concoursid);
 		else 
 		  $candidate = get_or_create_candidate($row);
+		$candidate->id_session = $row->id_session;
 
 		//		$row->NUMSIRHUS = $candidate->NUMSIRHUS;
 		$conflit = (
