@@ -96,9 +96,9 @@ if(!isSuperUser())
 						?>
 				<td valign="top">
 								<ul>
-<li><B>Selection</B></li>
-								<li><a href="index.php?action=view&amp;reset_filter=">Tous les dossiers</a></li>
-								<li><a href="index.php?action=view">Sélection</a></li>
+<li><B>Rapports</B></li>
+								<li><a href="index.php?action=view&amp;reset_filter=">Tous</a></li>
+								<li><a href="index.php?action=view">Sélection en cours</a></li>
 									<?php
 						    echo "<li><a href=\"index.php?action=view&amp;reset_filter=&amp;filter_rapporteur=".urlencode(getLogin())."\">Mes rapports</a></li>";
 									echo "<li><a href=\"index.php?action=view&amp;reset_filter=&amp;filter_avancement=todo&amp;filter_rapporteur=".getLogin()."\">A faire</a></li>";
