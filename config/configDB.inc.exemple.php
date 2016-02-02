@@ -3,13 +3,6 @@
 	$servername = "127.0.0.1";
 
 	
-	$rootdir = "";
-	$rootdir = "";
-        $dsirootdir = "evaluation";
-
-	$tmpdir = "";
-	
-define("marmottedbname","panda");
 $serverlogin = "monlogin";
 $serverpassword = "monmotdepasse";
 
