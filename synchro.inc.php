@@ -127,7 +127,7 @@ function synchronizeConcours($year = "")
       $sessions[] = $row->section;
 
   /*************** AJOUT DES CONCOURS ***********************************/
-  $sql = "SELECT * FROM ".dsidbname.".".celcc_concours." WHERE annee=\"".$year."\"";
+  $sql = "SELECT * FROM ".dsidbname.".".dsi_GOC." WHERE annee=\"".$year."\"";
   $result = sql_request($sql);
   while($row = mysqli_fetch_object($result))
     {
