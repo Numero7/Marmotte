@@ -436,7 +436,7 @@ function displayStatutMenu()
 <?php 
 }
 
-function displayActionsMenu($excludedaction = "", $actions)
+function displayActionsMenu($row, $excludedaction = "", $actions)
 {
 	$id = $row->id;
 	$id_origine = $row->id_origine;

@@ -10,9 +10,10 @@ require_once("config_tools.inc.php");
 $rubriques_supplementaires = array(
 		"individus" => array("rubriques_individus","Info","chercheur"),
 		"candidats" => array("rubriques_candidats", "Info","candidat"),
-		"concours" => array("rubriques_concours", "Generic","rapport concours"),
-		"chercheurs" => array("rubriques_chercheurs", "Generic","rapport chercheur"),
-		"unites" => array("rubriques_unites", "Generic","rapport unite")
+		"concours" => array("rubriques_concours", "Generic","candidature"),
+		"chercheurs" => array("rubriques_chercheurs", "Generic","évaluation chercheurs"),
+		"unites" => array("rubriques_unites", "Generic","évaluation unité"),
+		"delegations" => array("rubriques_delegations", "Generic","délégation")
 );
 
 $add_rubriques_people = get_rubriques("individus");

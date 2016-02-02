@@ -51,22 +51,7 @@ function displaySecretaryImport()
 					<?php
 	    global $typesRapportsAll;
 					$types = $typesRapportsAll;
-/*
-					if(is_current_session_concours())
-					{
-						global $typesRapportsConcours;
-						$types = $typesRapportsConcours;
-					}
-					else if(is_current_session_delegation())
-					{
-						$types = array('Delegation'=>'Délégation');
-					}
-					else
-					{
-						global $typesRapportsChercheurs;
-						global $typesRapportsUnites;
-						$types = array_merge($typesRapportsChercheurs, $typesRapportsUnites);
-*/					
+
 					if(isset($_REQUEST["type"]))
 					  $ttype = $_REQUEST["type"];
 					else
@@ -118,15 +103,23 @@ function displaySecretaryImport()
 		<tr>
 			<td>Choix du type de rapport</td>
 			<td><select name="subtype">
-					<?php  if (!is_current_session_concours())
-					{
-						?>
-					<option value="">Autodétection</option>
-					<?php   
-					}
-					$types = get_current_report_types();
+					<?php
+	    global $typesRapportsAll;
+					$types = $typesRapportsAll;
+
+					if(isset($_REQUEST["type"]))
+					  $ttype = $_REQUEST["type"];
+					else
+					  $ttype = "";
+					global $typesRapportsConcours;
 					foreach($types as $type => $name)
-						echo '<option value='.$type.'>'.$name.'</option><br/>'."\n";
+					  {
+					    if(isset($typesRapportsConcours[$type])) continue;
+					  if($type != $ttype)
+					    echo '<option value='.$type.'>'.$name.'</option><br/>'."\n";
+					  else
+					    echo '<option selected="selected" value='.$type.'>'.$name.'</option><br/>'."\n";
+					  }
 					?>
 			</select>
 			</td>

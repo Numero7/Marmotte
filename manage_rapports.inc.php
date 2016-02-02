@@ -332,7 +332,7 @@ function filtersCriteriaToSQL($filters, $filter_values, $rapporteur_or = true)
 				else if($filter_values[$filter] == avis_oral)
 				  $sql .= " AND (".reports_db.".$filter=\"".avis_oral."\" OR ".reports_db.".$filter=\"".avis_non_classe."\" OR ".reports_db.".$filter REGEXP \"^c[0-9]\" )";
 				else if($filter_values[$filter] == avis_admis_a_concourir)
-					$sql .= " AND ".reports_db.".$filter!=\"".avis_nonconcur."\" AND ".reports_db.".$filter!=\"".avis_desistement."\" ";
+					$sql .= " AND ".reports_db.".statut_celcc!=\"non admis à concourir\" AND ".reports_db.".$filter!=\"".avis_desistement."\" ";
 				else
 					$sql .= " AND ".reports_db.".$filter=\"$filter_values[$filter]\" ";
 				//echo $sql;
