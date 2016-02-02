@@ -286,15 +286,20 @@ function filtersCriteriaToSQL($filters, $filter_values, $rapporteur_or = true)
 				//dirty hack tfor "Mes rapport sà faire/ faits"
 				$val = $filter_values[$filter];
 
-				if($login != "")
-					$basesql = "( (".reports_db.".rapporteur=\"$login\" AND ".reports_db.".avis1 != \"\") OR (".reports_db.".rapporteur2=\"$login\" AND ".reports_db.".avis2 != \"\") OR  (".reports_db.".rapporteur3!=\"$login\" AND ".reports_db.".avis3 != \"\")) ";
-				else
-					$basesql = "( (".reports_db.".rapporteur=\"\" OR ".reports_db.".avis1 != \"\") AND (".reports_db.".rapporteur2=\"\" OR ".reports_db.".avis2 != \"\") AND (".reports_db.".rapporteur3=\"\" OR ".reports_db.".avis3 != \"\")) ";
-
 				if($val == "todo")
-					$sql .= " AND NOT ".$basesql;
+				  {
+				if($login != "")
+					$sql .= "AND ( (".reports_db.".rapporteur=\"$login\" AND ".reports_db.".avis1 = \"\") OR (".reports_db.".rapporteur2=\"$login\" AND ".reports_db.".avis2 = \"\") OR  (".reports_db.".rapporteur3=\"$login\" AND ".reports_db.".avis3 = \"\")) ";
+				else
+					$sql .= "AND ( (".reports_db.".rapporteur!=\"\" AND ".reports_db.".avis1 = \"\") OR (".reports_db.".rapporteur2!=\"\" AND ".reports_db.".avis2 = \"\") OR  (".reports_db.".rapporteur3!=\"\" AND ".reports_db.".avis3 = \"\")) ";
+				  }
 				else if($val == "done")
-					$sql .= " AND ".$basesql;
+				  {
+				if($login != "")
+					$sql .= "AND ( (".reports_db.".rapporteur=\"$login\" AND ".reports_db.".avis1 != \"\") OR (".reports_db.".rapporteur2=\"$login\" AND ".reports_db.".avis2 != \"\") OR  (".reports_db.".rapporteur3=\"$login\" AND ".reports_db.".avis3 != \"\")) ";
+				else
+					$sql .= "AND ( (".reports_db.".rapporteur=\"\" OR ".reports_db.".avis1 != \"\") AND (".reports_db.".rapporteur2=\"\" OR ".reports_db.".avis2 != \"\") AND (".reports_db.".rapporteur3=\"\" OR ".reports_db.".avis3 != \"\")) ";
+				  }
 			}
 			else if($filter == "concours")
 			{
@@ -346,7 +351,7 @@ function filtersCriteriaToSQL($filters, $filter_values, $rapporteur_or = true)
 
 		}
 	}
-	//echo $sql;
+	//	echo $sql;
 	return $sql;
 }
 
