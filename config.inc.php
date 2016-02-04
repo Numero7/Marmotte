@@ -21,6 +21,7 @@ $add_rubriques_candidats = get_rubriques("candidats");
 $add_rubriques_concours = get_rubriques("concours");
 $add_rubriques_chercheurs = get_rubriques("chercheurs");
 $add_rubriques_unites = get_rubriques("unites");
+$add_rubriques_delegations = get_rubriques("delegations");
 
 
 
@@ -224,6 +225,30 @@ foreach($add_rubriques_chercheurs as $index => $rubrique)
 	$fieldsIndividual3[] = "Generic".(3*$index+2);
 }
 
+$fieldsDelegation0 = array(
+		array("type", "statut"),
+		"intitule",
+		array(
+				"rapporteur",
+				"rapporteur2",
+				"rapporteur3",
+		),
+		"avis",
+		"rapport",
+		"signataire"
+);
+
+$fieldsDelegation1 = array("avis1","prerapport");
+$fieldsDelegation2 = array("avis2","prerapport2");
+$fieldsDelegation3 = array("avis3","prerapport3");
+
+foreach($add_rubriques_delegations as $index => $rubrique)
+{
+	$fieldsDelegation1[] = "Generic".(3*$index);
+	$fieldsDelegation2[] = "Generic".(3*$index+1);
+	$fieldsDelegation3[] = "Generic".(3*$index+2);
+}
+
 
 /*
  * Tous les champs d'un rapport individuel
@@ -393,6 +418,7 @@ foreach($add_rubriques_people as $index => $rubrique)
 	$fieldsIndividualAll["Info".$index] = $rubrique;
 	$fieldsIndividualDB["Info".$index] = $rubrique;	
   }
+
 foreach($add_rubriques_candidats as $index => $rubrique)
   {
 	$fieldsIndividualAll["Info".$index] = $rubrique;
@@ -455,6 +481,9 @@ $fieldsDelegation = array("statut","rapporteur","rapporteur2","rapporteur3","nom
 		"theme1","theme2","theme3",
 		"avis","rapport",
 );
+
+//foreach($add_rubriques_delegations as $index => $rubrique)
+//	$fieldsDelegation[] = "Generic".$index;
 
 $fieldsIndividualDefault = array(
 		"DKEY",
@@ -913,7 +942,7 @@ if(!get_option("bur_can_affect"))
   $fieldsEditableBureau = array_diff($fieldsEditableBureau, array("theme1","theme2","theme3"));
 
 
-$fieldsArrayDelegation = array($fieldsChercheursDelegationsAll, $fieldsIndividual0,$fieldsIndividual1,$fieldsIndividual2,$fieldsIndividual3);
+$fieldsArrayDelegation = array($fieldsChercheursDelegationsAll, $fieldsDelegation0,$fieldsDelegation1,$fieldsDelegation2,$fieldsDelegation3);
 
 $typesRapportToFields =	array();
 
@@ -949,6 +978,11 @@ function is_equivalence($type)
 function is_concours($type)
 {
   return ($type == REPORT_CANDIDATURE) || ($type == REPORT_AUDITION) ||  is_equivalence($type);
+}
+
+function is_delegation($type)
+{
+  return $type == REPORT_DELEGATION;
 }
 
 function is_avis_classement($avis)
@@ -1628,6 +1662,7 @@ $filtersConcours = array(
 							 "soumis à IE"=>"soumis à IE",
 							 "soumis au CS"=>"soumis au CS",
 							 "admis à concourir"=>"admis à concourir",
+							 "admis à poursuivre"=>"admis à poursuivre",
 							 "retrait candidature"=>"retrait candidature",
 							 "non-admissible"=>"non-admissible",
 							 "non-admis"=>"non-admis"

@@ -4,6 +4,8 @@ global $rubriques_supplementaires;
 foreach($rubriques_supplementaires as $field => $intitule)
 {
 	?>
+<hr/>
+<br />
 <h3 <?php echo "id=\"rubriques".$field."\"";?>>
 	Rubriques
 	<?php echo $intitule[2];?>
@@ -62,11 +64,9 @@ if(count($rubriques) > 0)
 		</tr>
 	</table>
 </form>
-<hr />
 <?php 
 }
 ?>
-<br />
 <br />
 <?php 
    }

@@ -30,10 +30,13 @@ function compute_title($row, $fieldId)
 		global $add_rubriques_concours;
 		global $add_rubriques_chercheurs;
 		global $add_rubriques_unites;
+		global $add_rubriques_delegations;
 
 		$suff = intval(substr($fieldId,7))/3;
 
-		if( is_rapport_chercheur($row) )
+		if(is_delegation($row->type))
+			$title = $add_rubriques_delegations[$suff];
+		else if( is_rapport_chercheur($row) )
 			$title = $add_rubriques_chercheurs[$suff];
 		else if( is_rapport_concours($row) )
 			$title = $add_rubriques_concours[$suff];
@@ -42,16 +45,6 @@ function compute_title($row, $fieldId)
 	}
 	else if(isset($fieldsAll[$fieldId]))
 		$title = $fieldsAll[$fieldId];
-	//	else
-	//$title = "Not title for ". $fieldId; 
-	  
-
-	/*global $type_specific_fields_renaming;
-	 if(isset($row->type) && key_exists($row->type, $type_specific_fields_renaming) && key_exists($fieldId, $type_specific_fields_renaming[$row->type]))
-		$title = $type_specific_fields_renaming[$row->type][$fieldId];
-	if(isset($row->intitule))
-		$title .= " - ".$row->intitule;
-	*/
 	return $title;
 }
 
@@ -921,7 +914,10 @@ function change_report_property($id_origine, $property_name, $newvalue)
 {
   if(substr($property_name,0,10) == "rapporteur")
     {
-      $emails = is_current_session_concours() ? array(get_config("email_scc")) :  emailsACN();
+      $emails = 
+	is_current_session_concours() ? array(get_config("email_scc")) 
+	:  is_current_session_delegation() ? array() 
+	: emailsACN();
       $sql = "SELECT * FROM reports WHERE id='".$id_origine."';";
       $res = sql_request($sql);
 

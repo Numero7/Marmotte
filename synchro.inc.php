@@ -62,12 +62,13 @@ function synchronizeStatutsConcours($year = "")
   if($changed > 0)
     $log .= $changed." statuts celcc ont été basculés à 'non admis a poursuivre'<br/>";
 
-  $sql = "UPDATE reports marmotte, ".dsidbname.".".celcc_statuts." dsi SET marmotte.statut_celcc='non-admissible' ";
+  /*  $sql = "UPDATE reports marmotte, ".dsidbname.".".celcc_statuts." dsi SET marmotte.statut_celcc='non-admissible' ";
   $sql .= "WHERE dsi.num_conc=marmotte.concours AND dsi.user_id=marmotte.concoursid AND dsi.admissible='non'"; 
   sql_request($sql);
   $changed = mysqli_affected_rows($dbh);
   if($changed > 0)
     $log .= $changed." statuts celcc ont été basculés à 'non admissible'<br/>";
+  */
 
   $sql = "UPDATE reports marmotte, ".dsidbname.".".celcc_statuts." dsi SET marmotte.statut_celcc=CONCAT('admissible: ',dsi.classement_admissibilite) ";
   $sql .= "WHERE dsi.num_conc=marmotte.concours AND dsi.user_id=marmotte.concoursid AND dsi.admissible='oui' AND dsi.admis='non traité'"; 

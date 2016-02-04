@@ -3,6 +3,7 @@ require_once("db.inc.php");
 require_once('config_tools.inc.php');
 
 define("NIVEAU_PERMISSION_BASE", 0);
+define("NIVEAU_PERMISSION_SCC", -1);
 define("NIVEAU_PERMISSION_BUREAU", 100);
 define("NIVEAU_PERMISSION_ACN", 400);
 define("NIVEAU_PERMISSION_SECRETAIRE", 500);
