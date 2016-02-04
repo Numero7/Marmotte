@@ -4,7 +4,8 @@ if(isSuperUser())
 	?>
    <p>Ce menu permet de supprimer les prérapports d une session.</p>
 <?php
-       $sql = "SELECT DISTINCT id_session FROM reports";
+       $sql = "SELECT DISTINCT id_session FROM reports WHERE avis1!='' OR avis2!='' OR avis3!='' OR prerapport!='' OR prerapport2!='' OR prerapport3!=''";
+  //  echo $sql;
        $result = sql_request($sql);
        while($row = mysqli_fetch_object($result))
 	   $all_concours[]=$row->id_session;

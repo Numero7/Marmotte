@@ -118,9 +118,9 @@ function deletePreRapports($id)
   for($i = 0; $i <= 30; $i++)
     $sql .= ",Generic".$i." =\"\"";
   if(!isSuperUser())
-    $sql .= " WHERE section=\"".real_escape_string($_SESSION['filter_section'])."\";";
+    $sql .= " WHERE id_session=\"".real_escape_string($id)."\"section=\"".real_escape_string($_SESSION['filter_section'])."\";";
   else
-    $sql .= " WHERE 1;";
+    $sql .= " WHERE id_session=\"".real_escape_string($id)."\"";
   sql_request($sql);
 }
 
