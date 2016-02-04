@@ -98,6 +98,8 @@ function get_bureau_stats()
 
 		$iid_seen = array();
 
+			$done = array();
+
 		while( $row = mysqli_fetch_object($result))
 		{
 			if(isset($concours[$row->concours]))
@@ -116,13 +118,13 @@ function get_bureau_stats()
 			if($row->avis == avis_nonauditionne)
 				continue;
 
-			$done = array();
 
 			foreach($fields as $field)
 			{
 			  $rapp = $row->$field;
 			  if($rapp != "" && ($iid == "" || !isset($done[$pref][$rapp][$iid])))
 				{
+
 					if(!isset($stats[$pref]["Total"][$field]))
 						$stats[$pref]["Total"][$field] = 0;
 					if(!isset($stats[$pref][$rapp]["total"]))
@@ -130,13 +132,19 @@ function get_bureau_stats()
 					$stats[$pref][$rapp]["total"]++;
 					//if($iid == "" || !isset($stats[$key][$rapp][$field][$iid]))
 					{
-						$stats[$pref]["Total"][$field]++;
+					  $stats[$pref]["Total"][$field]++;
+					  if(!isset($done[$pref])) $done[$pref] = array();
+					  if(!isset($done[$pref][$rapp])) $done[$pref][$rapp] = array();
+
 						$done[$pref][$rapp][$iid] = "ok";
 						if(!isset($stats[$pref][$rapp][$field]))
 							$stats[$pref][$rapp][$field] = 0;
 						$stats[$pref][$rapp][$field]++;
 					}
-					//echo "add 1 to ".$iid." ".$pref." ".$row->$field." ".$field." tot ".$stats[$pref][$row->$field][$field]["counter"]."<br/>";
+					//					echo "'".$pref."' '".$rapp."' '".$iid."' '".$done[$pref][$rapp][$iid]."'<br/>";
+
+					//				echo "add 1 to ".$iid." ".$pref." ".$row->$field." ".
+					//$field." tot ".$stats[$pref][$row->$field][$field]["counter"]."<br/>";
 				}
 			}
 		}

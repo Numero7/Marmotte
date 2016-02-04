@@ -144,7 +144,7 @@ else
 		      {
 ?>
 
-<li><a onclick="return confirm('Veuillez confirmez la transmission des avis du jury au SCC. Les avis ne seront alors plus modifiables (mais les rapports oui).')" href="?action=change_statut&amp;new_statut=avistransmis">Transmettre les avis</a></li>
+<li><a onclick="return confirm('Veuillez confirmez la transmission définitive des avis du jury au SCC. Ne pas effectuer cette opération avant la fin du jury d'admissibilité. Les avis ne seront alors plus modifiables (mais les rapports oui).')" href="?action=change_statut&amp;new_statut=avistransmis">Transmettre les avis</a></li>
 
 <?php
 		      }
@@ -161,7 +161,7 @@ if(isSecretaire() && !isACN() && !isSuperUser())
 		  {
 ?>
 
-<li><a onclick="return confirm('Veuillez confirmer la transmission des rapports du jury au SCC. Les rapports ne seront alors plus modifiables.')" href="?action=change_statut&amp;new_statut=publie">Transmettre les rapports</a></li>
+<li><a onclick="return confirm('Veuillez confirmer la transmission des rapports du jury au SCC. NE pas effectuer cette opération avant la fin du jury d'admissibilité. Les rapports ne seront alors plus modifiables.')" href="?action=change_statut&amp;new_statut=publie">Transmettre les rapports</a></li>
 
 		      <?php		  }
 
