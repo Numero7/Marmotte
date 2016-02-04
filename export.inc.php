@@ -483,6 +483,8 @@ function generate_jad_reports($preambules = array())
 	foreach($concours_ouverts as $concours => $niveau)
 	{
 	  //	  echo $concours."<br/>";
+	  if(!isset($preambules[$concours]) || trim($preambules[$concours]) == "")
+	    continue;
 		$preambule = isset($preambules[$concours]) ? $preambules[$concours] : "";
 		$docs[$concours] = generate_jad_report($concours, $preambule);
 	}
@@ -579,30 +581,44 @@ function generate_jad_report($code,$preambule="")
 	//date("j/F/Y")
 	appendLeaf("date_jad", utf8_encode(strftime("%#d %B %Y")), $doc, $root);
 		
-	appendLeaf("examines", "<b>".strval(count($candidats))."</b>", $doc, $root);
 	$leaf = $doc->createElement("candidats");
 	$root->appendChild($leaf);
+
+	$admis = getAdmisAPoursuivre($num_concours);
+
+	$examines = count($admis);
+
 	foreach($candidats as $key => $candidat)
 	{
-		$subleaf = $doc->createElement("candidat");
-		appendLeaf("nom", $candidat->nom, $doc, $subleaf);
-		appendLeaf("prenom", $candidat->prenom, $doc, $subleaf);
+	if(isset($candidat->concoursid) && in_array($candidat->concoursid,$admis))
+	  {
+	    $subleaf = $doc->createElement("candidat");
+	    appendLeaf("nom", strtoupper($candidat->nom), $doc, $subleaf);
+	    appendLeaf("prenom", ucfirst(strtolower($candidat->prenom)), $doc, $subleaf);
 		$leaf->appendChild($subleaf);
+	  }
 	}
 
-	$n = count($admissibles);
-	$sn = "<b>".strval($n)."</b>";
-	appendLeaf("auditionnes", $sn, $doc, $root);
 	
+	$auditonnes = 0;
 	$leaf = $doc->createElement("admissibles");
 	$root->appendChild($leaf);
 	foreach($admissibles as $key => $candidat)
 	{
+	if(isset($candidat->concoursid) && in_array($candidat->concoursid,$admis))
+	    {
+	      $auditonnes++;
 		$subleaf = $doc->createElement("candidat");
-		appendLeaf("nom", $candidat->nom, $doc, $subleaf);
-		appendLeaf("prenom", $candidat->prenom, $doc, $subleaf);
+		appendLeaf("nom", strtoupper($candidat->nom), $doc, $subleaf);
+		appendLeaf("prenom", ucfirst(strtolower($candidat->prenom)), $doc, $subleaf);
 		$leaf->appendChild($subleaf);
+	    }
 	}
+
+	appendLeaf("examines", "<b>".strval($examines)."</b>", $doc, $root);
+	$sn = "<b>".strval($auditonnes)."</b>";
+	appendLeaf("auditionnes", $sn, $doc, $root);
+
 
 	date_default_timezone_set('Europe/Paris');
 	setlocale (LC_TIME, 'fr_FR.utf8','fra');
