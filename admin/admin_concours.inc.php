@@ -4,6 +4,9 @@
 <?php
    if(isSuperUser())
      {
+?>
+   <p>Ce menu permet de supprimer entièrement un concours de la base de données, y compris les fichiers pdf.</p>
+<?php
        $all_concours=array();
        $sql = "SELECT DISTINCT id_session FROM reports";
        $result = sql_request($sql);

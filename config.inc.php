@@ -1315,6 +1315,7 @@ $grades = array(
 
 /* permissions levels for actions */
 $actions_level = array(
+		       "delete_prerapports" => NIVEAU_PERMISSION_SUPER_UTILISATEUR,
 		       "reinitialiserconflits" => NIVEAU_PERMISSION_SECRETAIRE,
 		       "synchronizeStatutsConcours" => NIVEAU_PERMISSION_SUPER_UTILISATEUR,
 		       "synchronizeConcours" => NIVEAU_PERMISSION_SUPER_UTILISATEUR,
