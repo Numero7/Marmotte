@@ -535,6 +535,11 @@ function display_jad_reports()
 
 function generate_jad_report($code,$preambule="")
 {
+
+  $key = "preambule_jad_".trim($code,"\\/ ");
+  set_config($key,$preambule);
+
+
 	$doc = new DOMDocument("1.0","UTF-8");
 	$root = $doc->createElement("jad");
 	$doc->appendChild($root);
