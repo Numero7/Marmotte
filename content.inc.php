@@ -201,7 +201,7 @@ function alertText($text)
 		}
 		function displayReports($centralid = 0)
 		{
-
+		  ?><script>sessionStorage.scrollPos = 0;</script><?php
 			if(isSuperUser())
 				return ;
 			//reset_tri

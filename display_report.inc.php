@@ -587,21 +587,12 @@ function displayEditableReport($row, $canedit = true)
 	}
 
 	echo "</form>\n";
-
-	echo('
-			<script type="text/javascript">');
-	echo('
-			document.getElementById("debut").scrollIntoView();');
-
-	/*
-	 echo('
-	 		var elt = document.getElementById( '$id' );
-	 		var top = (	return elt.offsetTop + ( elt.offsetParent ? elt.offsetParent.documentOffsetTop() : 0 )) - ( window.innerHeight / 2 );
-	 		window.scrollTo( 0, top );
-	 		');
-	*/
-	echo('		</script>');
-
+					?>
+					<script>
+	     $('input').click(function() { sessionStorage.scrollPos = $(window).scrollTop();  });
+	     window.onload = function () {  $(window).scrollTop(sessionStorage.scrollPos || 0); };
+					</script>
+					    <?php
 }
 
 function editReport($id_rapport)
@@ -626,7 +617,6 @@ function editReport($id_rapport)
 	{
 		throw new Exception("Echec de l'édition du rapport:\n ".$exc->getMessage());
 	}
-
 };
 
 function viewReport($id_rapport)
