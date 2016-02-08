@@ -589,7 +589,7 @@ function displayEditableReport($row, $canedit = true)
 	echo "</form>\n";
 					?>
 					<script>
-	     $('input').click(function() { sessionStorage.scrollPos = $(window).scrollTop();  });
+					   $('input').click(function() { sessionStorage.scrollPos = $(window).scrollTop(); return true;  });
 	     window.onload = function () {  $(window).scrollTop(sessionStorage.scrollPos || 0); };
 					</script>
 					    <?php

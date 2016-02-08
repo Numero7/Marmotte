@@ -25,6 +25,8 @@
 		"show_theme1"=> array("Afficher le mot-clé1 dans l'écran principal","true"),
 		"show_theme2"=> array("Afficher le mot-clé2 dans l'écran principal","true"),
 		"show_theme3"=> array("Afficher le mot-clé3 dans l'écran principal","false"),
+		"show_avis_double_aveugle"=> array("Les avis n'apparaissent pas dans l'écran principal en mode double aveugle","false"),
+		"double_aveugle_strict"=> array("Le mode double-aveugle masque tous les rapports et avis à tous les rapporteurs","false"),
 		"formule_standard_Promotion_oui"=>array("Formule standard pour les promotions avec avis 'oui' (typiquement CR1)",""),
 		"formule_standard_Promotion_non"=>array("Formule standard pour les promotions avec avis 'non'",""),
 		"formule_standard_Titularisation_tres_favorable"=>array("Formule standard pour les titularisations avec avis TF","")
