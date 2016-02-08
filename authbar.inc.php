@@ -181,7 +181,13 @@ if(!is_current_session_concours())
   {
 ?>
 <li><a href="?action=see_people">Chercheurs section</a></li>
-<?php } ?>
+<?php }
+  if(is_current_session_concours())
+    {
+      echo "<li><a href=\"?action=see_concours\">Concours</a></li>";
+    }
+?>
+
 <li><a href="?action=see_units">Unités section</a></li>
 </ul>
 </td>

@@ -54,6 +54,8 @@
 		}
 		echo "</td></tr>";
 	}
+	if(isSecretaire())
+	  {
 	?>
 </table>
 
@@ -180,4 +182,6 @@
 </form>
 <?php
 	    }
+     }
+
 ?>

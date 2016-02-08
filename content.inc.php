@@ -315,6 +315,9 @@ function alertText($text)
 			case 'see_units':
 			  include 'admin/admin_units.php';
 			  break;
+			case 'see_concours':
+			  include 'admin/admin_concours.inc.php';
+			  break;
 				case 'maintenance_on':
 					set_config("maintenance", "on");
 					include 'admin/admin.inc.php';
