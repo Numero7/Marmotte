@@ -32,7 +32,7 @@
 	</tr>
 	<tr>
 		<td width="250">
-			<B>Section du Comité national : <xsl:value-of select="section_nb"/></B>
+			<B><xsl:value-of disable-output-escaping="yes" select="typesectioncidlong"/> : <xsl:value-of select="section_nb"/></B>
 		</td>
 		<td width="350">
 			<B>Session : <xsl:value-of disable-output-escaping="yes" select="session"/></B>
@@ -41,7 +41,7 @@
 	<tr>
 		<td colspan="2" width="600">
 		<B>
-		Intitulé de la section:
+		Intitulé de la <xsl:value-of disable-output-escaping="yes" select="typesectioncid"/>:
 		</B> <xsl:value-of disable-output-escaping="yes" select="section_intitule"/>
 		</td>
 	</tr>
@@ -58,7 +58,7 @@
 <table>
 <tr>
 <td  height="400">
-<p><B>Appréciations générales et recommandations de la section :</B><br/>
+<p><B>Appréciations générales et recommandations de la <xsl:value-of disable-output-escaping="yes" select="typesectioncid"/> :</B><br/>
 <small>
 <i> Ce rapport a été établi après délibérations de la section, sous la responsabilité de son président, à partir des appréciations des rapporteurs et
 des observations et recommandations de la section.<br/>

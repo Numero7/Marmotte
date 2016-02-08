@@ -378,6 +378,19 @@ function createXMLReportElem($row, DOMDocument $doc, $keep_br = true)
 	appendLeaf("entetegauche", EnteteGauche($row), $doc, $rapportElem);
 	appendLeaf("entetedroit", EnteteDroit($row,$units), $doc, $rapportElem);
 
+	$cid = ($row->section >= 50);
+	if($cid)
+	  {
+	appendLeaf("typesectioncid", "CID", $doc, $rapportElem);
+	appendLeaf("typesectioncidlong", "CID", $doc, $rapportElem);
+	  }
+	else
+	  {
+	appendLeaf("typesectioncidlong", "Section du Comité national", $doc, $rapportElem);
+	appendLeaf("typesectioncid", "section", $doc, $rapportElem);
+	  }
+
+
 	//On ajoute le nickname du labo
 	$value = "";
 	if(array_key_exists($row->unite,$units))
