@@ -25,7 +25,7 @@
 		<td  width="350">
 		<h1>
 		<B>
-			RAPPORT DE SECTION
+			RAPPORT DE <xsl:value-of disable-output-escaping="yes" select="typesectioncid"/>
 			</B>
 			</h1>
 		</td>
@@ -60,9 +60,9 @@
 <td  height="400">
 <p><B>Appréciations générales et recommandations de la <xsl:value-of disable-output-escaping="yes" select="typesectioncid"/> :</B><br/>
 <small>
-<i> Ce rapport a été établi après délibérations de la section, sous la responsabilité de son président, à partir des appréciations des rapporteurs et
-des observations et recommandations de la section.<br/>
-Les avis émis par les sections ne préjugent pas de la décision qui sera prise par la direction du CNRS.
+<i> Ce rapport a été établi après délibérations de la <xsl:value-of disable-output-escaping="yes" select="typesectioncid"/>, sous la responsabilité de son président, à partir des appréciations des rapporteurs et
+des observations et recommandations de la <xsl:value-of disable-output-escaping="yes" select="typesectioncid"/>.<br/>
+Les avis émis par les <xsl:value-of disable-output-escaping="yes" select="typesectioncid"/> ne préjugent pas de la décision qui sera prise par la direction du CNRS.
 </i></small>
 </p>
 
