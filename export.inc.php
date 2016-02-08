@@ -132,12 +132,28 @@ function export_reports_as_csv($reports, $dir, $type = "")
 	{
 	global $mandatory_export_fields;
 		$activefields =
-	array_unique(
+		  array_unique(
 			array_merge(
 					$mandatory_export_fields,
 					 get_readable_fields($reports[0])
 					)
-	);
+			       );
+		$useful_fields = array();
+		foreach($activefields as $field)
+		  {
+		    $ok = false;
+		    foreach($reports as $report)
+		      {
+			if(isset($report->$field) && $report->$field != "")
+			  {
+			    $ok = true;
+			    break;
+			  }
+		      }
+		    if($ok)
+			$useful_fields[] = $field;
+		  }
+		$activefields = $useful_fields;
 	}
 
 	$file = $dir."/".$file;
