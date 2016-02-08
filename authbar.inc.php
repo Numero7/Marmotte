@@ -101,7 +101,7 @@ if(!isSuperUser())
 								<li><a href="index.php?action=view">Sélection en cours</a></li>
 									<?php
 						    echo "<li><a href=\"index.php?action=view&amp;reset_filter=&amp;filter_rapporteur=".urlencode(getLogin())."\">Mes rapports</a></li>";
-									echo "<li><a href=\"index.php?action=view&amp;reset_filter=&amp;filter_avancement=todo&amp;filter_rapporteur=".getLogin()."\">A faire</a></li>";
+						  echo "<li><a href=\"index.php?action=view&amp;reset_filter=&amp;filter_avancement=todo&amp;filter_rapporteur=".urlencode(getLogin())."\">A faire</a></li>";
 //									echo "<li><a href=\"index.php?action=view&amp;reset_filter=&amp;filter_avancement=done&amp;filter_rapporteur=".getLogin()."&amp;filter_id_session=".current_session_id()."\">Faits</a></li>";
 									?>
 </ul>

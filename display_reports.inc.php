@@ -230,6 +230,11 @@ function displayRowCell($row, $fieldID)
 	$rapporteurs = 	listUsers();
 	//	$rapporteurs = listNomRapporteurs();
 	
+	$login = getLogin();
+	$is_rapp1 = isset($row->rapporteur) && ($login == $row->rapporteur);
+	$is_rapp2 = isset($row->rapporteur2) && ($login == $row->rapporteur2);
+	$is_rapp3 = isset($row->rapporteur3) && ($login == $row->rapporteur3);
+	$is_rapp = $is_rapp1 || $is_rapp2 ||$is_rapp3;
 
 	$title = $fieldsAll[$fieldID];
 	echo '<td>';
@@ -305,9 +310,12 @@ function displayRowCell($row, $fieldID)
 </form>
 	<?php
 		}
-		else if($fieldID == "avis" || $sec || !isset($row->statut) || $row->statut != "doubleaveugle")
+		else if($fieldID == "avis" || $sec || 
+			( !get_option("double_aveugle_strict") && !get_option("show_avis_double_aveugle") &&  (!$is_rapp || !isset($row->statut) || $row->statut != "doubleaveugle"))
+			)
 		{
 			showIconAvis($fieldID,$data);
+			//echo get_config("double_aveugle_strict");
 			echo (isset($tous_avis[$data]) && !is_array($tous_avis[$data]) )? $tous_avis[$data] : $data;
 		}
 	}

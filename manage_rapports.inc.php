@@ -1347,6 +1347,7 @@ function is_field_visible($row, $fieldId)
     )
     return false;
 
+
 	global $typesRapportToFields;
 	global $alwaysVisibleFieldsTypes;
 
@@ -1381,6 +1382,14 @@ function is_field_visible($row, $fieldId)
 
 	if(isset($row->statut) && ($row->statut == "doubleaveugle") && ($is_rapp1 || $is_rapp2 || $is_rapp3))
 		return false;
+
+	if(!isSecretaire()
+	   && isset($row->statut)
+	   && $row->statut == "doubleaveugle"
+	   && get_option("double_aveugle_strict")
+	   )
+	  return false;
+
 
 	return true;
 }

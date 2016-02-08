@@ -42,7 +42,7 @@ $statutsRapportsACN = array(
 );
 
 $statutsRapportsIndiv = array(
-		'doubleaveugle'=>'Edition Double Aveugle (les rapporteurs ne voient que leus propres prérapports)',
+		'doubleaveugle'=>'Edition Double Aveugle (les rapporteurs ne voient que leurs propres prérapports)',
 		'edition' => "Edition (édition par les rapporteurs)",
 		'audition' => "Audition (édition par les rapporteurs et le président de la section de jury de concours)",
 		'avistransmis'=>"Transmettre l'avis (l'avis ne sera définitivement plus modifiable)",

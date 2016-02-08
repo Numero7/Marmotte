@@ -122,7 +122,7 @@ function export_reports_as_csv($reports, $dir, $type = "")
 	else if($type == "releveconclusions")
 	{
 		$activefields =
-		array('type','nom','prenom',
+		  array('type','nom','prenom','concours',
 				"grade_rapport",
 				"unite",
 				"avis"
