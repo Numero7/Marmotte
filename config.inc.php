@@ -1651,7 +1651,7 @@ foreach($tous_sous_jury as $conc => $sousjurys)
 	foreach($sousjurys as $code => $president)
 	$liste_sous_jurys[$code] = $conc." - ".$code;
 
-$tous_concours = array("CR"=>"tous CR","DR"=>"tous DR");
+$tous_concours = array("CR2"=>"CR2","CR1"=>"CR1","CR"=>"CR","DR"=>"DR");
 foreach($concours_ouverts as $code => $data)
 	$tous_concours[strval($code)] = $data;
 
