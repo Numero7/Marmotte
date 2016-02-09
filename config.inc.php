@@ -1570,13 +1570,13 @@ $concours_ouverts = array();
 $postes_ouverts = array();
 $tous_sous_jury = array();
 
-/* Ugly hack translated from former xml configuration system ... */
+/* Ugly hack translated from former xml configuration system ... */
 
 while($result = mysqli_fetch_object($query))
 {
 
 	$code = $result->code;
-  if($_SESSION['permission_mask'] >= NIVEAU_PERMISSION_SECRETAIRE)
+  if($_SESSION['permission'] >= NIVEAU_PERMISSION_ACN)
      $my_conc[$code] = $code;
   else if(!isset($my_conc[$code]))
 	  continue;

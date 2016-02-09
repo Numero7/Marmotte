@@ -383,11 +383,13 @@ function createXMLReportElem($row, DOMDocument $doc, $keep_br = true)
 	  {
 	appendLeaf("typesectioncid", "CID", $doc, $rapportElem);
 	appendLeaf("typesectioncidlong", "CID", $doc, $rapportElem);
+	appendLeaf("typesectioncidtreslong", "COMMISSION INTERDISCIPLINAIRE", $doc, $rapportElem);
 	  }
 	else
 	  {
 	appendLeaf("typesectioncidlong", "Section du Comité national", $doc, $rapportElem);
 	appendLeaf("typesectioncid", "section", $doc, $rapportElem);
+	appendLeaf("typesectioncidtreslong", "SECTION", $doc, $rapportElem);
 	  }
 
 
@@ -425,7 +427,7 @@ function createXMLReportElem($row, DOMDocument $doc, $keep_br = true)
 			foreach($aviss as $avis => $label)
 			{
 				if(isset($boxes[$avis]))
-					$checkBoxes[$avis] = $boxes[$avis];
+				  $checkBoxes[$avis] = $cid ? str_replace("section","CID",$boxes[$avis]) : $boxes[$avis];
 			}
 		}
 
@@ -433,6 +435,8 @@ function createXMLReportElem($row, DOMDocument $doc, $keep_br = true)
 		{
 			$leaf = $doc->createElement("checkboxes");
 			$checkBoxesTitle = isset($typesRapportsToCheckboxesTitles[$row->type]) ? $typesRapportsToCheckboxesTitles[$row->type] : "<B>Avis de la section</B>";
+			if($cid)
+			  $checkBoxesTitle = str_replace("section","CID",$checkBoxesTitle);
 			$leaf->setAttribute("titre", $checkBoxesTitle);
 			foreach($checkBoxes as $avis => $intitule)
 			{
