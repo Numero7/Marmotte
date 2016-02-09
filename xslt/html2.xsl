@@ -25,7 +25,7 @@
 		<td  width="350">
 		<h1>
 		<B>
-			RAPPORT DE <xsl:value-of disable-output-escaping="yes" select="typesectioncid"/>
+			RAPPORT DE <xsl:value-of disable-output-escaping="yes" select="typesectioncidtreslong"/>
 			</B>
 			</h1>
 		</td>
