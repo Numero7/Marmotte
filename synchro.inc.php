@@ -825,7 +825,32 @@ function check_missing_data()
 
 function synchronize_units()
 {
+  global $dbh;
+  $answer = "";
+  
+  $sql = "UPDATE ".units_db." marmotte JOIN ".dsidbname.".".dsi_units_db." dsi SET ";
+  $sql .= "marmotte.fullname=dsi.INTUNI WHERE marmotte.code=dsi.CODEUNITE AND dsi.INTUNI!=''";
+  sql_request($sql);
+  $num = mysqli_affected_rows($dbh);
+  if($num> 0)
+      $answer .= $num . " intitulé d'unités ont été mis à jour<br/>\n";
 
+  $sql = "UPDATE ".units_db." marmotte JOIN ".dsidbname.".".dsi_units_db." dsi SET ";
+  $sql .= "marmotte.directeur=CONCAT(dsi.NOM_DIR_UNI,' ',dsi.PRN_DIR_UNI) ";
+  $sql .= "WHERE marmotte.code=dsi.CODEUNITE AND dsi.NOM_DIR_UNI!=''";
+  sql_request($sql);
+  $num = mysqli_affected_rows($dbh);
+  if($num> 0)
+      $answer .= $num . " noms de directeurs ont été mis à jour<br/>\n";
+
+  $sql = "UPDATE ".units_db." marmotte JOIN ".dsidbname.".".dsi_units_db." dsi SET ";
+  $sql .= "marmotte.nickname=dsi.SIGLEUNI WHERE marmotte.code=dsi.CODEUNITE AND dsi.SIGLEUNI != ''";
+  sql_request($sql);
+  $num = mysqli_affected_rows($dbh);
+  if($num> 0)
+      $answer .= $num . " sigles ont été mis à jour<br/>\n";
+  
+  return $answer;
 }
 
 function synchronize_colleges()
