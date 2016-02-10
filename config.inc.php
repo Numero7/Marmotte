@@ -1035,7 +1035,8 @@ $typesRapportToFields[REPORT_INCONNU] = $fieldsArrayUnite;
 /*********************** renommge de champs pour import ******************************************/
 $copies = array(
 		"Nom" => "nom",
-		"Nom d\'usage" => "nom",
+		"Nom d'usage" => "nom",
+		"NOM D'USAGE" => "nom",
 		"NOMUSUEL" => "nom",
 		"Prénom" => "prenom",
 		"PRENOM" => "prenom",

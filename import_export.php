@@ -37,11 +37,10 @@ function displaySecretaryImport()
 	{
 		?>
 
-<h2>Ajout d un nouveau rapport</h2>
+	  <h2>Ajout d&apos;un rapport</h2>
 <form enctype="multipart/form-data" action="index.php" method="post">
 	<table>
-		<tr>
-			<td><input type="hidden" name="id_origine" value="0" /> <input
+		<tr>			<td><input type="hidden" name="id_origine" value="0" /> <input
 				type="hidden" name="action" value="new" />
 			</td>
 		</tr>
@@ -83,9 +82,8 @@ function displaySecretaryImport()
 			    if(!is_current_session_concours())
 			      {
 ?>
-<h2>[Réservé SGCN] Import de plusieurs rapports</h2>
-<p>Cette fonction maintenant réservée au SGCN disparaîtra prochainement
-	de Marmotte.</p>
+<h2>Ajout d&apos;une liste de rapports</h2>
+<p>N&apos;utilisez cette fonction qu&apos;en concertation avec votre ACN.</p>
 <form enctype="multipart/form-data" action="index.php" method="post">
 	<table>
 		<tr>
@@ -96,7 +94,7 @@ function displaySecretaryImport()
 			</td>
 		</tr>
 		<tr>
-			<td>Fichier</td>
+			<td>Fichier csv au format correct</td>
 			<td><input name="uploadedfile" type="file" />
 			</td>
 		</tr>

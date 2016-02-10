@@ -95,7 +95,6 @@ function import_csv($type,$filename, $subtype = "", $create = false, $sep="?", $
 
 		while(($data = fgetcsv ( $file, 0, $sep , $enc ,$esc)) != false)
 		{
-			$nb++;
 
 			if($is_utf8)
 				for($i = 0 ; $i < count($data); $i++)
@@ -111,6 +110,7 @@ function import_csv($type,$filename, $subtype = "", $create = false, $sep="?", $
 				if($type == 'evaluations')
 				{
 					/* First case we update data about an already existing report */
+				  /*
 					if(!$create && $with_id)
 					{
 						if(count($data) != $nbfields)
@@ -122,10 +122,13 @@ function import_csv($type,$filename, $subtype = "", $create = false, $sep="?", $
 							for($i = 0; $i < $nbfields; $i++)
 								$properties[$fields[$i]] =  $data[$i];
 							$report = change_report_properties($id_origine, $properties);
+							$nb++;
+
 							//$output .= "Line ".$nb." : updated data of report ".$id_origine . " (new report has id ".$report->id.")<br/>";
 						}
 					}
 					else
+				  */
 					{
 						/* Second case we create report */
 						$properties = array();
@@ -137,6 +140,7 @@ function import_csv($type,$filename, $subtype = "", $create = false, $sep="?", $
 						if($subtype == "" && $oldsubtype != "")
 							$subtype = $oldsubtype;
 						addCsvReport($subtype, $properties);
+						$nb++;
 					}
 				}
 				else if ($type == 'unites')
@@ -146,6 +150,7 @@ function import_csv($type,$filename, $subtype = "", $create = false, $sep="?", $
 						$properties[$fields[$i]] =  $data[$i];
 					addCsvUnite($properties);
 					unset($_SESSION['all_units']);
+					$nb++;
 				}
 				else
 					throw new Exception("Unknown generic csv report type \'".$type."\'");
