@@ -30,7 +30,7 @@ case 'set_property':
   $property = $_POST['property'];
   $id_origine = $_POST['id_origine'];
   $value = $_POST['value'];
-  set_property($property,$id_origine, $value, true);
+  set_property($property,$id_origine, $value, strpos($property,"rapp") != FALSE);
   echo "set property '".$property."' with value '".$value."' for report '".$id_origine."'";
   break;
 case 'set_people_property':

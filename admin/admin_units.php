@@ -14,28 +14,6 @@ if(isSuperUser())
 <input type="submit" value="Synchroniser la liste des unités">
 </form>
 
-<p>Les champs suivants sont nécessaires: "Code unité", "Intitulé unité",
-	"Responsable nom", "Responsable prénom", "Sigle unité", "Liste
-	section(s)"</p>
-<form enctype="multipart/form-data" action="index.php" method="post"
-	onsubmit="return confirm('Etes vous sur de vouloir uploader ce fichier labos?');">
-	<p>
-		<input type="hidden" name="admin_unites"> <input type="hidden"
-			name="type" value="unites" /> <input type="hidden" name="action"
-			value="upload" /> <input type="hidden" name="MAX_FILE_SIZE"
-			value="50000000" /> Fichier csv: <input name="uploadedfile"
-			type="file" /> <br /> <input type="submit" value="Ajouter/MAJ unités" />
-	</p>
-</form>
-<hr />
-<form enctype="multipart/form-data" action="index.php" method="post"
-	onsubmit="return confirm('Etes vous sur de vouloir supprimer toutes les unites?');">
-	<p>
-		<input type="hidden" name="action" value="delete_units" /> <input
-			type="submit" value="Supprimer toutes les unités" />
-	</p>
-</form>
-
 <?php 
 }
 if(isBureauUser() && !isSuperUser())

@@ -825,7 +825,7 @@ function set_property($property,$id_origine, $value, $all_reports = false)
 	$report = getReport($id_origine);
 	if($report->nom != "" && $report->prenom != "")
 	{
-		if($all_reports)
+	  if($all_reports)
 		{
 			$sql = "UPDATE reports SET `".real_escape_string($property)."`=\"".real_escape_string($value)."\" ";
 			$sql .= " WHERE `".real_escape_string($property)."`=\"\" AND nom=\"".$report->nom."\" and prenom=\"".$report->prenom."\"";

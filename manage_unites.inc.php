@@ -72,7 +72,7 @@ try
 			while($row = mysqli_fetch_object($res))
 			{
 			  if($row->SIGLEUNI == "") $row->SIGLEUNI = $row->CODEUNITE;
-				addUnit($row->SIGLEUNI,$row->CODEUNITE,$row->INTUNI,$row->COURRIELDIRUNI);
+				addUnit($row->SIGLEUNI,$row->CODEUNITE,$row->INTUNI,$row->NOM_DIR_UNI." ".$row->PRN_DIR_UNI);
 				break;
 			}
 		}
@@ -119,11 +119,6 @@ function updateUnitData($unite, $data)
 	}
 }
 
-function updateUnitDirecteur($unite, $directeur)
-{
-	$sql = "UPDATE FROM ".units_db." SET directeur='$directeur' WHERE code='$unite' AND `section`='". currentSection()."';";
-	sql_request($sql);
-}
 
 function simpleUnitsList($short = false)
 {
