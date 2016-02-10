@@ -355,15 +355,15 @@ function addCsvReport($subtype, $properties)
 					{
 						updateCandidateFromData((object) $properties);
 						addReport($report,false);
-						if(isset($report->unite))
-							updateUnitData($report->unite, (object) $report);
+						//						if(isset($report->unite))
+						//	updateUnitData($report->unite, (object) $report);
 					}
 				}
 				else
 				{
 					addReport($report,false);
-					if(isset($report->unite))
-						updateUnitData($report->unite, (object) $report);
+					//					if(isset($report->unite))
+					//	updateUnitData($report->unite, (object) $report);
 				}
 }
 

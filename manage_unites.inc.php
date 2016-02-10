@@ -87,7 +87,7 @@ catch(Exception $e)
   }
 	}
 }
-
+/*
 function updateUnitData($unite, $data)
 {
   if($unite == "") return;
@@ -117,7 +117,7 @@ function updateUnitData($unite, $data)
 	{
 		$sql = "INSERT INTO ".reports_db." ($sqlfields) VALUES ($sqlvalues);";
 	}
-}
+}$/
 
 
 function simpleUnitsList($short = false)
