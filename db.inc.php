@@ -255,8 +255,10 @@ function migrate( $section, $serverName, $db, $login, $password, $type)
 function sql_request($sql)
 {
 	global $dbh;
-	//	echo $sql."<br/>\n";
+	echo time()."<br/>";
+	echo $sql."<br/>\n";
 	$result = mysqli_query($dbh, $sql);
+	echo time()."<br/>";
 	if($result == false)
 		throw new Exception("Failed to process sql query: <br/>\t".mysqli_error($dbh)."<br/>".$sql);
 	else

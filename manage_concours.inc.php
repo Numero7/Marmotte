@@ -92,6 +92,7 @@ function myConcours()
 
 function getConcours()
 {
+  if(!isset($_SESSION["allconcours"]))
 	{
 	$concours = array();
 	$sql = "SELECT * FROM ".marmottedbname.".".concours_db." conc JOIN ".dsidbname.".".dsi_GOC." goc ON conc.code=goc.n_public ";
