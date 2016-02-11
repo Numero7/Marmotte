@@ -181,11 +181,25 @@ try
   /* mse a jour des candidats ayant changé de nom */
   $sql = "UPDATE ".marmottedbname.".".people_db." marmotte, ".dsidbname.".".celcc_candidats." dsi ";
   $sql .= "SET marmotte.nom=dsi.nom,marmotte.prenom =dsi.prenom WHERE marmotte.concoursid=dsi.user_id";
+try
+  {
   sql_request($sql);
+  }
+catch(Exception $e)
+  {
+    $log .= "Failed to update nom et prenom ".$e->getMessage();
+  }
 
   $sql = "UPDATE ".marmottedbname.".".reports_db." marmotte, ".dsidbname.".".celcc_candidats." dsi ";
   $sql .= "SET marmotte.nom=dsi.nom,marmotte.prenom =dsi.prenom WHERE marmotte.concoursid=dsi.user_id";
+try
+  {
   sql_request($sql);
+  }
+catch(Exception $e)
+  {
+    $log .= "Failed to update nom et prenom ".$e->getMessage();
+  }
 
   /* calcul des candidats déjà connus */
   $sql = "SELECT concoursid,section FROM ".marmottedbname.".people WHERE concoursid!=\"\"";

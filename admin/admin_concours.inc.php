@@ -138,6 +138,8 @@
 		type="submit" value="Affecter sections de jurys" /> <input type="hidden"
 		name="admin_concours"></input>
 </form>
+<br/>
+<hr/>
 <br />
 <h3>Reinitialiser les conflits</h3>
     <p>Cette fonction permet de supprimer tous les conflits d&apos;intérêts.</p>
@@ -149,6 +151,7 @@
 </form>
 <br />
 <hr />
+<!--
 <h3>Rapports JAD</h3>
 <form method="post" action="export.php">
 	<input type="submit" value="Générer les rapports de JAD" /> <input
@@ -180,6 +183,7 @@
 	
 	</table>
 </form>
+-->
 <?php
 	    }
      }
