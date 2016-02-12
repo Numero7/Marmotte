@@ -35,7 +35,6 @@
 3. Synchro
 	* Le script sync.sh permet de récupérer les listes de DE depusi la table dsi
 
-
 4. Prise en main:
       * cf doc du SGCN
       	   http://www.cnrs.fr/comitenational/outils/projet_marmotte.htm
