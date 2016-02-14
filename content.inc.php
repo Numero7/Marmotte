@@ -276,6 +276,9 @@ function alertText($text)
 			case 'sync_units':
 			  echo synchronize_units();
 			  break;
+			case 'purge_units':
+			  echo purge_units();
+			  break;
 			case 'fix_missing_data':
 			  $report = "";
 			  for($i = 0; $i < 55; $i++)

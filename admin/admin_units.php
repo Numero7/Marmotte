@@ -13,6 +13,11 @@ if(isSuperUser())
 <input type="hidden" name="action" value="sync_units"> 
 <input type="submit" value="Synchroniser la liste des unités">
 </form>
+<form>
+<input type="hidden" name="admin_unites">
+<input type="hidden" name="action" value="purge_units"> 
+<input type="submit" value="Purger la liste des unités inconnues">
+</form>
 
 <?php 
 }

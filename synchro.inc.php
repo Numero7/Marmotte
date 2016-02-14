@@ -9,7 +9,7 @@ function synchronizeStatutsConcours($year = "")
  
   if($year == "")
     $year = date("Y");
-  $log = "<h3>Synchronisation des statuts</h3>";
+  $log = "<h3>Synchronisation des statuts candidatures</h3>";
 
   $sql = "UPDATE reports marmotte, ".dsidbname.".".celcc_statuts." dsi SET marmotte.statut_celcc='non admis à concourir' ";
   $sql .= "WHERE dsi.num_conc=marmotte.concours AND dsi.user_id=marmotte.concoursid AND dsi.admis_concourir='non'"; 
@@ -105,7 +105,7 @@ function synchronizeStatutsConcours($year = "")
   sql_request($sql);
   $changed = mysqli_affected_rows($dbh);
   if($changed > 0)
-    $log .= $changed." avis marmotte ont été basculés à 'retrait candidature'<br/>";
+    $log .= $changed." status marmotte ont été basculés à 'retrait candidature'<br/>";
 
   return $log;
 }
@@ -276,7 +276,6 @@ catch(Exception $e)
   $log .= synchronizeStatutsConcours($year);
 
 
-  echo $log;
   return $log;
 }
 
@@ -836,11 +835,47 @@ function check_missing_data()
   */
   return $msg;
 }
+function purge_units()
+{
+  global $dbh;
+  $answer = "";
+
+  $sql = "DELETE FROM ".units_db." WHERE code NOT IN (SELECT CODEUNITE FROM ".dsidbname.".".dsi_units_db.")";
+  sql_request($sql);
+  $num = mysqli_affected_rows($dbh);
+  if($num> 0)
+      $answer .= $num . " unités inconnues ont été purgées<br/>\n";
+  return $answer;
+}
 
 function synchronize_units()
 {
   global $dbh;
   $answer = "";
+
+  $sql="INSERT IGNORE INTO ".units_db." (code,directeur,fullname,nickname,section) ";
+  $sql .= "SELECT CODEUNITE,CONCAT(NOM_DIR_UNI,\" \",PRN_DIR_UNI),INTUNI,SIGLEUNI,SCN1UNI FROM ".dsidbname.".".dsi_units_db." ";
+  $sql .= "WHERE 1 ";
+  sql_request($sql);
+  $num = mysqli_affected_rows($dbh);
+  if($num> 0)
+      $answer .= $num . " unités ont été ajoutées en section principale<br/>\n";
+
+  $sql="INSERT IGNORE INTO ".units_db." (code,directeur,fullname,nickname,section) ";
+  $sql .= "SELECT CODEUNITE,CONCAT(NOM_DIR_UNI,\" \",PRN_DIR_UNI),INTUNI,SIGLEUNI,SCN2UNI FROM ".dsidbname.".".dsi_units_db." ";
+  $sql .= "WHERE 1 ";
+  sql_request($sql);
+  $num = mysqli_affected_rows($dbh);
+  if($num> 0)
+      $answer .= $num . " unités ont été ajoutées en section secondaire<br/>\n";
+
+  $sql="INSERT IGNORE INTO ".units_db." (code,directeur,fullname,nickname,section) ";
+  $sql .= "SELECT CODEUNITE,CONCAT(NOM_DIR_UNI,\" \",PRN_DIR_UNI),INTUNI,SIGLEUNI,SCN3UNI FROM ".dsidbname.".".dsi_units_db." ";
+  $sql .= "WHERE 1 ";
+  sql_request($sql);
+  $num = mysqli_affected_rows($dbh);
+  if($num> 0)
+      $answer .= $num . " unités ont été ajoutées en section tertiaire<br/>\n";
   
   $sql = "UPDATE ".units_db." marmotte JOIN ".dsidbname.".".dsi_units_db." dsi SET ";
   $sql .= "marmotte.fullname=dsi.INTUNI WHERE marmotte.code=dsi.CODEUNITE AND dsi.INTUNI!=''";
@@ -863,7 +898,8 @@ function synchronize_units()
   $num = mysqli_affected_rows($dbh);
   if($num> 0)
       $answer .= $num . " sigles ont été mis à jour<br/>\n";
-  
+
+
   return $answer;
 }
 
@@ -929,6 +965,13 @@ try
 	       email_handler($email,"Alerte Marmotte: données manquantes",$report,email_sgcn,email_admin);
 	  }
 
+	$answer .= "<h2>Verification des donnees manquantes</h2>";
+	$answer .= $report;
+
+	$answer .= "<h2>Synchro des unites</h2>";
+	$answer .= synchronize_units();
+
+	$answer .= "<h2>Synchro des metadonnees des DE unites</h2>";
 	/* mise a jour des meta données pour les DE unités déjà importées dans marmotte */
 	$sql = "UPDATE ".marmottedbname.".".reports_db." marmotte JOIN ".dsidbname.".".dsi_evaluation_units_db." dsi ";
 	$sql .= "ON marmotte.DKEY=dsi.DKEY ";
@@ -941,6 +984,7 @@ try
 	if($num > 0)
 	  $answer .= "Les meta données de ".$num." DE unités déjà existantes dans la base marmotte ont été mises à jour<br/>"; 
 
+	$answer .= "<h2>Synchro des metadonnees des DE chercheurs</h2>";
 	/* mise a jour des meta données pour les DE chercheurs déjà importées dans marmotte */
 	$sql = "UPDATE ".marmottedbname.".".reports_db." marmotte JOIN ".dsidbname.".".dsi_evaluation_db." dsi ";
 	$sql .= "ON marmotte.DKEY=dsi.DKEY ";
