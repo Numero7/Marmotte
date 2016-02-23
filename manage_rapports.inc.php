@@ -499,8 +499,10 @@ function addReport($report)
 		if(!isset($report->$key))
 		$report->$key = $value;
 
-	if(!isSuperUser())
-		$report->section = $_SESSION['filter_section'];
+	if(!isSuperUser() && isset($report->section) && ($report->section != $_SESSION['filter_section']))
+		throw new Exception("Le compte ".$login." n'a pas la permission de créer un rapport pour une autre section que la sienne.");
+
+	$report->section = $_SESSION['filter_section'];
 
 	return addReportToDatabase($report);
 };
@@ -533,6 +535,11 @@ function addReportFromRequest($id_origine, $request)
 	}
 
 	$report = createReportFromRequest($id_origine, $request);
+
+	if(!isSuperUser() && isset($report->section) && ($report->section != $_SESSION['filter_section']))
+		throw new Exception("Le compte ".$login." n'a pas la permission de créer un rapport pour une autre section que la sienne.");
+
+	$report->section = $_SESSION['filter_section'];
 
 	if(isset($report->NUMSIRHUS))
           {
@@ -732,10 +739,11 @@ function addReportToDatabase($report,$normalize = true)
 
 		$specialRule = array("date","id","voeux");
 
-		if(!isSuperUser())
+		/*		if(!isSuperUser())
 		  $current_report->section = $_SESSION['filter_section'];
 		else
 		  $current_report->section = $report->section;
+		*/
 
 		$first = true;
 
@@ -1426,139 +1434,6 @@ function get_readable_fields($row)
 	return $result;
 }
 
-/*
-function migrate_to_avis_codes()
-{
-
-		foreach(array("avis","avis1","avis2","avis3") as $field)
-			  {
-			    echo "Updating classement<br/>";
-			$sql = "UPDATE `".reports_db."` SET `".$field."`=CONCAT(\"c\",".$field.") WHERE ".$field." REGEXP '[0-9]+';";
-			sql_request($sql);
-			echo $sql;
-			  }
-
-
-  $mig = array(
-	       "tresfavorable" => avis_tres_favorable,
-	       "favorable" => avis_favorable,
-	       "defavorable" => avis_defavorable,
-	       "reserve" => avis_reserve,
-	       "alerte" => avis_alerte,
-	       "differe" => avis_differe,
-	       "sansavis" => avis_pas_davis,
-	       "oui" => avis_oui,
-	       "non" => avis_non,
-	       "nonclasses" => avis_non_classe,
-	       "adiscuter"=> avis_adiscuter,
-	       "desistement"=>avis_desistement,
-	       "nonconcur"=>avis_nonconcur,
-	       "nonauditionne"=>avis_nonauditionne,
-	       "oral"=>avis_oral,
-	       "classe"=>avis_estclasse
-	       );
-
-		foreach($mig as $pref => $id)
-		{
-		  foreach(array("avis","avis1","avis2","avis3") as $field)
-			  {
-			    echo "Updating field ".$field. " avis ".$pref." => ".$id."<br/>";
-			$sql = "UPDATE `".reports_db."` SET `".$field."`=\"".$id."\" WHERE `".$field."`=\"".$pref."\";";
-			sql_request($sql);
-			  }
-		}
-
-
-
-}
-
-function migrate_to_eval_codes()
-{
-	if(isSuperUser())
-	{
-		$mig = array(
-				"Suivi-PostEvalua" => 6009,
-				"Renouvellement-G"=> 8025,
-				"Reexamen"=>6008,"EvalMiVague"=>6005,
-				"Delegation"=>7778, "DEChercheur"=>7779,
-				"Creation-GDR"=>8015,"Changement d'aff"=>7012,
-				"Ch-section"=>"6515","Candidature"=>7777,
-				"Generique"=>"7780","DEChercheur"=>7779,
-				"EvalVague"=>"6005","Emeritat"=>7017,
-				"ChgtSection"=>6515, "Renouvellement"=>8020,
-				"Association"=>8021
-		);
-
-		foreach($mig as $pref => $id)
-		{
-			$sql = "UPDATE `".reports_db."` SET `type`=\"".$id."\" WHERE `type`=\"".$pref."\";";
-			sql_request($sql);
-		}
-
-
-		echo "Migrating to eval codes <br/>";
-		$sql = "UPDATE `".reports_db."` SET `type`=\"6515\" WHERE `type`=\"Changement-section\";";
-		sql_request($sql);
-		$sql = "UPDATE `".reports_db."` SET `type`=\"ChgtDir\" WHERE `type`=\"ChgtDir-Adjoint\";";
-		sql_request($sql);
-		$sql = "UPDATE `".reports_db."` SET `type`=\"8101\" WHERE `type`=\"Changement-Directeur-Adjoint\";";
-		sql_request($sql);
-		$sql = "UPDATE `".reports_db."` SET `type`=\"8101\" WHERE `type`=\"Changement-Directeur\";";
-		sql_request($sql);
-		$sql = "UPDATE `".reports_db."` SET `type`=\"8101\" WHERE `type`=\"ChgtDir\";";
-		sql_request($sql);
-		$sql = "UPDATE `".reports_db."` SET `type`=\"8515\" WHERE `type`=\"Ecole\";";
-		sql_request($sql);
-		$sql = "UPDATE `".reports_db."` SET `type`=\"6005\" WHERE `type`=\"Evaluation-MiVague\";";
-		sql_request($sql);
-		$sql = "UPDATE `".reports_db."` SET `type`=\"6005\" WHERE `type`=\"Evaluation-Vague\";";
-		sql_request($sql);
-		$sql = "UPDATE `".reports_db."` SET `intitule`= `ecole` WHERE `intitule`=\"\";";
-		sql_request($sql);
-		$sql = "UPDATE `".reports_db."` SET `type`= \"6005\" WHERE `intitule`=\"Evaluation de chaire\";";
-		sql_request($sql);
-		$sql = "UPDATE `".reports_db."` SET `type`= \"6525\" WHERE `intitule`=\"Evaluation permanente par une deuxième section\";";
-		sql_request($sql);
-		$sql = "UPDATE `".reports_db."` SET `type`= \"6009\" WHERE `intitule`=\"Suivi post-évaluation\";";
-		sql_request($sql);
-		$sql = "UPDATE `".reports_db."` SET `type`= \"6525\" WHERE `intitule`=\"Evaluation permanente par une 2ème section ou CID\";";
-		sql_request($sql);
-		$sql = "UPDATE `".reports_db."` SET `type`= \"6520\" WHERE `intitule`=\"Renouvellement de mise a disposition\";";
-		sql_request($sql);
-		$sql = "UPDATE `".reports_db."` SET `type`= \"6005\" WHERE `intitule`=\"Rapport sur chercheur\";";
-		sql_request($sql);
-		$sql = "UPDATE `".reports_db."` SET `type`= \"7006\" WHERE `type`=\"MedailleArgent\";";
-		sql_request($sql);
-		$sql = "UPDATE `".reports_db."` SET `type`= \"7005\" WHERE `type`=\"MedailleBronze\";";
-		sql_request($sql);
-
-
-		$sql = "SELECT * FROM report_types WHERE code_marmotte=\"\";";
-		$result = sql_request($sql);
-		while ($row = mysqli_fetch_object($result))
-		{
-			$sql = "UPDATE `".reports_db."` SET `type`=\"".$row->id."\" WHERE `type`=\"".$row->code_marmotte."\";";
-			sql_request($sql);
-		}
-
-		global $id_rapport_to_label;
-		foreach($id_rapport_to_label as $id => $data)
-		{
-			if($id != 9999)
-				$sql = "UPDATE `".reports_db."` SET `intitule`=\"".$data."\" WHERE `type`=\"".$id."\" AND intitule=\"\";";
-			else
-				$sql = "UPDATE `".reports_db."` SET `intitule`=`ecole` WHERE `type`=\"9999\";";
-			sql_request($sql);
-		}
-
-	}
-
-
-
-}
-*/
-
-
 function is_rapport_chercheur($row)
 {
 	global $report_types_to_class;
@@ -1639,39 +1514,4 @@ function get_current_report_types()
 		return $typesRapportsSession;
 	}
 }
-/*
-function inject_new_reports_from_dsi()
-{
-	$sql = "SELECT * FROM dsi.evaluationdoc WHERE numsirhus NOT IN SELECT numsirhus FROM dsi.evaluationdoc;";
-
-	$result = sql_request($sql);
-	$sessions = get_all_sessions();
-
-	$added = array();
-	while($row = mysqli_fetch_object($result))
-	{
-		if(!in_array($row->numsirhus,$added))
-		{
-			$added[] = $row->numsirhus;
-			$session = $row->lib_session.$row->annee;
-			$section = $row->code_section;
-			if( !isset($sessions[$section]) || !in_array($session, $sessions[$section]))
-			{
-				createSession($row->lib_session, $row->annee, $section);
-				$sessions[$section][] = $session;
-			}
-			$report = array(
-					"section" => $section,
-					"nom" => $nom,
-					"prenom" => $prenom,
-					"rapporteur" => $row->rap1,
-					"rapporteur2" => $row->rap2,
-					"rapporteur3" => $row->rap3,
-					"type" => $type_eval
-			);
-			//		addReport($report);
-		}
-	}
-}
-*/
 ?>

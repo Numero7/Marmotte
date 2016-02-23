@@ -122,10 +122,6 @@ function getConcours()
 	return $_SESSION["allconcours"];
 }
 
-function getPresidentSousJury($sousjury)
-{
-
-}
 
 function setConcours($conc)
 {
