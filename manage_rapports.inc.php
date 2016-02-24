@@ -110,10 +110,9 @@ function getReport($id_rapport, $most_recent = true)
 {
 	if($most_recent)
 		$id_rapport = getIDOrigine($id_rapport);
-	$sql = "SELECT * FROM ".reports_db." WHERE id=$id_rapport";
+	$sql = "SELECT * FROM ".reports_db." WHERE id=".real_escape_string($id_rapport)." AND section=".real_escape_string(currentSection());
 	$result=sql_request($sql);
 	$report = mysqli_fetch_object($result);
-
 
 	try
 	{
@@ -123,7 +122,7 @@ function getReport($id_rapport, $most_recent = true)
 	catch(Exception $e){};
 
 	if($report == false)
-		throw new Exception("No report with id ".$id_rapport);
+	  throw new Exception("Ce rapport n'est pas un rapport de la section/CID ".currentSection());
 
 	if(is_rapport_concours($report) && $report->concoursid != "")
 	  {
@@ -180,7 +179,7 @@ function getAllReportsOfType($type,$id_session=-1)
 
 function filterSortReports($filters, $filter_values = array(), $sorting_value = array(), $rapporteur_or = true)
 {
-	$section = $_SESSION['filter_section'];
+  $section = currentSection();
 
   if(is_current_session_concours())
     {
@@ -481,7 +480,7 @@ function newReport($type_rapport,$nom="",$prenom="")
 	$row = array();
 	$row['type'] = $type_rapport;
 	$row["DKEY"] = "";
-	$row['section'] = $_SESSION['filter_section'];
+	$row['section'] = currentSection();
 	$row["nom"]=$nom;
 	$row["prenom"]=$prenom;
 
@@ -499,10 +498,10 @@ function addReport($report)
 		if(!isset($report->$key))
 		$report->$key = $value;
 
-	if(!isSuperUser() && isset($report->section) && ($report->section != $_SESSION['filter_section']))
+	if(!isSuperUser() && isset($report->section) && ($report->section != currentSection()))
 		throw new Exception("Le compte ".$login." n'a pas la permission de créer un rapport pour une autre section que la sienne.");
 
-	$report->section = $_SESSION['filter_section'];
+	$report->section = currentSection();
 
 	return addReportToDatabase($report);
 };
@@ -536,10 +535,10 @@ function addReportFromRequest($id_origine, $request)
 
 	$report = createReportFromRequest($id_origine, $request);
 
-	if(!isSuperUser() && isset($report->section) && ($report->section != $_SESSION['filter_section']))
-		throw new Exception("Le compte ".$login." n'a pas la permission de créer un rapport pour une autre section que la sienne.");
+	if(isset($report->section) && ($report->section != currentSection()))
+		throw new Exception("Impossible de créer un rapport pour une autre section que la sienne.");
 
-	$report->section = $_SESSION['filter_section'];
+	$report->section = currentSection();
 
 	if(isset($report->NUMSIRHUS))
           {
@@ -730,7 +729,7 @@ function addReportToDatabase($report,$normalize = true)
 		catch(Exception $e)
 		{
 			if(!isReportCreatable())
-				throw new Exception("Failed to add report to database<br/>".$e->getMessage());
+				throw new Exception("Echec de l'édition du rapport<br/>".$e->getMessage());
 			$current_report = $report;
 		}
 
@@ -738,12 +737,6 @@ function addReportToDatabase($report,$normalize = true)
 		$sqlvalues = "";
 
 		$specialRule = array("date","id","voeux");
-
-		/*		if(!isSuperUser())
-		  $current_report->section = $_SESSION['filter_section'];
-		else
-		  $current_report->section = $report->section;
-		*/
 
 		$first = true;
 

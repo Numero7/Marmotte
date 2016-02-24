@@ -119,6 +119,14 @@ function updateCandidateFromData($data)
 			$first = false;
 		}
 	}
+	$section =  $data->section;
+	if(!isSuperUser() && isset($section) && ($section != currentSection()))
+	  {
+	    echo "shou!";
+		throw new Exception("Le compte ".$login." n'a pas la permission de modifier un candidat  pour une autre section que la sienne.");
+	  }
+
+
 	$sql = "UPDATE ".people_db." SET ".$sqlcore." WHERE nom=\"".$data->nom."\" AND prenom=\"".$data->prenom."\" AND section=\"".currentSection()."\" ;";
 	sql_request($sql);
 

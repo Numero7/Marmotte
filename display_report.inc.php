@@ -605,9 +605,6 @@ function editReport($id_rapport)
 			if($_SESSION['rows_id'][$i] == $id_rapport)
 			$_SESSION['current_id'] = $i;
 		
-		if($report->section != currentSection())
-			throw new Exception("Bas les pattes, ce rapport est un rapport de la section/CID ".$report->section);
-
 		$row = normalizeReport($report);
 
 		$candidat = get_or_create_candidate($row);
@@ -630,7 +627,7 @@ function viewReport($id_rapport)
 			$_SESSION['current_id'] = $i;
 		
 		if($report->section != currentSection())
-			throw new Exception("Bas les pattes, ce rapport est un rapport de la section/CID ".$report->section);
+			throw new Exception("Visualisation interdite, ce rapport est un rapport de la section/CID ".$report->section);
 
 		$row = normalizeReport($report);
 		$candidat = get_or_create_candidate($row);
