@@ -1110,7 +1110,7 @@ define("avis_IE_non",83);
 
 $avis_candidature_short =
 array(
-		"" =>"sans avis",
+		"" =>"",
 		//		avis_desistement => 'désistement',
 		avis_adiscuter=>"à discuter",
 		avis_nonauditionne=>"non-auditionné",
@@ -1118,7 +1118,8 @@ array(
 		avis_non_classe=>"non-classé",
 		avis_classe=>"classé",
 		avis_IE_oui=>"IE oui",
-		avis_IE_non=>"IE non"
+		avis_IE_non=>"IE non",
+		avis_pas_davis => "sans avis"
 		//avis_admis_a_concourir => "admis à concourir",
 		//avis_nonconcur=>"non-admis à concourir"
 );
@@ -1731,10 +1732,10 @@ array("IE"=>"IE","JAD"=>"JAD", "auditions"=>"auditions","admissibilite"=>"admiss
 /************************* Icones *******************************/
 $icones_avis = array(
 		avis_tres_favorable => "img/Icon-Yes.png",
-		"A+" => "img/Icon-Yes.png",
+		"Ap" => "img/Icon-Yes.png",
 		avis_favorable => "img/Icon-Yes.png",
 		"A" => "img/Icon-Yes.png",
-		"A-" => "img/Icon-Yes.png",
+		"Am" => "img/Icon-Yes.png",
 		avis_admis_a_concourir => "img/Icon-Yes.png",
 		avis_oral=>"img/Icon-Yes.png",
 		avis_classe=>"img/Icon-Yes.png",
@@ -1746,9 +1747,9 @@ $icones_avis = array(
 		avis_desistement => "img/Icon-NoComment.png",
 		avis_nonconcur => "img/Icon-NoComment.png",
 		avis_differe => "img/Icon-NoComment.png",
-		"B+" => "img/Icon-NoComment.png",
+		"Bp" => "img/Icon-NoComment.png",
 		"B" => "img/Icon-NoComment.png",
-		"B-" => "img/Icon-NoComment.png",
+		"Bm" => "img/Icon-NoComment.png",
 
 		avis_defavorable => "img/Icon-No.png",
 		avis_non_classe => "img/Icon-No.png",
@@ -1762,9 +1763,9 @@ $icones_avis = array(
 		avis_non =>"img/Icon-No.png",
 		avis_IE_non =>"img/Icon-No.png",
 
-		avis_pas_davis => "img/Icon-Maybe.png",
+				avis_pas_davis => "img/Icon-Maybe.png",
 		avis_adiscuter => "img/Icon-Maybe.png",
-		"" =>"img/Icon-Maybe.png",
+		//		"" =>"img/Icon-Maybe.png",
 );
 
 for($i = 1; $i <= $max_classement; $i++)
