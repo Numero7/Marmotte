@@ -46,7 +46,7 @@ $statutsRapportsIndiv = array(
 		'edition' => "Edition (édition par les rapporteurs)",
 		'audition' => "Audition (édition par les rapporteurs et le président de la section de jury de concours)",
 		'avistransmis'=>"Transmettre l'avis (l'avis ne sera définitivement plus modifiable)",
-		'validation'=>"Validation président (seuls le président et le secrétaire peuvent éditer le rapport)",
+		'validation'=>"Validation président (seuls le président et le secrétaire peuvent éditer le rapport, avis non modifiable)",
 		'publie'=>"Transmettre le rapport (le RS ne sera définitivement plus modifable)"
 );
 $statutsRapportsMulti = array(
@@ -54,7 +54,7 @@ $statutsRapportsMulti = array(
 		'edition' => "Edition (édition par les rapporteurs)",
 		'audition' => "Audition (édition par les rapporteurs et le président de la section de jury de concours)",
 		'avistransmis'=>"Transmettre les avis (les avis ne sont définitivement plus modifiables)",
-		'validation'=>"Validation président (seuls le président et le secrétaire peuvent éditer les rapports)",
+		'validation'=>"Validation président (seuls le président et le secrétaire peuvent éditer les rapports, avis non modifiable)",
 		'publie'=>"Transmettre les rapports (les rapports ne sont définitivement plus modifables)"
 );
 
@@ -376,6 +376,7 @@ $fieldsIndividualAll = array(
 		"infos_evaluation"=>"Infos e-valuation",
 		"infos_celcc"=>"Infos celcc",
 		"genre" => "Genre",
+		"email"=> "Email",
 		"grade" => "Grade (Individu)",
 		"annee_recrutement" => "Date de recrutement",
 		"labo1" => "Labo 1",
@@ -398,6 +399,7 @@ $fieldsIndividualDB = array(
 		"nom" => "Nom",
 		"prenom" => "Prénom",
 		"genre" => "Genre",
+		"email" => "Email",
 		"grade" => "Grade (Individu)",
 		"annee_recrutement" => "Date de recrutement",
 		"labo1" => "Labo 1",
@@ -430,7 +432,7 @@ array('id','nom','prenom'
 );
 
 $mandatory_export_fields=
-array('id','nom','prenom','genre','type','concours',
+  array('id','nom','prenom','genre','email','type','concours',
 		"annee_recrutement",
 		"diploma",
 		"labo1",
@@ -654,7 +656,8 @@ $empty_individual = array(
 		"nom" => "",
 		"prenom" => "",
 		"genre" => "None",
-		"grade" => "None",
+	"email"=>"",
+"grade" => "None",
 	"infos_evaluation"=>"",
 	"infos_celcc"=>"",
 		"annee_recrutement" => "",
@@ -810,6 +813,7 @@ $fieldsTypes = array(
 	     	"nom" => "short",
 		"prenom" => "short",
 		"genre" => "enum",
+		     "email" =>"short",
 		"statut_individu"=> "enum",
 		"statut_celcc"=> "short",
 		"voeux"=> "treslong",

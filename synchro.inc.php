@@ -275,6 +275,11 @@ catch(Exception $e)
     }
   $log .= synchronizeStatutsConcours($year);
 
+  /* synchro emails */
+
+  $sql="UPDATE ".marmottedbname.".".people_db." marmotte,".dsidbname.".".celcc_candidats;
+  $sql .=" dsi SET marmotte.email=dsi.email WHERE marmotte.concoursid=dsi.user_id";  
+  sql_request($sql);
 
   return $log;
 }
@@ -757,7 +762,7 @@ function export_to_evaluation($section)
 
 		$sql = "insert into ".dsidbname.".".dsi_marmotte_db."(DKEY,AVIS_EVAL,CODE_SECTION,RAPPORTEUR1,RAPPORTEUR2,RAPPORTEUR3,statut)";
 		$sql .=" select DKEY,avis,section,rapporteur,rapporteur2,rapporteur3,statut from ".marmottedbname.".".reports_db;
-		$sql .=" WHERE DKEY!=\"\" AND id_origine=id AND (statut=\"avistransmis\" OR statut=\"publie\") AND section=\"".$section."\" ";
+		$sql .=" WHERE DKEY!=\"\" AND id_origine=id AND (statut=\"avistransmis\" OR statut=\"publie\" OR statut=\"validation\") AND section=\"".$section."\" ";
 		$sql .=" ON DUPLICATE KEY UPDATE";
 		$sql .=" ".dsidbname.".".dsi_marmotte_db.".AVIS_EVAL=".marmottedbname.".".reports_db.".avis,";
 		$sql .=" ".dsidbname.".".dsi_marmotte_db.".RAPPORTEUR1=".marmottedbname.".".reports_db.".rapporteur,";

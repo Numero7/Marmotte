@@ -868,6 +868,12 @@ function change_statuts($new_statut)
 
 	foreach($rows as $row)
 	  {
+	    if($row->statut == "validation" && $new_statut != "publie" && $new_statut != "validation" && $new_statut != "avistranmis")
+	      {
+		echo "Impossible de changer le statut du rapport ".$row->DKEY." qui est en mode validation";
+		echo " et ne peut que basculer vers les modes publie et avistransmis.<br/>";
+		continue;
+	      }
 	    if($row->statut == "publie" && !isACN())
 	      {
 		echo "Impossible de changer le statut du rapport ".$row->DKEY." qui est déjà publié.<br/>";

@@ -39,7 +39,7 @@ function affectersousjurys()
 
 function getAdmisAPoursuivre($num_conc)
 {
-  $sql = "SELECT user_id FROM dsi.INTER_CC_statuts_candidatures4 WHERE num_conc='".real_escape_string($num_conc)."' AND admis_concourir_code='1' AND retrait_candidature_code!='1'";
+  $sql = "SELECT user_id FROM ".dsidbname.".".celcc_statuts." WHERE num_conc='".real_escape_string($num_conc)."' AND admis_concourir_code='1' AND retrait_candidature_code!='1'";
   $res = sql_request($sql);
   $result = array();
   while($row = mysqli_fetch_object($res))
