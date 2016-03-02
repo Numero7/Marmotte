@@ -262,6 +262,10 @@ function alertText($text)
 			  echo reinitializeCponflicts();
 			  include 'admin/admin_concours.inc.php';
 			  break;
+			case 'export_to_evaluation':
+			  echo export_to_evaluation();
+			  include 'admin/admin_maintenance.inc.php';
+			  break;
 			case 'synchronizeConcours':
 			  echo synchronizeConcours();
 			  include 'admin/admin_maintenance.inc.php';

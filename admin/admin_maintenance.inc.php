@@ -39,17 +39,11 @@ Statut maintenance: '<?php echo get_config("maintenance", "off", true, 0); ?>'</
 <a href="index.php?action=maintenance_off&amp;admin_maintenance=">Terminer la maintenance.</a>
 </p>
 <p>
-Le lien suivant permet de synchroniser Marmotte avec les bases de donnees d&#39;e-valuation.<br/>
+Synchroniser Marmotte avec les bases de donnees d&#39;e-valuation.<br/>
 <a href="index.php?action=synchronize_with_dsi&amp;admin_maintenance=">Synchroniser avec e-valuation.</a>
 </p>
 <p>
-<a href="index.php?action=fix_missing_data&amp;admin_maintenance=">Reparer les données manquantes.</a>
-</p>
-<p>
-<a href="index.php?action=check_missing_data&amp;admin_maintenance=">Vérifier les données manquantes.</a>
-</p>
-<p>
-<a href="index.php?action=sync_colleges&amp;admin_maintenance=">Synchroniser les collèges des membres.</a>
+<a href="index.php?action=export_to_evaluation&amp;admin_maintenance=">Exporter les avis vers e-valuation.</a>
 </p>
 <p>
 <a href="index.php?action=synchronizeConcours&amp;admin_maintenance=">Synchroniser les concours (attention risque faible de perte de données des utilisateurs connectés)</a>

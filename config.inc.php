@@ -1327,6 +1327,7 @@ $actions_level = array(
 		       "reinitialiserconflits" => NIVEAU_PERMISSION_SECRETAIRE,
 		       "synchronizeStatutsConcours" => NIVEAU_PERMISSION_SUPER_UTILISATEUR,
 		       "synchronizeConcours" => NIVEAU_PERMISSION_SUPER_UTILISATEUR,
+		       "export_to_evaluation" => NIVEAU_PERMISSION_SUPER_UTILISATEUR,
 		       "sync_colleges" => NIVEAU_PERMISSION_SUPER_UTILISATEUR,
 		       "fix_missing_data" => NIVEAU_PERMISSION_SECRETAIRE,
 		       "check_missing_data" => NIVEAU_PERMISSION_SECRETAIRE,

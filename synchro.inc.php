@@ -754,15 +754,15 @@ function synchronizeUnitReports($section = "", $session = "")
 	return $answer;
 }
 
-function export_to_evaluation($section)
+function export_to_evaluation()
 {
-  //$answer = "<B>Export des avis et rapporteurs vers e-valuation</B><br/>";
+  $answer = "<B>Export des avis et rapporteurs vers e-valuation</B><br/>";
 		$sql = "DELETE FROM ".dsidbname.".".dsi_marmotte_db." WHERE CODE_SECTION=\"".$section."\"";
 		sql_request($sql);
 
 		$sql = "insert into ".dsidbname.".".dsi_marmotte_db."(DKEY,AVIS_EVAL,CODE_SECTION,RAPPORTEUR1,RAPPORTEUR2,RAPPORTEUR3,statut)";
 		$sql .=" select DKEY,avis,section,rapporteur,rapporteur2,rapporteur3,statut from ".marmottedbname.".".reports_db;
-		$sql .=" WHERE DKEY!=\"\" AND id_origine=id AND (statut=\"avistransmis\" OR statut=\"publie\" OR statut=\"validation\") AND section=\"".$section."\" ";
+		$sql .=" WHERE DKEY!=\"\" AND id_origine=id";
 		$sql .=" ON DUPLICATE KEY UPDATE";
 		$sql .=" ".dsidbname.".".dsi_marmotte_db.".AVIS_EVAL=".marmottedbname.".".reports_db.".avis,";
 		$sql .=" ".dsidbname.".".dsi_marmotte_db.".RAPPORTEUR1=".marmottedbname.".".reports_db.".rapporteur,";
@@ -771,7 +771,7 @@ function export_to_evaluation($section)
 		$sql .=" ".dsidbname.".".dsi_marmotte_db.".statut=".marmottedbname.".".reports_db.".statut";
 		sql_request($sql);
 		//		$answer .= "<a href=\"https://www.youtube.com/watch?v=0rCrc6RoJg0\">Ca l'effectue</a>";
-		return "";
+		return $answer;
 }
 
 function check_missing_data()
@@ -1056,9 +1056,6 @@ try
 		    if($log  != "")
 		      $answer .= $log."<br/>";
 		  }		  
-		
-
-		$answer.= export_to_evaluation($section);
 	}
   }
 catch(Exception $e)
@@ -1085,6 +1082,8 @@ $answer = "<h1>Synchronisation avec e-valuation de la section ".$section." - ".d
 	  {
 	    if($section > 55)
 	      {
+		$answer .= "<h1>Export des avis vers evaluation</h1>";
+		$answer .= export_to_evaluation();
 		$answer .= "<h1>Synchro concours</h1>";
 		$answer .= synchronizeConcours();
 		$answer.= "<h2>Renommage des intitulés</h2>";
