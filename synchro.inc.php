@@ -442,12 +442,19 @@ function synchronizeSessions($section)
 
 function synchronizePeople($section)
 {
+
   $answer = "";
 	$sql =  "UPDATE ".people_db." marmotte JOIN ".dsidbname.".".dsi_people_db." dsi ";
 	$sql .= " ON marmotte.nom=dsi.nom AND marmotte.prenom=dsi.prenom";
 	$sql .= " SET marmotte.NUMSIRHUS=dsi.numsirhus";
-	$sql .= " WHERE section=\"".$section."\" AND marmotte.NUMSIRHUS=\"\";";
+	$sql .= " WHERE marmotte.nom!=\"\" AND marmotte.section=\"".$section."\" AND marmotte.NUMSIRHUS=\"\" AND dsi.numsirhus != \"\";";
+
+	$answer .= $sql;
+	//	echo $sql;
+
+	return "";
 	$res = sql_request($sql);
+
 	global $dbh;
 	$num = mysqli_affected_rows($dbh);
 	if($num > 0)
@@ -472,7 +479,7 @@ function synchronizePeople($section)
 
 	$sql =  "DELETE marmotte FROM ".people_db." marmotte LEFT JOIN ".dsidbname.".".dsi_people_db." dsi ";
 	$sql .= " ON marmotte.NUMSIRHUS=dsi.numsirhus";
-	$sql .= " WHERE marmotte.NUMSIRHUS!='' AND section=\"".$section."\" AND marmotte.nom!=dsi.nom AND marmotte.prenom!=dsi.prenom;";
+	$sql .= " WHERE marmotte.NUMSIRHUS!='' AND marmotte.section=\"".$section."\" AND marmotte.nom!=dsi.nom AND marmotte.prenom!=dsi.prenom;";
 	$res = sql_request($sql);
 
 	$sql =  "UPDATE ".people_db." marmotte JOIN ".dsidbname.".".dsi_people_db." dsi ";
@@ -555,6 +562,8 @@ function synchronizePeopleReports($section, $session = "")
 	$sql .= " AND  eval.LIB_SESSION=\"".$lib."\" AND eval.ANNEE=\"".$year."\" AND ";
 	$sql .= " (eval.CODE_SECTION =\"".$section."\" OR eval.CODE_SECTION_2=\"".$section."\" OR eval.CODE_SECTION_EXCPT=\"".$section."\");";
 	
+	//	$answer .= $sql;
+
 	$result = sql_request($sql);
 	
 	//	$answer .= "La base dsi contient ".mysqli_num_rows($result);
@@ -582,6 +591,7 @@ function synchronizePeopleReports($section, $session = "")
 			try
 			  { 
 			  sql_request($sql);
+			  //			  $answer .= $sql;
 			}
 			catch(Exception $e)
 			  {}

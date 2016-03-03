@@ -7,7 +7,7 @@
 		"president_titre" => array("Titre du président, utilisé pour signer les rapports", "Président de la Section 6"),
 		"president" => array("Nom du président, utilisé pour signer les rapports", "Alan Türing"),
 		"webmaster" => array("Adresse email de l'expéditeur des emails", "alan.turing@cnrs.fr"),
-		"webmaster_nom" => array("Signataire des emails et pdfs", "Alan Türing"),
+		"webmaster_nom" => array("Signataire des emails et pdfs", "Alan Turing"),
 		"email_scc"=>array("Email utilisé pour informer le SCC d'un changement de rapporteur sur une candidature",""),
 			  "bur_can_affect"=> array("Les membres du bureau peuvent affecter les rapporteurs","true"),
 			  "bur_can_meta"=> array("Les membres du bureau peuvent modifier les rubriques chercheurs/candidats","false"),
@@ -37,6 +37,7 @@ function init_config()
 {
   global $configus;
 
+
 	if(!isset($_SESSION['filter_section']))
 	{
 		removeCredentials();
@@ -44,8 +45,12 @@ function init_config()
 	}
 	$section = $_SESSION['filter_section'];
 
-	if($section == "0")
+		if($section == "0")
+	  {
+	    //	    $configus = array();
 	    $configus["sessions_synchro"]= array("Liste des sessions à synchroniser, séparées par des ';'", "Printemps2015;Automne2015");
+	  }
+	
 
 	$sql = "SELECT * FROM ".config_db." WHERE `section`='".real_escape_string($section)."';";
 	$query = sql_request($sql);

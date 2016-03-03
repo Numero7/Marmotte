@@ -110,7 +110,11 @@ function getReport($id_rapport, $most_recent = true)
 {
 	if($most_recent)
 		$id_rapport = getIDOrigine($id_rapport);
-	$sql = "SELECT * FROM ".reports_db." WHERE id=".real_escape_string($id_rapport)." AND section=".real_escape_string(currentSection());
+	if(isSuperUser())
+	  $sql = "SELECT * FROM ".reports_db." WHERE id=".real_escape_string($id_rapport);
+	else
+	  $sql = "SELECT * FROM ".reports_db." WHERE id=".real_escape_string($id_rapport)." AND section=".real_escape_string(currentSection());
+
 	$result=sql_request($sql);
 	$report = mysqli_fetch_object($result);
 

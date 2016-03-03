@@ -5,14 +5,15 @@
 		<tr>
 			<?php 
 			echo "<tr><th>Description</th><th>Valeur</th></tr>\n";
+init_config();
 global $configus;
 
 $configs = $configus;
 
-//if(isSuperUser())
-//{
-//$configs["sessions_synchro"]= array("Liste des sessions à synchroniser, séparées par des ';'", "Printemps2015;Automne2015");
-//}
+/*if(isSuperUser())
+{
+$configs["sessions_synchro"]= array("Liste des sessions à synchroniser, séparées par des ';'", "Printemps2015;Automne2015");
+}*/
 
 			foreach($configs as $key => $data)
 			{

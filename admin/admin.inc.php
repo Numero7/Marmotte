@@ -7,7 +7,7 @@ $admin_sessions = isset($_REQUEST["admin_sessions"]) && isSecretaire();
 $admin_maintenance = isset($_REQUEST["admin_maintenance"]) && isSuperUser();
 $admin_users = isset($_REQUEST["admin_users"]) && isSecretaire();
 $admin_concours = isset($_REQUEST["admin_concours"]) && isSecretaire();
-$admin_config = isset($_REQUEST["admin_config"]) && isSecretaire() && !isACN() && !isSuperUser();
+$admin_config = isset($_REQUEST["admin_config"]) && isSecretaire() && !isACN();
 $admin_keywords = isset($_REQUEST["admin_keywords"]) && isSecretaire();
 $admin_rubriques = isset($_REQUEST["admin_rubriques"]) && isSecretaire() && !isSuperUser();
 $admin_migration = isset($_REQUEST["admin_migration"]) && isSuperUser();
@@ -30,7 +30,7 @@ $admin_people = isset($_REQUEST["admin_people"]) &&!isSuperUser() && isSecretair
 	<li><a href="index.php?action=admin&amp;admin_users=">Membres</a></li>
 	<li><a href="index.php?action=admin&amp;admin_unites">Unit&eacute;s</a>	
 <?php
-if(!isACN() && !isSuperUser())
+if(!isACN())
 {
 ?>
 	<li><a href="index.php?action=admin&amp;admin_config=">Configuration</a>	</li>
