@@ -767,20 +767,41 @@ function synchronizeUnitReports($section = "", $session = "")
 function export_to_evaluation()
 {
   $answer = "<B>Export des avis et rapporteurs vers e-valuation</B><br/>";
-		$sql = "DELETE FROM ".dsidbname.".".dsi_marmotte_db." WHERE CODE_SECTION=\"".$section."\"";
+		$sql = "DELETE FROM ".dsidbname.".".dsi_marmotte_db." WHERE 1";
 		sql_request($sql);
 
-		$sql = "insert into ".dsidbname.".".dsi_marmotte_db."(DKEY,AVIS_EVAL,CODE_SECTION,RAPPORTEUR1,RAPPORTEUR2,RAPPORTEUR3,statut)";
-		$sql .=" select DKEY,avis,section,rapporteur,rapporteur2,rapporteur3,statut from ".marmottedbname.".".reports_db;
-		$sql .=" WHERE DKEY!=\"\" AND id_origine=id";
-		$sql .=" ON DUPLICATE KEY UPDATE";
-		$sql .=" ".dsidbname.".".dsi_marmotte_db.".AVIS_EVAL=".marmottedbname.".".reports_db.".avis,";
-		$sql .=" ".dsidbname.".".dsi_marmotte_db.".RAPPORTEUR1=".marmottedbname.".".reports_db.".rapporteur,";
-		$sql .=" ".dsidbname.".".dsi_marmotte_db.".RAPPORTEUR2=".marmottedbname.".".reports_db.".rapporteur2,";
-		$sql .=" ".dsidbname.".".dsi_marmotte_db.".RAPPORTEUR3=".marmottedbname.".".reports_db.".rapporteur3,";
-		$sql .=" ".dsidbname.".".dsi_marmotte_db.".statut=".marmottedbname.".".reports_db.".statut";
+		
+		$sql = "insert into ".dsidbname.".".dsi_marmotte_db;
+		$sql .=" (DKEY,AVIS_EVAL,CODE_SECTION,RAPPORTEUR1,RAPPORTEUR2,RAPPORTEUR3,statut,LIB_SESSION,ANNEE)";
+		$sql .=" (select marmotte.DKEY,marmotte.avis,marmotte.section,marmotte.rapporteur,marmotte.rapporteur2,marmotte.rapporteur3,marmotte.statut,dsi.LIB_SESSION,dsi.ANNEE ";
+		$sql .=" FROM (".marmottedbname.".".reports_db." marmotte JOIN ".dsidbname.".".dsi_evaluation_db." dsi ";
+		$sql .=" ON marmotte.DKEY=dsi.DKEY) ";
+		$sql .=" WHERE marmotte.id_origine=marmotte.id)";
+		$sql .=" ON DUPLICATE KEY UPDATE marmotte.DKEY=dsi.DKEY";
 		sql_request($sql);
+		
+		$sql = "insert into ".dsidbname.".".dsi_marmotte_db;
+		$sql .=" (DKEY,AVIS_EVAL,CODE_SECTION,RAPPORTEUR1,RAPPORTEUR2,RAPPORTEUR3,statut,LIB_SESSION,ANNEE)";
+		$sql .=" (select marmotte.DKEY,marmotte.avis,marmotte.section,marmotte.rapporteur,marmotte.rapporteur2,marmotte.rapporteur3,marmotte.statut,dsi.LIB_SESSION,dsi.ANNEE ";
+		$sql .=" FROM (".marmottedbname.".".reports_db." marmotte JOIN ".dsidbname.".".dsi_evaluation_units_db." dsi ";
+		$sql .=" ON marmotte.DKEY=dsi.DKEY) ";
+		$sql .=" WHERE marmotte.id_origine=marmotte.id)";
+		$sql .=" ON DUPLICATE KEY UPDATE marmotte.DKEY=dsi.DKEY";
+		sql_request($sql);
+
 		//		$answer .= "<a href=\"https://www.youtube.com/watch?v=0rCrc6RoJg0\">Ca l'effectue</a>";
+		$sql = "UPDATE ".dsidbname.".".dsi_marmotte_db." SET AVIS_EVAL='".avis_favorable."' WHERE AVIS_EVAL='".avis_oui."'";
+		sql_request($sql);
+
+		$sql = "UPDATE ".dsidbname.".".dsi_marmotte_db." SET AVIS_EVAL='".avis_defavorable."' WHERE AVIS_EVAL='".avis_non."'";
+		sql_request($sql);
+
+		$sql = "UPDATE ".dsidbname.".".dsi_marmotte_db." SET AVIS_EVAL='".avis_classe."' WHERE AVIS_EVAL LIKE \"c%\"";
+		sql_request($sql);
+
+		$sql = "UPDATE ".dsidbname.".".dsi_marmotte_db." SET AVIS_EVAL='' WHERE AVIS_EVAL='".avis_aucunadonner."'";
+		sql_request($sql);
+
 		return $answer;
 }
 

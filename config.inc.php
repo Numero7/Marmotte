@@ -1088,26 +1088,28 @@ $avis_lettre = array(
 		"C"=>"C"
 );
 
-define("avis_tres_favorable", 1);
-define("avis_favorable", 2);
-define("avis_defavorable", 3);
-define("avis_reserve", 4);
-define("avis_alerte", 5);
-define("avis_differe", 6);
-define("avis_pas_davis", 7);
-define("avis_classe", 8);
 define("avis_ouinon", 9);
-define("avis_proposition", 10);
-define("avis_aucunadonner", 11);
+define("avis_classenonclasse", 8);
+
+define("avis_tres_favorable", "F00");
+define("avis_favorable", "G00");
+define("avis_defavorable", "H00");
+define("avis_reserve", "J00");
+define("avis_alerte", "J03");
+define("avis_differe", "H20");
+define("avis_pas_davis", "W00");
+define("avis_classe", "K00");
+
+define("avis_proposition", "Y00");
+define("avis_aucunadonner", "???");
 define("avis_oui", 72);
 define("avis_non", 73);
-define("avis_non_classe", 74);
+define("avis_non_classe", "L00");
 define("avis_adiscuter", 75);
 define("avis_desistement", 76);
 define("avis_nonconcur",77);
 define("avis_nonauditionne",78);
 define("avis_oral",79);
-define("avis_estclasse",80);
 define("avis_admis_a_concourir",81);
 define("avis_IE_oui",82);
 define("avis_IE_non",83);
@@ -1133,12 +1135,12 @@ $tous_avis = array(
 		   avis_oui=>"oui",
 		   avis_non=>"non",
 		   avis_non_classe=>"non-classé",
+		   avis_classe=>"classé",
 		   avis_adiscuter=>"à discuter",
 		   avis_desistement=>"désistement",
 		   avis_nonconcur=>"non-admis à concourir",
 		   avis_nonauditionne=>"non-auditionné",
 		   avis_oral=>"auditionné",
-		   avis_estclasse=>"classé",
 		   avis_defavorable=>"défavorable",
 		   avis_IE_oui=>"IE oui",
 		   avis_IE_non=>"IE non"
@@ -1160,18 +1162,27 @@ for($i = 1; $i <= $max_classement; $i++)
 }
 
 
-
+$sql = "SELECT * FROM dsi.refavis WHERE 1;";
+$result= sql_request($sql);
+$idavis_to_code = array();
+while($row = mysqli_fetch_object($result))
+  {
+    $idavis_to_code[$row->idreftypeavis]=$row->code;
+  }
 
 $sql = "SELECT * FROM dsi.reftypeavis WHERE 1;";
 $result= sql_request($sql);
 while($row = mysqli_fetch_object($result))
 {
-	if($row->id == avis_classe)
+	if($row->id == avis_classenonclasse)
 		$tous_avis[$row->id] = $avis_classement;
 	else if($row->id == avis_ouinon)
 		$tous_avis[$row->id] = array(avis_oui => "oui", avis_non => "non");
 	else
-		$tous_avis[$row->id] = $row->label;
+	  {
+	    $code = isset($idavis_to_code[$row->id]) ? $idavis_to_code[$row->id] : $row->id; 
+		$tous_avis[$code] = $row->label;
+	  }
 }
 foreach($avis_lettre as $avi => $label)
 	if(!isset($tous_avis[$avi])) $tous_avis[$avi] = $label;
