@@ -796,12 +796,18 @@ function export_to_evaluation()
 		$sql = "UPDATE ".dsidbname.".".dsi_marmotte_db." SET AVIS_EVAL='".avis_defavorable."' WHERE AVIS_EVAL='".avis_non."'";
 		sql_request($sql);
 
-		$sql = "UPDATE ".dsidbname.".".dsi_marmotte_db." SET AVIS_EVAL='".avis_classe."' WHERE AVIS_EVAL LIKE \"c%\"";
+		$sql = "UPDATE ".dsidbname.".".dsi_marmotte_db." SET CODE_CLASSEMENT=2* CAST(SUBSTR(AVIS_EVAL,2) AS SIGNED) -1 WHERE AVIS_EVAL LIKE \"c%\"";
+		sql_request($sql);
+
+		$sql = "UPDATE ".dsidbname.".".dsi_marmotte_db." SET CLASSEMENT= CAST(SUBSTR(AVIS_EVAL,2) AS SIGNED) WHERE AVIS_EVAL LIKE \"c%\"";
 		sql_request($sql);
 
 		$sql = "UPDATE ".dsidbname.".".dsi_marmotte_db." SET AVIS_EVAL='' WHERE AVIS_EVAL='".avis_aucunadonner."'";
 		sql_request($sql);
 
+		$sql = "UPDATE ".dsidbname.".".dsi_marmotte_db." SET AVIS_EVAL='".avis_classe."' WHERE AVIS_EVAL LIKE \"c%\"";
+		sql_request($sql);
+		
 		return $answer;
 }
 
