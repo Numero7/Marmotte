@@ -197,7 +197,7 @@ function filterSortReports($filters, $filter_values = array(), $sorting_value = 
 	$sql = "SELECT *, ".reports_db.".id AS report_id, ".people_db.".id AS people_id, ".people_db.".nom AS people_nom, ".people_db.".prenom AS people_prenom, ".people_db.".conflits AS people_conflits, ".reports_db.".nom AS nom, ".reports_db.".prenom AS prenom FROM ".reports_db;
 	$sql .=" left join ".people_db." on ".reports_db.".nom=".people_db.".nom AND ".reports_db.".prenom=".people_db.".prenom AND ".reports_db.".section=".people_db.".section WHERE ";
 	$sql .= reports_db.".id=".reports_db.".id_origine AND ".reports_db.".statut!=\"supprime\" AND ".reports_db.".section=\"".$section."\"";
-
+	$sql .= "AND ".people_db.".concoursid=\"\"";
     }
 
 	$sql .= filtersCriteriaToSQL($filters,$filter_values, $rapporteur_or);
@@ -512,11 +512,13 @@ function addReport($report)
 
 function addReportFromRequest($id_origine, $request)
 {
+  $concoursid = "";
 	if($id_origine != 0)
 	{
 		try
 		{
 			$report = getReport($id_origine);
+			$concoursid = $report->concoursid;
 			global $typesRapportsAll;
 			if(
 					isset($report->type)
@@ -546,7 +548,16 @@ function addReportFromRequest($id_origine, $request)
 
 	if(isset($report->NUMSIRHUS))
           {
-            $cand = get_candidate_from_SIRHUS($data->NUMSIRHUS);
+            $cand = get_candidate_from_SIRHUS($report->NUMSIRHUS);
+            if($cand != null)
+              {
+                $report->nom = $cand->nom;
+                $report->prenom = $cand->prenom;
+              }
+          }
+	else if($concoursid != "")
+          {
+            $cand = get_candidate_from_concoursid($concoursid);
             if($cand != null)
               {
                 $report->nom = $cand->nom;
@@ -557,7 +568,7 @@ function addReportFromRequest($id_origine, $request)
 	$id_nouveau = addReportToDatabase($report,false);
 
 	if(is_rapport_chercheur($report) || is_rapport_concours($report))
-		updateCandidateFromRequest($request);
+	  updateCandidateFromRequest($request, $concoursid);
 
 	return getReport($id_nouveau);
 }

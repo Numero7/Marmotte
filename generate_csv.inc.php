@@ -63,9 +63,17 @@ function compileObjectsAsTXT($rows)
 		  if(isset($row->$field))
 		    $result .= compileFieldAsTxt($row,$field,$row->$field);
 
-		if(is_rapport_chercheur($row) || is_rapport_concours($row))
+		if(is_rapport_chercheur($row))
 		{
 			$candidat = get_or_create_candidate($row);
+			foreach($candidat as $field => $value)
+			  if(is_field_visible($row, $field) && !in_array($field, $dont_export_doc_fields) && !in_array($field,$export_doc_fields))
+			      $result .= 
+				compileFieldAsTxt($row, $field,$candidat->$field);
+		}
+		else if(is_rapport_concours($row))
+		{
+			$candidat = get_candidate_from_concoursid($row->concoursid);
 			foreach($candidat as $field => $value)
 			  if(is_field_visible($row, $field) && !in_array($field, $dont_export_doc_fields) && !in_array($field,$export_doc_fields))
 			      $result .= 

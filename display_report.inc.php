@@ -607,7 +607,6 @@ function editReport($id_rapport)
 		
 		$row = normalizeReport($report);
 
-		$candidat = get_or_create_candidate($row);
 		displayEditableReport($row, true);
 	}
 	catch(Exception $exc)
@@ -630,7 +629,6 @@ function viewReport($id_rapport)
 			throw new Exception("Visualisation interdite, ce rapport est un rapport de la section/CID ".$report->section);
 
 		$row = normalizeReport($report);
-		$candidat = get_or_create_candidate($row);
 		displayEditableReport($row, false);
 	}
 	catch(Exception $exc)

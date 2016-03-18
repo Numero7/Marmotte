@@ -83,26 +83,20 @@ function add_conflit_to_report($login, $id_origine)
 	}
 }
 
-function updateCandidateFromRequest($request, $oldannee="")
+function updateCandidateFromRequest($request, $concoursid = "")
 {
-
 	global $fieldsIndividualDB;
-
 	$data = (object) array();
-
-
 	foreach($fieldsIndividualDB as  $field => $value)
 	  {
 		if (isset($request["field".$field]))
 		$data->$field = nl2br(trim($request["field".$field]),true);
 	  }
 
-	$candidate = updateCandidateFromData($data);
-
-	return $candidate;
+	updateCandidateFromData($data,$concoursid);
 }
 
-function updateCandidateFromData($data)
+function updateCandidateFromData($data, $concoursid="")
 {
 	global $fieldsIndividualDB;
 
@@ -112,25 +106,27 @@ function updateCandidateFromData($data)
 	$first = true;
 	foreach($data as  $field => $value)
 	{
-		if(key_exists($field, $fieldsIndividualDB))
+		if(
+		   key_exists($field, $fieldsIndividualDB)
+		   && ($field != "nom") && ($field != "prenom")
+		   )
 		{
 			$sqlcore.=$first ? "" : ",";
 			$sqlcore.=$field.'="'.real_escape_string($value).'" ';
 			$first = false;
 		}
 	}
-	$section =  $data->section;
-	if(!isSuperUser() && isset($section) && ($section != currentSection()))
-	  {
-	    echo "shou!";
+
+	if(!isSuperUser() && isset($data->section) && ($data->section != currentSection()))
 		throw new Exception("Le compte ".$login." n'a pas la permission de modifier un candidat  pour une autre section que la sienne.");
-	  }
 
 
-	$sql = "UPDATE ".people_db." SET ".$sqlcore." WHERE nom=\"".$data->nom."\" AND prenom=\"".$data->prenom."\" AND section=\"".currentSection()."\" ;";
+	if($concoursid != "") {
+	  $sql = "UPDATE ".people_db." SET ".$sqlcore." WHERE concoursid=\"".$concoursid."\" AND section=\"".currentSection()."\" ;";
+	} else {
+	  $sql = "UPDATE ".people_db." SET ".$sqlcore." WHERE nom=\"".$data->nom."\" AND prenom=\"".$data->prenom."\" AND concoursid='' AND section=\"".currentSection()."\" ;";
+	}
 	sql_request($sql);
-
-	return get_or_create_candidate($data );
 }
 
 function getAllCandidates()
@@ -260,7 +256,7 @@ function get_or_create_candidate($data)
 
 function get_candidate_from_SIRHUS($sirhus)
 {
-	$sql = "SELECT * FROM ".dsidbname.".".dsi_people_db." WHERE numsirhus=\"".$sirhus."\";";
+	$sql = "SELECT * FROM ".dsidbname.".".dsi_people_db." WHERE numsirhus=\"".$sirhus."\"";
 	$res = sql_request($sql);
 	while($row = mysqli_fetch_object($res))
 		return $row;

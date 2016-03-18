@@ -352,12 +352,11 @@ function addCsvReport($subtype, $properties)
 				$report->id_session = current_session_id();
 
 				global $typesRapportsChercheurs;
-				global $typesRapportsConcours;
 
-				if( in_array($report->type, $typesRapportsChercheurs) || in_array($report->type, $typesRapportsConcours) )
+				if( in_array($report->type, $typesRapportsChercheurs) )
 				{
 					if(isset($report->nom) && isset($report->prenom) && $report->nom != "")
-					{
+					{					  
 						updateCandidateFromData((object) $properties);
 						addReport($report,false);
 						//						if(isset($report->unite))
