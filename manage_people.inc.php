@@ -200,7 +200,7 @@ function get_or_create_candidate($data)
 //	echo("Getting candidate of SIRHUS '".$data->NUMSIRHUS."'<br/>");
 	try
 	{
-		$sql = "SELECT * FROM ".people_db.' WHERE nom="'.$data->nom.'" AND prenom="'.$data->prenom.'" AND section="'.$section.'" ;';
+		$sql = "SELECT * FROM ".people_db.' WHERE concoursid="'.$data->concoursid.'" AND nom="'.$data->nom.'" AND prenom="'.$data->prenom.'" AND section="'.$section.'" ;';
 		$result = sql_request($sql);
 
 		$cdata = mysqli_fetch_object($result);
