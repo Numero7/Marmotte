@@ -292,7 +292,7 @@ $fieldsDSIChercheurs = array(
 			     "lieu" => array("lieutravail" => "Lieu de travail:", "dr" =>"Deleg"),
 			     "scn1" => "Section:",
 			     "scn2" => "Section2:",
-			     "CodePos" => array("codeposition" => "", "nature_sirhus" => " -", "quotite" => "- quotité", "ddebposs" =>"- du","dfinposs"=>"au"),
+			     "CodePos" => array("codeposition" => "", "nature_sirhus" => " -", "quotite" => "- quotité", "ddebposs" =>"- du","dfinposs"=>"au","NUMSIRHUS"=>"num sirhus")
 			     );
 
 

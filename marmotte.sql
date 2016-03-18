@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Client: localhost
--- Généré le: Jeu 28 Janvier 2016 à 16:13
+-- Généré le: Jeu 17 Mars 2016 à 18:15
 -- Version du serveur: 5.5.46-0ubuntu0.14.04.2-log
 -- Version de PHP: 5.5.9-1ubuntu4.14
 
@@ -73,7 +73,7 @@ CREATE TABLE IF NOT EXISTS `config` (
 DROP TABLE IF EXISTS `people`;
 CREATE TABLE IF NOT EXISTS `people` (
   `NUMSIRHUS` varchar(30) NOT NULL DEFAULT '',
-  `concoursid` varchar(10) DEFAULT NULL,
+  `concoursid` varchar(10) NOT NULL DEFAULT '',
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `section` tinyint(4) NOT NULL,
   `nom` varchar(64) NOT NULL DEFAULT '',
@@ -122,9 +122,11 @@ CREATE TABLE IF NOT EXISTS `people` (
   `conflits` text,
   `birth` varchar(20) DEFAULT NULL,
   `diploma` varchar(20) DEFAULT NULL,
-  PRIMARY KEY (`section`,`nom`,`prenom`),
-  UNIQUE KEY `id` (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1405119 ;
+  `email` varchar(60) DEFAULT '',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id` (`id`),
+  UNIQUE KEY `concoursid` (`concoursid`,`section`,`nom`,`prenom`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1799423 ;
 
 -- --------------------------------------------------------
 
@@ -202,7 +204,7 @@ CREATE TABLE IF NOT EXISTS `reports` (
   `signataire` text,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=178895 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=195039 ;
 
 -- --------------------------------------------------------
 
@@ -268,3 +270,4 @@ CREATE TABLE IF NOT EXISTS `users` (
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+
