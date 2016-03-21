@@ -344,7 +344,11 @@ function filtersCriteriaToSQL($filters, $filter_values, $rapporteur_or = true)
 				else
 					$sql .= " AND ".reports_db.".$filter=\"$filter_values[$filter]\" ";
 				//echo $sql;
-			}
+							} 			
+			else if($filter == "statut_celcc" && $filter_values[$filter] == "admissible")
+				{
+			    $sql .= " AND (".reports_db.".$filter REGEXP \"^c[0-9]\" OR ".reports_db.".$filter=\"".avis_classe."\") ";
+			  } 
 			else
 			{
 				if(isset($fieldsRapportAll[$filter]))
