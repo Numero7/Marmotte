@@ -168,7 +168,8 @@ function add_candidate_to_database($data,$section="")
 		{
 			$sqlfields .= ($first ? "" : ",") ."`".$field."`";
 			$sqlvalues .= ($first ? "" : ",");
-			$sqlvalues .= '"'.(isset($data->$field) ? $data->$field : ( isset($empty_individual[$field]) ? $empty_individual[$field] : "") );
+			$sqlvalues .= '"'.
+			  real_escape_string((isset($data->$field) ? $data->$field : ( isset($empty_individual[$field]) ? $empty_individual[$field] : "") ));
 			$sqlvalues .= '"';
 			$first = false;
 		}
