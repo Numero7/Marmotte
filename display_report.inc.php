@@ -393,7 +393,8 @@ function displayEditableReport($row, $canedit = true)
 		else 
 		  $candidate = get_or_create_candidate($row);
 		$candidate->id_session = $row->id_session;
-
+		$candidate->sousjury = $row->sousjury;
+		
 		//		$row->NUMSIRHUS = $candidate->NUMSIRHUS;
 		$conflit = (
 				is_in_conflict(getLogin(), $candidate))

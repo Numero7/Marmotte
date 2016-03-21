@@ -408,6 +408,9 @@ function isSousJury($sousjury, $login = "")
 function isPresidentSousJury($concours = "", $sousjury = "")
 {
 	global $tous_sous_jury;
+	
+	//	echo $concours."::".$sousjury."<br/>";
+	//echo $tous_sous_jury[$concours][$sousjury]["president"];
 	return
 	(isset($tous_sous_jury[$concours]))
 	&&  (isset($tous_sous_jury[$concours][$sousjury]))

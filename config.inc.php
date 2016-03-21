@@ -1611,6 +1611,8 @@ while($result = mysqli_fetch_object($query))
 		$suffm = "membressj".$i;
 		if($result->$suff != "")
 		{
+		  //		  echo $code." ".$result->$suff."<br/>";
+
 			$tous_sous_jury[$code][$result->$suff] = array("president"=> $result->$suffp, "membres" => explode(";", $result->$suffm));
 		}
 	}

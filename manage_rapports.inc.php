@@ -1254,10 +1254,18 @@ function is_field_editable($row, $fieldId)
 	if(($is_rapp1 || $is_rapp2 || $is_rapp3) && $fieldId == "rapport")
 		return true;
 
+	global $fieldsIndividualAll;
+	global $fieldsCandidat;
+	//	echo "a";
 	if(isset($row->statut) && ($row->statut == "audition"))
 	{
-	  /* le president du sous jury peut tout diter pendant l'audtiion */
-		if(isset($row->sousjury) && isPresidentSousJury($row->sousjury))
+	  //echo $row->sousjury;;
+	  /* le president du sous jury peut editer les infos candidats pendant l'audtiion */
+	  if(
+	     isset($row->sousjury) 
+	     && isPresidentSousJury($row->concours,$row->sousjury)
+	     && in_array($fieldId,$fieldsCandidat)
+	     )
 			return true;
 
 		/* tout le monde peut rajouter un fichier pendant l'audition */
