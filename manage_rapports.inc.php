@@ -346,8 +346,8 @@ function filtersCriteriaToSQL($filters, $filter_values, $rapporteur_or = true)
 				//echo $sql;
 							} 			
 			else if($filter == "statut_celcc" && $filter_values[$filter] == "admissible")
-				{
-			    $sql .= " AND (".reports_db.".$filter REGEXP \"^c[0-9]\" OR ".reports_db.".$filter=\"".avis_classe."\") ";
+			  {
+			    $sql .= " AND (".reports_db.".avis REGEXP \"^c[0-9]\" OR ".reports_db.".avis=\"".avis_classe."\") ";
 			  } 
 			else
 			{

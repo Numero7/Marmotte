@@ -1691,7 +1691,6 @@ $filtersConcours = array(
 							 "non-admis"=>"non-admis",
 							 "retrait candidature"=>"retrait candidature"
 ),
-
 'default_value' => "tous", 'default_name' => ""),
 		'sousjury' => array('name'=>"Section de jury" , 'liste' => $liste_sous_jurys, 'default_value' => "toutes", 'default_name' => ""),
 		'avis' => array('name'=>"Avis section" , 'liste' => $avis_candidature_short, 'default_value' => "tous", 'default_name' => ""),
