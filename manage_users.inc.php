@@ -606,11 +606,12 @@ function createUser(
 			$CID_code = "";
 			if(!isSuperUser())
 				$sections = "";
+			/*
 				if(isCurrentSectionACID())
 					$CID_code = currentSection();
 				else
 					$section_code = currentSection();
-
+			*/
 			unset($_SESSION['all_users']);
 			$passHash = crypt($pwd);
 			$sql = "INSERT INTO ".users_db." (login,sections,permissions,section_code,CID_code,passHash,description,email,tel) VALUES ('";
