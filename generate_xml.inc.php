@@ -273,8 +273,7 @@ function createXMLReportElem($row, DOMDocument $doc, $keep_br = true)
 		appendLeaf($fieldID,   $keep_br ? $row->$fieldID : remove_br($row->$fieldID) , $doc, $rapportElem);
 
 
-
-	if($row->type == REPORT_AUDITION)
+	if($row->type == REPORT_AUDITION || $row->type == "Audition")
 	{
 		global $concours_ouverts;
 		global $liste_sous_jurys;

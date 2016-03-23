@@ -6,8 +6,6 @@ require_once('generate_xml.inc.php');
 function getReportAsDOMDoc($id_rapport, $option="")
 {
 	$row = getReport($id_rapport);
-	
-	
 	if(!$row)
 	{
 		echo 'Pas de rapport avec id '.$id_rapport;
@@ -52,8 +50,9 @@ function viewReportAsPdf($id_rapport,$option = "")
 		$type = "Classement";
 	
 	$xsl = type_to_xsl( $type);
+
 	$html = XMLToHTML( $doc , $xsl );	
-	
+
 	$pdf = HTMLToPDF($html);
 
 	$nodes =$doc->getElementsByTagName("rapport");
