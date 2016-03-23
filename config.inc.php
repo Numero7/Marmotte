@@ -1209,17 +1209,19 @@ if(!isset($_SESSION["type_avis_classement"]))
 		$result = sql_request($sql);
 		while($row = mysqli_fetch_object($result))
 		{
-			if(is_array($tous_avis[$row->idavis]))
-			{
-				foreach($tous_avis[$row->idavis] as $id => $avis)
+		  $code = isset($idavis_to_code[$row->idavis]) ? $idavis_to_code[$row->idavis] : $row->idavis;
+		  if(isset($tous_avis[$code]) && is_array($tous_avis[$code]))
+		    {
+				foreach($tous_avis[$code] as $id => $avis)
 				  {
 					$typesRapportToAvis[$type][$id] = $avis;
 				  }
-			}
-			else
-			$typesRapportToAvis[$type][$row->idavis]= $tous_avis[$row->idavis];
-			if($row->idavis == avis_classe)
-				$type_avis_classement[] = $type;
+		    }
+		    else if(isset($tous_avis[$code])) {
+			  $typesRapportToAvis[$type][$code]= $tous_avis[$code];
+		    }
+		    if($code == avis_classe)
+			  $type_avis_classement[] = $type;
 		}
 	}
 	$_SESSION["type_avis_classement"] = $type_avis_classement;
