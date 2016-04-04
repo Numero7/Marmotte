@@ -915,12 +915,12 @@ function change_statuts($new_statut)
 	      }
 	    if($row->statut == "validation" && !isPresident() && !isACN() && !get_option("sec_can_edit_valid"))
 	      {
-		echo "Impossible de changer le statut du rapport ".$row->DKEY." qui est en mode 'validation', car vous n'êtes pas président.<br/>";
+		echo "Impossible de changer le statut du rapport ".$row->DKEY." qui est en mode 'validation', car vous n'êtes pas président et l'option d'édition par le secrétaire en mode 'validation' n'est pas activée.<br/>";
 		continue;
 	      }
 	    if($row->statut == "validation" && isACN() && !get_option("acn_can_edit_valid"))
 	      {
-		echo "Impossible de changer le statut du rapport ".$row->DKEY." qui est en mode 'validation', car vous n'êtes pas président.<br/>";
+		echo "Impossible de changer le statut du rapport ".$row->DKEY." qui est en mode 'validation', car vous n'êtes pas président et l'option d'édition par l'ACN en mode 'validation' n'est pas activée.<br/>";
 		continue;
 	      }
 	  change_statut($row->id, $new_statut);
