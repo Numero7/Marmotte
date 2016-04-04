@@ -133,6 +133,9 @@ $fieldsEditableACN = array(
 if(get_option("acn_can_edit_reports"))
   $fieldsEditableACN[]= "rapport";
 
+if(get_option("acn_can_edit_concours"))
+  $fieldsEditableACN[]= "audition";
+
 if(get_option("acn_can_edit_avis"))
   $fieldsEditableACN[]= "avis";
 
