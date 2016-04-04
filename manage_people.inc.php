@@ -79,7 +79,8 @@ function add_conflit_to_report($login, $id_origine)
 			$conflits .= ";".$login;
 			if(isset($candidat->nom) && isset($candidat->prenom) && $candidat->nom != "")
 				$candidat->conflits = $conflits;
-			updateCandidateFromData($candidat);
+			//			echo $candidat->conflits;
+			updateCandidateFromData($candidat,$candidat->concoursid);
 	}
 }
 
@@ -126,6 +127,7 @@ function updateCandidateFromData($data, $concoursid="")
 	} else {
 	  $sql = "UPDATE ".people_db." SET ".$sqlcore." WHERE nom=\"".$data->nom."\" AND prenom=\"".$data->prenom."\" AND concoursid='' AND section=\"".currentSection()."\" ;";
 	}
+	//	echo $sql; rr();
 	sql_request($sql);
 }
 
