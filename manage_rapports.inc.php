@@ -197,14 +197,14 @@ function filterSortReports($filters, $filter_values = array(), $sorting_value = 
 	$sql = "SELECT *, ".reports_db.".id AS report_id, ".people_db.".id AS people_id, ".people_db.".nom AS people_nom, ".people_db.".prenom AS people_prenom, ".people_db.".conflits AS people_conflits, ".reports_db.".nom AS nom, ".reports_db.".prenom AS prenom FROM ".reports_db;
 	$sql .=" left join ".people_db." on ".reports_db.".nom=".people_db.".nom AND ".reports_db.".prenom=".people_db.".prenom AND ".reports_db.".section=".people_db.".section WHERE ";
 	$sql .= reports_db.".id=".reports_db.".id_origine AND ".reports_db.".statut!=\"supprime\" AND ".reports_db.".section=\"".$section."\"";
-	$sql .= "AND ".people_db.".concoursid=\"\"";
+	$sql .= "AND (".people_db.".concoursid=\"\" OR ".people_db.".concoursid is NULL)";
     }
 
 	$sql .= filtersCriteriaToSQL($filters,$filter_values, $rapporteur_or);
 	$sql .= sortCriteriaToSQL($sorting_value);
 	$sql .= ";";
 
-	//echo $sql;
+	//	echo $sql;
 	$result=sql_request($sql);
 
 	if($result == false)
