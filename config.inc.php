@@ -1047,6 +1047,7 @@ $copies = array(
 		"NOMUSUEL" => "nom",
 		"Prénom" => "prenom",
 		"PRENOM" => "prenom",
+		"Prenom" => "prenom",
 		"GRAD_CONC" => "grade_rapport",
 		"Grade" => "grade",
 		"Directeur" => "directeur",
