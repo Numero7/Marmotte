@@ -40,6 +40,16 @@ function resetOrder($field = "")
 	}
 }
 
+function resetSessionFilters()
+{
+  foreach($_SESSION as $key => $value) {
+    if($key != "filter_section" && $key != "filter_id_session" && strpos($key,"filter_") === 0) {
+      unset($_SESSION[$key]);
+    }
+  }
+}
+
+
 function resetFilterValues()
 {
 	$filters = getCurrentFiltersList();
