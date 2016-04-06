@@ -230,9 +230,9 @@ function filterSortReports($filters, $filter_values = array(), $sorting_value = 
 	return $rows;
 }
 
-function updatePeoplid()
+function updatePeopleIds()
 {
-   $sql = "UPDATE reports JOIN people ON reports.section=people.section AND reports.nom=people.nom AND reports.prenom=people.prenom AND (reports.concoursid = people.concoursid) SET reports.peopleid=people.id";
+   $sql = "UPDATE ".reports_db." reports JOIN ".people_db." people ON reports.section=people.section AND reports.nom=people.nom AND reports.prenom=people.prenom AND (reports.concoursid = people.concoursid) WHERE reports.peopleid=0 SET reports.peopleid=people.id";
   sql_request($sql);
 }
 
