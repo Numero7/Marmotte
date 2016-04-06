@@ -196,34 +196,48 @@ function add_candidate_to_database($data,$section="")
 
 function get_or_create_candidate($data)
 {
-	$data = normalizeCandidat($data);
+  $people = false;
+  $data = normalizeCandidat($data);
+  $section = currentSection();
+
+  if(isset($data->peopleid) && $data->peopleid != 0) {
+    $sql = "SELECT * FROM ".people_db.' WHERE id="'.$data->peopleid.'" AND section="'.$section.'"';
+    $result = sql_request($sql);
+    $people = mysqli_fetch_object($result);
+  } 
+  if($people == false && isset($data->concoursid) && $data->concoursid!="") {
+    $sql = "SELECT * FROM ".people_db.' WHERE concoursid="'.$data->concoursid.'" AND section="'.$section.'"';
+    $result = sql_request($sql);
+    $people = mysqli_fetch_object($result);
+  }
+  if($people == false) {
 	$data->nom = ucwords(strtolower($data->nom));
 	$data->prenom = ucwords(strtolower($data->prenom));
-	$section = currentSection();
-//	echo("Getting candidate of SIRHUS '".$data->NUMSIRHUS."'<br/>");
+	$cid = isset($data->concoursid) ? $data->concoursid : "";
+	$sql = "SELECT * FROM ".people_db.' WHERE concoursid="'.$cid.'" AND nom="'.$data->nom.'" AND prenom="'.$data->prenom.'" AND section="'.$section.'" ;';
+	$result = sql_request($sql);
+	$people = mysqli_fetch_object($result);
+  }
+
 	try
 	{
-		$sql = "SELECT * FROM ".people_db.' WHERE concoursid="'.$data->concoursid.'" AND nom="'.$data->nom.'" AND prenom="'.$data->prenom.'" AND section="'.$section.'" ;';
-		$result = sql_request($sql);
-
-		$cdata = mysqli_fetch_object($result);
-		if($cdata == false)
+		if($people == false)
 		{
 			add_candidate_to_database($data,$section);
 			$result = sql_request($sql);
-			$cdata = mysqli_fetch_object($result);
-			if($cdata == false)
+			$people = mysqli_fetch_object($result);
+			if($people == false)
 				throw new Exception("Failed to find candidate previously added<br/>".$sql);
 		}
 		else if(isset($data->NUMSIRHUS) && $data->NUMSIRHUS != "")
 		  {
-		$cdata->NUMSIRHUS = $data->NUMSIRHUS;
+		$people->NUMSIRHUS = $data->NUMSIRHUS;
 		$cand = get_candidate_from_SIRHUS($data->NUMSIRHUS);
 		if($cand != null)
 		  {
 		    global $fieldsDSIChercheurs;
 		    global $refposition;
-		    $cdata->infos_evaluation = "";
+		    $people->infos_evaluation = "";
 		    foreach($fieldsDSIChercheurs as $key => $data)
 		      {
 			    if(is_array($data))
@@ -238,17 +252,17 @@ function get_or_create_candidate($data)
 				      $loc.= $data2." ".$cand->$key2." ";
 				  }
 				if($loc != "")
-				  $cdata->infos_evaluation.= $loc."<br/>";
+				  $people->infos_evaluation.= $loc."<br/>";
 			      }
 			    else if(isset($cand->$key) && $cand->$key != "")
-			      $cdata->infos_evaluation.= $data." ".$cand->$key."<br/>";
+			      $people->infos_evaluation.= $data." ".$cand->$key."<br/>";
 		      }
-		    $cdata->nom = $cand->nom;
-		    $cdata->prenom = $cand->prenom;
+		    $people->nom = $cand->nom;
+		    $people->prenom = $cand->prenom;
 		  }
 	      }
 
-		return normalizeCandidat($cdata);
+		return normalizeCandidat($people);
 	}
 	catch(Exception $exc)
 	{

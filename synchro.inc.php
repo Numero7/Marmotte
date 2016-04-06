@@ -1146,6 +1146,9 @@ $answer = "<h1>Synchronisation avec e-valuation de la section ".$section." - ".d
 		$sql.="(SELECT DKEY FROM ".dsidbname.".".dsi_evaluation_db." WHERE `type`='".REPORT_EVAL."' AND `PHASE_EVAL`=\"mi-vague\")";
 		sql_request($sql);
 
+		$answer.= "<h2>Mise a jour de reports.peopleid</h2>";
+		updatePeopleIds();
+
 		echo $answer;
 		//		$_SESSION["answer_dsi_sync"] = $answer . $_SESSION["answer_dsi_sync"];
 
