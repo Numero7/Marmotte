@@ -710,7 +710,7 @@ $typesRapportsUnitesShort = array();
 $typesRapportsConcours = array();
 $typesRapportsSession = array();
 $typesRapportsAll = array();
-$typesRapportsPromotion = array("4500","4505","4510","4515","4520");
+$typesRapportsPromotion = array("4500","4505","4510","4515","4520","7800");
 $types_needs_checkboxes = array();
 
 define("REPORT_CLASS_CHERCHEUR", "c");
@@ -720,6 +720,7 @@ define("REPORT_CLASS_DELEGATION", "d");
 define("REPORT_CLASS_ECOLE", "e");
 
 define("REPORT_CANDIDATURE", 7777);
+define("REPORT_PEDR", 7800);
 define("REPORT_AUDITION", 7781);
 
 
@@ -970,12 +971,12 @@ function is_promotion_DR($type)
 
 function is_promotion($type)
 {
-	return ($type >= 4500 && $type <= 4520);
+  return ($type >= 4500 && $type <= 4520);
 }
 
 function is_classement($type)
 {
-	return ($type == REPORT_CANDIDATURE) || is_promotion_DR($type) || ($type == REPORT_EMERITAT) || ($type == REPORT_EMERITAT_RE);
+  return ($type == REPORT_CANDIDATURE)|| ($type==REPORT_PEDR) || is_promotion_DR($type) || ($type == REPORT_EMERITAT) || ($type == REPORT_EMERITAT_RE);
 }
 
 function is_equivalence($type)
@@ -1179,10 +1180,13 @@ $sql = "SELECT * FROM dsi.reftypeavis WHERE 1;";
 $result= sql_request($sql);
 while($row = mysqli_fetch_object($result))
 {
-	if($row->id == avis_classenonclasse)
+  if($row->id == avis_classenonclasse) {
+    //    echo $row->id;
 		$tous_avis[$row->id] = $avis_classement;
-	else if($row->id == avis_ouinon)
+  }
+  else if($row->id == avis_ouinon) {
 		$tous_avis[$row->id] = array(avis_oui => "oui", avis_non => "non");
+  }
 	else
 	  {
 	    $code = isset($idavis_to_code[$row->id]) ? $idavis_to_code[$row->id] : $row->id; 
@@ -1200,6 +1204,7 @@ foreach($avis_classement as $avi => $label)
 //	$sql = "select label from reftypeavis where id in (select idavis from reltypevalavis where ideval = '7017');";
 $typesRapportToAvis = array(
 		REPORT_CANDIDATURE => $avis_candidature_short,
+		REPORT_PEDR => $avis_candidature_short,
 		REPORT_DELEGATION => $avis_lettre,
 		REPORT_INCONNU=>$tous_avis
 );
