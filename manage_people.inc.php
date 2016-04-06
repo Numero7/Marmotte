@@ -69,12 +69,14 @@ function is_in_conflict($login, $candidat)
 
 function add_conflit_to_report($login, $id_origine)
 {
+
+
 	$report = getReport($id_origine);
 	$row = normalizeReport($report);
 	$candidat = get_or_create_candidate($row);
 
 	$conflits = isset($candidat->conflits) ? $candidat->conflits : "";
-	if(strpos($conflits,$login) === false)
+	//	if(strpos($conflits,$login) === false)
 	{
 			$conflits .= ";".$login;
 			if(isset($candidat->nom) && isset($candidat->prenom) && $candidat->nom != "")
@@ -93,7 +95,6 @@ function updateCandidateFromRequest($request, $concoursid = "")
 		if (isset($request["field".$field]))
 		$data->$field = nl2br(trim($request["field".$field]),true);
 	  }
-
 	updateCandidateFromData($data,$concoursid);
 }
 
@@ -196,20 +197,26 @@ function add_candidate_to_database($data,$section="")
 
 function get_or_create_candidate($data)
 {
+
   $people = false;
   $data = normalizeCandidat($data);
   $section = currentSection();
 
-  if(isset($data->peopleid) && $data->peopleid != 0) {
-    $sql = "SELECT * FROM ".people_db.' WHERE id="'.$data->peopleid.'" AND section="'.$section.'"';
-    $result = sql_request($sql);
-    $people = mysqli_fetch_object($result);
-  } 
-  if($people == false && isset($data->concoursid) && $data->concoursid!="") {
+  echo $data->concoursid;
+  echo "ff";
+  echo $data->peopleid;
+  //  rr();
+
+  if(isset($data->concoursid) && $data->concoursid!="") {
     $sql = "SELECT * FROM ".people_db.' WHERE concoursid="'.$data->concoursid.'" AND section="'.$section.'"';
     $result = sql_request($sql);
     $people = mysqli_fetch_object($result);
   }
+  if($people == false && isset($data->peopleid) && $data->peopleid != 0) {
+    $sql = "SELECT * FROM ".people_db.' WHERE id="'.$data->peopleid.'" AND section="'.$section.'"';
+    $result = sql_request($sql);
+    $people = mysqli_fetch_object($result);
+  } 
   if($people == false) {
 	$data->nom = ucwords(strtolower($data->nom));
 	$data->prenom = ucwords(strtolower($data->prenom));
