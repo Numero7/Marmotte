@@ -145,6 +145,7 @@ try
 			if(isset($_REQUEST['filter_id_session']))
 			{
 			       set_current_session_id($_REQUEST['filter_id_session']);
+			       resetFilterValues();
 				reload("?action=");
 			}
 			

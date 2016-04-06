@@ -75,7 +75,7 @@ function change_current_section($section)
 	unset($_SESSION['filter_id_session']);
 	unset($_SESSION["allconcours"]);
 	unset($_SESSION["myconc"]);
-	
+	//	resetFilterValues();
 	update_permissions(getLogin(), $section);
 }
 
