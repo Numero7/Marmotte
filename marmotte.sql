@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Client: localhost
--- Généré le: Jeu 17 Mars 2016 à 18:15
+-- Généré le: Mer 06 Avril 2016 à 05:40
 -- Version du serveur: 5.5.46-0ubuntu0.14.04.2-log
 -- Version de PHP: 5.5.9-1ubuntu4.14
 
@@ -28,7 +28,6 @@ USE `panda`;
 -- Structure de la table `concours`
 --
 
-DROP TABLE IF EXISTS `concours`;
 CREATE TABLE IF NOT EXISTS `concours` (
   `section` tinyint(4) NOT NULL COMMENT 'numero section ou cid',
   `session` varchar(16) NOT NULL COMMENT 'l''année du concours',
@@ -56,7 +55,6 @@ CREATE TABLE IF NOT EXISTS `concours` (
 -- Structure de la table `config`
 --
 
-DROP TABLE IF EXISTS `config`;
 CREATE TABLE IF NOT EXISTS `config` (
   `section` tinyint(4) NOT NULL,
   `key` varchar(128) NOT NULL,
@@ -70,7 +68,6 @@ CREATE TABLE IF NOT EXISTS `config` (
 -- Structure de la table `people`
 --
 
-DROP TABLE IF EXISTS `people`;
 CREATE TABLE IF NOT EXISTS `people` (
   `NUMSIRHUS` varchar(30) NOT NULL DEFAULT '',
   `concoursid` varchar(10) NOT NULL DEFAULT '',
@@ -126,7 +123,7 @@ CREATE TABLE IF NOT EXISTS `people` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`),
   UNIQUE KEY `concoursid` (`concoursid`,`section`,`nom`,`prenom`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1799423 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1931609 ;
 
 -- --------------------------------------------------------
 
@@ -134,7 +131,6 @@ CREATE TABLE IF NOT EXISTS `people` (
 -- Structure de la table `reports`
 --
 
-DROP TABLE IF EXISTS `reports`;
 CREATE TABLE IF NOT EXISTS `reports` (
   `DKEY` varchar(22) NOT NULL DEFAULT '',
   `NUMSIRHUS` varchar(30) NOT NULL DEFAULT '',
@@ -153,7 +149,8 @@ CREATE TABLE IF NOT EXISTS `reports` (
   `type_eval` varchar(4) DEFAULT NULL,
   `intitule` text NOT NULL,
   `concours` varchar(5) DEFAULT NULL,
-  `concoursid` varchar(10) DEFAULT NULL,
+  `concoursid` varchar(10) NOT NULL DEFAULT '',
+  `peopleid` int(11) NOT NULL,
   `rapporteur` varchar(64) DEFAULT NULL,
   `rapporteur2` varchar(64) DEFAULT NULL,
   `rapporteur3` varchar(64) DEFAULT NULL,
@@ -204,7 +201,7 @@ CREATE TABLE IF NOT EXISTS `reports` (
   `signataire` text,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=195039 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=198223 ;
 
 -- --------------------------------------------------------
 
@@ -212,7 +209,6 @@ CREATE TABLE IF NOT EXISTS `reports` (
 -- Structure de la table `sessions`
 --
 
-DROP TABLE IF EXISTS `sessions`;
 CREATE TABLE IF NOT EXISTS `sessions` (
   `id` varchar(16) NOT NULL,
   `section` int(11) NOT NULL,
@@ -228,7 +224,6 @@ CREATE TABLE IF NOT EXISTS `sessions` (
 -- Structure de la table `units`
 --
 
-DROP TABLE IF EXISTS `units`;
 CREATE TABLE IF NOT EXISTS `units` (
   `section` tinyint(11) NOT NULL,
   `nickname` varchar(30) NOT NULL DEFAULT '',
@@ -244,7 +239,6 @@ CREATE TABLE IF NOT EXISTS `units` (
 -- Structure de la table `users`
 --
 
-DROP TABLE IF EXISTS `users`;
 CREATE TABLE IF NOT EXISTS `users` (
   `section_numchaire` varchar(8) NOT NULL DEFAULT '',
   `CID_numchaire` varchar(8) NOT NULL DEFAULT '',
