@@ -290,7 +290,7 @@ function createSession($name,$annee, $section ="")
 			$date = "01/03/".$annee; break;
 		case "Automne":
 			$date = "01/10/".$annee; break;
-		case "PES":
+		case "PEDR":
 			$date = "01/05/".$annee; break;
 		default:
 			$date = "01/07/".$annee; break;

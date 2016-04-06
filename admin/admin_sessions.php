@@ -66,7 +66,7 @@ else
 				name="sessionname">
 					<?php
 						echo  '<option value="Delegations">Delegations</option>';
-						echo  '<option value="PES">PES</option>';
+						echo  '<option value="PEDR">PEDR</option>';
 						echo  '<option value="Printemps">Printemps</option>';
 						echo  '<option value="Automne">Automne</option>';
 						echo  '<option value="Generique">Generique</option>';
