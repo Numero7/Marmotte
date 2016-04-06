@@ -205,7 +205,7 @@ function get_or_create_candidate($data)
     $result = sql_request($sql);
     $people = mysqli_fetch_object($result);
   } 
-  if($people == false && $data->concoursid!="") {
+  if($people == false && isset($data->concoursid) && $data->concoursid!="") {
     $sql = "SELECT * FROM ".people_db.' WHERE concoursid="'.$data->concoursid.'" AND section="'.$section.'"';
     $result = sql_request($sql);
     $people = mysqli_fetch_object($result);
@@ -213,7 +213,8 @@ function get_or_create_candidate($data)
   if($people == false) {
 	$data->nom = ucwords(strtolower($data->nom));
 	$data->prenom = ucwords(strtolower($data->prenom));
-	$sql = "SELECT * FROM ".people_db.' WHERE concoursid="'.$data->concoursid.'" AND nom="'.$data->nom.'" AND prenom="'.$data->prenom.'" AND section="'.$section.'" ;';
+	$cid = isset($data->concoursid) ? $data->concoursid : "";
+	$sql = "SELECT * FROM ".people_db.' WHERE concoursid="'.$cid.'" AND nom="'.$data->nom.'" AND prenom="'.$data->prenom.'" AND section="'.$section.'" ;';
 	$result = sql_request($sql);
 	$people = mysqli_fetch_object($result);
   }

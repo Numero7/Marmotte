@@ -666,6 +666,11 @@ function addReportToDatabase($report,$normalize = true)
 		createUnitIfNeeded($report->unite);
 	    }
 	catch(Exception $e){}
+	
+	if((is_rapport_concours($report) || is_rapport_chercheur($report)) && ( !isset($report->peopleid) || $report->peopleid=="0" ) ) {
+	  	$candidate = get_or_create_candidate($report);
+		$report->peopleid = $candidate->id;
+	}
 
 	$specialRule = array("date","id","id_origine","voeux");
 

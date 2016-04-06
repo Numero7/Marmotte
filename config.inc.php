@@ -153,6 +153,7 @@ $fieldsEditableAvisTransmis = array(
 
 $fieldsRapportAll = array(
 		  "concoursid" => "NumCand",
+		  "peopleid" => "MarmotteId",
 		"dsi" => "Infos e-valuation",
 		"statut" => "Statut rapport",
 		"statut_celcc"=>"Statut candidature",
