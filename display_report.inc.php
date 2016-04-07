@@ -90,9 +90,11 @@ function displayEditableChercheur($chercheur,$report = NULL, $canedit = true)
 	displayEditionFrameStart("",$hidden,array());
 
 	if(is_current_session_delegation())
-		displayEditableObject("", $chercheur, $fieldsChercheursDelegationsAll, $canedit, $session);
+	  displayEditableObject("", $chercheur, $fieldsChercheursDelegationsAll, $canedit, $session,
+			 array("conflits"=>'<input type="submit" name="conflit" value="Se déclarer en conflit" />'));
 	else
-		displayEditableObject("", $chercheur, $fieldsChercheursAll, $canedit, $session);
+	  displayEditableObject("", $chercheur, $fieldsChercheursAll, $canedit, $session,
+			 array("conflits"=>'<input type="submit" name="conflit" value="Se déclarer en conflit" />'));
 
 	displayEditionFrameEnd("Données chercheur");
 
