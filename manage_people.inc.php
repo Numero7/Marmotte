@@ -102,7 +102,12 @@ function updateCandidateFromData($data, $concoursid="")
 {
 	global $fieldsIndividualDB;
 
+
 	$candidate = get_or_create_candidate($data );
+
+	if(!isset($candidate->nom) || $candidate->nom == "")
+	  return ;
+
 	$sqlcore = "";
 
 	$first = true;
@@ -123,6 +128,7 @@ function updateCandidateFromData($data, $concoursid="")
 		throw new Exception("Le compte ".$login." n'a pas la permission de modifier un candidat  pour une autre section que la sienne.");
 
 
+	if($sqlcore != "") {
 	if($concoursid != "") {
 	  $sql = "UPDATE ".people_db." SET ".$sqlcore." WHERE concoursid=\"".$concoursid."\" AND section=\"".currentSection()."\" ;";
 	} else {
@@ -130,6 +136,7 @@ function updateCandidateFromData($data, $concoursid="")
 	}
 	//	echo $sql; rr();
 	sql_request($sql);
+	}
 }
 
 function getAllCandidates()
@@ -202,9 +209,9 @@ function get_or_create_candidate($data)
   $data = normalizeCandidat($data);
   $section = currentSection();
 
-  echo $data->concoursid;
-  echo "ff";
-  echo $data->peopleid;
+  //  echo $data->concoursid;
+  //  echo "ff";
+  //echo $data->peopleid;
   //  rr();
 
   if(isset($data->concoursid) && $data->concoursid!="") {
