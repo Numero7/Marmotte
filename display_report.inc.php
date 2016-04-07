@@ -487,7 +487,10 @@ function displayEditableReport($row, $canedit = true)
 		voir_rapport_pdf($row);
 		echo "</div>";
 		
-
+		if($conflit)
+		  {
+		    echo "<h2 style=\"color:red;\">Vous êtes en conflit d'intérêt sur cette candidature.</h2>";
+		  }
 		displayEditableChercheur($chercheur,$row,$canedit);
 
 		//$other_reports = find_somebody_reports($chercheur,$eval_type);
@@ -558,7 +561,7 @@ function displayEditableReport($row, $canedit = true)
 		displayEditionFrameStart("",$hidden,$submits);
 		voir_rapport_pdf($row);
 		echo "</div>"; 
-
+	
 		displayEditionFrameStart("",$hidden,array());
 
 		echo'<table><tr>';
