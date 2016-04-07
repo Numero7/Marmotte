@@ -89,7 +89,6 @@
 									</td>
 									<td>
 									<B>Date :</B>
-		le <xsl:value-of disable-output-escaping="yes" select="date"/>.
 									</td>
 								</tr>
 							</table>
