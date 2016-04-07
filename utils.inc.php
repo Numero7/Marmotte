@@ -214,18 +214,19 @@ function filename_from_params($nom, $prenom, $grade, $unite, $type, $session, $a
 		else
 			$result =  $session." - ".$section." - ".$pretty_type." - ".$avis." - ".$unite;
 	}
-	else if( is_concours_type($type))
+	else if( is_concours_type($type) || $type == "Audition" || $type == "Classement")
 	{
 	  if(is_classement($type))
 	    $result =  $session." - ".$concours." - ".$pretty_type." - ".$avis." - ".$nom." ".$prenom;
 	else
-		$result  =  $session." - ".$pretty_type." - ".$grade." - ".$avis." - ".$nom." ".$prenom;
+		$result  =  $session." - ".$concours." - ".$pretty_type." - ".$grade." - ".$avis." - ".$nom." ".$prenom;
 	}
 	else
 		$result =  $session." - ".$section." - ".$pretty_type." - ".$grade." - ".$avis." - ".$unite." - ".$nom." ".$prenom;
 	$result = str_replace(array("'","(",")","/"),array(" ","","","-"),$result);
 	return replace_accents($result);
 }
+
 
 function getStyle($fieldId,$odd, $conflict = false)
 {
