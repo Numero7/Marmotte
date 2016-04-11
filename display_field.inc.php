@@ -398,9 +398,13 @@ function display_fichiers($row, $fieldID, $session, $readonly, $type, $subtype =
 		echo "</table>\n";
 		echo "</td><td>";
 
-		foreach($files as $label => $file)
-			if(strcontains($file,"id.jpg"))
-			  echo '<img class="photoid" src="'.$file.'" alt="'.$file.'" />';
+
+		foreach($files as $label => $file) {
+		    if(strcontains($file,"jpg") && $type=="marmotte")
+			  {
+		   		  echo '<img class="photoid" src="'.$file.'" alt="'.$file.'" />';
+			  }
+		}
 		echo "</td>";
 				}
 				echo "</tr>";
