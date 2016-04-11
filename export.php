@@ -71,7 +71,7 @@ if (authenticate())
 						switch($type)
 						{
 							case "pdf":
-
+							  //							  rr();
 								if(!isSecretaire())
 									throw new Exception("Zip and pdf exports are only for secretaray and president");
 

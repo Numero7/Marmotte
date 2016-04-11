@@ -77,6 +77,7 @@ function getReportsAsXML($filter_values, $sort_criteria = array(), $keep_br = tr
 	//	kk();
 	foreach($rows as $row)
 	{
+	  //					  	echo $row->type." ".$row->concours." ".$row->nom."<br/>";	  
 			$types = array();
 			if($row->type == REPORT_CANDIDATURE)
 			{
@@ -85,6 +86,7 @@ function getReportsAsXML($filter_values, $sort_criteria = array(), $keep_br = tr
 				if(needs_audition_report($row))
 				  {
 					$types[] = "Audition";
+
 				  }
 				if(is_classe($row))
 					$types[] = "Classement";
@@ -101,7 +103,7 @@ function getReportsAsXML($filter_values, $sort_criteria = array(), $keep_br = tr
 			$root->appendChild($elem);
 		}
 	}
-
+	//	rr();
 	$doc->appendChild($root);
 	return $doc;
 }

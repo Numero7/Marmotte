@@ -100,14 +100,17 @@ formulaire d&apos;assistance de la dsi</a>.
 </p>
 <br/>	
   <br/>
+<br/>	  <br/>
 <br/>	
   <br/>
-  <table>
-  <tr>
-  <td width="20%"></td>
-  <td width="80%">
-		    <h3>Contributeurs <a href="http://s.scifi-universe.com/galeries/images-old/abominable/jour_sans_fin_01.jpg">Marmotte 2.3 "RainSeason"</a></h3>
-<table><tr><td>
+<p>Marmotte est le fruit d'un <a href="#" id="contributeurs_clickable">projet collaboratif open-source</a> réunissant secrétaires scientifiques, SGCN, DSI et DSI-concours.</p>
+<span hidden id="contributeurs">
+<p>Version: <a href="https://github.com/Numero7/Marmotte">Marmotte 2.3 "RainSeason"</a></p>
+<table><tr>
+<td>
+<img src="http://s.scifi-universe.com/galeries/images-old/abominable/jour_sans_fin_01.jpg">
+</td>
+<td>
   <ul>
   <li><B>Secrétaires scientifiques</B></li>
   <li>Hugo Gimbert (d&eacute;veloppeur, coordinateur technique, section 6)</li>
@@ -137,7 +140,19 @@ formulaire d&apos;assistance de la dsi</a>.
  </td>
  </tr>
  </table>
+</span>
  </div>
   </div>
  </div>
 <!-- <iframe width="90%" height="20%" src="https://lejournal.cnrs.fr/"></iframe>  -->
+<script>
+		    var display = false;
+		      document.getElementById('contributeurs_clickable').onclick 
+= function (event){
+			if(!display)
+    $('#contributeurs').show();
+			else 
+    $('#contributeurs').hide();
+			display = !display;
+}
+</script>
