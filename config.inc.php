@@ -263,7 +263,6 @@ $fieldsChercheursAll = array(
 			     array("nom","prenom"),
 		"conflits",
 		"infos_evaluation",
-		"infos_celcc",
 		"genre",
 		array("grade","annee_recrutement"),
 		"labo1",
@@ -1616,6 +1615,7 @@ while($result = mysqli_fetch_object($query))
 	$concours_ouverts[$code] = $result->grade_conc." ".$result->n_public." ".$result->intitule;
 	$postes_ouverts[$code] = $result->nb_prop;
 	$tous_sous_jury[$code] = array();
+	
 	for($i = 1 ; $i <= 4; $i++)
 	{
 		$suff = "sousjury".$i;
@@ -1623,7 +1623,7 @@ while($result = mysqli_fetch_object($query))
 		$suffm = "membressj".$i;
 		if($result->$suff != "")
 		{
-		  //		  echo $code." ".$result->$suff."<br/>";
+		  //	  		  echo $code." ".$result->$suff."<br/>";
 
 			$tous_sous_jury[$code][$result->$suff] = array("president"=> $result->$suffp, "membres" => explode(";", $result->$suffm));
 		}
