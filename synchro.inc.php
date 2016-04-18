@@ -475,10 +475,6 @@ function synchronizePeople($section)
 	    $answer = "<B>Synchro des num SIRHUS de chercheurs de la section ".$section."</B><br/>\n";
 	  $answer .= $num." num&eacute;ros SIRHUS ont &eacute;t&eacute; mis &agrave; jour.<br/>";
 	  }
-	else {
-	  echo $sql;
-	  //	  rr();
-	}
 
 	$sql =  "UPDATE ".people_db." marmotte JOIN ".dsidbname.".".dsi_people_db." dsi ";
 	$sql .= " ON marmotte.NUMSIRHUS=dsi.numsirhus";
@@ -493,16 +489,6 @@ function synchronizePeople($section)
 	  $answer .= $num." nom et prenoms ont &eacute;t&eacute; mis &agrave; jour.<br/>";
 	  }
 	
-
-	/*
-	$sql =  "DELETE marmotte FROM ".people_db." marmotte LEFT JOIN ".dsidbname.".".dsi_people_db." dsi ";
-	$sql .= " ON marmotte.NUMSIRHUS=dsi.numsirhus";
-	$sql .= " WHERE marmotte.NUMSIRHUS!='' AND marmotte.section=\"".$section."\" AND marmotte.nom!=dsi.nom AND marmotte.prenom!=dsi.prenom;";
-	$res = sql_request($sql);
-	*/
-
-	//	$sql = "INSERT into ".people_db." marmotte (section,nom,prenom,NUMSIRHUS) ";
-	//$sql .= "SELECT (
 
 	$sql =  "UPDATE ".people_db." marmotte JOIN ".dsidbname.".".dsi_people_db." dsi ";
 	$sql .= " ON marmotte.NUMSIRHUS=dsi.numsirhus";
