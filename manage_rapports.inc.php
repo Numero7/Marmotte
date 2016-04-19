@@ -340,14 +340,18 @@ function filtersCriteriaToSQL($filters, $filter_values, $rapporteur_or = true)
 			}
 			else if(isset($fieldsTypes[$filter]) && $fieldsTypes[$filter] == "avis")
 			{
-				if($filter_values[$filter] == avis_classe)
+			  if($filter_values[$filter] == avis_classe) {
 					$sql .= " AND (".reports_db.".$filter REGEXP \"^c[0-9]\" OR ".reports_db.".$filter=\"".avis_classe."\") ";
-				else if($filter_values[$filter] == avis_oral)
-				  $sql .= " AND (".reports_db.".$filter=\"".avis_oral."\" OR ".reports_db.".$filter=\"".avis_non_classe."\" OR ".reports_db.".$filter REGEXP \"^c[0-9]\" )";
-				else if($filter_values[$filter] == avis_admis_a_concourir)
+			  }
+			  else if($filter_values[$filter] == avis_oral) {
+			    $sql .= " AND (".reports_db.".$filter=\"".avis_oral."\" OR ".reports_db.".$filter=\"".avis_classe."\"";
+			    $sql .= " OR ".reports_db.".$filter=\"".avis_non_classe."\" OR ".reports_db.".$filter REGEXP \"^c[0-9]\" )";
+			  }
+			  else if($filter_values[$filter] == avis_admis_a_concourir) {
 					$sql .= " AND ".reports_db.".statut_celcc!=\"non admis à concourir\" AND ".reports_db.".$filter!=\"".avis_desistement."\" ";
-				else
+			  } else {
 					$sql .= " AND ".reports_db.".$filter=\"$filter_values[$filter]\" ";
+			  }
 				//echo $sql;
 							} 			
 			else if($filter == "statut_celcc" && $filter_values[$filter] == "admissible")
