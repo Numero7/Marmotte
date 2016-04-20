@@ -187,9 +187,18 @@ function filterSortReports($filters, $filter_values = array(), $sorting_value = 
 
   if(is_current_session_concours())
     {
+      if(session_year(current_session_id()) >= 2016) {
 	$sql = "SELECT *, ".reports_db.".id AS report_id, ".people_db.".id AS people_id, ".people_db.".nom AS people_nom, ".people_db.".prenom AS people_prenom, ".people_db.".conflits AS people_conflits, ".reports_db.".nom AS nom, ".reports_db.".prenom AS prenom FROM ".reports_db;
 	$sql .=" left join ".people_db." on ".reports_db.".concoursid=".people_db.".concoursid  AND ".reports_db.".section=".people_db.".section WHERE ";
 	$sql .= reports_db.".id=".reports_db.".id_origine AND ".reports_db.".concoursid!=\"\" AND ".reports_db.".statut!=\"supprime\" AND ".reports_db.".section=\"".$section."\"";
+      } else {
+	$sql = "SELECT *, ".reports_db.".id AS report_id, ".people_db.".id AS people_id, ".people_db.".nom AS people_nom, ".people_db.".prenom AS people_prenom, ".people_db.".conflits AS people_conflits, ".reports_db.".nom AS nom, ".reports_db.".prenom AS prenom FROM ".reports_db;
+	$sql .=" join ".people_db." on ";
+	$sql .= reports_db.".nom LIKE ".people_db.".nom  ";
+	$sql .= " AND ".reports_db.".prenom LIKE ".people_db.".prenom  ";
+	$sql .= " AND ".reports_db.".section=".people_db.".section WHERE ";
+	$sql .= reports_db.".id=".reports_db.".id_origine AND ".reports_db.".concours!='' AND ".reports_db.".statut!=\"supprime\" AND ".reports_db.".section=\"".$section."\"";
+      }
 
     }
   else
@@ -204,7 +213,7 @@ function filterSortReports($filters, $filter_values = array(), $sorting_value = 
 	$sql .= sortCriteriaToSQL($sorting_value);
 	$sql .= ";";
 
-	//echo $sql;
+	//	echo $sql;
 
 	//	rr();
 
