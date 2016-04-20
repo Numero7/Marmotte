@@ -1,19 +1,13 @@
 <?php 
 require_once('config.inc.php');
 require_once('manage_unites.inc.php');
+require_once('synchro.inc.php');
+
+if(isSecretaire())
+  synchronizePeople($_SESSION['filter_section']);
 
 global $fieldsUnitsDB;
 
-
-$sql = "INSERT IGNORE INTO `people` (nom,prenom,NUMSIRHUS,section,labo1,labo2)";
-$sql .="SELECT dsi.nom,prenom,numsirhus,scn1,code_unite,code_unite2 FROM ".dsidbname.".".dsi_people_db." dsi ";
-$sql .= "WHERE dsi.scn1 = '".$_SESSION['filter_section']."';";
-$result = sql_request($sql);
-
-$sql = "INSERT IGNORE INTO `people` (nom,prenom,NUMSIRHUS,section,labo1,labo2)";
-$sql .="SELECT dsi.nom,prenom,numsirhus,scn2,code_unite,code_unite2 FROM ".dsidbname.".".dsi_people_db." dsi ";
-$sql .= "WHERE dsi.scn2 = '".$_SESSION['filter_section']."';";
-$result = sql_request($sql);
 
 $sql = "SELECT DISTINCT id_session,NUMSIRHUS FROM `".reports_db."` WHERE section=\"".$_SESSION['filter_section']."\" AND NUMSIRHUS != \"\" AND type=\"".REPORT_EVAL."\" OR type=\"".REPORT_EVAL_RE."\"";
 $result = sql_request($sql);
@@ -24,42 +18,15 @@ while($row = mysqli_fetch_object($result))
     $evals[$row->NUMSIRHUS][] = substr($row->id_session,0,1) . substr($row->id_session,count($row->id_session)-3,2);
   }
 
-if(false)
-  //if($_SESSION['filter_section']== "6" && isSecretaire() && !isPresident())
-  {
-    /* mise a jour des num sirhus */
-    $sql = "UPDATE `people` marmotte ";
-    $sql .= "JOIN ".dsidbname.".".dsi_people_db." dsi ON (marmotte.nom=dsi.nom) AND (marmotte.prenom=dsi.prenom) ";
-    $sql .= "SET marmotte.NUMSIRHUS=dsi.NUMSIRHUS ";
-    $sql .= "WHERE marmotte.NUMSIRHUS=\"\" AND marmotte.section=\"".$_SESSION['filter_section']."\" ";
-    $result = sql_request($sql);
-
-    $sql = "UPDATE `reports` marmotte ";
-    $sql .= "JOIN ".dsidbname.".".dsi_people_db." dsi ON (marmotte.nom=dsi.nom) AND (marmotte.prenom=dsi.prenom) ";
-    $sql .= "SET marmotte.NUMSIRHUS=dsi.NUMSIRHUS ";
-    $sql .= "WHERE (dsi.scn1=\"".$_SESSION['filter_section']."\" or dsi.scn2=\"".$_SESSION['filter_section']."\") ";
-    $sql.= "AND marmotte.NUMSIRHUS=\"\" AND marmotte.section=\"".$_SESSION['filter_section']."\" ";
-    $result = sql_request($sql);
-  }
-/*$sql = "SELECT DISTINCT id_session,NUMSIRHUS FROM `".reports_db."` WHERE NUMSIRHUS != \"\" AND type=\"".REPORT_TITU."\"";
-$result = sql_request($sql);
-$titus = array();
-while($row = mysqli_fetch_object($result))
-  {
-    if(!isset($evals[$row->NUMSIRHUS])) $titus[$row->NUMSIRHUS] = array();
-    $titus[$row->NUMSIRHUS][] = $row->id_session;
-  }
-*/
-
 
 $keyword = "";
 if(isset($_REQUEST["keyword"]))
   $keyword = $_REQUEST["keyword"];
 
 $tri="nom";
-$ftri="dsi.nom";
+$ftri="marmotte.nom";
 $tris = array(
-	      "nom"=>"dsi.nom",
+	      "nom"=>"marmotte.nom",
 	      "labo"=>"marmotte.labo1",
 	      "key1"=>"marmotte.theme1",
 	      "key2"=>"marmotte.theme2",
@@ -76,17 +43,16 @@ if(isset($_REQUEST["tri"]) && isset($tris[$_REQUEST["tri"]]))
 if($keyword == "")
   {
 //$sql = "SELECT * ,".dsidbname.".".dsi_people_db.".nom AS dsi_nom, ".dsidbname.".".dsi_people_db.".prenom AS dsi_prenom FROM `people` marmotte ";
-$sql = "SELECT *,dsi.numsirhus AS num FROM `people` marmotte ";
-$sql .= "INNER JOIN ".dsidbname.".".dsi_people_db." dsi ON marmotte.NUMSIRHUS = dsi.numsirhus OR (marmotte.nom=dsi.nom AND marmotte.prenom=dsi.prenom)";
-$sql .= "WHERE marmotte.concoursid=\"\" AND marmotte.section=\"".$_SESSION['filter_section']."\"";
-$sql .= " AND (dsi.scn1 = \"".$_SESSION['filter_section']."\" OR dsi.scn2 = \"".$_SESSION['filter_section']."\") ORDER BY ".$ftri." ASC;";
+$sql = "SELECT * FROM `people` marmotte ";
+$sql .= "WHERE marmotte.concoursid=\"\" AND marmotte.NUMSIRHUS!=\"\" AND marmotte.section=\"".$_SESSION['filter_section']."\"";
+$sql .= " ORDER BY ".$ftri." ASC;";
   }
 else
   {
-$sql = "SELECT *,dsi.numsirhus AS num FROM `people` marmotte ";
-$sql .= "INNER JOIN ".dsidbname.".".dsi_people_db." dsi ON marmotte.NUMSIRHUS = dsi.numsirhus OR (marmotte.nom=dsi.nom AND marmotte.prenom=dsi.prenom)";
-$sql .= "WHERE marmotte.concoursid=\"\" AND marmotte.section=\"".$_SESSION['filter_section']."\" AND (marmotte.theme1='".$keyword."' OR marmotte.theme2='".$keyword."' OR marmotte.theme3='".$keyword."')";
-$sql .= " AND (dsi.scn1 = \"".$_SESSION['filter_section']."\" OR dsi.scn2 = \"".$_SESSION['filter_section']."\") ORDER BY ".$ftri." ASC;";
+$sql = "SELECT * FROM `people` marmotte ";
+$sql .= "WHERE marmotte.concoursid=\"\" AND marmotte.NUMSIRHUS!=\"\" AND marmotte.section=\"".$_SESSION['filter_section']."\"";
+$sql .= " AND (marmotte.theme1='".$keyword."' OR marmotte.theme2='".$keyword."' OR marmotte.theme3='".$keyword."')";
+$sql .= " ORDER BY ".$ftri." ASC;";
   }
 
 $result = sql_request($sql);
@@ -98,8 +64,8 @@ $fields =
 "grade"=>"Grade",
 "scn1"=>"Sect",
 "scn2"=>"ions",
-"code_unite"=>"Unité",
-"code_unite2"=>"Unité2",
+"labo1"=>"Unité",
+"labo2"=>"Unité2",
 "theme1" => "MotClef1",
 "theme2" => "MotClef2",
 "theme3" => "MotClef3",
@@ -112,7 +78,7 @@ $fields =
 "codeposition" => "Position",
 "nature_sirhus" => "Nature",
 "dr" => "DR",
-"num"=>"Numsirhus"
+"NUMSIRHUS"=>"Numsirhus"
 	);
 
 
