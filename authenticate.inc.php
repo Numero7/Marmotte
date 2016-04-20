@@ -14,7 +14,7 @@ $is_maintenance = (get_config("maintenance","off",false,"0") === "on");
 
 <br/>
   <br/>
-  <h3>"Marmotte", un outil de gestion des rapports pour les sections et CID du Comit&eacute; National.</h3>
+  <h3><a href="http://d2tq98mqfjyz2l.cloudfront.net/image_cache/1345701412322553.jpg">"Marmotte"</a>, un outil de gestion des rapports pour les sections et CID du Comit&eacute; National.</h3>
   <br/>
   <br/>
 <br/>
