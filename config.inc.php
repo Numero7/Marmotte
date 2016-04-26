@@ -91,8 +91,8 @@ while($row = mysqli_fetch_object($result))
 
 $fieldsSummary = array("type","unite","nom","prenom",/*"ecole",*/"avis","rapporteur","avis1","rapporteur2","avis2", "rapporteur3", "avis3","theme1","theme2","theme3","DKEY");
 
-$fieldsSummaryConcours = array("concours","nom","prenom","sousjury","statut_celcc","avis","rapporteur","avis1",
-			       "rapporteur2","avis2","rapporteur3","avis3","theme1","theme2","theme3","labo1","labo2","diploma"
+$fieldsSummaryConcours = array("concours","nom","prenom","sousjury","avis","theme1","theme2","theme3","rapporteur","avis1",
+			       "rapporteur2","avis2","rapporteur3","avis3","labo1","labo2","diploma","statut_celcc"
 );
 
 if(!get_option("show_rapporteur3"))

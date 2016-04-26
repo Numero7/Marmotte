@@ -371,15 +371,18 @@ function display_fichiers($row, $fieldID, $session, $readonly, $type, $subtype =
 	if(!isset($row->type))
 		return;
 	
-	$files = find_files($row, $session, false,$type, $subtype);	
+	if( $type == "marmotte" && is_rapport_unite($row) && ( !isset($row->unite) || $row->unite == "")) {
+	    echo "Veuillez associer une unité à cette demande pour pouvoir ajouter des fichiers.";
+	    return ;
+	  }
 
+	$files = find_files($row, $session, false,$type, $subtype);	
 
 	echo "<td><table><tr>\n";
 	
-	if(count($files)== 0)
+	if(count($files)== 0) {
 	  echo "<td></td>\n";
-	else
-	{
+	} else {
 		$i = -1;
 		echo "<td><table>\n";
 		echo '<tr><td style="padding-right: 10px">';
@@ -406,8 +409,8 @@ function display_fichiers($row, $fieldID, $session, $readonly, $type, $subtype =
 			  }
 		}
 		echo "</td>";
-				}
-				echo "</tr>";
+	}
+	echo "</tr>";
 				
 		if(!$readonly)
 		{
@@ -420,13 +423,10 @@ function display_fichiers($row, $fieldID, $session, $readonly, $type, $subtype =
 
 	type="hidden" name="MAX_FILE_SIZE" value="50000000" />
 	<input type="hidden" name="uploaddir<?php echo $fieldID;?>" value="<?php echo $dir;?>"/>
-	<input name="uploadedfile<?php echo $fieldID;?>"
-	type="file" />
+	<input name="uploadedfile<?php echo $fieldID;?>[]"
+	type="file" multiple />
 			<input
 	type="submit" name="ajout<?php echo $fieldID;?>" value="Ajouter fichier" />
-<!--				<input
-	type="submit" name="ajoutphoto" value="Ajouter photo" />
--->
 			</td></tr><tr><td>
 <input type="hidden" name="type"
 	value="candidatefile" />

@@ -192,6 +192,7 @@ function filterSortReports($filters, $filter_values = array(), $sorting_value = 
 	$sql .=" left join ".people_db." on ".reports_db.".concoursid=".people_db.".concoursid  AND ".reports_db.".section=".people_db.".section WHERE ";
 	$sql .= reports_db.".id=".reports_db.".id_origine AND ".reports_db.".concoursid!=\"\" AND ".reports_db.".statut!=\"supprime\" AND ".reports_db.".section=\"".$section."\"";
       } else {
+	//	echo "retro";
 	$sql = "SELECT *, ".reports_db.".id AS report_id, ".people_db.".id AS people_id, ".people_db.".nom AS people_nom, ".people_db.".prenom AS people_prenom, ".people_db.".conflits AS people_conflits, ".reports_db.".nom AS nom, ".reports_db.".prenom AS prenom FROM ".reports_db;
 	$sql .=" join ".people_db." on ";
 	$sql .= reports_db.".nom LIKE ".people_db.".nom  ";
@@ -352,14 +353,18 @@ function filtersCriteriaToSQL($filters, $filter_values, $rapporteur_or = true)
 			}
 			else if(isset($fieldsTypes[$filter]) && $fieldsTypes[$filter] == "avis")
 			{
-				if($filter_values[$filter] == avis_classe)
+			  if($filter_values[$filter] == avis_classe) {
 					$sql .= " AND (".reports_db.".$filter REGEXP \"^c[0-9]\" OR ".reports_db.".$filter=\"".avis_classe."\") ";
-				else if($filter_values[$filter] == avis_oral)
-				  $sql .= " AND (".reports_db.".$filter=\"".avis_oral."\" OR ".reports_db.".$filter=\"".avis_non_classe."\" OR ".reports_db.".$filter REGEXP \"^c[0-9]\" )";
-				else if($filter_values[$filter] == avis_admis_a_concourir)
+			  }
+			  else if($filter_values[$filter] == avis_oral) {
+			    $sql .= " AND (".reports_db.".$filter=\"".avis_oral."\" OR ".reports_db.".$filter=\"".avis_classe."\"";
+			    $sql .= " OR ".reports_db.".$filter=\"".avis_non_classe."\" OR ".reports_db.".$filter REGEXP \"^c[0-9]\" )";
+			  }
+			  else if($filter_values[$filter] == avis_admis_a_concourir) {
 					$sql .= " AND ".reports_db.".statut_celcc!=\"non admis à concourir\" AND ".reports_db.".$filter!=\"".avis_desistement."\" ";
-				else
+			  } else {
 					$sql .= " AND ".reports_db.".$filter=\"$filter_values[$filter]\" ";
+			  }
 				//echo $sql;
 							} 			
 			else if($filter == "statut_celcc" && $filter_values[$filter] == "admissible")

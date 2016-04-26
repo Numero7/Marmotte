@@ -5,17 +5,24 @@ require_once 'import.inc.php';
 require_once 'manage_people.inc.php';
 
 
-function process_upload($create = false, $directory = null, $files)
+function process_upload($create = false, $directory = null, $files, $i = -1)
 {
+ 
+
 	global $typeImports;
 	try
 	{
-	  //		if (isset($_FILES['uploadedfile']))
 		{
-		  //			$files = $_FILES['uploadedfile'];
 			if (isset($files['tmp_name']) && isset($files['name']))
 			{
-				switch($files['error'])
+  if($i < 0 && is_array($files['name'])) {
+      for($j = 0; $j < count($files['name']) ; $j++) {
+	 process_upload($create,$directory,$files,$j);
+      }
+      return;
+  }
+  $error = ($i< 0) ? $files['error'] : $files['error'][$i];
+  switch($error)
 				{
 					case UPLOAD_ERR_OK: break;
 					case UPLOAD_ERR_INI_SIZE: throw new Exception("Error: UPLOAD_ERR_INI_SIZE"); break;
@@ -25,13 +32,13 @@ function process_upload($create = false, $directory = null, $files)
 					case UPLOAD_ERR_NO_TMP_DIR: throw new Exception("Error: UPLOAD_ERR_NO_TMP_DIR"); break;
 					case UPLOAD_ERR_CANT_WRITE: throw new Exception("Error: UPLOAD_ERR_CANT_WRITE"); break;
 					case UPLOAD_ERR_EXTENSION: throw new Exception("Error: UPLOAD_ERR_EXTENSION"); break;
-					default: throw new Exception("Unknown error  : ". intval($files['error']));
+				default: throw new Exception("Unknown error  : ". $error);
 				}
-				$filename = $files['name'];
-				$tmpname = $files['tmp_name'];
+				$filename = ($i < 0) ? $files['name'] : $files['name'][$i];
+				$tmpname = ($i < 0) ? $files['tmp_name'] : $files['tmp_name'][$i];
 
 				if(strlen($filename) <3)
-					throw new Exception("Filename '"+ $filename+"' too short");
+					throw new Exception("Filename '". $filename . "' too short");
 
 				$suffix = substr($filename,strlen($filename) -3, 3);
 				$type = isset($_REQUEST['type']) ? real_escape_string($_REQUEST['type']) : "";
@@ -67,10 +74,10 @@ function process_upload($create = false, $directory = null, $files)
 						break;
 					case "candidatefile":
 						{
-							$new_name = isset($_REQUEST['ajoutphoto']) ? "id.jpg" : $files['name'];
+							$new_name = isset($_REQUEST['ajoutphoto']) ? "id.jpg" : $filename;
 								if(!move_uploaded_file($tmpname, $directory."/".$new_name ))
 									throw new Exception("Failed to add file");
-								return ("Fichier ".$files['name']." ajouté au candidat ");
+								return ("Fichier ".$filename." ajouté au candidat ");
 						}
 						break;
 					default:
