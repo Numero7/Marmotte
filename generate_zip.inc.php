@@ -26,7 +26,7 @@ function zip_files($filenames,$zipname = "reports.zip")
 		if(!$zip->addFile($localfilename, $shortfilename))
 		{
 			echo "Failed to add file ".$shortfilename." to zip file<br/>";
-			return false;
+			//			return false;
 		}
 	}
 	$zip->close();

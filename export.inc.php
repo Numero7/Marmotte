@@ -281,6 +281,19 @@ function aggregate_files($report)
 			    $short = substr($file,strrpos($file,'/')+1);
 			    $filenames[$file] = $short;
 			  }
+		} else {
+			$extra_files = 
+			  array_merge(
+				      find_files($report, $report->id_session,true,"e-valuation"),
+				      find_files($report, $report->id_session,true,"marmotte"),
+				      find_files($report, $report->id_session,true,"marmotte","avis")
+				      );
+			foreach($extra_files as $file)
+			  {
+			    $short = substr($file,strrpos($file,'/')+1);
+			    //			    echo $short."<br/>".$file."<br/>";
+			    $filenames[$file] = $short;
+			  }
 		}
 		return $filenames;
 

@@ -90,6 +90,7 @@ function find_evaluation_files($row, $session)
 		$sess = ($roww->session_doc == "NULL") ? "" : $roww->session_doc;
 		$label = $roww->annee_doc." - " . $sess. " - " . $label. " - ". $roww->nom_document;
 		$dsifiles[$label] =  $dossier_stockage_dsi."/".$roww->path_sas."/".$roww->nom_document;
+		//		echo $roww->nom_document."<br/>";
 	      }	
 		ksort($dsifiles);
 		return $dsifiles;
