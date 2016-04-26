@@ -371,6 +371,11 @@ function display_fichiers($row, $fieldID, $session, $readonly, $type, $subtype =
 	if(!isset($row->type))
 		return;
 	
+	if( is_rapport_unite($row) && ( !isset($row->unite) || $row->unite == "")) {
+	    echo "Pas d'unite associée à cette demande";
+	    return ;
+	  }
+
 	$files = find_files($row, $session, false,$type, $subtype);	
 
 	echo "<td><table><tr>\n";

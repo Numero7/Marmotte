@@ -104,7 +104,9 @@ function find_marmotte_files($row, $session, $create_directory_if_nexists = fals
 	$dir = "";
 	if(  is_rapport_unite($row) )
 	{
-		if(isset($row->unite) && $row->unite == "") return $files;
+	  if(isset($row->unite) && $row->unite == "") {
+	    return $files;
+	  }
 		$marmotte_files = find_unit_files($row,true, $session, true);
 		$dir = get_unit_directory($row, $session, false);
 	}
