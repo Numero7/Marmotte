@@ -371,8 +371,8 @@ function display_fichiers($row, $fieldID, $session, $readonly, $type, $subtype =
 	if(!isset($row->type))
 		return;
 	
-	if( is_rapport_unite($row) && ( !isset($row->unite) || $row->unite == "")) {
-	    echo "Pas d'unite associée à cette demande";
+	if( $type == "marmotte" && is_rapport_unite($row) && ( !isset($row->unite) || $row->unite == "")) {
+	    echo "Veuillez associer une unité à cette demande pour pouvoir ajouter des fichiers.";
 	    return ;
 	  }
 
