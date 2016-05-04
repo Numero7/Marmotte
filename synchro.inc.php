@@ -462,7 +462,7 @@ function synchronizePeople($section)
 	if($num > 0)
 	    $answer = "<B>Ajout de ".$num." chercheurs de section secondaire ".$section."</B><br/>\n";
 
-	$sql =  "UPDATE ".people_db." marmotte JOIN ".dsidbname.".".dsi_people_db." dsi ";
+	$sql =  "UPDATE IGNORE ".people_db." marmotte JOIN ".dsidbname.".".dsi_people_db." dsi ";
 	$sql .= " ON marmotte.nom LIKE dsi.nom AND marmotte.prenom LIKE dsi.prenom";
 	$sql .= " SET marmotte.NUMSIRHUS=dsi.numsirhus";
 	$sql .= " WHERE marmotte.nom!=\"\" AND marmotte.section=\"".$section."\" ";
@@ -476,7 +476,7 @@ function synchronizePeople($section)
 	  $answer .= $num." num&eacute;ros SIRHUS ont &eacute;t&eacute; mis &agrave; jour.<br/>";
 	  }
 
-	$sql =  "UPDATE ".people_db." marmotte JOIN ".dsidbname.".".dsi_people_db." dsi ";
+	$sql =  "UPDATE IGNORE ".people_db." marmotte JOIN ".dsidbname.".".dsi_people_db." dsi ";
 	$sql .= " ON marmotte.NUMSIRHUS=dsi.numsirhus";
 	$sql .= " SET marmotte.nom=dsi.nom, marmotte.prenom=dsi.prenom";
 	$sql .= " WHERE marmotte.NUMSIRHUS!='' AND section=\"".$section."\" AND marmotte.nom=\"\";";
@@ -821,7 +821,7 @@ function export_to_evaluation()
 		$sql = "UPDATE ".dsidbname.".".dsi_marmotte_db." SET AVIS_EVAL='".avis_classe."' WHERE AVIS_EVAL LIKE \"c%\"";
 		sql_request($sql);
 
-		$sql ="UPDATE ".dsidbname.".".dsi_marmotte_db." target,";
+		$sql ="UPDATE ".dsidbname.".".dsi_marmotte_db." target ";
 		$sql .= "(SELECT DKEY,CODE_SECTION,CLASSEMENT,TYPE_EVAL,LIB_SESSION,ANNEE FROM ".dsidbname.".".dsi_marmotte_db;
 		$sql .= " WHERE AVIS_EVAL=\"K00\" AND CODE_CLASSEMENT IS NOT NULL";
 		$sql .= " GROUP BY CODE_SECTION,CLASSEMENT,TYPE_EVAL,LIB_SESSION,ANNEE HAVING count(*) > 1) src";
