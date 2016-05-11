@@ -26,6 +26,12 @@ function find_celcc_files($row, $session)
 {
   $concours = getConcours();
 
+  /*  echo "tt";
+    foreach($concours as $code => $row)
+    echo $code;
+  echo "yy";
+  */
+
   if(isset($concours[$row->concours]))
     {
       $grade = substr($concours[$row->concours]->intitule,0,2);
@@ -35,15 +41,16 @@ function find_celcc_files($row, $session)
     {
        $grade = "";
        $corps_grade = "";
+       //       echo "oups";
     }
 
-  //  echo $grade."<br/>".$corps_grade."<br/>";
   if(!isset($row->concoursid) || $row->concoursid=="")
     return array();
   $sql = "SELECT * FROM ".dsidbname.".".celcc_docs." ";
   $sql .="WHERE user_id='".real_escape_string($row->concoursid)."' ";
   $sql .= "AND (num_conc='' OR num_conc='".real_escape_string($row->concours)."') ";
   $sql .= "AND (corps_grade='' OR corps_grade='".$corps_grade."' OR corps_grade='".real_escape_string($grade)."') ";
+  //  echo $sql;
   $result = sql_request($sql);
   $files = array();
 		global  $dossier_stockage_dsi;

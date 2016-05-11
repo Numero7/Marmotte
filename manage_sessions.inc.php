@@ -47,6 +47,7 @@ function set_current_session_id($id)
 {
   unset($_SESSION['myconc']);
 	unset($_SESSION["rows_id"]);
+	unset($_SESSION["allconcours"]);
 	resetSessionFilters();
 
 	$_SESSION['filter_id_session'] = $id;
