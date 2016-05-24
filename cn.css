@@ -70,11 +70,18 @@ table.people
 {
 	border: 1px solid black;
 	border-collapse : collapse;
+	
 }
 
 table.people tr {
 	  border:solid 1px gray;
 	  padding: 2px;
+}
+
+table.people td {
+	  border-right:solid 1px #d3d3d3;
+	  border-left:solid 1px #d3d3d3;
+	  padding: 1px;
 }
 
 table.calendrier
