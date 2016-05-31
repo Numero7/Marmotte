@@ -777,7 +777,7 @@ function export_to_evaluation()
   $answer = "<B>Export des avis et rapporteurs vers e-valuation</B><br/>";
 		$sql = "DELETE FROM ".dsidbname.".".dsi_marmotte_db." WHERE 1";
 		sql_request($sql);
-		echo $sql."<br/>";
+		//echo $sql."<br/>";
 
 		
 		$sql = "insert into ".dsidbname.".".dsi_marmotte_db;
@@ -788,7 +788,7 @@ function export_to_evaluation()
 		$sql .=" WHERE marmotte.id_origine=marmotte.id)";
 		$sql .=" ON DUPLICATE KEY UPDATE marmotte.DKEY=dsi.DKEY";
 		sql_request($sql);
-		echo $sql."<br/>";
+		//		echo $sql."<br/>";
 		
 		$sql = "insert into ".dsidbname.".".dsi_marmotte_db;
 		$sql .=" (DKEY,AVIS_EVAL,CODE_SECTION,RAPPORTEUR1,RAPPORTEUR2,RAPPORTEUR3,statut,LIB_SESSION,ANNEE,TYPE_EVAL)";
@@ -798,7 +798,7 @@ function export_to_evaluation()
 		$sql .=" WHERE marmotte.id_origine=marmotte.id)";
 		$sql .=" ON DUPLICATE KEY UPDATE marmotte.DKEY=dsi.DKEY";
 		sql_request($sql);
-		echo $sql."<br/>";
+		//echo $sql."<br/>";
 
 		//		$answer .= "<a href=\"https://www.youtube.com/watch?v=0rCrc6RoJg0\">Ca l'effectue</a>";
 		$sql = "UPDATE ".dsidbname.".".dsi_marmotte_db." SET AVIS_EVAL='".avis_favorable."' WHERE AVIS_EVAL='".avis_oui."'";
@@ -809,11 +809,11 @@ function export_to_evaluation()
 
 		$sql = "UPDATE ".dsidbname.".".dsi_marmotte_db." SET CODE_CLASSEMENT=2* CAST(SUBSTR(AVIS_EVAL,2) AS SIGNED) -1 WHERE AVIS_EVAL LIKE \"c%\"";
 		sql_request($sql);
-		echo $sql."<br/>";
+		//echo $sql."<br/>";
 
 		$sql = "UPDATE ".dsidbname.".".dsi_marmotte_db." SET CLASSEMENT= CAST(SUBSTR(AVIS_EVAL,2) AS SIGNED) WHERE AVIS_EVAL LIKE \"c%\"";
 		sql_request($sql);
-		echo $sql."<br/>";
+		//echo $sql."<br/>";
 
 		$sql = "UPDATE ".dsidbname.".".dsi_marmotte_db." SET AVIS_EVAL='' WHERE AVIS_EVAL='".avis_aucunadonner."'";
 		sql_request($sql);
@@ -821,7 +821,7 @@ function export_to_evaluation()
 		$sql = "UPDATE ".dsidbname.".".dsi_marmotte_db." SET AVIS_EVAL='".avis_classe."' WHERE AVIS_EVAL LIKE \"c%\"";
 		sql_request($sql);
 
-		$sql ="UPDATE ".dsidbname.".".dsi_marmotte_db." target ";
+		$sql ="UPDATE ".dsidbname.".".dsi_marmotte_db." target, ";
 		$sql .= "(SELECT DKEY,CODE_SECTION,CLASSEMENT,TYPE_EVAL,LIB_SESSION,ANNEE FROM ".dsidbname.".".dsi_marmotte_db;
 		$sql .= " WHERE AVIS_EVAL=\"K00\" AND CODE_CLASSEMENT IS NOT NULL";
 		$sql .= " GROUP BY CODE_SECTION,CLASSEMENT,TYPE_EVAL,LIB_SESSION,ANNEE HAVING count(*) > 1) src";
@@ -829,7 +829,7 @@ function export_to_evaluation()
 		$sql .= " WHERE target.CLASSEMENT=src.CLASSEMENT AND target.CODE_SECTION=src.CODE_SECTION";
 		$sql .= " AND target.TYPE_EVAL=src.TYPE_EVAL AND target.LIB_SESSION=src.LIB_SESSION AND target.ANNEE=src.ANNEE";
 		sql_request($sql);
-		echo $sql."<br/>";
+		//echo $sql."<br/>";
 
 		return $answer;
 }
