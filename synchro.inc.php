@@ -854,7 +854,7 @@ function check_missing_data()
   $missing = array();
   $total = 0;
   //  global $dossier_stockage_dsi;
-  $dossier_stockage_dsi = "/home/gimbert/Panda/storage/evaluation";
+  $dossier_stockage_dsi = dsi_absolute_root_dir;
   while($row = mysqli_fetch_object($result))
     {
       $total++;      
