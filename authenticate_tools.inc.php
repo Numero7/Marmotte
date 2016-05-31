@@ -17,36 +17,41 @@ function init_filter_session()
 
 	if(!isset($_SESSION['filter_id_session']))
 	{
-		$ok = $_SESSION['filter_section'];
+		$section = $_SESSION['filter_section'];
 		$id = get_config("current_session");
-		$sql = "SELECT * FROM ".sessions_db." WHERE `id`='".$id."' AND `section`='". real_escape_string($ok)."' ORDER BY date DESC;";
+		$sql = "SELECT * FROM ".sessions_db." WHERE `id`='".$id."' AND `section`='". real_escape_string($section)."' ORDER BY date DESC;";
 		$result = sql_request($sql);
 		if(mysqli_num_rows($result) == 0)
 		{
-			$sql = "SELECT * FROM ".sessions_db." WHERE `section`='". real_escape_string($ok)."' ORDER BY date DESC;";
+			$sql = "SELECT * FROM ".sessions_db." WHERE `section`='". real_escape_string($section)."' ORDER BY date DESC;";
 			$result = sql_request($sql);
 			if(mysqli_num_rows($result) == 0)
 			{
+				createSession("Printemps", "2015", $section);
+				$id = "Printemps2015";
+				set_config("current_session", $id);
+
 				$sql = "SELECT * FROM ".sessions_db." WHERE `section`='0' ORDER BY date DESC;";
 				$result = sql_request($sql);
 				if(mysqli_num_rows($result) == 0)
-				{
 					createSession("Printemps", "2015", 0);
-					$result = sql_request($sql);
-				}
-				if($row = mysqli_fetch_object($result))
-				{
-					createSession($row->nom, date('Y', strtotime($row->date)), $ok);
-					$sql = "SELECT * FROM ".sessions_db." WHERE `section`='". real_escape_string($ok)."' ORDER BY date DESC;";
+				/*
+				$result = sql_request($sql);
+				$row = mysqli_fetch_object($result);
+
+					createSession($row->nom, date('Y', strtotime($row->date)), $section);
+					$sql = "SELECT * FROM ".sessions_db." WHERE `section`='". real_escape_string($section)."' ORDER BY date DESC;";
 					$result = sql_request($sql);
 					$row = mysqli_fetch_object($result);
 					set_config("current_session", $row->id);
 					$id = get_config("current_session");
-				}
+				*/
+
+			} else {
+			  $row = mysqli_fetch_object($result);
+			  $result = sql_request($sql);
+			  $id = $row->id;
 			}
-			$row = mysqli_fetch_object($result);
-			$result = sql_request($sql);
-			$id = $row->id;
 		}
 		$_SESSION['filter_id_session'] = $id;
 	}
