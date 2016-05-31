@@ -17,7 +17,7 @@ function synchronizeStatutsConcours($year = "")
   global $dbh;
   $changed = mysqli_affected_rows($dbh);
   if($changed > 0)
-    $log .= $changed." statuts_celcc ont été basculés à 'non admis a concourir'<br/>";
+    $log .= $changed." statuts_celcc ont &eacute;t&acute; bascul&eacute;s à 'non admis a concourir'<br/>";
 
   // mise a jour des statuts cel_cc
   $sql = "UPDATE reports marmotte, ".dsidbname.".".celcc_statuts." dsi SET marmotte.statut_celcc='soumis à IE' ";
@@ -470,10 +470,10 @@ function synchronizePeople($section)
 	$res = sql_request($sql);
 
 	$num = mysqli_affected_rows($dbh);
-	if($num > 0)
+	//	if($num > 0)
 	  {
-	    $answer = "<B>Synchro des num SIRHUS de chercheurs de la section ".$section."</B><br/>\n";
-	  $answer .= $num." num&eacute;ros SIRHUS ont &eacute;t&eacute; mis &agrave; jour.<br/>";
+	    //  $answer = "<B>Synchro des num SIRHUS de chercheurs de la section ".$section."</B><br/>\n";
+	    //$answer .= $num." num&eacute;ros SIRHUS ont &eacute;t&eacute; mis &agrave; jour.<br/>";
 	  }
 
 	$sql =  "UPDATE IGNORE ".people_db." marmotte JOIN ".dsidbname.".".dsi_people_db." dsi ";
@@ -483,10 +483,10 @@ function synchronizePeople($section)
 	$res = sql_request($sql);
 	global $dbh;
 	$num = mysqli_affected_rows($dbh);
-	if($num > 0)
+	//	if($num > 0)
 	  {
-	    $answer .= "<B>Synchro des noms et prénoms de chercheurs de la section ".$section."</B><br/>\n";
-	  $answer .= $num." nom et prenoms ont &eacute;t&eacute; mis &agrave; jour.<br/>";
+	    //  $answer .= "<B>Synchro des noms et prénoms de chercheurs de la section ".$section."</B><br/>\n";
+	    //$answer .= $num." nom et prenoms ont &eacute;t&eacute; mis &agrave; jour.<br/>";
 	  }
 	
 
@@ -497,10 +497,10 @@ function synchronizePeople($section)
 	$res = sql_request($sql);
 	global $dbh;
 	$num = mysqli_affected_rows($dbh);
-	if($num > 0)
+	//	if($num > 0)
 	  {
-	    $answer .= "<B>Synchro des unit&eacute;s des chercheurs de la section ".$section."</B><br/>\n";
-	  $answer .= $num." unit&eacute;(s) ont &eacute;t&eacute; mises &agrave; jour.<br/>";
+	    //	    $answer .= "<B>Synchro des unit&eacute;s des chercheurs de la section ".$section."</B><br/>\n";
+	    //$answer .= $num." unit&eacute;(s) ont &eacute;t&eacute; mises &agrave; jour.<br/>";
 	  }
 
 	$sql =  "UPDATE ".people_db." marmotte JOIN ".dsidbname.".".dsi_people_db." dsi ";
@@ -510,10 +510,10 @@ function synchronizePeople($section)
 	$res = sql_request($sql);
 	global $dbh;
 	$num = mysqli_affected_rows($dbh);
-	if($num > 0)
+	//	if($num > 0)
 	  {
-	    $answer .= "<B>Synchro des grades des chercheurs de la section ".$section."</B><br/>\n";
-	  $answer .= $num." grades ont &eacute;t&eacute; mis &agrave; jour.<br/>";
+	    //  $answer .= "<B>Synchro des grades des chercheurs de la section ".$section."</B><br/>\n";
+	    //$answer .= $num." grades ont &eacute;t&eacute; mis &agrave; jour.<br/>";
 	  }
 
 
@@ -947,7 +947,7 @@ function synchronize_units()
   sql_request($sql);
   $num = mysqli_affected_rows($dbh);
   if($num> 0)
-      $answer .= $num . " intitulé d'unités ont été mis à jour<br/>\n";
+    $answer .= $num . " intitulé d'unités ont été mis à jour<br/>\n";
 
   $sql = "UPDATE ".units_db." marmotte JOIN ".dsidbname.".".dsi_units_db." dsi SET ";
   $sql .= "marmotte.directeur=CONCAT(dsi.NOM_DIR_UNI,' ',dsi.PRN_DIR_UNI) ";
@@ -955,7 +955,7 @@ function synchronize_units()
   sql_request($sql);
   $num = mysqli_affected_rows($dbh);
   if($num> 0)
-      $answer .= $num . " noms de directeurs ont été mis à jour<br/>\n";
+    $answer .= $num . " noms de directeurs ont été mis à jour<br/>\n";
 
   $sql = "UPDATE ".units_db." marmotte JOIN ".dsidbname.".".dsi_units_db." dsi SET ";
   $sql .= "marmotte.nickname=dsi.SIGLEUNI WHERE marmotte.code=dsi.CODEUNITE AND dsi.SIGLEUNI != ''";
@@ -1046,8 +1046,8 @@ try
 	sql_request($sql);
 	global $dbh;
 	$num = mysqli_affected_rows($dbh);
-	if($num > 0)
-	  $answer .= "Les meta données de ".$num." DE unités déjà existantes dans la base marmotte ont été mises à jour<br/>"; 
+	//	if($num > 0)
+	//  $answer .= "Les meta données de ".$num." DE unités déjà existantes dans la base marmotte ont été mises à jour<br/>"; 
 
 	$answer .= "<h2>Synchro des metadonnees des DE chercheurs</h2>";
 	/* mise a jour des meta données pour les DE chercheurs déjà importées dans marmotte */
@@ -1058,8 +1058,8 @@ try
 	$sql .= " dsi.EVALUATION_CN=\"Soumis\" AND (dsi.ETAT_EVAL=\"En cours\" OR dsi.ETAT_EVAL=\"Terminée\")";
 	sql_request($sql);
 	$num = mysqli_affected_rows($dbh);
-	if($num > 0)
-	  $answer .= "Les meta données de ".$num." DE chercheurs déjà existantes dans la base marmotte ont été mises à jour<br/>"; 
+	//	if($num > 0)
+	//  $answer .= "Les meta données de ".$num." DE chercheurs déjà existantes dans la base marmotte ont été mises à jour<br/>"; 
 
 	/* synchro des colleges */
 	$answer .=synchronize_colleges();
@@ -1157,6 +1157,7 @@ $answer = "<h1>Synchronisation avec e-valuation de la section ".$section." - ".d
 		$answer.= "<h2>Mise a jour de reports.peopleid</h2>";
 		updatePeopleIds();
 
+		$answer .="<h2>Synchro termin&eacute;e</h2>";
 		echo $answer;
 		//		$_SESSION["answer_dsi_sync"] = $answer . $_SESSION["answer_dsi_sync"];
 
