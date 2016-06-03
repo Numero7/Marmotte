@@ -17,7 +17,7 @@ function synchronizeStatutsConcours($year = "")
   global $dbh;
   $changed = mysqli_affected_rows($dbh);
   if($changed > 0)
-    $log .= $changed." statuts_celcc ont &eacute;t&acute; bascul&eacute;s à 'non admis a concourir'<br/>";
+    $log .= $changed." statuts_celcc ont &eacute;t&eacute; bascul&eacute;s &agrave; 'non admis a concourir'<br/>";
 
   // mise a jour des statuts cel_cc
   $sql = "UPDATE reports marmotte, ".dsidbname.".".celcc_statuts." dsi SET marmotte.statut_celcc='soumis à IE' ";
@@ -25,49 +25,49 @@ function synchronizeStatutsConcours($year = "")
   sql_request($sql);
   $changed = mysqli_affected_rows($dbh);
   if($changed > 0)
-    $log .= $changed." statuts_celcc ont été basculés à 'IE'<br/>";
+    $log .= $changed." statuts_celcc ont &eacute;t&eacute; bascul&eacute;s &agrave; 'IE'<br/>";
 
   $sql = "UPDATE reports marmotte, ".dsidbname.".".celcc_statuts." dsi SET marmotte.statut_celcc='soumis au CS' ";
   $sql .= "WHERE dsi.num_conc=marmotte.concours AND dsi.user_id=marmotte.concoursid AND dsi.dde_equiv='soumis au CS' AND dsi.admis_concourir='non traité'"; 
   sql_request($sql);
   $changed = mysqli_affected_rows($dbh);
   if($changed > 0)
-    $log .= $changed." statuts_celcc ont été basculés à 'CS'<br/>";
+    $log .= $changed." statuts_celcc ont &eacute;t&eacute; bascul&eacute;s &agrave; 'CS'<br/>";
 
   $sql = "UPDATE reports marmotte, ".dsidbname.".".celcc_statuts." dsi SET marmotte.statut_celcc='admis à concourir' ";
   $sql .= "WHERE dsi.num_conc=marmotte.concours AND dsi.user_id=marmotte.concoursid AND dsi.admis_concourir='oui' AND dsi.admis_poursuivre='non traité'"; 
   sql_request($sql);
   $changed = mysqli_affected_rows($dbh);
   if($changed > 0)
-    $log .= $changed." statuts_celcc ont été basculés à 'admis a concourir'<br/>";
+    $log .= $changed." statuts_celcc ont &eacute;t&eacute; bascul&eacute;s &agrave; 'admis a concourir'<br/>";
 
   $sql = "UPDATE reports marmotte, ".dsidbname.".".celcc_statuts." dsi SET marmotte.avis='' ";
   $sql .= "WHERE dsi.num_conc=marmotte.concours AND dsi.user_id=marmotte.concoursid AND marmotte.avis=\"".avis_IE_oui."\" AND dsi.admis_concourir='oui' AND dsi.admis_poursuivre='non traité'"; 
   sql_request($sql);
   $changed = mysqli_affected_rows($dbh);
   if($changed > 0)
-    $log .= $changed." avis ont été basculés de 'IE oui' à ''<br/>";
+    $log .= $changed." avis ont &eacute;t&eacute; bascul&eacute;s  de 'IE oui' &agrave; ''<br/>";
 
   $sql = "UPDATE reports marmotte, ".dsidbname.".".celcc_statuts." dsi SET marmotte.statut_celcc='admis à poursuivre' ";
   $sql .= "WHERE dsi.num_conc=marmotte.concours AND dsi.user_id=marmotte.concoursid AND dsi.admis_poursuivre='oui' AND dsi.admissible='non traité'"; 
   sql_request($sql);
   $changed = mysqli_affected_rows($dbh);
   if($changed > 0)
-    $log .= $changed." statuts celcc ont été basculés à 'admis a poursuivre'<br/>";
+    $log .= $changed." statuts celcc ont &eacute;t&eacute; bascul&eacute;s &agrave; 'admis a poursuivre'<br/>";
 
   $sql = "UPDATE reports marmotte, ".dsidbname.".".celcc_statuts." dsi SET marmotte.statut_celcc='non admis à poursuivre' ";
   $sql .= "WHERE dsi.num_conc=marmotte.concours AND dsi.user_id=marmotte.concoursid AND dsi.admis_concourir='oui' AND dsi.admis_poursuivre='non'"; 
   sql_request($sql);
   $changed = mysqli_affected_rows($dbh);
   if($changed > 0)
-    $log .= $changed." statuts celcc ont été basculés à 'non admis a poursuivre'<br/>";
+    $log .= $changed." statuts celcc ont &eacute;t&eacute; bascul&eacute;s &agrave; 'non admis a poursuivre'<br/>";
 
   $sql = "UPDATE reports marmotte, ".dsidbname.".".celcc_statuts." dsi SET marmotte.statut_celcc='non-admissible' ";
   $sql .= "WHERE dsi.num_conc=marmotte.concours AND dsi.user_id=marmotte.concoursid AND dsi.admis_poursuivre='oui' AND dsi.admissible='non'"; 
   sql_request($sql);
   $changed = mysqli_affected_rows($dbh);
   if($changed > 0)
-    $log .= $changed." statuts celcc ont été basculés à 'non admissible'<br/>";
+    $log .= $changed." statuts celcc ont &eacute;t&eacute; bascul&eacute;s &agrave; 'non admissible'<br/>";
   
 
   $sql = "UPDATE reports marmotte, ".dsidbname.".".celcc_statuts." dsi SET marmotte.statut_celcc=CONCAT('admissible: ',dsi.classement_admissibilite) ";
@@ -75,21 +75,21 @@ function synchronizeStatutsConcours($year = "")
   sql_request($sql);
   $changed = mysqli_affected_rows($dbh);
   if($changed > 0)
-    $log .= $changed." statuts celcc ont été basculés à 'admissible'<br/>";
+    $log .= $changed." statuts celcc ont &eacute;t&eacute; bascul&eacute;s &agrave; 'admissible'<br/>";
 
   $sql = "UPDATE reports marmotte, ".dsidbname.".".celcc_statuts." dsi SET marmotte.statut_celcc=CONCAT('non-admis, admissible: ',dsi.classement_admissibilite) ";
   $sql .= "WHERE dsi.num_conc=marmotte.concours AND dsi.user_id=marmotte.concoursid AND dsi.admissible='oui' AND dsi.admis='non'"; 
   sql_request($sql);
   $changed = mysqli_affected_rows($dbh);
   if($changed > 0)
-    $log .= $changed." statuts celcc ont été basculés à 'non-admis'<br/>";
+    $log .= $changed." statuts celcc ont &eacute;t&eacute; bascul&eacute;s &agrave; 'non-admis'<br/>";
 
   $sql = "UPDATE reports marmotte, ".dsidbname.".".celcc_statuts." dsi SET marmotte.statut_celcc=CONCAT('admis: ',dsi.classement_admission,' admissible: ',dsi.classement_admissibilite) ";
   $sql .= "WHERE dsi.num_conc=marmotte.concours AND dsi.user_id=marmotte.concoursid AND dsi.admissible='oui' AND dsi.admis!='non' AND dsi.classement_admission != '-1'"; 
   sql_request($sql);
   $changed = mysqli_affected_rows($dbh);
   if($changed > 0)
-    $log .= $changed." statuts celcc ont été basculés à 'admis'<br/>";
+    $log .= $changed." statuts celcc ont &eacute;t&eacute; bascul&eacute;s &agrave; 'admis'<br/>";
 
 
   $sql = "UPDATE reports marmotte, ".dsidbname.".".celcc_statuts." dsi SET marmotte.avis='".avis_non_classe."' ";
@@ -97,7 +97,7 @@ function synchronizeStatutsConcours($year = "")
   sql_request($sql);
   $changed = mysqli_affected_rows($dbh);
   if($changed > 0)
-    $log .= $changed." avis marmotte ont été basculés à 'non classé'<br/>";
+    $log .= $changed." avis marmotte ont &eacute;t&eacute; bascul&eacute;s &agrave; 'non class&eacute;'<br/>";
 
   $sql = "UPDATE reports marmotte, ".dsidbname.".".celcc_statuts." dsi ";
   $sql .= "SET marmotte.avis='".avis_non_classe."', marmotte.statut_celcc='retrait candidature' ";
@@ -105,7 +105,7 @@ function synchronizeStatutsConcours($year = "")
   sql_request($sql);
   $changed = mysqli_affected_rows($dbh);
   if($changed > 0)
-    $log .= $changed." status marmotte ont été basculés à 'retrait candidature'<br/>";
+    $log .= $changed." status marmotte ont &eacute;t&eacute; bascul&eacute;s &agrave; 'retrait candidature'<br/>";
 
   return $log;
 }
@@ -947,7 +947,7 @@ function synchronize_units()
   sql_request($sql);
   $num = mysqli_affected_rows($dbh);
   if($num> 0)
-    $answer .= $num . " intitulé d'unités ont été mis à jour<br/>\n";
+    $answer .= $num . " intitul&eagrave; d'unit&eagrave;s ont été mis à jour<br/>\n";
 
   $sql = "UPDATE ".units_db." marmotte JOIN ".dsidbname.".".dsi_units_db." dsi SET ";
   $sql .= "marmotte.directeur=CONCAT(dsi.NOM_DIR_UNI,' ',dsi.PRN_DIR_UNI) ";
@@ -1146,7 +1146,7 @@ $answer = "<h1>Synchronisation avec e-valuation de la section ".$section." - ".d
 		$answer .= export_to_evaluation();
 		$answer .= "<h1>Synchro concours</h1>";
 		$answer .= synchronizeConcours();
-		$answer.= "<h2>Renommage des intitulés</h2>";
+		$answer.= "<h2>Renommage des intitul&eagrave;s</h2>";
 		$sql = "UPDATE ".marmottedbname.".".reports_db." SET `intitule`=\"Evaluation à vague de chercheurs\" WHERE `DKEY`IN";
 		$sql .= "(SELECT DKEY FROM ".dsidbname.".".dsi_evaluation_db." WHERE `type`='".REPORT_EVAL."' AND `PHASE_EVAL`=\"vague\")";
 		sql_request($sql);

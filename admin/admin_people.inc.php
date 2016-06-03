@@ -14,8 +14,8 @@ $result = sql_request($sql);
 $evals = array();
 while($row = mysqli_fetch_object($result))
   {
-    if(!isset($evals[$row->NUMSIRHUS])) $evals[$row->NUMSIRHUS] = array();
-    $evals[$row->NUMSIRHUS][] = substr($row->id_session,0,1) . substr($row->id_session,count($row->id_session)-3,2);
+    if(!isset($evals[$row->NUMSIRHUS])) $evals[$row->NUMSIRHUS] = "";
+    $evals[$row->NUMSIRHUS] .= substr($row->id_session,0,1) . substr($row->id_session,count($row->id_session)-3,2)." ";
   }
 
 
@@ -62,14 +62,14 @@ $fields =
   array(
 "nom"=>"Nom",
 "prenom" =>"Prénom",
-"grade"=>"Grade",
+"grade"=>"",
 "scn1"=>"Sect",
 "scn2"=>"ions",
 "labo1"=>"Unité",
 "labo2"=>"Unité2",
-"theme1" => "MotClef1",
-"theme2" => "MotClef2",
-"theme3" => "MotClef3",
+"theme1" => "Mots clés",
+"theme2" => "",
+"theme3" => "",
 //"titus" => "Titu",
 "evals" => "Evals",
 "statut_sirhus" => "Statut",
@@ -78,8 +78,9 @@ $fields =
 "lieutravail"=>"Lieu de travail",
 "codeposition" => "Position",
 "nature_sirhus" => "Nature",
-"dr" => "DR",
-"NUMSIRHUS"=>"Numsirhus"
+"dr" => "DR"
+//,
+//"NUMSIRHUS"=>"Numsirhus"
 	);
 
 
@@ -153,7 +154,14 @@ echo "<p><B>".mysqli_num_rows($result)." chercheurs</B></p>";
 echo "<table class=\"people\">\n";
 echo "<tr>\n";
 foreach($fields as $key => $label)
-  echo "<th>".$label."</th>\n";
+  {
+    if($key == "theme1") {
+      echo "<th colspan=\"3\">".$label."</th>\n";
+    } else if($key != "theme2" && $key != "theme3")
+      {
+	echo "<th>".$label."</th>\n";
+      }
+  }
 echo "</tr>\n";
 
 $section = currentSection();
@@ -197,11 +205,12 @@ echo "<tr>";
 	}
 	else if($key == "evals")
 	  {
-	    	  echo "<td>";
+	    	    	  echo "<td>";
 		  if(isset($evals[$row->NUMSIRHUS]))
-		    foreach($evals[$row->NUMSIRHUS] as $session)
-		      echo $session." ";
-	  echo "</td>";
+		    echo $evals[$row->NUMSIRHUS];
+		  //		    foreach($evals[$row->NUMSIRHUS] as $session)
+		  //  echo $session." ";
+		  echo "</td>";
 	}
       /*
 	else if($key == "titus")
