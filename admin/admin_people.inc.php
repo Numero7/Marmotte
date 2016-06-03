@@ -44,14 +44,14 @@ if($keyword == "")
   {
 //$sql = "SELECT * ,".dsidbname.".".dsi_people_db.".nom AS dsi_nom, ".dsidbname.".".dsi_people_db.".prenom AS dsi_prenom FROM `people` marmotte ";
 $sql = "SELECT * FROM `people` marmotte JOIN ".dsidbname.".".dsi_people_db." dsi ON marmotte.NUMSIRHUS=dsi.numsirhus ";
-$sql .= "WHERE (dsi.scn1='6' OR dsi.scn2='6') AND marmotte.concoursid=\"\" AND marmotte.NUMSIRHUS!=\"\" AND marmotte.section=\"".$_SESSION['filter_section']."\"";
+$sql .= "WHERE (dsi.scn1=marmotte.section OR dsi.scn2=marmotte.section) AND marmotte.concoursid=\"\" AND marmotte.NUMSIRHUS!=\"\" AND marmotte.section=\"".$_SESSION['filter_section']."\"";
 $sql .= " ORDER BY ".$ftri." ASC;";
   }
 else
   {
 $sql = "SELECT * FROM `people` marmotte JOIN ".dsidbname.".".dsi_people_db." dsi ON marmotte.NUMSIRHUS=dsi.numsirhus ";
 //$sql = "SELECT * FROM `people` marmotte ";
-$sql .= "WHERE marmotte.concoursid=\"\" AND marmotte.NUMSIRHUS!=\"\" AND marmotte.section=\"".$_SESSION['filter_section']."\"";
+$sql .= "WHERE (dsi.scn1=marmotte.section OR dsi.scn2=marmotte.section) AND marmotte.concoursid=\"\" AND marmotte.NUMSIRHUS!=\"\" AND marmotte.section=\"".$_SESSION['filter_section']."\"";
 $sql .= " AND (marmotte.theme1='".$keyword."' OR marmotte.theme2='".$keyword."' OR marmotte.theme3='".$keyword."')";
 $sql .= " ORDER BY ".$ftri." ASC;";
   }
