@@ -134,6 +134,7 @@ formulaire d&apos;assistance de la dsi</a>.
 <ul>
 <li><B>DSI</B></li>
   <li>Ren&eacute; Pelfresne<br/> (chef de projet DSI)</li>
+  <li>Dominique Naude<br/> (chargée de projet GFI)</li>
 </ul>
 </td>
  </ul>
