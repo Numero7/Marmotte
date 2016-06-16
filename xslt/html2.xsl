@@ -62,7 +62,7 @@
 <small>
 <i> Ce rapport a été établi après délibérations de la <xsl:value-of disable-output-escaping="yes" select="typesectioncid"/>, sous la responsabilité de son président, à partir des appréciations des rapporteurs et
 des observations et recommandations de la <xsl:value-of disable-output-escaping="yes" select="typesectioncid"/>.<br/>
-Les avis émis par les <xsl:value-of disable-output-escaping="yes" select="typesectioncid"/> ne préjugent pas de la décision qui sera prise par la direction du CNRS.
+Les avis émis par les <xsl:value-of disable-output-escaping="yes" select="typesectioncid"/>s ne préjugent pas de la décision qui sera prise par la direction du CNRS.
 </i></small>
 </p>
 

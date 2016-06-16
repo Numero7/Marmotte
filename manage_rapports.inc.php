@@ -1280,8 +1280,8 @@ function is_field_editable($row, $fieldId)
 			 'publie'=>"Publication des Rapports",
 			 'audition'=>"Audition"
 */
-	/* tous les rapporteurs peuvent éditer le rapport de section */
-	if(($is_rapp1 || $is_rapp2 || $is_rapp3) && $fieldId == "rapport")
+	/* tous les rapporteurs peuvent éditer le rapport de section et ajouter des fichiers*/
+	if(($is_rapp1 || $is_rapp2 || $is_rapp3) && ($fieldId == "fichiers" || $fieldId == "rapport"))
 		return true;
 
 	global $fieldsIndividualAll;
