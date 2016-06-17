@@ -28,31 +28,6 @@ function is_auditionne($report)
   return is_classe($report) || $report->avis==avis_oral || $report->avis==avis_non_classe || isset($avis_lettre[$report->avis]);
 }
 
-function needs_audition_report($report)
-{
-  //  return true;
-  
-  global $concours_ouverts;
-  global $tous_sous_jury;
-
-  return  (isset($concours_ouverts[$report->concours]) && substr($concours_ouverts[$report->concours],0,2)=="CR")
-  && isset($tous_sous_jury[$report->concours])
-    && (count($tous_sous_jury[$report->concours])> 2)
-    //  && ($tous_sous_jury[$report->concours][1] != "")
-    && (is_classe($report) || $report->avis==avis_oral || $report->avis==avis_non_classe || $report->avis==avis_non || $report->avis == avis_classe);
-  //echo "'".$a."'".$b."'".$c."'".$d."'".$e."'";
-  //foreach($tous_sous_jury[$report->concours] as $key=>$value)
-  //echo $key;
-  //return $a && $b && $c && $d && $e;
-
-  /*  return (isset($concours_ouverts[$report->concours]) && substr($concours_ouverts[$report->concours],0,2)=="CR")
-    && isset($tous_sous_jury[$report->concours])
-    && isset($tous_sous_jury[$report->concours]["sj2"])
-    && ($tous_sous_jury[$report->concours]["sj2"] != "")
-    &&(is_classe($report) || $report->avis=="oral" || $report->avis=="nonclasse");
-  */
-}
-
 function is_auditionneCR($report)
 {
 	global $concours_ouverts;
