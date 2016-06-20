@@ -55,7 +55,7 @@ function needs_audition_report($report)
 
   return  (isset($concours_ouverts[$report->concours]) && substr($concours_ouverts[$report->concours],0,2)=="CR")
   && isset($tous_sous_jury[$report->concours])
-    && (count($tous_sous_jury[$report->concours])=> 2)
+    && (count($tous_sous_jury[$report->concours]) > 2)
     && (is_classe($report) || $report->avis==avis_oral || $report->avis==avis_non_classe || $report->avis==avis_non || $report->avis == avis_classe);
 }
 
