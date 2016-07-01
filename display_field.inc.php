@@ -187,9 +187,17 @@ function display_dsi($row, $fieldID, $readonly)
 			  "UNITE_EVAL",
 			  "RAPPORTEUR",
 			  "AVIS",
+			  "COMMENTAIRE_RC1",
+			  "COMMENTAIRE_RC2",
+			  "COMMENTAIRE_RC3",
 			  "DATE_ENVOI_AR",
 			  "DATE_DROIT_REPONSE",
-			  "DKEY")
+			  "DKEY",
+			  "DATE_MODIFICATION",
+			  "DATE_CREATION",
+			  "LIB_SESSION",
+			  "ANNEE",
+			  "CADRE_EVAL")
 			  ;
   $report = null;
   if(isset($row->DKEY))
