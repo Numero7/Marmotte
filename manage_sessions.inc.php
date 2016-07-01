@@ -127,6 +127,21 @@ function deletePreRapports($id)
   sql_request($sql);
 }
 
+function initConcours()
+{
+      echo "<p>Suppression de toutes les fiches candidats<br/>";
+		    	$sql = "DELETE FROM ".people_db." WHERE concoursid!=\"\"";
+			sql_request($sql);
+      echo "<p>Suppression de tous les concours<br/>";
+		    	$sql = "DELETE FROM ".concours_db." WHERE 1";
+			sql_request($sql);
+      echo "Suppression de toutes les sessions concours</br>";
+		$sql = "DELETE FROM ".sessions_db." WHERE id LIKE \"%Concours%\";";
+		sql_request($sql);
+      echo "Suppression de toutes les candidatures</br>";
+		$sql = "DELETE FROM ".reports_db." WHERE id_session LIKE \"%Concours%\";";
+		sql_request($sql);
+}
 function deleteSession($id, $supprimerdossiers)
 {
   if(isSuperUser())
@@ -141,15 +156,11 @@ function deleteSession($id, $supprimerdossiers)
 			$sql = "DELETE FROM ".reports_db." WHERE id_session='$id'";
 			sql_request($sql);
 		}
+		/*
 		if(strpos($id,"Concours") !== FALSE)
 		  {
-      echo "<p>Suppression de toutes les fiches candidats<br/>";
-		    	$sql = "DELETE FROM ".people_db." WHERE concoursid!=\"\"";
-			sql_request($sql);
-      echo "<p>Suppression de tous les sousjurys<br/>";
-		    	$sql = "DELETE FROM ".concours_db." WHERE 1";
-			sql_request($sql);
-		  }
+}
+		*/
     }
   else
 	if (isSecretaire())

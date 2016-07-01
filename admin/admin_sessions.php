@@ -119,7 +119,7 @@ else
 		foreach($sessions as $session)
 		  {
 			$id = $session["id"];
-			if(strpos($id,"Concours")===FALSE)
+			if(isSuperUser() || strpos($id,"Concours")===FALSE)
 			  echo "<option value=\"$id\">".$id."</option>";
 		}
 		?>
