@@ -18,11 +18,11 @@ $admin_people = isset($_REQUEST["admin_people"]) &&!isSuperUser() && isSecretair
 ?>
   <h1>Interface d&#39;administration</h1>
 <ul>
+	  <li><a href="index.php?action=admin&amp;admin_sessions=">Sessions</a></li>
 	<?php 
 	if(!isSuperUser())
 	{
 	  ?>
-	  <li><a href="index.php?action=admin&amp;admin_sessions=">Sessions</a></li>
 	<li><a href="index.php?action=admin&amp;admin_people=">Chercheurs</a></li>
 	    <?php 
 	}

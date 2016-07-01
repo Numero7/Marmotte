@@ -7,12 +7,14 @@ require_once('config_tools.inc.php');
 
 require_once('manage_sessions.inc.php');
 
+if(isSecretaire() && !isSuperUser())
+  {
 ?>
 
 
 <h3>Session courante</h3>
 <?php 
-if(isSecretaire())
+      if(isSecretaire() && !isSuperUser())
 {
 
 ?>
@@ -79,6 +81,7 @@ else
 			</form>
 			<br/>
 <?php
+			    }
 						  if(isSecretaire() && !isACN())
 						    {
 
@@ -104,7 +107,7 @@ else
 </form>
 <?php
 						    }
-
+  
 ?>
 <hr />
 			<h3>Suppression d&#39;une session</h3>
@@ -119,7 +122,7 @@ else
 		foreach($sessions as $session)
 		  {
 			$id = $session["id"];
-			if(isSuperUser() || strpos($id,"Concours")===FALSE)
+			if(isSuperUser() || strpos($id,"Concours")===FALSE)
 			  echo "<option value=\"$id\">".$id."</option>";
 		}
 		?>

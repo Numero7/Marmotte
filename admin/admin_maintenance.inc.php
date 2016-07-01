@@ -1,35 +1,7 @@
 <?php
 if(isSuperUser())
 {
-	?>
-   <p>Ce menu permet de supprimer les prérapports d une session.</p>
-<?php
-       $sql = "SELECT DISTINCT id_session FROM reports WHERE avis1!='' OR avis2!='' OR avis3!='' OR prerapport!='' OR prerapport2!='' OR prerapport3!=''";
-  //  echo $sql;
-       $result = sql_request($sql);
-       while($row = mysqli_fetch_object($result))
-	   $all_concours[]=$row->id_session;
-       ?>
-<form method="post" onsubmit="return confirm('Etes vous complètement sur de vouloir supprimer lesprérapports de cette session pour toutes les sections?);">
-       <form>
-<select name="sessionid">
-<?php
-   foreach($all_concours as $concours)
-   echo "<option value=\"".$concours."\">".$concours."</option>";
 ?>
-</select>
-<br/>
-	<input type="hidden" name="supprimerdossiers"></input>
-	<input type="hidden" name="admin_maintenance"></input>
-       <input  type="hidden" name="action" value="delete_prerapports" />
-	<input type="submit" value="Supprimer les prerapports de la base de données" />
-</form>
-
-<br/>
-<hr/>
-<br/>
-
-    
 <p>
 Statut maintenance: '<?php echo get_config("maintenance", "off", true, 0); ?>'</p>
 <p>
@@ -48,6 +20,10 @@ Synchroniser Marmotte avec les bases de donnees d&#39;e-valuation.<br/>
 <p>
 <a href="index.php?action=synchronizeConcours&amp;admin_maintenance=">Synchroniser les concours (attention risque faible de perte de données des utilisateurs connectés)</a>
 </p>
+<!--
+<p>
+<a href="index.php?action=synchronizeStatutsConcours&amp;admin_maintenance=">Supprimer toutes les données concours.</a>
+-->
 <p>
 <a href="index.php?action=synchronizeStatutsConcours&amp;admin_maintenance=">Synchroniser les statuts concours.</a>
 </p>
