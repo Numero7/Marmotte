@@ -66,7 +66,7 @@ function change_current_section($section)
 	$sql .= real_escape_string($section);
 	$sql .= "'WHERE login='".real_escape_string(getLogin())."';";
 	sql_request($sql);
-	$_SESSION['filter_section'] = $section;
+	$_SESSION['filter_section'] = ltrim($section,'0');
 	unset($_SESSION["config"]);
 	unset($_SESSION['all_units']);
 	unset($_SESSION["all_users"]);

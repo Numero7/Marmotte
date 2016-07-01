@@ -218,7 +218,10 @@ function get_last_user_section($user)
 
 	if( ($row->permissions < NIVEAU_PERMISSION_SUPER_UTILISATEUR) && array_search($last,$sections) === false)
 		$last = $sections[0];
+	//removing leading zeros
+	$last = ltrim($last,'0');
 	$_SESSION['filter_section'] = $last;
+
 	return $last;
 }
 
