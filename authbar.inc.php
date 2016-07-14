@@ -257,6 +257,8 @@ Déconnexion
   <li>Ren&eacute; Pelfresne (chef de projet DSI)</li>
   <li>Dominique Naude (chargée de projet GFI)</li>
 </ul>
+<B>DGDS</B>
+<ul><li>Philippe Baptiste</li></ul>
 </td>
  </ul>
  </td>
