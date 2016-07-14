@@ -30,8 +30,9 @@
 		"formule_standard_Titularisation_tres_favorable"=>array("Formule standard pour les titularisations avec avis TF","")
 			  );
 
-$configus_admin["sessions_synchro"]= array("Liste des sessions à synchroniser, séparées par des ';'", "Printemps2015;Automne20\
-15");
+$configus_admin = array(
+			"sessions_synchro" => 
+			array("Liste des sessions à synchroniser, séparées par des ';'", "Printemps2015;Automne2015"));
 
 
 function init_config()
@@ -46,7 +47,7 @@ function init_config()
 	}
 	$section = $_SESSION['filter_section'];
 
-	if(isSuperUser())
+	if($_SESSION["permission_mask"] == NIVEAU_PERMISSION_SUPER_UTILISATEUR)
 	  {
 	    //	    $configus = array();
 	    foreach($configus_admin as $key => $value)
