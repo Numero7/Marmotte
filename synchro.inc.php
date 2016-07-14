@@ -1102,7 +1102,7 @@ try
 		if($log != "")
 		  $answer .= $log."<br/>";
 		
-		//		$answer .= "<B>Suppression de l'historique des rapports</B><br/>\n";
+		//Suppression de l'historique des rapports
 		$sql = "DELETE FROM ".reports_db." WHERE id!=id_origine AND section=\"".$section."\";";
 		sql_request($sql);
 
