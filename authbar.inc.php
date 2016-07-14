@@ -220,9 +220,60 @@ Déconnexion
 </a>
 </li>
 <li><a href="http://www.cnrs.fr/comitenational/outils/projet_marmotte.htm">Aide</a></li>
+<li><a href="#" id="contributeurs_clickable">A propos</a></li>
 </ul>
 </td>
 </tr>
 					</table>
 	</div>
+
+<div class="content">
+  <span hidden id="contributeurs">
+  <p>Marmotte est le fruit d&acute;un <a href="https://github.com/Numero7/Marmotte">
+				     projet collaboratif open-source</a> réunissant secrétaires scientifiques, SGCN, DSI et DSI-concours (version 2.3 "RainSeason") repris en TMA par <a href="https://www.globalis-ms.com">Globalis</a> depuis la version 2.4.</p>
+<table><tr>
+<td>
+<img src="http://s.scifi-universe.com/galeries/images-old/abominable/jour_sans_fin_01.jpg">
+</td>
+<td>
+<B>Secrétaires scientifiques</B>
+  <ul>
+				     <li>Hugo Gimbert (d&eacute;veloppeur, coordinateur technique, section 6)</li>
+				     <li>Yann Ponty (d&eacute;veloppeur, section 6)</li>
+				     <li>Matias Velazquez (&beta;-testeur, coordinateur d&eacute;ploiement SSC, section 15)</li>
+				     <li>Caroline Strube (&beta;-testeuse, formatrice, section 25)</li>
+				     <li>Sophie Achard (&beta;-testeuse, formatrice, section 7)</li>
+				     <li>Guillaume Lapeyre (&beta;-testeur, formateur, section 19)</li>
+				     <li>Santiago Pita (&beta;-testeur, section 1)</li>
+</ul>
+<B>SGCN</B>
+<ul>
+		    <li>Marie-Claude Labastie (ambassadrice)</li>
+	   <li>Laurent Chazaly (coordinateur SGCN et formation)</li>
+		    <li>Mich&egrave;le Desumeur (&beta;-testeuse ACN)</li>
+</ul>
+<B>DSI</B>
+<ul>
+  <li>Ren&eacute; Pelfresne (chef de projet DSI)</li>
+  <li>Dominique Naude (chargée de projet GFI)</li>
+</ul>
+</td>
+ </ul>
+ </td>
+ </tr>
+ </table>
+<hr/>
+</span>
+<script>
+		    var display = false;
+		      document.getElementById('contributeurs_clickable').onclick 
+= function (event){
+			if(!display)
+    $('#contributeurs').show();
+			else 
+    $('#contributeurs').hide();
+			display = !display;
+}
+</script>
+</div>
 </div>
