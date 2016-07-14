@@ -103,7 +103,7 @@ formulaire d&apos;assistance de la dsi</a>.
 <br/>	  <br/>
 <br/>	
   <br/>
-<p>Marmotte est le fruit d'un <a href="#" id="contributeurs_clickable">projet collaboratif open-source</a> réunissant secrétaires scientifiques, SGCN, DSI et DSI-concours.</p>
+<p>Marmotte est le fruit d&acute;un <a href="#" id="contributeurs_clickable">projet collaboratif open-source</a> réunissant secrétaires scientifiques, SGCN, DSI et DSI-concours.</p>
 <span hidden id="contributeurs">
 <p>Version: <a href="https://github.com/Numero7/Marmotte">Marmotte 2.3 "RainSeason"</a></p>
 <table><tr>
@@ -145,7 +145,6 @@ formulaire d&apos;assistance de la dsi</a>.
  </div>
   </div>
  </div>
-<!-- <iframe width="90%" height="20%" src="https://lejournal.cnrs.fr/"></iframe>  -->
 <script>
 		    var display = false;
 		      document.getElementById('contributeurs_clickable').onclick 

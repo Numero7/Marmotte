@@ -871,7 +871,7 @@ function is_rapporteur_allowed($data, $row)
     return false;
   $college = $data->college;
   $type = $row->type;
-  if($type == "4510" || $type == "4515" || $type == "4520") 
+  if(is_promotion_DR($type))
     return ($college == "A1" || $college == "A2");
   if($type == "4505" || $type == "7777")
     return ($college == "A1" || $college == "A2" || $college == "B1" || $college == "B2");
@@ -882,7 +882,7 @@ function is_rapporteur_allowed($data, $row)
 function is_seeing_allowed($college, $type)
 {
   if(isSecretaire(getLogin(), false)) return true;
-  if($type == "4510" || $type == "4515" || $type == "4520") 
+  if(is_promotion_DR($type))
     return ($college == "A1" || $college == "A2");
   if($type == "7777")
     return ($college != "C");

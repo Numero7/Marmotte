@@ -19,8 +19,6 @@
 		"acn_can_edit_concours"=> array("L'ACN peut editer pendant une session concours","true"),
 		"sec_can_edit_valid"=> array("En plus du président, le secrétaire peut éditer les rapports en mode 'validation'","true"),
 		"acn_can_edit_valid"=> array("En plus du président, l'ACN peut éditer les rapports en mode 'validation'","true"),
-		"B_can_view_DR1_promo"=> array("Les rangs B ont accès aux dossiers de promo DR1","true"),
-		"C_can_view_DR1_promo"=> array("Les rangs C ont accès aux dossiers de promo DR1","false"),
 		"show_rapporteur3"=> array("Afficher le raporteur3 et son avis dans l'écran principal","false"),
 		"show_theme1"=> array("Afficher le mot-clé1 dans l'écran principal","true"),
 		"show_theme2"=> array("Afficher le mot-clé2 dans l'écran principal","true"),
