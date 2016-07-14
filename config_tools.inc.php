@@ -43,7 +43,7 @@ function init_config()
 	}
 	$section = $_SESSION['filter_section'];
 
-		if($section == "0")
+	if(isSuperUser())
 	  {
 	    //	    $configus = array();
 	    $configus["sessions_synchro"]= array("Liste des sessions à synchroniser, séparées par des ';'", "Printemps2015;Automne2015");

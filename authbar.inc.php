@@ -58,7 +58,9 @@ if(!isSuperUser())
 									</select>
 									</li>
 									<?php 
-}?>
+}
+if(!isSuperUser()) {
+?>
 			<li>
 			Mode
 			<select onchange="window.location='index.php?action=change_role&amp;role=' + this.value;">
@@ -88,6 +90,7 @@ if(!isSuperUser())
 			?>
 			</select>
 			</li>
+			    <?php } ?>
 							</ul>
 						</td>
 						<?php 
