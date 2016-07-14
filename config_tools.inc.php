@@ -29,7 +29,10 @@
 		"formule_standard_Promotion_non"=>array("Formule standard pour les promotions avec avis 'non'",""),
 		"formule_standard_Titularisation_tres_favorable"=>array("Formule standard pour les titularisations avec avis TF","")
 			  );
-		
+
+$configus_admin["sessions_synchro"]= array("Liste des sessions à synchroniser, séparées par des ';'", "Printemps2015;Automne20\
+15");
+
 
 function init_config()
 {
@@ -46,7 +49,8 @@ function init_config()
 	if(isSuperUser())
 	  {
 	    //	    $configus = array();
-	    $configus["sessions_synchro"]= array("Liste des sessions à synchroniser, séparées par des ';'", "Printemps2015;Automne2015");
+	    foreach($configus_admin as $key => $value)
+	      $configus[$key]= $value;
 	  }
 	
 

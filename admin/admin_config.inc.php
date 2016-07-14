@@ -7,16 +7,14 @@
 			echo "<tr><th>Description</th><th>Valeur</th></tr>\n";
 init_config();
 global $configus;
+global $configus_admin;
 
-$configs = $configus;
+$configs = isSuperUser() ? $configus_admin : $configus;
 
-/*if(isSuperUser())
-{
-$configs["sessions_synchro"]= array("Liste des sessions à synchroniser, séparées par des ';'", "Printemps2015;Automne2015");
-}*/
 
 			foreach($configs as $key => $data)
 			{
+
 				$value = $data[1];
 				if(isset($_SESSION["config"][$key]))
 					$value = $_SESSION["config"][$key];
