@@ -38,6 +38,7 @@ $configus_admin = array(
 function init_config()
 {
   global $configus;
+  global $configus_admin;
 
 
 	if(!isset($_SESSION['filter_section']))
