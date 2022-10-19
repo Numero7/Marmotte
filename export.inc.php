@@ -219,7 +219,7 @@ function export_report($report, $export_format, $dir)
 			fclose($handle);
 		}
 		else
-			throw new Exception("Imposible de creer le fichier doc ".$file);
+			throw new Exception("Impossible de creer le fichier doc ".$file);
 	}
 
 	return $file;

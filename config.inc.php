@@ -47,7 +47,7 @@ $statutsRapportsIndiv = array(
 		'audition' => "Audition (édition par les rapporteurs et le président de la section de jury de concours)",
 		'avistransmis'=>"Transmettre l'avis (l'avis ne sera définitivement plus modifiable)",
 		'validation'=>"Validation président (seuls le président et le secrétaire peuvent éditer le rapport, avis non modifiable)",
-		'publie'=>"Transmettre le rapport (le RS ne sera définitivement plus modifable)"
+		'publie'=>"Transmettre le rapport (le RS ne sera définitivement plus modifiable)"
 );
 $statutsRapportsMulti = array(
 		'doubleaveugle'=>'Edition Double Aveugle (les rapporteurs ne voient que leurs propres prérapports)',

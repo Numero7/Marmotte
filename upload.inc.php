@@ -69,7 +69,7 @@ function process_upload($create = false, $directory = null, $files, $i = -1)
 							if(move_uploaded_file($tmpname,$dossier_stockage."/".signature_file))
 								echo "<p>Nouvelle signature enregistrée</p>";
 							else
-								throw new Exception("Failed to store siganture as file ".signature_file);
+								throw new Exception("Failed to store signature as file ".signature_file);
 						}
 						break;
 					case "candidatefile":
